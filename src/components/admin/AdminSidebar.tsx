@@ -114,6 +114,69 @@ const navItems: NavItem[] = [
     ),
   },
   {
+    label: 'Crew',
+    href: '/app/crew',
+    feature: 'crew',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="5" cy="5" r="2.5" />
+        <circle cx="13" cy="5" r="2.5" />
+        <circle cx="9" cy="13" r="2.5" />
+        <path d="M5 7.5v2" />
+        <path d="M13 7.5v2" />
+        <path d="M9 10.5v-1" />
+      </svg>
+    ),
+  },
+  {
+    label: 'Equipment',
+    href: '/app/equipment',
+    feature: 'equipment',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="6" width="14" height="8" rx="1" />
+        <path d="M5 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+        <line x1="9" y1="9" x2="9" y2="11" />
+      </svg>
+    ),
+  },
+  {
+    label: 'Calendar',
+    href: '/app/calendar',
+    feature: 'calendar',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="3" width="14" height="13" rx="1" />
+        <line x1="2" y1="7" x2="16" y2="7" />
+        <line x1="6" y1="1" x2="6" y2="4" />
+        <line x1="12" y1="1" x2="12" y2="4" />
+      </svg>
+    ),
+  },
+  {
+    label: 'Leads',
+    href: '/app/leads',
+    feature: 'leads',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M16 9a7 7 0 1 1-3.3-5.95" />
+        <path d="M16 2v5h-5" />
+      </svg>
+    ),
+  },
+  {
+    label: 'Warehouse',
+    href: '/app/warehouse',
+    feature: 'warehouse',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M1 7l8-5 8 5" />
+        <path d="M3 7v8h12V7" />
+        <rect x="7" y="11" width="4" height="4" />
+      </svg>
+    ),
+  },
+  {
     label: 'Team',
     href: '/app/team',
     feature: 'team',
@@ -245,7 +308,7 @@ export default function AdminSidebar() {
         {/* Brand */}
         <div className="flex items-center gap-2.5 px-6 py-5 border-b border-border">
           <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-foreground">
-            <span className="text-white text-sm font-semibold tracking-tight">X</span>
+            <span className="text-white text-xs font-semibold tracking-tight">FD</span>
           </div>
           <span className="text-base font-semibold tracking-tight text-foreground">FlyteDeck</span>
         </div>

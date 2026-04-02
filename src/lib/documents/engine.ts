@@ -659,6 +659,7 @@ export const DOCUMENT_TYPES = [
   'load-in-strike',
   'crew-call-sheet',
   'wrap-report',
+  'packing-list',
 ] as const;
 
 export type DocumentType = (typeof DOCUMENT_TYPES)[number];

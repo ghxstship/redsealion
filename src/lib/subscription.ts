@@ -43,7 +43,17 @@ export type FeatureKey =
   | 'audit_log'
   | 'permissions'
   | 'sso'
-  | 'billing';
+  | 'billing'
+  // Feature parity additions
+  | 'crew'
+  | 'equipment'
+  | 'esign'
+  | 'calendar'
+  | 'leads'
+  | 'online_payments'
+  | 'warehouse'
+  | 'onboarding'
+  | 'payroll_export';
 
 // Maps each feature to the minimum subscription tier required
 const featureRegistry: Record<FeatureKey, SubscriptionTier> = {
@@ -92,6 +102,16 @@ const featureRegistry: Record<FeatureKey, SubscriptionTier> = {
   permissions: 'enterprise',
   sso: 'enterprise',
   billing: 'starter',
+  // Feature parity additions
+  crew: 'professional',
+  equipment: 'professional',
+  esign: 'professional',
+  calendar: 'professional',
+  leads: 'starter',
+  online_payments: 'professional',
+  warehouse: 'enterprise',
+  onboarding: 'professional',
+  payroll_export: 'enterprise',
 };
 
 const tierRank: Record<SubscriptionTier, number> = {

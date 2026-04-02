@@ -582,6 +582,7 @@ export interface Asset {
   current_location: AssetLocation | null;
   return_required: boolean;
   barcode: string | null;
+  serial_number: string | null;
   photo_urls: string[];
   created_at: string;
   updated_at: string;
@@ -1305,4 +1306,322 @@ export interface PhaseWithRelations extends Phase {
   milestone_gate?: MilestoneGate & { requirements?: MilestoneRequirement[] };
   creative_references?: CreativeReference[];
   portfolio_links?: (PhasePortfolioLink & { portfolio_item?: PortfolioItem })[];
+}
+
+// ---------------------------------------------------------------------------
+// Sprint A: Crew Management
+// ---------------------------------------------------------------------------
+
+export type CrewAvailabilityStatus = 'available' | 'unavailable' | 'tentative';
+
+export type CrewBookingStatus = 'offered' | 'accepted' | 'declined' | 'confirmed' | 'cancelled';
+
+export type OnboardingStatus = 'not_started' | 'in_progress' | 'complete';
+
+export type RateType = 'hourly' | 'day' | 'overtime' | 'per_diem' | 'travel' | 'flat';
+
+export interface Certification {
+  name: string;
+  issuer: string | null;
+  expires_at: string | null;
+  document_url: string | null;
+}
+
+export interface CrewProfile {
+  id: string;
+  user_id: string;
+  organization_id: string;
+  skills: string[];
+  certifications: Certification[];
+  hourly_rate: number | null;
+  day_rate: number | null;
+  ot_rate: number | null;
+  per_diem_rate: number | null;
+  travel_rate: number | null;
+  availability_default: CrewAvailabilityStatus;
+  emergency_contact_name: string | null;
+  emergency_contact_phone: string | null;
+  onboarding_status: OnboardingStatus;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CrewAvailability {
+  id: string;
+  user_id: string;
+  organization_id: string;
+  date: string;
+  status: CrewAvailabilityStatus;
+  note: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CrewBooking {
+  id: string;
+  organization_id: string;
+  proposal_id: string;
+  venue_id: string | null;
+  user_id: string;
+  role: string;
+  status: CrewBookingStatus;
+  shift_start: string;
+  shift_end: string;
+  call_time: string | null;
+  rate_type: RateType;
+  rate_amount: number;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CrewProfileWithUser extends CrewProfile {
+  user?: User;
+}
+
+export interface CrewBookingWithUser extends CrewBooking {
+  user?: User;
+  proposal?: Proposal;
+  venue?: Venue;
+}
+
+// ---------------------------------------------------------------------------
+// Sprint B: Equipment Management
+// ---------------------------------------------------------------------------
+
+export type EquipmentReservationStatus = 'reserved' | 'checked_out' | 'returned' | 'cancelled';
+
+export type MaintenanceType = 'repair' | 'inspection' | 'cleaning' | 'calibration';
+
+export type MaintenanceStatus = 'scheduled' | 'in_progress' | 'complete' | 'cancelled';
+
+export interface EquipmentBundle {
+  id: string;
+  organization_id: string;
+  name: string;
+  description: string | null;
+  items: BundleItem[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BundleItem {
+  asset_id: string;
+  quantity: number;
+}
+
+export interface EquipmentReservation {
+  id: string;
+  organization_id: string;
+  asset_id: string;
+  proposal_id: string;
+  venue_id: string | null;
+  quantity: number;
+  reserved_from: string;
+  reserved_until: string;
+  status: EquipmentReservationStatus;
+  checked_out_by: string | null;
+  checked_out_at: string | null;
+  returned_by: string | null;
+  returned_at: string | null;
+  condition_on_return: AssetCondition | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MaintenanceRecord {
+  id: string;
+  organization_id: string;
+  asset_id: string;
+  type: MaintenanceType;
+  status: MaintenanceStatus;
+  description: string | null;
+  scheduled_date: string;
+  completed_date: string | null;
+  cost: number | null;
+  performed_by: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// ---------------------------------------------------------------------------
+// Sprint C: E-Signatures + Notifications
+// ---------------------------------------------------------------------------
+
+export type ESignStatus = 'pending' | 'viewed' | 'signed' | 'declined' | 'expired';
+
+export interface ESignatureRequest {
+  id: string;
+  organization_id: string;
+  proposal_id: string | null;
+  document_type: string;
+  document_title: string;
+  signer_name: string;
+  signer_email: string;
+  token: string;
+  status: ESignStatus;
+  sent_at: string | null;
+  viewed_at: string | null;
+  signed_at: string | null;
+  signature_data: string | null;
+  ip_address: string | null;
+  pdf_url: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export type NotificationChannel = 'email' | 'sms' | 'in_app';
+
+export interface NotificationPreference {
+  id: string;
+  user_id: string;
+  organization_id: string;
+  event_type: string;
+  channel: NotificationChannel;
+  enabled: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+// ---------------------------------------------------------------------------
+// Sprint D: Event Calendar + Shifts
+// ---------------------------------------------------------------------------
+
+export interface Shift {
+  id: string;
+  organization_id: string;
+  venue_id: string;
+  proposal_id: string;
+  name: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  call_time: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CalendarSyncConfig {
+  id: string;
+  user_id: string;
+  organization_id: string;
+  provider: 'google' | 'ical';
+  external_calendar_id: string | null;
+  sync_token: string | null;
+  last_synced_at: string | null;
+  enabled: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+// ---------------------------------------------------------------------------
+// Sprint E: Lead Capture + Payments
+// ---------------------------------------------------------------------------
+
+export type LeadStatus = 'new' | 'contacted' | 'qualified' | 'converted' | 'lost';
+
+export interface Lead {
+  id: string;
+  organization_id: string;
+  source: string;
+  company_name: string | null;
+  contact_name: string;
+  contact_email: string;
+  contact_phone: string | null;
+  event_type: string | null;
+  event_date: string | null;
+  estimated_budget: number | null;
+  message: string | null;
+  status: LeadStatus;
+  assigned_to: string | null;
+  converted_to_deal_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface LeadForm {
+  id: string;
+  organization_id: string;
+  name: string;
+  fields: LeadFormField[];
+  thank_you_message: string | null;
+  auto_response_enabled: boolean;
+  auto_response_subject: string | null;
+  auto_response_body: string | null;
+  is_active: boolean;
+  embed_token: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface LeadFormField {
+  name: string;
+  label: string;
+  type: 'text' | 'email' | 'phone' | 'textarea' | 'select' | 'date' | 'number';
+  required: boolean;
+  options?: string[];
+}
+
+export interface PaymentLink {
+  id: string;
+  organization_id: string;
+  invoice_id: string;
+  provider: string;
+  external_id: string;
+  url: string;
+  amount: number;
+  currency: string;
+  status: 'active' | 'paid' | 'expired';
+  expires_at: string | null;
+  created_at: string;
+}
+
+// ---------------------------------------------------------------------------
+// Sprint F: Onboarding + Payroll
+// ---------------------------------------------------------------------------
+
+export interface OnboardingDocument {
+  id: string;
+  organization_id: string;
+  user_id: string;
+  type: 'w9' | 'nda' | 'i9' | 'direct_deposit' | 'emergency_contact' | 'other';
+  name: string;
+  file_url: string | null;
+  status: 'pending' | 'uploaded' | 'verified' | 'rejected';
+  verified_by: string | null;
+  verified_at: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// ---------------------------------------------------------------------------
+// Sprint G: Warehouse + Packing Lists
+// ---------------------------------------------------------------------------
+
+export type TransferStatus = 'pending' | 'in_transit' | 'received' | 'cancelled';
+
+export interface WarehouseTransfer {
+  id: string;
+  organization_id: string;
+  from_facility_id: string;
+  to_facility_id: string;
+  status: TransferStatus;
+  initiated_by: string;
+  items: WarehouseTransferItem[];
+  shipped_at: string | null;
+  received_at: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WarehouseTransferItem {
+  asset_id: string;
+  quantity: number;
+  condition: AssetCondition | null;
 }

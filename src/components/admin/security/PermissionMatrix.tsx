@@ -40,6 +40,10 @@ const RESOURCE_LABELS: Record<PermissionResource, string> = {
   automations: 'Automations',
   settings: 'Settings',
   ai_assistant: 'AI Assistant',
+  crew: 'Crew',
+  equipment: 'Equipment',
+  leads: 'Leads',
+  warehouse: 'Warehouse',
 };
 
 const ROLE_LABELS: Record<string, string> = {

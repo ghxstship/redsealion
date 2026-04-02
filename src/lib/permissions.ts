@@ -19,7 +19,11 @@ export type PermissionResource =
   | 'integrations'
   | 'automations'
   | 'settings'
-  | 'ai_assistant';
+  | 'ai_assistant'
+  | 'crew'
+  | 'equipment'
+  | 'leads'
+  | 'warehouse';
 
 export type PermissionAction = 'view' | 'create' | 'edit' | 'delete';
 
@@ -39,6 +43,10 @@ export const ALL_RESOURCES: PermissionResource[] = [
   'automations',
   'settings',
   'ai_assistant',
+  'crew',
+  'equipment',
+  'leads',
+  'warehouse',
 ];
 
 export const ALL_ACTIONS: PermissionAction[] = ['view', 'create', 'edit', 'delete'];
