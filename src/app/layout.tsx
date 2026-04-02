@@ -13,8 +13,48 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'XPB — Experiential Proposal Builder',
-  description: 'Interactive proposals for experiential production companies',
+  metadataBase: new URL('https://xpb.io'),
+  title: {
+    default: 'XPB — The Operating System for Experiential Production',
+    template: '%s | XPB',
+  },
+  description:
+    'XPB is the all-in-one platform for experiential production companies. Build interactive proposals, manage clients, track budgets, schedule resources, and run your entire operation — from pitch to wrap.',
+  keywords: [
+    'experiential production',
+    'event production software',
+    'proposal builder',
+    'experiential marketing',
+    'brand activation',
+    'live events',
+    'trade show management',
+    'creative production',
+    'event budgeting',
+    'production management',
+    'client portal',
+    'interactive proposals',
+    'experiential agency',
+    'event planning software',
+    'production operations',
+  ],
+  openGraph: {
+    title: 'XPB — The Operating System for Experiential Production',
+    description:
+      'XPB is the all-in-one platform for experiential production companies. Build interactive proposals, manage clients, track budgets, schedule resources, and run your entire operation — from pitch to wrap.',
+    siteName: 'XPB',
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'XPB — The Operating System for Experiential Production',
+    description:
+      'XPB is the all-in-one platform for experiential production companies. Build interactive proposals, manage clients, track budgets, schedule resources, and run your entire operation — from pitch to wrap.',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({

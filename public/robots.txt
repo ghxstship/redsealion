@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /app/
+Disallow: /portal/
+Disallow: /api/
+Disallow: /login
+Disallow: /signup
+
+Sitemap: https://xpb.io/sitemap.xml
