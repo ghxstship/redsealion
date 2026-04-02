@@ -3,8 +3,18 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import { useSubscription } from '@/components/shared/SubscriptionProvider';
+import { LockIcon } from '@/components/shared/TierBadge';
+import type { FeatureKey } from '@/lib/subscription';
 
-const navItems = [
+interface NavItem {
+  label: string;
+  href: string;
+  feature?: FeatureKey;
+  icon: React.ReactNode;
+}
+
+const navItems: NavItem[] = [
   {
     label: 'Dashboard',
     href: '/app',
@@ -20,6 +30,7 @@ const navItems = [
   {
     label: 'Proposals',
     href: '/app/proposals',
+    feature: 'proposals',
     icon: (
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M10 1H3a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7l-6-6Z" />
@@ -28,8 +39,19 @@ const navItems = [
     ),
   },
   {
+    label: 'Pipeline',
+    href: '/app/pipeline',
+    feature: 'pipeline',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M1 3h16v3l-6 4v5l-4 2v-7L1 6V3Z" />
+      </svg>
+    ),
+  },
+  {
     label: 'Clients',
     href: '/app/clients',
+    feature: 'clients',
     icon: (
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M13 16v-1.5a3 3 0 0 0-3-3H5a3 3 0 0 0-3 3V16" />
@@ -40,8 +62,37 @@ const navItems = [
     ),
   },
   {
+    label: 'Invoices',
+    href: '/app/invoices',
+    feature: 'invoices',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M14 2H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1Z" />
+        <line x1="6" y1="6" x2="12" y2="6" />
+        <line x1="6" y1="9" x2="12" y2="9" />
+        <line x1="6" y1="12" x2="9" y2="12" />
+      </svg>
+    ),
+  },
+  {
+    label: 'Reports',
+    href: '/app/reports',
+    feature: 'reports',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M16 13V5a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1Z" />
+        <path d="M5 16h8" />
+        <path d="M9 13v3" />
+        <path d="M5 10V8" />
+        <path d="M9 10V7" />
+        <path d="M13 10V6" />
+      </svg>
+    ),
+  },
+  {
     label: 'Portfolio',
     href: '/app/portfolio',
+    feature: 'portfolio',
     icon: (
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <rect x="1" y="3" width="16" height="12" rx="1" />
@@ -53,6 +104,7 @@ const navItems = [
   {
     label: 'Assets',
     href: '/app/assets',
+    feature: 'assets',
     icon: (
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M15.5 12.5L9 16l-6.5-3.5" />
@@ -64,6 +116,7 @@ const navItems = [
   {
     label: 'Team',
     href: '/app/team',
+    feature: 'team',
     icon: (
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M12 16v-1a3 3 0 0 0-3-3H5a3 3 0 0 0-3 3v1" />
@@ -74,8 +127,32 @@ const navItems = [
     ),
   },
   {
+    label: 'Integrations',
+    href: '/app/integrations',
+    feature: 'integrations',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M7.5 4.5L6 3 3 6l1.5 1.5" />
+        <path d="M10.5 13.5L12 15l3-3-1.5-1.5" />
+        <line x1="5" y1="13" x2="13" y2="5" />
+      </svg>
+    ),
+  },
+  {
+    label: 'Time',
+    href: '/app/time',
+    feature: 'time_tracking',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="9" cy="9" r="7.5" />
+        <path d="M9 4.5V9l3 1.5" />
+      </svg>
+    ),
+  },
+  {
     label: 'Templates',
     href: '/app/templates',
+    feature: 'templates',
     icon: (
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M2 6l7-4 7 4" />
@@ -87,6 +164,7 @@ const navItems = [
   {
     label: 'Terms',
     href: '/app/terms',
+    feature: 'terms',
     icon: (
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M13 2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8" />
@@ -115,6 +193,7 @@ const navItems = [
 export default function AdminSidebar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { canAccess } = useSubscription();
 
   const isActive = (href: string) => {
     if (href === '/app') return pathname === '/app';
@@ -176,25 +255,32 @@ export default function AdminSidebar() {
           <ul className="space-y-0.5">
             {navItems.map((item) => {
               const active = isActive(item.href);
+              const locked = item.feature ? !canAccess(item.feature) : false;
+
               return (
                 <li key={item.href}>
                   <Link
-                    href={item.href}
-                    onClick={() => setMobileOpen(false)}
+                    href={locked ? '#' : item.href}
+                    onClick={(e) => {
+                      if (locked) e.preventDefault();
+                      else setMobileOpen(false);
+                    }}
                     className={`
                       flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
                       transition-colors duration-150
-                      ${
-                        active
+                      ${locked
+                        ? 'text-text-muted cursor-not-allowed opacity-50'
+                        : active
                           ? 'bg-bg-tertiary text-foreground'
                           : 'text-text-secondary hover:bg-bg-secondary hover:text-foreground'
                       }
                     `}
                   >
-                    <span className={active ? 'text-foreground' : 'text-text-muted'}>
+                    <span className={locked ? 'text-text-muted' : active ? 'text-foreground' : 'text-text-muted'}>
                       {item.icon}
                     </span>
-                    {item.label}
+                    <span className="flex-1">{item.label}</span>
+                    {locked && <LockIcon className="text-text-muted" />}
                   </Link>
                 </li>
               );

@@ -1,0 +1,90 @@
+'use client';
+
+import { formatCurrencyDetailed } from '@/lib/utils';
+
+interface LineItem {
+  description: string;
+  quantity: number;
+  rate: number;
+}
+
+interface InvoicePreviewProps {
+  clientName: string;
+  invoiceNumber: string;
+  lineItems: LineItem[];
+  total: number;
+  memo: string;
+  dueDate: string;
+}
+
+export default function InvoicePreview({
+  clientName,
+  invoiceNumber,
+  lineItems,
+  total,
+  memo,
+  dueDate,
+}: InvoicePreviewProps) {
+  return (
+    <div className="sticky top-8 rounded-xl border border-border bg-white p-8 shadow-sm">
+      <div className="text-center mb-6">
+        <p className="text-xs uppercase tracking-wider text-text-muted">Invoice Preview</p>
+      </div>
+
+      <div className="flex justify-between items-start mb-8">
+        <div>
+          <div className="w-8 h-8 rounded-lg bg-foreground flex items-center justify-center mb-2">
+            <span className="text-white text-sm font-semibold">X</span>
+          </div>
+          <p className="text-xs text-text-muted">Meridian Experiential</p>
+        </div>
+        <div className="text-right">
+          <p className="text-sm font-semibold text-foreground">{invoiceNumber}</p>
+          {dueDate && (
+            <p className="text-xs text-text-muted mt-1">
+              Due: {new Date(dueDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+            </p>
+          )}
+        </div>
+      </div>
+
+      <div className="mb-6">
+        <p className="text-xs text-text-muted">Bill To</p>
+        <p className="text-sm font-medium text-foreground">{clientName}</p>
+      </div>
+
+      <table className="w-full mb-4 text-xs">
+        <thead>
+          <tr className="border-b border-border">
+            <th className="py-2 text-left text-text-muted font-medium">Item</th>
+            <th className="py-2 text-right text-text-muted font-medium">Qty</th>
+            <th className="py-2 text-right text-text-muted font-medium">Rate</th>
+            <th className="py-2 text-right text-text-muted font-medium">Amount</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          {lineItems.map((li, i) => (
+            <tr key={i}>
+              <td className="py-2 text-foreground">{li.description || '(empty)'}</td>
+              <td className="py-2 text-right tabular-nums text-text-secondary">{li.quantity}</td>
+              <td className="py-2 text-right tabular-nums text-text-secondary">{formatCurrencyDetailed(li.rate)}</td>
+              <td className="py-2 text-right tabular-nums font-medium text-foreground">{formatCurrencyDetailed(li.quantity * li.rate)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <div className="border-t border-border pt-3 flex justify-between items-center">
+        <span className="text-xs font-semibold text-foreground">Total</span>
+        <span className="text-sm font-semibold tabular-nums text-foreground">{formatCurrencyDetailed(total)}</span>
+      </div>
+
+      {memo && (
+        <div className="mt-4 pt-3 border-t border-border">
+          <p className="text-xs text-text-muted">Memo</p>
+          <p className="text-xs text-text-secondary mt-1">{memo}</p>
+        </div>
+      )}
+    </div>
+  );
+}

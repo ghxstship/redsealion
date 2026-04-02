@@ -1,63 +1,77 @@
 import Link from 'next/link';
 import { formatCurrency } from '@/lib/utils';
+import { createClient } from '@/lib/supabase/server';
+import { getSeedClients } from '@/lib/seed-data';
+import ClientsSearch from '@/components/admin/clients/ClientsSearch';
 
-const clients = [
-  {
-    id: 'client_001',
-    company_name: 'Nike',
-    industry: 'Sportswear & Apparel',
-    tags: ['enterprise', 'repeat'],
-    proposals: 2,
-    total_value: 610000,
-    last_activity: '2026-03-28T00:00:00Z',
-  },
-  {
-    id: 'client_002',
-    company_name: 'Spotify',
-    industry: 'Music & Entertainment',
-    tags: ['enterprise', 'tech'],
-    proposals: 2,
-    total_value: 415000,
-    last_activity: '2026-03-15T00:00:00Z',
-  },
-  {
-    id: 'client_003',
-    company_name: 'Mercedes-Benz',
-    industry: 'Automotive',
-    tags: ['enterprise', 'luxury'],
-    proposals: 1,
-    total_value: 485000,
-    last_activity: '2026-03-05T00:00:00Z',
-  },
-  {
-    id: 'client_004',
-    company_name: 'Apple',
-    industry: 'Technology',
-    tags: ['enterprise', 'tech', 'repeat'],
-    proposals: 1,
-    total_value: 275000,
-    last_activity: '2026-03-25T00:00:00Z',
-  },
-  {
-    id: 'client_005',
-    company_name: 'Red Bull',
-    industry: 'Beverages & Lifestyle',
-    tags: ['mid-market', 'sports'],
-    proposals: 0,
-    total_value: 0,
-    last_activity: '2026-02-10T00:00:00Z',
-  },
-];
-
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
+interface ClientRow {
+  id: string;
+  company_name: string;
+  industry: string | null;
+  tags: string[];
+  proposals: number;
+  total_value: number;
+  last_activity: string;
 }
 
-export default function ClientsPage() {
+async function getClients(): Promise<ClientRow[]> {
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) throw new Error('No auth');
+
+    const { data: userData } = await supabase
+      .from('users')
+      .select('organization_id')
+      .eq('id', user.id)
+      .single();
+
+    if (!userData) throw new Error('No org');
+
+    const { data: clients } = await supabase
+      .from('clients')
+      .select('*')
+      .eq('organization_id', userData.organization_id)
+      .order('company_name');
+
+    if (!clients) throw new Error('No clients');
+
+    return clients.map((c: Record<string, unknown>) => ({
+      id: c.id as string,
+      company_name: c.company_name as string,
+      industry: c.industry as string | null,
+      tags: (c.tags as string[]) ?? [],
+      proposals: 0,
+      total_value: 0,
+      last_activity: c.updated_at as string,
+    }));
+  } catch {
+    // Fallback seed data with inline proposal counts
+    const seedClients = getSeedClients();
+    const proposalCounts: Record<string, { count: number; value: number }> = {
+      client_001: { count: 2, value: 610000 },
+      client_002: { count: 2, value: 415000 },
+      client_003: { count: 1, value: 485000 },
+      client_004: { count: 1, value: 275000 },
+    };
+
+    return seedClients.map((c) => ({
+      id: c.id,
+      company_name: c.company_name,
+      industry: c.industry,
+      tags: c.tags,
+      proposals: proposalCounts[c.id]?.count ?? 0,
+      total_value: proposalCounts[c.id]?.value ?? 0,
+      last_activity: c.updated_at,
+    }));
+  }
+}
+
+export default async function ClientsPage() {
+  const clients = await getClients();
   const totalValue = clients.reduce((sum, c) => sum + c.total_value, 0);
 
   return (
@@ -90,84 +104,7 @@ export default function ClientsPage() {
       </div>
 
       {/* Search */}
-      <div className="mb-6">
-        <input
-          type="text"
-          placeholder="Search clients..."
-          className="w-full max-w-sm rounded-lg border border-border bg-white px-4 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
-        />
-      </div>
-
-      {/* Table */}
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-border bg-bg-secondary">
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">
-                  Company
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">
-                  Industry
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">
-                  Tags
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">
-                  Proposals
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">
-                  Total Value
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">
-                  Last Activity
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {clients.map((client) => (
-                <tr
-                  key={client.id}
-                  className="transition-colors hover:bg-bg-secondary/50"
-                >
-                  <td className="px-6 py-4">
-                    <Link
-                      href={`/app/clients/${client.id}`}
-                      className="text-sm font-medium text-foreground hover:underline"
-                    >
-                      {client.company_name}
-                    </Link>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-text-secondary">
-                    {client.industry}
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex flex-wrap gap-1.5">
-                      {client.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-right text-sm tabular-nums text-foreground">
-                    {client.proposals}
-                  </td>
-                  <td className="px-6 py-4 text-right text-sm font-medium tabular-nums text-foreground">
-                    {formatCurrency(client.total_value)}
-                  </td>
-                  <td className="px-6 py-4 text-right text-sm text-text-muted">
-                    {formatDate(client.last_activity)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <ClientsSearch clients={clients} />
     </>
   );
 }

@@ -1,0 +1,115 @@
+'use client';
+
+import { useState } from 'react';
+
+const ACTION_TYPES = [
+  { value: 'send_email', label: 'Send Email', description: 'Send an email notification' },
+  { value: 'send_slack', label: 'Send Slack Message', description: 'Post a message to a Slack channel' },
+  { value: 'create_invoice', label: 'Create Invoice', description: 'Auto-generate an invoice' },
+  { value: 'update_deal_stage', label: 'Update Deal Stage', description: 'Move a deal to a different stage' },
+  { value: 'create_task', label: 'Create Task', description: 'Create a task in a connected PM tool' },
+  { value: 'sync_crm', label: 'Sync to CRM', description: 'Push data to connected CRM' },
+  { value: 'webhook_call', label: 'Call Webhook', description: 'Send data to an external URL' },
+  { value: 'create_calendar_event', label: 'Create Calendar Event', description: 'Add event to connected calendar' },
+];
+
+interface ActionSelectorProps {
+  value: string;
+  config: Record<string, unknown>;
+  onChange: (actionType: string, config: Record<string, unknown>) => void;
+}
+
+export function ActionSelector({ value, config, onChange }: ActionSelectorProps) {
+  const [selectedType, setSelectedType] = useState(value);
+
+  function handleTypeChange(newType: string) {
+    setSelectedType(newType);
+    onChange(newType, {});
+  }
+
+  return (
+    <div className="space-y-4">
+      <label className="block text-sm font-medium text-foreground">
+        Action
+      </label>
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        {ACTION_TYPES.map((action) => (
+          <button
+            key={action.value}
+            type="button"
+            onClick={() => handleTypeChange(action.value)}
+            className={`rounded-lg border px-4 py-3 text-left transition-colors ${
+              selectedType === action.value
+                ? 'border-foreground bg-bg-secondary'
+                : 'border-border bg-white hover:bg-bg-secondary'
+            }`}
+          >
+            <p className="text-sm font-medium text-foreground">{action.label}</p>
+            <p className="mt-0.5 text-xs text-text-muted">{action.description}</p>
+          </button>
+        ))}
+      </div>
+
+      {selectedType === 'send_email' && (
+        <div className="mt-3 space-y-2">
+          <div>
+            <label className="block text-xs font-medium text-text-secondary mb-1">To</label>
+            <input
+              type="text"
+              value={(config.to as string) ?? ''}
+              onChange={(e) => onChange(selectedType, { ...config, to: e.target.value })}
+              placeholder="recipient@example.com"
+              className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-text-secondary mb-1">Subject</label>
+            <input
+              type="text"
+              value={(config.subject as string) ?? ''}
+              onChange={(e) => onChange(selectedType, { ...config, subject: e.target.value })}
+              placeholder="Notification subject"
+              className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-text-secondary mb-1">Body</label>
+            <textarea
+              value={(config.body as string) ?? ''}
+              onChange={(e) => onChange(selectedType, { ...config, body: e.target.value })}
+              rows={3}
+              placeholder="Email body..."
+              className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
+            />
+          </div>
+        </div>
+      )}
+
+      {selectedType === 'webhook_call' && (
+        <div className="mt-3">
+          <label className="block text-xs font-medium text-text-secondary mb-1">Webhook URL</label>
+          <input
+            type="url"
+            value={(config.url as string) ?? ''}
+            onChange={(e) => onChange(selectedType, { ...config, url: e.target.value })}
+            placeholder="https://example.com/webhook"
+            className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
+          />
+        </div>
+      )}
+
+      {selectedType === 'send_slack' && (
+        <div className="mt-3">
+          <label className="block text-xs font-medium text-text-secondary mb-1">Channel</label>
+          <input
+            type="text"
+            value={(config.channel as string) ?? ''}
+            onChange={(e) => onChange(selectedType, { ...config, channel: e.target.value })}
+            placeholder="#general"
+            className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
+          />
+        </div>
+      )}
+    </div>
+  );
+}

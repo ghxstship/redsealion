@@ -3,9 +3,10 @@
   "configurations": [
     {
       "name": "xpb-dev",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
-      "port": 3000
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": ["-c", "PATH=/usr/local/bin:$PATH exec npm run dev"],
+      "port": 3001,
+      "cwd": "/Users/julianclarkson/claude-code/xpb"
     }
   ]
 }
