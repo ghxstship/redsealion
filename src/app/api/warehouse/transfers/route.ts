@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
 
   let query = supabase
     .from('warehouse_transfers')
-    .select('*, items:warehouse_transfer_items(*)')
+    .select('*')
     .eq('organization_id', orgId)
     .order('created_at', { ascending: false });
 
@@ -87,8 +87,9 @@ export async function POST(request: NextRequest) {
       from_facility_id,
       to_facility_id,
       status: 'pending',
+      initiated_by: perm.userId,
+      items: JSON.stringify(items),
       notes: notes || null,
-      created_by: perm.userId,
     })
     .select()
     .single();
@@ -96,28 +97,6 @@ export async function POST(request: NextRequest) {
   if (transferError || !transfer) {
     return NextResponse.json(
       { error: 'Failed to create transfer.', details: transferError?.message },
-      { status: 500 },
-    );
-  }
-
-  // Insert transfer items
-  const itemRows = items.map((item) => ({
-    transfer_id: transfer.id,
-    asset_id: item.asset_id,
-    quantity: item.quantity,
-  }));
-
-  const { error: itemsError } = await supabase
-    .from('warehouse_transfer_items')
-    .insert(itemRows);
-
-  if (itemsError) {
-    return NextResponse.json(
-      {
-        error: 'Transfer created but items failed.',
-        details: itemsError.message,
-        transfer,
-      },
       { status: 500 },
     );
   }

@@ -50,8 +50,8 @@ async function getMaintenance(): Promise<MaintenanceEntry[]> {
     if (!userData) throw new Error('No org');
 
     const { data: records } = await supabase
-      .from('equipment_maintenance')
-      .select('*, equipment(name)')
+      .from('maintenance_records')
+      .select('*, assets:asset_id(name)')
       .eq('organization_id', userData.organization_id)
       .order('scheduled_date', { ascending: false });
 

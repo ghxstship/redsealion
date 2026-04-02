@@ -30,7 +30,7 @@ async function getEsignRequest(
 
     // Fetch e-sign request by token
     const { data: request } = await supabase
-      .from('esign_requests')
+      .from('esignature_requests')
       .select('*')
       .eq('token', token)
       .eq('organization_id', org.id)

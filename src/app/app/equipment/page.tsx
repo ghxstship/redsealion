@@ -45,7 +45,7 @@ async function getEquipment(): Promise<EquipmentItem[]> {
     if (!userData) throw new Error('No org');
 
     const { data: items } = await supabase
-      .from('equipment')
+      .from('assets')
       .select('*')
       .eq('organization_id', userData.organization_id)
       .order('name');

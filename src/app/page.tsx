@@ -298,7 +298,7 @@ export default function HomePage() {
       <nav className="flex items-center justify-between px-6 py-6 sm:px-8 lg:px-16">
         <div className="flex items-center gap-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-900">
-            <span className="text-sm font-bold text-white">X</span>
+            <span className="text-xs font-bold text-white">FD</span>
           </div>
           <span className="text-lg font-semibold tracking-tight text-zinc-900">
             FlyteDeck

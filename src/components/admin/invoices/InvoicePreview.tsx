@@ -34,7 +34,7 @@ export default function InvoicePreview({
       <div className="flex justify-between items-start mb-8">
         <div>
           <div className="w-8 h-8 rounded-lg bg-foreground flex items-center justify-center mb-2">
-            <span className="text-white text-sm font-semibold">X</span>
+            <span className="text-white text-xs font-semibold">FD</span>
           </div>
           <p className="text-xs text-text-muted">Meridian Experiential</p>
         </div>

@@ -61,7 +61,7 @@ async function getWarehouseData(): Promise<{
     if (!userData) throw new Error('No org');
 
     const { data: assets } = await supabase
-      .from('equipment')
+      .from('assets')
       .select('*')
       .eq('organization_id', userData.organization_id)
       .order('current_location')

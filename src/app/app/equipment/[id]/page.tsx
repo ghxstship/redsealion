@@ -59,7 +59,7 @@ async function getEquipmentDetail(id: string): Promise<EquipmentDetail> {
     if (!user) throw new Error('No auth');
 
     const { data: item } = await supabase
-      .from('equipment')
+      .from('assets')
       .select('*')
       .eq('id', id)
       .single();
@@ -69,14 +69,14 @@ async function getEquipmentDetail(id: string): Promise<EquipmentDetail> {
     const [resResult, mntResult] = await Promise.all([
       supabase
         .from('equipment_reservations')
-        .select('id, project_name, start_date, end_date, status')
-        .eq('equipment_id', id)
-        .order('start_date', { ascending: true }),
+        .select('id, proposal_id, reserved_from, reserved_until, status')
+        .eq('asset_id', id)
+        .order('reserved_from', { ascending: true }),
       supabase
-        .from('equipment_maintenance')
-        .select('id, type, description, date, performed_by')
-        .eq('equipment_id', id)
-        .order('date', { ascending: false }),
+        .from('maintenance_records')
+        .select('id, type, description, scheduled_date, performed_by')
+        .eq('asset_id', id)
+        .order('scheduled_date', { ascending: false }),
     ]);
 
     return {

@@ -19,9 +19,9 @@ export async function GET(
   const orgId = perm.organizationId;
 
   const { data: documents, error } = await supabase
-    .from('crew_documents')
+    .from('onboarding_documents')
     .select('*')
-    .eq('crew_profile_id', id)
+    .eq('user_id', id)
     .eq('organization_id', orgId)
     .order('created_at', { ascending: false });
 
@@ -80,14 +80,14 @@ export async function POST(
   const orgId = perm.organizationId;
 
   const { data: document, error } = await supabase
-    .from('crew_documents')
+    .from('onboarding_documents')
     .insert({
       organization_id: orgId,
-      crew_profile_id: id,
+      user_id: id,
       type,
       name,
       file_url,
-      uploaded_by: perm.userId,
+      status: 'uploaded',
     })
     .select()
     .single();

@@ -96,7 +96,7 @@ export default function LoginPage() {
       <div className="mb-8 text-center">
         <div className="mb-6 inline-flex items-center gap-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-900">
-            <span className="text-sm font-bold text-white">X</span>
+            <span className="text-xs font-bold text-white">FD</span>
           </div>
           <span className="text-lg font-semibold tracking-tight text-zinc-900">
             FlyteDeck

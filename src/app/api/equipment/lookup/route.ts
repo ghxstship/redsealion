@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
 
   // Look up the equipment asset
   let query = supabase
-    .from('equipment')
+    .from('assets')
     .select('*')
     .eq('organization_id', orgId);
 
