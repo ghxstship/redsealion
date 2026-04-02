@@ -1,4 +1,4 @@
--- XPB Initial Schema Migration
+-- FlyteDeck Initial Schema Migration
 -- Multi-tenant experiential proposal builder
 
 -- Enable required extensions
@@ -52,7 +52,7 @@ CREATE TABLE organizations (
     "timezone": "America/New_York",
     "currency": "USD",
     "invoicePrefix": "INV",
-    "proposalPrefix": "XPB"
+    "proposalPrefix": "FD"
   }'::jsonb,
   subscription_tier subscription_tier NOT NULL DEFAULT 'free',
   stripe_customer_id TEXT,

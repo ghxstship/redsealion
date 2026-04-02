@@ -41,7 +41,7 @@ export default function LeadCard({ lead }: LeadCardProps) {
     new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(amount);
 
   const formatDate = (dateStr: string) =>
-    new Date(dateStr).toLocaleDateString('default', { month: 'short', day: 'numeric', year: 'numeric' });
+    new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
   return (
     <div className="bg-white border border-border rounded-lg shadow-sm p-4">

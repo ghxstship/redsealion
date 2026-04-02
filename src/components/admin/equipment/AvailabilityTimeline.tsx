@@ -32,7 +32,7 @@ export default function AvailabilityTimeline({ reservations, from, to }: Availab
   for (let i = 0; i <= totalDays; i++) {
     const d = new Date(startDate);
     d.setDate(d.getDate() + i);
-    dayLabels.push(d.toLocaleDateString('default', { month: 'short', day: 'numeric' }));
+    dayLabels.push(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
   }
 
   const getPosition = (dateStr: string) => {

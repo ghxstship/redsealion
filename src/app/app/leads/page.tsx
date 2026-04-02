@@ -26,6 +26,10 @@ const STATUS_COLORS: Record<string, string> = {
   new: 'bg-blue-50 text-blue-700',
   contacted: 'bg-yellow-50 text-yellow-700',
   qualified: 'bg-green-50 text-green-700',
+  proposal_sent: 'bg-purple-50 text-purple-700',
+  won: 'bg-green-100 text-green-800',
+  lost: 'bg-red-50 text-red-700',
+  archived: 'bg-gray-100 text-gray-600',
   disqualified: 'bg-red-50 text-red-700',
 };
 

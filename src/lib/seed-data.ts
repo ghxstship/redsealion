@@ -68,6 +68,11 @@ export function getSeedOrganization(): Organization {
     stripe_connect_onboarding_complete: false,
     billing_email: 'billing@meridianxp.com',
     payment_instructions: 'Wire transfer to Meridian Experiential LLC. Contact accounting@meridianxp.com for details.',
+    date_format: 'MM/DD/YYYY',
+    time_format: '12h',
+    first_day_of_week: 0,
+    number_format: 'en-US',
+    language: 'en',
     created_at: '2025-01-15T00:00:00Z',
     updated_at: '2026-03-20T00:00:00Z',
   };

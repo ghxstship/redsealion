@@ -256,6 +256,11 @@ export interface Organization {
   stripe_connect_onboarding_complete: boolean;
   billing_email: string | null;
   payment_instructions: string | null;
+  date_format: string;
+  time_format: string;
+  first_day_of_week: number;
+  number_format: string;
+  language: string;
   created_at: string;
   updated_at: string;
 }
@@ -1507,15 +1512,16 @@ export interface Shift {
   updated_at: string;
 }
 
+export type CalendarProvider = 'google' | 'outlook' | 'ical';
+
 export interface CalendarSyncConfig {
   id: string;
   user_id: string;
   organization_id: string;
-  provider: 'google' | 'ical';
-  external_calendar_id: string | null;
-  sync_token: string | null;
+  provider: CalendarProvider;
+  calendar_id: string | null;
+  sync_enabled: boolean;
   last_synced_at: string | null;
-  enabled: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -1626,4 +1632,71 @@ export interface WarehouseTransferItem {
   asset_id: string;
   quantity: number;
   condition: AssetCondition | null;
+}
+
+// Settings types
+
+export interface UserPreferences {
+  id: string;
+  user_id: string;
+  organization_id: string;
+  theme: 'light' | 'dark' | 'system';
+  sidebar_collapsed: boolean;
+  date_format: string;
+  time_format: '12h' | '24h';
+  first_day_of_week: number;
+  number_format: string;
+  language: string;
+  default_calendar_view: 'month' | 'week' | 'day';
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ApiKey {
+  id: string;
+  organization_id: string;
+  name: string;
+  key_hash: string;
+  key_prefix: string;
+  scopes: string[];
+  last_used_at: string | null;
+  expires_at: string | null;
+  created_by: string;
+  created_at: string;
+  revoked_at: string | null;
+}
+
+export type TagEntityType = 'equipment' | 'crew' | 'project' | 'lead' | 'client';
+
+export interface Tag {
+  id: string;
+  organization_id: string;
+  entity_type: TagEntityType;
+  name: string;
+  color: string;
+  created_at: string;
+}
+
+export interface EmailTemplate {
+  id: string;
+  organization_id: string;
+  event_type: string;
+  subject_template: string;
+  body_template: string;
+  enabled: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export type DocumentDefaultType = 'proposal' | 'invoice' | 'contract' | 'sow' | 'crew_call_sheet';
+export type DocumentDefaultSection = 'terms_and_conditions' | 'disclaimer' | 'notes' | 'scope_header' | 'scope_footer' | 'payment_instructions';
+
+export interface DocumentDefault {
+  id: string;
+  organization_id: string;
+  document_type: DocumentDefaultType;
+  section: DocumentDefaultSection;
+  content: string;
+  created_at: string;
+  updated_at: string;
 }
