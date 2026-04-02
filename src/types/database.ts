@@ -364,6 +364,7 @@ export interface Proposal {
   narrative_context: NarrativeContext | null;
   payment_terms: PaymentTerms | null;
   terms_document_id: string | null;
+  assumptions: string[];
   tags: string[];
   portal_access_token: string | null;
   portal_first_viewed_at: string | null;
@@ -745,6 +746,41 @@ export interface SavedReport {
   updated_at: string;
 }
 
+// Change Orders
+
+export type ChangeOrderStatus = 'draft' | 'submitted' | 'approved' | 'rejected' | 'void';
+
+export interface ChangeOrder {
+  id: string;
+  proposal_id: string;
+  organization_id: string;
+  number: number;
+  title: string;
+  description: string | null;
+  reason: string | null;
+  status: ChangeOrderStatus;
+  requested_by: string | null;
+  approved_by: string | null;
+  approved_at: string | null;
+  scope_additions: ChangeOrderLineItem[];
+  scope_removals: ChangeOrderLineItem[];
+  schedule_impact_days: number | null;
+  original_value: number;
+  revised_value: number;
+  net_change: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ChangeOrderLineItem {
+  description: string;
+  phase_number: string | null;
+  category: string | null;
+  qty: number;
+  unit_cost: number;
+  total: number;
+}
+
 // Sprint 5: Integration types
 
 export interface Integration {
@@ -866,20 +902,6 @@ export interface CreditNote {
   created_at: string;
 }
 
-export interface ChangeOrder {
-  id: string;
-  proposal_id: string;
-  organization_id: string;
-  title: string;
-  description: string | null;
-  amount: number;
-  status: string;
-  approved_by: string | null;
-  approved_at: string | null;
-  created_by: string | null;
-  created_at: string;
-  updated_at: string;
-}
 
 export interface RecurringInvoiceSchedule {
   id: string;
