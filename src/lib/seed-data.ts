@@ -64,6 +64,8 @@ export function getSeedOrganization(): Organization {
     },
     subscription_tier: 'professional',
     stripe_customer_id: null,
+    stripe_connect_account_id: null,
+    stripe_connect_onboarding_complete: false,
     billing_email: 'billing@meridianxp.com',
     payment_instructions: 'Wire transfer to Meridian Experiential LLC. Contact accounting@meridianxp.com for details.',
     created_at: '2025-01-15T00:00:00Z',

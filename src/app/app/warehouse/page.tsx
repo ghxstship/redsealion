@@ -129,6 +129,12 @@ export default async function WarehousePage() {
         </div>
         <div className="flex gap-3">
           <Link
+            href="/app/warehouse/scan"
+            className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
+          >
+            Scan Equipment
+          </Link>
+          <Link
             href="/app/warehouse/transfers"
             className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
           >

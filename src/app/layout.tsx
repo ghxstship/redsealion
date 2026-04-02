@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
+import ServiceWorkerRegistration from '@/components/ServiceWorkerRegistration';
+import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -55,6 +57,15 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'FlyteDeck',
+  },
+  other: {
+    'apple-touch-icon': '/icons/icon.svg',
+  },
 };
 
 export default function RootLayout({
@@ -64,7 +75,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable} h-full`}>
-      <body className="min-h-full flex flex-col antialiased">{children}</body>
+      <head>
+        <meta name="theme-color" content="#0a0a0a" />
+        <link rel="apple-touch-icon" href="/icons/icon.svg" />
+      </head>
+      <body className="min-h-full flex flex-col antialiased">
+        {children}
+        <ServiceWorkerRegistration />
+        <PWAInstallPrompt />
+      </body>
     </html>
   );
 }

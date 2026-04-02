@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { handleWebhookEvent } from '@/lib/payments/stripe';
+import { notifyPaymentReceived } from '@/lib/notifications/triggers';
 
 export async function POST(request: Request) {
   const payload = await request.text();
@@ -45,6 +46,11 @@ export async function POST(request: Request) {
             status: newStatus,
           })
           .eq('id', invoiceId);
+
+        // Fire-and-forget: notify org admin of payment
+        notifyPaymentReceived(invoiceId, amountReceived).catch((err) => {
+          console.error('[Payments] Failed to send payment notification:', err);
+        });
       }
     }
   }

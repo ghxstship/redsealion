@@ -9,9 +9,19 @@ export async function createPaymentLink(opts: {
   amount: number;
   currency: string;
   description: string;
+  stripeAccountId?: string;
 }): Promise<{ url: string; externalId: string } | null> {
   const apiKey = process.env.STRIPE_SECRET_KEY;
   if (!apiKey) return null;
+
+  const baseHeaders: Record<string, string> = {
+    'Authorization': `Bearer ${apiKey}`,
+    'Content-Type': 'application/x-www-form-urlencoded',
+  };
+
+  if (opts.stripeAccountId) {
+    baseHeaders['Stripe-Account'] = opts.stripeAccountId;
+  }
 
   // First create a price for the one-off amount
   const priceBody = new URLSearchParams({
@@ -22,10 +32,7 @@ export async function createPaymentLink(opts: {
 
   const priceRes = await fetch(`${STRIPE_API_BASE}/prices`, {
     method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${apiKey}`,
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
+    headers: baseHeaders,
     body: priceBody.toString(),
   });
 
@@ -41,10 +48,7 @@ export async function createPaymentLink(opts: {
 
   const linkRes = await fetch(`${STRIPE_API_BASE}/payment_links`, {
     method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${apiKey}`,
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
+    headers: baseHeaders,
     body: linkBody.toString(),
   });
 

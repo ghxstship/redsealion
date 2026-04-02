@@ -252,6 +252,8 @@ export interface Organization {
   settings: OrgSettings;
   subscription_tier: SubscriptionTier;
   stripe_customer_id: string | null;
+  stripe_connect_account_id: string | null;
+  stripe_connect_onboarding_complete: boolean;
   billing_email: string | null;
   payment_instructions: string | null;
   created_at: string;

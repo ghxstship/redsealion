@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase/server';
+import { notifySignatureCompleted } from '@/lib/notifications/triggers';
 
 /**
  * Public endpoint for completing a signature.
@@ -66,6 +67,11 @@ export async function POST(request: NextRequest) {
         { status: 500 },
       );
     }
+
+    // Fire-and-forget: notify org admin that the document was signed
+    notifySignatureCompleted(esignRequest.id).catch((err) => {
+      console.error('[ESign] Failed to send completion notification:', err);
+    });
 
     return NextResponse.json({ success: true });
   } catch (error) {
