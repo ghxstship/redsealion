@@ -91,23 +91,23 @@ export default async function CreditNotesPage() {
         </button>
       </div>
 
-      <div className="rounded-xl border border-border bg-white divide-y divide-border">
-        <div className="grid grid-cols-6 gap-4 px-5 py-3 text-xs font-medium uppercase tracking-wider text-text-muted">
+      <div className="rounded-xl border border-border bg-white divide-y divide-border overflow-x-auto">
+        <div className="grid grid-cols-2 gap-4 px-5 py-3 text-xs font-medium uppercase tracking-wider text-text-muted sm:grid-cols-3 lg:grid-cols-6 min-w-[600px] lg:min-w-0">
           <span>Credit #</span>
-          <span>Invoice</span>
-          <span>Client</span>
+          <span className="hidden sm:block">Invoice</span>
+          <span className="hidden lg:block">Client</span>
           <span>Amount</span>
-          <span>Reason</span>
-          <span>Issued</span>
+          <span className="hidden lg:block">Reason</span>
+          <span className="hidden sm:block">Issued</span>
         </div>
         {creditNotes.map((cn) => (
-          <div key={cn.id} className="grid grid-cols-6 gap-4 px-5 py-3 items-center">
+          <div key={cn.id} className="grid grid-cols-2 gap-4 px-5 py-3 items-center sm:grid-cols-3 lg:grid-cols-6 min-w-[600px] lg:min-w-0">
             <span className="text-sm font-medium text-foreground">{cn.credit_number}</span>
-            <span className="text-sm text-text-secondary">{cn.invoice_number}</span>
-            <span className="text-sm text-text-secondary">{cn.client_name}</span>
+            <span className="text-sm text-text-secondary hidden sm:block">{cn.invoice_number}</span>
+            <span className="text-sm text-text-secondary hidden lg:block">{cn.client_name}</span>
             <span className="text-sm font-medium text-red-600">-{formatCurrency(cn.amount)}</span>
-            <span className="text-sm text-text-secondary truncate">{cn.reason}</span>
-            <span className="text-sm text-text-muted">{cn.issued_date}</span>
+            <span className="text-sm text-text-secondary truncate hidden lg:block">{cn.reason}</span>
+            <span className="text-sm text-text-muted hidden sm:block">{cn.issued_date}</span>
           </div>
         ))}
       </div>

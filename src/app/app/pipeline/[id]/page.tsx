@@ -164,7 +164,7 @@ export default async function DealDetailPage({
             <h2 className="text-sm font-semibold text-foreground mb-4">
               Deal Details
             </h2>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <p className="text-xs text-text-muted">Value</p>
                 <p className="text-lg font-semibold tabular-nums text-foreground">

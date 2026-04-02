@@ -204,7 +204,7 @@ function VenueCard({
           </div>
 
           {/* Activation Dates */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className="block text-xs font-medium text-text-secondary mb-1">Activation Start</label>
               <input
@@ -281,7 +281,7 @@ function VenueCard({
 
           {/* Load-In fields */}
           {venue.hasLoadIn && venue.loadIn && (
-            <div className="grid grid-cols-3 gap-4 pl-4 border-l-2 border-border">
+            <div className="grid grid-cols-1 gap-4 pl-4 border-l-2 border-border sm:grid-cols-3">
               <div>
                 <label className="block text-xs font-medium text-text-secondary mb-1">Load-In Date</label>
                 <input
@@ -329,7 +329,7 @@ function VenueCard({
 
           {/* Strike fields */}
           {venue.hasStrike && venue.strike && (
-            <div className="grid grid-cols-3 gap-4 pl-4 border-l-2 border-border">
+            <div className="grid grid-cols-1 gap-4 pl-4 border-l-2 border-border sm:grid-cols-3">
               <div>
                 <label className="block text-xs font-medium text-text-secondary mb-1">Strike Date</label>
                 <input

@@ -36,8 +36,8 @@ export default function TimeOffCalendar() {
     day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
 
   return (
-    <div className="rounded-xl border border-border bg-white overflow-hidden">
-      <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+    <div className="rounded-xl border border-border bg-white overflow-hidden overflow-x-auto">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-border min-w-[600px]">
         <button onClick={prevMonth} className="text-sm text-text-secondary hover:text-foreground transition-colors">
           &larr; Prev
         </button>
@@ -49,7 +49,7 @@ export default function TimeOffCalendar() {
         </button>
       </div>
 
-      <div className="grid grid-cols-7">
+      <div className="grid grid-cols-7 min-w-[600px]">
         {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
           <div key={day} className="px-2 py-2 text-center text-xs font-medium uppercase tracking-wider text-text-muted border-b border-border bg-bg-secondary">
             {day}

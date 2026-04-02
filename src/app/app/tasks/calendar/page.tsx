@@ -166,9 +166,9 @@ export default async function TaskCalendarPage({
       </div>
 
       {/* Calendar grid */}
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-white overflow-hidden overflow-x-auto">
         {/* Weekday headers */}
-        <div className="grid grid-cols-7 border-b border-border bg-bg-secondary">
+        <div className="grid grid-cols-7 border-b border-border bg-bg-secondary min-w-[600px]">
           {weekdays.map((wd) => (
             <div
               key={wd}
@@ -180,7 +180,7 @@ export default async function TaskCalendarPage({
         </div>
 
         {/* Day cells */}
-        <div className="grid grid-cols-7">
+        <div className="grid grid-cols-7 min-w-[600px]">
           {days.map((day, index) => {
             const isToday =
               day !== null &&

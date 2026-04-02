@@ -53,6 +53,7 @@ export default function InvoicePreview({
         <p className="text-sm font-medium text-foreground">{clientName}</p>
       </div>
 
+      <div className="overflow-x-auto">
       <table className="w-full mb-4 text-xs">
         <thead>
           <tr className="border-b border-border">
@@ -73,6 +74,7 @@ export default function InvoicePreview({
           ))}
         </tbody>
       </table>
+      </div>
 
       <div className="border-t border-border pt-3 flex justify-between items-center">
         <span className="text-xs font-semibold text-foreground">Total</span>

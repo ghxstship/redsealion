@@ -86,7 +86,7 @@ export default function PricingPage() {
 
       {/* Header */}
       <div className="px-8 py-20 text-center lg:px-16">
-        <h1 className="text-4xl font-semibold tracking-tight text-zinc-900 sm:text-5xl">
+        <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 sm:text-4xl lg:text-5xl">
           Simple, transparent pricing
         </h1>
         <p className="mx-auto mt-4 max-w-lg text-lg text-zinc-500">
@@ -95,7 +95,7 @@ export default function PricingPage() {
       </div>
 
       {/* Pricing Cards */}
-      <div className="mx-auto grid w-full max-w-5xl gap-6 px-8 pb-24 sm:grid-cols-3 lg:px-16">
+      <div className="mx-auto grid w-full max-w-5xl gap-6 px-8 pb-24 lg:grid-cols-3 lg:px-16">
         {tiers.map((tier) => (
           <div
             key={tier.name}

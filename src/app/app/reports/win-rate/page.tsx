@@ -133,6 +133,7 @@ export default async function WinRateReportPage() {
             <div className="px-6 py-4 border-b border-border">
               <h3 className="text-sm font-semibold text-foreground">Win Rate by Client</h3>
             </div>
+            <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-border bg-bg-secondary">
@@ -157,6 +158,7 @@ export default async function WinRateReportPage() {
                 })}
               </tbody>
             </table>
+            </div>
           </div>
         )}
       </div>

@@ -38,7 +38,7 @@ export default function HomePage() {
       {/* Hero */}
       <main className="flex flex-1 flex-col items-center justify-center px-8 py-24 lg:px-16">
         <div className="mx-auto max-w-3xl text-center">
-          <h1 className="text-5xl font-semibold leading-tight tracking-tight text-zinc-900 sm:text-6xl">
+          <h1 className="text-4xl font-semibold leading-tight tracking-tight text-zinc-900 sm:text-5xl lg:text-6xl">
             Interactive proposals for experiential production
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-zinc-500">
@@ -62,7 +62,7 @@ export default function HomePage() {
         </div>
 
         {/* Value Props */}
-        <div className="mx-auto mt-32 grid max-w-4xl gap-12 sm:grid-cols-3">
+        <div className="mx-auto mt-32 grid max-w-4xl gap-12 md:grid-cols-3">
           <div>
             <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-100">
               <svg

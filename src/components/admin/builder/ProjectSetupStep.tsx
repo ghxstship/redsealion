@@ -188,7 +188,7 @@ export default function ProjectSetupStep({
       {/* Payment Terms */}
       <fieldset className="space-y-4">
         <legend className="text-sm font-medium text-foreground">Payment Terms Override</legend>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label htmlFor="depositPercent" className="block text-xs font-medium text-text-secondary mb-1">
               Deposit %
