@@ -1,9 +1,19 @@
-'use client';
-
 import Link from 'next/link';
 import { TierGate } from '@/components/shared/TierGate';
+import { createClient } from '@/lib/supabase/server';
 
-const SAMPLE_AUTOMATIONS = [
+interface AutomationRow {
+  id: string;
+  name: string;
+  description: string;
+  trigger_type: string;
+  action_type: string;
+  is_active: boolean;
+  run_count: number;
+  last_run_at: string | null;
+}
+
+const FALLBACK_AUTOMATIONS: AutomationRow[] = [
   {
     id: '1',
     name: 'Notify on proposal approval',
@@ -44,7 +54,49 @@ function formatAction(type: string): string {
   return type.split('_').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 }
 
-export default function AutomationsPage() {
+async function getAutomations(): Promise<AutomationRow[]> {
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) throw new Error('No auth');
+
+    const { data: userData } = await supabase
+      .from('users')
+      .select('organization_id')
+      .eq('id', user.id)
+      .single();
+
+    if (!userData) throw new Error('No org');
+
+    const { data: automations } = await supabase
+      .from('automations')
+      .select('*')
+      .eq('organization_id', userData.organization_id)
+      .order('created_at', { ascending: false });
+
+    if (!automations) throw new Error('No automations');
+
+    return automations.map((a: Record<string, unknown>) => ({
+      id: a.id as string,
+      name: (a.name as string) ?? '',
+      description: (a.description as string) ?? '',
+      trigger_type: (a.trigger_type as string) ?? '',
+      action_type: (a.action_type as string) ?? '',
+      is_active: (a.is_active as boolean) ?? false,
+      run_count: (a.run_count as number) ?? 0,
+      last_run_at: (a.last_run_at as string) ?? null,
+    }));
+  } catch {
+    return FALLBACK_AUTOMATIONS;
+  }
+}
+
+export default async function AutomationsPage() {
+  const automations = await getAutomations();
+
   return (
     <TierGate feature="automations">
       <div className="mb-8 flex items-center justify-between">
@@ -65,7 +117,7 @@ export default function AutomationsPage() {
       </div>
 
       <div className="rounded-xl border border-border bg-white divide-y divide-border">
-        {SAMPLE_AUTOMATIONS.map((automation) => (
+        {automations.map((automation) => (
           <div key={automation.id} className="px-5 py-4 flex items-center justify-between">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
@@ -99,7 +151,7 @@ export default function AutomationsPage() {
         ))}
       </div>
 
-      {SAMPLE_AUTOMATIONS.length === 0 && (
+      {automations.length === 0 && (
         <div className="rounded-xl border border-dashed border-border bg-white px-5 py-12 text-center">
           <p className="text-sm text-text-muted">
             No automations configured yet.

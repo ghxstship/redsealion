@@ -1,12 +1,15 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { TierGate } from '@/components/shared/TierGate';
 import { TriggerSelector } from '@/components/admin/automations/TriggerSelector';
 import { ActionSelector } from '@/components/admin/automations/ActionSelector';
+import { createClient } from '@/lib/supabase/client';
 
 export default function NewAutomationPage() {
+  const router = useRouter();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [triggerType, setTriggerType] = useState('');
@@ -14,20 +17,57 @@ export default function NewAutomationPage() {
   const [actionType, setActionType] = useState('');
   const [actionConfig, setActionConfig] = useState<Record<string, unknown>>({});
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleSave() {
     if (!name || !triggerType || !actionType) return;
     setSaving(true);
+    setError(null);
+
     try {
-      // Placeholder: save automation via API
-      console.log('Creating automation:', {
+      const supabase = createClient();
+
+      // Get current user's organization
+      const {
+        data: { user },
+        error: authError,
+      } = await supabase.auth.getUser();
+
+      if (authError || !user) {
+        setError('You must be logged in to create automations.');
+        return;
+      }
+
+      const { data: userData, error: userError } = await supabase
+        .from('users')
+        .select('organization_id')
+        .eq('id', user.id)
+        .single();
+
+      if (userError || !userData?.organization_id) {
+        setError('Could not determine your organization.');
+        return;
+      }
+
+      const { error: insertError } = await supabase.from('automations').insert({
+        organization_id: userData.organization_id,
         name,
-        description,
-        triggerType,
-        triggerConfig,
-        actionType,
-        actionConfig,
+        description: description || null,
+        trigger_type: triggerType,
+        trigger_config: triggerConfig,
+        action_type: actionType,
+        action_config: actionConfig,
+        is_active: true,
       });
+
+      if (insertError) {
+        setError(insertError.message);
+        return;
+      }
+
+      router.push('/app/automations');
+    } catch {
+      setError('An unexpected error occurred. Please try again.');
     } finally {
       setSaving(false);
     }
@@ -52,6 +92,12 @@ export default function NewAutomationPage() {
           Define a trigger event and an action to automate.
         </p>
       </div>
+
+      {error && (
+        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {error}
+        </div>
+      )}
 
       <div className="space-y-6">
         {/* Name + Description */}

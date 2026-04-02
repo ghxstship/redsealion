@@ -1,8 +1,17 @@
-'use client';
-
 import { TierGate } from '@/components/shared/TierGate';
+import { createClient } from '@/lib/supabase/server';
 
-const SAMPLE_THREADS = [
+interface EmailThreadRow {
+  id: string;
+  subject: string;
+  from_name: string;
+  from_email: string;
+  last_message_at: string;
+  message_count: number;
+  deal_title: string | null;
+}
+
+const FALLBACK_THREADS: EmailThreadRow[] = [
   {
     id: '1',
     subject: 'Re: Booth design specs for CES 2026',
@@ -32,7 +41,87 @@ const SAMPLE_THREADS = [
   },
 ];
 
-export default function EmailsPage() {
+async function getEmailThreads(): Promise<EmailThreadRow[]> {
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) throw new Error('No auth');
+
+    const { data: userData } = await supabase
+      .from('users')
+      .select('organization_id')
+      .eq('id', user.id)
+      .single();
+
+    if (!userData) throw new Error('No org');
+
+    // Try email_threads table first
+    const { data: threads, error } = await supabase
+      .from('email_threads')
+      .select('*')
+      .eq('organization_id', userData.organization_id)
+      .order('last_message_at', { ascending: false });
+
+    if (error) {
+      // Fall back to email_messages if email_threads doesn't exist
+      const { data: messages } = await supabase
+        .from('email_messages')
+        .select('*')
+        .eq('organization_id', userData.organization_id)
+        .order('sent_at', { ascending: false });
+
+      if (!messages || messages.length === 0) throw new Error('No messages');
+
+      // Group by thread_id or subject
+      const threadMap = new Map<string, EmailThreadRow>();
+      for (const msg of messages) {
+        const key = (msg.thread_id as string) ?? (msg.subject as string) ?? msg.id;
+        if (!threadMap.has(key)) {
+          threadMap.set(key, {
+            id: key,
+            subject: (msg.subject as string) ?? '(No subject)',
+            from_name: (msg.from_name as string) ?? '',
+            from_email: (msg.from_email as string) ?? '',
+            last_message_at: (msg.sent_at as string) ?? '',
+            message_count: 1,
+            deal_title: (msg.deal_title as string) ?? null,
+          });
+        } else {
+          const existing = threadMap.get(key)!;
+          existing.message_count += 1;
+          if ((msg.sent_at as string) > existing.last_message_at) {
+            existing.last_message_at = msg.sent_at as string;
+            existing.from_name = (msg.from_name as string) ?? existing.from_name;
+            existing.from_email = (msg.from_email as string) ?? existing.from_email;
+          }
+        }
+      }
+
+      return Array.from(threadMap.values());
+    }
+
+    if (!threads || threads.length === 0) throw new Error('No threads');
+
+    return threads.map((t: Record<string, unknown>) => ({
+      id: t.id as string,
+      subject: (t.subject as string) ?? '(No subject)',
+      from_name: (t.from_name as string) ?? '',
+      from_email: (t.from_email as string) ?? '',
+      last_message_at: (t.last_message_at as string) ?? '',
+      message_count: (t.message_count as number) ?? 0,
+      deal_title: (t.deal_title as string) ?? null,
+    }));
+  } catch {
+    return FALLBACK_THREADS;
+  }
+}
+
+export default async function EmailsPage() {
+  const threads = await getEmailThreads();
+
   return (
     <TierGate feature="email_inbox">
       <div className="mb-8">
@@ -45,7 +134,7 @@ export default function EmailsPage() {
       </div>
 
       <div className="rounded-xl border border-border bg-white divide-y divide-border">
-        {SAMPLE_THREADS.map((thread) => (
+        {threads.map((thread) => (
           <div
             key={thread.id}
             className="px-5 py-4 flex items-start gap-4 hover:bg-bg-secondary transition-colors cursor-pointer"
@@ -76,7 +165,7 @@ export default function EmailsPage() {
         ))}
       </div>
 
-      {SAMPLE_THREADS.length === 0 && (
+      {threads.length === 0 && (
         <div className="rounded-xl border border-dashed border-border bg-white px-5 py-12 text-center">
           <p className="text-sm text-text-muted">
             No email threads yet. Connect your email or integration to see conversations here.

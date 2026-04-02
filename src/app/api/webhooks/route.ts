@@ -1,14 +1,49 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { createHmac } from 'crypto';
+
+function signPayload(payload: string, secret: string): string {
+  return createHmac('sha256', secret).update(payload).digest('hex');
+}
+
+async function deliverWebhook(
+  endpoint: { id: string; url: string; secret: string },
+  event: string,
+  payload: Record<string, unknown>,
+): Promise<{ status: number; body: string }> {
+  const payloadString = JSON.stringify(payload);
+  const signature = signPayload(payloadString, endpoint.secret);
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 5000);
+
+  try {
+    const response = await fetch(endpoint.url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Webhook-Event': event,
+        'X-Webhook-Signature': signature,
+      },
+      body: payloadString,
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+
+    const body = await response.text().catch(() => '');
+    return { status: response.status, body: body.slice(0, 2000) };
+  } catch (err) {
+    clearTimeout(timeout);
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    return { status: 0, body: `Delivery failed: ${message}` };
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const event: string = body.event ?? 'unknown';
     const payload: Record<string, unknown> = body.payload ?? {};
-
-    // Validate webhook signature if provided
-    const signature = request.headers.get('x-webhook-signature');
 
     const supabase = await createClient();
 
@@ -27,24 +62,33 @@ export async function POST(request: NextRequest) {
       (ep) => ep.events.length === 0 || ep.events.includes(event),
     );
 
-    // Log deliveries (placeholder: in production, actually forward to the URLs)
+    // Deliver to each matching endpoint
+    const deliveryResults: Array<{ endpoint_id: string; status: number; success: boolean }> = [];
+
     for (const endpoint of matching) {
+      const result = await deliverWebhook(endpoint, event, payload);
+
+      // Record delivery in database
       await supabase.from('webhook_deliveries').insert({
         webhook_endpoint_id: endpoint.id,
         event,
         payload,
-        response_status: 200,
-        response_body: 'OK',
+        response_status: result.status,
+        response_body: result.body,
+      });
+
+      deliveryResults.push({
+        endpoint_id: endpoint.id,
+        status: result.status,
+        success: result.status >= 200 && result.status < 300,
       });
     }
-
-    // Suppress unused variable warning
-    void signature;
 
     return NextResponse.json({
       received: true,
       event,
       deliveries: matching.length,
+      results: deliveryResults,
     });
   } catch (error) {
     console.error('Webhook receiver error:', error);

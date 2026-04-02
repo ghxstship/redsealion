@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { getAdapter } from '@/lib/integrations/registry';
 
 export async function POST(
   _request: NextRequest,
@@ -42,6 +43,15 @@ export async function POST(
       );
     }
 
+    // Resolve the adapter for this platform
+    const adapter = getAdapter(platform);
+    if (!adapter) {
+      return NextResponse.json(
+        { error: `No adapter found for platform: ${platform}` },
+        { status: 400 },
+      );
+    }
+
     // Create sync log entry
     const { data: syncLog } = await supabase
       .from('integration_sync_log')
@@ -55,26 +65,62 @@ export async function POST(
       .select('id')
       .single();
 
-    // Placeholder: In production, trigger the actual sync via the adapter
-    // For now, mark as completed immediately
-    if (syncLog) {
+    try {
+      // Run the adapter's sync method
+      const result = await adapter.sync(integration.id, 'inbound');
+
+      // Update sync log with results
+      if (syncLog) {
+        await supabase
+          .from('integration_sync_log')
+          .update({
+            status: result.errors.length > 0 ? 'completed_with_errors' : 'completed',
+            entity_type: result.entityType,
+            entity_count: result.entityCount,
+            error_message: result.errors.length > 0 ? result.errors.join('; ') : null,
+            completed_at: new Date().toISOString(),
+          })
+          .eq('id', syncLog.id);
+      }
+
+      // Update last_sync_at on the integration
       await supabase
-        .from('integration_sync_log')
-        .update({ status: 'completed', entity_count: 0, completed_at: new Date().toISOString() })
-        .eq('id', syncLog.id);
+        .from('integrations')
+        .update({ last_sync_at: new Date().toISOString() })
+        .eq('id', integration.id);
+
+      return NextResponse.json({
+        success: true,
+        platform,
+        syncLogId: syncLog?.id,
+        entityType: result.entityType,
+        entityCount: result.entityCount,
+        errors: result.errors,
+      });
+    } catch (syncError) {
+      // Mark sync as failed
+      if (syncLog) {
+        await supabase
+          .from('integration_sync_log')
+          .update({
+            status: 'failed',
+            error_message:
+              syncError instanceof Error ? syncError.message : 'Unknown sync error',
+            completed_at: new Date().toISOString(),
+          })
+          .eq('id', syncLog.id);
+      }
+
+      console.error(`Sync adapter error [${platform}]:`, syncError);
+      return NextResponse.json(
+        {
+          error: 'Sync failed',
+          details: syncError instanceof Error ? syncError.message : 'Unknown error',
+          syncLogId: syncLog?.id,
+        },
+        { status: 500 },
+      );
     }
-
-    // Update last_sync_at
-    await supabase
-      .from('integrations')
-      .update({ last_sync_at: new Date().toISOString() })
-      .eq('id', integration.id);
-
-    return NextResponse.json({
-      success: true,
-      platform,
-      syncLogId: syncLog?.id,
-    });
   } catch (error) {
     console.error(`Sync error [${platform}]:`, error);
     return NextResponse.json({ error: 'Sync failed' }, { status: 500 });

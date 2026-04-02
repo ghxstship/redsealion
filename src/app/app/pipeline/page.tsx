@@ -2,8 +2,11 @@ import { TierGate } from '@/components/shared/TierGate';
 import PipelineBoard from '@/components/admin/pipeline/PipelineBoard';
 import { createClient } from '@/lib/supabase/server';
 import { getSeedDeals, getSeedClients } from '@/lib/seed-data';
+import type { Deal } from '@/types/database';
 
-async function getDeals() {
+type DealWithClient = Deal & { client_name: string };
+
+async function getDeals(): Promise<DealWithClient[]> {
   try {
     const supabase = await createClient();
     const {
@@ -28,10 +31,13 @@ async function getDeals() {
 
     if (!deals) throw new Error('No deals');
 
-    return deals.map((d: Record<string, unknown>) => ({
-      ...d,
-      client_name: (d.clients as Record<string, string>)?.company_name ?? 'Unknown',
-    }));
+    return deals.map((d: Record<string, unknown>) => {
+      const { clients: _clients, ...rest } = d;
+      return {
+        ...rest,
+        client_name: (_clients as Record<string, string>)?.company_name ?? 'Unknown',
+      } as unknown as DealWithClient;
+    });
   } catch {
     // Fallback to seed data
     const deals = getSeedDeals();

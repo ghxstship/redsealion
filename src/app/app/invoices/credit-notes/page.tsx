@@ -1,9 +1,18 @@
-'use client';
-
 import { TierGate } from '@/components/shared/TierGate';
 import { formatCurrency } from '@/lib/utils';
+import { createClient } from '@/lib/supabase/server';
 
-const SAMPLE_CREDIT_NOTES = [
+interface CreditNoteRow {
+  id: string;
+  credit_number: string;
+  invoice_number: string;
+  amount: number;
+  reason: string;
+  issued_date: string;
+  client_name: string;
+}
+
+const FALLBACK_CREDIT_NOTES: CreditNoteRow[] = [
   {
     id: '1',
     credit_number: 'CN-2026-001',
@@ -24,7 +33,48 @@ const SAMPLE_CREDIT_NOTES = [
   },
 ];
 
-export default function CreditNotesPage() {
+async function getCreditNotes(): Promise<CreditNoteRow[]> {
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) throw new Error('No auth');
+
+    const { data: userData } = await supabase
+      .from('users')
+      .select('organization_id')
+      .eq('id', user.id)
+      .single();
+
+    if (!userData) throw new Error('No org');
+
+    const { data: creditNotes } = await supabase
+      .from('credit_notes')
+      .select('*, invoices(invoice_number), clients(company_name)')
+      .eq('organization_id', userData.organization_id)
+      .order('issued_date', { ascending: false });
+
+    if (!creditNotes) throw new Error('No credit notes');
+
+    return creditNotes.map((cn: Record<string, unknown>) => ({
+      id: cn.id as string,
+      credit_number: cn.credit_number as string,
+      invoice_number: (cn.invoices as Record<string, string>)?.invoice_number ?? 'Unknown',
+      amount: cn.amount as number,
+      reason: (cn.reason as string) ?? '',
+      issued_date: cn.issued_date as string,
+      client_name: (cn.clients as Record<string, string>)?.company_name ?? 'Unknown',
+    }));
+  } catch {
+    return FALLBACK_CREDIT_NOTES;
+  }
+}
+
+export default async function CreditNotesPage() {
+  const creditNotes = await getCreditNotes();
+
   return (
     <TierGate feature="credit_notes">
       <div className="mb-8 flex items-center justify-between">
@@ -50,7 +100,7 @@ export default function CreditNotesPage() {
           <span>Reason</span>
           <span>Issued</span>
         </div>
-        {SAMPLE_CREDIT_NOTES.map((cn) => (
+        {creditNotes.map((cn) => (
           <div key={cn.id} className="grid grid-cols-6 gap-4 px-5 py-3 items-center">
             <span className="text-sm font-medium text-foreground">{cn.credit_number}</span>
             <span className="text-sm text-text-secondary">{cn.invoice_number}</span>
@@ -62,7 +112,7 @@ export default function CreditNotesPage() {
         ))}
       </div>
 
-      {SAMPLE_CREDIT_NOTES.length === 0 && (
+      {creditNotes.length === 0 && (
         <div className="rounded-xl border border-dashed border-border bg-white px-5 py-12 text-center">
           <p className="text-sm text-text-muted">No credit notes issued yet.</p>
         </div>

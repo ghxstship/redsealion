@@ -135,7 +135,7 @@ export async function GET(
   const buffer = await Packer.toBuffer(doc);
   const filename = `${proposalName.replace(/[^a-zA-Z0-9]/g, '_')}.docx`;
 
-  return new NextResponse(buffer, {
+  return new NextResponse(new Uint8Array(buffer), {
     headers: {
       'Content-Type':
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',

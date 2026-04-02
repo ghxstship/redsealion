@@ -1,9 +1,18 @@
-'use client';
-
 import { TierGate } from '@/components/shared/TierGate';
 import { formatCurrency } from '@/lib/utils';
+import { createClient } from '@/lib/supabase/server';
 
-const SAMPLE_SCHEDULES = [
+interface RecurringScheduleRow {
+  id: string;
+  client_name: string;
+  frequency: string;
+  next_issue_date: string;
+  amount: number;
+  is_active: boolean;
+  description: string;
+}
+
+const FALLBACK_SCHEDULES: RecurringScheduleRow[] = [
   {
     id: '1',
     client_name: 'ACME Corp',
@@ -43,7 +52,48 @@ function formatFrequency(freq: string): string {
   return labels[freq] ?? freq;
 }
 
-export default function RecurringInvoicesPage() {
+async function getRecurringSchedules(): Promise<RecurringScheduleRow[]> {
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) throw new Error('No auth');
+
+    const { data: userData } = await supabase
+      .from('users')
+      .select('organization_id')
+      .eq('id', user.id)
+      .single();
+
+    if (!userData) throw new Error('No org');
+
+    const { data: schedules } = await supabase
+      .from('recurring_invoice_schedules')
+      .select('*, clients(company_name)')
+      .eq('organization_id', userData.organization_id)
+      .order('next_issue_date', { ascending: true });
+
+    if (!schedules) throw new Error('No schedules');
+
+    return schedules.map((s: Record<string, unknown>) => ({
+      id: s.id as string,
+      client_name: (s.clients as Record<string, string>)?.company_name ?? 'Unknown',
+      frequency: s.frequency as string,
+      next_issue_date: s.next_issue_date as string,
+      amount: s.base_amount as number,
+      is_active: s.is_active as boolean,
+      description: (s.description as string) ?? '',
+    }));
+  } catch {
+    return FALLBACK_SCHEDULES;
+  }
+}
+
+export default async function RecurringInvoicesPage() {
+  const schedules = await getRecurringSchedules();
+
   return (
     <TierGate feature="recurring_invoices">
       <div className="mb-8 flex items-center justify-between">
@@ -61,7 +111,7 @@ export default function RecurringInvoicesPage() {
       </div>
 
       <div className="rounded-xl border border-border bg-white divide-y divide-border">
-        {SAMPLE_SCHEDULES.map((schedule) => (
+        {schedules.map((schedule) => (
           <div key={schedule.id} className="px-5 py-4 flex items-center justify-between">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
@@ -87,6 +137,12 @@ export default function RecurringInvoicesPage() {
           </div>
         ))}
       </div>
+
+      {schedules.length === 0 && (
+        <div className="rounded-xl border border-dashed border-border bg-white px-5 py-12 text-center">
+          <p className="text-sm text-text-muted">No recurring invoice schedules yet.</p>
+        </div>
+      )}
     </TierGate>
   );
 }
