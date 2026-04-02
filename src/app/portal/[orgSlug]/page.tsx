@@ -1,3 +1,8 @@
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
+import { createClient } from '@/lib/supabase/server';
+import { formatCurrency, statusColor } from '@/lib/utils';
+
 interface PortalPageProps {
   params: Promise<{ orgSlug: string }>;
 }
@@ -5,35 +10,28 @@ interface PortalPageProps {
 export default async function PortalPage({ params }: PortalPageProps) {
   const { orgSlug } = await params;
 
-  const orgName = orgSlug
-    .split('-')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+  const supabase = await createClient();
 
-  // Placeholder proposals — will be replaced with Supabase data
-  const proposals = [
-    {
-      id: '1',
-      name: 'Summer Brand Activation',
-      status: 'In Review',
-      updatedAt: 'Mar 28, 2026',
-      value: '$48,500',
-    },
-    {
-      id: '2',
-      name: 'Product Launch Experience',
-      status: 'Approved',
-      updatedAt: 'Mar 15, 2026',
-      value: '$124,000',
-    },
-    {
-      id: '3',
-      name: 'Holiday Pop-Up Installation',
-      status: 'Draft',
-      updatedAt: 'Mar 10, 2026',
-      value: '$67,200',
-    },
-  ];
+  // Look up the organization by slug
+  const { data: org } = await supabase
+    .from('organizations')
+    .select('id, name')
+    .eq('slug', orgSlug)
+    .single();
+
+  if (!org) {
+    redirect('/');
+  }
+
+  // Fetch proposals for this organization that have portal access (sent to client)
+  const { data: proposals } = await supabase
+    .from('proposals')
+    .select('id, name, status, total_value, currency, updated_at, portal_access_token')
+    .eq('organization_id', org.id)
+    .not('portal_access_token', 'is', null)
+    .order('updated_at', { ascending: false });
+
+  const proposalList = proposals ?? [];
 
   return (
     <div className="space-y-10">
@@ -43,7 +41,7 @@ export default async function PortalPage({ params }: PortalPageProps) {
           Welcome back
         </h1>
         <p className="mt-1 text-sm text-text-secondary">
-          {orgName} Client Portal
+          {org.name} Client Portal
         </p>
       </div>
 
@@ -53,63 +51,74 @@ export default async function PortalPage({ params }: PortalPageProps) {
           Active Proposals
         </h2>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {proposals.map((proposal) => (
-            <div
-              key={proposal.id}
-              className="group rounded-lg border border-border bg-background p-5 transition-all duration-200 hover:border-text-muted hover:shadow-sm cursor-pointer"
-            >
-              <div className="flex items-start justify-between mb-3">
-                <h3 className="text-sm font-medium text-foreground leading-snug pr-3">
-                  {proposal.name}
-                </h3>
-                <StatusBadge status={proposal.status} />
-              </div>
-
-              <div className="space-y-1.5">
-                <div className="flex justify-between text-xs">
-                  <span className="text-text-muted">Value</span>
-                  <span className="text-text-secondary font-medium">{proposal.value}</span>
+        {proposalList.length === 0 ? (
+          <div className="rounded-lg border border-border bg-background p-8 text-center">
+            <p className="text-sm text-text-muted">No proposals available yet.</p>
+            <p className="text-xs text-text-muted mt-1">
+              Proposals will appear here once they have been shared with you.
+            </p>
+          </div>
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {proposalList.map((proposal) => (
+              <Link
+                key={proposal.id}
+                href={`/portal/${orgSlug}/proposals/${proposal.id}`}
+                className="group rounded-lg border border-border bg-background p-5 transition-all duration-200 hover:border-text-muted hover:shadow-sm"
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <h3 className="text-sm font-medium text-foreground leading-snug pr-3">
+                    {proposal.name}
+                  </h3>
+                  <StatusBadge status={proposal.status} />
                 </div>
-                <div className="flex justify-between text-xs">
-                  <span className="text-text-muted">Updated</span>
-                  <span className="text-text-secondary">{proposal.updatedAt}</span>
-                </div>
-              </div>
 
-              <div className="mt-4 pt-3 border-t border-border">
-                <span
-                  className="text-xs font-medium transition-colors"
-                  style={{ color: 'var(--org-primary)' }}
-                >
-                  View proposal
-                  <span className="inline-block ml-1 transition-transform group-hover:translate-x-0.5">
-                    &rarr;
+                <div className="space-y-1.5">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-text-muted">Value</span>
+                    <span className="text-text-secondary font-medium">
+                      {formatCurrency(proposal.total_value, proposal.currency)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-text-muted">Updated</span>
+                    <span className="text-text-secondary">
+                      {new Date(proposal.updated_at).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                      })}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="mt-4 pt-3 border-t border-border">
+                  <span
+                    className="text-xs font-medium transition-colors"
+                    style={{ color: 'var(--org-primary)' }}
+                  >
+                    View proposal
+                    <span className="inline-block ml-1 transition-transform group-hover:translate-x-0.5">
+                      &rarr;
+                    </span>
                   </span>
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );
 }
 
 function StatusBadge({ status }: { status: string }) {
-  const styles: Record<string, string> = {
-    'In Review': 'bg-amber-50 text-amber-700',
-    Approved: 'bg-emerald-50 text-emerald-700',
-    Draft: 'bg-bg-tertiary text-text-muted',
-  };
-
+  const label = status.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
   return (
     <span
-      className={`inline-flex items-center whitespace-nowrap rounded-full px-2 py-0.5 text-[11px] font-medium ${
-        styles[status] ?? 'bg-bg-tertiary text-text-muted'
-      }`}
+      className={`inline-flex items-center whitespace-nowrap rounded-full px-2 py-0.5 text-[11px] font-medium ${statusColor(status)}`}
     >
-      {status}
+      {label}
     </span>
   );
 }

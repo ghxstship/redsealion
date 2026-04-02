@@ -1,6 +1,15 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+
+const TIMER_STORAGE_KEY = 'xpb_active_timer';
+
+interface TimerState {
+  startedAt: number; // epoch ms
+  description: string;
+  project: string;
+  billable: boolean;
+}
 
 export default function TimerWidget() {
   const [running, setRunning] = useState(false);
@@ -8,12 +17,44 @@ export default function TimerWidget() {
   const [description, setDescription] = useState('');
   const [project, setProject] = useState('');
   const [billable, setBillable] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const startedAtRef = useRef<number | null>(null);
 
+  // Restore timer from localStorage on mount
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(TIMER_STORAGE_KEY);
+      if (stored) {
+        const state: TimerState = JSON.parse(stored);
+        const now = Date.now();
+        const elapsedSec = Math.floor((now - state.startedAt) / 1000);
+        if (elapsedSec > 0 && elapsedSec < 86400) {
+          startedAtRef.current = state.startedAt;
+          setDescription(state.description);
+          setProject(state.project);
+          setBillable(state.billable);
+          setElapsed(elapsedSec);
+          setRunning(true);
+        } else {
+          localStorage.removeItem(TIMER_STORAGE_KEY);
+        }
+      }
+    } catch {
+      // Ignore parse errors
+    }
+  }, []);
+
+  // Tick the timer
   useEffect(() => {
     if (running) {
       intervalRef.current = setInterval(() => {
-        setElapsed((prev) => prev + 1);
+        if (startedAtRef.current) {
+          setElapsed(Math.floor((Date.now() - startedAtRef.current) / 1000));
+        } else {
+          setElapsed((prev) => prev + 1);
+        }
       }, 1000);
     } else if (intervalRef.current) {
       clearInterval(intervalRef.current);
@@ -24,17 +65,66 @@ export default function TimerWidget() {
     };
   }, [running]);
 
-  const formatTime = (seconds: number) => {
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = seconds % 60;
-    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-  };
+  // Persist running timer state to localStorage
+  useEffect(() => {
+    if (running && startedAtRef.current) {
+      const state: TimerState = {
+        startedAt: startedAtRef.current,
+        description,
+        project,
+        billable,
+      };
+      localStorage.setItem(TIMER_STORAGE_KEY, JSON.stringify(state));
+    }
+  }, [running, description, project, billable]);
 
-  const handleToggle = () => {
+  const saveTimeEntry = useCallback(async (startMs: number, endMs: number) => {
+    const durationMinutes = Math.round((endMs - startMs) / 60000);
+    if (durationMinutes < 1) return;
+
+    setSaving(true);
+    setFeedback(null);
+
+    try {
+      const response = await fetch('/api/time-entries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          description: description || undefined,
+          proposal_id: project || undefined,
+          start_time: new Date(startMs).toISOString(),
+          end_time: new Date(endMs).toISOString(),
+          duration_minutes: durationMinutes,
+          billable,
+        }),
+      });
+
+      if (response.ok) {
+        setFeedback({ type: 'success', message: `Saved ${durationMinutes} minutes.` });
+      } else {
+        const data = await response.json().catch(() => ({}));
+        setFeedback({ type: 'error', message: data.error ?? 'Failed to save time entry.' });
+      }
+    } catch {
+      setFeedback({ type: 'error', message: 'Network error saving time entry.' });
+    } finally {
+      setSaving(false);
+    }
+  }, [description, project, billable]);
+
+  const handleToggle = async () => {
     if (running) {
+      // Stop timer and save
+      const endMs = Date.now();
+      const startMs = startedAtRef.current ?? endMs - elapsed * 1000;
       setRunning(false);
+      localStorage.removeItem(TIMER_STORAGE_KEY);
+      await saveTimeEntry(startMs, endMs);
     } else {
+      // Start timer
+      setFeedback(null);
+      const now = Date.now();
+      startedAtRef.current = now;
       setElapsed(0);
       setRunning(true);
     }
@@ -45,6 +135,16 @@ export default function TimerWidget() {
     setElapsed(0);
     setDescription('');
     setProject('');
+    startedAtRef.current = null;
+    setFeedback(null);
+    localStorage.removeItem(TIMER_STORAGE_KEY);
+  };
+
+  const formatTime = (seconds: number) => {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
   return (
@@ -55,21 +155,30 @@ export default function TimerWidget() {
           {formatTime(elapsed)}
         </p>
 
+        {/* Feedback message */}
+        {feedback && (
+          <p className={`mt-3 text-sm ${feedback.type === 'success' ? 'text-green-600' : 'text-red-600'}`}>
+            {feedback.message}
+          </p>
+        )}
+
         {/* Controls */}
         <div className="mt-6 flex items-center justify-center gap-3">
           <button
             onClick={handleToggle}
-            className={`rounded-lg px-6 py-2.5 text-sm font-medium text-white transition-colors ${
+            disabled={saving}
+            className={`rounded-lg px-6 py-2.5 text-sm font-medium text-white transition-colors disabled:opacity-50 ${
               running
                 ? 'bg-red-600 hover:bg-red-700'
                 : 'bg-foreground hover:bg-foreground/90'
             }`}
           >
-            {running ? 'Stop' : 'Start'}
+            {saving ? 'Saving...' : running ? 'Stop' : 'Start'}
           </button>
           <button
             onClick={handleReset}
-            className="rounded-lg border border-border bg-white px-6 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
+            disabled={saving}
+            className="rounded-lg border border-border bg-white px-6 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary disabled:opacity-50"
           >
             Reset
           </button>

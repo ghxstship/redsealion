@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { formatCurrencyDetailed } from '@/lib/utils';
 
 interface PaymentRecorderProps {
@@ -12,19 +13,47 @@ export default function PaymentRecorder({
   invoiceId,
   balanceDue,
 }: PaymentRecorderProps) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [amount, setAmount] = useState(balanceDue.toString());
   const [method, setMethod] = useState('wire');
   const [reference, setReference] = useState('');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // invoiceId will be used when form submission is wired to API
-  void invoiceId;
-
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    // TODO: POST to API
-    setOpen(false);
+    setError(null);
+    setSubmitting(true);
+
+    try {
+      const res = await fetch(`/api/invoices/${invoiceId}/payments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: parseFloat(amount),
+          method,
+          reference: reference || undefined,
+          received_date: date,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error ?? 'Failed to record payment.');
+        setSubmitting(false);
+        return;
+      }
+
+      setOpen(false);
+      router.refresh();
+    } catch {
+      setError('An unexpected error occurred.');
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -88,19 +117,26 @@ export default function PaymentRecorder({
               className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10"
             />
           </div>
+          {error && (
+            <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
+              {error}
+            </div>
+          )}
           <div className="flex gap-2 pt-1">
             <button
               type="button"
-              onClick={() => setOpen(false)}
-              className="flex-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
+              disabled={submitting}
+              onClick={() => { setOpen(false); setError(null); }}
+              className="flex-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary disabled:opacity-50"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 rounded-lg bg-foreground px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90"
+              disabled={submitting}
+              className="flex-1 rounded-lg bg-foreground px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90 disabled:opacity-50"
             >
-              Save
+              {submitting ? 'Saving...' : 'Save'}
             </button>
           </div>
         </form>

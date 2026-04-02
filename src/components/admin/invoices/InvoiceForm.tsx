@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import InvoicePreview from './InvoicePreview';
 
 interface SelectOption {
@@ -21,6 +22,7 @@ export default function InvoiceForm({
   clients: SelectOption[];
   proposals: SelectOption[];
 }) {
+  const router = useRouter();
   const [clientId, setClientId] = useState('');
   const [proposalId, setProposalId] = useState('');
   const [type, setType] = useState('deposit');
@@ -29,8 +31,64 @@ export default function InvoiceForm({
   const [lineItems, setLineItems] = useState<LineItem[]>([
     { description: '', quantity: 1, rate: 0 },
   ]);
+  const [saving, setSaving] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const total = lineItems.reduce((s, li) => s + li.quantity * li.rate, 0);
+
+  async function handleSave(andSend: boolean) {
+    setError(null);
+    const setLoading = andSend ? setSending : setSaving;
+    setLoading(true);
+
+    try {
+      const res = await fetch('/api/invoices', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          client_id: clientId,
+          proposal_id: proposalId || undefined,
+          type,
+          due_date: dueDate,
+          memo,
+          line_items: lineItems,
+          status: 'draft',
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error ?? 'Failed to create invoice.');
+        setLoading(false);
+        return;
+      }
+
+      const invoiceId = data.invoice?.id;
+
+      if (andSend && invoiceId) {
+        const sendRes = await fetch(`/api/invoices/${invoiceId}/send`, {
+          method: 'POST',
+        });
+        if (!sendRes.ok) {
+          const sendData = await sendRes.json();
+          setError(sendData.error ?? 'Invoice created but sending failed.');
+          setLoading(false);
+          router.push(`/app/invoices/${invoiceId}`);
+          return;
+        }
+      }
+
+      if (invoiceId) {
+        router.push(`/app/invoices/${invoiceId}`);
+      }
+    } catch {
+      setError('An unexpected error occurred.');
+    } finally {
+      setLoading(false);
+    }
+  }
 
   function addLineItem() {
     setLineItems([...lineItems, { description: '', quantity: 1, rate: 0 }]);
@@ -186,19 +244,30 @@ export default function InvoiceForm({
           ))}
         </div>
 
+        {/* Error */}
+        {error && (
+          <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            {error}
+          </div>
+        )}
+
         {/* Actions */}
         <div className="flex justify-end gap-3">
           <button
             type="button"
-            className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
+            disabled={saving || sending}
+            onClick={() => handleSave(false)}
+            className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary disabled:opacity-50"
           >
-            Save Draft
+            {saving ? 'Saving...' : 'Save Draft'}
           </button>
           <button
             type="button"
-            className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90"
+            disabled={saving || sending}
+            onClick={() => handleSave(true)}
+            className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90 disabled:opacity-50"
           >
-            Create & Send
+            {sending ? 'Sending...' : 'Create & Send'}
           </button>
         </div>
       </div>
