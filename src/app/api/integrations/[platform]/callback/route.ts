@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { requireFeature } from '@/lib/api/tier-guard';
 import { TOKEN_ENDPOINTS, envPrefix } from '@/lib/integrations/registry';
 
 // TODO: Replace with real encryption (e.g. AES-256-GCM) once an encryption key is provisioned.
@@ -17,6 +18,9 @@ export async function GET(
   const code = searchParams.get('code');
   const error = searchParams.get('error');
   const state = searchParams.get('state');
+
+  const tierError = await requireFeature('integrations');
+  if (tierError) return tierError;
 
   if (error) {
     return NextResponse.redirect(

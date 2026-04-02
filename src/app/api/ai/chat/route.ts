@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { requireFeature } from '@/lib/api/tier-guard';
 import { buildSystemPrompt } from '@/lib/ai/prompts';
 import { gatherContext } from '@/lib/ai/context';
 import {
@@ -351,6 +352,9 @@ async function buildIntentResponse(
 
 export async function POST(request: Request) {
   try {
+    const tierError = await requireFeature('ai_assistant');
+    if (tierError) return tierError;
+
     const supabase = await createClient();
     const {
       data: { user },

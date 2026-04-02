@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { requireFeature } from '@/lib/api/tier-guard';
 import { getAdapter } from '@/lib/integrations/registry';
 
 export async function POST(
@@ -9,6 +10,9 @@ export async function POST(
   const { platform } = await params;
 
   try {
+    const tierError = await requireFeature('integrations');
+    if (tierError) return tierError;
+
     const supabase = await createClient();
     const {
       data: { user },
