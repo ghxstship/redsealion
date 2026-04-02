@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { requireFeature } from '@/lib/api/tier-guard';
+import { requirePermission } from '@/lib/api/permission-guard';
 import { buildSystemPrompt } from '@/lib/ai/prompts';
 import { gatherContext } from '@/lib/ai/context';
 import {
@@ -354,6 +355,9 @@ export async function POST(request: Request) {
   try {
     const tierError = await requireFeature('ai_assistant');
     if (tierError) return tierError;
+
+    const permError = await requirePermission('ai_assistant', 'view');
+    if (permError) return permError;
 
     const supabase = await createClient();
     const {

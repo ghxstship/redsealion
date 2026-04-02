@@ -1,9 +1,13 @@
 import { NextResponse } from 'next/server';
+import { requirePortalPermission } from '@/lib/api/portal-guard';
 
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const permError = await requirePortalPermission('proposals.approve');
+  if (permError) return permError;
+
   const { id } = await params;
 
   const body = await request.json().catch(() => ({}));

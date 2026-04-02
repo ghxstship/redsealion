@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { requireFeature } from '@/lib/api/tier-guard';
+import { requirePermission } from '@/lib/api/permission-guard';
 import { randomBytes } from 'crypto';
 import { getAdapter, envPrefix } from '@/lib/integrations/registry';
 
@@ -13,6 +14,9 @@ export async function POST(
   try {
     const tierError = await requireFeature('integrations');
     if (tierError) return tierError;
+
+    const permError = await requirePermission('integrations', 'edit');
+    if (permError) return permError;
 
     const supabase = await createClient();
     const {

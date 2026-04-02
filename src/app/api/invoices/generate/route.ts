@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
+import { requirePermission } from '@/lib/api/permission-guard';
 
 export async function POST(request: Request) {
+  const permError = await requirePermission('invoices', 'create');
+  if (permError) return permError;
+
   const body = await request.json().catch(() => ({}));
   const { proposal_id } = body as { proposal_id?: string };
 

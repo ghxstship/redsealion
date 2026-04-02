@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { requireFeature } from '@/lib/api/tier-guard';
+import { requirePermission } from '@/lib/api/permission-guard';
 import { sendEmail } from '@/lib/email';
 
 interface ActionResult {
@@ -168,6 +169,9 @@ export async function POST(request: NextRequest) {
   try {
     const tierError = await requireFeature('automations');
     if (tierError) return tierError;
+
+    const permError = await requirePermission('automations', 'edit');
+    if (permError) return permError;
 
     const supabase = await createClient();
     const {

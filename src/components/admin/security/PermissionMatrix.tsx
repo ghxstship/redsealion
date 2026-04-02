@@ -1,98 +1,217 @@
 'use client';
 
-const ROLES = ['org_admin', 'project_manager', 'designer', 'fabricator', 'installer'] as const;
-const RESOURCES = ['proposals', 'invoices', 'clients', 'team', 'settings', 'budgets', 'time_tracking'] as const;
-const ACTIONS = ['view', 'create', 'edit', 'delete'] as const;
+import { useState, useCallback } from 'react';
+import { createClient } from '@/lib/supabase/client';
+import { useSubscription } from '@/components/shared/SubscriptionProvider';
+import type { OrganizationRole } from '@/types/database';
+import {
+  ALL_RESOURCES,
+  ALL_ACTIONS,
+  INTERNAL_ROLES,
+  DEFAULT_PERMISSIONS,
+  permKey,
+  type PermissionResource,
+  type PermissionAction,
+} from '@/lib/permissions';
 
-// Default permission matrix
-const defaults: Record<string, Record<string, boolean>> = {
-  org_admin: Object.fromEntries(RESOURCES.flatMap((r) => ACTIONS.map((a) => [`${r}.${a}`, true]))),
-  project_manager: {
-    'proposals.view': true, 'proposals.create': true, 'proposals.edit': true, 'proposals.delete': false,
-    'invoices.view': true, 'invoices.create': true, 'invoices.edit': true, 'invoices.delete': false,
-    'clients.view': true, 'clients.create': true, 'clients.edit': true, 'clients.delete': false,
-    'team.view': true, 'team.create': false, 'team.edit': false, 'team.delete': false,
-    'settings.view': false, 'settings.create': false, 'settings.edit': false, 'settings.delete': false,
-    'budgets.view': true, 'budgets.create': true, 'budgets.edit': true, 'budgets.delete': false,
-    'time_tracking.view': true, 'time_tracking.create': true, 'time_tracking.edit': true, 'time_tracking.delete': false,
-  },
-  designer: {
-    'proposals.view': true, 'proposals.create': false, 'proposals.edit': true, 'proposals.delete': false,
-    'invoices.view': false, 'invoices.create': false, 'invoices.edit': false, 'invoices.delete': false,
-    'clients.view': true, 'clients.create': false, 'clients.edit': false, 'clients.delete': false,
-    'team.view': true, 'team.create': false, 'team.edit': false, 'team.delete': false,
-    'settings.view': false, 'settings.create': false, 'settings.edit': false, 'settings.delete': false,
-    'budgets.view': false, 'budgets.create': false, 'budgets.edit': false, 'budgets.delete': false,
-    'time_tracking.view': true, 'time_tracking.create': true, 'time_tracking.edit': true, 'time_tracking.delete': false,
-  },
-  fabricator: {
-    'proposals.view': true, 'proposals.create': false, 'proposals.edit': false, 'proposals.delete': false,
-    'invoices.view': false, 'invoices.create': false, 'invoices.edit': false, 'invoices.delete': false,
-    'clients.view': false, 'clients.create': false, 'clients.edit': false, 'clients.delete': false,
-    'team.view': true, 'team.create': false, 'team.edit': false, 'team.delete': false,
-    'settings.view': false, 'settings.create': false, 'settings.edit': false, 'settings.delete': false,
-    'budgets.view': false, 'budgets.create': false, 'budgets.edit': false, 'budgets.delete': false,
-    'time_tracking.view': true, 'time_tracking.create': true, 'time_tracking.edit': true, 'time_tracking.delete': false,
-  },
-  installer: {
-    'proposals.view': true, 'proposals.create': false, 'proposals.edit': false, 'proposals.delete': false,
-    'invoices.view': false, 'invoices.create': false, 'invoices.edit': false, 'invoices.delete': false,
-    'clients.view': false, 'clients.create': false, 'clients.edit': false, 'clients.delete': false,
-    'team.view': true, 'team.create': false, 'team.edit': false, 'team.delete': false,
-    'settings.view': false, 'settings.create': false, 'settings.edit': false, 'settings.delete': false,
-    'budgets.view': false, 'budgets.create': false, 'budgets.edit': false, 'budgets.delete': false,
-    'time_tracking.view': true, 'time_tracking.create': true, 'time_tracking.edit': true, 'time_tracking.delete': false,
-  },
+interface PermissionMatrixProps {
+  organizationId: string;
+  overrides: Array<{
+    role: string;
+    resource: string;
+    action: string;
+    allowed: boolean;
+  }>;
+}
+
+const RESOURCE_LABELS: Record<PermissionResource, string> = {
+  proposals: 'Proposals',
+  pipeline: 'Pipeline / Deals',
+  clients: 'Clients',
+  invoices: 'Invoices',
+  expenses: 'Expenses',
+  budgets: 'Budgets',
+  time_tracking: 'Time Tracking',
+  tasks: 'Tasks',
+  reports: 'Reports',
+  assets: 'Assets',
+  team: 'Team / People',
+  integrations: 'Integrations',
+  automations: 'Automations',
+  settings: 'Settings',
+  ai_assistant: 'AI Assistant',
 };
 
-export default function PermissionMatrix() {
+const ROLE_LABELS: Record<string, string> = {
+  super_admin: 'Super Admin',
+  org_admin: 'Org Admin',
+  project_manager: 'Project Manager',
+  designer: 'Designer',
+  fabricator: 'Fabricator',
+  installer: 'Installer',
+};
+
+export default function PermissionMatrix({ organizationId, overrides }: PermissionMatrixProps) {
+  const { tier } = useSubscription();
+  const isEnterprise = tier === 'enterprise';
+
+  // Build effective permission state: defaults merged with DB overrides
+  const [permissions, setPermissions] = useState<Record<string, Record<string, boolean>>>(() => {
+    const state: Record<string, Record<string, boolean>> = {};
+    for (const role of INTERNAL_ROLES) {
+      state[role] = { ...DEFAULT_PERMISSIONS[role] };
+    }
+    // Apply DB overrides
+    for (const o of overrides) {
+      const key = permKey(o.resource as PermissionResource, o.action as PermissionAction);
+      if (state[o.role]) {
+        state[o.role][key] = o.allowed;
+      }
+    }
+    return state;
+  });
+
+  const [saving, setSaving] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const togglePermission = useCallback(
+    async (role: OrganizationRole, resource: PermissionResource, action: PermissionAction) => {
+      if (!isEnterprise) return;
+      // super_admin and org_admin are always full access — not editable
+      if (role === 'super_admin' || role === 'org_admin') return;
+
+      const key = permKey(resource, action);
+      const current = permissions[role]?.[key] ?? false;
+      const newValue = !current;
+
+      // Optimistic update
+      setPermissions((prev) => ({
+        ...prev,
+        [role]: { ...prev[role], [key]: newValue },
+      }));
+
+      const saveKey = `${role}.${key}`;
+      setSaving(saveKey);
+      setError(null);
+
+      try {
+        const supabase = createClient();
+        const { error: upsertError } = await supabase
+          .from('permissions')
+          .upsert(
+            {
+              organization_id: organizationId,
+              role,
+              resource,
+              action,
+              allowed: newValue,
+            },
+            { onConflict: 'organization_id,role,resource,action' },
+          );
+
+        if (upsertError) {
+          // Revert
+          setPermissions((prev) => ({
+            ...prev,
+            [role]: { ...prev[role], [key]: current },
+          }));
+          setError(upsertError.message);
+        }
+      } catch {
+        setPermissions((prev) => ({
+          ...prev,
+          [role]: { ...prev[role], [key]: current },
+        }));
+        setError('Failed to save permission.');
+      } finally {
+        setSaving(null);
+      }
+    },
+    [isEnterprise, organizationId, permissions],
+  );
+
   return (
     <div className="space-y-6">
-      {ROLES.map((role) => (
-        <div key={role} className="rounded-xl border border-border bg-white overflow-hidden">
-          <div className="px-6 py-4 border-b border-border bg-bg-secondary">
-            <h3 className="text-sm font-semibold text-foreground capitalize">
-              {role.replace(/_/g, ' ')}
-            </h3>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="px-6 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Resource</th>
-                  {ACTIONS.map((action) => (
-                    <th key={action} className="px-4 py-2 text-center text-xs font-medium uppercase tracking-wider text-text-muted">
-                      {action}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {RESOURCES.map((resource) => (
-                  <tr key={resource} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-6 py-2.5 text-sm text-foreground capitalize">
-                      {resource.replace(/_/g, ' ')}
-                    </td>
-                    {ACTIONS.map((action) => {
-                      const key = `${resource}.${action}`;
-                      const allowed = defaults[role]?.[key] ?? false;
-                      return (
-                        <td key={action} className="px-4 py-2.5 text-center">
-                          <div
-                            className={`mx-auto h-4 w-4 rounded ${
-                              allowed ? 'bg-green-500' : 'bg-gray-200'
-                            }`}
-                          />
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+      {error && (
+        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+          {error}
         </div>
-      ))}
+      )}
+
+      {!isEnterprise && (
+        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          Upgrade to Enterprise to customize role permissions. The default matrix is shown below.
+        </div>
+      )}
+
+      {INTERNAL_ROLES.map((role) => {
+        const isAdmin = role === 'super_admin' || role === 'org_admin';
+
+        return (
+          <div key={role} className="rounded-xl border border-border bg-white overflow-hidden">
+            <div className="px-6 py-4 border-b border-border bg-bg-secondary flex items-center justify-between">
+              <h3 className="text-sm font-semibold text-foreground">
+                {ROLE_LABELS[role] ?? role}
+              </h3>
+              {isAdmin && (
+                <span className="text-[10px] font-medium uppercase tracking-wider text-text-muted bg-bg-tertiary rounded px-2 py-0.5">
+                  Full Access
+                </span>
+              )}
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-border">
+                    <th className="px-6 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted w-48">
+                      Resource
+                    </th>
+                    {ALL_ACTIONS.map((action) => (
+                      <th
+                        key={action}
+                        className="px-4 py-2 text-center text-xs font-medium uppercase tracking-wider text-text-muted"
+                      >
+                        {action}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {ALL_RESOURCES.map((resource) => (
+                    <tr key={resource} className="hover:bg-bg-secondary/50 transition-colors">
+                      <td className="px-6 py-2.5 text-sm text-foreground">
+                        {RESOURCE_LABELS[resource]}
+                      </td>
+                      {ALL_ACTIONS.map((action) => {
+                        const key = permKey(resource, action);
+                        const allowed = permissions[role]?.[key] ?? false;
+                        const isSaving = saving === `${role}.${key}`;
+                        const editable = isEnterprise && !isAdmin;
+
+                        return (
+                          <td key={action} className="px-4 py-2.5 text-center">
+                            <button
+                              type="button"
+                              disabled={!editable || isSaving}
+                              onClick={() => togglePermission(role, resource, action)}
+                              className={`mx-auto h-5 w-5 rounded transition-colors ${
+                                editable ? 'cursor-pointer hover:ring-2 hover:ring-offset-1 hover:ring-gray-300' : 'cursor-default'
+                              } ${
+                                allowed ? 'bg-green-500' : 'bg-gray-200'
+                              } ${isSaving ? 'opacity-50 animate-pulse' : ''}`}
+                              title={`${allowed ? 'Allowed' : 'Denied'}: ${ROLE_LABELS[role] ?? role} → ${action} ${resource}`}
+                            />
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

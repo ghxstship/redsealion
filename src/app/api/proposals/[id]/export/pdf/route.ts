@@ -1,11 +1,15 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { requirePermission } from '@/lib/api/permission-guard';
 import { getSeedProposals, getSeedClients, getSeedPhases } from '@/lib/seed-data';
 
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const permError = await requirePermission('proposals', 'view');
+  if (permError) return permError;
+
   const { id } = await params;
 
   let proposalName = 'Proposal';
