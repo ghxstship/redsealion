@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 interface FieldMapping {
-  xpbField: string;
+  flyteDeckField: string;
   targetField: string;
 }
 
@@ -82,7 +82,7 @@ export default function ExportPreview({
                   <div className="rounded-lg border border-border overflow-hidden">
                     <div className="grid grid-cols-2 bg-bg-secondary px-4 py-2">
                       <span className="text-[11px] font-semibold uppercase tracking-wider text-text-muted">
-                        XPB Field
+                        FlyteDeck Field
                       </span>
                       <span className="text-[11px] font-semibold uppercase tracking-wider text-text-muted">
                         {platformName} Field
@@ -91,11 +91,11 @@ export default function ExportPreview({
                     <div className="divide-y divide-border">
                       {category.mappings.map((mapping) => (
                         <div
-                          key={mapping.xpbField}
+                          key={mapping.flyteDeckField}
                           className="grid grid-cols-2 px-4 py-2"
                         >
                           <span className="text-xs text-foreground font-mono">
-                            {mapping.xpbField}
+                            {mapping.flyteDeckField}
                           </span>
                           <span className="text-xs text-text-secondary font-mono">
                             {mapping.targetField}

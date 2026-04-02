@@ -13,13 +13,13 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://xpb.io'),
+  metadataBase: new URL('https://flytedeck.io'),
   title: {
-    default: 'XPB — The Operating System for Experiential Production',
-    template: '%s | XPB',
+    default: 'FlyteDeck — The Operating System for Experiential Production',
+    template: '%s | FlyteDeck',
   },
   description:
-    'XPB is the all-in-one platform for experiential production companies. Build interactive proposals, manage clients, track budgets, schedule resources, and run your entire operation — from pitch to wrap.',
+    'FlyteDeck is the all-in-one platform for experiential production companies. Build interactive proposals, manage clients, track budgets, schedule resources, and run your entire operation — from pitch to wrap.',
   keywords: [
     'experiential production',
     'event production software',
@@ -38,18 +38,18 @@ export const metadata: Metadata = {
     'production operations',
   ],
   openGraph: {
-    title: 'XPB — The Operating System for Experiential Production',
+    title: 'FlyteDeck — The Operating System for Experiential Production',
     description:
-      'XPB is the all-in-one platform for experiential production companies. Build interactive proposals, manage clients, track budgets, schedule resources, and run your entire operation — from pitch to wrap.',
-    siteName: 'XPB',
+      'FlyteDeck is the all-in-one platform for experiential production companies. Build interactive proposals, manage clients, track budgets, schedule resources, and run your entire operation — from pitch to wrap.',
+    siteName: 'FlyteDeck',
     locale: 'en_US',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'XPB — The Operating System for Experiential Production',
+    title: 'FlyteDeck — The Operating System for Experiential Production',
     description:
-      'XPB is the all-in-one platform for experiential production companies. Build interactive proposals, manage clients, track budgets, schedule resources, and run your entire operation — from pitch to wrap.',
+      'FlyteDeck is the all-in-one platform for experiential production companies. Build interactive proposals, manage clients, track budgets, schedule resources, and run your entire operation — from pitch to wrap.',
   },
   robots: {
     index: true,

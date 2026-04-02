@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next';
 
-const BASE_URL = 'https://xpb.io';
+const BASE_URL = 'https://flytedeck.io';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [

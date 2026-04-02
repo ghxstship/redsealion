@@ -99,7 +99,7 @@ export default function LoginPage() {
             <span className="text-sm font-bold text-white">X</span>
           </div>
           <span className="text-lg font-semibold tracking-tight text-zinc-900">
-            XPB
+            FlyteDeck
           </span>
         </div>
         <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">

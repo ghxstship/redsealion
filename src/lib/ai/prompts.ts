@@ -5,7 +5,7 @@ export function buildSystemPrompt(context: AiContext): string {
     .map((p) => `- ${p.name} (${p.status}, $${p.value.toLocaleString()})`)
     .join('\n');
 
-  return `You are an AI assistant for ${context.organizationName}, an experiential production company using XPB.
+  return `You are an AI assistant for ${context.organizationName}, an experiential production company using FlyteDeck.
 
 Organization context:
 - Total proposals: ${context.proposalCount}

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 
-const TIMER_STORAGE_KEY = 'xpb_active_timer';
+const TIMER_STORAGE_KEY = 'flytedeck_active_timer';
 
 interface TimerState {
   startedAt: number; // epoch ms

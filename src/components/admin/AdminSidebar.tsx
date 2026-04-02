@@ -247,7 +247,7 @@ export default function AdminSidebar() {
           <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-foreground">
             <span className="text-white text-sm font-semibold tracking-tight">X</span>
           </div>
-          <span className="text-base font-semibold tracking-tight text-foreground">XPB</span>
+          <span className="text-base font-semibold tracking-tight text-foreground">FlyteDeck</span>
         </div>
 
         {/* Navigation */}

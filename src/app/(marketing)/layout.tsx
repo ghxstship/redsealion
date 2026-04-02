@@ -4,10 +4,10 @@ import JsonLd from '@/components/marketing/JsonLd';
 const organizationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
-  name: 'XPB',
-  url: 'https://xpb.io',
+  name: 'FlyteDeck',
+  url: 'https://flytedeck.io',
   description:
-    'XPB is the all-in-one platform for experiential production companies. Build interactive proposals, manage clients, track budgets, schedule resources, and run your entire operation — from pitch to wrap.',
+    'FlyteDeck is the all-in-one platform for experiential production companies. Build interactive proposals, manage clients, track budgets, schedule resources, and run your entire operation — from pitch to wrap.',
 };
 
 export default function MarketingLayout({
@@ -23,10 +23,10 @@ export default function MarketingLayout({
       <nav className="flex items-center justify-between px-8 py-6 lg:px-16">
         <Link href="/" className="flex items-center gap-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-900">
-            <span className="text-sm font-bold text-white">X</span>
+            <span className="text-xs font-bold text-white">FD</span>
           </div>
           <span className="text-lg font-semibold tracking-tight text-zinc-900">
-            XPB
+            FlyteDeck
           </span>
         </Link>
         <div className="flex items-center gap-6">
@@ -69,7 +69,7 @@ export default function MarketingLayout({
       {/* Footer */}
       <footer className="mt-auto border-t border-zinc-100 px-8 py-8 lg:px-16">
         <div className="flex flex-col items-center gap-4 text-sm text-zinc-400 sm:flex-row sm:justify-between">
-          <span>&copy; {new Date().getFullYear()} XPB. All rights reserved.</span>
+          <span>&copy; {new Date().getFullYear()} FlyteDeck. All rights reserved.</span>
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
             <Link href="/features" className="transition-colors hover:text-zinc-600">
               Features

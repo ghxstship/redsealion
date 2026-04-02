@@ -3,9 +3,9 @@ import Link from 'next/link';
 import JsonLd from '@/components/marketing/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Software for Pop-Up Retail & Immersive Experiences | XPB',
+  title: 'Software for Pop-Up Retail & Immersive Experiences | FlyteDeck',
   description:
-    'Build proposals and manage pop-up retail activations, immersive installations, and experiential marketing with XPB. Fast turnaround tools for experience producers.',
+    'Build proposals and manage pop-up retail activations, immersive installations, and experiential marketing with FlyteDeck. Fast turnaround tools for experience producers.',
 };
 
 const jsonLd = {
@@ -13,7 +13,7 @@ const jsonLd = {
   '@type': 'WebPage',
   name: 'Software for Pop-Up Retail & Immersive Experiences',
   description:
-    'Build proposals and manage pop-up retail activations, immersive installations, and experiential marketing with XPB.',
+    'Build proposals and manage pop-up retail activations, immersive installations, and experiential marketing with FlyteDeck.',
   breadcrumb: {
     '@type': 'BreadcrumbList',
     itemListElement: [
@@ -21,19 +21,19 @@ const jsonLd = {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://xpb.io',
+        item: 'https://flytedeck.io',
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Use Cases',
-        item: 'https://xpb.io/use-cases',
+        item: 'https://flytedeck.io/use-cases',
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: 'Pop-Up Experiences',
-        item: 'https://xpb.io/use-cases/pop-up-experiences',
+        item: 'https://flytedeck.io/use-cases/pop-up-experiences',
       },
     ],
   },
@@ -61,12 +61,12 @@ const features = [
   {
     title: 'Quick proposal builder',
     description:
-      'Build polished, professional proposals in minutes, not hours. XPB provides templates designed for experiential production that include space for creative concepts, budget breakdowns, timeline milestones, and venue requirements. Clone proposals from previous pop-ups and adjust for the new project, carrying forward your pricing intelligence and operational knowledge from past experiences.',
+      'Build polished, professional proposals in minutes, not hours. FlyteDeck provides templates designed for experiential production that include space for creative concepts, budget breakdowns, timeline milestones, and venue requirements. Clone proposals from previous pop-ups and adjust for the new project, carrying forward your pricing intelligence and operational knowledge from past experiences.',
   },
   {
     title: 'Automated invoicing',
     description:
-      'Set up milestone-based or schedule-based invoicing when the project kicks off. XPB automatically generates invoices at the agreed intervals, tracks payment status, and sends reminders when payments are overdue. Producers spend less time on accounts receivable and more time on production. When scope changes occur, new line items flow automatically into the next invoice cycle.',
+      'Set up milestone-based or schedule-based invoicing when the project kicks off. FlyteDeck automatically generates invoices at the agreed intervals, tracks payment status, and sends reminders when payments are overdue. Producers spend less time on accounts receivable and more time on production. When scope changes occur, new line items flow automatically into the next invoice cycle.',
   },
   {
     title: 'Real-time client approvals',
@@ -110,13 +110,13 @@ export default function PopUpExperiencesPage() {
             Pop-up retail spaces, immersive brand installations, and temporary experiential
             environments demand speed without sacrificing quality. Your team needs to move
             from a creative brief to a fully operational experience in weeks, coordinating
-            design, fabrication, permitting, and logistics on a compressed timeline. XPB
+            design, fabrication, permitting, and logistics on a compressed timeline. FlyteDeck
             gives pop-up production teams the tools to move fast, stay organized, and
             deliver on budget.
           </p>
           <p className="mt-4 max-w-2xl text-lg leading-relaxed text-zinc-600">
             Whether you are building a two-day brand pop-up, a month-long immersive retail
-            experience, or a traveling installation that visits multiple cities, XPB keeps
+            experience, or a traveling installation that visits multiple cities, FlyteDeck keeps
             your proposals professional, your budgets transparent, and your stakeholders
             aligned.
           </p>
@@ -158,14 +158,14 @@ export default function PopUpExperiencesPage() {
         </div>
       </section>
 
-      {/* How XPB Solves It */}
+      {/* How FlyteDeck Solves It */}
       <section className="px-8 py-20 lg:px-16">
         <div className="mx-auto max-w-5xl">
           <h2 className="text-3xl font-bold tracking-tight text-zinc-900">
-            How XPB accelerates pop-up production
+            How FlyteDeck accelerates pop-up production
           </h2>
           <p className="mt-4 max-w-2xl text-zinc-600">
-            XPB is purpose-built for the speed and complexity of experiential production.
+            FlyteDeck is purpose-built for the speed and complexity of experiential production.
             Every feature is designed to eliminate friction and keep your pop-up project
             moving forward.
           </p>
@@ -193,7 +193,7 @@ export default function PopUpExperiencesPage() {
       <section className="bg-zinc-50 px-8 py-20 lg:px-16">
         <div className="mx-auto max-w-5xl">
           <h2 className="text-3xl font-bold tracking-tight text-zinc-900">
-            Types of pop-up experiences XPB supports
+            Types of pop-up experiences FlyteDeck supports
           </h2>
           <div className="mt-8 grid gap-8 sm:grid-cols-2">
             <div className="rounded-2xl border border-zinc-200 bg-white p-8">
@@ -209,7 +209,7 @@ export default function PopUpExperiencesPage() {
               <h3 className="text-lg font-semibold text-zinc-900">Immersive installations</h3>
               <p className="mt-3 text-sm leading-relaxed text-zinc-500">
                 Multi-sensory experiences that require careful coordination between
-                technology vendors, scenic fabricators, and content creators. XPB helps you
+                technology vendors, scenic fabricators, and content creators. FlyteDeck helps you
                 manage the complex interdependencies between these disciplines and keep
                 everyone working toward the same opening date.
               </p>
@@ -218,7 +218,7 @@ export default function PopUpExperiencesPage() {
               <h3 className="text-lg font-semibold text-zinc-900">Traveling experiences</h3>
               <p className="mt-3 text-sm leading-relaxed text-zinc-500">
                 Experiences that move from city to city, adapting to different venues while
-                maintaining brand consistency. Use XPB to manage multi-city logistics,
+                maintaining brand consistency. Use FlyteDeck to manage multi-city logistics,
                 track per-market budgets, and coordinate local vendors at each stop while
                 maintaining a master timeline for the entire tour.
               </p>
@@ -228,7 +228,7 @@ export default function PopUpExperiencesPage() {
               <p className="mt-3 text-sm leading-relaxed text-zinc-500">
                 High-energy brand presence at music festivals, sporting events, and cultural
                 gatherings. Manage the unique challenges of festival environments including
-                power constraints, weather contingencies, and high foot traffic with XPB
+                power constraints, weather contingencies, and high foot traffic with FlyteDeck
                 production tools designed for fast-paced on-site execution.
               </p>
             </div>
@@ -243,7 +243,7 @@ export default function PopUpExperiencesPage() {
             Launch your next pop-up with confidence
           </h2>
           <p className="mt-4 text-lg text-zinc-600">
-            Stop losing time to scattered tools and manual processes. XPB gives pop-up
+            Stop losing time to scattered tools and manual processes. FlyteDeck gives pop-up
             production teams a single platform to build proposals, manage budgets, coordinate
             stakeholders, and deliver unforgettable experiences on time and on budget.
           </p>

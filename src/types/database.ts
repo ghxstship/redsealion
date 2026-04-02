@@ -1,4 +1,4 @@
-// XPB Database Types — mirrors Supabase PostgreSQL schema
+// FlyteDeck Database Types — mirrors Supabase PostgreSQL schema
 
 export type OrganizationRole =
   | 'super_admin'

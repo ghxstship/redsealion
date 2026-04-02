@@ -3,9 +3,9 @@ import Link from 'next/link';
 import JsonLd from '@/components/marketing/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Proposal & Production Software for Brand Activations | XPB',
+  title: 'Proposal & Production Software for Brand Activations | FlyteDeck',
   description:
-    'Build interactive proposals, manage budgets, and run brand activation projects from pitch to wrap with XPB. Purpose-built software for experiential marketing teams.',
+    'Build interactive proposals, manage budgets, and run brand activation projects from pitch to wrap with FlyteDeck. Purpose-built software for experiential marketing teams.',
 };
 
 const jsonLd = {
@@ -13,7 +13,7 @@ const jsonLd = {
   '@type': 'WebPage',
   name: 'Proposal & Production Software for Brand Activations',
   description:
-    'Build interactive proposals, manage budgets, and run brand activation projects from pitch to wrap with XPB.',
+    'Build interactive proposals, manage budgets, and run brand activation projects from pitch to wrap with FlyteDeck.',
   breadcrumb: {
     '@type': 'BreadcrumbList',
     itemListElement: [
@@ -21,19 +21,19 @@ const jsonLd = {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://xpb.io',
+        item: 'https://flytedeck.io',
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Use Cases',
-        item: 'https://xpb.io/use-cases',
+        item: 'https://flytedeck.io/use-cases',
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: 'Brand Activations',
-        item: 'https://xpb.io/use-cases/brand-activations',
+        item: 'https://flytedeck.io/use-cases/brand-activations',
       },
     ],
   },
@@ -86,7 +86,7 @@ const features = [
 ];
 
 const workflowSteps = [
-  { label: 'Brief Received', description: 'Client brief lands in your inbox and gets logged in XPB' },
+  { label: 'Brief Received', description: 'Client brief lands in your inbox and gets logged in FlyteDeck' },
   { label: 'Proposal Built', description: 'Build a visual proposal with budget, mood boards, and timeline' },
   { label: 'Client Approval', description: 'Client reviews and approves via the branded portal' },
   { label: 'Production', description: 'Manage vendors, crew, and procurement against the approved budget' },
@@ -126,7 +126,7 @@ export default function BrandActivationsPage() {
             Brand activations are high-stakes, fast-moving projects that demand precision
             at every stage. From the initial client brief through creative concepting,
             vendor coordination, on-site execution, and post-event analysis, your team
-            needs a platform that keeps pace. XPB gives experiential marketing and brand
+            needs a platform that keeps pace. FlyteDeck gives experiential marketing and brand
             activation teams a single workspace to build compelling proposals, manage
             production budgets, coordinate venue logistics, and deliver wrap reports that
             prove ROI.
@@ -168,14 +168,14 @@ export default function BrandActivationsPage() {
         </div>
       </section>
 
-      {/* How XPB Solves It */}
+      {/* How FlyteDeck Solves It */}
       <section className="px-8 py-20 lg:px-16">
         <div className="mx-auto max-w-5xl">
           <h2 className="text-3xl font-bold tracking-tight text-zinc-900">
-            How XPB solves it
+            How FlyteDeck solves it
           </h2>
           <p className="mt-4 max-w-2xl text-zinc-600">
-            XPB replaces the patchwork of tools that brand activation teams typically rely
+            FlyteDeck replaces the patchwork of tools that brand activation teams typically rely
             on with a single, purpose-built platform designed for experiential production
             workflows.
           </p>
@@ -206,7 +206,7 @@ export default function BrandActivationsPage() {
             From brief to debrief
           </h2>
           <p className="mt-4 max-w-2xl text-zinc-600">
-            XPB supports your entire brand activation workflow. Every stage is tracked,
+            FlyteDeck supports your entire brand activation workflow. Every stage is tracked,
             documented, and visible to the people who need to see it.
           </p>
           <div className="mt-12 overflow-x-auto">
@@ -238,7 +238,7 @@ export default function BrandActivationsPage() {
       <section className="px-8 py-20 lg:px-16">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-3xl font-bold tracking-tight text-zinc-900">
-            Start managing brand activations with XPB
+            Start managing brand activations with FlyteDeck
           </h2>
           <p className="mt-4 text-lg text-zinc-600">
             Join experiential production teams who have replaced their spreadsheet-and-email

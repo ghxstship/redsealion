@@ -40,7 +40,7 @@ const assetsData: Record<string, {
     material: 'Aluminum frame, LED panels',
     acquisition_cost: 52000,
     current_value: 45000,
-    barcode: 'XPB-AV-2025-001',
+    barcode: 'FlyteDeck-AV-2025-001',
     deployment_count: 3,
     max_deployments: null,
     reusable: true,

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import JsonLd from '@/components/marketing/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Trade Show & Exhibition Management Software | XPB',
+  title: 'Trade Show & Exhibition Management Software | FlyteDeck',
   description:
     'Proposal builder and project management for trade show and exhibition design firms. Manage venues, budgets, and client approvals in one platform.',
 };
@@ -21,19 +21,19 @@ const jsonLd = {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://xpb.io',
+        item: 'https://flytedeck.io',
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Use Cases',
-        item: 'https://xpb.io/use-cases',
+        item: 'https://flytedeck.io/use-cases',
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: 'Trade Shows',
-        item: 'https://xpb.io/use-cases/trade-shows',
+        item: 'https://flytedeck.io/use-cases/trade-shows',
       },
     ],
   },
@@ -61,12 +61,12 @@ const features = [
   {
     title: 'Multi-venue support with addresses and dates',
     description:
-      'Manage an entire trade show season from a single dashboard. Each project in XPB can span multiple venues, each with its own address, show dates, move-in and move-out windows, and venue-specific requirements. Filter your project list by upcoming show dates to prioritize what needs attention now and plan ahead for what is coming next.',
+      'Manage an entire trade show season from a single dashboard. Each project in FlyteDeck can span multiple venues, each with its own address, show dates, move-in and move-out windows, and venue-specific requirements. Filter your project list by upcoming show dates to prioritize what needs attention now and plan ahead for what is coming next.',
   },
   {
     title: 'Proposal scenarios for booth options',
     description:
-      'Present clients with multiple booth options in a single proposal. XPB lets you build side-by-side scenarios — for example, a 20x20 inline booth versus a 30x30 island booth — each with its own budget, layout, and component list. Clients can compare options and approve their preferred scenario without requiring separate proposals for each concept.',
+      'Present clients with multiple booth options in a single proposal. FlyteDeck lets you build side-by-side scenarios — for example, a 20x20 inline booth versus a 30x30 island booth — each with its own budget, layout, and component list. Clients can compare options and approve their preferred scenario without requiring separate proposals for each concept.',
   },
   {
     title: 'Asset library for reusable components',
@@ -110,12 +110,12 @@ export default function TradeShowsPage() {
             Trade show and exhibition design firms operate in a unique space where creative
             design meets complex logistics. You are building custom environments that need
             to arrive on time, fit the floor plan exactly, reflect the brand perfectly, and
-            come in on budget. XPB gives exhibition teams the proposal, budgeting, and
+            come in on budget. FlyteDeck gives exhibition teams the proposal, budgeting, and
             project management tools they need to manage it all without the chaos.
           </p>
           <p className="mt-4 max-w-2xl text-lg leading-relaxed text-zinc-600">
             From initial client pitch through design iteration, fabrication management,
-            shipping coordination, and on-site installation, XPB keeps every stakeholder
+            shipping coordination, and on-site installation, FlyteDeck keeps every stakeholder
             aligned and every detail tracked.
           </p>
           <div className="mt-8">
@@ -155,14 +155,14 @@ export default function TradeShowsPage() {
         </div>
       </section>
 
-      {/* How XPB Solves It */}
+      {/* How FlyteDeck Solves It */}
       <section className="px-8 py-20 lg:px-16">
         <div className="mx-auto max-w-5xl">
           <h2 className="text-3xl font-bold tracking-tight text-zinc-900">
-            How XPB transforms trade show production
+            How FlyteDeck transforms trade show production
           </h2>
           <p className="mt-4 max-w-2xl text-zinc-600">
-            XPB understands the rhythms of trade show production — the seasonal surges, the
+            FlyteDeck understands the rhythms of trade show production — the seasonal surges, the
             multi-venue juggling, the design revision cycles, and the critical importance of
             getting every detail right before the show floor opens.
           </p>
@@ -197,7 +197,7 @@ export default function TradeShowsPage() {
               <h3 className="text-lg font-semibold text-zinc-900">Pre-show planning</h3>
               <p className="mt-3 leading-relaxed text-zinc-500">
                 Build proposals with detailed budgets, design concepts, and timeline
-                milestones. Use XPB to coordinate with subcontractors, order materials, and
+                milestones. Use FlyteDeck to coordinate with subcontractors, order materials, and
                 track fabrication progress against deadlines. Automated reminders ensure
                 nothing falls through the cracks as show dates approach.
               </p>
@@ -206,7 +206,7 @@ export default function TradeShowsPage() {
               <h3 className="text-lg font-semibold text-zinc-900">On-site execution</h3>
               <p className="mt-3 leading-relaxed text-zinc-500">
                 Track installation progress, log crew hours, and manage on-site changes
-                through XPB. When a client requests a last-minute graphic swap or furniture
+                through FlyteDeck. When a client requests a last-minute graphic swap or furniture
                 addition, capture the change order and cost impact immediately. Your team
                 stays aligned even when things move fast on the show floor.
               </p>
@@ -215,7 +215,7 @@ export default function TradeShowsPage() {
               <h3 className="text-lg font-semibold text-zinc-900">Post-show wrap-up</h3>
               <p className="mt-3 leading-relaxed text-zinc-500">
                 After the show, generate profitability reports, reconcile actual costs
-                against estimates, and document lessons learned. XPB makes it easy to create
+                against estimates, and document lessons learned. FlyteDeck makes it easy to create
                 post-show summaries that demonstrate the value you delivered and set the
                 stage for next season.
               </p>
@@ -225,7 +225,7 @@ export default function TradeShowsPage() {
               <p className="mt-3 leading-relaxed text-zinc-500">
                 Use historical project data to refine your estimating accuracy, identify your
                 most profitable show types, and build stronger proposals for returning
-                clients. XPB gives you the data foundation to grow your exhibition business
+                clients. FlyteDeck gives you the data foundation to grow your exhibition business
                 strategically.
               </p>
             </div>
@@ -237,11 +237,11 @@ export default function TradeShowsPage() {
       <section className="px-8 py-20 lg:px-16">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-3xl font-bold tracking-tight text-zinc-900">
-            Simplify your trade show operations with XPB
+            Simplify your trade show operations with FlyteDeck
           </h2>
           <p className="mt-4 text-lg text-zinc-600">
             Stop juggling spreadsheets across venues and start managing your entire
-            exhibition season from a single platform. XPB gives trade show teams the tools
+            exhibition season from a single platform. FlyteDeck gives trade show teams the tools
             to win more business, execute flawlessly, and grow profitably.
           </p>
           <div className="mt-8 flex items-center justify-center gap-4">

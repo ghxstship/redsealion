@@ -3,7 +3,7 @@ import Link from 'next/link';
 import JsonLd from '@/components/marketing/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Event Production Management Software | XPB',
+  title: 'Event Production Management Software | FlyteDeck',
   description:
     'Manage live event production from proposal to wrap. Time tracking, resource scheduling, budgeting, and client portals for event producers.',
 };
@@ -21,19 +21,19 @@ const jsonLd = {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://xpb.io',
+        item: 'https://flytedeck.io',
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Use Cases',
-        item: 'https://xpb.io/use-cases',
+        item: 'https://flytedeck.io/use-cases',
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: 'Live Events',
-        item: 'https://xpb.io/use-cases/live-events',
+        item: 'https://flytedeck.io/use-cases/live-events',
       },
     ],
   },
@@ -61,17 +61,17 @@ const features = [
   {
     title: 'Resource scheduling with utilization heat maps',
     description:
-      'See your entire crew and equipment roster at a glance. XPB displays utilization heat maps that highlight overbooked periods and underutilized resources, helping you staff events efficiently and avoid burnout. Drag-and-drop scheduling makes it easy to reassign crew members when availability changes.',
+      'See your entire crew and equipment roster at a glance. FlyteDeck displays utilization heat maps that highlight overbooked periods and underutilized resources, helping you staff events efficiently and avoid burnout. Drag-and-drop scheduling makes it easy to reassign crew members when availability changes.',
   },
   {
     title: 'Time tracking for crew',
     description:
-      'Crew members log hours directly in XPB, capturing regular time, overtime, and travel time by department and role. Producers get real-time visibility into labor costs against budget, and payroll exports are generated automatically at the end of each event.',
+      'Crew members log hours directly in FlyteDeck, capturing regular time, overtime, and travel time by department and role. Producers get real-time visibility into labor costs against budget, and payroll exports are generated automatically at the end of each event.',
   },
   {
     title: 'Change order management and invoicing',
     description:
-      'When a client requests an on-site change, create a change order in XPB with a few taps. The system calculates the cost impact, captures the client approval, and automatically adds the charges to the next invoice. No more lost revenue from undocumented scope changes.',
+      'When a client requests an on-site change, create a change order in FlyteDeck with a few taps. The system calculates the cost impact, captures the client approval, and automatically adds the charges to the next invoice. No more lost revenue from undocumented scope changes.',
   },
   {
     title: 'Gantt charts for event timelines',
@@ -81,7 +81,7 @@ const features = [
   {
     title: 'Real-time budget burn tracking',
     description:
-      'Monitor your budget in real time as costs are incurred. XPB tracks committed costs, actual spend, and remaining budget across every line item. Dashboard views show budget burn rate alongside project timeline progress, giving producers early warning when a project is trending over budget.',
+      'Monitor your budget in real time as costs are incurred. FlyteDeck tracks committed costs, actual spend, and remaining budget across every line item. Dashboard views show budget burn rate alongside project timeline progress, giving producers early warning when a project is trending over budget.',
   },
 ];
 
@@ -89,7 +89,7 @@ const stats = [
   {
     value: '23%',
     label: 'fewer budget overruns',
-    description: 'Teams using XPB report 23% fewer budget overruns compared to spreadsheet-based tracking, thanks to real-time cost visibility and automated variance alerts.',
+    description: 'Teams using FlyteDeck report 23% fewer budget overruns compared to spreadsheet-based tracking, thanks to real-time cost visibility and automated variance alerts.',
   },
   {
     value: '4.2 hrs',
@@ -132,13 +132,13 @@ export default function LiveEventsPage() {
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-zinc-600">
             Live event production is a high-wire act. Dozens of crew members, hundreds of
             line items, tight timelines, and clients who expect flawless execution every
-            time. XPB is the production management platform that gives event producers
+            time. FlyteDeck is the production management platform that gives event producers
             real-time control over budgets, schedules, and client communications so you can
             focus on delivering extraordinary experiences instead of chasing spreadsheets.
           </p>
           <p className="mt-4 max-w-2xl text-lg leading-relaxed text-zinc-600">
             Whether you are producing conferences, concerts, galas, awards shows, or
-            multi-day festivals, XPB adapts to your workflow and scales with your business.
+            multi-day festivals, FlyteDeck adapts to your workflow and scales with your business.
           </p>
           <div className="mt-8">
             <Link
@@ -178,14 +178,14 @@ export default function LiveEventsPage() {
         </div>
       </section>
 
-      {/* How XPB Solves It */}
+      {/* How FlyteDeck Solves It */}
       <section className="px-8 py-20 lg:px-16">
         <div className="mx-auto max-w-5xl">
           <h2 className="text-3xl font-bold tracking-tight text-zinc-900">
-            How XPB keeps your productions on track
+            How FlyteDeck keeps your productions on track
           </h2>
           <p className="mt-4 max-w-2xl text-zinc-600">
-            XPB was designed from the ground up for experiential production workflows. Every
+            FlyteDeck was designed from the ground up for experiential production workflows. Every
             feature is built to handle the fast pace, shifting scope, and high stakes of
             live event work.
           </p>
@@ -213,10 +213,10 @@ export default function LiveEventsPage() {
       <section className="bg-zinc-50 px-8 py-20 lg:px-16">
         <div className="mx-auto max-w-5xl">
           <h2 className="text-3xl font-bold tracking-tight text-zinc-900">
-            The impact of switching to XPB
+            The impact of switching to FlyteDeck
           </h2>
           <p className="mt-4 max-w-2xl text-zinc-600">
-            Production teams that move from spreadsheets and generic project tools to XPB
+            Production teams that move from spreadsheets and generic project tools to FlyteDeck
             see measurable improvements across their operations.
           </p>
           <div className="mt-12 grid gap-8 sm:grid-cols-3">
@@ -245,7 +245,7 @@ export default function LiveEventsPage() {
             Bring order to your event production workflow
           </h2>
           <p className="mt-4 text-lg text-zinc-600">
-            Stop fighting your tools and start producing events with confidence. XPB gives
+            Stop fighting your tools and start producing events with confidence. FlyteDeck gives
             you real-time budget visibility, streamlined crew scheduling, and a client
             portal that keeps everyone aligned. Start your free trial and see the difference
             in your next show.

@@ -51,7 +51,7 @@ const features = [
     title: 'Time Tracking & Timesheets',
     headline: 'Know where every hour goes',
     description:
-      'Capture time across projects without disrupting your team. Whether your producers prefer timers or weekly timesheets, XPB adapts to how your team actually works.',
+      'Capture time across projects without disrupting your team. Whether your producers prefer timers or weekly timesheets, FlyteDeck adapts to how your team actually works.',
     bullets: [
       'One-click timer with project and task assignment',
       'Weekly timesheet view with manager approvals',
@@ -96,7 +96,7 @@ const features = [
     title: 'Integrations',
     headline: 'Fits into your existing stack',
     description:
-      'XPB connects to the tools your team already uses. Sync data across your CRM, accounting software, project management tools, and communication platforms without manual entry.',
+      'FlyteDeck connects to the tools your team already uses. Sync data across your CRM, accounting software, project management tools, and communication platforms without manual entry.',
     bullets: [
       'Salesforce and HubSpot CRM sync',
       'QuickBooks and Xero accounting integration',
@@ -184,7 +184,7 @@ const useCases = [
 const testimonials = [
   {
     quote:
-      'We were running our entire production company on spreadsheets and email chains. XPB replaced all of it in a single platform. Our proposal win rate went up 35% in the first quarter.',
+      'We were running our entire production company on spreadsheets and email chains. FlyteDeck replaced all of it in a single platform. Our proposal win rate went up 35% in the first quarter.',
     name: 'Sarah Chen',
     title: 'Head of Production',
     company: 'Amplitude Creative',
@@ -229,37 +229,37 @@ const faqs = [
   {
     question: 'What is experiential proposal software?',
     answer:
-      'Experiential proposal software is a specialized tool for creating interactive, visually rich proposals tailored to the production industry. Unlike generic document tools, XPB lets you build proposals with drag-and-drop components, embed media, present multiple pricing scenarios, and share them through a branded client portal with built-in approvals and e-signatures.',
+      'Experiential proposal software is a specialized tool for creating interactive, visually rich proposals tailored to the production industry. Unlike generic document tools, FlyteDeck lets you build proposals with drag-and-drop components, embed media, present multiple pricing scenarios, and share them through a branded client portal with built-in approvals and e-signatures.',
   },
   {
-    question: 'How does XPB handle production billing?',
+    question: 'How does FlyteDeck handle production billing?',
     answer:
-      'XPB supports the billing workflows that production companies actually use, including deposit invoices, balance payments, change orders, and credit notes. You can set up recurring billing for retainer clients, track payment status in real time, and push finalized invoices directly to QuickBooks or Xero.',
+      'FlyteDeck supports the billing workflows that production companies actually use, including deposit invoices, balance payments, change orders, and credit notes. You can set up recurring billing for retainer clients, track payment status in real time, and push finalized invoices directly to QuickBooks or Xero.',
   },
   {
     question: 'Can I track profitability on brand activations?',
     answer:
-      'Yes. XPB gives you real-time profitability tracking at the project, client, and team level. You can monitor planned versus actual spend with live burn charts, categorize expenses, and drill into margin analysis to understand exactly where your profit is going on every activation.',
+      'Yes. FlyteDeck gives you real-time profitability tracking at the project, client, and team level. You can monitor planned versus actual spend with live burn charts, categorize expenses, and drill into margin analysis to understand exactly where your profit is going on every activation.',
   },
   {
-    question: 'Does XPB integrate with QuickBooks and Salesforce?',
+    question: 'Does FlyteDeck integrate with QuickBooks and Salesforce?',
     answer:
-      'XPB integrates natively with QuickBooks, Xero, Salesforce, and HubSpot. You can also connect to project management tools like ClickUp and Asana, communication platforms like Slack, and build custom workflows using Zapier-compatible webhooks.',
+      'FlyteDeck integrates natively with QuickBooks, Xero, Salesforce, and HubSpot. You can also connect to project management tools like ClickUp and Asana, communication platforms like Slack, and build custom workflows using Zapier-compatible webhooks.',
   },
   {
-    question: 'Is XPB suitable for small production teams?',
+    question: 'Is FlyteDeck suitable for small production teams?',
     answer:
-      'Absolutely. XPB is designed to scale from small boutique agencies to large production houses. Small teams benefit from having proposals, billing, time tracking, and client management in one place instead of juggling multiple disconnected tools.',
+      'Absolutely. FlyteDeck is designed to scale from small boutique agencies to large production houses. Small teams benefit from having proposals, billing, time tracking, and client management in one place instead of juggling multiple disconnected tools.',
   },
   {
     question: 'How does the client portal work?',
     answer:
-      'Each proposal you create in XPB can be shared via a branded client portal. Clients receive a secure link where they can explore the proposal interactively, leave inline comments, compare pricing scenarios, and approve or request changes. All activity is tracked so your team always knows where things stand.',
+      'Each proposal you create in FlyteDeck can be shared via a branded client portal. Clients receive a secure link where they can explore the proposal interactively, leave inline comments, compare pricing scenarios, and approve or request changes. All activity is tracked so your team always knows where things stand.',
   },
   {
-    question: 'What makes XPB different from generic project management tools?',
+    question: 'What makes FlyteDeck different from generic project management tools?',
     answer:
-      'Generic PM tools are built for software teams, not production companies. XPB is purpose-built for experiential production with features like interactive proposals, production-specific billing, client portals, resource scheduling with utilization heat maps, and an AI assistant that understands production terminology and workflows.',
+      'Generic PM tools are built for software teams, not production companies. FlyteDeck is purpose-built for experiential production with features like interactive proposals, production-specific billing, client portals, resource scheduling with utilization heat maps, and an AI assistant that understands production terminology and workflows.',
   },
 ];
 
@@ -301,7 +301,7 @@ export default function HomePage() {
             <span className="text-sm font-bold text-white">X</span>
           </div>
           <span className="text-lg font-semibold tracking-tight text-zinc-900">
-            XPB
+            FlyteDeck
           </span>
         </div>
         <div className="flex items-center gap-4">
@@ -524,7 +524,7 @@ export default function HomePage() {
           <div className="mx-auto max-w-4xl">
             <div className="mb-16 text-center">
               <h2 className="text-3xl font-semibold tracking-tight text-zinc-900 sm:text-4xl">
-                Why teams switch to XPB
+                Why teams switch to FlyteDeck
               </h2>
             </div>
 
@@ -537,7 +537,7 @@ export default function HomePage() {
                     </th>
                     <th className="pb-4 text-center text-sm font-semibold text-zinc-900">
                       <span className="rounded-lg bg-zinc-900 px-3 py-1 text-white">
-                        XPB
+                        FlyteDeck
                       </span>
                     </th>
                     <th className="pb-4 text-center text-sm font-medium text-zinc-400">
@@ -550,12 +550,12 @@ export default function HomePage() {
                 </thead>
                 <tbody>
                   {comparisonRows.map((row) => {
-                    const [xpb, spreadsheets, generic] = comparisonData[row];
+                    const [flyteDeck, spreadsheets, generic] = comparisonData[row];
                     return (
                       <tr key={row} className="border-b border-zinc-100">
                         <td className="py-4 text-sm text-zinc-600">{row}</td>
                         <td className="py-4 text-center">
-                          {xpb ? (
+                          {flyteDeck ? (
                             <CheckIcon className="mx-auto h-5 w-5 text-zinc-900" />
                           ) : (
                             <XIcon className="mx-auto h-5 w-5 text-zinc-300" />
@@ -628,7 +628,7 @@ export default function HomePage() {
               Ready to run your production company from one platform?
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-lg text-zinc-400">
-              Join the production teams already using XPB to win more work,
+              Join the production teams already using FlyteDeck to win more work,
               deliver on budget, and grow profitably.
             </p>
             <div className="mt-10">
@@ -649,7 +649,7 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="border-t border-zinc-100 px-6 py-8 sm:px-8 lg:px-16">
         <div className="flex flex-col items-center justify-between gap-4 text-sm text-zinc-400 sm:flex-row">
-          <span>&copy; {new Date().getFullYear()} XPB. All rights reserved.</span>
+          <span>&copy; {new Date().getFullYear()} FlyteDeck. All rights reserved.</span>
           <div className="flex flex-wrap items-center justify-center gap-6">
             <Link
               href="/features"

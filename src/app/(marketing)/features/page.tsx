@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Features',
   description:
-    'Explore XPB features: interactive proposals, CRM, invoicing, time tracking, resource scheduling, budgeting, profitability, integrations, and AI — built for experiential production.',
+    'Explore FlyteDeck features: interactive proposals, CRM, invoicing, time tracking, resource scheduling, budgeting, profitability, integrations, and AI — built for experiential production.',
 };
 
 interface Feature {

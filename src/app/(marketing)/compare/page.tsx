@@ -2,26 +2,26 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Compare XPB — See How We Stack Up',
+  title: 'Compare FlyteDeck — See How We Stack Up',
   description:
-    'Compare XPB to spreadsheets, generic project management tools, and Productive.io. See why experiential production teams choose XPB for proposals, budgets, and client management.',
+    'Compare FlyteDeck to spreadsheets, generic project management tools, and Productive.io. See why experiential production teams choose FlyteDeck for proposals, budgets, and client management.',
 };
 
 const comparisons = [
   {
-    title: 'XPB vs Spreadsheets & Email',
+    title: 'FlyteDeck vs Spreadsheets & Email',
     description:
-      'Spreadsheets and email are where production workflows go to die. See why teams switch to XPB for proposals, budgeting, and client management.',
+      'Spreadsheets and email are where production workflows go to die. See why teams switch to FlyteDeck for proposals, budgeting, and client management.',
     href: '/compare/spreadsheets',
   },
   {
-    title: 'XPB vs Monday, Asana & ClickUp',
+    title: 'FlyteDeck vs Monday, Asana & ClickUp',
     description:
-      'Generic project management tools are great for tasks but lack production-specific workflows. See how XPB fills the gaps.',
+      'Generic project management tools are great for tasks but lack production-specific workflows. See how FlyteDeck fills the gaps.',
     href: '/compare/project-management-tools',
   },
   {
-    title: 'XPB vs Productive.io',
+    title: 'FlyteDeck vs Productive.io',
     description:
       'A fair, detailed comparison for production teams evaluating both platforms. See where each tool leads and which fits your workflow.',
     href: '/compare/productive-io',
@@ -34,10 +34,10 @@ export default function ComparePage() {
       {/* Hero */}
       <div className="px-8 py-20 text-center lg:px-16">
         <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 sm:text-4xl lg:text-5xl">
-          See how XPB compares
+          See how FlyteDeck compares
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-lg text-zinc-500">
-          XPB is the only platform built specifically for experiential production.
+          FlyteDeck is the only platform built specifically for experiential production.
           See how it stacks up against the tools you might be considering.
         </p>
       </div>

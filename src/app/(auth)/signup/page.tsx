@@ -72,7 +72,7 @@ export default function SignupPage() {
             <span className="text-sm font-bold text-white">X</span>
           </div>
           <span className="text-lg font-semibold tracking-tight text-zinc-900">
-            XPB
+            FlyteDeck
           </span>
         </div>
         <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
@@ -224,7 +224,7 @@ export default function SignupPage() {
               URL slug
             </label>
             <div className="flex items-center rounded-lg border border-zinc-300 bg-white focus-within:border-zinc-500 focus-within:ring-1 focus-within:ring-zinc-500">
-              <span className="pl-3.5 text-sm text-zinc-400">xpb.app/</span>
+              <span className="pl-3.5 text-sm text-zinc-400">flytedeck.app/</span>
               <input
                 id="slug"
                 type="text"

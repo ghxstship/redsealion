@@ -2,9 +2,9 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "XPB vs Spreadsheets & Email — Why Production Teams Switch",
+  title: "FlyteDeck vs Spreadsheets & Email — Why Production Teams Switch",
   description:
-    "Still using spreadsheets and email to manage proposals and production? See why experiential production teams switch to XPB for proposals, budgeting, and client management.",
+    "Still using spreadsheets and email to manage proposals and production? See why experiential production teams switch to FlyteDeck for proposals, budgeting, and client management.",
 };
 
 const painPoints = [
@@ -31,16 +31,16 @@ const painPoints = [
 ];
 
 const comparisonRows = [
-  { dimension: 'Proposal creation', spreadsheet: 'Copy-paste into PDF or deck', xpb: 'Interactive drag-and-drop builder' },
-  { dimension: 'Client sharing', spreadsheet: 'Email back and forth', xpb: 'Branded client portal with approvals' },
-  { dimension: 'Budget tracking', spreadsheet: 'Manual formulas across sheets', xpb: 'Real-time burn tracking against estimates' },
-  { dimension: 'Invoice generation', spreadsheet: 'Manually create in accounting tool', xpb: 'One-click invoices from approved proposals' },
-  { dimension: 'Time tracking', spreadsheet: 'Separate tool or honor system', xpb: 'Built-in timesheets tied to projects' },
-  { dimension: 'Resource scheduling', spreadsheet: 'Shared calendar or whiteboard', xpb: 'Visual resource planner with capacity view' },
-  { dimension: 'Version control', spreadsheet: 'Filename suffixes and email chains', xpb: 'Automatic versioning with full history' },
-  { dimension: 'Client communication', spreadsheet: 'Scattered across inboxes', xpb: 'Centralized thread per project' },
-  { dimension: 'Reporting', spreadsheet: 'Build your own pivot tables', xpb: 'Pre-built dashboards and custom reports' },
-  { dimension: 'Profitability analysis', spreadsheet: 'Post-mortem guesswork', xpb: 'Live margin tracking per project' },
+  { dimension: 'Proposal creation', spreadsheet: 'Copy-paste into PDF or deck', flyteDeck: 'Interactive drag-and-drop builder' },
+  { dimension: 'Client sharing', spreadsheet: 'Email back and forth', flyteDeck: 'Branded client portal with approvals' },
+  { dimension: 'Budget tracking', spreadsheet: 'Manual formulas across sheets', flyteDeck: 'Real-time burn tracking against estimates' },
+  { dimension: 'Invoice generation', spreadsheet: 'Manually create in accounting tool', flyteDeck: 'One-click invoices from approved proposals' },
+  { dimension: 'Time tracking', spreadsheet: 'Separate tool or honor system', flyteDeck: 'Built-in timesheets tied to projects' },
+  { dimension: 'Resource scheduling', spreadsheet: 'Shared calendar or whiteboard', flyteDeck: 'Visual resource planner with capacity view' },
+  { dimension: 'Version control', spreadsheet: 'Filename suffixes and email chains', flyteDeck: 'Automatic versioning with full history' },
+  { dimension: 'Client communication', spreadsheet: 'Scattered across inboxes', flyteDeck: 'Centralized thread per project' },
+  { dimension: 'Reporting', spreadsheet: 'Build your own pivot tables', flyteDeck: 'Pre-built dashboards and custom reports' },
+  { dimension: 'Profitability analysis', spreadsheet: 'Post-mortem guesswork', flyteDeck: 'Live margin tracking per project' },
 ];
 
 const dayOneGains = [
@@ -65,7 +65,7 @@ export default function SpreadsheetsComparisonPage() {
           Spreadsheets and email are fine when you are managing one or two projects.
           But experiential production demands more: complex proposals with multiple
           scenarios, real-time budget tracking, client-facing deliverables, and
-          visibility across your entire pipeline. XPB is built for exactly that.
+          visibility across your entire pipeline. FlyteDeck is built for exactly that.
         </p>
       </div>
 
@@ -94,7 +94,7 @@ export default function SpreadsheetsComparisonPage() {
       {/* Comparison Table */}
       <div className="mx-auto w-full max-w-4xl px-8 pb-20 lg:px-16">
         <h2 className="mb-10 text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl">
-          Spreadsheets & Email vs XPB
+          Spreadsheets & Email vs FlyteDeck
         </h2>
 
         {/* Desktop Table */}
@@ -109,7 +109,7 @@ export default function SpreadsheetsComparisonPage() {
                   Spreadsheets & Email
                 </th>
                 <th className="border-b border-zinc-200 bg-zinc-50 pb-4 pl-4 text-sm font-semibold text-zinc-900">
-                  XPB
+                  FlyteDeck
                 </th>
               </tr>
             </thead>
@@ -126,7 +126,7 @@ export default function SpreadsheetsComparisonPage() {
                     {row.spreadsheet}
                   </td>
                   <td className="border-b border-zinc-100 bg-zinc-50/80 py-3 pl-4 text-sm font-medium text-zinc-700">
-                    {row.xpb}
+                    {row.flyteDeck}
                   </td>
                 </tr>
               ))}
@@ -152,8 +152,8 @@ export default function SpreadsheetsComparisonPage() {
                   <p className="text-sm text-zinc-500">{row.spreadsheet}</p>
                 </div>
                 <div className="rounded bg-zinc-50 p-2">
-                  <p className="mb-1 text-xs font-semibold text-zinc-600">XPB</p>
-                  <p className="text-sm font-medium text-zinc-700">{row.xpb}</p>
+                  <p className="mb-1 text-xs font-semibold text-zinc-600">FlyteDeck</p>
+                  <p className="text-sm font-medium text-zinc-700">{row.flyteDeck}</p>
                 </div>
               </div>
             </div>
@@ -195,7 +195,7 @@ export default function SpreadsheetsComparisonPage() {
             Stop managing productions in spreadsheets
           </h2>
           <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-zinc-400">
-            XPB replaces the patchwork of spreadsheets, email threads, and
+            FlyteDeck replaces the patchwork of spreadsheets, email threads, and
             disconnected tools with a single platform built for experiential
             production. Start a free trial and see the difference in your first proposal.
           </p>

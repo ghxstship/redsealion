@@ -3,17 +3,17 @@ import Link from 'next/link';
 import JsonLd from '@/components/marketing/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Use Cases — XPB for Every Type of Experiential Production',
+  title: 'Use Cases — FlyteDeck for Every Type of Experiential Production',
   description:
-    'Discover how XPB helps experiential production teams manage proposals, budgets, and projects across brand activations, live events, trade shows, pop-up experiences, and corporate events.',
+    'Discover how FlyteDeck helps experiential production teams manage proposals, budgets, and projects across brand activations, live events, trade shows, pop-up experiences, and corporate events.',
 };
 
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebPage',
-  name: 'Use Cases — XPB for Every Type of Experiential Production',
+  name: 'Use Cases — FlyteDeck for Every Type of Experiential Production',
   description:
-    'Discover how XPB helps experiential production teams manage proposals, budgets, and projects across brand activations, live events, trade shows, pop-up experiences, and corporate events.',
+    'Discover how FlyteDeck helps experiential production teams manage proposals, budgets, and projects across brand activations, live events, trade shows, pop-up experiences, and corporate events.',
   breadcrumb: {
     '@type': 'BreadcrumbList',
     itemListElement: [
@@ -21,13 +21,13 @@ const jsonLd = {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://xpb.io',
+        item: 'https://flytedeck.io',
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Use Cases',
-        item: 'https://xpb.io/use-cases',
+        item: 'https://flytedeck.io/use-cases',
       },
     ],
   },
@@ -100,13 +100,13 @@ export default function UseCasesPage() {
       <section className="px-8 pb-16 pt-20 lg:px-16">
         <div className="mx-auto max-w-4xl text-center">
           <h1 className="text-4xl font-bold tracking-tight text-zinc-900 sm:text-5xl">
-            XPB for every type of experiential production
+            FlyteDeck for every type of experiential production
           </h1>
           <p className="mt-6 text-lg leading-relaxed text-zinc-600">
             Whether you produce brand activations, live events, trade shows, pop-up
-            experiences, or corporate events, XPB gives your team a single platform to
+            experiences, or corporate events, FlyteDeck gives your team a single platform to
             build proposals, manage budgets, schedule resources, and keep clients in the
-            loop. Explore how production teams in each vertical use XPB to win more work
+            loop. Explore how production teams in each vertical use FlyteDeck to win more work
             and deliver projects on time and on budget.
           </p>
         </div>
@@ -150,7 +150,7 @@ export default function UseCasesPage() {
             Ready to streamline your production workflow?
           </h2>
           <p className="mt-4 text-lg text-zinc-600">
-            Join production teams who use XPB to win more pitches, deliver projects on
+            Join production teams who use FlyteDeck to win more pitches, deliver projects on
             budget, and keep clients happy from first contact to final wrap report.
           </p>
           <div className="mt-8 flex items-center justify-center gap-4">

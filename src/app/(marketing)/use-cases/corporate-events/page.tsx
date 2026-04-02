@@ -3,7 +3,7 @@ import Link from 'next/link';
 import JsonLd from '@/components/marketing/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Corporate Event Production Software | XPB',
+  title: 'Corporate Event Production Software | FlyteDeck',
   description:
     'Streamline corporate event production with professional proposals, budget tracking, and client management tools built for production companies serving enterprise clients.',
 };
@@ -21,19 +21,19 @@ const jsonLd = {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://xpb.io',
+        item: 'https://flytedeck.io',
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Use Cases',
-        item: 'https://xpb.io/use-cases',
+        item: 'https://flytedeck.io/use-cases',
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: 'Corporate Events',
-        item: 'https://xpb.io/use-cases/corporate-events',
+        item: 'https://flytedeck.io/use-cases/corporate-events',
       },
     ],
   },
@@ -61,27 +61,27 @@ const features = [
   {
     title: 'Professional branded proposals',
     description:
-      'Present your production company at its best with polished, branded proposals that match the professionalism your corporate clients expect. XPB proposals include your logo, brand colors, and custom cover pages alongside detailed scope descriptions, line-item budgets, timeline milestones, and terms and conditions. Export to PDF for procurement teams who need static documents, or share interactive versions through the client portal.',
+      'Present your production company at its best with polished, branded proposals that match the professionalism your corporate clients expect. FlyteDeck proposals include your logo, brand colors, and custom cover pages alongside detailed scope descriptions, line-item budgets, timeline milestones, and terms and conditions. Export to PDF for procurement teams who need static documents, or share interactive versions through the client portal.',
   },
   {
     title: 'SSO for enterprise clients',
     description:
-      'Corporate clients can access the XPB client portal using their existing enterprise credentials through single sign-on integration. This eliminates the friction of creating separate accounts, satisfies IT security requirements, and makes it easy for multiple stakeholders within the client organization to review proposals and track project progress without managing additional passwords.',
+      'Corporate clients can access the FlyteDeck client portal using their existing enterprise credentials through single sign-on integration. This eliminates the friction of creating separate accounts, satisfies IT security requirements, and makes it easy for multiple stakeholders within the client organization to review proposals and track project progress without managing additional passwords.',
   },
   {
     title: 'Recurring invoice schedules',
     description:
-      'Set up automated invoicing schedules that match your corporate client payment terms. Whether you bill monthly retainers, milestone-based payments, or a combination of both, XPB generates invoices on schedule, tracks payment status, and maintains a complete billing history for each client. Year-end reconciliation and audit support become simple when every invoice is organized and accessible.',
+      'Set up automated invoicing schedules that match your corporate client payment terms. Whether you bill monthly retainers, milestone-based payments, or a combination of both, FlyteDeck generates invoices on schedule, tracks payment status, and maintains a complete billing history for each client. Year-end reconciliation and audit support become simple when every invoice is organized and accessible.',
   },
   {
     title: 'Audit trails for every action',
     description:
-      'Every proposal revision, budget change, approval, comment, and document upload in XPB is logged with a timestamp and user identity. When a corporate client needs to trace the history of a decision or verify who approved a change order, the complete audit trail is available instantly. This level of documentation protects both your production company and your client during internal reviews.',
+      'Every proposal revision, budget change, approval, comment, and document upload in FlyteDeck is logged with a timestamp and user identity. When a corporate client needs to trace the history of a decision or verify who approved a change order, the complete audit trail is available instantly. This level of documentation protects both your production company and your client during internal reviews.',
   },
   {
     title: 'Multi-pipeline for different event types',
     description:
-      'Corporate production companies often manage several distinct event types simultaneously — conferences, executive retreats, product launches, and internal town halls. XPB supports multiple project pipelines, each with its own stages, templates, and default settings. Your team sees a clear view of all active projects organized by type, making it easy to manage capacity and prioritize workload across event categories.',
+      'Corporate production companies often manage several distinct event types simultaneously — conferences, executive retreats, product launches, and internal town halls. FlyteDeck supports multiple project pipelines, each with its own stages, templates, and default settings. Your team sees a clear view of all active projects organized by type, making it easy to manage capacity and prioritize workload across event categories.',
   },
 ];
 
@@ -115,13 +115,13 @@ export default function CorporateEventsPage() {
             Corporate event production demands a level of professionalism, documentation,
             and process rigor that most production tools were not designed to handle. Your
             clients are enterprise organizations with procurement teams, compliance
-            requirements, and multi-stakeholder approval chains. XPB gives corporate event
+            requirements, and multi-stakeholder approval chains. FlyteDeck gives corporate event
             production companies the tools to meet those expectations while running
             efficient, profitable operations.
           </p>
           <p className="mt-4 max-w-2xl text-lg leading-relaxed text-zinc-600">
             From annual sales kickoffs and leadership summits to product launches and
-            investor events, XPB helps you deliver polished proposals, maintain transparent
+            investor events, FlyteDeck helps you deliver polished proposals, maintain transparent
             budgets, and build lasting client relationships through consistent,
             professional service.
           </p>
@@ -163,14 +163,14 @@ export default function CorporateEventsPage() {
         </div>
       </section>
 
-      {/* How XPB Solves It */}
+      {/* How FlyteDeck Solves It */}
       <section className="px-8 py-20 lg:px-16">
         <div className="mx-auto max-w-5xl">
           <h2 className="text-3xl font-bold tracking-tight text-zinc-900">
-            How XPB meets enterprise-grade requirements
+            How FlyteDeck meets enterprise-grade requirements
           </h2>
           <p className="mt-4 max-w-2xl text-zinc-600">
-            XPB was built with the understanding that production companies serving corporate
+            FlyteDeck was built with the understanding that production companies serving corporate
             clients need more than just project management — they need a platform that
             instills confidence in every interaction.
           </p>
@@ -194,11 +194,11 @@ export default function CorporateEventsPage() {
         </div>
       </section>
 
-      {/* Why Corporate Teams Choose XPB */}
+      {/* Why Corporate Teams Choose FlyteDeck */}
       <section className="bg-zinc-50 px-8 py-20 lg:px-16">
         <div className="mx-auto max-w-5xl">
           <h2 className="text-3xl font-bold tracking-tight text-zinc-900">
-            Why corporate event producers choose XPB
+            Why corporate event producers choose FlyteDeck
           </h2>
           <div className="mt-8">
             <ul className="space-y-6">
@@ -259,7 +259,7 @@ export default function CorporateEventsPage() {
                 <div>
                   <h3 className="font-semibold text-zinc-900">Scalable operations</h3>
                   <p className="mt-1 text-zinc-500">
-                    As your client roster grows, XPB scales with you. Multi-pipeline views,
+                    As your client roster grows, FlyteDeck scales with you. Multi-pipeline views,
                     team permissions, and automated workflows ensure your operations stay
                     organized whether you are managing five events a year or fifty.
                   </p>
@@ -277,7 +277,7 @@ export default function CorporateEventsPage() {
             Elevate your corporate event production
           </h2>
           <p className="mt-4 text-lg text-zinc-600">
-            Give your team the professional tools that corporate clients expect. XPB helps
+            Give your team the professional tools that corporate clients expect. FlyteDeck helps
             production companies win more enterprise business, execute flawlessly, and build
             the documentation and process rigor that keeps clients coming back year after
             year.

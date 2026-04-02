@@ -17,7 +17,7 @@ export class SalesforceAdapter extends BaseIntegrationAdapter {
     _integrationId: string,
     direction: 'inbound' | 'outbound',
   ) {
-    // Placeholder: map Salesforce objects to XPB entities
+    // Placeholder: map Salesforce objects to FlyteDeck entities
     return {
       entityType: direction === 'inbound' ? 'client' : 'opportunity',
       entityCount: 0,

@@ -3,9 +3,9 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title:
-    'XPB vs Monday, Asana & ClickUp — Built for Production, Not Just Projects',
+    'FlyteDeck vs Monday, Asana & ClickUp — Built for Production, Not Just Projects',
   description:
-    "Generic project management tools weren't built for experiential production. Compare XPB to Monday.com, Asana, and ClickUp for managing proposals, budgets, and creative projects.",
+    "Generic project management tools weren't built for experiential production. Compare FlyteDeck to Monday.com, Asana, and ClickUp for managing proposals, budgets, and creative projects.",
 };
 
 const gaps = [
@@ -37,16 +37,16 @@ const gaps = [
 ];
 
 const comparisonRows = [
-  { dimension: 'Interactive proposals', pm: 'Not available', xpb: 'Drag-and-drop builder with scenarios' },
-  { dimension: 'Production-specific billing', pm: 'Not available', xpb: 'Deposit, balance, and final invoicing' },
-  { dimension: 'Client portal', pm: 'Share a board link (not branded)', xpb: 'White-label portal with approvals' },
-  { dimension: 'Venue management', pm: 'Not available', xpb: 'Venue database with load-in/strike scheduling' },
-  { dimension: 'Budget & profitability', pm: 'Build your own with add-ons', xpb: 'Real-time burn tracking and margin analysis' },
-  { dimension: 'Resource scheduling', pm: 'Basic workload views', xpb: 'Crew scheduling with capacity planning' },
-  { dimension: 'Time tracking', pm: 'Built-in or add-on', xpb: 'Built-in with project cost allocation' },
-  { dimension: 'CRM & pipeline', pm: 'Build your own or integrate', xpb: 'Purpose-built sales pipeline with deal tracking' },
-  { dimension: 'Integrations', pm: 'Extensive marketplace', xpb: 'Salesforce, HubSpot, QuickBooks, Xero, ClickUp, Asana' },
-  { dimension: 'Custom fields', pm: 'Available', xpb: 'Available with production-specific defaults' },
+  { dimension: 'Interactive proposals', pm: 'Not available', flyteDeck: 'Drag-and-drop builder with scenarios' },
+  { dimension: 'Production-specific billing', pm: 'Not available', flyteDeck: 'Deposit, balance, and final invoicing' },
+  { dimension: 'Client portal', pm: 'Share a board link (not branded)', flyteDeck: 'White-label portal with approvals' },
+  { dimension: 'Venue management', pm: 'Not available', flyteDeck: 'Venue database with load-in/strike scheduling' },
+  { dimension: 'Budget & profitability', pm: 'Build your own with add-ons', flyteDeck: 'Real-time burn tracking and margin analysis' },
+  { dimension: 'Resource scheduling', pm: 'Basic workload views', flyteDeck: 'Crew scheduling with capacity planning' },
+  { dimension: 'Time tracking', pm: 'Built-in or add-on', flyteDeck: 'Built-in with project cost allocation' },
+  { dimension: 'CRM & pipeline', pm: 'Build your own or integrate', flyteDeck: 'Purpose-built sales pipeline with deal tracking' },
+  { dimension: 'Integrations', pm: 'Extensive marketplace', flyteDeck: 'Salesforce, HubSpot, QuickBooks, Xero, ClickUp, Asana' },
+  { dimension: 'Custom fields', pm: 'Available', flyteDeck: 'Available with production-specific defaults' },
 ];
 
 export default function PMToolsComparisonPage() {
@@ -61,7 +61,7 @@ export default function PMToolsComparisonPage() {
           Monday.com, Asana, and ClickUp are excellent task management platforms.
           But experiential production is not just tasks. It is proposals, budgets,
           client approvals, venue logistics, crew scheduling, and billing — none
-          of which generic PM tools handle out of the box. XPB is built specifically
+          of which generic PM tools handle out of the box. FlyteDeck is built specifically
           for production workflows.
         </p>
       </div>
@@ -91,7 +91,7 @@ export default function PMToolsComparisonPage() {
       {/* Comparison Table */}
       <div className="mx-auto w-full max-w-4xl px-8 pb-20 lg:px-16">
         <h2 className="mb-10 text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl">
-          Generic PM Tools vs XPB
+          Generic PM Tools vs FlyteDeck
         </h2>
 
         {/* Desktop Table */}
@@ -106,7 +106,7 @@ export default function PMToolsComparisonPage() {
                   Monday / Asana / ClickUp
                 </th>
                 <th className="border-b border-zinc-200 bg-zinc-50 pb-4 pl-4 text-sm font-semibold text-zinc-900">
-                  XPB
+                  FlyteDeck
                 </th>
               </tr>
             </thead>
@@ -123,7 +123,7 @@ export default function PMToolsComparisonPage() {
                     {row.pm}
                   </td>
                   <td className="border-b border-zinc-100 bg-zinc-50/80 py-3 pl-4 text-sm font-medium text-zinc-700">
-                    {row.xpb}
+                    {row.flyteDeck}
                   </td>
                 </tr>
               ))}
@@ -149,8 +149,8 @@ export default function PMToolsComparisonPage() {
                   <p className="text-sm text-zinc-500">{row.pm}</p>
                 </div>
                 <div className="rounded bg-zinc-50 p-2">
-                  <p className="mb-1 text-xs font-semibold text-zinc-600">XPB</p>
-                  <p className="text-sm font-medium text-zinc-700">{row.xpb}</p>
+                  <p className="mb-1 text-xs font-semibold text-zinc-600">FlyteDeck</p>
+                  <p className="text-sm font-medium text-zinc-700">{row.flyteDeck}</p>
                 </div>
               </div>
             </div>
@@ -165,15 +165,15 @@ export default function PMToolsComparisonPage() {
             Best of both worlds
           </h2>
           <p className="mt-4 max-w-2xl text-sm leading-relaxed text-zinc-600">
-            You do not have to choose between XPB and your existing PM tool.
-            XPB integrates directly with ClickUp and Asana, so your production
-            workflows live in XPB while tasks sync automatically to the tools
+            You do not have to choose between FlyteDeck and your existing PM tool.
+            FlyteDeck integrates directly with ClickUp and Asana, so your production
+            workflows live in FlyteDeck while tasks sync automatically to the tools
             your team already uses. Proposals, budgets, and client approvals
-            happen in XPB. Task execution happens wherever your team is most
+            happen in FlyteDeck. Task execution happens wherever your team is most
             comfortable.
           </p>
           <p className="mt-4 max-w-2xl text-sm leading-relaxed text-zinc-600">
-            XPB also connects to Salesforce and HubSpot for CRM, and QuickBooks
+            FlyteDeck also connects to Salesforce and HubSpot for CRM, and QuickBooks
             and Xero for accounting — giving production teams a unified workflow
             without forcing anyone to abandon the tools they rely on.
           </p>
@@ -187,7 +187,7 @@ export default function PMToolsComparisonPage() {
             Purpose-built for production teams
           </h2>
           <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-zinc-400">
-            XPB gives experiential production companies the workflows that
+            FlyteDeck gives experiential production companies the workflows that
             generic PM tools cannot: interactive proposals, production billing,
             client portals, crew scheduling, and profitability tracking — all
             in one platform.

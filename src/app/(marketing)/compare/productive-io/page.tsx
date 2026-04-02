@@ -2,36 +2,36 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'XPB vs Productive.io — Comparison for Production Companies',
+  title: 'FlyteDeck vs Productive.io — Comparison for Production Companies',
   description:
-    "Comparing XPB and Productive.io for experiential and creative production management. See how XPB's interactive proposals, client portal, and production-specific tools compare.",
+    "Comparing FlyteDeck and Productive.io for experiential and creative production management. See how FlyteDeck's interactive proposals, client portal, and production-specific tools compare.",
 };
 
-const xpbAdvantages = [
+const flyteDeckAdvantages = [
   {
     title: 'Interactive proposal builder with drag-and-drop',
     description:
-      'XPB provides a purpose-built proposal builder where production teams drag and drop line items, group sections, and create polished, client-ready proposals without touching a design tool. Productive.io does not have an equivalent interactive proposal experience.',
+      'FlyteDeck provides a purpose-built proposal builder where production teams drag and drop line items, group sections, and create polished, client-ready proposals without touching a design tool. Productive.io does not have an equivalent interactive proposal experience.',
   },
   {
     title: 'White-label client portal',
     description:
-      'XPB includes a fully branded client portal where clients review proposals, approve line items, track project progress, and access deliverables. The portal carries your branding, not XPB\'s — making every client interaction feel professional and on-brand.',
+      'FlyteDeck includes a fully branded client portal where clients review proposals, approve line items, track project progress, and access deliverables. The portal carries your branding, not FlyteDeck\'s — making every client interaction feel professional and on-brand.',
   },
   {
     title: 'Venue management with load-in and strike',
     description:
-      'Experiential production revolves around venues. XPB includes a venue database with load-in and strike scheduling, venue-specific requirements, and the ability to tie venue details directly to proposals and project timelines.',
+      'Experiential production revolves around venues. FlyteDeck includes a venue database with load-in and strike scheduling, venue-specific requirements, and the ability to tie venue details directly to proposals and project timelines.',
   },
   {
     title: 'Proposal scenarios for A/B pricing',
     description:
-      'XPB lets teams create multiple pricing scenarios within a single proposal — for example, a standard package and a premium package. Clients see both options side by side and can approve the one that fits their budget, eliminating back-and-forth on pricing.',
+      'FlyteDeck lets teams create multiple pricing scenarios within a single proposal — for example, a standard package and a premium package. Clients see both options side by side and can approve the one that fits their budget, eliminating back-and-forth on pricing.',
   },
   {
     title: 'Asset library with cross-referencing to terms',
     description:
-      'XPB maintains a centralized asset library where teams store reusable proposal components, standard terms, and production templates. Assets cross-reference to terms and conditions, ensuring consistency and compliance across every proposal.',
+      'FlyteDeck maintains a centralized asset library where teams store reusable proposal components, standard terms, and production templates. Assets cross-reference to terms and conditions, ensuring consistency and compliance across every proposal.',
   },
 ];
 
@@ -54,21 +54,21 @@ const productiveAdvantages = [
 ];
 
 const comparisonRows = [
-  { dimension: 'Interactive proposals', productive: 'Basic deal/quote creation', xpb: 'Drag-and-drop builder with scenarios' },
-  { dimension: 'Client portal', productive: 'Limited client access', xpb: 'White-label branded portal' },
-  { dimension: 'Proposal scenarios', productive: 'Not available', xpb: 'A/B pricing within proposals' },
-  { dimension: 'Venue management', productive: 'Not available', xpb: 'Venue database with load-in/strike' },
-  { dimension: 'Asset library', productive: 'Basic docs storage', xpb: 'Reusable assets with terms cross-referencing' },
-  { dimension: 'Time tracking', productive: 'Mature, polished UX', xpb: 'Built-in with project cost allocation' },
-  { dimension: 'Resource scheduling', productive: 'Available', xpb: 'Crew scheduling with capacity planning' },
-  { dimension: 'Budget tracking', productive: 'Project budgets with forecasting', xpb: 'Real-time burn tracking per project' },
-  { dimension: 'Invoicing', productive: 'Available', xpb: 'Deposit-balance-final billing cycle' },
-  { dimension: 'Profitability analysis', productive: 'Available', xpb: 'Live margin tracking per project and client' },
-  { dimension: 'CRM & pipeline', productive: 'Sales pipeline (deals)', xpb: 'Production-focused pipeline with deal tracking' },
-  { dimension: 'Integrations', productive: 'QuickBooks, Xero, Zapier, HubSpot', xpb: 'Salesforce, HubSpot, QuickBooks, Xero, ClickUp, Asana' },
-  { dimension: 'Task management', productive: 'Full task and project management', xpb: 'Kanban, Gantt, and Calendar views' },
-  { dimension: 'Custom fields', productive: 'Available', xpb: 'Available with production-specific defaults' },
-  { dimension: 'Target audience', productive: 'All agency types', xpb: 'Experiential production companies' },
+  { dimension: 'Interactive proposals', productive: 'Basic deal/quote creation', flyteDeck: 'Drag-and-drop builder with scenarios' },
+  { dimension: 'Client portal', productive: 'Limited client access', flyteDeck: 'White-label branded portal' },
+  { dimension: 'Proposal scenarios', productive: 'Not available', flyteDeck: 'A/B pricing within proposals' },
+  { dimension: 'Venue management', productive: 'Not available', flyteDeck: 'Venue database with load-in/strike' },
+  { dimension: 'Asset library', productive: 'Basic docs storage', flyteDeck: 'Reusable assets with terms cross-referencing' },
+  { dimension: 'Time tracking', productive: 'Mature, polished UX', flyteDeck: 'Built-in with project cost allocation' },
+  { dimension: 'Resource scheduling', productive: 'Available', flyteDeck: 'Crew scheduling with capacity planning' },
+  { dimension: 'Budget tracking', productive: 'Project budgets with forecasting', flyteDeck: 'Real-time burn tracking per project' },
+  { dimension: 'Invoicing', productive: 'Available', flyteDeck: 'Deposit-balance-final billing cycle' },
+  { dimension: 'Profitability analysis', productive: 'Available', flyteDeck: 'Live margin tracking per project and client' },
+  { dimension: 'CRM & pipeline', productive: 'Sales pipeline (deals)', flyteDeck: 'Production-focused pipeline with deal tracking' },
+  { dimension: 'Integrations', productive: 'QuickBooks, Xero, Zapier, HubSpot', flyteDeck: 'Salesforce, HubSpot, QuickBooks, Xero, ClickUp, Asana' },
+  { dimension: 'Task management', productive: 'Full task and project management', flyteDeck: 'Kanban, Gantt, and Calendar views' },
+  { dimension: 'Custom fields', productive: 'Available', flyteDeck: 'Available with production-specific defaults' },
+  { dimension: 'Target audience', productive: 'All agency types', flyteDeck: 'Experiential production companies' },
 ];
 
 export default function ProductiveIoComparisonPage() {
@@ -77,10 +77,10 @@ export default function ProductiveIoComparisonPage() {
       {/* Hero */}
       <div className="px-8 py-20 text-center lg:px-16">
         <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 sm:text-4xl lg:text-5xl">
-          XPB vs Productive.io
+          FlyteDeck vs Productive.io
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-lg text-zinc-500">
-          Both XPB and Productive.io help production teams manage projects,
+          Both FlyteDeck and Productive.io help production teams manage projects,
           track budgets, and handle billing. This is a fair comparison to help
           you decide which platform fits your workflow. The right choice depends
           on whether you need a general agency tool or a platform built
@@ -88,13 +88,13 @@ export default function ProductiveIoComparisonPage() {
         </p>
       </div>
 
-      {/* Where XPB Leads */}
+      {/* Where FlyteDeck Leads */}
       <div className="mx-auto w-full max-w-4xl px-8 pb-20 lg:px-16">
         <h2 className="mb-10 text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl">
-          Where XPB leads
+          Where FlyteDeck leads
         </h2>
         <div className="space-y-4">
-          {xpbAdvantages.map((item) => (
+          {flyteDeckAdvantages.map((item) => (
             <div
               key={item.title}
               className="rounded-2xl border border-zinc-200 bg-white p-6"
@@ -150,7 +150,7 @@ export default function ProductiveIoComparisonPage() {
                   Productive.io
                 </th>
                 <th className="border-b border-zinc-200 bg-zinc-50 pb-4 pl-4 text-sm font-semibold text-zinc-900">
-                  XPB
+                  FlyteDeck
                 </th>
               </tr>
             </thead>
@@ -167,7 +167,7 @@ export default function ProductiveIoComparisonPage() {
                     {row.productive}
                   </td>
                   <td className="border-b border-zinc-100 bg-zinc-50/80 py-3 pl-4 text-sm font-medium text-zinc-700">
-                    {row.xpb}
+                    {row.flyteDeck}
                   </td>
                 </tr>
               ))}
@@ -193,8 +193,8 @@ export default function ProductiveIoComparisonPage() {
                   <p className="text-sm text-zinc-500">{row.productive}</p>
                 </div>
                 <div className="rounded bg-zinc-50 p-2">
-                  <p className="mb-1 text-xs font-semibold text-zinc-600">XPB</p>
-                  <p className="text-sm font-medium text-zinc-700">{row.xpb}</p>
+                  <p className="mb-1 text-xs font-semibold text-zinc-600">FlyteDeck</p>
+                  <p className="text-sm font-medium text-zinc-700">{row.flyteDeck}</p>
                 </div>
               </div>
             </div>
@@ -216,11 +216,11 @@ export default function ProductiveIoComparisonPage() {
             companies depend on.
           </p>
           <p className="mt-4 max-w-2xl text-sm leading-relaxed text-zinc-600">
-            XPB is purpose-built for experiential production. Every feature —
+            FlyteDeck is purpose-built for experiential production. Every feature —
             from venue management and load-in/strike scheduling to activation
             dates and production-specific billing — is designed for the way
             production teams actually work. There is no need to configure a
-            generic tool to fit your workflow. XPB already speaks your language.
+            generic tool to fit your workflow. FlyteDeck already speaks your language.
           </p>
         </div>
       </div>
@@ -229,7 +229,7 @@ export default function ProductiveIoComparisonPage() {
       <div className="mx-auto w-full max-w-4xl px-8 pb-24 lg:px-16">
         <div className="rounded-2xl bg-zinc-900 p-10 text-center sm:p-14">
           <h2 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-            See if XPB is right for your production team
+            See if FlyteDeck is right for your production team
           </h2>
           <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-zinc-400">
             The best way to compare is to try it. Start a free trial and build

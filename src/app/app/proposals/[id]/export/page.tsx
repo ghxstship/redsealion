@@ -293,28 +293,28 @@ const salesforceMappings = [
   {
     name: 'Deal / Opportunity',
     mappings: [
-      { xpbField: 'proposal.name', targetField: 'Opportunity.Name' },
-      { xpbField: 'proposal.total_value', targetField: 'Opportunity.Amount' },
-      { xpbField: 'proposal.status', targetField: 'Opportunity.StageName' },
-      { xpbField: 'proposal.valid_until', targetField: 'Opportunity.CloseDate' },
-      { xpbField: 'proposal.currency', targetField: 'Opportunity.CurrencyIsoCode' },
+      { flyteDeckField: 'proposal.name', targetField: 'Opportunity.Name' },
+      { flyteDeckField: 'proposal.total_value', targetField: 'Opportunity.Amount' },
+      { flyteDeckField: 'proposal.status', targetField: 'Opportunity.StageName' },
+      { flyteDeckField: 'proposal.valid_until', targetField: 'Opportunity.CloseDate' },
+      { flyteDeckField: 'proposal.currency', targetField: 'Opportunity.CurrencyIsoCode' },
     ],
   },
   {
     name: 'Account / Client',
     mappings: [
-      { xpbField: 'client.company_name', targetField: 'Account.Name' },
-      { xpbField: 'client.industry', targetField: 'Account.Industry' },
-      { xpbField: 'client.billing_address', targetField: 'Account.BillingAddress' },
+      { flyteDeckField: 'client.company_name', targetField: 'Account.Name' },
+      { flyteDeckField: 'client.industry', targetField: 'Account.Industry' },
+      { flyteDeckField: 'client.billing_address', targetField: 'Account.BillingAddress' },
     ],
   },
   {
     name: 'Line Items',
     mappings: [
-      { xpbField: 'deliverable.name', targetField: 'OpportunityLineItem.Name' },
-      { xpbField: 'deliverable.total_cost', targetField: 'OpportunityLineItem.UnitPrice' },
-      { xpbField: 'deliverable.qty', targetField: 'OpportunityLineItem.Quantity' },
-      { xpbField: 'phase.name', targetField: 'OpportunityLineItem.Description' },
+      { flyteDeckField: 'deliverable.name', targetField: 'OpportunityLineItem.Name' },
+      { flyteDeckField: 'deliverable.total_cost', targetField: 'OpportunityLineItem.UnitPrice' },
+      { flyteDeckField: 'deliverable.qty', targetField: 'OpportunityLineItem.Quantity' },
+      { flyteDeckField: 'phase.name', targetField: 'OpportunityLineItem.Description' },
     ],
   },
 ];
@@ -323,17 +323,17 @@ const hubspotMappings = [
   {
     name: 'Deal',
     mappings: [
-      { xpbField: 'proposal.name', targetField: 'deal.dealname' },
-      { xpbField: 'proposal.total_value', targetField: 'deal.amount' },
-      { xpbField: 'proposal.status', targetField: 'deal.dealstage' },
-      { xpbField: 'proposal.valid_until', targetField: 'deal.closedate' },
+      { flyteDeckField: 'proposal.name', targetField: 'deal.dealname' },
+      { flyteDeckField: 'proposal.total_value', targetField: 'deal.amount' },
+      { flyteDeckField: 'proposal.status', targetField: 'deal.dealstage' },
+      { flyteDeckField: 'proposal.valid_until', targetField: 'deal.closedate' },
     ],
   },
   {
     name: 'Company',
     mappings: [
-      { xpbField: 'client.company_name', targetField: 'company.name' },
-      { xpbField: 'client.industry', targetField: 'company.industry' },
+      { flyteDeckField: 'client.company_name', targetField: 'company.name' },
+      { flyteDeckField: 'client.industry', targetField: 'company.industry' },
     ],
   },
 ];
@@ -342,16 +342,16 @@ const pipedriveMappings = [
   {
     name: 'Deal',
     mappings: [
-      { xpbField: 'proposal.name', targetField: 'deal.title' },
-      { xpbField: 'proposal.total_value', targetField: 'deal.value' },
-      { xpbField: 'proposal.currency', targetField: 'deal.currency' },
-      { xpbField: 'proposal.valid_until', targetField: 'deal.expected_close_date' },
+      { flyteDeckField: 'proposal.name', targetField: 'deal.title' },
+      { flyteDeckField: 'proposal.total_value', targetField: 'deal.value' },
+      { flyteDeckField: 'proposal.currency', targetField: 'deal.currency' },
+      { flyteDeckField: 'proposal.valid_until', targetField: 'deal.expected_close_date' },
     ],
   },
   {
     name: 'Organization',
     mappings: [
-      { xpbField: 'client.company_name', targetField: 'organization.name' },
+      { flyteDeckField: 'client.company_name', targetField: 'organization.name' },
     ],
   },
 ];
