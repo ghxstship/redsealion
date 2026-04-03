@@ -37,7 +37,7 @@ export default function ProposalCard({
   return (
     <Link
       href={`/app/proposals/${id}`}
-      className="group block rounded-xl border border-border bg-white px-5 py-5 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5"
+      className="group block rounded-xl border border-border bg-white px-5 py-5 transition-[color,background-color,border-color,opacity,box-shadow,transform] duration-normal hover:shadow-md hover:-translate-y-0.5"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">

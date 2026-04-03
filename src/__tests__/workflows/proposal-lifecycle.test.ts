@@ -328,7 +328,7 @@ describe('Proposal Lifecycle Workflow', () => {
       expect(phases).toHaveLength(8);
       for (let i = 0; i < phases.length; i++) {
         expect(phases[i].sort_order).toBe(i);
-        expect(phases[i].number).toBe(String(i + 1));
+        expect(phases[i].phase_number).toBe(String(i + 1));
       }
     });
 

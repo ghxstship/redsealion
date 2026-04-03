@@ -391,7 +391,7 @@ export default function AdminSidebar() {
       {/* Mobile overlay */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/20 md:hidden"
+          className="fixed inset-0 z-30 bg-black/20 md:hidden animate-fade-in"
           onClick={() => setMobileOpen(false)}
         />
       )}
@@ -401,7 +401,7 @@ export default function AdminSidebar() {
         className={`
           fixed top-0 left-0 z-40 h-screen w-64 bg-white border-r border-border
           flex flex-col
-          transition-transform duration-200 ease-in-out
+          transition-transform duration-normal ease-in-out
           md:translate-x-0 md:static md:z-auto
           ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}
         `}
@@ -431,7 +431,7 @@ export default function AdminSidebar() {
                     }}
                     className={`
                       flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
-                      transition-colors duration-150
+                      transition-colors duration-fast
                       ${locked
                         ? 'text-text-muted cursor-not-allowed opacity-50'
                         : active

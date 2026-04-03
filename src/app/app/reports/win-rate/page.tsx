@@ -31,7 +31,7 @@ async function getDealsData() {
     return {
       deals: (deals ?? []) as Array<{
         stage: DealStage;
-        value: number;
+        deal_value: number;
         client_id: string;
         clients?: { company_name: string };
       }>,
@@ -55,7 +55,7 @@ export default async function WinRateReportPage() {
   const lost = deals.filter((d) => d.stage === 'lost');
   const closed = [...won, ...lost];
   const winRate = closed.length > 0 ? (won.length / closed.length) * 100 : 0;
-  const avgWonValue = won.length > 0 ? won.reduce((s, d) => s + d.value, 0) / won.length : 0;
+  const avgWonValue = won.length > 0 ? won.reduce((s, d) => s + d.deal_value, 0) / won.length : 0;
 
   // Group by client
   const clientMap = new Map<string, { name: string; won: number; lost: number; total: number }>();
@@ -64,7 +64,7 @@ export default async function WinRateReportPage() {
     const entry = clientMap.get(deal.client_id) ?? { name, won: 0, lost: 0, total: 0 };
     if (deal.stage === 'contract_signed') {
       entry.won++;
-      entry.total += deal.value;
+      entry.total += deal.deal_value;
     } else {
       entry.lost++;
     }

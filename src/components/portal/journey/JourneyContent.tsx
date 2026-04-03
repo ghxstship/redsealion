@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
+import { fmTransition } from '@/lib/motion';
 import type {
   Phase,
   PhaseDeliverable,
@@ -45,7 +46,7 @@ export default function JourneyContent({
     const initial = new Set<string>();
     for (const p of phases) {
       for (const addon of p.addons) {
-        if (addon.selected) initial.add(addon.id);
+        if (addon.is_selected) initial.add(addon.id);
       }
     }
     return initial;
@@ -124,7 +125,7 @@ export default function JourneyContent({
 
   const timelinePhases = phases.map((p) => ({
     id: p.phase.id,
-    number: p.phase.number,
+    phase_number: p.phase.phase_number,
     name: p.phase.name,
     status: p.phase.status,
   }));
@@ -142,7 +143,7 @@ export default function JourneyContent({
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ ...fmTransition.slow, delay: 0.1 }}
           className="pt-16 lg:pt-24 pb-12 lg:pb-16 px-6 lg:px-8 max-w-4xl"
         >
           <p

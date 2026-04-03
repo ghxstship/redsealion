@@ -74,7 +74,7 @@ export async function generateBOM(data: BOMData): Promise<Buffer> {
   const sortedPhases = [...phases].sort((a, b) => a.sort_order - b.sort_order);
 
   // Pre-calculate totals
-  const selectedAddons = addons.filter((a) => a.selected);
+  const selectedAddons = addons.filter((a) => a.is_selected);
   const totalLineItems = deliverables.length;
   const totalAddonsSelected = selectedAddons.length;
   const totalDeliverableCost = deliverables.reduce((sum, d) => sum + d.total_cost, 0);
@@ -145,13 +145,13 @@ export async function generateBOM(data: BOMData): Promise<Buffer> {
     const phaseDeliverables = (deliverablesByPhase.get(phase.id) ?? []).sort(
       (a, b) => a.sort_order - b.sort_order
     );
-    const phaseAddons = (addonsByPhase.get(phase.id) ?? []).filter((a) => a.selected).sort(
+    const phaseAddons = (addonsByPhase.get(phase.id) ?? []).filter((a) => a.is_selected).sort(
       (a, b) => a.sort_order - b.sort_order
     );
 
     if (phaseDeliverables.length === 0 && phaseAddons.length === 0) continue;
 
-    children.push(heading(`Phase ${phase.number}: ${phase.name}`, 2));
+    children.push(heading(`Phase ${phase.phase_number}: ${phase.name}`, 2));
 
     // Core items
     if (phaseDeliverables.length > 0) {

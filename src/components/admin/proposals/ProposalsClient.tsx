@@ -153,7 +153,7 @@ export default function ProposalsClient({
               status={p.status}
               totalValue={p.total_value}
               preparedDate={p.prepared_date}
-              probability={p.probability}
+              probability={p.probability_percent}
               currency={p.currency}
             />
           ))}

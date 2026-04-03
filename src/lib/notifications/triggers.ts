@@ -79,7 +79,7 @@ export async function notifyProposalSent(
         .from('client_contacts')
         .select('email, first_name, last_name')
         .eq('client_id', proposal.client_id)
-        .eq('role', 'primary')
+        .eq('contact_role', 'primary')
         .maybeSingle(),
       getOrgAdmin(supabase, orgId),
     ]);
@@ -146,7 +146,7 @@ export async function notifyInvoiceSent(
         .from('client_contacts')
         .select('email, first_name, last_name')
         .eq('client_id', invoice.client_id)
-        .eq('role', 'primary')
+        .eq('contact_role', 'primary')
         .maybeSingle(),
     ]);
 

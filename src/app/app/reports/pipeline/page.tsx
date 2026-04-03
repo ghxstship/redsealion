@@ -40,7 +40,7 @@ async function getPipelineData() {
       .select('*')
       .eq('organization_id', userData.organization_id);
 
-    return (deals ?? []) as Array<{ stage: DealStage; value: number; probability: number }>;
+    return (deals ?? []) as Array<{ stage: DealStage; deal_value: number; probability: number }>;
   } catch {
     return getSeedDeals();
   }
@@ -55,13 +55,13 @@ export default async function PipelineReportPage() {
     return {
       stage,
       count: stageDeals.length,
-      value: stageDeals.reduce((s, d) => s + d.value, 0),
-      weighted: stageDeals.reduce((s, d) => s + d.value * (d.probability / 100), 0),
+      value: stageDeals.reduce((s, d) => s + d.deal_value, 0),
+      weighted: stageDeals.reduce((s, d) => s + d.deal_value * (d.probability / 100), 0),
     };
   });
 
-  const totalPipeline = deals.reduce((s, d) => s + d.value, 0);
-  const weightedPipeline = deals.reduce((s, d) => s + d.value * (d.probability / 100), 0);
+  const totalPipeline = deals.reduce((s, d) => s + d.deal_value, 0);
+  const weightedPipeline = deals.reduce((s, d) => s + d.deal_value * (d.probability / 100), 0);
   const avgDealSize = deals.length > 0 ? totalPipeline / deals.length : 0;
   const maxBarValue = Math.max(...stageData.map((s) => s.value), 1);
 
@@ -97,7 +97,7 @@ export default async function PipelineReportPage() {
                   {formatCurrency(s.value)}
                 </span>
                 <div
-                  className="w-full rounded-t bg-foreground/80 transition-all min-h-[4px]"
+                  className="w-full rounded-t bg-foreground/80 transition-[width,height,opacity] min-h-[4px]"
                   style={{ height: `${(s.value / maxBarValue) * 200}px` }}
                 />
                 <span className="text-xs text-text-muted text-center leading-tight mt-1">

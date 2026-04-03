@@ -86,7 +86,7 @@ function DraggableDealCard({ deal }: { deal: DealWithClient }) {
         id={deal.id}
         title={deal.title}
         clientName={deal.client_name}
-        value={deal.value}
+        value={deal.deal_value}
         probability={deal.probability}
         expectedCloseDate={deal.expected_close_date}
         stage={deal.stage}
@@ -155,7 +155,7 @@ export default function PipelineBoard({
 
   const totalPipelineValue = deals
     .filter((d) => d.stage !== 'contract_signed')
-    .reduce((sum, d) => sum + d.value * (d.probability / 100), 0);
+    .reduce((sum, d) => sum + d.deal_value * (d.probability / 100), 0);
 
   return (
     <div>
@@ -186,7 +186,7 @@ export default function PipelineBoard({
         <div className="flex gap-4 overflow-x-auto pb-4">
           {ACTIVE_STAGES.map((stage) => {
             const stageDeals = grouped[stage] ?? [];
-            const stageValue = stageDeals.reduce((s, d) => s + d.value, 0);
+            const stageValue = stageDeals.reduce((s, d) => s + d.deal_value, 0);
             return (
               <DroppableColumn
                 key={stage}
@@ -209,7 +209,7 @@ export default function PipelineBoard({
                 id={activeDeal.id}
                 title={activeDeal.title}
                 clientName={activeDeal.client_name}
-                value={activeDeal.value}
+                value={activeDeal.deal_value}
                 probability={activeDeal.probability}
                 expectedCloseDate={activeDeal.expected_close_date}
                 stage={activeDeal.stage}

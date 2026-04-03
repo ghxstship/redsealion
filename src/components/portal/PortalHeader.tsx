@@ -77,8 +77,8 @@ export default function PortalHeader({ orgName, logoUrl }: PortalHeaderProps) {
         {/* Mobile navigation */}
         <div
           className={clsx(
-            'md:hidden overflow-hidden transition-all duration-200',
-            mobileMenuOpen ? 'max-h-40 pb-4' : 'max-h-0'
+            'md:hidden overflow-hidden transition-[max-height,opacity] duration-normal ease-in-out',
+            mobileMenuOpen ? 'max-h-40 pb-4 opacity-100' : 'max-h-0 opacity-0'
           )}
         >
           <nav className="flex flex-col gap-3 pt-2">

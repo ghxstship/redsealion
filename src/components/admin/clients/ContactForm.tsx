@@ -45,8 +45,8 @@ export default function ContactForm({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/20" onClick={onClose} />
-      <div className="relative w-full max-w-md rounded-xl border border-border bg-white p-6 shadow-lg">
+      <div className="absolute inset-0 bg-black/20 animate-modal-backdrop" onClick={onClose} />
+      <div className="relative w-full max-w-md rounded-xl border border-border bg-white p-6 shadow-lg animate-modal-content">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-semibold text-foreground">
             {initialData ? 'Edit Contact' : 'Add Contact'}

@@ -43,12 +43,24 @@ export type InvoiceType = 'deposit' | 'balance' | 'change_order' | 'addon' | 'fi
 
 export type InvoiceStatus = 'draft' | 'sent' | 'viewed' | 'partially_paid' | 'paid' | 'overdue' | 'void';
 
+// BEDROCK M-004: New ENUM types
+export type TaskStatus = 'todo' | 'in_progress' | 'review' | 'done' | 'blocked' | 'cancelled';
+export type TaskPriority = 'low' | 'medium' | 'high' | 'urgent';
+export type ExpenseStatus = 'pending' | 'approved' | 'rejected' | 'reimbursed';
+export type PoStatus = 'draft' | 'sent' | 'acknowledged' | 'received' | 'cancelled';
+export type TimesheetStatus = 'draft' | 'submitted' | 'approved' | 'rejected';
+export type TimeOffStatus = 'pending' | 'approved' | 'rejected' | 'cancelled';
+export type ChangeOrderStatus = 'draft' | 'submitted' | 'approved' | 'rejected' | 'void';
+export type IntegrationStatus = 'disconnected' | 'connecting' | 'connected' | 'error' | 'suspended';
+export type CustomFieldType = 'text' | 'textarea' | 'number' | 'currency' | 'date' | 'datetime' | 'boolean' | 'select' | 'multi_select' | 'url' | 'email' | 'phone' | 'file' | 'user' | 'relation';
+
 export type AssetStatus = 'planned' | 'in_production' | 'in_transit' | 'deployed' | 'in_storage' | 'retired' | 'disposed';
 
 export type AssetCondition = 'new' | 'excellent' | 'good' | 'fair' | 'poor' | 'damaged';
 
 export type ActorType = 'admin' | 'client' | 'system';
 
+// BEDROCK M-007: Renamed from ContactRole to avoid ambiguity
 export type ContactRole = 'primary' | 'billing' | 'creative' | 'operations';
 
 export type CreativeReferenceType =
@@ -305,7 +317,10 @@ export interface PortfolioItem {
 export interface User {
   id: string;
   email: string;
+  /** @deprecated Use first_name + last_name. Retained for backward compatibility. */
   full_name: string;
+  first_name: string;
+  last_name: string;
   avatar_url: string | null;
   organization_id: string;
   role: OrganizationRole;
@@ -326,7 +341,7 @@ export interface Client {
   billing_address: Address | null;
   tags: string[];
   source: string | null;
-  _crm_external_ids: CrmExternalIds | null;
+  crm_external_ids: CrmExternalIds | null;
   website: string | null;
   linkedin: string | null;
   annual_revenue: number | null;
@@ -345,7 +360,7 @@ export interface ClientContact {
   title: string | null;
   email: string;
   phone: string | null;
-  role: ContactRole;
+  contact_role: ContactRole;
   is_decision_maker: boolean;
   is_signatory: boolean;
   created_at: string;
@@ -361,7 +376,7 @@ export interface Proposal {
   version: number;
   status: ProposalStatus;
   current_phase_id: string | null;
-  probability: number | null;
+  probability_percent: number | null;
   currency: string;
   total_value: number;
   total_with_addons: number;
@@ -394,7 +409,7 @@ export interface Venue {
   activation_dates: VenueActivationDates | null;
   load_in: VenueLoadInStrike | null;
   strike: VenueLoadInStrike | null;
-  constraints: Record<string, unknown>;
+  site_constraints: Record<string, unknown>;
   contact_on_site: VenueContact | null;
   sequence: number;
   notes: string | null;
@@ -405,7 +420,7 @@ export interface Venue {
 export interface Phase {
   id: string;
   proposal_id: string;
-  number: string;
+  phase_number: string;
   name: string;
   subtitle: string | null;
   status: PhaseStatus;
@@ -428,7 +443,7 @@ export interface PhaseDeliverable {
   qty: number;
   unit_cost: number;
   total_cost: number;
-  taxable: boolean;
+  is_taxable: boolean;
   terms_sections: string[] | null;
   pm_metadata: PmMetadata | null;
   asset_metadata: AssetMetadata | null;
@@ -448,8 +463,8 @@ export interface PhaseAddon {
   qty: number;
   unit_cost: number;
   total_cost: number;
-  taxable: boolean;
-  selected: boolean;
+  is_taxable: boolean;
+  is_selected: boolean;
   terms_sections: string[] | null;
   mutually_exclusive_group: string | null;
   pm_metadata: PmMetadata | null;
@@ -553,7 +568,7 @@ export interface InvoiceLineItem {
   quantity: number;
   rate: number;
   amount: number;
-  taxable: boolean;
+  is_taxable: boolean;
   phase_number: string | null;
   category: string | null;
   deliverable_id: string | null;
@@ -572,8 +587,8 @@ export interface Asset {
   description: string | null;
   type: string;
   category: string;
-  trackable: boolean;
-  reusable: boolean;
+  is_trackable: boolean;
+  is_reusable: boolean;
   dimensions: string | null;
   weight: string | null;
   material: string | null;
@@ -587,7 +602,7 @@ export interface Asset {
   deployment_count: number;
   max_deployments: number | null;
   current_location: AssetLocation | null;
-  return_required: boolean;
+  is_return_required: boolean;
   barcode: string | null;
   serial_number: string | null;
   photo_urls: string[];
@@ -629,7 +644,7 @@ export interface ProposalComment {
   author_id: string;
   body: string;
   is_internal: boolean;
-  resolved: boolean;
+  is_resolved: boolean;
   resolved_by: string | null;
   resolved_at: string | null;
   created_at: string;
@@ -678,7 +693,7 @@ export interface Deal {
   proposal_id: string | null;
   client_id: string;
   title: string;
-  value: number;
+  deal_value: number;
   stage: DealStage;
   probability: number;
   expected_close_date: string | null;
@@ -755,8 +770,7 @@ export interface SavedReport {
 }
 
 // Change Orders
-
-export type ChangeOrderStatus = 'draft' | 'submitted' | 'approved' | 'rejected' | 'void';
+// ChangeOrderStatus type moved to BEDROCK ENUM section above
 
 export interface ChangeOrder {
   id: string;
@@ -952,9 +966,9 @@ export interface TimeEntry {
   start_time: string;
   end_time: string | null;
   duration_minutes: number | null;
-  billable: boolean;
+  is_billable: boolean;
   hourly_rate: number | null;
-  approved: boolean;
+  is_approved: boolean;
   approved_by: string | null;
   created_at: string;
   updated_at: string;
@@ -965,7 +979,7 @@ export interface Timesheet {
   organization_id: string;
   user_id: string;
   week_start: string;
-  status: string;
+  status: TimesheetStatus;
   total_hours: number;
   submitted_at: string | null;
   approved_at: string | null;
@@ -1069,7 +1083,7 @@ export interface Expense {
   currency: string;
   expense_date: string;
   receipt_url: string | null;
-  status: string;
+  status: ExpenseStatus;
   approved_by: string | null;
   approved_at: string | null;
   created_at: string;
@@ -1084,7 +1098,7 @@ export interface PurchaseOrder {
   vendor_name: string;
   description: string | null;
   total_amount: number;
-  status: string;
+  status: PoStatus;
   issued_date: string | null;
   due_date: string | null;
   created_at: string;
@@ -1141,7 +1155,7 @@ export interface TimeOffRequest {
   end_date: string;
   days_requested: number;
   reason: string | null;
-  status: string;
+  status: TimeOffStatus;
   approved_by: string | null;
   approved_at: string | null;
   created_at: string;
@@ -1153,7 +1167,7 @@ export interface HolidayCalendar {
   organization_id: string;
   name: string;
   date: string;
-  recurring: boolean;
+  is_recurring: boolean;
   created_at: string;
 }
 
@@ -1178,8 +1192,8 @@ export interface Task {
   phase_id: string | null;
   title: string;
   description: string | null;
-  status: string;
-  priority: string;
+  status: TaskStatus;
+  priority: TaskPriority;
   assignee_id: string | null;
   due_date: string | null;
   start_date: string | null;
@@ -1213,10 +1227,19 @@ export interface CustomFieldDefinition {
   organization_id: string;
   entity_type: string;
   field_name: string;
-  field_type: string;
+  field_key: string;
+  field_type: CustomFieldType;
   field_options: Record<string, unknown> | null;
-  required: boolean;
+  is_required: boolean;
   sort_order: number;
+  description: string | null;
+  section: string | null;
+  is_active: boolean;
+  is_filterable: boolean;
+  is_visible_in_list: boolean;
+  visibility_roles: string[];
+  created_by: string | null;
+  default_value: unknown | null;
   created_at: string;
   updated_at: string;
 }
@@ -1225,7 +1248,12 @@ export interface CustomFieldValue {
   id: string;
   field_definition_id: string;
   entity_id: string;
+  entity_type: string | null;
   value: unknown;
+  value_text: string | null;
+  value_number: number | null;
+  value_date: string | null;
+  value_boolean: boolean | null;
   created_at: string;
   updated_at: string;
 }

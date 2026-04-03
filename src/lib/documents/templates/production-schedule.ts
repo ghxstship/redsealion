@@ -165,7 +165,7 @@ export async function generateProductionSchedule(data: ProductionScheduleData): 
   const timelineRows = sortedPhases.map((phase) => {
     const ms = milestoneByPhase.get(phase.id);
     return [
-      phase.number,
+      phase.phase_number,
       phase.name,
       `${phaseStatusEmoji(phase.status)} ${phase.status.replace(/_/g, ' ')}`,
       ms?.name ?? '\u2014',

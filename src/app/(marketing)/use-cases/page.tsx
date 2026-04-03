@@ -164,7 +164,7 @@ export default function UseCasesPage() {
               <Link
                 key={useCase.href}
                 href={useCase.href}
-                className="group rounded-2xl border border-zinc-200 bg-white p-8 transition-all hover:border-zinc-300 hover:shadow-lg"
+                className="group rounded-2xl border border-zinc-200 bg-white p-8 transition-[color,background-color,border-color,opacity,box-shadow] hover:border-zinc-300 hover:shadow-lg"
               >
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-zinc-100 text-zinc-700 transition-colors group-hover:bg-zinc-900 group-hover:text-white">
                   {useCase.icon}

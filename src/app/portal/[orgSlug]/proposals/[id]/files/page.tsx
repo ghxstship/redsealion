@@ -212,7 +212,7 @@ export default async function FilesPage({ params }: PageProps) {
               <button
                 key={file.id}
                 type="button"
-                className="group rounded-lg border border-border bg-background p-4 text-left transition-all hover:border-text-muted hover:shadow-sm"
+                className="group rounded-lg border border-border bg-background p-4 text-left transition-[color,background-color,border-color,opacity,box-shadow] hover:border-text-muted hover:shadow-sm"
               >
                 <div className="flex items-start gap-3">
                   <FileTypeIcon mimeType={file.mime_type} />

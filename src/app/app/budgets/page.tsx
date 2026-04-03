@@ -79,7 +79,7 @@ export default async function BudgetsPage() {
             <Link
               key={budget.id}
               href={`/app/budgets/${budget.id}`}
-              className="group rounded-xl border border-border bg-white px-5 py-5 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5"
+              className="group rounded-xl border border-border bg-white px-5 py-5 transition-[color,background-color,border-color,opacity,box-shadow,transform] duration-normal hover:shadow-md hover:-translate-y-0.5"
             >
               <p className="text-sm font-medium text-foreground group-hover:underline">
                 {budget.projectName}
@@ -104,7 +104,7 @@ export default async function BudgetsPage() {
                 </div>
                 <div className="h-2 rounded-full bg-bg-secondary overflow-hidden">
                   <div
-                    className={`h-full rounded-full transition-all ${
+                    className={`h-full rounded-full transition-[width,opacity] ${
                       budget.percentUsed > 90
                         ? 'bg-red-500'
                         : budget.percentUsed > 70

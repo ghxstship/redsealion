@@ -64,7 +64,7 @@ export default async function PortalPage({ params }: PortalPageProps) {
               <Link
                 key={proposal.id}
                 href={`/portal/${orgSlug}/proposals/${proposal.id}`}
-                className="group rounded-lg border border-border bg-background p-5 transition-all duration-200 hover:border-text-muted hover:shadow-sm"
+                className="group rounded-lg border border-border bg-background p-5 transition-[color,background-color,border-color,opacity,box-shadow] duration-normal hover:border-text-muted hover:shadow-sm"
               >
                 <div className="flex items-start justify-between mb-3">
                   <h3 className="text-sm font-medium text-foreground leading-snug pr-3">

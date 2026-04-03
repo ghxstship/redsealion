@@ -151,7 +151,7 @@ export async function generateAssetInventory(data: AssetInventoryData): Promise<
     a.category,
     STATUS_LABELS[a.status] ?? a.status,
     a.condition,
-    a.reusable ? '\u2713' : '\u2717',
+    a.is_reusable ? '\u2713' : '\u2717',
     a.dimensions ?? '\u2014',
     a.barcode ?? '\u2014',
   ]);

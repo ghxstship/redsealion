@@ -66,7 +66,7 @@ export default function ComparePage() {
           <Link
             key={comparison.href}
             href={comparison.href}
-            className="group flex flex-col rounded-2xl border border-zinc-200 bg-white p-8 transition-all hover:border-zinc-300 hover:shadow-lg"
+            className="group flex flex-col rounded-2xl border border-zinc-200 bg-white p-8 transition-[color,background-color,border-color,opacity,box-shadow] hover:border-zinc-300 hover:shadow-lg"
           >
             <h2 className="text-lg font-semibold tracking-tight text-zinc-900 group-hover:text-zinc-700">
               {comparison.title}

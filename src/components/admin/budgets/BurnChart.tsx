@@ -42,7 +42,7 @@ export default function BurnChart({ totalBudget, spent }: BurnChartProps) {
                 </span>
                 <div className="w-full relative" style={{ height: '120px' }}>
                   <div
-                    className={`absolute bottom-0 w-full rounded-t-md transition-all ${
+                    className={`absolute bottom-0 w-full rounded-t-md transition-[width,height,opacity] ${
                       overBudget ? 'bg-red-400' : 'bg-foreground/80'
                     }`}
                     style={{ height: `${height}%` }}

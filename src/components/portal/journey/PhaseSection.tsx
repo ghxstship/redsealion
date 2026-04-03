@@ -2,6 +2,8 @@
 
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
+import { fmTransition } from '@/lib/motion';
+import { useReducedMotion } from '@/lib/useReducedMotion';
 import { formatCurrency } from '@/lib/utils';
 import type {
   Phase,
@@ -39,6 +41,7 @@ export default function PhaseSection({
 }: PhaseSectionProps) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
+  const prefersReduced = useReducedMotion();
 
   const phaseSubtotal = deliverables.reduce((sum, d) => sum + d.total_cost, 0);
 
@@ -46,9 +49,9 @@ export default function PhaseSection({
     <motion.section
       ref={ref}
       id={`phase-${phase.id}`}
-      initial={{ opacity: 0, y: 48 }}
+      initial={prefersReduced ? false : { opacity: 0, y: 48 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 48 }}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      transition={prefersReduced ? { duration: 0 } : fmTransition.decorative}
       className="scroll-mt-28"
     >
       <div className="py-20 lg:py-28">
@@ -58,7 +61,7 @@ export default function PhaseSection({
             className="text-sm font-medium tracking-[0.2em] uppercase mb-3"
             style={{ color: 'var(--org-primary)' }}
           >
-            Phase {phase.number}
+            Phase {phase.phase_number}
           </p>
           <h2 className="text-4xl lg:text-5xl font-light tracking-tight text-foreground mb-3">
             {phase.name}
@@ -96,7 +99,7 @@ export default function PhaseSection({
                       <img
                         src={ref.image_url}
                         alt={ref.label}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="w-full h-full object-cover transition-transform duration-decorative group-hover:scale-105"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
@@ -201,7 +204,7 @@ export default function PhaseSection({
         {/* Phase subtotal */}
         <div className="flex items-center justify-between pt-8 border-t border-border">
           <p className="text-sm font-medium tracking-[0.1em] uppercase text-text-muted">
-            Phase {phase.number} Investment
+            Phase {phase.phase_number} Investment
           </p>
           <p className="text-2xl lg:text-3xl font-light tracking-tight text-foreground">
             {formatCurrency(phaseSubtotal, currency)}

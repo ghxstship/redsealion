@@ -138,10 +138,10 @@ export default function ProposalDetailPage({
                 Probability
               </p>
               <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground">
-                {proposal.probability ?? 0}%
+                {proposal.probability_percent ?? 0}%
               </p>
               <p className="mt-1 text-xs text-text-secondary">
-                Weighted: {formatCurrency((proposal.total_value * (proposal.probability ?? 0)) / 100, proposal.currency)}
+                Weighted: {formatCurrency((proposal.total_value * (proposal.probability_percent ?? 0)) / 100, proposal.currency)}
               </p>
             </div>
             <div className="rounded-xl border border-border bg-white px-5 py-5">
@@ -197,7 +197,7 @@ export default function ProposalDetailPage({
                     />
                     <div className="mt-2 hidden sm:block">
                       <p className="text-xs font-medium text-foreground truncate">
-                        {phase.number}
+                        {phase.phase_number}
                       </p>
                     </div>
                     {/* Tooltip */}
@@ -215,7 +215,7 @@ export default function ProposalDetailPage({
             <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 sm:hidden">
               {phases.map((phase) => (
                 <p key={phase.id} className="text-xs text-text-muted">
-                  <span className="font-medium text-foreground">{phase.number}</span>{' '}
+                  <span className="font-medium text-foreground">{phase.phase_number}</span>{' '}
                   {phase.name}
                 </p>
               ))}
@@ -237,7 +237,7 @@ export default function ProposalDetailPage({
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <span className="text-xs font-mono text-text-muted w-6 shrink-0">
-                      {phase.number}
+                      {phase.phase_number}
                     </span>
                     <div className="min-w-0">
                       <p className="text-sm font-medium text-foreground truncate">

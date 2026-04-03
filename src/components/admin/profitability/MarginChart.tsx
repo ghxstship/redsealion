@@ -31,7 +31,7 @@ export default function MarginChart({ revenue, costs, categories }: MarginChartP
           </div>
           <div className="h-8 rounded-lg bg-bg-secondary overflow-hidden">
             <div
-              className="h-full rounded-lg bg-green-500 transition-all"
+              className="h-full rounded-lg bg-green-500 transition-[width,opacity]"
               style={{ width: `${revenueWidth}%` }}
             />
           </div>
@@ -45,7 +45,7 @@ export default function MarginChart({ revenue, costs, categories }: MarginChartP
           </div>
           <div className="h-8 rounded-lg bg-bg-secondary overflow-hidden">
             <div
-              className="h-full rounded-lg bg-red-400 transition-all"
+              className="h-full rounded-lg bg-red-400 transition-[width,opacity]"
               style={{ width: `${costsWidth}%` }}
             />
           </div>

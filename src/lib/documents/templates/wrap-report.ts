@@ -124,7 +124,7 @@ export async function generateWrapReport(data: WrapReportData): Promise<Buffer> 
   ];
 
   const phaseRows = sortedPhases.map((phase) => [
-    phase.number,
+    phase.phase_number,
     phase.name,
     `${phaseStatusEmoji(phase.status)} ${phase.status.replace(/_/g, ' ')}`,
     formatCurrency(phase.phase_investment, currency),
@@ -195,7 +195,7 @@ export async function generateWrapReport(data: WrapReportData): Promise<Buffer> 
 
     for (const asset of assets) {
       statusCounts.set(asset.status, (statusCounts.get(asset.status) ?? 0) + 1);
-      if (asset.reusable) reusableCount++;
+      if (asset.is_reusable) reusableCount++;
       if (asset.status === 'in_storage') storedCount++;
     }
 

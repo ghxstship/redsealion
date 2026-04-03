@@ -125,10 +125,10 @@ export async function generateLoadInStrike(data: LoadInStrikeData): Promise<Buff
     }
 
     // Venue constraints
-    if (venue.constraints && Object.keys(venue.constraints).length > 0) {
+    if (venue.site_constraints && Object.keys(venue.site_constraints).length > 0) {
       children.push(spacer(80));
       children.push(body('Venue Constraints:', { bold: true }));
-      for (const [key, value] of Object.entries(venue.constraints)) {
+      for (const [key, value] of Object.entries(venue.site_constraints)) {
         children.push(bullet(`${key}: ${String(value)}`));
       }
     }
@@ -192,16 +192,16 @@ export async function generateLoadInStrike(data: LoadInStrikeData): Promise<Buff
   children.push(heading('Logistics Notes', 2));
 
   for (const venue of sortedVenues) {
-    if (venue.notes || (venue.constraints && Object.keys(venue.constraints).length > 0)) {
+    if (venue.notes || (venue.site_constraints && Object.keys(venue.site_constraints).length > 0)) {
       children.push(heading(`${venue.name}`, 3));
 
       if (venue.notes) {
         children.push(body(venue.notes));
       }
 
-      if (venue.constraints && Object.keys(venue.constraints).length > 0) {
+      if (venue.site_constraints && Object.keys(venue.site_constraints).length > 0) {
         children.push(body('Constraints:', { bold: true, spacing: { before: 80 } }));
-        for (const [key, value] of Object.entries(venue.constraints)) {
+        for (const [key, value] of Object.entries(venue.site_constraints)) {
           children.push(bullet(`${key}: ${String(value)}`));
         }
       }

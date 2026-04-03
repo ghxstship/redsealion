@@ -360,7 +360,7 @@ function phaseSection(
       spacing: { before: 360, after: 80 },
       children: [
         new TextRun({
-          text: `PHASE ${phase.number}`,
+          text: `PHASE ${phase.phase_number}`,
           bold: true,
           font: brand.fontHeading,
           size: 20,
@@ -432,7 +432,7 @@ function phaseSection(
       children.push(
         checkbox(
           `${addon.name}${addon.description ? ' \u2014 ' + addon.description : ''} \u2014 ${formatCurrency(addon.total_cost, currency)}`,
-          addon.selected
+          addon.is_selected
         )
       );
     }
@@ -513,7 +513,7 @@ function investmentSummary(
   ];
 
   const rows = phases.map((p) => [
-    `Phase ${p.number}`,
+    `Phase ${p.phase_number}`,
     p.name,
     formatCurrency(p.phase_investment, currency),
   ]);

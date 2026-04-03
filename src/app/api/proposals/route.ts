@@ -124,7 +124,7 @@ export async function POST(request: Request) {
           activation_dates: v.activationDates ?? null,
           load_in: v.loadIn ?? null,
           strike: v.strike ?? null,
-          constraints: {},
+          site_constraints: {},
           contact_on_site: null,
           sequence: i,
           notes: v.notes || null,
@@ -169,7 +169,7 @@ export async function POST(request: Request) {
         .from('phases')
         .insert({
           proposal_id: proposalId,
-          number: phase.number || String(i + 1),
+          phase_number: phase.number || String(i + 1),
           name: phase.name || `Phase ${i + 1}`,
           subtitle: phase.subtitle || null,
           status: 'not_started',
@@ -209,7 +209,7 @@ export async function POST(request: Request) {
             qty: d.qty,
             unit_cost: d.unitCost,
             total_cost: d.totalCost,
-            taxable: false,
+            is_taxable: false,
             sort_order: j,
           }),
         );
@@ -244,8 +244,8 @@ export async function POST(request: Request) {
             qty: a.qty,
             unit_cost: a.unitCost,
             total_cost: a.totalCost,
-            taxable: false,
-            selected: a.selected ?? false,
+            is_taxable: false,
+            is_selected: a.selected ?? false,
             mutually_exclusive_group: a.mutuallyExclusiveGroup || null,
             sort_order: j,
           }),

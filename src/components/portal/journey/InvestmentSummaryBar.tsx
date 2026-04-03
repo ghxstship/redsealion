@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { motion, useSpring, useTransform } from 'framer-motion';
+import { fmTransition } from '@/lib/motion';
 import { formatCurrency } from '@/lib/utils';
 import type { PaymentTerms } from '@/types/database';
 
@@ -20,7 +21,7 @@ function AnimatedNumber({
   value: number;
   currency?: string;
 }) {
-  const spring = useSpring(value, { stiffness: 120, damping: 20 });
+  const spring = useSpring(value, fmTransition.counter);
   const display = useTransform(spring, (v) => formatCurrency(Math.round(v), currency));
   const [rendered, setRendered] = useState(formatCurrency(value, currency));
   const unsub = useRef<(() => void) | null>(null);
@@ -57,7 +58,7 @@ export default function InvestmentSummaryBar({
           <motion.div
             initial={{ x: 40, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            transition={{ delay: 0.5, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ delay: 0.5, ...fmTransition.slow }}
             className="w-full bg-background/95 backdrop-blur-md border border-border rounded-2xl shadow-2xl shadow-black/5 p-8 pointer-events-auto"
           >
             <h3 className="text-xs font-medium tracking-[0.2em] uppercase text-text-muted mb-8">
@@ -106,7 +107,7 @@ export default function InvestmentSummaryBar({
             <button
               type="button"
               onClick={onAccept}
-              className="w-full py-3.5 rounded-xl text-sm font-semibold tracking-wide text-white transition-all duration-300 hover:opacity-90 active:scale-[0.98]"
+              className="w-full py-3.5 rounded-xl text-sm font-semibold tracking-wide text-white transition-[opacity,transform] duration-slow hover:opacity-90 active:scale-[0.98]"
               style={{ backgroundColor: 'var(--org-primary)' }}
             >
               Accept &amp; Proceed
@@ -119,7 +120,7 @@ export default function InvestmentSummaryBar({
       <motion.div
         initial={{ y: 100 }}
         animate={{ y: 0 }}
-        transition={{ delay: 0.3, type: 'spring', stiffness: 200, damping: 25 }}
+        transition={{ delay: 0.3, ...fmTransition.springGentle }}
         className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-t border-border shadow-[0_-4px_30px_rgba(0,0,0,0.08)]"
       >
         <div className="px-5 py-4">
@@ -143,7 +144,7 @@ export default function InvestmentSummaryBar({
           <button
             type="button"
             onClick={onAccept}
-            className="w-full py-3 rounded-xl text-sm font-semibold tracking-wide text-white transition-all duration-300 hover:opacity-90 active:scale-[0.98]"
+            className="w-full py-3 rounded-xl text-sm font-semibold tracking-wide text-white transition-[opacity,transform] duration-slow hover:opacity-90 active:scale-[0.98]"
             style={{ backgroundColor: 'var(--org-primary)' }}
           >
             Accept &amp; Proceed

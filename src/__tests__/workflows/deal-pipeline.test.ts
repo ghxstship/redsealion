@@ -88,7 +88,7 @@ describe('Deal / Pipeline Workflow', () => {
       expect(deal.title).toBeTruthy();
       expect(deal.client_id).toBe(TEST_CLIENT_ID);
       expect(deal.organization_id).toBe(TEST_ORG_ID);
-      expect(deal.value).toBeGreaterThanOrEqual(0);
+      expect(deal.deal_value).toBeGreaterThanOrEqual(0);
       expect(deal.stage).toBe('lead');
     });
 
@@ -119,10 +119,10 @@ describe('Deal / Pipeline Workflow', () => {
 
     it('validates value >= 0', () => {
       const deal = makeDeal({ value: 0 });
-      expect(deal.value).toBeGreaterThanOrEqual(0);
+      expect(deal.deal_value).toBeGreaterThanOrEqual(0);
 
       const negativeDeal = makeDeal({ value: -1 });
-      expect(negativeDeal.value).toBeLessThan(0);
+      expect(negativeDeal.deal_value).toBeLessThan(0);
     });
   });
 
@@ -226,7 +226,7 @@ describe('Deal / Pipeline Workflow', () => {
       ];
 
       const weightedValue = deals.reduce(
-        (sum, d) => sum + (d.value as number) * ((d.probability as number) / 100),
+        (sum, d) => sum + (d.deal_value as number) * ((d.probability as number) / 100),
         0,
       );
 
@@ -241,7 +241,7 @@ describe('Deal / Pipeline Workflow', () => {
         makeDeal({ value: 150000 }),
       ];
 
-      const totalValue = deals.reduce((sum, d) => sum + (d.value as number), 0);
+      const totalValue = deals.reduce((sum, d) => sum + (d.deal_value as number), 0);
       expect(totalValue).toBe(450000);
     });
   });

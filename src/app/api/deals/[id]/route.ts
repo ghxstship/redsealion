@@ -58,7 +58,7 @@ export async function PATCH(
   // Build update payload with only provided fields
   const updates: Record<string, unknown> = {};
   if (title !== undefined) updates.title = title;
-  if (value !== undefined) updates.value = value;
+  if (value !== undefined) updates.deal_value = value;
   if (probability !== undefined) updates.probability = probability;
   if (expected_close_date !== undefined) updates.expected_close_date = expected_close_date;
   if (stage !== undefined) updates.stage = stage;

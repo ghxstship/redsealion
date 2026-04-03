@@ -138,7 +138,7 @@ export default async function ProgressPage({ params }: PageProps) {
         </div>
         <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
           <div
-            className="h-full rounded-full transition-all"
+            className="h-full rounded-full transition-[width,opacity]"
             style={{
               width: `${Math.round(phases.reduce((sum, p) => sum + p.completionPercent, 0) / phases.length)}%`,
               backgroundColor: 'var(--org-primary)',
@@ -189,7 +189,7 @@ export default async function ProgressPage({ params }: PageProps) {
               {/* Phase content */}
               <div className={`pb-6 flex-1 ${isLast ? 'pb-0' : ''}`}>
                 <div
-                  className={`rounded-lg border p-5 transition-all ${
+                  className={`rounded-lg border p-5 transition-[color,background-color,border-color,opacity,box-shadow] ${
                     isCurrent
                       ? 'border-blue-200 bg-blue-50/30 ring-1 ring-blue-100'
                       : 'border-border bg-background'
@@ -219,7 +219,7 @@ export default async function ProgressPage({ params }: PageProps) {
                     </div>
                     <div className="h-1.5 rounded-full bg-gray-100 overflow-hidden">
                       <div
-                        className={`h-full rounded-full transition-all ${
+                        className={`h-full rounded-full transition-[width,opacity] ${
                           phase.status === 'complete' ? 'bg-green-500' : 'bg-blue-500'
                         }`}
                         style={{ width: `${phase.completionPercent}%` }}

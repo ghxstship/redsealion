@@ -93,7 +93,7 @@ export default function AppearanceSettingsPage() {
               key={opt.value}
               type="button"
               onClick={() => setTheme(opt.value)}
-              className={`flex flex-col items-center gap-2 rounded-xl border-2 px-4 py-5 transition-all ${
+              className={`flex flex-col items-center gap-2 rounded-xl border-2 px-4 py-5 transition-[color,background-color,border-color,opacity,box-shadow] ${
                 theme === opt.value
                   ? 'border-foreground ring-2 ring-foreground/10'
                   : 'border-border hover:border-foreground/30'
@@ -116,12 +116,12 @@ export default function AppearanceSettingsPage() {
             role="switch"
             aria-checked={sidebarCollapsed}
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ${
+            className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-normal ${
               sidebarCollapsed ? 'bg-foreground' : 'bg-gray-200'
             }`}
           >
             <span
-              className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ${
+              className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-normal ${
                 sidebarCollapsed ? 'translate-x-5' : 'translate-x-0'
               }`}
             />

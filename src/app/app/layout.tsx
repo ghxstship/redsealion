@@ -1,4 +1,5 @@
 import AdminSidebar from '@/components/admin/AdminSidebar';
+import PageTransition from '@/components/shared/PageTransition';
 import { SubscriptionProvider } from '@/components/shared/SubscriptionProvider';
 import { createClient } from '@/lib/supabase/server';
 import type { SubscriptionTier } from '@/types/database';
@@ -46,7 +47,9 @@ export default async function AppLayout({
         <AdminSidebar />
         <main className="flex-1 min-w-0 md:ml-0">
           <div className="px-6 py-8 md:px-10 md:py-10 max-w-7xl mx-auto">
-            {children}
+            <PageTransition>
+              {children}
+            </PageTransition>
           </div>
         </main>
       </div>

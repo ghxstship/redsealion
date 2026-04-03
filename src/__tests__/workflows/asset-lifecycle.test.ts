@@ -123,13 +123,13 @@ describe('Asset Lifecycle Workflow', () => {
     it('supports trackable flag', () => {
       const trackable = makeAsset({ trackable: true });
       const nonTrackable = makeAsset({ trackable: false });
-      expect(trackable.trackable).toBe(true);
-      expect(nonTrackable.trackable).toBe(false);
+      expect(trackable.is_trackable).toBe(true);
+      expect(nonTrackable.is_trackable).toBe(false);
     });
 
     it('supports reusable flag', () => {
       const asset = makeAsset({ reusable: true });
-      expect(asset.reusable).toBe(true);
+      expect(asset.is_reusable).toBe(true);
     });
   });
 

@@ -6,7 +6,7 @@ import type { PhaseStatus } from '@/types/database';
 
 interface TimelinePhase {
   id: string;
-  number: string;
+  phase_number: string;
   name: string;
   status: PhaseStatus;
 }
@@ -63,7 +63,7 @@ export default function JourneyTimeline({
                 type="button"
                 onClick={() => scrollToPhase(phase.id)}
                 className={[
-                  'flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-300 whitespace-nowrap',
+                  'flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition-[color,background-color,opacity] duration-slow whitespace-nowrap',
                   active
                     ? 'text-white'
                     : complete
@@ -94,7 +94,7 @@ export default function JourneyTimeline({
                       />
                     </svg>
                   ) : (
-                    phase.number
+                    phase.phase_number
                   )}
                 </span>
                 <span className="hidden sm:inline">{phase.name}</span>

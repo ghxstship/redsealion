@@ -86,8 +86,9 @@ export default function ReservationModal({ assetId, assetName, onClose, onCreate
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white border border-border rounded-lg shadow-sm w-full max-w-md mx-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div className="absolute inset-0 bg-black/40 animate-modal-backdrop" onClick={onClose} />
+      <div className="relative bg-white border border-border rounded-lg shadow-sm w-full max-w-md mx-4 animate-modal-content">
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
           <h2 className="text-base font-semibold text-foreground">
             Reserve: {assetName}

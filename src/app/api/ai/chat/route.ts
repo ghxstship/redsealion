@@ -59,7 +59,7 @@ interface ClientRow {
 interface DealRow {
   title: string;
   stage: string;
-  value: number;
+  deal_value: number;
   probability: number;
 }
 
@@ -97,7 +97,7 @@ async function buildIntentResponse(
           .eq('organization_id', orgId),
         supabase
           .from('deals')
-          .select('title, stage, value, probability')
+          .select('title, stage, deal_value, probability')
           .eq('organization_id', orgId),
         supabase
           .from('invoices')
@@ -133,7 +133,7 @@ async function buildIntentResponse(
     deals = getSeedDeals().map((d) => ({
       title: d.title,
       stage: d.stage,
-      value: d.value,
+      deal_value: d.deal_value,
       probability: d.probability,
     }));
   }
@@ -184,8 +184,8 @@ async function buildIntentResponse(
         `Revenue summary:\n\n` +
         `  - Total collected: ${currencyFmt.format(totalPaid)} (${paidInvoices.length} paid invoice${paidInvoices.length !== 1 ? 's' : ''})\n` +
         `  - Outstanding receivables: ${currencyFmt.format(outstanding)}\n` +
-        `  - Total pipeline value: ${currencyFmt.format(deals.reduce((s, d) => s + d.value, 0))}\n` +
-        `  - Weighted pipeline: ${currencyFmt.format(deals.reduce((s, d) => s + d.value * (d.probability / 100), 0))}`
+        `  - Total pipeline value: ${currencyFmt.format(deals.reduce((s, d) => s + d.deal_value, 0))}\n` +
+        `  - Weighted pipeline: ${currencyFmt.format(deals.reduce((s, d) => s + d.deal_value * (d.probability / 100), 0))}`
       );
     }
 
@@ -265,12 +265,12 @@ async function buildIntentResponse(
         'negotiation',
         'contract_signed',
       ];
-      const byStage: Record<string, { count: number; value: number }> = {};
+      const byStage: Record<string, { count: number; deal_value: number }> = {};
       for (const d of deals) {
         const stage = d.stage.replace(/_/g, ' ');
-        if (!byStage[stage]) byStage[stage] = { count: 0, value: 0 };
+        if (!byStage[stage]) byStage[stage] = { count: 0, deal_value: 0 };
         byStage[stage].count++;
-        byStage[stage].value += d.value;
+        byStage[stage].deal_value += d.deal_value;
       }
 
       const lines = stageOrder
@@ -278,13 +278,13 @@ async function buildIntentResponse(
         .filter((s) => byStage[s])
         .map(
           (s) =>
-            `  - ${s}: ${byStage[s].count} deal${byStage[s].count !== 1 ? 's' : ''}, ${currencyFmt.format(byStage[s].value)}`
+            `  - ${s}: ${byStage[s].count} deal${byStage[s].count !== 1 ? 's' : ''}, ${currencyFmt.format(byStage[s].deal_value)}`
         )
         .join('\n');
 
-      const totalValue = deals.reduce((s, d) => s + d.value, 0);
+      const totalValue = deals.reduce((s, d) => s + d.deal_value, 0);
       const weighted = deals.reduce(
-        (s, d) => s + d.value * (d.probability / 100),
+        (s, d) => s + d.deal_value * (d.probability / 100),
         0
       );
 
@@ -325,7 +325,7 @@ async function buildIntentResponse(
       const overdueCount = invoices.filter(
         (i) => i.status === 'overdue'
       ).length;
-      const pipelineValue = deals.reduce((s, d) => s + d.value, 0);
+      const pipelineValue = deals.reduce((s, d) => s + d.deal_value, 0);
 
       return (
         `Here is your business overview:\n\n` +

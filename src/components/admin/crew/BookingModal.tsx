@@ -96,8 +96,9 @@ export default function BookingModal({ userId, userName, onClose, onCreated }: B
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white border border-border rounded-lg shadow-sm w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div className="absolute inset-0 bg-black/40 animate-modal-backdrop" onClick={onClose} />
+      <div className="relative bg-white border border-border rounded-lg shadow-sm w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto animate-modal-content">
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
           <h2 className="text-base font-semibold text-foreground">
             Book {userName}

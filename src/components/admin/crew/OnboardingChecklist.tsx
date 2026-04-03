@@ -76,7 +76,7 @@ export default function OnboardingChecklist({ userId, documents }: OnboardingChe
       {/* Progress bar */}
       <div className="w-full h-2 bg-bg-secondary rounded-full mb-4">
         <div
-          className="h-2 bg-green-500 rounded-full transition-all"
+          className="h-2 bg-green-500 rounded-full transition-[width,opacity]"
           style={{ width: total > 0 ? `${(completed / total) * 100}%` : '0%' }}
         />
       </div>

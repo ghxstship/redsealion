@@ -221,12 +221,12 @@ describe('Time Entry Workflow', () => {
 
     it('defaults billable to true', () => {
       const entry = makeTimeEntry();
-      expect(entry.billable).toBe(true);
+      expect(entry.is_billable).toBe(true);
     });
 
     it('supports non-billable entries', () => {
       const entry = makeTimeEntry({ billable: false });
-      expect(entry.billable).toBe(false);
+      expect(entry.is_billable).toBe(false);
     });
 
     it('links to proposal', () => {
@@ -276,7 +276,7 @@ describe('Time Entry Workflow', () => {
         makeTimeEntry({ duration_minutes: 90, billable: false }),
       ];
       const billableMinutes = entries
-        .filter(e => e.billable)
+        .filter(e => e.is_billable)
         .reduce((sum, e) => sum + (e.duration_minutes as number), 0);
 
       expect(billableMinutes).toBe(180);

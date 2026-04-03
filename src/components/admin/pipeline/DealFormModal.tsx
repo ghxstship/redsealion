@@ -103,11 +103,11 @@ export default function DealFormModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/40"
+        className="absolute inset-0 bg-black/40 animate-modal-backdrop"
         onClick={onClose}
       />
       {/* Modal */}
-      <div className="relative w-full max-w-lg rounded-xl border border-border bg-white p-6 shadow-xl">
+      <div className="relative w-full max-w-lg rounded-xl border border-border bg-white p-6 shadow-xl animate-modal-content">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-semibold text-foreground">New Deal</h2>
           <button

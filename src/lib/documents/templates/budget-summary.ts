@@ -88,7 +88,7 @@ function phaseBudgetTable(
   const rows = phases.map((phase) => {
     const phaseDeliverables = deliverables.filter((d) => d.phase_id === phase.id);
     const row = [
-      `${phase.number}. ${phase.name}`,
+      `${phase.phase_number}. ${phase.name}`,
       formatCurrency(phase.phase_investment, currency),
     ];
     categories.forEach((cat) => {
@@ -118,7 +118,7 @@ function deliverablesBreakdown(
 
     if (phaseDeliverables.length === 0) continue;
 
-    parts.push(body(`Phase ${phase.number}: ${phase.name}`, { bold: true, size: 24, spacing: { before: 200, after: 80 } }));
+    parts.push(body(`Phase ${phase.phase_number}: ${phase.name}`, { bold: true, size: 24, spacing: { before: 200, after: 80 } }));
 
     const columns: TableColumn[] = [
       { header: 'Deliverable', width: 3600 },
@@ -146,7 +146,7 @@ function selectedAddonsSection(
   brand: DocBrand,
   currency: string
 ): (Paragraph | Table)[] {
-  const selected = addons.filter((a) => a.selected);
+  const selected = addons.filter((a) => a.is_selected);
   if (selected.length === 0) return [];
 
   // Build a phase lookup
@@ -163,7 +163,7 @@ function selectedAddonsSection(
     const phase = phaseMap.get(a.phase_id);
     return [
       a.name,
-      phase ? `${phase.number}. ${phase.name}` : '-',
+      phase ? `${phase.phase_number}. ${phase.name}` : '-',
       formatCurrency(a.total_cost, currency),
     ];
   });

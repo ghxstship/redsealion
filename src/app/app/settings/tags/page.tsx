@@ -171,7 +171,7 @@ export default function TagsSettingsPage() {
                   <button
                     key={c}
                     onClick={() => setNewColor(c)}
-                    className={`h-7 w-7 rounded-full border-2 transition-all ${
+                    className={`h-7 w-7 rounded-full border-2 transition-[color,background-color,border-color,opacity,box-shadow] ${
                       newColor === c ? 'border-foreground scale-110' : 'border-transparent'
                     }`}
                     style={{ backgroundColor: c }}

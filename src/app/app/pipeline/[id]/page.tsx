@@ -27,7 +27,7 @@ function formatDate(dateStr: string): string {
 interface DealDetail {
   id: string;
   title: string;
-  value: number;
+  deal_value: number;
   stage: DealStage;
   probability: number;
   expected_close_date: string | null;
@@ -168,7 +168,7 @@ export default async function DealDetailPage({
               <div>
                 <p className="text-xs text-text-muted">Value</p>
                 <p className="text-lg font-semibold tabular-nums text-foreground">
-                  {formatCurrency(deal.value)}
+                  {formatCurrency(deal.deal_value)}
                 </p>
               </div>
               <div>
@@ -180,7 +180,7 @@ export default async function DealDetailPage({
               <div>
                 <p className="text-xs text-text-muted">Weighted Value</p>
                 <p className="text-lg font-semibold tabular-nums text-foreground">
-                  {formatCurrency(deal.value * (deal.probability / 100))}
+                  {formatCurrency(deal.deal_value * (deal.probability / 100))}
                 </p>
               </div>
               <div>

@@ -21,7 +21,7 @@ export async function GET(
   let validUntil = '';
   let paymentTerms = '50/50';
   let phases: Array<{
-    number: string;
+    phase_number: string;
     name: string;
     status: string;
     phase_investment: number;
@@ -56,7 +56,7 @@ export async function GET(
 
     const { data: phaseData } = await supabase
       .from('phases')
-      .select('number, name, status, phase_investment')
+      .select('phase_number, name, status, phase_investment')
       .eq('proposal_id', id)
       .order('sort_order');
 
@@ -78,7 +78,7 @@ export async function GET(
     paymentTerms =
       (proposal.payment_terms as unknown as Record<string, string>)?.structure ?? '50/50';
     phases = getSeedPhases(proposal.id).map((p) => ({
-      number: p.number,
+      phase_number: p.phase_number,
       name: p.name,
       status: p.status,
       phase_investment: p.phase_investment,
@@ -115,7 +115,7 @@ export async function GET(
     .map(
       (p) => `
         <tr>
-          <td style="padding: 10px 14px; border-bottom: 1px solid #e2e8f0; color: #64748b; text-align: center;">${p.number}</td>
+          <td style="padding: 10px 14px; border-bottom: 1px solid #e2e8f0; color: #64748b; text-align: center;">${p.phase_number}</td>
           <td style="padding: 10px 14px; border-bottom: 1px solid #e2e8f0; font-weight: 500;">${p.name}</td>
           <td style="padding: 10px 14px; border-bottom: 1px solid #e2e8f0; text-align: center;">
             <span style="display: inline-block; padding: 2px 10px; border-radius: 9999px; font-size: 12px; font-weight: 500; background: ${
