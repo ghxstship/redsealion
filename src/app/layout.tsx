@@ -1,18 +1,9 @@
 import type { Metadata } from 'next';
-import { Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import ServiceWorkerRegistration from '@/components/ServiceWorkerRegistration';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 
-const inter = Inter({
-  variable: '--font-inter',
-  subsets: ['latin'],
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  variable: '--font-jetbrains-mono',
-  subsets: ['latin'],
-});
+const fontVariables = '--font-inter --font-jetbrains-mono';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://flytedeck.io'),
@@ -74,7 +65,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable} h-full`}>
+    <html lang="en" className="h-full">
       <head>
         <meta name="theme-color" content="#0a0a0a" />
         <link rel="apple-touch-icon" href="/icons/icon.svg" />

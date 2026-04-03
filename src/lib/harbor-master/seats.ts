@@ -73,14 +73,15 @@ export async function incrementSeatUsage(
 
   const { data: allocation } = await supabase
     .from('seat_allocations')
-    .select(field)
+    .select('internal_seats_used, external_seats_used')
     .eq('organization_id', organizationId)
     .single();
 
   if (allocation) {
+    const record = allocation as Record<string, unknown>;
     await supabase
       .from('seat_allocations')
-      .update({ [field]: (allocation[field] as number) + 1 })
+      .update({ [field]: (record[field] as number) + 1 })
       .eq('organization_id', organizationId);
   }
 }
@@ -97,12 +98,13 @@ export async function decrementSeatUsage(
 
   const { data: allocation } = await supabase
     .from('seat_allocations')
-    .select(field)
+    .select('internal_seats_used, external_seats_used')
     .eq('organization_id', organizationId)
     .single();
 
   if (allocation) {
-    const currentValue = allocation[field] as number;
+    const record = allocation as Record<string, unknown>;
+    const currentValue = record[field] as number;
     await supabase
       .from('seat_allocations')
       .update({ [field]: Math.max(0, currentValue - 1) })
