@@ -26,6 +26,24 @@ const comparisons = [
       'A fair, detailed comparison for production teams evaluating both platforms. See where each tool leads and which fits your workflow.',
     href: '/compare/productive-io',
   },
+  {
+    title: 'FlyteDeck vs Monday.com',
+    description:
+      'Monday.com is a general-purpose work OS. See why experiential production teams need purpose-built tools that understand phases, venues, and crew.',
+    href: '/compare/monday',
+  },
+  {
+    title: 'FlyteDeck vs Asana',
+    description:
+      'Asana excels at task management but lacks production-specific features. Compare proposal building, budgeting, and client portals side by side.',
+    href: '/compare/asana',
+  },
+  {
+    title: 'FlyteDeck vs ClickUp',
+    description:
+      'ClickUp offers a broad feature set, but breadth is not depth. See how FlyteDeck provides production-grade workflows that ClickUp cannot replicate.',
+    href: '/compare/clickup',
+  },
 ];
 
 export default function ComparePage() {

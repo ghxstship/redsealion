@@ -1,6 +1,33 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
+
+export async function GET(request: NextRequest) {
+  const perm = await checkPermission('invoices', 'view');
+  if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+
+  const supabase = await createClient();
+  const url = new URL(request.url);
+  const status = url.searchParams.get('status');
+  const clientId = url.searchParams.get('client_id');
+  const proposalId = url.searchParams.get('proposal_id');
+
+  let query = supabase
+    .from('invoices')
+    .select('*, clients(company_name), invoice_line_items(*)')
+    .eq('organization_id', perm.organizationId)
+    .order('issue_date', { ascending: false });
+
+  if (status) query = query.eq('status', status);
+  if (clientId) query = query.eq('client_id', clientId);
+  if (proposalId) query = query.eq('proposal_id', proposalId);
+
+  const { data: invoices, error } = await query;
+  if (error) return NextResponse.json({ error: 'Failed to fetch invoices', details: error.message }, { status: 500 });
+
+  return NextResponse.json({ invoices: invoices ?? [] });
+}
 
 export async function POST(request: Request) {
   const perm = await checkPermission('invoices', 'create');

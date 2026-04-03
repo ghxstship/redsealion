@@ -3,6 +3,12 @@ import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
 import { randomBytes, createHash } from 'crypto';
 
+/**
+ * Legacy settings API keys endpoint — now enriched with Harbor Master fields
+ * (role_id, is_active, rate_limit_rpm, allowed_ips).
+ * Shares the same api_keys table as /api/v1/api-keys.
+ */
+
 function generateApiKey(): { key: string; prefix: string; hash: string } {
   const raw = randomBytes(32).toString('hex');
   const key = `fd_live_${raw}`;
@@ -19,9 +25,10 @@ export async function GET() {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from('api_keys')
-    .select('id, name, key_prefix, scopes, created_at, last_used_at, created_by')
+    .select('id, name, key_prefix, scopes, is_active, rate_limit_rpm, created_at, last_used_at, expires_at, created_by')
     .eq('organization_id', perm.organizationId)
     .is('revoked_at', null)
+    .eq('is_active', true)
     .order('created_at', { ascending: false });
 
   if (error) {

@@ -64,62 +64,78 @@ export async function updateSession(request: NextRequest) {
 
   // ---------------------------------------------------------------------------
   // Harbor Master: User status + session enforcement on every authenticated request
+  // Performance: check cookie cache first (set for 60s), fall back to DB
   // ---------------------------------------------------------------------------
   if (user && (isAppRoute || isApiRoute)) {
-    const { data: userRecord } = await supabase
-      .from('users')
-      .select('status')
-      .eq('id', user.id)
-      .single();
+    const statusCookie = request.cookies.get('fd_user_status')?.value;
+    let userStatus: string | null = statusCookie ?? null;
 
-    if (userRecord) {
-      const status = userRecord.status as string;
+    if (!userStatus) {
+      const { data: userRecord } = await supabase
+        .from('users')
+        .select('status')
+        .eq('id', user.id)
+        .single();
 
-      // Suspended users cannot access any protected resources
-      if (status === 'suspended') {
-        if (isApiRoute) {
-          return NextResponse.json(
-            { error: 'Account suspended', reason: 'Your account has been suspended. Contact your administrator.' },
-            { status: 403 },
-          );
-        }
-        const url = request.nextUrl.clone();
-        url.pathname = '/login';
-        url.searchParams.set('error', 'account_suspended');
-        return NextResponse.redirect(url);
-      }
+      userStatus = (userRecord?.status as string) ?? 'active';
 
-      // Deactivated users cannot access protected resources — redirect to reactivation
-      if (status === 'deactivated') {
-        if (isApiRoute) {
-          return NextResponse.json(
-            { error: 'Account deactivated', reactivation_url: '/reactivate' },
-            { status: 403 },
-          );
-        }
-        const url = request.nextUrl.clone();
-        url.pathname = '/reactivate';
-        return NextResponse.redirect(url);
-      }
-
-      // Pending deletion users are blocked
-      if (status === 'pending_deletion') {
-        if (isApiRoute) {
-          return NextResponse.json(
-            { error: 'Account pending deletion' },
-            { status: 403 },
-          );
-        }
-        const url = request.nextUrl.clone();
-        url.pathname = '/login';
-        url.searchParams.set('error', 'account_deleted');
-        return NextResponse.redirect(url);
-      }
+      // Cache in response cookie for 60 seconds
+      supabaseResponse.cookies.set('fd_user_status', userStatus, {
+        maxAge: 60,
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+      });
     }
 
-    // Check MFA requirement if org has enforce_mfa enabled
-    // Skip for MFA enrollment page itself
-    if (!pathname.startsWith('/app/settings/security/mfa')) {
+    // Rewrite the block below to use the cached/fetched status
+    const statusToCheck = userStatus;
+    const isApiRouteCheck = isApiRoute;
+
+    if (statusToCheck === 'suspended') {
+      if (isApiRouteCheck) {
+        return NextResponse.json(
+          { error: 'Account suspended', reason: 'Your account has been suspended. Contact your administrator.' },
+          { status: 403 },
+        );
+      }
+      const url = request.nextUrl.clone();
+      url.pathname = '/login';
+      url.searchParams.set('error', 'account_suspended');
+      return NextResponse.redirect(url);
+    }
+
+    if (statusToCheck === 'deactivated') {
+      if (isApiRouteCheck) {
+        return NextResponse.json(
+          { error: 'Account deactivated', reactivation_url: '/reactivate' },
+          { status: 403 },
+        );
+      }
+      const url = request.nextUrl.clone();
+      url.pathname = '/reactivate';
+      return NextResponse.redirect(url);
+    }
+
+    if (statusToCheck === 'pending_deletion') {
+      if (isApiRouteCheck) {
+        return NextResponse.json(
+          { error: 'Account pending deletion' },
+          { status: 403 },
+        );
+      }
+      const url = request.nextUrl.clone();
+      url.pathname = '/login';
+      url.searchParams.set('error', 'account_deleted');
+      return NextResponse.redirect(url);
+    }
+  }
+
+  // MFA check (only when not cached — runs on first request after cache expires)
+  if (user && isAppRoute && !pathname.startsWith('/app/settings/security/mfa')) {
+    // Only run MFA check if status was fetched from DB (no cache cookie existed)
+    const statusCookie = request.cookies.get('fd_user_status')?.value;
+    if (!statusCookie) {
       const { data: membership } = await supabase
         .from('organization_memberships')
         .select('organization_id')
@@ -131,12 +147,11 @@ export async function updateSession(request: NextRequest) {
       if (membership) {
         const { data: authSettings } = await supabase
           .from('auth_settings')
-          .select('require_mfa, sso_enforce_only, allowed_auth_methods')
+          .select('require_mfa')
           .eq('organization_id', membership.organization_id)
           .single();
 
         if (authSettings?.require_mfa) {
-          // Check if user's current session has MFA verified
           const { data: activeSession } = await supabase
             .from('sessions')
             .select('mfa_verified')
@@ -147,12 +162,6 @@ export async function updateSession(request: NextRequest) {
             .single();
 
           if (activeSession && !activeSession.mfa_verified) {
-            if (isApiRoute) {
-              return NextResponse.json(
-                { error: 'MFA required', mfa_enrollment_url: '/app/settings/security/mfa' },
-                { status: 403 },
-              );
-            }
             const url = request.nextUrl.clone();
             url.pathname = '/app/settings/security/mfa';
             return NextResponse.redirect(url);

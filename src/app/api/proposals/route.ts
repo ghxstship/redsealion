@@ -1,6 +1,36 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
+
+export async function GET(request: NextRequest) {
+  const perm = await checkPermission('proposals', 'view');
+  if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+
+  const supabase = await createClient();
+  const url = new URL(request.url);
+  const status = url.searchParams.get('status');
+  const clientId = url.searchParams.get('client_id');
+  const search = url.searchParams.get('search');
+
+  let query = supabase
+    .from('proposals')
+    .select('*, clients(company_name)')
+    .eq('organization_id', perm.organizationId)
+    .order('updated_at', { ascending: false });
+
+  if (status) query = query.eq('status', status);
+  if (clientId) query = query.eq('client_id', clientId);
+  if (search) query = query.ilike('name', `%${search}%`);
+
+  const { data: proposals, error } = await query;
+
+  if (error) {
+    return NextResponse.json({ error: 'Failed to fetch proposals', details: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ proposals: proposals ?? [] });
+}
 
 export async function POST(request: Request) {
   try {

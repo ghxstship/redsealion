@@ -242,6 +242,107 @@ const navItems: NavItem[] = [
     ),
   },
   {
+    label: 'Tasks',
+    href: '/app/tasks',
+    feature: 'tasks',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M14 2H4a1 1 0 0 0-1 1v14l4-2 2 2 2-2 4 2V3a1 1 0 0 0-1-1Z" />
+        <path d="M7 7l2 2 3-3" />
+      </svg>
+    ),
+  },
+  {
+    label: 'Automations',
+    href: '/app/automations',
+    feature: 'automations',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M11 1L5 9h4l-2 8 6-8h-4l2-8Z" />
+      </svg>
+    ),
+  },
+  {
+    label: 'People',
+    href: '/app/people',
+    feature: 'people_hr',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="9" cy="5" r="3" />
+        <path d="M3 16v-1a6 6 0 0 1 12 0v1" />
+      </svg>
+    ),
+  },
+  {
+    label: 'Budgets',
+    href: '/app/budgets',
+    feature: 'budgets',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="9" y1="1" x2="9" y2="17" />
+        <path d="M13 4H7a2.5 2.5 0 0 0 0 5h4a2.5 2.5 0 0 1 0 5H5" />
+      </svg>
+    ),
+  },
+  {
+    label: 'Expenses',
+    href: '/app/expenses',
+    feature: 'expenses',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="1" y="4" width="16" height="11" rx="1" />
+        <path d="M1 8h16" />
+        <path d="M5 12h3" />
+      </svg>
+    ),
+  },
+  {
+    label: 'Profitability',
+    href: '/app/profitability',
+    feature: 'profitability',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 15l4-5 3 3 5-7" />
+        <path d="M15 6v5h-5" />
+      </svg>
+    ),
+  },
+  {
+    label: 'Resources',
+    href: '/app/resources',
+    feature: 'resource_scheduling',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="1" y="3" width="16" height="12" rx="1" />
+        <path d="M1 7h16" />
+        <path d="M5 3v12" />
+        <path d="M9 3v12" />
+        <path d="M13 3v12" />
+      </svg>
+    ),
+  },
+  {
+    label: 'AI Assistant',
+    href: '/app/ai',
+    feature: 'ai_assistant',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M9 2l.8 2.8a4.5 4.5 0 0 0 3.4 3.4L16 9l-2.8.8a4.5 4.5 0 0 0-3.4 3.4L9 16l-.8-2.8a4.5 4.5 0 0 0-3.4-3.4L2 9l2.8-.8a4.5 4.5 0 0 0 3.4-3.4L9 2Z" />
+      </svg>
+    ),
+  },
+  {
+    label: 'Emails',
+    href: '/app/emails',
+    feature: 'email_inbox',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="1" y="3" width="16" height="12" rx="1" />
+        <path d="M1 3l8 6 8-6" />
+      </svg>
+    ),
+  },
+  {
     label: 'Settings',
     href: '/app/settings',
     icon: (

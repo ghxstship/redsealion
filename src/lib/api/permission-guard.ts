@@ -16,11 +16,15 @@ interface PermissionCheckResult {
 }
 
 /**
- * Check whether the authenticated user has permission to perform an action
- * on a resource. Reads from the `permissions` table first; falls back to
- * hardcoded defaults from `src/lib/permissions.ts`.
+ * Unified permission check — bridges the legacy RBAC matrix with Harbor Master.
  *
- * Returns the check result or null if the user is not authenticated.
+ * Resolution order:
+ * 1. If the user has an organization_membership (Harbor Master), check via
+ *    the Postgres check_permission() RPC for hierarchical role permissions.
+ * 2. Fall back to the legacy users.role + permissions table override + default matrix.
+ *
+ * This ensures all existing domain routes continue working while Harbor Master
+ * memberships are progressively adopted.
  */
 export async function checkPermission(
   resource: PermissionResource,
@@ -49,7 +53,40 @@ export async function checkPermission(
     return { allowed: true, role, userId: user.id, organizationId };
   }
 
-  // Check for an org-level override in the permissions table
+  // --- Harbor Master path: check organization_memberships + role_permissions ---
+  const { data: membership } = await supabase
+    .from('organization_memberships')
+    .select('role_id')
+    .eq('user_id', user.id)
+    .eq('organization_id', organizationId)
+    .eq('status', 'active')
+    .maybeSingle();
+
+  if (membership?.role_id) {
+    // Map legacy action names to Harbor Master action names
+    const hmAction = action === 'view' ? 'read'
+      : action === 'create' ? 'create'
+      : action === 'edit' ? 'update'
+      : action === 'delete' ? 'delete'
+      : action;
+
+    const { data: allowed } = await supabase.rpc('check_permission', {
+      p_user_id: user.id,
+      p_action: hmAction,
+      p_resource: resource,
+      p_scope: 'organization',
+      p_scope_id: organizationId,
+    });
+
+    if (allowed === true) {
+      return { allowed: true, role, userId: user.id, organizationId };
+    }
+
+    // If Harbor Master explicitly denied and membership exists, still fall through
+    // to legacy — Harbor Master permissions are additive during migration
+  }
+
+  // --- Legacy path: permissions table override → default matrix ---
   const key = permKey(resource, action);
   const { data: override } = await supabase
     .from('permissions')
