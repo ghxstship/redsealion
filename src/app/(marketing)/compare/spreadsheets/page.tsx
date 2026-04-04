@@ -31,7 +31,7 @@ const painPoints = [
 ];
 
 const comparisonRows = [
-  { dimension: 'Proposal creation', spreadsheet: 'Copy-paste into PDF or deck', flyteDeck: 'Interactive drag-and-drop builder' },
+  { dimension: 'Proposal creation', spreadsheet: 'Copy-paste into PDF or deck', flyteDeck: 'Interactive step-by-step builder' },
   { dimension: 'Client sharing', spreadsheet: 'Email back and forth', flyteDeck: 'Branded client portal with approvals' },
   { dimension: 'Budget tracking', spreadsheet: 'Manual formulas across sheets', flyteDeck: 'Real-time burn tracking against estimates' },
   { dimension: 'Invoice generation', spreadsheet: 'Manually create in accounting tool', flyteDeck: 'One-click invoices from approved proposals' },

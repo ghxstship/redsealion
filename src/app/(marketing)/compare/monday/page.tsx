@@ -31,7 +31,7 @@ const painPoints = [
 ];
 
 const comparisonRows = [
-  { dimension: 'Proposal creation', spreadsheet: 'No built-in proposal builder', flyteDeck: 'Drag-and-drop proposal builder with templates' },
+  { dimension: 'Proposal creation', spreadsheet: 'No built-in proposal builder', flyteDeck: 'Step-by-step proposal builder with templates' },
   { dimension: 'Client portal', spreadsheet: 'Guest seats on internal boards', flyteDeck: 'Branded client portal with review and approval' },
   { dimension: 'Phased budgeting', spreadsheet: 'Number columns without financial structure', flyteDeck: 'Phase-based budgets with real-time burn tracking' },
   { dimension: 'Crew scheduling', spreadsheet: 'People column with no availability view', flyteDeck: 'Visual crew planner with availability and conflicts' },

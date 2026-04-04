@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
+import { createLogger } from '@/lib/logger';
 
 export async function GET(request: NextRequest) {
   const perm = await checkPermission('proposals', 'view');
@@ -96,9 +97,9 @@ export async function POST(request: Request) {
       .single();
 
     if (proposalError || !proposal) {
-      console.error('Failed to insert proposal:', proposalError);
+      createLogger('proposals').error('Failed to insert proposal', {}, proposalError);
       return NextResponse.json(
-        { error: 'Failed to create proposal', details: proposalError?.message },
+        { error: 'Failed to create proposal' },
         { status: 500 },
       );
     }
@@ -133,7 +134,7 @@ export async function POST(request: Request) {
 
       const { error: venueError } = await supabase.from('venues').insert(venueRows);
       if (venueError) {
-        console.error('Failed to insert venues:', venueError);
+        createLogger('proposals').error('Failed to insert venues', { proposalId }, venueError);
       }
     }
 
@@ -152,7 +153,7 @@ export async function POST(request: Request) {
         .from('team_assignments')
         .insert(teamRows);
       if (teamError) {
-        console.error('Failed to insert team assignments:', teamError);
+        createLogger('proposals').error('Failed to insert team assignments', { proposalId }, teamError);
       }
     }
 
@@ -182,7 +183,7 @@ export async function POST(request: Request) {
         .single();
 
       if (phaseError || !phaseRow) {
-        console.error(`Failed to insert phase ${i + 1}:`, phaseError);
+        createLogger('proposals').error(`Failed to insert phase ${i + 1}`, { proposalId }, phaseError);
         continue;
       }
 
@@ -218,7 +219,7 @@ export async function POST(request: Request) {
           .from('phase_deliverables')
           .insert(delRows);
         if (delError) {
-          console.error(`Failed to insert deliverables for phase ${i + 1}:`, delError);
+          createLogger('proposals').error(`Failed to insert deliverables for phase ${i + 1}`, { proposalId, phaseId }, delError);
         }
       }
 
@@ -255,7 +256,7 @@ export async function POST(request: Request) {
           .from('phase_addons')
           .insert(addonRows);
         if (addonError) {
-          console.error(`Failed to insert addons for phase ${i + 1}:`, addonError);
+          createLogger('proposals').error(`Failed to insert addons for phase ${i + 1}`, { proposalId, phaseId }, addonError);
         }
       }
 
@@ -273,7 +274,7 @@ export async function POST(request: Request) {
           .single();
 
         if (milestoneError || !milestoneRow) {
-          console.error(`Failed to insert milestone for phase ${i + 1}:`, milestoneError);
+          createLogger('proposals').error(`Failed to insert milestone for phase ${i + 1}`, { proposalId, phaseId }, milestoneError);
         } else if (
           phase.milestone.requirements &&
           phase.milestone.requirements.length > 0
@@ -293,7 +294,7 @@ export async function POST(request: Request) {
             .from('milestone_requirements')
             .insert(reqRows);
           if (reqError) {
-            console.error(`Failed to insert requirements for phase ${i + 1}:`, reqError);
+            createLogger('proposals').error(`Failed to insert requirements for phase ${i + 1}`, {}, reqError);
           }
         }
       }
@@ -301,7 +302,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ id: proposalId }, { status: 201 });
   } catch (error) {
-    console.error('Unexpected error creating proposal:', error);
+    createLogger('proposals').error('Unexpected error creating proposal', {}, error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
 
   let query = supabase
     .from('warehouse_transfers')
-    .select('*')
+    .select()
     .eq('organization_id', orgId)
     .order('created_at', { ascending: false });
 

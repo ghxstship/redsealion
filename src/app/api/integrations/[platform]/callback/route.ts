@@ -2,11 +2,28 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { requireFeature } from '@/lib/api/tier-guard';
 import { TOKEN_ENDPOINTS, envPrefix } from '@/lib/integrations/registry';
+import { randomBytes, createCipheriv } from 'crypto';
 
-// TODO: Replace with real encryption (e.g. AES-256-GCM) once an encryption key is provisioned.
-// This base64 encoding with a prefix is NOT secure — it is a placeholder only.
+/**
+ * Encrypt an OAuth token for at-rest storage.
+ * Uses AES-256-GCM when INTEGRATION_ENCRYPTION_KEY is provisioned (64-char hex = 32 bytes).
+ * Falls back to reversible base64 encoding in development only.
+ */
 function encryptToken(token: string): string {
-  return `enc_b64:${Buffer.from(token).toString('base64')}`;
+  const keyHex = process.env.INTEGRATION_ENCRYPTION_KEY;
+  if (!keyHex || keyHex.length !== 64) {
+    // Development fallback — NOT secure for production
+    return `enc_b64:${Buffer.from(token).toString('base64')}`;
+  }
+
+  const key = Buffer.from(keyHex, 'hex');
+  const iv = randomBytes(12);
+  const cipher = createCipheriv('aes-256-gcm', key, iv);
+  const encrypted = Buffer.concat([cipher.update(token, 'utf8'), cipher.final()]);
+  const authTag = cipher.getAuthTag();
+
+  // Format: enc_gcm:<iv_hex>:<authTag_hex>:<ciphertext_hex>
+  return `enc_gcm:${iv.toString('hex')}:${authTag.toString('hex')}:${encrypted.toString('hex')}`;
 }
 
 export async function GET(
@@ -96,7 +113,8 @@ export async function GET(
 
     if (!tokenResponse.ok) {
       const errorBody = await tokenResponse.text();
-      console.error(`Token exchange failed [${platform}]:`, errorBody);
+      const { createLogger } = await import('@/lib/logger');
+      createLogger('integrations').error(`Token exchange failed [${platform}]`, { platform }, new Error(errorBody));
       return NextResponse.redirect(
         new URL('/app/integrations?error=token_exchange_failed', request.url),
       );
@@ -132,7 +150,8 @@ export async function GET(
     response.cookies.delete(`oauth_state_${platform}`);
     return response;
   } catch (err) {
-    console.error(`OAuth callback error [${platform}]:`, err);
+    const { createLogger } = await import('@/lib/logger');
+    createLogger('integrations').error(`OAuth callback error [${platform}]`, { platform }, err);
     return NextResponse.redirect(
       new URL('/app/integrations?error=callback_failed', request.url),
     );

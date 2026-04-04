@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { TierGate } from '@/components/shared/TierGate';
 import { formatCurrency } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
-import { getSeedDeals } from '@/lib/seed-data';
 import MetricGrid from '@/components/admin/reports/MetricGrid';
 import ChartContainer from '@/components/admin/reports/ChartContainer';
 import type { DealStage } from '@/types/database';
@@ -37,12 +36,12 @@ async function getPipelineData() {
 
     const { data: deals } = await supabase
       .from('deals')
-      .select('*')
+      .select()
       .eq('organization_id', userData.organization_id);
 
     return (deals ?? []) as Array<{ stage: DealStage; deal_value: number; probability: number }>;
   } catch {
-    return getSeedDeals();
+    return [] as Array<{ stage: DealStage; deal_value: number; probability: number }>;
   }
 }
 

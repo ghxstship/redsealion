@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 type DocumentType = 'proposal' | 'invoice' | 'contract' | 'sow' | 'crew_call_sheet';
 type Section = 'terms_and_conditions' | 'disclaimer' | 'notes' | 'scope_header' | 'scope_footer' | 'payment_instructions';
@@ -55,8 +55,25 @@ const fallbackContent: Record<string, string> = {
 
 export default function DocumentDefaultsPage() {
   const [activeType, setActiveType] = useState<DocumentType>('proposal');
-  const [values, setValues] = useState<Record<string, string>>(() => ({ ...fallbackContent }));
+  const [values, setValues] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/settings/document-defaults')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.defaults && Array.isArray(data.defaults)) {
+          const loadedValues: Record<string, string> = {};
+          data.defaults.forEach((d: { document_type: string; section: string; content: string }) => {
+            loadedValues[`${d.document_type}:${d.section}`] = d.content;
+          });
+          setValues(loadedValues);
+        }
+        setLoaded(true);
+      })
+      .catch(() => setLoaded(true));
+  }, []);
 
   function handleChange(section: Section, value: string) {
     setValues((prev) => ({ ...prev, [`${activeType}:${section}`]: value }));
@@ -85,6 +102,8 @@ export default function DocumentDefaultsPage() {
   }
 
   const sections = sectionsByType[activeType];
+
+  if (!loaded) return null;
 
   return (
     <div className="max-w-2xl space-y-6">

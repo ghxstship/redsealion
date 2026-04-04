@@ -16,6 +16,25 @@ export async function POST(request: Request) {
     );
   }
 
+  // Handle subscription checkout completion
+  if (event.event === 'checkout.session.completed') {
+    const data = event.data as Record<string, unknown>;
+    const metadata = (data.metadata ?? {}) as Record<string, string>;
+    const orgId = metadata.organization_id;
+    const tier = metadata.tier;
+
+    if (orgId && tier) {
+      const supabase = await createClient();
+      await supabase
+        .from('organizations')
+        .update({
+          subscription_tier: tier,
+          stripe_customer_id: data.customer as string,
+        })
+        .eq('id', orgId);
+    }
+  }
+
   if (event.event === 'payment_intent.succeeded') {
     const data = event.data as Record<string, unknown>;
     const metadata = (data.metadata ?? {}) as Record<string, string>;
@@ -49,7 +68,8 @@ export async function POST(request: Request) {
 
         // Fire-and-forget: notify org admin of payment
         notifyPaymentReceived(invoiceId, amountReceived).catch((err) => {
-          console.error('[Payments] Failed to send payment notification:', err);
+          const { createLogger } = require('@/lib/logger');
+          createLogger('payments').error('Failed to send payment notification', { invoiceId }, err);
         });
       }
     }

@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { requirePermission } from '@/lib/api/permission-guard';
-import { getSeedProposals, getSeedClients, getSeedPhases } from '@/lib/seed-data';
 
 export async function GET(
   _request: Request,
@@ -61,28 +60,10 @@ export async function GET(
       .order('sort_order');
 
     phases = (phaseData ?? []) as typeof phases;
-  } catch {
-    // Fallback to seed data
-    const proposals = getSeedProposals();
-    const clients = getSeedClients();
-    const proposal = proposals.find((p) => p.id === id) ?? proposals[0];
-    const client = clients.find((c) => c.id === proposal.client_id);
-
-    proposalName = proposal.name;
-    clientName = client?.company_name ?? 'Client';
-    subtitle = proposal.subtitle ?? '';
-    totalValue = proposal.total_value;
-    status = proposal.status;
-    preparedDate = proposal.prepared_date ?? '';
-    validUntil = proposal.valid_until ?? '';
-    paymentTerms =
-      (proposal.payment_terms as unknown as Record<string, string>)?.structure ?? '50/50';
-    phases = getSeedPhases(proposal.id).map((p) => ({
-      phase_number: p.phase_number,
-      name: p.name,
-      status: p.status,
-      phase_investment: p.phase_investment,
-    }));
+  } catch (error) {
+    const { createLogger } = await import('@/lib/logger');
+    createLogger('proposals').error('PDF export failed', { proposalId: id }, error);
+    return NextResponse.json({ error: 'Proposal not found' }, { status: 404 });
   }
 
   const currencyFmt = new Intl.NumberFormat('en-US', {

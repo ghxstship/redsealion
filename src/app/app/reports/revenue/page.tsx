@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { TierGate } from '@/components/shared/TierGate';
 import { formatCurrency } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
-import { getSeedInvoices } from '@/lib/seed-data';
 import MetricGrid from '@/components/admin/reports/MetricGrid';
 import ChartContainer from '@/components/admin/reports/ChartContainer';
 
@@ -38,12 +37,7 @@ async function getRevenueData(): Promise<RevenueRow[]> {
 
     return (invoices ?? []) as RevenueRow[];
   } catch {
-    return getSeedInvoices().map((inv) => ({
-      total: inv.total,
-      amount_paid: inv.amount_paid,
-      status: inv.status,
-      issue_date: inv.issue_date,
-    }));
+    return [];
   }
 }
 

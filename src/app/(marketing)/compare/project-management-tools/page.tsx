@@ -37,7 +37,7 @@ const gaps = [
 ];
 
 const comparisonRows = [
-  { dimension: 'Interactive proposals', pm: 'Not available', flyteDeck: 'Drag-and-drop builder with scenarios' },
+  { dimension: 'Interactive proposals', pm: 'Not available', flyteDeck: 'Interactive builder with scenarios' },
   { dimension: 'Production-specific billing', pm: 'Not available', flyteDeck: 'Deposit, balance, and final invoicing' },
   { dimension: 'Client portal', pm: 'Share a board link (not branded)', flyteDeck: 'White-label portal with approvals' },
   { dimension: 'Venue management', pm: 'Not available', flyteDeck: 'Venue database with load-in/strike scheduling' },

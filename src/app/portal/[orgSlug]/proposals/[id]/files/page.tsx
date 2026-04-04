@@ -1,118 +1,9 @@
-import type { FileAttachment } from '@/types/database';
+import { notFound } from 'next/navigation';
+import { createClient } from '@/lib/supabase/server';
 
 interface PageProps {
   params: Promise<{ orgSlug: string; id: string }>;
 }
-
-// ---------------------------------------------------------------------------
-// Mock data
-// ---------------------------------------------------------------------------
-
-const ts = '2026-01-15T00:00:00Z';
-
-interface FileWithPhase extends FileAttachment {
-  phase_name: string;
-  phase_number: string;
-}
-
-const mockFiles: FileWithPhase[] = [
-  {
-    id: 'f-1',
-    proposal_id: 'proposal-1',
-    phase_id: 'phase-1',
-    uploaded_by: 'user-1',
-    file_name: 'Creative_Brief_v2.pdf',
-    file_path: '/files/creative-brief-v2.pdf',
-    file_size: 2_450_000,
-    mime_type: 'application/pdf',
-    category: 'brief',
-    is_client_visible: true,
-    created_at: '2026-02-08T14:30:00Z',
-    updated_at: '2026-02-08T14:30:00Z',
-    phase_name: 'Discovery',
-    phase_number: '1',
-  },
-  {
-    id: 'f-2',
-    proposal_id: 'proposal-1',
-    phase_id: 'phase-1',
-    uploaded_by: 'user-1',
-    file_name: 'Site_Analysis_Portland.pdf',
-    file_path: '/files/site-analysis.pdf',
-    file_size: 8_120_000,
-    mime_type: 'application/pdf',
-    category: 'report',
-    is_client_visible: true,
-    created_at: '2026-02-06T09:15:00Z',
-    updated_at: '2026-02-06T09:15:00Z',
-    phase_name: 'Discovery',
-    phase_number: '1',
-  },
-  {
-    id: 'f-3',
-    proposal_id: 'proposal-1',
-    phase_id: 'phase-2',
-    uploaded_by: 'user-1',
-    file_name: 'AirMax_3D_Renderings.zip',
-    file_path: '/files/3d-renderings.zip',
-    file_size: 145_000_000,
-    mime_type: 'application/zip',
-    category: 'design',
-    is_client_visible: true,
-    created_at: '2026-02-25T16:45:00Z',
-    updated_at: '2026-02-25T16:45:00Z',
-    phase_name: 'Design',
-    phase_number: '2',
-  },
-  {
-    id: 'f-4',
-    proposal_id: 'proposal-1',
-    phase_id: 'phase-2',
-    uploaded_by: 'user-1',
-    file_name: 'Material_Spec_Book.pdf',
-    file_path: '/files/material-specs.pdf',
-    file_size: 12_800_000,
-    mime_type: 'application/pdf',
-    category: 'specification',
-    is_client_visible: true,
-    created_at: '2026-02-27T11:00:00Z',
-    updated_at: '2026-02-27T11:00:00Z',
-    phase_name: 'Design',
-    phase_number: '2',
-  },
-  {
-    id: 'f-5',
-    proposal_id: 'proposal-1',
-    phase_id: 'phase-3',
-    uploaded_by: 'user-1',
-    file_name: 'Structural_Drawings_PE_Stamped.pdf',
-    file_path: '/files/structural-drawings.pdf',
-    file_size: 18_400_000,
-    mime_type: 'application/pdf',
-    category: 'engineering',
-    is_client_visible: true,
-    created_at: '2026-03-18T10:30:00Z',
-    updated_at: '2026-03-18T10:30:00Z',
-    phase_name: 'Engineering',
-    phase_number: '3',
-  },
-  {
-    id: 'f-6',
-    proposal_id: 'proposal-1',
-    phase_id: 'phase-3',
-    uploaded_by: 'user-1',
-    file_name: 'Walkthrough_Animation.mp4',
-    file_path: '/files/walkthrough.mp4',
-    file_size: 256_000_000,
-    mime_type: 'video/mp4',
-    category: 'presentation',
-    is_client_visible: true,
-    created_at: '2026-03-20T15:20:00Z',
-    updated_at: '2026-03-20T15:20:00Z',
-    phase_name: 'Engineering',
-    phase_number: '3',
-  },
-];
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -184,9 +75,78 @@ function CategoryBadge({ category }: { category: string }) {
 export default async function FilesPage({ params }: PageProps) {
   const { orgSlug, id } = await params;
 
+  const supabase = await createClient();
+
+  // Verify proposal belongs to this org
+  const { data: proposal } = await supabase
+    .from('proposals')
+    .select('id, organization_id')
+    .eq('id', id)
+    .single();
+
+  if (!proposal) notFound();
+
+  const { data: org } = await supabase
+    .from('organizations')
+    .select('id')
+    .eq('slug', orgSlug)
+    .single();
+
+  if (!org || proposal.organization_id !== org.id) notFound();
+
+  // Fetch file attachments for this proposal (client-visible only)
+  const { data: files } = await supabase
+    .from('file_attachments')
+    .select('*')
+    .eq('proposal_id', id)
+    .eq('is_client_visible', true)
+    .order('created_at', { ascending: true });
+
+  const fileList = files ?? [];
+
+  // Fetch phases to map phase_id → phase name/number
+  const { data: phases } = await supabase
+    .from('phases')
+    .select('id, phase_number, name')
+    .eq('proposal_id', id)
+    .order('sort_order', { ascending: true });
+
+  const phaseMap = new Map(
+    (phases ?? []).map((p) => [p.id, { name: p.name, number: p.phase_number }]),
+  );
+
   // Group files by phase
-  const grouped = mockFiles.reduce<Record<string, FileWithPhase[]>>((acc, file) => {
-    const key = `Phase ${file.phase_number}: ${file.phase_name}`;
+  interface FileWithPhase {
+    id: string;
+    file_name: string;
+    file_path: string;
+    file_size: number;
+    mime_type: string;
+    category: string;
+    created_at: string;
+    phase_name: string;
+    phase_number: string;
+  }
+
+  const enriched: FileWithPhase[] = fileList.map((f) => {
+    const phase = f.phase_id ? phaseMap.get(f.phase_id) : null;
+    return {
+      id: f.id,
+      file_name: f.file_name,
+      file_path: f.file_path,
+      file_size: f.file_size,
+      mime_type: f.mime_type,
+      category: f.category,
+      created_at: f.created_at,
+      phase_name: phase?.name ?? 'General',
+      phase_number: phase?.number ?? '0',
+    };
+  });
+
+  const grouped = enriched.reduce<Record<string, FileWithPhase[]>>((acc, file) => {
+    const key = file.phase_number === '0'
+      ? 'General'
+      : `Phase ${file.phase_number}: ${file.phase_name}`;
     if (!acc[key]) acc[key] = [];
     acc[key].push(file);
     return acc;
@@ -201,14 +161,23 @@ export default async function FilesPage({ params }: PageProps) {
         </p>
       </div>
 
-      {Object.entries(grouped).map(([groupLabel, files]) => (
+      {Object.keys(grouped).length === 0 && (
+        <div className="rounded-lg border border-border bg-background p-8 text-center">
+          <p className="text-sm text-text-muted">No files shared yet.</p>
+          <p className="text-xs text-text-muted mt-1">
+            Files and deliverables will appear here as your project progresses.
+          </p>
+        </div>
+      )}
+
+      {Object.entries(grouped).map(([groupLabel, groupFiles]) => (
         <section key={groupLabel}>
           <h3 className="text-xs font-medium text-text-muted uppercase tracking-wider mb-3">
             {groupLabel}
           </h3>
 
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {files.map((file) => (
+            {groupFiles.map((file) => (
               <button
                 key={file.id}
                 type="button"

@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { getInitials } from '@/lib/utils';
+import CommentForm from '@/components/portal/CommentForm';
 
 interface PageProps {
   params: Promise<{ orgSlug: string; id: string }>;
@@ -128,27 +129,7 @@ export default async function CommentsPage({ params }: PageProps) {
       )}
 
       {/* Add comment form */}
-      <div className="rounded-lg border border-border bg-background p-5">
-        <h3 className="text-sm font-medium text-foreground mb-3">Add a Comment</h3>
-        <form action={`/api/proposals/${id}/comments`} method="POST">
-          <textarea
-            name="body"
-            rows={4}
-            placeholder="Write your comment..."
-            className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-offset-1 resize-y"
-            style={{ '--tw-ring-color': 'var(--org-primary)' } as React.CSSProperties}
-          />
-          <div className="mt-3 flex justify-end">
-            <button
-              type="submit"
-              className="inline-flex items-center rounded-md px-4 py-2 text-sm font-medium text-white transition-colors"
-              style={{ backgroundColor: 'var(--org-primary)' }}
-            >
-              Post Comment
-            </button>
-          </div>
-        </form>
-      </div>
+      <CommentForm proposalId={id} orgSlug={orgSlug} />
     </div>
   );
 }

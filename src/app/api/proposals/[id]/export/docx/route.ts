@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from 'docx';
 import { createClient } from '@/lib/supabase/server';
 import { requirePermission } from '@/lib/api/permission-guard';
-import { getSeedProposals, getSeedClients, getSeedPhases } from '@/lib/seed-data';
 
 export async function GET(
   _request: Request,
@@ -47,21 +46,10 @@ export async function GET(
       .order('sort_order');
 
     phases = (phaseData ?? []) as Array<{ name: string; phase_investment: number }>;
-  } catch {
-    // Fallback to seed data
-    const proposals = getSeedProposals();
-    const clients = getSeedClients();
-    const proposal = proposals.find((p) => p.id === id) ?? proposals[0];
-    const client = clients.find((c) => c.id === proposal.client_id);
-
-    proposalName = proposal.name;
-    clientName = client?.company_name ?? 'Client';
-    subtitle = proposal.subtitle ?? '';
-    totalValue = proposal.total_value;
-    phases = getSeedPhases(proposal.id).map((p) => ({
-      name: p.name,
-      phase_investment: p.phase_investment,
-    }));
+  } catch (error) {
+    const { createLogger } = await import('@/lib/logger');
+    createLogger('proposals').error('DOCX export failed', { proposalId: id }, error);
+    return NextResponse.json({ error: 'Proposal not found' }, { status: 404 });
   }
 
   const currencyFmt = new Intl.NumberFormat('en-US', {

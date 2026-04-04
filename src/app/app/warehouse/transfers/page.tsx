@@ -45,7 +45,7 @@ async function getTransfers(): Promise<Transfer[]> {
 
     const { data: transfers } = await supabase
       .from('warehouse_transfers')
-      .select('*')
+      .select()
       .eq('organization_id', userData.organization_id)
       .order('requested_date', { ascending: false });
 

@@ -3,6 +3,10 @@ import { createClient } from '@/lib/supabase/server';
 import { requireFeature } from '@/lib/api/tier-guard';
 import { requirePermission } from '@/lib/api/permission-guard';
 
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('integrations');
+
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ platform: string }> },
@@ -75,7 +79,7 @@ export async function POST(
       pushed: invoiceIds.length,
     });
   } catch (error) {
-    console.error(`Invoice push error [${platform}]:`, error);
+    log.error(`Invoice push error [${platform}]:`, {}, error);
     return NextResponse.json({ error: 'Failed to push invoices' }, { status: 500 });
   }
 }

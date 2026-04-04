@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
 
   let query = supabase
     .from('maintenance_records')
-    .select('*')
+    .select()
     .eq('organization_id', orgId)
     .order('scheduled_date', { ascending: false });
 

@@ -1,6 +1,5 @@
 import ProposalsClient from '@/components/admin/proposals/ProposalsClient';
 import { createClient } from '@/lib/supabase/server';
-import { getSeedProposals, getSeedClients } from '@/lib/seed-data';
 import type { Proposal, Client } from '@/types/database';
 
 async function getData(): Promise<{ proposals: Proposal[]; clients: Client[] }> {
@@ -10,7 +9,7 @@ async function getData(): Promise<{ proposals: Proposal[]; clients: Client[] }> 
       data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user) throw new Error('No auth');
+    if (!user) return { proposals: [], clients: [] };
 
     const { data: userData } = await supabase
       .from('users')
@@ -18,30 +17,25 @@ async function getData(): Promise<{ proposals: Proposal[]; clients: Client[] }> 
       .eq('id', user.id)
       .single();
 
-    if (!userData) throw new Error('No org');
+    if (!userData) return { proposals: [], clients: [] };
 
     const { data: proposals } = await supabase
       .from('proposals')
-      .select('*')
+      .select()
       .eq('organization_id', userData.organization_id)
       .order('created_at', { ascending: false });
 
     const { data: clients } = await supabase
       .from('clients')
-      .select('*')
+      .select()
       .eq('organization_id', userData.organization_id);
 
-    if (!proposals || !clients) throw new Error('No data');
-
     return {
-      proposals: proposals as Proposal[],
-      clients: clients as Client[],
+      proposals: (proposals ?? []) as Proposal[],
+      clients: (clients ?? []) as Client[],
     };
   } catch {
-    return {
-      proposals: getSeedProposals(),
-      clients: getSeedClients(),
-    };
+    return { proposals: [], clients: [] };
   }
 }
 

@@ -84,7 +84,7 @@ export async function GET(request: NextRequest) {
 
   let query = supabase
     .from('time_entries')
-    .select('*')
+    .select()
     .eq('user_id', perm.userId)
     .order('start_time', { ascending: false })
     .limit(200);

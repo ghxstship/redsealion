@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { checkPermission } from '@/lib/api/permission-guard';
 
 type ExportType = 'crm' | 'finance' | 'pm' | 'assets';
 
@@ -6,6 +7,10 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string; type: string }> }
 ) {
+  const perm = await checkPermission('integrations', 'view');
+  if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+
   const { id, type } = await params;
 
   const validTypes: ExportType[] = ['crm', 'finance', 'pm', 'assets'];

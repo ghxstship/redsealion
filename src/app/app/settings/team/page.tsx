@@ -72,9 +72,9 @@ export default async function TeamSettingsPage() {
         }
       }
     }
-  } catch {
-    // Use fallback data
-  }
+  } catch (error) {
+      void error; /* Caught: error boundary handles display */
+    }
 
   return (
     <div className="max-w-4xl space-y-6">

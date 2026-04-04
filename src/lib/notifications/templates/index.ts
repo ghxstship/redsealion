@@ -263,3 +263,52 @@ export function equipmentReservationAlert(data: {
     html: wrapEmailHtml(content, data.orgName),
   };
 }
+
+// ---------------------------------------------------------------------------
+// i) Payment reminder (overdue invoice)
+// ---------------------------------------------------------------------------
+
+export function paymentReminder(data: {
+  recipientName: string;
+  invoiceNumber: string;
+  amount: string;
+  dueDate: string;
+  daysOverdue: number;
+  paymentUrl: string;
+  orgName: string;
+}): TemplateResult {
+  const urgencyLabel =
+    data.daysOverdue <= 7
+      ? 'a friendly reminder'
+      : data.daysOverdue <= 14
+        ? 'a second reminder'
+        : 'an urgent reminder';
+
+  const details = detailTable(
+    [
+      detailRow('Invoice', data.invoiceNumber),
+      detailRow('Amount Due', data.amount),
+      detailRow('Due Date', data.dueDate),
+      detailRow('Days Overdue', String(data.daysOverdue)),
+    ].join('\n'),
+  );
+
+  const content = [
+    heading('Payment Reminder'),
+    paragraph(`Hi ${data.recipientName},`),
+    paragraph(
+      `This is ${urgencyLabel} that <strong>Invoice ${data.invoiceNumber}</strong> for <strong>${data.amount}</strong> was due on <strong>${data.dueDate}</strong> and is now <strong>${data.daysOverdue} day${data.daysOverdue === 1 ? '' : 's'} overdue</strong>.`,
+    ),
+    details,
+    ctaButton('Pay Now', data.paymentUrl),
+    paragraph(
+      'If you have already sent payment, please disregard this reminder. If you have any questions, please don\'t hesitate to reach out.',
+    ),
+  ].join('\n');
+
+  return {
+    subject: `Payment reminder: Invoice ${data.invoiceNumber} — ${data.amount} overdue`,
+    html: wrapEmailHtml(content, data.orgName),
+    smsText: `${data.orgName}: Reminder — Invoice ${data.invoiceNumber} for ${data.amount} is ${data.daysOverdue} days overdue. Pay: ${data.paymentUrl}`,
+  };
+}

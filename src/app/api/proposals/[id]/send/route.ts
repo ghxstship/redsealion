@@ -3,6 +3,10 @@ import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { sendEmail } from '@/lib/email';
 
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('proposals');
+
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
@@ -46,7 +50,7 @@ export async function POST(
       .eq('id', id);
 
     if (updateError) {
-      console.error('Failed to update proposal status:', updateError);
+      log.error('Failed to update proposal status:', {}, updateError);
       return NextResponse.json(
         { error: 'Failed to send proposal', details: updateError.message },
         { status: 500 },
@@ -91,7 +95,7 @@ export async function POST(
       portalUrl,
     });
   } catch (error) {
-    console.error('Unexpected error sending proposal:', error);
+    log.error('Unexpected error sending proposal:', {}, error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

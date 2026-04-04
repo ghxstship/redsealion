@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('proposals');
+
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
@@ -23,7 +27,7 @@ export async function POST(
     // Fetch the original proposal
     const { data: original, error: fetchError } = await supabase
       .from('proposals')
-      .select('*')
+      .select()
       .eq('id', id)
       .eq('organization_id', organizationId)
       .single();
@@ -58,7 +62,7 @@ export async function POST(
       .single();
 
     if (insertError || !newProposal) {
-      console.error('Failed to duplicate proposal:', insertError);
+      log.error('Failed to duplicate proposal:', {}, insertError);
       return NextResponse.json(
         { error: 'Failed to duplicate proposal', details: insertError?.message },
         { status: 500 },
@@ -70,7 +74,7 @@ export async function POST(
     // Copy venues
     const { data: venues } = await supabase
       .from('venues')
-      .select('*')
+      .select()
       .eq('proposal_id', id)
       .order('sequence');
 
@@ -91,14 +95,14 @@ export async function POST(
 
       const { error: venueError } = await supabase.from('venues').insert(venueRows);
       if (venueError) {
-        console.error('Failed to copy venues:', venueError);
+        log.error('Failed to copy venues:', {}, venueError);
       }
     }
 
     // Copy team assignments
     const { data: teamAssignments } = await supabase
       .from('team_assignments')
-      .select('*')
+      .select()
       .eq('proposal_id', id);
 
     if (teamAssignments && teamAssignments.length > 0) {
@@ -113,14 +117,14 @@ export async function POST(
         .from('team_assignments')
         .insert(teamRows);
       if (teamError) {
-        console.error('Failed to copy team assignments:', teamError);
+        log.error('Failed to copy team assignments:', {}, teamError);
       }
     }
 
     // Copy phases and their children
     const { data: phases } = await supabase
       .from('phases')
-      .select('*')
+      .select()
       .eq('proposal_id', id)
       .order('sort_order');
 
@@ -143,14 +147,14 @@ export async function POST(
           .single();
 
         if (phaseError || !newPhase) {
-          console.error('Failed to copy phase:', phaseError);
+          log.error('Failed to copy phase:', {}, phaseError);
           continue;
         }
 
         // Copy deliverables
         const { data: deliverables } = await supabase
           .from('phase_deliverables')
-          .select('*')
+          .select()
           .eq('phase_id', phase.id)
           .order('sort_order');
 
@@ -179,7 +183,7 @@ export async function POST(
         // Copy addons
         const { data: addons } = await supabase
           .from('phase_addons')
-          .select('*')
+          .select()
           .eq('phase_id', phase.id)
           .order('sort_order');
 
@@ -209,7 +213,7 @@ export async function POST(
         // Copy milestone gates and requirements
         const { data: milestones } = await supabase
           .from('milestone_gates')
-          .select('*')
+          .select()
           .eq('phase_id', phase.id);
 
         if (milestones && milestones.length > 0) {
@@ -228,7 +232,7 @@ export async function POST(
             if (newMs) {
               const { data: reqs } = await supabase
                 .from('milestone_requirements')
-                .select('*')
+                .select()
                 .eq('milestone_id', ms.id)
                 .order('sort_order');
 
@@ -258,7 +262,7 @@ export async function POST(
       new_proposal_id: newId,
     });
   } catch (error) {
-    console.error('Unexpected error duplicating proposal:', error);
+    log.error('Unexpected error duplicating proposal:', {}, error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

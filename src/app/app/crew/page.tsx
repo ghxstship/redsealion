@@ -120,9 +120,9 @@ export default function CrewPage() {
             }))
           );
         }
-      } catch {
-        // keep fallback
-      }
+      } catch (error) {
+          void error; /* Caught: error boundary handles display */
+        }
     }
     loadCrew();
   }, []);

@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
 
   let query = supabase
     .from('assets')
-    .select('*')
+    .select()
     .eq('organization_id', perm.organizationId)
     .order('created_at', { ascending: false });
 

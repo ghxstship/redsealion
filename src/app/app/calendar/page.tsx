@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface CalendarEvent {
   id: string;
@@ -23,18 +23,6 @@ const EVENT_LABELS: Record<string, string> = {
   crew_booking: 'Crew',
 };
 
-const fallbackEvents: CalendarEvent[] = [
-  { id: 'evt_001', title: 'Nike SNKRS Fest 2026', type: 'proposal', date: '2026-04-15', end_date: '2026-04-17' },
-  { id: 'evt_002', title: 'Convention Center Setup', type: 'venue_activation', date: '2026-04-14' },
-  { id: 'evt_003', title: 'Alex Rivera - Lighting', type: 'crew_booking', date: '2026-04-15' },
-  { id: 'evt_004', title: 'Jordan Lee - Audio', type: 'crew_booking', date: '2026-04-15' },
-  { id: 'evt_005', title: 'Samsung Galaxy Unpacked', type: 'proposal', date: '2026-04-22', end_date: '2026-04-24' },
-  { id: 'evt_006', title: 'Barclays Center Load-in', type: 'venue_activation', date: '2026-04-21' },
-  { id: 'evt_007', title: 'Sam Patel - Video', type: 'crew_booking', date: '2026-04-22' },
-  { id: 'evt_008', title: 'Spotify Wrapped Live', type: 'proposal', date: '2026-05-10', end_date: '2026-05-11' },
-  { id: 'evt_009', title: 'Taylor Brooks - Fabrication', type: 'crew_booking', date: '2026-05-09' },
-];
-
 function getDaysInMonth(year: number, month: number): number {
   return new Date(year, month + 1, 0).getDate();
 }
@@ -51,6 +39,66 @@ function getCalendarDays(year: number, month: number): (number | null)[] {
 export default function CalendarPage() {
   const [currentDate, setCurrentDate] = useState(() => new Date());
   const [view, setView] = useState<'month' | 'week'>('month');
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
+
+  // Fetch events from Supabase
+  useEffect(() => {
+    async function loadEvents() {
+      try {
+        const { createClient } = await import('@/lib/supabase/client');
+        const supabase = createClient();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { data: userData } = await supabase
+          .from('users')
+          .select('organization_id')
+          .eq('id', user.id)
+          .single();
+        if (!userData) return;
+
+        const orgId = userData.organization_id;
+
+        // Fetch proposals with dates as "proposal" events
+        const { data: proposals } = await supabase
+          .from('proposals')
+          .select('id, name, event_start_date, event_end_date')
+          .eq('organization_id', orgId)
+          .not('event_start_date', 'is', null);
+
+        const proposalEvents: CalendarEvent[] = (proposals ?? [])
+          .filter((p: Record<string, unknown>) => p.event_start_date)
+          .map((p: Record<string, unknown>) => ({
+            id: p.id as string,
+            title: p.name as string,
+            type: 'proposal' as const,
+            date: (p.event_start_date as string).slice(0, 10),
+            end_date: p.event_end_date ? (p.event_end_date as string).slice(0, 10) : undefined,
+          }));
+
+        // Fetch resource allocations as "crew_booking" events
+        const { data: allocations } = await supabase
+          .from('resource_allocations')
+          .select('id, user_id, start_date, end_date, users(full_name)')
+          .eq('organization_id', orgId);
+
+        const crewEvents: CalendarEvent[] = (allocations ?? []).map((a: Record<string, unknown>) => ({
+          id: a.id as string,
+          title: `${(a.users as Record<string, string>)?.full_name ?? 'Crew'} — Booked`,
+          type: 'crew_booking' as const,
+          date: (a.start_date as string).slice(0, 10),
+          end_date: a.end_date ? (a.end_date as string).slice(0, 10) : undefined,
+        }));
+
+        setEvents([...proposalEvents, ...crewEvents]);
+      } catch {
+        // Silently fail — calendar shows empty
+      }
+    }
+    loadEvents();
+  }, []);
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -62,7 +110,7 @@ export default function CalendarPage() {
 
   // Group events by day
   const eventsByDay = new Map<number, CalendarEvent[]>();
-  for (const event of fallbackEvents) {
+  for (const event of events) {
     const eventDate = new Date(event.date + 'T00:00:00');
     if (eventDate.getFullYear() === year && eventDate.getMonth() === month) {
       const day = eventDate.getDate();
@@ -241,7 +289,7 @@ export default function CalendarPage() {
           <div className="grid grid-cols-7 min-w-[700px]">
             {weekDays.map((d) => {
               const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-              const dayEvents = fallbackEvents.filter((e) => e.date === dateStr);
+              const dayEvents = events.filter((e) => e.date === dateStr);
               const isToday =
                 d.getFullYear() === today.getFullYear() &&
                 d.getMonth() === today.getMonth() &&

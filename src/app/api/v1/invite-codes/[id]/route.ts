@@ -16,7 +16,7 @@ export async function PATCH(
   const body = await request.json().catch(() => ({}));
   const { is_active, expires_at } = body as { is_active?: boolean; expires_at?: string };
 
-  const { data: code } = await supabase.from('invite_codes').select('*').eq('id', id).single();
+  const { data: code } = await supabase.from('invite_codes').select().eq('id', id).single();
   if (!code) return NextResponse.json({ error: 'Invite code not found' }, { status: 404 });
 
   const isCreator = code.created_by === user.id;

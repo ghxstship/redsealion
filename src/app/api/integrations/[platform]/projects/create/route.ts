@@ -3,6 +3,10 @@ import { createClient } from '@/lib/supabase/server';
 import { requireFeature } from '@/lib/api/tier-guard';
 import { requirePermission } from '@/lib/api/permission-guard';
 
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('integrations');
+
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ platform: string }> },
@@ -88,7 +92,7 @@ export async function POST(
       projectName: proposal.name,
     });
   } catch (error) {
-    console.error(`Project create error [${platform}]:`, error);
+    log.error(`Project create error [${platform}]:`, {}, error);
     return NextResponse.json({ error: 'Failed to create project' }, { status: 500 });
   }
 }

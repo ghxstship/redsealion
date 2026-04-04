@@ -56,7 +56,7 @@ export function createMockQueryBuilder(resolvedData: RowData | RowData[] | null 
       if (prop === 'then') {
         return (resolve: (val: unknown) => void) => resolve(result);
       }
-      return (target as Record<string | symbol, unknown>)[prop];
+      return (target as any)[prop];
     },
   });
 
@@ -138,7 +138,7 @@ export function makeOrganization(overrides: RowData = {}) {
     created_at: '2025-01-01T00:00:00Z',
     updated_at: '2026-03-01T00:00:00Z',
     ...overrides,
-  };
+  } as Record<string, any>; // Add generic type for testing flexibility
 }
 
 export function makeClient(overrides: RowData = {}) {

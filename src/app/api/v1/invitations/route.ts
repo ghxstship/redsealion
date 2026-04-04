@@ -172,7 +172,7 @@ export async function GET(request: NextRequest) {
   const url = new URL(request.url);
   const filter = url.searchParams.get('filter'); // 'sent' | 'received' | 'all'
 
-  let query = supabase.from('invitations').select('*');
+  let query = supabase.from('invitations').select();
 
   if (filter === 'sent') {
     query = query.eq('invited_by', user.id);

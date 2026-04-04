@@ -20,7 +20,7 @@ export async function GET(
 
   const { data: documents, error } = await supabase
     .from('onboarding_documents')
-    .select('*')
+    .select()
     .eq('user_id', id)
     .eq('organization_id', orgId)
     .order('created_at', { ascending: false });

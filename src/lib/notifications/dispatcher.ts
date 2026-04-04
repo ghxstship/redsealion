@@ -5,6 +5,10 @@ import { TwilioSmsProvider } from './sms';
 import type { EmailProvider } from './email';
 import type { SmsProvider } from './sms';
 
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('notification-dispatcher');
+
 export interface SendNotificationOptions {
   orgId: string;
   userId: string;
@@ -50,12 +54,12 @@ export async function sendNotification(opts: SendNotificationOptions): Promise<v
       const provider = getSmsProvider();
       await provider.send(to, body);
     } else {
-      console.warn(`[Notifications] Unknown channel: ${channel}`);
+      log.warn(`[Notifications] Unknown channel: ${channel}`, {});
       return;
     }
   } catch (err) {
     error = err instanceof Error ? err.message : String(err);
-    console.error(`[Notifications] Failed to send ${channel} notification:`, err);
+    log.error(`[Notifications] Failed to send ${channel} notification:`, {}, err);
   }
 
   // Log to the database regardless of success/failure
@@ -75,6 +79,6 @@ export async function sendNotification(opts: SendNotificationOptions): Promise<v
       error,
     });
   } catch (dbErr) {
-    console.error('[Notifications] Failed to log notification:', dbErr);
+    log.error('[Notifications] Failed to log notification:', {}, dbErr);
   }
 }

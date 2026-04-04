@@ -57,9 +57,10 @@ export async function POST(
       .eq('id', id);
 
     if (updateError) {
-      console.error('Failed to accept proposal:', updateError);
+      const { createLogger } = await import('@/lib/logger');
+      createLogger('proposals').error('Failed to accept proposal', { proposalId: id }, updateError);
       return NextResponse.json(
-        { error: 'Failed to accept proposal', details: updateError.message },
+        { error: 'Failed to accept proposal' },
         { status: 500 },
       );
     }
@@ -72,7 +73,8 @@ export async function POST(
       signer_title: signer_title ?? null,
     });
   } catch (error) {
-    console.error('Unexpected error accepting proposal:', error);
+    const { createLogger } = await import('@/lib/logger');
+    createLogger('proposals').error('Unexpected error accepting proposal', {}, error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

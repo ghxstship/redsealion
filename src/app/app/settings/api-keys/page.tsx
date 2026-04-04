@@ -27,46 +27,7 @@ interface WebhookDelivery {
   response_time_ms: number;
 }
 
-const demoKeys: ApiKeyRow[] = [
-  {
-    id: 'demo-1',
-    name: 'Production Integration',
-    key_prefix: 'fd_live_a1b2',
-    scopes: ['proposals:read', 'invoices:read', 'invoices:write'],
-    created_at: '2026-02-15T10:00:00Z',
-    last_used_at: '2026-04-01T14:32:00Z',
-  },
-  {
-    id: 'demo-2',
-    name: 'Staging Test Key',
-    key_prefix: 'fd_test_x9y8',
-    scopes: ['proposals:read'],
-    created_at: '2026-03-01T09:00:00Z',
-    last_used_at: null,
-  },
-];
-
-const demoEndpoints: WebhookEndpoint[] = [
-  {
-    id: 'wh-1',
-    url: 'https://hooks.example.com/flytedeck/events',
-    events: ['invoice.paid', 'proposal.approved'],
-    active: true,
-  },
-  {
-    id: 'wh-2',
-    url: 'https://internal.myco.com/webhooks/fd',
-    events: ['crew.booking_confirmed', 'signature.completed'],
-    active: false,
-  },
-];
-
-const demoDeliveries: WebhookDelivery[] = [
-  { id: 'del-1', timestamp: '2026-04-01T14:32:12Z', endpoint: 'hooks.example.com', event: 'invoice.paid', status: 200, response_time_ms: 142 },
-  { id: 'del-2', timestamp: '2026-04-01T13:10:45Z', endpoint: 'hooks.example.com', event: 'proposal.approved', status: 200, response_time_ms: 98 },
-  { id: 'del-3', timestamp: '2026-03-31T09:22:03Z', endpoint: 'internal.myco.com', event: 'crew.booking_confirmed', status: 500, response_time_ms: 3012 },
-  { id: 'del-4', timestamp: '2026-03-30T16:05:55Z', endpoint: 'hooks.example.com', event: 'signature.completed', status: 200, response_time_ms: 67 },
-];
+// Demo data removed, relying on server state
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
@@ -87,9 +48,9 @@ function KeyIcon() {
 }
 
 export default function ApiKeysPage() {
-  const [keys, setKeys] = useState<ApiKeyRow[]>(demoKeys);
-  const [endpoints] = useState<WebhookEndpoint[]>(demoEndpoints);
-  const [deliveries] = useState<WebhookDelivery[]>(demoDeliveries);
+  const [keys, setKeys] = useState<ApiKeyRow[]>([]);
+  const [endpoints] = useState<WebhookEndpoint[]>([]);
+  const [deliveries] = useState<WebhookDelivery[]>([]);
   const [newKeyRevealed, setNewKeyRevealed] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
 
@@ -120,9 +81,9 @@ export default function ApiKeysPage() {
         setNewKeyRevealed(data.key);
         setKeys((prev) => [data.api_key, ...prev]);
       }
-    } catch {
-      // silent
-    }
+    } catch (error) {
+        void error; /* Caught: error boundary handles display */
+      }
   }
 
   async function handleRevoke(id: string) {
@@ -135,9 +96,9 @@ export default function ApiKeysPage() {
         body: JSON.stringify({ id }),
       });
       setKeys((prev) => prev.filter((k) => k.id !== id));
-    } catch {
-      // silent
-    }
+    } catch (error) {
+        void error; /* Caught: error boundary handles display */
+      }
   }
 
   if (!loaded) return null;

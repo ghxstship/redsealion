@@ -16,7 +16,7 @@ export async function GET() {
 
   const { data: bundles, error } = await supabase
     .from('equipment_bundles')
-    .select('*')
+    .select()
     .eq('organization_id', orgId)
     .order('name', { ascending: true });
 

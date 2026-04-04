@@ -36,6 +36,10 @@ import { generateLoadInStrike } from '@/lib/documents/templates/load-in-strike';
 import { generateCrewCallSheet } from '@/lib/documents/templates/crew-call-sheet';
 import { generateWrapReport } from '@/lib/documents/templates/wrap-report';
 
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('documents');
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -95,7 +99,7 @@ export async function GET(
   // Fetch org data for branding
   const { data: org, error: orgError } = await supabase
     .from('organizations')
-    .select('*')
+    .select()
     .eq('id', orgId)
     .single();
 
@@ -124,7 +128,7 @@ export async function GET(
         );
     }
   } catch (err) {
-    console.error(`[documents/${type}] Generation failed:`, err);
+    log.error(`[documents/${type}] Generation failed:`, {}, err);
     return NextResponse.json(
       { error: 'Document generation failed', detail: err instanceof Error ? err.message : String(err) },
       { status: 500 },
@@ -150,7 +154,7 @@ async function fetchProposalAndClient(
 
   const { data: proposal } = await supabase
     .from('proposals')
-    .select('*')
+    .select()
     .eq('id', proposalId)
     .eq('organization_id', orgId)
     .single();
@@ -161,7 +165,7 @@ async function fetchProposalAndClient(
 
   const { data: client } = await supabase
     .from('clients')
-    .select('*')
+    .select()
     .eq('id', proposal.client_id)
     .eq('organization_id', orgId)
     .single();
@@ -176,7 +180,7 @@ async function fetchProposalAndClient(
 async function fetchVenues(supabase: SupabaseClient, proposalId: string): Promise<Venue[]> {
   const { data } = await supabase
     .from('venues')
-    .select('*')
+    .select()
     .eq('proposal_id', proposalId)
     .order('sequence');
   return (data ?? []) as Venue[];
@@ -185,7 +189,7 @@ async function fetchVenues(supabase: SupabaseClient, proposalId: string): Promis
 async function fetchPhases(supabase: SupabaseClient, proposalId: string): Promise<Phase[]> {
   const { data } = await supabase
     .from('phases')
-    .select('*')
+    .select()
     .eq('proposal_id', proposalId)
     .order('sort_order');
   return (data ?? []) as Phase[];
@@ -210,7 +214,7 @@ async function fetchMilestones(
 
   const { data: milestones } = await supabase
     .from('milestone_gates')
-    .select('*')
+    .select()
     .in('phase_id', phaseIds);
 
   const msIds = (milestones ?? []).map((ms: Record<string, unknown>) => ms.id as string);
@@ -219,7 +223,7 @@ async function fetchMilestones(
   if (msIds.length > 0) {
     const { data: reqData } = await supabase
       .from('milestone_requirements')
-      .select('*')
+      .select()
       .in('milestone_id', msIds)
       .order('sort_order');
     requirements = (reqData ?? []) as MilestoneRequirement[];
@@ -322,7 +326,7 @@ async function handleCrewCallSheet(
 
   const { data: proposal } = await supabase
     .from('proposals')
-    .select('*')
+    .select()
     .eq('id', proposalId)
     .eq('organization_id', orgId)
     .single();
@@ -333,7 +337,7 @@ async function handleCrewCallSheet(
 
   const { data: venue } = await supabase
     .from('venues')
-    .select('*')
+    .select()
     .eq('id', venueId)
     .eq('proposal_id', proposalId)
     .single();
@@ -372,7 +376,7 @@ async function handleWrapReport(
     (async () => {
       const { data } = await supabase
         .from('assets')
-        .select('*')
+        .select()
         .eq('proposal_id', proposal.id)
         .eq('organization_id', orgId);
       return (data ?? []) as Asset[];
@@ -380,7 +384,7 @@ async function handleWrapReport(
     (async () => {
       const { data } = await supabase
         .from('invoices')
-        .select('*')
+        .select()
         .eq('proposal_id', proposal.id)
         .eq('organization_id', orgId);
       return (data ?? []) as Invoice[];
@@ -388,7 +392,7 @@ async function handleWrapReport(
     (async () => {
       const { data } = await supabase
         .from('change_orders')
-        .select('*')
+        .select()
         .eq('proposal_id', proposal.id)
         .eq('organization_id', orgId);
       return (data ?? []) as ChangeOrder[];

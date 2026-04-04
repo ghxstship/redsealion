@@ -53,6 +53,10 @@ export type TimeOffStatus = 'pending' | 'approved' | 'rejected' | 'cancelled';
 export type ChangeOrderStatus = 'draft' | 'submitted' | 'approved' | 'rejected' | 'void';
 export type IntegrationStatus = 'disconnected' | 'connecting' | 'connected' | 'error' | 'suspended';
 export type CustomFieldType = 'text' | 'textarea' | 'number' | 'currency' | 'date' | 'datetime' | 'boolean' | 'select' | 'multi_select' | 'url' | 'email' | 'phone' | 'file' | 'user' | 'relation';
+export type DependencyType = 'finish_to_start' | 'start_to_start' | 'finish_to_finish' | 'start_to_finish';
+export type ApprovalStatus = 'pending' | 'approved' | 'rejected';
+export type RecurrenceFrequency = 'daily' | 'weekly' | 'biweekly' | 'monthly' | 'quarterly' | 'yearly';
+export type BookingStatus = 'confirmed' | 'tentative' | 'waitlisted';
 
 export type AssetStatus = 'planned' | 'in_production' | 'in_transit' | 'deployed' | 'in_storage' | 'retired' | 'disposed';
 
@@ -1011,6 +1015,7 @@ export interface ResourceAllocation {
   end_date: string;
   hours_per_day: number;
   role: string | null;
+  booking_status: BookingStatus;
   notes: string | null;
   created_at: string;
   updated_at: string;
@@ -1185,11 +1190,22 @@ export interface OrgChartPosition {
 
 // Sprint 13: Tasks, Custom Fields, Scenarios
 
+export interface RecurrenceRule {
+  frequency: RecurrenceFrequency;
+  interval: number;
+  days_of_week?: number[];
+  day_of_month?: number;
+  end_date?: string;
+  end_after_occurrences?: number;
+  occurrences_created?: number;
+}
+
 export interface Task {
   id: string;
   organization_id: string;
   proposal_id: string | null;
   phase_id: string | null;
+  parent_task_id: string | null;
   title: string;
   description: string | null;
   status: TaskStatus;
@@ -1200,6 +1216,8 @@ export interface Task {
   estimated_hours: number | null;
   actual_hours: number | null;
   sort_order: number;
+  recurrence_rule: RecurrenceRule | null;
+  recurring_parent_id: string | null;
   created_by: string;
   created_at: string;
   updated_at: string;
@@ -1209,7 +1227,8 @@ export interface TaskDependency {
   id: string;
   task_id: string;
   depends_on_task_id: string;
-  type: string;
+  type: DependencyType;
+  lag_days: number;
   created_at: string;
 }
 
@@ -1218,8 +1237,19 @@ export interface TaskComment {
   task_id: string;
   author_id: string;
   body: string;
+  mentions: string[];
   created_at: string;
   updated_at: string;
+}
+
+export interface TaskWithSubtasks extends Task {
+  subtasks?: Task[];
+  comments_count?: number;
+  assignee?: Pick<User, 'id' | 'full_name' | 'avatar_url'>;
+}
+
+export interface TaskCommentWithAuthor extends TaskComment {
+  author?: Pick<User, 'id' | 'full_name' | 'avatar_url'>;
 }
 
 export interface CustomFieldDefinition {
@@ -1271,7 +1301,48 @@ export interface ProposalScenario {
   updated_at: string;
 }
 
+// Sprint 13b: Approval Workflows & Cost Rates
+
+export type ApprovalEntityType =
+  | 'expense'
+  | 'budget'
+  | 'change_order'
+  | 'timesheet'
+  | 'purchase_order'
+  | 'time_off_request'
+  | 'invoice';
+
+export interface ApprovalRequest {
+  id: string;
+  organization_id: string;
+  entity_type: ApprovalEntityType;
+  entity_id: string;
+  entity_title: string;
+  requested_by: string;
+  status: ApprovalStatus;
+  approvers: string[];
+  approved_by: string | null;
+  approved_at: string | null;
+  rejected_by: string | null;
+  rejected_at: string | null;
+  rejection_reason: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CostRate {
+  id: string;
+  organization_id: string;
+  role: string;
+  hourly_cost: number;
+  hourly_billable: number;
+  effective_from: string;
+  created_at: string;
+  updated_at: string;
+}
+
 // Sprint 14: AI, Security, Billing
+
 
 export interface AiConversation {
   id: string;

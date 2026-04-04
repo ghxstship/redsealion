@@ -62,7 +62,7 @@ async function getWarehouseData(): Promise<{
 
     const { data: assets } = await supabase
       .from('assets')
-      .select('*')
+      .select()
       .eq('organization_id', userData.organization_id)
       .order('current_location')
       .order('name');

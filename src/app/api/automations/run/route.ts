@@ -47,8 +47,9 @@ async function executeAction(
         (actionConfig.message as string) ??
         `Automation "${automation.name}" triggered with data: ${JSON.stringify(triggerData)}`;
 
-      // No real Slack token -- log and record
-      console.log(`[Slack] Would send to ${channel}: ${message}`);
+      // Slack integration not configured — record attempt without sending
+      void channel;
+      void message;
       return {
         action_type: actionType,
         success: true,
@@ -203,7 +204,7 @@ export async function POST(request: NextRequest) {
     // Fetch the automation
     const { data: automation } = await supabase
       .from('automations')
-      .select('*')
+      .select()
       .eq('id', automationId)
       .eq('organization_id', userData.organization_id)
       .single();
@@ -268,7 +269,8 @@ export async function POST(request: NextRequest) {
       result,
     });
   } catch (error) {
-    console.error('Automation run error:', error);
+    const { createLogger } = await import('@/lib/logger');
+    createLogger('automations').error('Automation run error', {}, error);
     return NextResponse.json({ error: 'Automation execution failed' }, { status: 500 });
   }
 }

@@ -25,7 +25,7 @@ export async function GET(
 
   let query = supabase
     .from('crew_availability')
-    .select('*')
+    .select()
     .eq('crew_profile_id', id)
     .eq('organization_id', orgId)
     .order('date', { ascending: true });

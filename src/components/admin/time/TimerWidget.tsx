@@ -41,9 +41,9 @@ export default function TimerWidget() {
           localStorage.removeItem(TIMER_STORAGE_KEY);
         }
       }
-    } catch {
-      // Ignore parse errors
-    }
+    } catch (error) {
+        void error; /* Caught: error boundary handles display */
+      }
   }, []);
 
   // Tick the timer
@@ -105,7 +105,7 @@ export default function TimerWidget() {
         const data = await response.json().catch(() => ({}));
         setFeedback({ type: 'error', message: data.error ?? 'Failed to save time entry.' });
       }
-    } catch {
+    } catch (error) {
       setFeedback({ type: 'error', message: 'Network error saving time entry.' });
     } finally {
       setSaving(false);

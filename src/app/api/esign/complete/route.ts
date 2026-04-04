@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase/server';
 import { notifySignatureCompleted } from '@/lib/notifications/triggers';
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('esign');
 
 /**
  * Public endpoint for completing a signature.
@@ -61,7 +64,7 @@ export async function POST(request: NextRequest) {
       .eq('id', esignRequest.id);
 
     if (updateError) {
-      console.error('[ESign] Failed to complete signature:', updateError);
+      log.error('Failed to complete signature', { requestId: esignRequest.id }, updateError);
       return NextResponse.json(
         { error: 'Failed to record signature' },
         { status: 500 },
@@ -70,12 +73,12 @@ export async function POST(request: NextRequest) {
 
     // Fire-and-forget: notify org admin that the document was signed
     notifySignatureCompleted(esignRequest.id).catch((err) => {
-      console.error('[ESign] Failed to send completion notification:', err);
+      log.error('Failed to send completion notification', { requestId: esignRequest.id }, err);
     });
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('[ESign] Error completing signature:', error);
+    log.error('Error completing signature', {}, error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

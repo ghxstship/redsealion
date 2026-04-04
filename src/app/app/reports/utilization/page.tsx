@@ -1,0 +1,204 @@
+import { createClient } from '@/lib/supabase/server';
+import { TierGate } from '@/components/shared/TierGate';
+
+interface UtilizationRow {
+  userId: string;
+  userName: string;
+  role: string | null;
+  totalHours: number;
+  billableHours: number;
+  nonBillableHours: number;
+  utilizationPercent: number;
+  capacity: number;
+}
+
+async function getUtilizationData(): Promise<UtilizationRow[]> {
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return [];
+
+    const { data: userData } = await supabase
+      .from('users')
+      .select('organization_id')
+      .eq('id', user.id)
+      .single();
+    if (!userData) return [];
+
+    const orgId = userData.organization_id;
+
+    // Get all team members
+    const { data: users } = await supabase
+      .from('users')
+      .select('id, full_name, role')
+      .eq('organization_id', orgId)
+      .not('role', 'in', '("client_primary","client_viewer")');
+
+    if (!users || users.length === 0) return [];
+
+    // Get time entries for the current month
+    const now = new Date();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+    const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString();
+
+    const { data: entries } = await supabase
+      .from('time_entries')
+      .select('user_id, duration_minutes, is_billable')
+      .eq('organization_id', orgId)
+      .gte('start_time', monthStart)
+      .lte('start_time', monthEnd);
+
+    // Aggregate by user
+    const hoursMap = new Map<string, { billable: number; nonBillable: number }>();
+    for (const entry of entries ?? []) {
+      const userId = entry.user_id;
+      const hours = (entry.duration_minutes ?? 0) / 60;
+      const current = hoursMap.get(userId) ?? { billable: 0, nonBillable: 0 };
+      if (entry.is_billable) {
+        current.billable += hours;
+      } else {
+        current.nonBillable += hours;
+      }
+      hoursMap.set(userId, current);
+    }
+
+    // Calculate business days in current month
+    const businessDays = getBusinessDaysInMonth(now.getFullYear(), now.getMonth());
+    const monthlyCapacity = businessDays * 8; // 8 hours per day
+
+    return users.map((u) => {
+      const hours = hoursMap.get(u.id) ?? { billable: 0, nonBillable: 0 };
+      const totalHours = hours.billable + hours.nonBillable;
+      const utilizationPercent = monthlyCapacity > 0
+        ? Math.round((hours.billable / monthlyCapacity) * 100)
+        : 0;
+
+      return {
+        userId: u.id,
+        userName: u.full_name,
+        role: u.role,
+        totalHours: Math.round(totalHours * 10) / 10,
+        billableHours: Math.round(hours.billable * 10) / 10,
+        nonBillableHours: Math.round(hours.nonBillable * 10) / 10,
+        utilizationPercent,
+        capacity: monthlyCapacity,
+      };
+    }).sort((a, b) => b.utilizationPercent - a.utilizationPercent);
+  } catch {
+    return [];
+  }
+}
+
+function getBusinessDaysInMonth(year: number, month: number): number {
+  const d = new Date(year, month, 1);
+  let count = 0;
+  while (d.getMonth() === month) {
+    const day = d.getDay();
+    if (day !== 0 && day !== 6) count++;
+    d.setDate(d.getDate() + 1);
+  }
+  return count;
+}
+
+function utilizationColor(percent: number): string {
+  if (percent >= 90) return 'text-red-600 bg-red-50';
+  if (percent >= 70) return 'text-green-600 bg-green-50';
+  if (percent >= 50) return 'text-yellow-600 bg-yellow-50';
+  return 'text-gray-600 bg-gray-50';
+}
+
+function barColor(percent: number): string {
+  if (percent >= 90) return 'bg-red-500';
+  if (percent >= 70) return 'bg-green-500';
+  if (percent >= 50) return 'bg-yellow-500';
+  return 'bg-gray-400';
+}
+
+export default async function UtilizationReportPage() {
+  const rows = await getUtilizationData();
+  const avgUtilization = rows.length > 0
+    ? Math.round(rows.reduce((s, r) => s + r.utilizationPercent, 0) / rows.length)
+    : 0;
+  const totalBillable = rows.reduce((s, r) => s + r.billableHours, 0);
+  const totalNonBillable = rows.reduce((s, r) => s + r.nonBillableHours, 0);
+
+  const now = new Date();
+  const monthName = now.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+
+  return (
+    <TierGate feature="profitability">
+      <div className="mb-8">
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Utilization Report</h1>
+        <p className="mt-1 text-sm text-text-secondary">
+          Billable vs non-billable hours for {monthName}.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-4 mb-8">
+        <div className="rounded-xl border border-border bg-white px-5 py-5">
+          <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Avg Utilization</p>
+          <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground">{avgUtilization}%</p>
+        </div>
+        <div className="rounded-xl border border-border bg-white px-5 py-5">
+          <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Team Members</p>
+          <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground">{rows.length}</p>
+        </div>
+        <div className="rounded-xl border border-border bg-white px-5 py-5">
+          <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Billable Hours</p>
+          <p className="mt-2 text-3xl font-semibold tracking-tight text-green-600">{totalBillable.toFixed(1)}h</p>
+        </div>
+        <div className="rounded-xl border border-border bg-white px-5 py-5">
+          <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Non-Billable</p>
+          <p className="mt-2 text-3xl font-semibold tracking-tight text-text-secondary">{totalNonBillable.toFixed(1)}h</p>
+        </div>
+      </div>
+
+      {rows.length === 0 ? (
+        <div className="rounded-xl border border-border bg-white px-8 py-16 text-center">
+          <p className="text-sm text-text-secondary">No utilization data for this period.</p>
+        </div>
+      ) : (
+        <div className="rounded-xl border border-border bg-white overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-border bg-bg-secondary">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Team Member</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Role</th>
+                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Billable</th>
+                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Non-Bill.</th>
+                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Total</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted min-w-[200px]">Utilization</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {rows.map((r) => (
+                  <tr key={r.userId} className="transition-colors hover:bg-bg-secondary/50">
+                    <td className="px-6 py-3.5 text-sm font-medium text-foreground">{r.userName}</td>
+                    <td className="px-6 py-3.5 text-sm text-text-secondary capitalize">{r.role?.replace(/_/g, ' ') ?? '—'}</td>
+                    <td className="px-6 py-3.5 text-right text-sm tabular-nums text-green-600">{r.billableHours}h</td>
+                    <td className="px-6 py-3.5 text-right text-sm tabular-nums text-text-secondary">{r.nonBillableHours}h</td>
+                    <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{r.totalHours}h</td>
+                    <td className="px-6 py-3.5">
+                      <div className="flex items-center gap-3">
+                        <div className="flex-1 h-2 rounded-full bg-bg-secondary overflow-hidden">
+                          <div
+                            className={`h-full rounded-full ${barColor(r.utilizationPercent)} transition-all`}
+                            style={{ width: `${Math.min(r.utilizationPercent, 100)}%` }}
+                          />
+                        </div>
+                        <span className={`inline-flex min-w-[3rem] items-center justify-center rounded-full px-2 py-0.5 text-xs font-medium ${utilizationColor(r.utilizationPercent)}`}>
+                          {r.utilizationPercent}%
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </TierGate>
+  );
+}

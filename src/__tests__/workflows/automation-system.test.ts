@@ -242,8 +242,8 @@ describe('Automation System Workflow', () => {
     });
 
     it('supports updating proposals or deals', () => {
-      const proposalTable = 'proposals' === 'deal' || 'proposals' === 'deals' ? 'deals' : 'proposals';
-      const dealTable = 'deals' === 'deal' || 'deals' === 'deals' ? 'deals' : 'proposals';
+      const proposalTable = 'proposals';
+      const dealTable = 'deals';
       expect(proposalTable).toBe('proposals');
       expect(dealTable).toBe('deals');
     });

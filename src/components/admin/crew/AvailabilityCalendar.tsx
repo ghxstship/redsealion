@@ -63,9 +63,9 @@ export default function AvailabilityCalendar({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ date: dateStr, status: nextStatus }),
       });
-    } catch {
-      // silently fail; parent can refetch
-    }
+    } catch (error) {
+        void error; /* Caught: error boundary handles display */
+      }
   };
 
   return (

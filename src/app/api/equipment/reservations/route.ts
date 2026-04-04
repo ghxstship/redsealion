@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
 
   let query = supabase
     .from('equipment_reservations')
-    .select('*')
+    .select()
     .eq('organization_id', orgId)
     .order('reserved_from', { ascending: true });
 

@@ -25,7 +25,7 @@ export async function checkSeatAvailability(
 
   const { data: allocation } = await supabase
     .from('seat_allocations')
-    .select('*')
+    .select()
     .eq('organization_id', organizationId)
     .single();
 

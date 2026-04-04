@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { sendEmail } from '@/lib/email';
 import { createClient } from '@/lib/supabase/server';
 
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('notifications');
+
 export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient();
@@ -75,7 +79,7 @@ export async function POST(request: NextRequest) {
       });
 
     if (dbError) {
-      console.error('[Notification] Failed to record:', dbError);
+      log.error('[Notification] Failed to record:', {}, dbError);
     }
 
     return NextResponse.json({
@@ -83,7 +87,7 @@ export async function POST(request: NextRequest) {
       messageId: result.messageId,
     });
   } catch (error) {
-    console.error('[Notification] Error:', error);
+    log.error('[Notification] Error:', {}, error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

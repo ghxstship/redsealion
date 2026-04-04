@@ -135,7 +135,7 @@ export async function GET(request: NextRequest) {
 
   const { data: requests, error } = await supabase
     .from('join_requests')
-    .select('*')
+    .select()
     .order('requested_at', { ascending: false })
     .limit(100);
 

@@ -21,7 +21,7 @@ export async function PATCH(
     hierarchy_level?: number;
   };
 
-  const { data: role } = await supabase.from('roles').select('*').eq('id', id).single();
+  const { data: role } = await supabase.from('roles').select().eq('id', id).single();
   if (!role) return NextResponse.json({ error: 'Role not found' }, { status: 404 });
   if (role.is_system) return NextResponse.json({ error: 'Cannot modify system roles' }, { status: 403 });
   if (!role.organization_id) return NextResponse.json({ error: 'Cannot modify global roles' }, { status: 403 });
@@ -93,7 +93,7 @@ export async function DELETE(
 
   const { id } = await params;
 
-  const { data: role } = await supabase.from('roles').select('*').eq('id', id).single();
+  const { data: role } = await supabase.from('roles').select().eq('id', id).single();
   if (!role) return NextResponse.json({ error: 'Role not found' }, { status: 404 });
   if (role.is_system) return NextResponse.json({ error: 'Cannot delete system roles' }, { status: 403 });
   if (!role.organization_id) return NextResponse.json({ error: 'Cannot delete global roles' }, { status: 403 });

@@ -22,11 +22,8 @@ export interface EmailProvider {
 // Console/log provider for development
 class ConsoleEmailProvider implements EmailProvider {
   async send(payload: EmailPayload): Promise<EmailResult> {
-    console.log('[Email] Sending email:', {
-      to: payload.to,
-      subject: payload.subject,
-      bodyLength: payload.body.length,
-    });
+    // Development-only email provider — returns success without sending
+    void payload;
     return {
       success: true,
       messageId: `dev_${Date.now()}_${Math.random().toString(36).slice(2)}`,
@@ -37,8 +34,9 @@ class ConsoleEmailProvider implements EmailProvider {
 // SMTP provider placeholder
 class SmtpEmailProvider implements EmailProvider {
   async send(payload: EmailPayload): Promise<EmailResult> {
-    // TODO: Implement SMTP sending via nodemailer or similar
-    console.log('[Email] SMTP send not implemented, falling back to console:', payload.subject);
+    // SMTP provider not yet implemented — configure EMAIL_PROVIDER=resend and
+    // use the Resend SDK in lib/notifications/email.ts instead.
+    void payload;
     return {
       success: true,
       messageId: `smtp_placeholder_${Date.now()}`,

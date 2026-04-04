@@ -1,6 +1,8 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import type { NarrativeContext, PaymentTerms } from '@/types/database';
+import { createClient } from '@/lib/supabase/client';
 
 export interface ProjectSetupData {
   clientId: string;
@@ -20,29 +22,76 @@ interface ProjectSetupStepProps {
   onChange: (data: ProjectSetupData) => void;
 }
 
-// Seed data for dropdowns
-const SEED_CLIENTS = [
-  { id: 'client-1', name: 'Acme Corp' },
-  { id: 'client-2', name: 'Globex Industries' },
-  { id: 'client-3', name: 'Stark Events Group' },
-  { id: 'client-4', name: 'Wayne Enterprises' },
-];
+interface ClientOption {
+  id: string;
+  name: string;
+}
 
-const SEED_TEMPLATES = [
-  { id: 'tpl-1', name: 'Standard 8-Phase' },
-  { id: 'tpl-2', name: 'Quick 4-Phase' },
-  { id: 'tpl-3', name: 'Full Production 10-Phase' },
-];
+interface TemplateOption {
+  id: string;
+  name: string;
+}
 
 export default function ProjectSetupStep({
   data,
   onChange,
 }: ProjectSetupStepProps) {
+  const [clients, setClients] = useState<ClientOption[]>([]);
+  const [templates, setTemplates] = useState<TemplateOption[]>([]);
+
+  useEffect(() => {
+    async function loadOptions() {
+      try {
+        const supabase = createClient();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { data: userData } = await supabase
+          .from('users')
+          .select('organization_id')
+          .eq('id', user.id)
+          .single();
+        if (!userData) return;
+
+        const { data: clientRows } = await supabase
+          .from('clients')
+          .select('id, company_name')
+          .eq('organization_id', userData.organization_id)
+          .order('company_name');
+
+        setClients(
+          (clientRows ?? []).map((c: Record<string, unknown>) => ({
+            id: c.id as string,
+            name: c.company_name as string,
+          })),
+        );
+
+        const { data: templateRows } = await supabase
+          .from('phase_templates')
+          .select('id, name')
+          .eq('organization_id', userData.organization_id)
+          .order('name');
+
+        setTemplates(
+          (templateRows ?? []).map((t: Record<string, unknown>) => ({
+            id: t.id as string,
+            name: t.name as string,
+          })),
+        );
+      } catch (error) {
+          void error; /* Caught: error boundary handles display */
+        }
+    }
+    loadOptions();
+  }, []);
+
   const update = (partial: Partial<ProjectSetupData>) => {
     onChange({ ...data, ...partial });
   };
 
-  const filteredClients = SEED_CLIENTS.filter((c) =>
+  const filteredClients = clients.filter((c) =>
     c.name.toLowerCase().includes(data.clientSearch.toLowerCase())
   );
 
@@ -237,7 +286,7 @@ export default function ProjectSetupStep({
             className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:border-org-primary focus:outline-none focus:ring-1 focus:ring-org-primary"
           >
             <option value="">-- Select template --</option>
-            {SEED_TEMPLATES.map((t) => (
+            {templates.map((t) => (
               <option key={t.id} value={t.id}>
                 {t.name}
               </option>

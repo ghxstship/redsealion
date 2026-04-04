@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { formatCurrency } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
-import { getSeedClients } from '@/lib/seed-data';
 import ClientsSearch from '@/components/admin/clients/ClientsSearch';
 
 interface ClientRow {
@@ -21,7 +20,7 @@ async function getClients(): Promise<ClientRow[]> {
       data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user) throw new Error('No auth');
+    if (!user) return [];
 
     const { data: userData } = await supabase
       .from('users')
@@ -29,15 +28,15 @@ async function getClients(): Promise<ClientRow[]> {
       .eq('id', user.id)
       .single();
 
-    if (!userData) throw new Error('No org');
+    if (!userData) return [];
 
     const { data: clients } = await supabase
       .from('clients')
-      .select('*')
+      .select()
       .eq('organization_id', userData.organization_id)
       .order('company_name');
 
-    if (!clients) throw new Error('No clients');
+    if (!clients) return [];
 
     return clients.map((c: Record<string, unknown>) => ({
       id: c.id as string,
@@ -49,24 +48,7 @@ async function getClients(): Promise<ClientRow[]> {
       last_activity: c.updated_at as string,
     }));
   } catch {
-    // Fallback seed data with inline proposal counts
-    const seedClients = getSeedClients();
-    const proposalCounts: Record<string, { count: number; value: number }> = {
-      client_001: { count: 2, value: 610000 },
-      client_002: { count: 2, value: 415000 },
-      client_003: { count: 1, value: 485000 },
-      client_004: { count: 1, value: 275000 },
-    };
-
-    return seedClients.map((c) => ({
-      id: c.id,
-      company_name: c.company_name,
-      industry: c.industry,
-      tags: c.tags,
-      proposals: proposalCounts[c.id]?.count ?? 0,
-      total_value: proposalCounts[c.id]?.value ?? 0,
-      last_activity: c.updated_at,
-    }));
+    return [];
   }
 }
 

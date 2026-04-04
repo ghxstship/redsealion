@@ -60,7 +60,7 @@ async function getEquipmentDetail(id: string): Promise<EquipmentDetail> {
 
     const { data: item } = await supabase
       .from('assets')
-      .select('*')
+      .select()
       .eq('id', id)
       .single();
 

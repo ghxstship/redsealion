@@ -4,12 +4,10 @@ import { requireFeature } from '@/lib/api/tier-guard';
 import { requirePermission } from '@/lib/api/permission-guard';
 import { buildSystemPrompt } from '@/lib/ai/prompts';
 import { gatherContext } from '@/lib/ai/context';
-import {
-  getSeedProposals,
-  getSeedClients,
-  getSeedDeals,
-  getSeedInvoices,
-} from '@/lib/seed-data';
+
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('app-api-ai');
 
 type Intent =
   | 'proposal'
@@ -111,43 +109,14 @@ async function buildIntentResponse(
       clients = (clientRes.data ?? []) as ClientRow[];
       deals = (dealRes.data ?? []) as DealRow[];
       invoices = (invRes.data ?? []) as InvoiceRow[];
-    } catch {
-      // Fall through to seed data
-    }
+    } catch (error) {
+        // Fail-loud: log error per TITANIUM STANDARD L7
+        log.error('Operation failed', {}, error);
+      }
   }
 
-  // Use seed data if nothing loaded
-  if (proposals.length === 0) {
-    const seedP = getSeedProposals();
-    proposals = seedP.map((p) => ({
-      name: p.name,
-      status: p.status,
-      total_value: p.total_value,
-      client_id: p.client_id,
-    }));
-  }
-  if (clients.length === 0) {
-    clients = getSeedClients().map((c) => ({ id: c.id, company_name: c.company_name }));
-  }
-  if (deals.length === 0) {
-    deals = getSeedDeals().map((d) => ({
-      title: d.title,
-      stage: d.stage,
-      deal_value: d.deal_value,
-      probability: d.probability,
-    }));
-  }
-  if (invoices.length === 0) {
-    invoices = getSeedInvoices().map((i) => ({
-      invoice_number: i.invoice_number,
-      status: i.status,
-      total: i.total,
-      amount_paid: i.amount_paid,
-      due_date: i.due_date,
-      paid_date: i.paid_date,
-      memo: i.memo,
-    }));
-  }
+  // Use empty arrays if nothing loaded — we don't want to show fake data
+  // The intent handlers below will give "no data available" messages for empty state
 
   switch (intent) {
     case 'proposal': {
@@ -304,9 +273,10 @@ async function buildIntentResponse(
             .select('id', { count: 'exact', head: true })
             .eq('organization_id', orgId);
           teamCount = count ?? 0;
-        } catch {
-          // fall through
-        }
+        } catch (error) {
+            // Fail-loud: log error per TITANIUM STANDARD L7
+            log.error('Operation failed', {}, error);
+          }
       }
 
       return teamCount > 0
@@ -390,15 +360,16 @@ export async function POST(request: Request) {
         .eq('id', user.id)
         .single();
       orgId = userData?.organization_id ?? null;
-    } catch {
-      // Will fall back to seed data
-    }
+    } catch (error) {
+        // Fail-loud: log error per TITANIUM STANDARD L7
+        log.error('Operation failed', {}, error);
+      }
 
     const intent = detectIntent(message);
     const response = await buildIntentResponse(intent, supabase, orgId);
 
     return NextResponse.json({ response });
-  } catch {
+  } catch (error) {
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

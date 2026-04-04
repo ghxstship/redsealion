@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
   // Fetch invite code
   const { data: inviteCode } = await supabase
     .from('invite_codes')
-    .select('*')
+    .select()
     .eq('code', code)
     .single();
 

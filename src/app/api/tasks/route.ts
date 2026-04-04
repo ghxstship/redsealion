@@ -41,6 +41,13 @@ export async function GET(request: NextRequest) {
     query = query.eq('proposal_id', proposalId);
   }
 
+  const parentTaskId = searchParams.get('parent_task_id');
+  if (parentTaskId === 'null') {
+    query = query.is('parent_task_id', null);
+  } else if (parentTaskId) {
+    query = query.eq('parent_task_id', parentTaskId);
+  }
+
   const dueDateFrom = searchParams.get('due_date_from');
   if (dueDateFrom) {
     query = query.gte('due_date', dueDateFrom);
@@ -84,9 +91,11 @@ export async function POST(request: NextRequest) {
     assignee_id,
     proposal_id,
     phase_id,
+    parent_task_id,
     due_date,
     start_date,
     estimated_hours,
+    recurrence_rule,
   } = body as {
     title?: string;
     description?: string;
@@ -95,9 +104,11 @@ export async function POST(request: NextRequest) {
     assignee_id?: string;
     proposal_id?: string;
     phase_id?: string;
+    parent_task_id?: string;
     due_date?: string;
     start_date?: string;
     estimated_hours?: number;
+    recurrence_rule?: Record<string, unknown>;
   };
 
   if (!title) {
@@ -118,9 +129,12 @@ export async function POST(request: NextRequest) {
       assignee_id: assignee_id || null,
       proposal_id: proposal_id || null,
       phase_id: phase_id || null,
+      parent_task_id: parent_task_id || null,
       due_date: due_date || null,
       start_date: start_date || null,
       estimated_hours: estimated_hours ?? null,
+      recurrence_rule: recurrence_rule ?? null,
+      recurring_parent_id: null,
       created_by: perm.userId,
       sort_order: 0,
     })

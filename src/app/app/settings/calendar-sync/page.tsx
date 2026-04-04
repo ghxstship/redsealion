@@ -65,7 +65,7 @@ export default function CalendarSyncPage() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ provider: key }),
-    }).catch(() => {});
+    }).catch(() => { /* best-effort, failure is non-critical */ });
   }
 
   function handleDisconnect(key: Provider) {
@@ -74,7 +74,7 @@ export default function CalendarSyncPage() {
         p.key === key ? { ...p, connected: false, lastSynced: null, calendarId: '' } : p
       )
     );
-    fetch(`/api/settings/calendar-sync?provider=${key}`, { method: 'DELETE' }).catch(() => {});
+    fetch(`/api/settings/calendar-sync?provider=${key}`, { method: 'DELETE' }).catch(() => { /* best-effort, failure is non-critical */ });
   }
 
   function handleSyncDirection(key: Provider, dir: SyncDirection) {

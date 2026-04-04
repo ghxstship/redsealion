@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createHmac } from 'crypto';
+import { checkPermission } from '@/lib/api/permission-guard';
 
 function signPayload(payload: string, secret: string): string {
   return createHmac('sha256', secret).update(payload).digest('hex');
@@ -41,6 +42,10 @@ async function deliverWebhook(
 
 export async function POST(request: NextRequest) {
   try {
+    const perm = await checkPermission('automations', 'edit');
+    if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+
     const body = await request.json();
     const event: string = body.event ?? 'unknown';
     const payload: Record<string, unknown> = body.payload ?? {};
@@ -91,7 +96,8 @@ export async function POST(request: NextRequest) {
       results: deliveryResults,
     });
   } catch (error) {
-    console.error('Webhook receiver error:', error);
+    const { createLogger } = await import('@/lib/logger');
+    createLogger('webhooks').error('Webhook receiver error', {}, error);
     return NextResponse.json({ error: 'Webhook processing failed' }, { status: 500 });
   }
 }

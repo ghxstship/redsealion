@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { TierGate } from '@/components/shared/TierGate';
 import InvoiceForm from '@/components/admin/invoices/InvoiceForm';
 import { createClient } from '@/lib/supabase/server';
-import { getSeedClients, getSeedProposals } from '@/lib/seed-data';
 
 interface SelectOption {
   id: string;
@@ -52,16 +51,7 @@ async function getOptions(): Promise<{
       })),
     };
   } catch {
-    return {
-      clients: getSeedClients().map((c) => ({
-        id: c.id,
-        label: c.company_name,
-      })),
-      proposals: getSeedProposals().map((p) => ({
-        id: p.id,
-        label: p.name,
-      })),
-    };
+    return { clients: [], proposals: [] };
   }
 }
 

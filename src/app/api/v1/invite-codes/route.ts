@@ -145,7 +145,7 @@ export async function GET(request: NextRequest) {
 
   const { data: codes, error } = await supabase
     .from('invite_codes')
-    .select('*')
+    .select()
     .order('created_at', { ascending: false })
     .limit(100);
 

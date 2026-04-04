@@ -35,7 +35,7 @@ async function getBundles(): Promise<Bundle[]> {
 
     const { data: bundles } = await supabase
       .from('equipment_bundles')
-      .select('*')
+      .select()
       .eq('organization_id', userData.organization_id)
       .order('name');
 

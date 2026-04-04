@@ -47,7 +47,8 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(filtered ?? []);
   } catch (error) {
-    console.error('Zapier polling error:', error);
+    const { createLogger } = await import('@/lib/logger');
+    createLogger('zapier').error('Zapier polling error', { eventType }, error);
     return NextResponse.json([], { status: 200 });
   }
 }
@@ -105,7 +106,8 @@ export async function POST(request: NextRequest) {
       endpoints_matched: matching.length,
     });
   } catch (error) {
-    console.error('Zapier action error:', error);
+    const { createLogger } = await import('@/lib/logger');
+    createLogger('zapier').error('Zapier action error', {}, error);
     return NextResponse.json({ error: 'Action processing failed' }, { status: 500 });
   }
 }

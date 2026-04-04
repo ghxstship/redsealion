@@ -3,6 +3,10 @@ import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { getESignProvider } from '@/lib/esign/provider';
 
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('esign');
+
 export async function POST(request: Request) {
   try {
     const permResult = await checkPermission('proposals', 'edit');
@@ -76,7 +80,7 @@ export async function POST(request: Request) {
       { status: 201 },
     );
   } catch (error) {
-    console.error('[ESign] Error creating request:', error);
+    log.error('[ESign] Error creating request:', {}, error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

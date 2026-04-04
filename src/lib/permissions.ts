@@ -144,6 +144,18 @@ export const DEFAULT_PERMISSIONS: Record<OrganizationRole, Record<string, boolea
     [permKey('ai_assistant', 'create')]: false,
     [permKey('ai_assistant', 'edit')]: false,
     [permKey('ai_assistant', 'delete')]: false,
+    // crew — manage (no delete)
+    ...allActions(['crew']),
+    [permKey('crew', 'delete')]: false,
+    // equipment — manage (no delete)
+    ...allActions(['equipment']),
+    [permKey('equipment', 'delete')]: false,
+    // leads — manage (no delete)
+    ...allActions(['leads']),
+    [permKey('leads', 'delete')]: false,
+    // warehouse — manage (no delete)
+    ...allActions(['warehouse']),
+    [permKey('warehouse', 'delete')]: false,
   },
 
   // designer — creative focus
@@ -187,6 +199,17 @@ export const DEFAULT_PERMISSIONS: Record<OrganizationRole, Record<string, boolea
     [permKey('ai_assistant', 'create')]: false,
     [permKey('ai_assistant', 'edit')]: false,
     [permKey('ai_assistant', 'delete')]: false,
+    // crew — view only
+    ...viewOnly(['crew']),
+    // equipment — view + edit (design assets)
+    [permKey('equipment', 'view')]: true,
+    [permKey('equipment', 'create')]: false,
+    [permKey('equipment', 'edit')]: true,
+    [permKey('equipment', 'delete')]: false,
+    // leads — view only
+    ...viewOnly(['leads']),
+    // warehouse — view only
+    ...viewOnly(['warehouse']),
   },
 
   // fabricator — production focus
@@ -226,6 +249,20 @@ export const DEFAULT_PERMISSIONS: Record<OrganizationRole, Record<string, boolea
     [permKey('ai_assistant', 'create')]: false,
     [permKey('ai_assistant', 'edit')]: false,
     [permKey('ai_assistant', 'delete')]: false,
+    // crew — view only
+    ...viewOnly(['crew']),
+    // equipment — view + edit (fabrication)
+    [permKey('equipment', 'view')]: true,
+    [permKey('equipment', 'create')]: true,
+    [permKey('equipment', 'edit')]: true,
+    [permKey('equipment', 'delete')]: false,
+    // leads — none
+    ...noPerm(['leads']),
+    // warehouse — view + edit (production floor)
+    [permKey('warehouse', 'view')]: true,
+    [permKey('warehouse', 'create')]: true,
+    [permKey('warehouse', 'edit')]: true,
+    [permKey('warehouse', 'delete')]: false,
   },
 
   // installer — same as fabricator
@@ -259,6 +296,20 @@ export const DEFAULT_PERMISSIONS: Record<OrganizationRole, Record<string, boolea
     [permKey('ai_assistant', 'create')]: false,
     [permKey('ai_assistant', 'edit')]: false,
     [permKey('ai_assistant', 'delete')]: false,
+    // crew — view only
+    ...viewOnly(['crew']),
+    // equipment — view + edit (install work)
+    [permKey('equipment', 'view')]: true,
+    [permKey('equipment', 'create')]: false,
+    [permKey('equipment', 'edit')]: true,
+    [permKey('equipment', 'delete')]: false,
+    // leads — none
+    ...noPerm(['leads']),
+    // warehouse — view + edit (pick/pack)
+    [permKey('warehouse', 'view')]: true,
+    [permKey('warehouse', 'create')]: true,
+    [permKey('warehouse', 'edit')]: true,
+    [permKey('warehouse', 'delete')]: false,
   },
 
   // Client roles — portal only, no admin app access

@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
   // Fetch the asset
   const { data: asset, error: assetError } = await supabase
     .from('assets')
-    .select('*')
+    .select()
     .eq('organization_id', orgId)
     .eq('id', assetId)
     .single();
@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
   // A reservation overlaps if it starts before the range ends AND ends after the range starts
   const { data: reservations, error: resError } = await supabase
     .from('equipment_reservations')
-    .select('*')
+    .select()
     .eq('organization_id', orgId)
     .eq('asset_id', assetId)
     .not('status', 'in', '("cancelled","returned")')

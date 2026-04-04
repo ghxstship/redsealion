@@ -43,7 +43,7 @@ export async function POST(
   // Fetch the invoice to validate balance
   const { data: invoice, error: fetchError } = await supabase
     .from('invoices')
-    .select('*')
+    .select()
     .eq('id', id)
     .eq('organization_id', perm.organizationId)
     .single();

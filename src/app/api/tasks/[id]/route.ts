@@ -55,7 +55,7 @@ export async function PATCH(
   // Fetch current task to detect status changes
   const { data: existingTask, error: fetchError } = await supabase
     .from('tasks')
-    .select('*')
+    .select()
     .eq('id', id)
     .eq('organization_id', orgId)
     .single();
@@ -110,7 +110,7 @@ export async function PATCH(
       old_status: existingTask.status,
       new_status: status,
       assignee_id: task.assignee_id,
-    }).catch(() => {});
+    }).catch(() => { /* best-effort, failure is non-critical */ });
   }
 
   return NextResponse.json({ success: true, task });

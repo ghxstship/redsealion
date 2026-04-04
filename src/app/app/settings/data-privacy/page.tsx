@@ -2,15 +2,12 @@
 
 import { useState } from 'react';
 
-const demoSessions = [
-  { id: '1', browser: 'Chrome 124 on macOS', ip: '192.168.1.42', lastActive: '2 minutes ago', current: true },
-  { id: '2', browser: 'Safari 17 on iPhone', ip: '10.0.0.15', lastActive: '3 hours ago', current: false },
-];
+// Demo sessions mock removed
 
 export default function DataPrivacyPage() {
   const [auditRetention, setAuditRetention] = useState('90');
   const [deletedRetention, setDeletedRetention] = useState('30');
-  const [sessions, setSessions] = useState(demoSessions);
+  const [sessions, setSessions] = useState<Array<{ id: string; browser: string; ip: string; lastActive: string; current: boolean }>>([]);
   const [deletePassword, setDeletePassword] = useState('');
   const [orgConfirm, setOrgConfirm] = useState('');
   const [exporting, setExporting] = useState(false);

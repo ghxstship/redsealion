@@ -1,7 +1,6 @@
 import { TierGate } from '@/components/shared/TierGate';
 import PipelineBoard from '@/components/admin/pipeline/PipelineBoard';
 import { createClient } from '@/lib/supabase/server';
-import { getSeedDeals, getSeedClients } from '@/lib/seed-data';
 import type { Deal } from '@/types/database';
 
 type DealWithClient = Deal & { client_name: string };
@@ -13,7 +12,7 @@ async function getDeals(): Promise<DealWithClient[]> {
       data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user) throw new Error('No auth');
+    if (!user) return [];
 
     const { data: userData } = await supabase
       .from('users')
@@ -21,7 +20,7 @@ async function getDeals(): Promise<DealWithClient[]> {
       .eq('id', user.id)
       .single();
 
-    if (!userData) throw new Error('No org');
+    if (!userData) return [];
 
     const { data: deals } = await supabase
       .from('deals')
@@ -29,7 +28,7 @@ async function getDeals(): Promise<DealWithClient[]> {
       .eq('organization_id', userData.organization_id)
       .order('created_at', { ascending: false });
 
-    if (!deals) throw new Error('No deals');
+    if (!deals) return [];
 
     return deals.map((d: Record<string, unknown>) => {
       const { clients: _clients, ...rest } = d;
@@ -39,14 +38,7 @@ async function getDeals(): Promise<DealWithClient[]> {
       } as unknown as DealWithClient;
     });
   } catch {
-    // Fallback to seed data
-    const deals = getSeedDeals();
-    const clients = getSeedClients();
-    return deals.map((d) => ({
-      ...d,
-      client_name:
-        clients.find((c) => c.id === d.client_id)?.company_name ?? 'Unknown',
-    }));
+    return [];
   }
 }
 

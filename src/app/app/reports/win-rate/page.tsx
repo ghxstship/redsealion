@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { TierGate } from '@/components/shared/TierGate';
 import { createClient } from '@/lib/supabase/server';
-import { getSeedDeals, getSeedClients } from '@/lib/seed-data';
 import MetricGrid from '@/components/admin/reports/MetricGrid';
 import ChartContainer from '@/components/admin/reports/ChartContainer';
 import type { DealStage } from '@/types/database';
@@ -37,14 +36,7 @@ async function getDealsData() {
       }>,
     };
   } catch {
-    const deals = getSeedDeals();
-    const clients = getSeedClients();
-    return {
-      deals: deals.map((d) => ({
-        ...d,
-        clients: { company_name: clients.find((c) => c.id === d.client_id)?.company_name ?? 'Unknown' },
-      })),
-    };
+    return { deals: [] };
   }
 }
 

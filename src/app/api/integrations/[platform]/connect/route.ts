@@ -5,6 +5,10 @@ import { requirePermission } from '@/lib/api/permission-guard';
 import { randomBytes } from 'crypto';
 import { getAdapter, envPrefix } from '@/lib/integrations/registry';
 
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('integrations');
+
 export async function POST(
   _request: NextRequest,
   { params }: { params: Promise<{ platform: string }> },
@@ -67,7 +71,7 @@ export async function POST(
 
     return response;
   } catch (error) {
-    console.error(`Integration connect error [${platform}]:`, error);
+    log.error(`Integration connect error [${platform}]:`, {}, error);
     return NextResponse.json(
       { error: 'Failed to initiate connection' },
       { status: 500 },

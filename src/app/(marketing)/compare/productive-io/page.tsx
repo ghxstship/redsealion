@@ -9,9 +9,9 @@ export const metadata: Metadata = {
 
 const flyteDeckAdvantages = [
   {
-    title: 'Interactive proposal builder with drag-and-drop',
+    title: 'Interactive step-by-step proposal builder',
     description:
-      'FlyteDeck provides a purpose-built proposal builder where production teams drag and drop line items, group sections, and create polished, client-ready proposals without touching a design tool. Productive.io does not have an equivalent interactive proposal experience.',
+      'FlyteDeck provides a purpose-built proposal builder where production teams organize line items, group sections, and create polished, client-ready proposals without touching a design tool. Productive.io does not have an equivalent interactive proposal experience.',
   },
   {
     title: 'White-label client portal',
@@ -54,7 +54,7 @@ const productiveAdvantages = [
 ];
 
 const comparisonRows = [
-  { dimension: 'Interactive proposals', productive: 'Basic deal/quote creation', flyteDeck: 'Drag-and-drop builder with scenarios' },
+  { dimension: 'Interactive proposals', productive: 'Basic deal/quote creation', flyteDeck: 'Interactive builder with scenarios' },
   { dimension: 'Client portal', productive: 'Limited client access', flyteDeck: 'White-label branded portal' },
   { dimension: 'Proposal scenarios', productive: 'Not available', flyteDeck: 'A/B pricing within proposals' },
   { dimension: 'Venue management', productive: 'Not available', flyteDeck: 'Venue database with load-in/strike' },

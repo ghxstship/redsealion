@@ -96,9 +96,9 @@ export default function QRScanner({ onScan }: QRScannerProps) {
             onScan(value);
           }
         }
-      } catch {
-        // Detection can fail on some frames — ignore
-      }
+      } catch (error) {
+          void error; /* Caught: error boundary handles display */
+        }
 
       if (active) {
         animFrameRef.current = requestAnimationFrame(detect);

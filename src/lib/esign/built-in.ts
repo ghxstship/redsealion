@@ -1,11 +1,14 @@
 import crypto from 'crypto';
 import { createServiceClient } from '@/lib/supabase/server';
+import { createLogger } from '@/lib/logger';
 import type {
   ESignProvider,
   ESignCreateOptions,
   ESignCreateResult,
   ESignStatusResult,
 } from './provider';
+
+const log = createLogger('esign');
 
 /**
  * Built-in e-signature provider.
@@ -41,7 +44,7 @@ export class BuiltInESignProvider implements ESignProvider {
       .single();
 
     if (error || !data) {
-      console.error('[ESign] Failed to create request:', error);
+      log.error('[ESign] Failed to create request:', {}, error);
       throw new Error('Failed to create signature request');
     }
 
@@ -63,7 +66,7 @@ export class BuiltInESignProvider implements ESignProvider {
       .single();
 
     if (error || !data) {
-      console.error('[ESign] Failed to get status:', error);
+      log.error('[ESign] Failed to get status:', {}, error);
       throw new Error('Signature request not found');
     }
 

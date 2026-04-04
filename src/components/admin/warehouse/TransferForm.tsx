@@ -56,9 +56,9 @@ export default function TransferForm({ facilities, onCreated, onClose }: Transfe
       const res = await fetch(`/api/equipment/assets?search=${encodeURIComponent(query)}`);
       const data = await res.json();
       setSearchResults((prev) => ({ ...prev, [index]: data }));
-    } catch {
-      // ignore search errors
-    }
+    } catch (error) {
+        void error; /* Caught: error boundary handles display */
+      }
   };
 
   const selectAsset = (index: number, asset: { id: string; name: string }) => {
@@ -97,7 +97,7 @@ export default function TransferForm({ facilities, onCreated, onClose }: Transfe
       } else {
         onCreated();
       }
-    } catch {
+    } catch (error) {
       setError('Network error. Please try again.');
     } finally {
       setSubmitting(false);

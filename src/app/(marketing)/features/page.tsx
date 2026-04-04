@@ -26,7 +26,7 @@ const categories: FeatureCategory[] = [
       {
         title: 'Interactive Proposal Builder',
         description:
-          'Drag-and-drop sections, rich media embeds, and real-time preview so clients see exactly what you see.',
+          'Step-by-step builder with deliverables, add-ons, milestone gates, and instant preview so clients see exactly what you see.',
       },
       {
         title: 'Proposal Templates',
@@ -41,7 +41,7 @@ const categories: FeatureCategory[] = [
       {
         title: 'Client Portal',
         description:
-          'A branded portal where clients review proposals, leave comments, approve, and e-sign.',
+          'A branded portal where clients review proposals, approve phases, and track project progress.',
       },
       {
         title: 'Sales Pipeline',
@@ -75,9 +75,9 @@ const categories: FeatureCategory[] = [
           'Issue credits and manage adjustments without losing an audit trail.',
       },
       {
-        title: 'Accounting Sync',
+        title: 'Accounting Integration',
         description:
-          'Push invoices and pull payment status from QuickBooks and Xero in real time.',
+          'Connect to QuickBooks and Xero to push invoices and reconcile payment status.',
       },
       {
         title: 'Budget Tracking',
@@ -103,7 +103,7 @@ const categories: FeatureCategory[] = [
       {
         title: 'Resource Scheduling',
         description:
-          'Drag-and-drop allocation with utilization heat maps to balance workloads across your team.',
+          'Team allocation with utilization tracking to balance workloads across your crew.',
       },
       {
         title: 'Capacity Planning',
@@ -132,14 +132,14 @@ const categories: FeatureCategory[] = [
     tier: 'Professional and above',
     features: [
       {
-        title: 'CRM Sync',
+        title: 'CRM Integration',
         description:
-          'Two-way sync with Salesforce, HubSpot, and Pipedrive to keep your sales data consistent.',
+          'Connect to Salesforce, HubSpot, and Pipedrive to keep your sales data consistent.',
       },
       {
-        title: 'PM Sync',
+        title: 'PM Integration',
         description:
-          'Synchronize tasks with ClickUp, Asana, and Monday so nothing falls through the cracks.',
+          'Connect tasks with ClickUp, Asana, and Monday so nothing falls through the cracks.',
       },
       {
         title: 'Automations',
@@ -154,7 +154,7 @@ const categories: FeatureCategory[] = [
       {
         title: 'Email Inbox',
         description:
-          'Linked email threads on deals and projects so every conversation lives in context.',
+          'Linked email threads on deals and projects so every conversation lives in context. Coming soon.',
       },
     ],
   },
@@ -201,7 +201,7 @@ const categories: FeatureCategory[] = [
       {
         title: 'SSO',
         description:
-          'Single sign-on for enterprise security with support for SAML and OIDC providers.',
+          'Single sign-on for enterprise security with support for SAML and OIDC providers. Coming soon.',
       },
       {
         title: 'White-Label Branding',

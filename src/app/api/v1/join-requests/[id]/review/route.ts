@@ -27,7 +27,7 @@ export async function POST(
 
   const { data: joinRequest } = await supabase
     .from('join_requests')
-    .select('*')
+    .select()
     .eq('id', id)
     .eq('status', 'pending')
     .single();

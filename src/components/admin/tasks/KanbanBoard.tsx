@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface KanbanTask {
   id: string;
@@ -19,21 +19,11 @@ const COLUMN_LABELS: Record<Column, string> = {
   done: 'Done',
 };
 
-const initialTasks: Record<Column, KanbanTask[]> = {
-  todo: [
-    { id: '1', title: 'Design booth layout', priority: 'high', assignee: 'Sarah C.' },
-    { id: '2', title: 'Source materials', priority: 'medium', assignee: null },
-  ],
-  in_progress: [
-    { id: '3', title: 'Build stage platform', priority: 'high', assignee: 'Mike J.' },
-    { id: '4', title: 'Create LED content', priority: 'medium', assignee: 'Emily D.' },
-  ],
-  review: [
-    { id: '5', title: 'Client signoff on mockups', priority: 'urgent', assignee: 'Jordan L.' },
-  ],
-  done: [
-    { id: '6', title: 'Site survey complete', priority: 'low', assignee: 'Alex K.' },
-  ],
+const STATUS_MAP: Record<string, Column> = {
+  todo: 'todo',
+  in_progress: 'in_progress',
+  review: 'review',
+  done: 'done',
 };
 
 function priorityDot(priority: string): string {
@@ -46,8 +36,56 @@ function priorityDot(priority: string): string {
   return map[priority] ?? 'bg-gray-300';
 }
 
+function emptyBoard(): Record<Column, KanbanTask[]> {
+  return { todo: [], in_progress: [], review: [], done: [] };
+}
+
 export default function KanbanBoard() {
-  const [tasks] = useState(initialTasks);
+  const [tasks, setTasks] = useState<Record<Column, KanbanTask[]>>(emptyBoard);
+
+  useEffect(() => {
+    async function loadTasks() {
+      try {
+        const { createClient } = await import('@/lib/supabase/client');
+        const supabase = createClient();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { data: userData } = await supabase
+          .from('users')
+          .select('organization_id')
+          .eq('id', user.id)
+          .single();
+        if (!userData) return;
+
+        const { data: taskRows } = await supabase
+          .from('tasks')
+          .select('id, title, priority, status, assigned_to, users!tasks_assigned_to_fkey(full_name)')
+          .eq('organization_id', userData.organization_id)
+          .order('sort_order', { ascending: true });
+
+        if (!taskRows || taskRows.length === 0) return;
+
+        const grouped = emptyBoard();
+        for (const row of taskRows) {
+          const col = STATUS_MAP[row.status as string] ?? 'todo';
+          const assigneeUser = row.users as unknown as { full_name: string } | null;
+          grouped[col].push({
+            id: row.id,
+            title: row.title,
+            priority: (row.priority as string) ?? 'medium',
+            assignee: assigneeUser?.full_name ?? null,
+          });
+        }
+        setTasks(grouped);
+      } catch {
+        // Silent fail — board shows empty
+      }
+    }
+    loadTasks();
+  }, []);
 
   return (
     <div className="flex gap-4 overflow-x-auto pb-4">
@@ -78,6 +116,11 @@ export default function KanbanBoard() {
                   )}
                 </div>
               ))}
+              {tasks[col].length === 0 && (
+                <div className="flex items-center justify-center h-20 text-xs text-text-muted">
+                  No tasks
+                </div>
+              )}
             </div>
           </div>
         </div>

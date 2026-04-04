@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 type EntityType = 'equipment' | 'crew' | 'project' | 'lead' | 'client';
 
@@ -23,53 +23,37 @@ interface Tag {
   color: string;
 }
 
-const fallbackTags: Record<EntityType, Tag[]> = {
-  equipment: [
-    { id: 'eq-1', name: 'Lighting', color: '#EAB308' },
-    { id: 'eq-2', name: 'Audio', color: '#3B82F6' },
-    { id: 'eq-3', name: 'Video', color: '#8B5CF6' },
-    { id: 'eq-4', name: 'Rigging', color: '#F97316' },
-    { id: 'eq-5', name: 'Power', color: '#EF4444' },
-    { id: 'eq-6', name: 'Staging', color: '#22C55E' },
-  ],
-  crew: [
-    { id: 'cr-1', name: 'Lighting Tech', color: '#EAB308' },
-    { id: 'cr-2', name: 'Audio Engineer', color: '#3B82F6' },
-    { id: 'cr-3', name: 'Video Op', color: '#8B5CF6' },
-    { id: 'cr-4', name: 'Stage Manager', color: '#F97316' },
-    { id: 'cr-5', name: 'Rigger', color: '#EF4444' },
-    { id: 'cr-6', name: 'Driver', color: '#22C55E' },
-  ],
-  project: [
-    { id: 'pr-1', name: 'Corporate', color: '#3B82F6' },
-    { id: 'pr-2', name: 'Festival', color: '#EC4899' },
-    { id: 'pr-3', name: 'Product Launch', color: '#8B5CF6' },
-    { id: 'pr-4', name: 'Concert', color: '#EF4444' },
-    { id: 'pr-5', name: 'Experiential', color: '#06B6D4' },
-    { id: 'pr-6', name: 'Brand Activation', color: '#F97316' },
-  ],
-  lead: [
-    { id: 'le-1', name: 'Hot', color: '#EF4444' },
-    { id: 'le-2', name: 'Warm', color: '#F97316' },
-    { id: 'le-3', name: 'Cold', color: '#3B82F6' },
-    { id: 'le-4', name: 'VIP', color: '#8B5CF6' },
-    { id: 'le-5', name: 'Returning', color: '#22C55E' },
-  ],
-  client: [
-    { id: 'cl-1', name: 'Enterprise', color: '#3B82F6' },
-    { id: 'cl-2', name: 'Mid-Market', color: '#06B6D4' },
-    { id: 'cl-3', name: 'Startup', color: '#22C55E' },
-    { id: 'cl-4', name: 'Agency', color: '#8B5CF6' },
-    { id: 'cl-5', name: 'Brand', color: '#EC4899' },
-  ],
-};
+// Fallback data removed - tags load from server
 
 export default function TagsSettingsPage() {
   const [activeType, setActiveType] = useState<EntityType>('equipment');
-  const [tags, setTags] = useState<Record<EntityType, Tag[]>>(() => ({ ...fallbackTags }));
+  const [tags, setTags] = useState<Record<EntityType, Tag[]>>({
+    equipment: [], crew: [], project: [], lead: [], client: []
+  });
+  const [loaded, setLoaded] = useState(false);
   const [showAdd, setShowAdd] = useState(false);
   const [newName, setNewName] = useState('');
   const [newColor, setNewColor] = useState(presetColors[0]);
+
+  useEffect(() => {
+    fetch('/api/settings/tags')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.tags && Array.isArray(data.tags)) {
+          const grouped: Record<EntityType, Tag[]> = {
+            equipment: [], crew: [], project: [], lead: [], client: []
+          };
+          data.tags.forEach((t: { id: string; entity_type: EntityType; name: string; color: string }) => {
+            if (grouped[t.entity_type]) {
+              grouped[t.entity_type].push({ id: t.id, name: t.name, color: t.color });
+            }
+          });
+          setTags(grouped);
+        }
+        setLoaded(true);
+      })
+      .catch(() => setLoaded(true));
+  }, []);
 
   function handleAdd() {
     if (!newName.trim()) return;
@@ -88,7 +72,7 @@ export default function TagsSettingsPage() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ entity_type: activeType, name: tag.name, color: tag.color }),
-    }).catch(() => {});
+    }).catch(() => { /* best-effort, failure is non-critical */ });
 
     setNewName('');
     setNewColor(presetColors[0]);
@@ -101,10 +85,12 @@ export default function TagsSettingsPage() {
       [activeType]: prev[activeType].filter((t) => t.id !== tagId),
     }));
 
-    fetch(`/api/settings/tags?id=${tagId}`, { method: 'DELETE' }).catch(() => {});
+    fetch(`/api/settings/tags?id=${tagId}`, { method: 'DELETE' }).catch(() => { /* best-effort, failure is non-critical */ });
   }
 
-  const currentTags = tags[activeType];
+  const currentTags = tags[activeType] || [];
+
+  if (!loaded) return null;
 
   return (
     <div className="max-w-2xl space-y-6">

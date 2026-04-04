@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
   // Fetch the reservation scoped to the org
   const { data: reservation, error: fetchError } = await supabase
     .from('equipment_reservations')
-    .select('*')
+    .select()
     .eq('organization_id', orgId)
     .eq('id', reservation_id)
     .single();

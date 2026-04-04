@@ -1,3 +1,6 @@
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('email');
 /**
  * Email provider abstraction for the notification system.
  */
@@ -24,7 +27,7 @@ export class ResendEmailProvider implements EmailProvider {
 
   async send(to: string, subject: string, html: string): Promise<void> {
     if (!this.apiKey) {
-      console.warn('[Email] RESEND_API_KEY is not set -- skipping email send');
+      log.warn('[Email] RESEND_API_KEY is not set -- skipping email send', {});
       return;
     }
 
@@ -45,10 +48,10 @@ export class ResendEmailProvider implements EmailProvider {
 
       if (!response.ok) {
         const errorBody = await response.text();
-        console.error('[Email] Resend API error:', response.status, errorBody);
+        log.error('[Email] Resend API error', { status: response.status }, new Error(errorBody));
       }
     } catch (error) {
-      console.error('[Email] Failed to send via Resend:', error);
+      log.error('[Email] Failed to send via Resend:', {}, error);
     }
   }
 }

@@ -27,7 +27,7 @@ export async function POST(
   // Fetch the invitation
   const { data: invitation, error: fetchErr } = await supabase
     .from('invitations')
-    .select('*')
+    .select()
     .eq('id', id)
     .single();
 

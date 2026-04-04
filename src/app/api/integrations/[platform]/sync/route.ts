@@ -4,6 +4,10 @@ import { requireFeature } from '@/lib/api/tier-guard';
 import { requirePermission } from '@/lib/api/permission-guard';
 import { getAdapter } from '@/lib/integrations/registry';
 
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('integrations');
+
 export async function POST(
   _request: NextRequest,
   { params }: { params: Promise<{ platform: string }> },
@@ -119,7 +123,7 @@ export async function POST(
           .eq('id', syncLog.id);
       }
 
-      console.error(`Sync adapter error [${platform}]:`, syncError);
+      log.error(`Sync adapter error [${platform}]:`, {}, syncError);
       return NextResponse.json(
         {
           error: 'Sync failed',
@@ -130,7 +134,7 @@ export async function POST(
       );
     }
   } catch (error) {
-    console.error(`Sync error [${platform}]:`, error);
+    log.error(`Sync error [${platform}]:`, {}, error);
     return NextResponse.json({ error: 'Sync failed' }, { status: 500 });
   }
 }

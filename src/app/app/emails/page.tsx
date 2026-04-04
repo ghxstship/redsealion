@@ -61,7 +61,7 @@ async function getEmailThreads(): Promise<EmailThreadRow[]> {
     // Try email_threads table first
     const { data: threads, error } = await supabase
       .from('email_threads')
-      .select('*')
+      .select()
       .eq('organization_id', userData.organization_id)
       .order('last_message_at', { ascending: false });
 
@@ -69,7 +69,7 @@ async function getEmailThreads(): Promise<EmailThreadRow[]> {
       // Fall back to email_messages if email_threads doesn't exist
       const { data: messages } = await supabase
         .from('email_messages')
-        .select('*')
+        .select()
         .eq('organization_id', userData.organization_id)
         .order('sent_at', { ascending: false });
 

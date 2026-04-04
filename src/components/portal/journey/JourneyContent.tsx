@@ -112,15 +112,16 @@ export default function JourneyContent({
 
   const handleMilestoneApprove = useCallback(
     (milestoneId: string, requirementId: string) => {
-      // Placeholder — would call API
-      console.log('Approve milestone requirement:', milestoneId, requirementId);
+      // Stub: call POST /api/proposals/[id]/milestones/[mid]/requirements/[rid]/approve
+      void milestoneId;
+      void requirementId;
     },
     []
   );
 
   const handleAccept = useCallback(() => {
-    // Placeholder — would call API
-    console.log('Proposal accepted. Selected addons:', Array.from(selectedAddonIds));
+    // Stub: call POST /api/proposals/[id]/accept with selectedAddonIds
+    void selectedAddonIds;
   }, [selectedAddonIds]);
 
   const timelinePhases = phases.map((p) => ({

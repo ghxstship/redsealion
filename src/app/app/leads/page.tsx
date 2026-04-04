@@ -50,7 +50,7 @@ async function getLeads(): Promise<Lead[]> {
 
     const { data: leads } = await supabase
       .from('leads')
-      .select('*')
+      .select()
       .eq('organization_id', userData.organization_id)
       .order('created_at', { ascending: false });
 

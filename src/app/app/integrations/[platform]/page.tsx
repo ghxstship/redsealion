@@ -138,8 +138,8 @@ export default function IntegrationConfigPage({
             sourceFields={CRM_SOURCE_FIELDS}
             targetFields={CRM_TARGET_FIELDS}
             onSave={(mappings) => {
-              // Placeholder: save mappings to integration config
-              console.log('Saving mappings:', mappings);
+              // Stub: persist mappings to integration config via PATCH /api/integrations/[platform]
+              void mappings;
             }}
           />
         </div>

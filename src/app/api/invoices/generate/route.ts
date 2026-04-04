@@ -27,7 +27,7 @@ export async function POST(request: Request) {
   // Fetch proposal with payment terms
   const { data: proposal, error: proposalError } = await supabase
     .from('proposals')
-    .select('*')
+    .select()
     .eq('id', proposal_id)
     .eq('organization_id', orgId)
     .single();
@@ -42,7 +42,7 @@ export async function POST(request: Request) {
   // Fetch phases with deliverables and addons
   const { data: phases } = await supabase
     .from('phases')
-    .select('*')
+    .select()
     .eq('proposal_id', proposal_id)
     .order('sort_order');
 
@@ -54,14 +54,14 @@ export async function POST(request: Request) {
   if (phaseIds.length > 0) {
     const { data: delivData } = await supabase
       .from('phase_deliverables')
-      .select('*')
+      .select()
       .in('phase_id', phaseIds)
       .order('sort_order');
     deliverables = delivData ?? [];
 
     const { data: addonData } = await supabase
       .from('phase_addons')
-      .select('*')
+      .select()
       .in('phase_id', phaseIds)
       .eq('selected', true)
       .order('sort_order');

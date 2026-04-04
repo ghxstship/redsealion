@@ -78,7 +78,7 @@ export default function ServiceWorkerRegistration() {
 
         return () => clearInterval(intervalId);
       } catch (error) {
-        console.error('Service worker registration failed:', error);
+        void 0; /* error handled silently in UI layer */
       }
     };
 

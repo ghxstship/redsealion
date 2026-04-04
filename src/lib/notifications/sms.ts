@@ -1,3 +1,6 @@
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('sms');
 /**
  * SMS provider abstraction for the notification system.
  */
@@ -26,7 +29,7 @@ export class TwilioSmsProvider implements SmsProvider {
 
   async send(to: string, body: string): Promise<void> {
     if (!this.accountSid || !this.authToken || !this.fromNumber) {
-      console.warn('[SMS] Twilio env vars not configured -- skipping SMS send');
+      log.warn('[SMS] Twilio env vars not configured -- skipping SMS send', {});
       return;
     }
 
@@ -51,10 +54,10 @@ export class TwilioSmsProvider implements SmsProvider {
 
       if (!response.ok) {
         const errorBody = await response.text();
-        console.error('[SMS] Twilio API error:', response.status, errorBody);
+        log.error('[SMS] Twilio API error', { status: response.status }, new Error(errorBody));
       }
     } catch (error) {
-      console.error('[SMS] Failed to send via Twilio:', error);
+      log.error('[SMS] Failed to send via Twilio:', {}, error);
     }
   }
 }

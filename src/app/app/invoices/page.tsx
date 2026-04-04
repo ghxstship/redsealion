@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { formatCurrency, statusColor } from '@/lib/utils';
 import { TierGate } from '@/components/shared/TierGate';
 import { createClient } from '@/lib/supabase/server';
-import { getSeedInvoices, getSeedClients } from '@/lib/seed-data';
 import InvoiceTabs from '@/components/admin/invoices/InvoiceTabs';
 
 interface InvoiceRow {
@@ -24,7 +23,7 @@ async function getInvoices(): Promise<InvoiceRow[]> {
       data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user) throw new Error('No auth');
+    if (!user) return [];
 
     const { data: userData } = await supabase
       .from('users')
@@ -32,7 +31,7 @@ async function getInvoices(): Promise<InvoiceRow[]> {
       .eq('id', user.id)
       .single();
 
-    if (!userData) throw new Error('No org');
+    if (!userData) return [];
 
     const { data: invoices } = await supabase
       .from('invoices')
@@ -40,7 +39,7 @@ async function getInvoices(): Promise<InvoiceRow[]> {
       .eq('organization_id', userData.organization_id)
       .order('issue_date', { ascending: false });
 
-    if (!invoices) throw new Error('No invoices');
+    if (!invoices) return [];
 
     return invoices.map((inv: Record<string, unknown>) => ({
       id: inv.id as string,
@@ -54,20 +53,7 @@ async function getInvoices(): Promise<InvoiceRow[]> {
       due_date: inv.due_date as string,
     }));
   } catch {
-    const invoices = getSeedInvoices();
-    const clients = getSeedClients();
-    return invoices.map((inv) => ({
-      id: inv.id,
-      invoice_number: inv.invoice_number,
-      client_name:
-        clients.find((c) => c.id === inv.client_id)?.company_name ?? 'Unknown',
-      type: inv.type,
-      status: inv.status,
-      total: inv.total,
-      amount_paid: inv.amount_paid,
-      issue_date: inv.issue_date,
-      due_date: inv.due_date,
-    }));
+    return [];
   }
 }
 

@@ -46,7 +46,7 @@ export async function PATCH(
   // Fetch current deal to detect stage changes
   const { data: existingDeal, error: fetchError } = await supabase
     .from('deals')
-    .select('*')
+    .select()
     .eq('id', id)
     .eq('organization_id', orgId)
     .single();

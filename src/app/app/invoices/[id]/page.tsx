@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { formatCurrency, formatCurrencyDetailed, statusColor } from '@/lib/utils';
 import { TierGate } from '@/components/shared/TierGate';
 import { createClient } from '@/lib/supabase/server';
-import { getSeedInvoices, getSeedClients } from '@/lib/seed-data';
 import PaymentRecorder from '@/components/admin/invoices/PaymentRecorder';
 
 interface InvoiceDetail {
@@ -56,12 +55,12 @@ async function getInvoice(id: string): Promise<InvoiceDetail | null> {
 
     const { data: lineItems } = await supabase
       .from('invoice_line_items')
-      .select('*')
+      .select()
       .eq('invoice_id', id);
 
     const { data: payments } = await supabase
       .from('invoice_payments')
-      .select('*')
+      .select()
       .eq('invoice_id', id)
       .order('received_date', { ascending: false });
 
@@ -97,49 +96,7 @@ async function getInvoice(id: string): Promise<InvoiceDetail | null> {
       })),
     };
   } catch {
-    // Fallback seed data
-    const invoices = getSeedInvoices();
-    const clients = getSeedClients();
-    const inv = invoices.find((i) => i.id === id) ?? invoices[0];
-    return {
-      id: inv.id,
-      invoice_number: inv.invoice_number,
-      client_name:
-        clients.find((c) => c.id === inv.client_id)?.company_name ?? 'Unknown',
-      type: inv.type,
-      status: inv.status,
-      total: inv.total,
-      subtotal: inv.subtotal,
-      tax_amount: inv.tax_amount,
-      amount_paid: inv.amount_paid,
-      currency: inv.currency,
-      memo: inv.memo,
-      issue_date: inv.issue_date,
-      due_date: inv.due_date,
-      paid_date: inv.paid_date,
-      sent_at: inv.sent_at ?? null,
-      line_items: [
-        {
-          id: 'li_1',
-          description: inv.memo ?? 'Services',
-          quantity: 1,
-          rate: inv.subtotal,
-          amount: inv.subtotal,
-        },
-      ],
-      payments:
-        inv.status === 'paid'
-          ? [
-              {
-                id: 'pay_1',
-                amount: inv.amount_paid,
-                method: 'wire',
-                received_date: inv.paid_date ?? inv.due_date,
-                reference: null,
-              },
-            ]
-          : [],
-    };
+    return null;
   }
 }
 

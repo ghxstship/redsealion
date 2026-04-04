@@ -1,73 +1,49 @@
-const categories = ['All', 'Pop-Up', 'Installation', 'Festival', 'Launch', 'Retail'];
+import { createClient } from '@/lib/supabase/server';
 
-const portfolioItems = [
-  {
-    id: 'port_001',
-    project_name: 'Nike Air Max Day 2025',
-    project_year: 2025,
-    category: 'Pop-Up',
-    client_name: 'Nike',
-    description: 'Immersive sneaker culture pop-up in downtown LA.',
-  },
-  {
-    id: 'port_002',
-    project_name: 'Spotify Wrapped NYC',
-    project_year: 2025,
-    category: 'Installation',
-    client_name: 'Spotify',
-    description: 'Interactive data visualization installation at Hudson Yards.',
-  },
-  {
-    id: 'port_003',
-    project_name: 'Mercedes EQE Reveal',
-    project_year: 2025,
-    category: 'Launch',
-    client_name: 'Mercedes-Benz',
-    description: 'Premium EV launch experience with holographic displays.',
-  },
-  {
-    id: 'port_004',
-    project_name: 'Red Bull Sound Clash',
-    project_year: 2024,
-    category: 'Festival',
-    client_name: 'Red Bull',
-    description: 'Multi-stage music festival activation with branded environments.',
-  },
-  {
-    id: 'port_005',
-    project_name: 'Apple Vision Pro Demo',
-    project_year: 2025,
-    category: 'Retail',
-    client_name: 'Apple',
-    description: 'Spatial computing demo suite for flagship retail locations.',
-  },
-  {
-    id: 'port_006',
-    project_name: 'Spotify Listening Lounge',
-    project_year: 2025,
-    category: 'Installation',
-    client_name: 'Spotify',
-    description: 'Intimate premium listening experience for emerging artists at SXSW.',
-  },
-  {
-    id: 'port_007',
-    project_name: 'Nike SNKRS Fest',
-    project_year: 2025,
-    category: 'Festival',
-    client_name: 'Nike',
-    description: 'Annual sneaker culture festival and brand activation.',
-  },
-  {
-    id: 'port_008',
-    project_name: 'Mercedes Pop-Up Gallery',
-    project_year: 2024,
-    category: 'Pop-Up',
-    client_name: 'Mercedes-Benz',
-    description: 'Art meets automotive in this gallery-style brand experience.',
-  },
-];
+const CATEGORIES = ['All', 'Pop-Up', 'Installation', 'Festival', 'Launch', 'Retail'];
 
-export default function PortfolioPage() {
+interface PortfolioItem {
+  id: string;
+  project_name: string;
+  project_year: number | null;
+  category: string;
+  client_name: string | null;
+  description: string | null;
+  image_url: string;
+}
+
+async function getPortfolioItems(): Promise<PortfolioItem[]> {
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) return [];
+
+    const { data: userData } = await supabase
+      .from('users')
+      .select('organization_id')
+      .eq('id', user.id)
+      .single();
+
+    if (!userData) return [];
+
+    const { data: items } = await supabase
+      .from('portfolio_library')
+      .select('id, project_name, project_year, category, client_name, description, image_url')
+      .eq('organization_id', userData.organization_id)
+      .order('project_year', { ascending: false });
+
+    return (items ?? []) as PortfolioItem[];
+  } catch {
+    return [];
+  }
+}
+
+export default async function PortfolioPage() {
+  const portfolioItems = await getPortfolioItems();
+
   return (
     <>
       {/* Header */}
@@ -77,7 +53,7 @@ export default function PortfolioPage() {
             Portfolio
           </h1>
           <p className="mt-1 text-sm text-text-secondary">
-            {portfolioItems.length} projects in your portfolio library.
+            {portfolioItems.length} project{portfolioItems.length !== 1 ? 's' : ''} in your portfolio library.
           </p>
         </div>
         <button className="inline-flex items-center justify-center gap-2 rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-foreground/90">
@@ -98,7 +74,7 @@ export default function PortfolioPage() {
 
       {/* Category filters */}
       <div className="mb-6 flex flex-wrap gap-2">
-        {categories.map((cat, idx) => (
+        {CATEGORIES.map((cat, idx) => (
           <button
             key={cat}
             className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
@@ -113,36 +89,54 @@ export default function PortfolioPage() {
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {portfolioItems.map((item) => (
-          <div
-            key={item.id}
-            className="group rounded-xl border border-border bg-white overflow-hidden transition-colors hover:border-foreground/20"
-          >
-            {/* Placeholder image */}
-            <div className="relative aspect-[4/3] bg-bg-tertiary flex items-center justify-center">
-              <div className="text-center px-4">
-                <p className="text-sm font-medium text-text-muted">{item.client_name}</p>
-                <p className="mt-1 text-xs text-text-muted">Image placeholder</p>
+      {portfolioItems.length === 0 ? (
+        <div className="rounded-xl border border-dashed border-border bg-white px-5 py-12 text-center">
+          <p className="text-sm text-text-muted">
+            No portfolio projects yet. Upload completed projects to showcase your work.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {portfolioItems.map((item) => (
+            <div
+              key={item.id}
+              className="group rounded-xl border border-border bg-white overflow-hidden transition-colors hover:border-foreground/20"
+            >
+              {/* Image */}
+              <div className="relative aspect-[4/3] bg-bg-tertiary flex items-center justify-center overflow-hidden">
+                {item.image_url ? (
+                  <img
+                    src={item.image_url}
+                    alt={item.project_name}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="text-center px-4">
+                    <p className="text-sm font-medium text-text-muted">{item.client_name ?? 'Project'}</p>
+                    <p className="mt-1 text-xs text-text-muted">No image</p>
+                  </div>
+                )}
               </div>
-            </div>
-            {/* Info */}
-            <div className="px-4 py-4">
-              <div className="flex items-start justify-between gap-2">
-                <p className="text-sm font-medium text-foreground leading-snug">
-                  {item.project_name}
-                </p>
-                <span className="shrink-0 text-xs tabular-nums text-text-muted">
-                  {item.project_year}
+              {/* Info */}
+              <div className="px-4 py-4">
+                <div className="flex items-start justify-between gap-2">
+                  <p className="text-sm font-medium text-foreground leading-snug">
+                    {item.project_name}
+                  </p>
+                  {item.project_year && (
+                    <span className="shrink-0 text-xs tabular-nums text-text-muted">
+                      {item.project_year}
+                    </span>
+                  )}
+                </div>
+                <span className="mt-2 inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">
+                  {item.category}
                 </span>
               </div>
-              <span className="mt-2 inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">
-                {item.category}
-              </span>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </>
   );
 }

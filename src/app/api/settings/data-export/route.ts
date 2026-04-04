@@ -23,10 +23,10 @@ export async function POST() {
     supabase.from('proposals').select('*').eq('organization_id', orgId),
     supabase.from('invoices').select('*').eq('organization_id', orgId),
     supabase.from('clients').select('*').eq('organization_id', orgId),
-    supabase.from('equipment').select('*').eq('organization_id', orgId),
+    supabase.from('assets').select('*').eq('organization_id', orgId),
     supabase.from('users').select('id, full_name, email, role, title, phone, created_at').eq('organization_id', orgId),
     supabase.from('tags').select('*').eq('organization_id', orgId),
-    supabase.from('crew_members').select('*').eq('organization_id', orgId),
+    supabase.from('crew_profiles').select('*').eq('organization_id', orgId),
   ]);
 
   const exportData = {

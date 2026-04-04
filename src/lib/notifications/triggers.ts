@@ -10,6 +10,10 @@ import { createServiceClient } from '@/lib/supabase/server';
 import { sendNotification } from './dispatcher';
 import * as templates from './templates';
 
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('notification-triggers');
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -113,7 +117,7 @@ export async function notifyProposalSent(
       to: contact.email,
     });
   } catch (err) {
-    console.error('[Triggers] notifyProposalSent failed:', err);
+    log.error('[Triggers] notifyProposalSent failed:', {}, err);
   }
 }
 
@@ -182,7 +186,7 @@ export async function notifyInvoiceSent(
       to: contact.email,
     });
   } catch (err) {
-    console.error('[Triggers] notifyInvoiceSent failed:', err);
+    log.error('[Triggers] notifyInvoiceSent failed:', {}, err);
   }
 }
 
@@ -234,7 +238,7 @@ export async function notifySignatureRequested(
       to: esignReq.signer_email,
     });
   } catch (err) {
-    console.error('[Triggers] notifySignatureRequested failed:', err);
+    log.error('[Triggers] notifySignatureRequested failed:', {}, err);
   }
 }
 
@@ -283,7 +287,7 @@ export async function notifySignatureCompleted(
       to: admin.email,
     });
   } catch (err) {
-    console.error('[Triggers] notifySignatureCompleted failed:', err);
+    log.error('[Triggers] notifySignatureCompleted failed:', {}, err);
   }
 }
 
@@ -333,7 +337,7 @@ export async function notifyPaymentReceived(
       to: admin.email,
     });
   } catch (err) {
-    console.error('[Triggers] notifyPaymentReceived failed:', err);
+    log.error('[Triggers] notifyPaymentReceived failed:', {}, err);
   }
 }
 
@@ -399,6 +403,146 @@ export async function notifyCrewBookingOffer(
       to: user.email,
     });
   } catch (err) {
-    console.error('[Triggers] notifyCrewBookingOffer failed:', err);
+    log.error('[Triggers] notifyCrewBookingOffer failed:', {}, err);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// 7. Payment reminder (overdue invoice)
+// ---------------------------------------------------------------------------
+
+export async function notifyPaymentReminder(
+  invoiceId: string,
+): Promise<void> {
+  try {
+    const supabase = await createServiceClient();
+
+    const { data: invoice } = await supabase
+      .from('invoices')
+      .select('id, invoice_number, total, amount_paid, due_date, currency, client_id, organization_id, payment_link')
+      .eq('id', invoiceId)
+      .single();
+
+    if (!invoice || !invoice.due_date) return;
+
+    const dueDate = new Date(invoice.due_date + 'T00:00:00');
+    const now = new Date();
+    const daysOverdue = Math.floor(
+      (now.getTime() - dueDate.getTime()) / (1000 * 60 * 60 * 24),
+    );
+
+    if (daysOverdue <= 0) return; // Not overdue
+
+    const amountDue = invoice.total - (invoice.amount_paid ?? 0);
+    if (amountDue <= 0) return; // Already fully paid
+
+    const [{ data: org }, { data: contact }] = await Promise.all([
+      supabase
+        .from('organizations')
+        .select('name, slug')
+        .eq('id', invoice.organization_id)
+        .single(),
+      supabase
+        .from('client_contacts')
+        .select('email, first_name, last_name')
+        .eq('client_id', invoice.client_id)
+        .eq('contact_role', 'primary')
+        .maybeSingle(),
+    ]);
+
+    if (!org || !contact?.email) return;
+
+    const recipientName = [contact.first_name, contact.last_name]
+      .filter(Boolean)
+      .join(' ') || 'there';
+
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
+    const paymentUrl =
+      invoice.payment_link ??
+      `${baseUrl}/portal/${org.slug}/pay/${invoiceId}`;
+
+    const admin = await getOrgAdmin(supabase, invoice.organization_id);
+
+    const tpl = templates.paymentReminder({
+      recipientName,
+      invoiceNumber: invoice.invoice_number,
+      amount: formatCurrency(amountDue, invoice.currency ?? 'USD'),
+      dueDate: formatDate(invoice.due_date),
+      daysOverdue,
+      paymentUrl,
+      orgName: org.name,
+    });
+
+    await sendNotification({
+      orgId: invoice.organization_id,
+      userId: admin?.userId ?? invoiceId,
+      eventType: 'payment.reminder',
+      channel: 'email',
+      subject: tpl.subject,
+      body: tpl.html,
+      to: contact.email,
+    });
+  } catch (err) {
+    log.error('[Triggers] notifyPaymentReminder failed:', {}, err);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// 8. Comment posted (internal notification to org admins)
+// ---------------------------------------------------------------------------
+
+export async function notifyCommentPosted(
+  commentId: string,
+  proposalId: string,
+  orgId: string,
+): Promise<void> {
+  try {
+    const supabase = await createServiceClient();
+
+    const [{ data: comment }, { data: proposal }, { data: org }] = await Promise.all([
+      supabase
+        .from('proposal_comments')
+        .select('id, body, author_id, is_internal')
+        .eq('id', commentId)
+        .single(),
+      supabase
+        .from('proposals')
+        .select('name')
+        .eq('id', proposalId)
+        .single(),
+      supabase
+        .from('organizations')
+        .select('name')
+        .eq('id', orgId)
+        .single(),
+    ]);
+
+    if (!comment || !proposal || !org) return;
+
+    const { data: author } = await supabase
+      .from('users')
+      .select('full_name')
+      .eq('id', comment.author_id)
+      .single();
+
+    const admin = await getOrgAdmin(supabase, orgId);
+    if (!admin || admin.userId === comment.author_id) return; // Don't notify self
+
+    const preview =
+      comment.body.length > 100
+        ? comment.body.slice(0, 100) + '…'
+        : comment.body;
+
+    await sendNotification({
+      orgId,
+      userId: admin.userId,
+      eventType: 'comment.posted',
+      channel: 'email',
+      subject: `New comment on ${proposal.name}`,
+      body: `${author?.full_name ?? 'Someone'} commented: "${preview}"`,
+      to: admin.email,
+    });
+  } catch (err) {
+    log.error('[Triggers] notifyCommentPosted failed:', {}, err);
   }
 }

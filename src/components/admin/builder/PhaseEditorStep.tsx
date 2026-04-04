@@ -1,115 +1,27 @@
 'use client';
 
+import {
+  type PhaseData,
+  type DeliverableData,
+  type AddonData,
+  type MilestoneRequirementData,
+  CATEGORY_SUGGESTIONS,
+  UNIT_OPTIONS,
+  ASSIGNEE_OPTIONS,
+  createEmptyDeliverable,
+  createEmptyAddon,
+  createEmptyRequirement,
+  formatCurrency,
+} from './types';
 import type { RequirementAssignee } from '@/types/database';
 
-export interface DeliverableData {
-  id: string;
-  name: string;
-  description: string;
-  category: string;
-  unit: string;
-  qty: number;
-  unitCost: number;
-  totalCost: number;
-}
-
-export interface AddonData extends DeliverableData {
-  selected: boolean;
-  mutuallyExclusiveGroup: string;
-}
-
-export interface MilestoneRequirementData {
-  id: string;
-  text: string;
-  assignee: RequirementAssignee;
-}
-
-export interface MilestoneData {
-  name: string;
-  requirements: MilestoneRequirementData[];
-}
-
-export interface PhaseData {
-  id: string;
-  number: string;
-  name: string;
-  subtitle: string;
-  narrative: string;
-  deliverables: DeliverableData[];
-  addons: AddonData[];
-  milestone: MilestoneData;
-}
+export type { DeliverableData, AddonData, MilestoneRequirementData, PhaseData } from './types';
 
 interface PhaseEditorStepProps {
   phase: PhaseData;
   onChange: (phase: PhaseData) => void;
 }
 
-const CATEGORY_SUGGESTIONS = [
-  'Design',
-  'Fabrication',
-  'Technology',
-  'Logistics',
-  'Staffing',
-  'AV/Production',
-  'Content',
-  'Installation',
-  'Management',
-];
-
-const UNIT_OPTIONS = ['unit', 'hour', 'day', 'sq ft', 'linear ft', 'lot', 'each', 'set', 'person'];
-
-const ASSIGNEE_OPTIONS: { value: RequirementAssignee; label: string }[] = [
-  { value: 'client', label: 'Client' },
-  { value: 'producer', label: 'Producer' },
-  { value: 'both', label: 'Both' },
-  { value: 'external_vendor', label: 'External Vendor' },
-];
-
-function createEmptyDeliverable(): DeliverableData {
-  return {
-    id: crypto.randomUUID(),
-    name: '',
-    description: '',
-    category: '',
-    unit: 'unit',
-    qty: 1,
-    unitCost: 0,
-    totalCost: 0,
-  };
-}
-
-function createEmptyAddon(): AddonData {
-  return {
-    id: crypto.randomUUID(),
-    name: '',
-    description: '',
-    category: '',
-    unit: 'unit',
-    qty: 1,
-    unitCost: 0,
-    totalCost: 0,
-    selected: false,
-    mutuallyExclusiveGroup: '',
-  };
-}
-
-function createEmptyRequirement(): MilestoneRequirementData {
-  return {
-    id: crypto.randomUUID(),
-    text: '',
-    assignee: 'producer',
-  };
-}
-
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(value);
-}
 
 export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProps) {
   const update = (partial: Partial<PhaseData>) => {

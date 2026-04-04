@@ -1,147 +1,184 @@
-import { createClient } from '@/lib/supabase/server';
+import Link from 'next/link';
 import { formatCurrency } from '@/lib/utils';
+import { canAccessFeature } from '@/lib/subscription';
+import { getDashboardData, tasksDueSummary, type StatCard } from './_dashboard-data';
 
-interface DashboardStats {
-  totalProposals: number;
-  activeProjects: number;
-  revenuePipeline: number;
-  pendingApprovals: number;
-  recentActivity: Array<{
-    id: string;
-    action: string;
-    entity_type: string;
-    created_at: string;
-  }>;
-  pipelineSummary: Array<{
-    status: string;
-    count: number;
-    total_value: number;
-  }>;
+/* ─────────────────────────────────────────────────────────
+   Types
+   ───────────────────────────────────────────────────────── */
+
+interface QuickAction {
+  label: string;
+  href: string;
+  icon: React.ReactNode;
 }
 
-async function getDashboardStats(): Promise<DashboardStats> {
-  const fallback: DashboardStats = {
-    totalProposals: 0,
-    activeProjects: 0,
-    revenuePipeline: 0,
-    pendingApprovals: 0,
-    recentActivity: [],
-    pipelineSummary: [],
-  };
-
-  try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) return fallback;
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-
-    if (!userData) return fallback;
-
-    const orgId = userData.organization_id;
-
-    // Run queries in parallel
-    const [proposalsRes, activeRes, pipelineRes, pendingRes, activityRes] =
-      await Promise.all([
-        // Total proposals
-        supabase
-          .from('proposals')
-          .select('id', { count: 'exact', head: true })
-          .eq('organization_id', orgId),
-
-        // Active projects (approved, in_production, active)
-        supabase
-          .from('proposals')
-          .select('id', { count: 'exact', head: true })
-          .eq('organization_id', orgId)
-          .in('status', ['approved', 'in_production', 'active']),
-
-        // Pipeline value (non-terminal statuses)
-        supabase
-          .from('proposals')
-          .select('status, total_value')
-          .eq('organization_id', orgId)
-          .not('status', 'in', '("complete","cancelled")'),
-
-        // Pending approvals
-        supabase
-          .from('proposals')
-          .select('id', { count: 'exact', head: true })
-          .eq('organization_id', orgId)
-          .in('status', ['sent', 'viewed', 'negotiating']),
-
-        // Recent activity
-        supabase
-          .from('activity_log')
-          .select('id, action, entity_type, created_at')
-          .eq('organization_id', orgId)
-          .order('created_at', { ascending: false })
-          .limit(10),
-      ]);
-
-    // Compute pipeline value
-    const revenuePipeline = (pipelineRes.data ?? []).reduce(
-      (sum, p) => sum + (p.total_value || 0),
-      0
-    );
-
-    // Build pipeline summary by status
-    const statusMap = new Map<string, { count: number; total_value: number }>();
-    for (const p of pipelineRes.data ?? []) {
-      const entry = statusMap.get(p.status) ?? { count: 0, total_value: 0 };
-      entry.count++;
-      entry.total_value += p.total_value || 0;
-      statusMap.set(p.status, entry);
-    }
-    const pipelineSummary = Array.from(statusMap.entries()).map(
-      ([status, data]) => ({ status, ...data })
-    );
-
-    return {
-      totalProposals: proposalsRes.count ?? 0,
-      activeProjects: activeRes.count ?? 0,
-      revenuePipeline,
-      pendingApprovals: pendingRes.count ?? 0,
-      recentActivity: activityRes.data ?? [],
-      pipelineSummary,
-    };
-  } catch {
-    return fallback;
-  }
-}
+/* ─────────────────────────────────────────────────────────
+   Component
+   ───────────────────────────────────────────────────────── */
 
 export default async function DashboardPage() {
-  const stats = await getDashboardStats();
+  const { stats, tier } = await getDashboardData();
 
-  const cards = [
+  // Build stat cards based on tier
+  const cards: StatCard[] = [
     {
       label: 'Total Proposals',
       value: String(stats.totalProposals),
       detail: 'All time',
+      href: '/app/proposals',
     },
     {
       label: 'Active Projects',
       value: String(stats.activeProjects),
       detail: 'Approved / in production',
+      href: '/app/pipeline',
     },
     {
       label: 'Revenue Pipeline',
       value: formatCurrency(stats.revenuePipeline),
       detail: 'Open proposals',
+      href: '/app/pipeline',
     },
     {
       label: 'Pending Approvals',
       value: String(stats.pendingApprovals),
       detail: 'Sent / viewed / negotiating',
+      href: '/app/proposals',
     },
   ];
+
+  // Professional tier cards
+  if (canAccessFeature(tier, 'automations')) {
+    cards.push({
+      label: 'Automations Run',
+      value: String(stats.automationsRun),
+      detail: 'Last 7 days',
+      href: '/app/automations',
+    });
+  }
+
+  if (canAccessFeature(tier, 'integrations')) {
+    cards.push({
+      label: 'Integrations Active',
+      value: String(stats.integrationsSynced),
+      detail: 'Connected & syncing',
+      href: '/app/integrations',
+    });
+  }
+
+  // Enterprise tier cards
+  if (canAccessFeature(tier, 'time_tracking')) {
+    cards.push({
+      label: 'Hours This Week',
+      value: stats.hoursLoggedThisWeek.toFixed(1),
+      detail: 'Logged by all members',
+      href: '/app/time',
+    });
+  }
+
+  if (canAccessFeature(tier, 'tasks')) {
+    cards.push({
+      label: 'Tasks Due Today',
+      value: String(stats.tasksDueToday),
+      detail: tasksDueSummary(stats.tasksDueToday),
+      href: '/app/tasks',
+    });
+  }
+
+  if (canAccessFeature(tier, 'expenses')) {
+    cards.push({
+      label: 'Pending Expenses',
+      value: String(stats.pendingExpenses),
+      detail: 'Awaiting approval',
+      href: '/app/expenses',
+    });
+  }
+
+  if (canAccessFeature(tier, 'crew')) {
+    cards.push({
+      label: 'Crew Available',
+      value: String(stats.crewAvailable),
+      detail: 'Active crew members',
+      href: '/app/crew',
+    });
+  }
+
+  // Build quick actions based on tier
+  const quickActions: QuickAction[] = [
+    {
+      label: 'New Proposal',
+      href: '/app/proposals',
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M10 1H3a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7l-6-6Z" />
+          <path d="M10 1v6h6" />
+        </svg>
+      ),
+    },
+    {
+      label: 'New Client',
+      href: '/app/clients',
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M13 16v-1.5a3 3 0 0 0-3-3H5a3 3 0 0 0-3 3V16" />
+          <circle cx="7.5" cy="5" r="3" />
+          <line x1="15" y1="6" x2="15" y2="12" />
+          <line x1="12" y1="9" x2="18" y2="9" />
+        </svg>
+      ),
+    },
+    {
+      label: 'New Lead',
+      href: '/app/leads',
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M16 9a7 7 0 1 1-3.3-5.95" />
+          <path d="M16 2v5h-5" />
+        </svg>
+      ),
+    },
+  ];
+
+  if (canAccessFeature(tier, 'time_tracking')) {
+    quickActions.push({
+      label: 'Log Time',
+      href: '/app/time/timer',
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="9" cy="9" r="7.5" />
+          <path d="M9 4.5V9l3 1.5" />
+        </svg>
+      ),
+    });
+  }
+
+  if (canAccessFeature(tier, 'expenses')) {
+    quickActions.push({
+      label: 'New Expense',
+      href: '/app/expenses/new',
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="1" y="4" width="16" height="11" rx="1" />
+          <path d="M1 8h16" />
+          <path d="M5 12h3" />
+        </svg>
+      ),
+    });
+  }
+
+  if (canAccessFeature(tier, 'tasks')) {
+    quickActions.push({
+      label: 'New Task',
+      href: '/app/tasks',
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M14 2H4a1 1 0 0 0-1 1v14l4-2 2 2 2-2 4 2V3a1 1 0 0 0-1-1Z" />
+          <path d="M7 7l2 2 3-3" />
+        </svg>
+      ),
+    });
+  }
 
   return (
     <>
@@ -154,22 +191,67 @@ export default async function DashboardPage() {
         </p>
       </div>
 
-      {/* Stat cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {cards.map((card) => (
-          <div
-            key={card.label}
-            className="rounded-xl border border-border bg-white px-5 py-5"
+      {/* Quick Actions */}
+      <div className="mb-8 flex flex-wrap gap-3">
+        {quickActions.map((action) => (
+          <Link
+            key={action.label}
+            href={action.href}
+            className="inline-flex items-center gap-2.5 rounded-lg border border-border bg-white px-4 py-2.5 text-sm font-medium text-foreground transition-[color,background-color,border-color,opacity,box-shadow] duration-normal hover:border-text-muted hover:shadow-sm"
           >
-            <p className="text-xs font-medium uppercase tracking-wider text-text-muted">
-              {card.label}
-            </p>
-            <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground">
-              {card.value}
-            </p>
-            <p className="mt-1 text-xs text-text-secondary">{card.detail}</p>
-          </div>
+            <span className="text-text-muted">{action.icon}</span>
+            {action.label}
+          </Link>
         ))}
+        <button
+          className="inline-flex items-center gap-2 rounded-lg border border-dashed border-border px-4 py-2.5 text-sm font-medium text-text-muted transition-colors hover:border-text-muted hover:text-text-secondary"
+          onClick={undefined}
+          title="Press ⌘K to search"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="7" cy="7" r="4.5" />
+            <line x1="10.5" y1="10.5" x2="14" y2="14" />
+          </svg>
+          ⌘K
+        </button>
+      </div>
+
+      {/* Stat cards — dynamically sized grid based on card count */}
+      <div
+        className={`grid grid-cols-1 gap-4 sm:grid-cols-2 ${
+          cards.length <= 4 ? 'lg:grid-cols-4' : cards.length <= 6 ? 'lg:grid-cols-3' : 'lg:grid-cols-4'
+        }`}
+      >
+        {cards.map((card) => {
+          const cardContent = (
+            <>
+              <p className="text-xs font-medium uppercase tracking-wider text-text-muted">
+                {card.label}
+              </p>
+              <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground">
+                {card.value}
+              </p>
+              <p className="mt-1 text-xs text-text-secondary">{card.detail}</p>
+              {card.href && (
+                <span className="mt-2 inline-block text-xs text-text-muted group-hover:text-foreground transition-colors">
+                  View →
+                </span>
+              )}
+            </>
+          );
+
+          const className = "group rounded-xl border border-border bg-white px-5 py-5 transition-[color,background-color,border-color,opacity,box-shadow] duration-normal hover:border-text-muted hover:shadow-sm";
+
+          return card.href ? (
+            <Link key={card.label} href={card.href} className={className}>
+              {cardContent}
+            </Link>
+          ) : (
+            <div key={card.label} className={className}>
+              {cardContent}
+            </div>
+          );
+        })}
       </div>
 
       {/* Pipeline breakdown */}
@@ -180,9 +262,10 @@ export default async function DashboardPage() {
           </h2>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {stats.pipelineSummary.map((item) => (
-              <div
+              <Link
                 key={item.status}
-                className="rounded-lg border border-border bg-white px-4 py-3"
+                href="/app/pipeline"
+                className="rounded-lg border border-border bg-white px-4 py-3 transition-[color,background-color,border-color,opacity,box-shadow] duration-normal hover:border-text-muted hover:shadow-sm"
               >
                 <p className="text-xs font-medium capitalize text-text-secondary">
                   {item.status.replace(/_/g, ' ')}
@@ -193,7 +276,7 @@ export default async function DashboardPage() {
                 <p className="text-xs text-text-muted">
                   {formatCurrency(item.total_value)}
                 </p>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -207,13 +290,15 @@ export default async function DashboardPage() {
           </h2>
           <div className="rounded-xl border border-border bg-white divide-y divide-border">
             {stats.recentActivity.map((activity) => (
-              <div key={activity.id} className="px-5 py-3 flex items-center justify-between">
+              <div
+                key={activity.id}
+                className="px-5 py-3 flex items-center justify-between"
+              >
                 <div>
                   <p className="text-sm text-foreground">
                     <span className="font-medium capitalize">
                       {activity.action.replace(/_/g, ' ')}
-                    </span>
-                    {' '}
+                    </span>{' '}
                     <span className="text-text-secondary">
                       {activity.entity_type.replace(/_/g, ' ')}
                     </span>

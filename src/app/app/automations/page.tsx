@@ -73,7 +73,7 @@ async function getAutomations(): Promise<AutomationRow[]> {
 
     const { data: automations } = await supabase
       .from('automations')
-      .select('*')
+      .select()
       .eq('organization_id', userData.organization_id)
       .order('created_at', { ascending: false });
 

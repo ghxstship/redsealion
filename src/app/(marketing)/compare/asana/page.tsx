@@ -31,7 +31,7 @@ const painPoints = [
 ];
 
 const comparisonRows = [
-  { dimension: 'Proposal creation', spreadsheet: 'Not supported', flyteDeck: 'Drag-and-drop proposal builder with branded output' },
+  { dimension: 'Proposal creation', spreadsheet: 'Not supported', flyteDeck: 'Step-by-step proposal builder with branded output' },
   { dimension: 'Budget tracking', spreadsheet: 'No financial features', flyteDeck: 'Phase-based budgets with real-time actuals' },
   { dimension: 'Invoicing', spreadsheet: 'Requires external tool', flyteDeck: 'One-click invoices from approved proposals' },
   { dimension: 'Crew scheduling', spreadsheet: 'Task assignment only', flyteDeck: 'Visual crew planner with availability and call sheets' },

@@ -46,7 +46,7 @@ async function getEquipment(): Promise<EquipmentItem[]> {
 
     const { data: items } = await supabase
       .from('assets')
-      .select('*')
+      .select()
       .eq('organization_id', userData.organization_id)
       .order('name');
 

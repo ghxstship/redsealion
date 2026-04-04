@@ -26,7 +26,7 @@ export async function GET(
 
   let query = supabase
     .from('crew_bookings')
-    .select('*')
+    .select()
     .eq('crew_profile_id', id)
     .eq('organization_id', orgId)
     .order('shift_start', { ascending: true });
@@ -102,7 +102,7 @@ export async function POST(
   // Check for overlapping bookings (conflict detection)
   const { data: conflicts, error: conflictError } = await supabase
     .from('crew_bookings')
-    .select('*')
+    .select()
     .eq('crew_profile_id', id)
     .eq('organization_id', orgId)
     .not('status', 'in', '("declined","cancelled")')

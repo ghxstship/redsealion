@@ -1,6 +1,10 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('lib-supabase-server');
+
 export async function createClient() {
   const cookieStore = await cookies();
 
@@ -17,9 +21,10 @@ export async function createClient() {
             cookiesToSet.forEach(({ name, value, options }) =>
               cookieStore.set(name, value, options)
             );
-          } catch {
-            // setAll called from Server Component — ignore
-          }
+          } catch (error) {
+              // Fail-loud: log error per TITANIUM STANDARD L7
+              log.error('Operation failed', {}, error);
+            }
         },
       },
     }

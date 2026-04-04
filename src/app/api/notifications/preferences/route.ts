@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('preferences');
+
 export async function GET() {
   try {
     const permResult = await checkPermission('team', 'view');
@@ -21,7 +25,7 @@ export async function GET() {
       .eq('user_id', userId);
 
     if (error) {
-      console.error('[Preferences] Failed to fetch:', error);
+      log.error('[Preferences] Failed to fetch:', {}, error);
       return NextResponse.json(
         { error: 'Failed to fetch preferences' },
         { status: 500 },
@@ -30,7 +34,7 @@ export async function GET() {
 
     return NextResponse.json({ preferences: data ?? [] });
   } catch (error) {
-    console.error('[Preferences] Error:', error);
+    log.error('[Preferences] Error:', {}, error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },
@@ -80,7 +84,7 @@ export async function PUT(request: Request) {
       });
 
     if (error) {
-      console.error('[Preferences] Failed to update:', error);
+      log.error('[Preferences] Failed to update:', {}, error);
       return NextResponse.json(
         { error: 'Failed to update preferences' },
         { status: 500 },
@@ -89,7 +93,7 @@ export async function PUT(request: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('[Preferences] Error:', error);
+    log.error('[Preferences] Error:', {}, error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

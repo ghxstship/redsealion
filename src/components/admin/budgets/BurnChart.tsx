@@ -1,24 +1,91 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { formatCurrency } from '@/lib/utils';
 
 interface BurnChartProps {
   totalBudget: number;
   spent: number;
+  proposalId?: string;
 }
 
-export default function BurnChart({ totalBudget, spent }: BurnChartProps) {
+interface MonthlyBurn {
+  month: string;
+  amount: number;
+}
+
+export default function BurnChart({ totalBudget, spent, proposalId }: BurnChartProps) {
   const remaining = totalBudget - spent;
   const percentUsed = totalBudget > 0 ? Math.round((spent / totalBudget) * 100) : 0;
 
-  // Generate mock monthly burn data
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
-  const monthlySpend = months.map((_, i) => {
-    const fraction = (i + 1) / months.length;
-    return Math.round(spent * fraction * (0.8 + Math.random() * 0.4));
-  });
+  const [monthlySpend, setMonthlySpend] = useState<MonthlyBurn[]>([]);
 
-  const maxSpend = Math.max(...monthlySpend, totalBudget);
+  useEffect(() => {
+    async function loadBurnData() {
+      if (!proposalId) {
+        // Fallback: distribute `spent` evenly across 6 months
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+        const perMonth = spent > 0 ? Math.round(spent / months.length) : 0;
+        setMonthlySpend(months.map((m, i) => ({
+          month: m,
+          amount: i < months.length - 1 ? perMonth : spent - perMonth * (months.length - 1),
+        })));
+        return;
+      }
+
+      try {
+        const { createClient } = await import('@/lib/supabase/client');
+        const supabase = createClient();
+
+        // Fetch expenses grouped by month for this proposal
+        const { data: expenses } = await supabase
+          .from('expenses')
+          .select('amount, date')
+          .eq('proposal_id', proposalId)
+          .order('date', { ascending: true });
+
+        if (!expenses || expenses.length === 0) {
+          // No expenses — show even distribution of spent amount
+          const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+          const perMonth = spent > 0 ? Math.round(spent / months.length) : 0;
+          setMonthlySpend(months.map((m, i) => ({
+            month: m,
+            amount: i < months.length - 1 ? perMonth : spent - perMonth * (months.length - 1),
+          })));
+          return;
+        }
+
+        // Group expenses by month
+        const monthMap = new Map<string, number>();
+        for (const exp of expenses) {
+          const d = new Date(exp.date);
+          const key = d.toLocaleString('en-US', { month: 'short' });
+          monthMap.set(key, (monthMap.get(key) ?? 0) + exp.amount);
+        }
+
+        // Build cumulative monthly series
+        let cumulative = 0;
+        const result: MonthlyBurn[] = [];
+        for (const [month, amount] of monthMap) {
+          cumulative += amount;
+          result.push({ month, amount: cumulative });
+        }
+
+        setMonthlySpend(result);
+      } catch {
+        // Fallback on error
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+        const perMonth = spent > 0 ? Math.round(spent / months.length) : 0;
+        setMonthlySpend(months.map((m, i) => ({
+          month: m,
+          amount: i < months.length - 1 ? perMonth : spent - perMonth * (months.length - 1),
+        })));
+      }
+    }
+    loadBurnData();
+  }, [proposalId, spent]);
+
+  const maxSpend = Math.max(...monthlySpend.map((m) => m.amount), totalBudget, 1);
 
   return (
     <div className="rounded-xl border border-border bg-white overflow-hidden">
@@ -32,13 +99,13 @@ export default function BurnChart({ totalBudget, spent }: BurnChartProps) {
       <div className="px-6 py-6">
         {/* Simple bar chart */}
         <div className="flex items-end gap-3 h-40">
-          {months.map((month, idx) => {
-            const height = maxSpend > 0 ? (monthlySpend[idx] / maxSpend) * 100 : 0;
-            const overBudget = monthlySpend[idx] > totalBudget;
+          {monthlySpend.map((m) => {
+            const height = maxSpend > 0 ? (m.amount / maxSpend) * 100 : 0;
+            const overBudget = m.amount > totalBudget;
             return (
-              <div key={month} className="flex-1 flex flex-col items-center gap-1">
+              <div key={m.month} className="flex-1 flex flex-col items-center gap-1">
                 <span className="text-xs tabular-nums text-text-muted">
-                  {formatCurrency(monthlySpend[idx])}
+                  {formatCurrency(m.amount)}
                 </span>
                 <div className="w-full relative" style={{ height: '120px' }}>
                   <div
@@ -48,7 +115,7 @@ export default function BurnChart({ totalBudget, spent }: BurnChartProps) {
                     style={{ height: `${height}%` }}
                   />
                 </div>
-                <span className="text-xs text-text-muted">{month}</span>
+                <span className="text-xs text-text-muted">{m.month}</span>
               </div>
             );
           })}

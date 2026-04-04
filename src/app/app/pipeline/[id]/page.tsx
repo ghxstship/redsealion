@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import { formatCurrency, statusColor } from '@/lib/utils';
 import { TierGate } from '@/components/shared/TierGate';
+import Breadcrumbs from '@/components/shared/Breadcrumbs';
 import { createClient } from '@/lib/supabase/server';
-import { getSeedDeals, getSeedClients } from '@/lib/seed-data';
 import type { DealStage } from '@/types/database';
 
 const STAGE_LABELS: Record<DealStage, string> = {
@@ -66,7 +66,7 @@ async function getDeal(id: string): Promise<DealDetail | null> {
 
     const { data: activities } = await supabase
       .from('deal_activities')
-      .select('*')
+      .select()
       .eq('deal_id', id)
       .order('created_at', { ascending: false });
 
@@ -77,30 +77,7 @@ async function getDeal(id: string): Promise<DealDetail | null> {
       activities: activities ?? [],
     } as DealDetail;
   } catch {
-    // Fallback to seed data
-    const deals = getSeedDeals();
-    const clients = getSeedClients();
-    const deal = deals.find((d) => d.id === id) ?? deals[0];
-    return {
-      ...deal,
-      client_name:
-        clients.find((c) => c.id === deal.client_id)?.company_name ?? 'Unknown',
-      proposal_name: deal.proposal_id ? deal.title : null,
-      activities: [
-        {
-          id: 'act_1',
-          type: 'stage_change',
-          description: `Deal moved to ${STAGE_LABELS[deal.stage]}`,
-          created_at: deal.updated_at,
-        },
-        {
-          id: 'act_2',
-          type: 'created',
-          description: 'Deal created',
-          created_at: deal.created_at,
-        },
-      ],
-    };
+    return null;
   }
 }
 
@@ -128,14 +105,7 @@ export default async function DealDetailPage({
 
   return (
     <TierGate feature="pipeline">
-      {/* Breadcrumb */}
-      <nav className="mb-6 flex items-center gap-2 text-sm text-text-muted">
-        <Link href="/app/pipeline" className="hover:text-foreground transition-colors">
-          Pipeline
-        </Link>
-        <span>/</span>
-        <span className="text-foreground font-medium">{deal.title}</span>
-      </nav>
+      <Breadcrumbs currentLabel={deal.title} />
 
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-8">

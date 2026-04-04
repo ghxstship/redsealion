@@ -1,6 +1,6 @@
+import { notFound } from 'next/navigation';
+import { createClient } from '@/lib/supabase/server';
 import type {
-  MilestoneGate,
-  MilestoneRequirement,
   MilestoneStatus,
   RequirementStatus,
   RequirementAssignee,
@@ -12,119 +12,7 @@ interface PageProps {
 }
 
 // ---------------------------------------------------------------------------
-// Mock data
-// ---------------------------------------------------------------------------
-
-const ts = '2026-01-15T00:00:00Z';
-
-interface PhaseMilestone {
-  phaseNumber: string;
-  phaseName: string;
-  milestone: MilestoneGate & { requirements: MilestoneRequirement[] };
-}
-
-const phaseMilestones: PhaseMilestone[] = [
-  {
-    phaseNumber: '1',
-    phaseName: 'Discovery',
-    milestone: {
-      id: 'ms-1',
-      phase_id: 'phase-1',
-      name: 'Discovery Approval',
-      unlocks_description: 'Proceeds to Design phase; triggers 25% deposit invoice.',
-      status: 'complete' as MilestoneStatus,
-      completed_at: '2026-02-10T00:00:00Z',
-      created_at: ts,
-      updated_at: ts,
-      requirements: [
-        { id: 'r-1-1', milestone_id: 'ms-1', text: 'Creative brief delivered and presented', status: 'complete' as RequirementStatus, assignee: 'producer' as RequirementAssignee, due_offset: null, due_date: null, completed_at: '2026-02-08T00:00:00Z', completed_by: 'user-1', finance_trigger: null, evidence_required: false, sort_order: 0, created_at: ts, updated_at: ts },
-        { id: 'r-1-2', milestone_id: 'ms-1', text: 'Site analysis report reviewed', status: 'complete' as RequirementStatus, assignee: 'client' as RequirementAssignee, due_offset: null, due_date: null, completed_at: '2026-02-09T00:00:00Z', completed_by: 'user-2', finance_trigger: null, evidence_required: false, sort_order: 1, created_at: ts, updated_at: ts },
-        { id: 'r-1-3', milestone_id: 'ms-1', text: 'Creative brief approved', status: 'complete' as RequirementStatus, assignee: 'client' as RequirementAssignee, due_offset: null, due_date: null, completed_at: '2026-02-10T00:00:00Z', completed_by: 'user-2', finance_trigger: { triggersInvoice: true, invoiceType: 'deposit', percent: 25 }, evidence_required: true, sort_order: 2, created_at: ts, updated_at: ts },
-      ],
-    },
-  },
-  {
-    phaseNumber: '2',
-    phaseName: 'Design',
-    milestone: {
-      id: 'ms-2',
-      phase_id: 'phase-2',
-      name: 'Design Approval',
-      unlocks_description: 'Proceeds to Engineering; locks design scope for production.',
-      status: 'complete' as MilestoneStatus,
-      completed_at: '2026-03-05T00:00:00Z',
-      created_at: ts,
-      updated_at: ts,
-      requirements: [
-        { id: 'r-2-1', milestone_id: 'ms-2', text: '3D design package delivered', status: 'complete' as RequirementStatus, assignee: 'producer' as RequirementAssignee, due_offset: null, due_date: null, completed_at: '2026-02-28T00:00:00Z', completed_by: 'user-1', finance_trigger: null, evidence_required: false, sort_order: 0, created_at: ts, updated_at: ts },
-        { id: 'r-2-2', milestone_id: 'ms-2', text: 'Client review period (5 business days)', status: 'complete' as RequirementStatus, assignee: 'client' as RequirementAssignee, due_offset: null, due_date: '2026-03-05T00:00:00Z', completed_at: '2026-03-04T00:00:00Z', completed_by: 'user-2', finance_trigger: null, evidence_required: false, sort_order: 1, created_at: ts, updated_at: ts },
-        { id: 'r-2-3', milestone_id: 'ms-2', text: 'Design direction approved with sign-off', status: 'complete' as RequirementStatus, assignee: 'client' as RequirementAssignee, due_offset: null, due_date: null, completed_at: '2026-03-05T00:00:00Z', completed_by: 'user-2', finance_trigger: null, evidence_required: true, sort_order: 2, created_at: ts, updated_at: ts },
-        { id: 'r-2-4', milestone_id: 'ms-2', text: 'Revision round completed (if applicable)', status: 'waived' as RequirementStatus, assignee: 'both' as RequirementAssignee, due_offset: null, due_date: null, completed_at: null, completed_by: null, finance_trigger: null, evidence_required: false, sort_order: 3, created_at: ts, updated_at: ts },
-      ],
-    },
-  },
-  {
-    phaseNumber: '3',
-    phaseName: 'Engineering',
-    milestone: {
-      id: 'ms-3',
-      phase_id: 'phase-3',
-      name: 'Engineering Sign-Off',
-      unlocks_description: 'Proceeds to Fabrication; triggers material procurement.',
-      status: 'in_progress' as MilestoneStatus,
-      completed_at: null,
-      created_at: ts,
-      updated_at: ts,
-      requirements: [
-        { id: 'r-3-1', milestone_id: 'ms-3', text: 'PE-stamped structural drawings delivered', status: 'complete' as RequirementStatus, assignee: 'producer' as RequirementAssignee, due_offset: null, due_date: null, completed_at: '2026-03-20T00:00:00Z', completed_by: 'user-1', finance_trigger: null, evidence_required: true, sort_order: 0, created_at: ts, updated_at: ts },
-        { id: 'r-3-2', milestone_id: 'ms-3', text: 'Production drawings reviewed by client', status: 'in_progress' as RequirementStatus, assignee: 'client' as RequirementAssignee, due_offset: null, due_date: '2026-04-04T00:00:00Z', completed_at: null, completed_by: null, finance_trigger: null, evidence_required: false, sort_order: 1, created_at: ts, updated_at: ts },
-        { id: 'r-3-3', milestone_id: 'ms-3', text: 'Engineering package approved', status: 'pending' as RequirementStatus, assignee: 'client' as RequirementAssignee, due_offset: null, due_date: null, completed_at: null, completed_by: null, finance_trigger: { triggersInvoice: true, invoiceType: 'deposit', percent: 25 }, evidence_required: true, sort_order: 2, created_at: ts, updated_at: ts },
-      ],
-    },
-  },
-  {
-    phaseNumber: '4',
-    phaseName: 'Fabrication',
-    milestone: {
-      id: 'ms-4',
-      phase_id: 'phase-4',
-      name: 'Fabrication Complete',
-      unlocks_description: 'Proceeds to Logistics; all elements ready for transport.',
-      status: 'pending' as MilestoneStatus,
-      completed_at: null,
-      created_at: ts,
-      updated_at: ts,
-      requirements: [
-        { id: 'r-4-1', milestone_id: 'ms-4', text: 'All elements fabricated and QC passed', status: 'pending' as RequirementStatus, assignee: 'producer' as RequirementAssignee, due_offset: null, due_date: null, completed_at: null, completed_by: null, finance_trigger: null, evidence_required: true, sort_order: 0, created_at: ts, updated_at: ts },
-        { id: 'r-4-2', milestone_id: 'ms-4', text: 'Client factory visit or video walkthrough', status: 'pending' as RequirementStatus, assignee: 'both' as RequirementAssignee, due_offset: null, due_date: null, completed_at: null, completed_by: null, finance_trigger: null, evidence_required: false, sort_order: 1, created_at: ts, updated_at: ts },
-        { id: 'r-4-3', milestone_id: 'ms-4', text: 'Fabrication quality approved', status: 'pending' as RequirementStatus, assignee: 'client' as RequirementAssignee, due_offset: null, due_date: null, completed_at: null, completed_by: null, finance_trigger: null, evidence_required: false, sort_order: 2, created_at: ts, updated_at: ts },
-      ],
-    },
-  },
-  {
-    phaseNumber: '7',
-    phaseName: 'Installation & Activation',
-    milestone: {
-      id: 'ms-7',
-      phase_id: 'phase-7',
-      name: 'Activation Go-Live',
-      unlocks_description: 'Experience opens to public; triggers balance invoice.',
-      status: 'pending' as MilestoneStatus,
-      completed_at: null,
-      created_at: ts,
-      updated_at: ts,
-      requirements: [
-        { id: 'r-7-1', milestone_id: 'ms-7', text: 'Installation complete and inspected', status: 'pending' as RequirementStatus, assignee: 'producer' as RequirementAssignee, due_offset: null, due_date: null, completed_at: null, completed_by: null, finance_trigger: null, evidence_required: true, sort_order: 0, created_at: ts, updated_at: ts },
-        { id: 'r-7-2', milestone_id: 'ms-7', text: 'Technology systems tested and calibrated', status: 'pending' as RequirementStatus, assignee: 'producer' as RequirementAssignee, due_offset: null, due_date: null, completed_at: null, completed_by: null, finance_trigger: null, evidence_required: false, sort_order: 1, created_at: ts, updated_at: ts },
-        { id: 'r-7-3', milestone_id: 'ms-7', text: 'Client walkthrough completed', status: 'pending' as RequirementStatus, assignee: 'both' as RequirementAssignee, due_offset: null, due_date: null, completed_at: null, completed_by: null, finance_trigger: null, evidence_required: false, sort_order: 2, created_at: ts, updated_at: ts },
-        { id: 'r-7-4', milestone_id: 'ms-7', text: 'Go-live approved', status: 'pending' as RequirementStatus, assignee: 'client' as RequirementAssignee, due_offset: null, due_date: null, completed_at: null, completed_by: null, finance_trigger: { triggersInvoice: true, invoiceType: 'balance', percent: 50 }, evidence_required: true, sort_order: 3, created_at: ts, updated_at: ts },
-      ],
-    },
-  },
-];
-
-// ---------------------------------------------------------------------------
-// Component
+// Sub-components
 // ---------------------------------------------------------------------------
 
 function RequirementStatusIcon({ status }: { status: RequirementStatus }) {
@@ -162,8 +50,106 @@ function AssigneeBadge({ assignee }: { assignee: RequirementAssignee }) {
   );
 }
 
+// ---------------------------------------------------------------------------
+// Page
+// ---------------------------------------------------------------------------
+
+interface MilestoneRow {
+  id: string;
+  name: string;
+  status: MilestoneStatus;
+  completed_at: string | null;
+  unlocks_description: string | null;
+  phase_id: string;
+}
+
+interface RequirementRow {
+  id: string;
+  milestone_id: string;
+  text: string;
+  status: RequirementStatus;
+  assignee: RequirementAssignee;
+  due_date: string | null;
+  completed_at: string | null;
+  completed_by: string | null;
+  finance_trigger: unknown;
+  evidence_required: boolean;
+  sort_order: number;
+}
+
 export default async function MilestonesPage({ params }: PageProps) {
   const { orgSlug, id } = await params;
+
+  const supabase = await createClient();
+
+  // Verify proposal belongs to this org
+  const { data: proposal } = await supabase
+    .from('proposals')
+    .select('id, organization_id')
+    .eq('id', id)
+    .single();
+
+  if (!proposal) notFound();
+
+  const { data: org } = await supabase
+    .from('organizations')
+    .select('id')
+    .eq('slug', orgSlug)
+    .single();
+
+  if (!org || proposal.organization_id !== org.id) notFound();
+
+  // Fetch phases
+  const { data: phases } = await supabase
+    .from('phases')
+    .select('id, phase_number, name')
+    .eq('proposal_id', id)
+    .order('sort_order', { ascending: true });
+
+  const phaseList = phases ?? [];
+  const phaseIds = phaseList.map((p) => p.id);
+
+  // Fetch milestones and requirements
+  const [milestonesRes, requirementsRes] = await Promise.all([
+    phaseIds.length > 0
+      ? supabase.from('milestone_gates').select('*').in('phase_id', phaseIds)
+      : { data: [] },
+    phaseIds.length > 0
+      ? supabase.from('milestone_requirements').select('*').order('sort_order', { ascending: true })
+      : { data: [] },
+  ]);
+
+  const milestones = (milestonesRes.data ?? []) as MilestoneRow[];
+  const allRequirements = (requirementsRes.data ?? []) as RequirementRow[];
+
+  // Filter requirements to those belonging to our milestones
+  const milestoneIds = new Set(milestones.map((m) => m.id));
+  const requirements = allRequirements.filter((r) => milestoneIds.has(r.milestone_id));
+
+  // Build grouped data: phase → milestone → requirements
+  const milestoneByPhase = new Map<string, MilestoneRow>();
+  for (const m of milestones) {
+    milestoneByPhase.set(m.phase_id, m);
+  }
+
+  const reqsByMilestone = new Map<string, RequirementRow[]>();
+  for (const r of requirements) {
+    const arr = reqsByMilestone.get(r.milestone_id) ?? [];
+    arr.push(r);
+    reqsByMilestone.set(r.milestone_id, arr);
+  }
+
+  const phaseMilestones = phaseList
+    .filter((p) => milestoneByPhase.has(p.id))
+    .map((p) => {
+      const milestone = milestoneByPhase.get(p.id)!;
+      return {
+        phaseNumber: p.phase_number,
+        phaseName: p.name,
+        milestone,
+        requirements: reqsByMilestone.get(milestone.id) ?? [],
+      };
+    });
 
   return (
     <div className="space-y-8">
@@ -173,6 +159,15 @@ export default async function MilestonesPage({ params }: PageProps) {
           Track approval gates across every phase of the project.
         </p>
       </div>
+
+      {phaseMilestones.length === 0 && (
+        <div className="rounded-lg border border-border bg-background p-8 text-center">
+          <p className="text-sm text-text-muted">No milestones defined yet.</p>
+          <p className="text-xs text-text-muted mt-1">
+            Milestone gates will appear here once your project phases are configured.
+          </p>
+        </div>
+      )}
 
       {/* Timeline */}
       <div className="relative space-y-0">
@@ -223,7 +218,7 @@ export default async function MilestonesPage({ params }: PageProps) {
 
                   {/* Requirements */}
                   <div className="space-y-2.5">
-                    {pm.milestone.requirements.map((req) => (
+                    {pm.requirements.map((req) => (
                       <div key={req.id} className="flex items-start gap-3">
                         <RequirementStatusIcon status={req.status} />
                         <div className="flex-1 min-w-0">

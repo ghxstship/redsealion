@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { TierGate } from '@/components/shared/TierGate';
 
 interface Pipeline {
@@ -12,24 +12,105 @@ interface Pipeline {
 
 const DEFAULT_STAGES = ['Lead', 'Qualified', 'Proposal Sent', 'Negotiation', 'Verbal Yes', 'Contract Signed'];
 
-const SAMPLE_PIPELINES: Pipeline[] = [
-  {
-    id: '1',
-    name: 'Default Pipeline',
-    is_default: true,
-    stages: DEFAULT_STAGES,
-  },
-  {
-    id: '2',
-    name: 'Enterprise Sales',
-    is_default: false,
-    stages: ['Discovery', 'Solution Design', 'Proposal', 'Legal Review', 'Procurement', 'Closed Won'],
-  },
-];
-
 export default function PipelineSettingsPage() {
-  const [pipelines, setPipelines] = useState<Pipeline[]>(SAMPLE_PIPELINES);
+  const [pipelines, setPipelines] = useState<Pipeline[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [orgId, setOrgId] = useState<string | null>(null);
+  const [loaded, setLoaded] = useState(false);
+
+  // Load pipeline config from org settings
+  useEffect(() => {
+    async function loadPipelines() {
+      try {
+        const { createClient } = await import('@/lib/supabase/client');
+        const supabase = createClient();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (!user) {
+          setLoaded(true);
+          return;
+        }
+
+        const { data: userData } = await supabase
+          .from('users')
+          .select('organization_id')
+          .eq('id', user.id)
+          .single();
+        if (!userData) {
+          setLoaded(true);
+          return;
+        }
+
+        setOrgId(userData.organization_id);
+
+        const { data: org } = await supabase
+          .from('organizations')
+          .select('settings')
+          .eq('id', userData.organization_id)
+          .single();
+
+        if (org?.settings) {
+          const settings = org.settings as Record<string, unknown>;
+          const saved = settings.pipelines as Pipeline[] | undefined;
+          if (saved && saved.length > 0) {
+            setPipelines(saved);
+            setLoaded(true);
+            return;
+          }
+        }
+
+        // Default pipeline if none configured
+        setPipelines([
+          {
+            id: crypto.randomUUID(),
+            name: 'Default Pipeline',
+            is_default: true,
+            stages: [...DEFAULT_STAGES],
+          },
+        ]);
+      } catch {
+        // Fallback
+        setPipelines([
+          {
+            id: crypto.randomUUID(),
+            name: 'Default Pipeline',
+            is_default: true,
+            stages: [...DEFAULT_STAGES],
+          },
+        ]);
+      } finally {
+        setLoaded(true);
+      }
+    }
+    loadPipelines();
+  }, []);
+
+  // Save pipeline config to org settings
+  const savePipelines = useCallback(async (updatedPipelines: Pipeline[]) => {
+    if (!orgId) return;
+    try {
+      const { createClient } = await import('@/lib/supabase/client');
+      const supabase = createClient();
+
+      // Fetch current settings to merge
+      const { data: org } = await supabase
+        .from('organizations')
+        .select('settings')
+        .eq('id', orgId)
+        .single();
+
+      const currentSettings = (org?.settings ?? {}) as Record<string, unknown>;
+      const newSettings = { ...currentSettings, pipelines: updatedPipelines };
+
+      await supabase
+        .from('organizations')
+        .update({ settings: newSettings })
+        .eq('id', orgId);
+    } catch {
+      // Silent fail — local state remains
+    }
+  }, [orgId]);
 
   function addPipeline() {
     const newPipeline: Pipeline = {
@@ -38,17 +119,27 @@ export default function PipelineSettingsPage() {
       is_default: false,
       stages: [...DEFAULT_STAGES],
     };
-    setPipelines((prev) => [...prev, newPipeline]);
+    const updated = [...pipelines, newPipeline];
+    setPipelines(updated);
     setEditingId(newPipeline.id);
+    savePipelines(updated);
   }
 
   function updatePipeline(id: string, updates: Partial<Pipeline>) {
-    setPipelines((prev) => prev.map((p) => (p.id === id ? { ...p, ...updates } : p)));
+    const updated = pipelines.map((p) => (p.id === id ? { ...p, ...updates } : p));
+    setPipelines(updated);
+  }
+
+  function finishEditing() {
+    setEditingId(null);
+    savePipelines(pipelines);
   }
 
   function removePipeline(id: string) {
-    setPipelines((prev) => prev.filter((p) => p.id !== id));
+    const updated = pipelines.filter((p) => p.id !== id);
+    setPipelines(updated);
     if (editingId === id) setEditingId(null);
+    savePipelines(updated);
   }
 
   function addStage(pipelineId: string) {
@@ -70,6 +161,17 @@ export default function PipelineSettingsPage() {
     if (!pipeline) return;
     const stages = pipeline.stages.filter((_, i) => i !== index);
     updatePipeline(pipelineId, { stages });
+  }
+
+  if (!loaded) {
+    return (
+      <TierGate feature="multi_pipeline">
+        <div className="mb-8">
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">Pipeline Settings</h1>
+          <p className="mt-1 text-sm text-text-secondary">Loading...</p>
+        </div>
+      </TierGate>
+    );
   }
 
   return (
@@ -114,7 +216,7 @@ export default function PipelineSettingsPage() {
               </div>
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => setEditingId(editingId === pipeline.id ? null : pipeline.id)}
+                  onClick={() => editingId === pipeline.id ? finishEditing() : setEditingId(pipeline.id)}
                   className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-bg-secondary transition-colors"
                 >
                   {editingId === pipeline.id ? 'Done' : 'Edit'}

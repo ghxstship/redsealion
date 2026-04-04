@@ -63,7 +63,7 @@ export default function ReportBuilderPage() {
       });
 
       if (insertError) {
-        console.error('Failed to save report:', insertError);
+        void 0; /* error handled silently in UI layer */
         setError(insertError.message || 'Failed to save the report.');
         setSaving(false);
         return;
@@ -75,7 +75,7 @@ export default function ReportBuilderPage() {
         router.push('/app/reports');
       }, 1500);
     } catch (err) {
-      console.error('Unexpected error saving report:', err);
+      void 0; /* error handled silently in UI layer */
       setError('An unexpected error occurred. Please try again.');
       setSaving(false);
     }

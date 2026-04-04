@@ -1,62 +1,7 @@
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { formatCurrency, statusColor } from '@/lib/utils';
-
-const assetsData: Record<string, {
-  name: string;
-  type: string;
-  category: string;
-  status: string;
-  condition: string;
-  description: string;
-  dimensions: string;
-  weight: string;
-  material: string;
-  acquisition_cost: number;
-  current_value: number;
-  barcode: string;
-  deployment_count: number;
-  max_deployments: number | null;
-  reusable: boolean;
-  storage_requirements: string;
-  proposal: string;
-  location_history: Array<{
-    id: string;
-    location: string;
-    moved_at: string;
-    condition: string;
-    notes: string;
-  }>;
-  photos: string[];
-}> = {
-  asset_001: {
-    name: 'LED Video Wall (12x8)',
-    type: 'AV Equipment',
-    category: 'Technology',
-    status: 'deployed',
-    condition: 'excellent',
-    description: 'High-resolution LED video wall panel array, 12ft wide by 8ft tall. 2.5mm pixel pitch, indoor rated.',
-    dimensions: '12ft x 8ft x 6in',
-    weight: '420 lbs',
-    material: 'Aluminum frame, LED panels',
-    acquisition_cost: 52000,
-    current_value: 45000,
-    barcode: 'FlyteDeck-AV-2025-001',
-    deployment_count: 3,
-    max_deployments: null,
-    reusable: true,
-    storage_requirements: 'Climate controlled, upright storage, anti-static covers',
-    proposal: 'Spotify Wrapped Pop-Up',
-    location_history: [
-      { id: 'lh_01', location: 'NYC - Hudson Yards', moved_at: '2026-03-01T00:00:00Z', condition: 'excellent', notes: 'Deployed for Spotify Wrapped activation' },
-      { id: 'lh_02', location: 'LA Warehouse', moved_at: '2026-01-15T00:00:00Z', condition: 'excellent', notes: 'Returned from SNKRS Fest, full inspection passed' },
-      { id: 'lh_03', location: 'LA Convention Center', moved_at: '2025-11-20T00:00:00Z', condition: 'excellent', notes: 'Deployed for Nike SNKRS Fest' },
-      { id: 'lh_04', location: 'LA Warehouse', moved_at: '2025-09-01T00:00:00Z', condition: 'new', notes: 'Initial delivery and setup from manufacturer' },
-    ],
-    photos: [],
-  },
-};
-
-const defaultAsset = assetsData.asset_001;
+import { createClient } from '@/lib/supabase/server';
 
 function formatStatus(status: string): string {
   return status
@@ -91,7 +36,42 @@ export default async function AssetDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const asset = assetsData[id] ?? defaultAsset;
+
+  const supabase = await createClient();
+
+  // Fetch asset
+  const { data: asset } = await supabase
+    .from('assets')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (!asset) notFound();
+
+  // Fetch proposal name
+  const { data: proposal } = await supabase
+    .from('proposals')
+    .select('name')
+    .eq('id', asset.proposal_id)
+    .single();
+
+  // Fetch location history
+  const { data: locationHistory } = await supabase
+    .from('asset_location_history')
+    .select('*')
+    .eq('asset_id', id)
+    .order('moved_at', { ascending: false });
+
+  const history = (locationHistory ?? []).map((entry) => {
+    const loc = entry.location as { name?: string } | null;
+    return {
+      id: entry.id,
+      location: loc?.name ?? 'Unknown',
+      moved_at: entry.moved_at,
+      condition: entry.condition_at_move ?? 'unknown',
+      notes: entry.notes ?? '',
+    };
+  });
 
   return (
     <>
@@ -116,7 +96,7 @@ export default async function AssetDetailPage({
             </span>
           </div>
           <p className="mt-1 text-sm text-text-secondary">
-            {asset.type} &middot; {asset.category} &middot; {asset.barcode}
+            {asset.type} &middot; {asset.category} {asset.barcode ? `· ${asset.barcode}` : ''}
           </p>
         </div>
         <div className="flex items-center gap-3 shrink-0">
@@ -136,26 +116,36 @@ export default async function AssetDetailPage({
           <div className="rounded-xl border border-border bg-white px-6 py-5">
             <h2 className="text-sm font-semibold text-foreground mb-4">Details</h2>
             <dl className="space-y-3">
-              <div className="flex justify-between">
-                <dt className="text-sm text-text-muted">Description</dt>
-                <dd className="text-sm text-foreground text-right max-w-xs">{asset.description}</dd>
-              </div>
-              <div className="flex justify-between border-t border-border pt-3">
-                <dt className="text-sm text-text-muted">Dimensions</dt>
-                <dd className="text-sm text-foreground">{asset.dimensions}</dd>
-              </div>
-              <div className="flex justify-between border-t border-border pt-3">
-                <dt className="text-sm text-text-muted">Weight</dt>
-                <dd className="text-sm text-foreground">{asset.weight}</dd>
-              </div>
-              <div className="flex justify-between border-t border-border pt-3">
-                <dt className="text-sm text-text-muted">Material</dt>
-                <dd className="text-sm text-foreground">{asset.material}</dd>
-              </div>
-              <div className="flex justify-between border-t border-border pt-3">
-                <dt className="text-sm text-text-muted">Storage</dt>
-                <dd className="text-sm text-foreground text-right max-w-xs">{asset.storage_requirements}</dd>
-              </div>
+              {asset.description && (
+                <div className="flex justify-between">
+                  <dt className="text-sm text-text-muted">Description</dt>
+                  <dd className="text-sm text-foreground text-right max-w-xs">{asset.description}</dd>
+                </div>
+              )}
+              {asset.dimensions && (
+                <div className="flex justify-between border-t border-border pt-3">
+                  <dt className="text-sm text-text-muted">Dimensions</dt>
+                  <dd className="text-sm text-foreground">{asset.dimensions}</dd>
+                </div>
+              )}
+              {asset.weight && (
+                <div className="flex justify-between border-t border-border pt-3">
+                  <dt className="text-sm text-text-muted">Weight</dt>
+                  <dd className="text-sm text-foreground">{asset.weight}</dd>
+                </div>
+              )}
+              {asset.material && (
+                <div className="flex justify-between border-t border-border pt-3">
+                  <dt className="text-sm text-text-muted">Material</dt>
+                  <dd className="text-sm text-foreground">{asset.material}</dd>
+                </div>
+              )}
+              {asset.storage_requirements && (
+                <div className="flex justify-between border-t border-border pt-3">
+                  <dt className="text-sm text-text-muted">Storage</dt>
+                  <dd className="text-sm text-foreground text-right max-w-xs">{asset.storage_requirements}</dd>
+                </div>
+              )}
             </dl>
           </div>
 
@@ -171,14 +161,18 @@ export default async function AssetDetailPage({
                   </span>
                 </dd>
               </div>
-              <div className="flex justify-between border-t border-border pt-3">
-                <dt className="text-sm text-text-muted">Acquisition Cost</dt>
-                <dd className="text-sm font-medium text-foreground tabular-nums">{formatCurrency(asset.acquisition_cost)}</dd>
-              </div>
-              <div className="flex justify-between border-t border-border pt-3">
-                <dt className="text-sm text-text-muted">Current Value</dt>
-                <dd className="text-sm font-medium text-foreground tabular-nums">{formatCurrency(asset.current_value)}</dd>
-              </div>
+              {asset.acquisition_cost != null && (
+                <div className="flex justify-between border-t border-border pt-3">
+                  <dt className="text-sm text-text-muted">Acquisition Cost</dt>
+                  <dd className="text-sm font-medium text-foreground tabular-nums">{formatCurrency(asset.acquisition_cost)}</dd>
+                </div>
+              )}
+              {asset.current_value != null && (
+                <div className="flex justify-between border-t border-border pt-3">
+                  <dt className="text-sm text-text-muted">Current Value</dt>
+                  <dd className="text-sm font-medium text-foreground tabular-nums">{formatCurrency(asset.current_value)}</dd>
+                </div>
+              )}
               <div className="flex justify-between border-t border-border pt-3">
                 <dt className="text-sm text-text-muted">Deployments</dt>
                 <dd className="text-sm text-foreground">
@@ -187,11 +181,11 @@ export default async function AssetDetailPage({
               </div>
               <div className="flex justify-between border-t border-border pt-3">
                 <dt className="text-sm text-text-muted">Reusable</dt>
-                <dd className="text-sm text-foreground">{asset.reusable ? 'Yes' : 'No'}</dd>
+                <dd className="text-sm text-foreground">{asset.is_reusable ? 'Yes' : 'No'}</dd>
               </div>
               <div className="flex justify-between border-t border-border pt-3">
                 <dt className="text-sm text-text-muted">Current Proposal</dt>
-                <dd className="text-sm text-foreground">{asset.proposal}</dd>
+                <dd className="text-sm text-foreground">{proposal?.name ?? '—'}</dd>
               </div>
             </dl>
           </div>
@@ -205,45 +199,54 @@ export default async function AssetDetailPage({
               + Upload Photo
             </button>
           </div>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {[1, 2, 3, 4].map((i) => (
-              <div
-                key={i}
-                className="aspect-square rounded-lg bg-bg-tertiary flex items-center justify-center"
-              >
-                <p className="text-xs text-text-muted">Photo {i}</p>
-              </div>
-            ))}
-          </div>
+          {asset.photo_urls && asset.photo_urls.length > 0 ? (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {asset.photo_urls.map((url: string, i: number) => (
+                <div key={i} className="aspect-square rounded-lg overflow-hidden bg-bg-tertiary">
+                  <img src={url} alt={`${asset.name} photo ${i + 1}`} className="h-full w-full object-cover" />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex items-center justify-center rounded-lg border border-dashed border-border bg-bg-secondary py-8 text-sm text-text-muted">
+              No photos uploaded yet
+            </div>
+          )}
         </div>
 
         {/* Location History */}
         <div className="rounded-xl border border-border bg-white px-6 py-5">
           <h2 className="text-sm font-semibold text-foreground mb-4">Location History</h2>
-          <div className="space-y-0">
-            {asset.location_history.map((entry, index) => (
-              <div key={entry.id} className="relative flex gap-4 pb-6 last:pb-0">
-                {index < asset.location_history.length - 1 && (
-                  <div className="absolute left-[7px] top-5 bottom-0 w-px bg-border" />
-                )}
-                <div className="relative mt-1.5 h-3.5 w-3.5 shrink-0 rounded-full border-2 border-border bg-white" />
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="text-sm font-medium text-foreground">{entry.location}</p>
-                      <p className="text-xs text-text-muted mt-0.5">{entry.notes}</p>
-                    </div>
-                    <div className="shrink-0 text-right">
-                      <p className="text-xs text-text-muted">{formatDate(entry.moved_at)}</p>
-                      <span className={`mt-1 inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium capitalize ${conditionColor(entry.condition)}`}>
-                        {entry.condition}
-                      </span>
+          {history.length === 0 ? (
+            <p className="text-sm text-text-muted">No location history recorded.</p>
+          ) : (
+            <div className="space-y-0">
+              {history.map((entry, index) => (
+                <div key={entry.id} className="relative flex gap-4 pb-6 last:pb-0">
+                  {index < history.length - 1 && (
+                    <div className="absolute left-[7px] top-5 bottom-0 w-px bg-border" />
+                  )}
+                  <div className="relative mt-1.5 h-3.5 w-3.5 shrink-0 rounded-full border-2 border-border bg-white" />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="text-sm font-medium text-foreground">{entry.location}</p>
+                        {entry.notes && (
+                          <p className="text-xs text-text-muted mt-0.5">{entry.notes}</p>
+                        )}
+                      </div>
+                      <div className="shrink-0 text-right">
+                        <p className="text-xs text-text-muted">{formatDate(entry.moved_at)}</p>
+                        <span className={`mt-1 inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium capitalize ${conditionColor(entry.condition)}`}>
+                          {entry.condition}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </>

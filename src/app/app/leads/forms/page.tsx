@@ -41,7 +41,7 @@ async function getLeadForms(): Promise<LeadForm[]> {
 
     const { data: forms } = await supabase
       .from('lead_forms')
-      .select('*')
+      .select()
       .eq('organization_id', userData.organization_id)
       .order('created_at', { ascending: false });
 

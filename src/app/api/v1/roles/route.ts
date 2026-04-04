@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
   const url = new URL(request.url);
   const orgId = url.searchParams.get('organization_id');
 
-  let query = supabase.from('roles').select('*').order('hierarchy_level', { ascending: true });
+  let query = supabase.from('roles').select().order('hierarchy_level', { ascending: true });
 
   if (orgId) {
     // System roles (org_id IS NULL) + custom roles for this org

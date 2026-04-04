@@ -12,18 +12,7 @@ interface AutomationRun {
   timestamp: string;
 }
 
-const fallbackRuns: AutomationRun[] = [
-  { id: '1', name: 'Send Welcome Email', trigger: 'client_created', status: 'success', duration: '1.2s', timestamp: '2 min ago' },
-  { id: '2', name: 'Assign Default Tags', trigger: 'lead_created', status: 'success', duration: '0.8s', timestamp: '15 min ago' },
-  { id: '3', name: 'Notify Team on Close', trigger: 'deal_won', status: 'failed', duration: '3.1s', timestamp: '1 hr ago' },
-  { id: '4', name: 'Generate Invoice', trigger: 'proposal_accepted', status: 'success', duration: '2.4s', timestamp: '2 hrs ago' },
-  { id: '5', name: 'Update CRM Stage', trigger: 'deal_stage_changed', status: 'skipped', duration: '0.1s', timestamp: '3 hrs ago' },
-  { id: '6', name: 'Send Reminder', trigger: 'invoice_overdue', status: 'success', duration: '1.0s', timestamp: '4 hrs ago' },
-  { id: '7', name: 'Archive Old Leads', trigger: 'scheduled', status: 'success', duration: '5.6s', timestamp: '6 hrs ago' },
-  { id: '8', name: 'Sync to QuickBooks', trigger: 'invoice_created', status: 'failed', duration: '8.2s', timestamp: '8 hrs ago' },
-  { id: '9', name: 'Crew Availability Check', trigger: 'booking_created', status: 'success', duration: '1.5s', timestamp: '12 hrs ago' },
-  { id: '10', name: 'Send Crew Call Sheet', trigger: 'project_confirmed', status: 'success', duration: '2.0s', timestamp: '1 day ago' },
-];
+// Fallback runs mock removed
 
 const statusBadge: Record<string, string> = {
   success: 'bg-green-50 text-green-700',
@@ -40,6 +29,7 @@ export default function AutomationsConfigPage() {
   const [logAllRuns, setLogAllRuns] = useState(true);
   const [pauseOnFailures, setPauseOnFailures] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [runs, setRuns] = useState<AutomationRun[]>([]);
 
   async function handleSave() {
     setSaving(true);
@@ -162,7 +152,7 @@ export default function AutomationsConfigPage() {
               </tr>
             </thead>
             <tbody>
-              {fallbackRuns.map((run) => (
+              {runs.map((run) => (
                 <tr key={run.id} className="border-b border-border last:border-0">
                   <td className="py-3 text-foreground font-medium">{run.name}</td>
                   <td className="py-3 text-text-secondary font-mono text-xs">{run.trigger}</td>
@@ -175,6 +165,13 @@ export default function AutomationsConfigPage() {
                   <td className="py-3 text-text-secondary">{run.timestamp}</td>
                 </tr>
               ))}
+              {runs.length === 0 && (
+                <tr className="border-b border-border last:border-0">
+                  <td colSpan={5} className="py-6 text-center text-sm text-text-muted">
+                    No recent automation runs found.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
