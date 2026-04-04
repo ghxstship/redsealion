@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { requireFeature } from '@/lib/api/tier-guard';
-import { extractMentionedUserIds, notifyMentionedUsers } from '@/lib/mentions';
+import { extractMentionedUserIds } from '@/lib/mentions';
+import { notifyMentionedUsers } from '@/lib/mentions-server';
 
 export async function GET(
   _request: NextRequest,
