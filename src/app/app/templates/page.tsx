@@ -101,7 +101,7 @@ const { data: templates } = await supabase
 
     if (!templates || templates.length === 0) return FALLBACK_TEMPLATES;
 
-    return templates.map((t: any) => ({
+    return templates.map((t: { id: string; name: string; description: string | null; is_default: boolean; phases: string[]; updated_at: string }) => ({
       id: t.id,
       name: t.name,
       description: t.description,

@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase/server';
 import { createLogger } from '@/lib/logger';
 
@@ -10,8 +10,16 @@ const log = createLogger('cron-review-requests');
  * and action_type = 'send_review_request', then checks for recently
  * completed proposals that haven't had a review request sent yet.
  */
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // --- Verify CRON_SECRET ---
+    const cronSecret = process.env.CRON_SECRET;
+    if (cronSecret) {
+      const authHeader = request.headers.get('authorization');
+      if (authHeader !== `Bearer ${cronSecret}`) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+    }
     const supabase = await createServiceClient();
 
     // Find all active review request automations

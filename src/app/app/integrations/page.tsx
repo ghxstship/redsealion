@@ -52,7 +52,7 @@ export default async function IntegrationsPage() {
   const activeIntegrations = await getIntegrations();
 
   const integrationsMap = new Map(
-    activeIntegrations.map((i: any) => [i.platform, i])
+    activeIntegrations.map((i: { platform: string; status: string; last_sync_at: string | null }) => [i.platform, i])
   );
 
   return (
@@ -81,7 +81,7 @@ export default async function IntegrationsPage() {
                   displayName={p.displayName}
                   description={p.description}
                   category={p.category}
-                  status={dbInt?.status ?? 'disconnected'}
+                  status={(dbInt?.status ?? 'disconnected') as 'disconnected' | 'connected' | 'error'}
                   lastSyncAt={dbInt?.last_sync_at ?? null}
                 />
               );

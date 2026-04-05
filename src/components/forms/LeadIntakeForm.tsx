@@ -43,8 +43,9 @@ export function LeadIntakeForm({ organizationId }: { organizationId: string }) {
       }
 
       setIsSuccess(true);
-    } catch (err: any) {
-      setError(err.message || 'An unexpected error occurred.');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'An unexpected error occurred.';
+      setError(message);
     } finally {
       setIsSubmitting(false);
     }
@@ -75,7 +76,7 @@ export function LeadIntakeForm({ organizationId }: { organizationId: string }) {
       <div className="relative z-10">
         <h2 className="mb-2 text-3xl font-bold tracking-tight text-white">Start Your Project</h2>
         <p className="mb-8 text-white/70">
-          Tell us about what you're building. We'll set everything up and get back to you immediately.
+          Tell us about what you&apos;re building. We&apos;ll set everything up and get back to you immediately.
         </p>
 
         {error && (

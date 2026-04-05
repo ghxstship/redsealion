@@ -84,7 +84,7 @@ export async function getExportData(proposalId: string) {
   const phaseIds = (phases ?? []).map((p) => p.id);
 
   // Fetch deliverables grouped by phase
-  let deliverablesByPhase: Record<string, string[]> = {};
+  const deliverablesByPhase: Record<string, string[]> = {};
   if (phaseIds.length > 0) {
     const { data: deliverables } = await supabase
       .from('phase_deliverables')

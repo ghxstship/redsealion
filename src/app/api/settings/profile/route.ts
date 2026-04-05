@@ -13,7 +13,7 @@ export async function GET() {
 
   const { data: profile, error } = await supabase
     .from('users')
-    .select('id, email, full_name, phone, title, avatar_url, role, created_at')
+    .select('id, email, full_name, first_name, last_name, phone, title, avatar_url, created_at')
     .eq('id', user.id)
     .single();
 
@@ -44,6 +44,20 @@ export async function PUT(request: NextRequest) {
     );
   }
 
+  if (phone !== undefined && phone !== null && typeof phone !== 'string') {
+    return NextResponse.json(
+      { error: 'Phone must be a string' },
+      { status: 400 },
+    );
+  }
+
+  if (title !== undefined && title !== null && typeof title !== 'string') {
+    return NextResponse.json(
+      { error: 'Title must be a string' },
+      { status: 400 },
+    );
+  }
+
   const { data: updated, error } = await supabase
     .from('users')
     .update({
@@ -53,7 +67,7 @@ export async function PUT(request: NextRequest) {
       updated_at: new Date().toISOString(),
     })
     .eq('id', user.id)
-    .select('id, email, full_name, phone, title, avatar_url, role')
+    .select('id, email, full_name, first_name, last_name, phone, title, avatar_url')
     .single();
 
   if (error) {

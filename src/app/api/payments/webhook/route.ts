@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { handleWebhookEvent } from '@/lib/payments/stripe';
 import { notifyPaymentReceived } from '@/lib/notifications/triggers';
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('payments');
 
 export async function POST(request: Request) {
   const payload = await request.text();
@@ -68,8 +71,7 @@ export async function POST(request: Request) {
 
         // Fire-and-forget: notify org admin of payment
         notifyPaymentReceived(invoiceId, amountReceived).catch((err) => {
-          const { createLogger } = require('@/lib/logger');
-          createLogger('payments').error('Failed to send payment notification', { invoiceId }, err);
+          log.error('Failed to send payment notification', { invoiceId }, err);
         });
       }
     }

@@ -56,7 +56,7 @@ export function createMockQueryBuilder(resolvedData: RowData | RowData[] | null 
       if (prop === 'then') {
         return (resolve: (val: unknown) => void) => resolve(result);
       }
-      return (target as any)[prop];
+      return (target as unknown as Record<string | symbol, unknown>)[prop];
     },
   });
 
@@ -141,7 +141,8 @@ export function makeOrganization(overrides: RowData = {}) {
     created_at: '2025-01-01T00:00:00Z',
     updated_at: '2026-03-01T00:00:00Z',
     ...overrides,
-  } as Record<string, any>; // Add generic type for testing flexibility
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as Record<string, any>; // Test factory — flexible typing for assertion convenience
 }
 
 export function makeClient(overrides: RowData = {}) {

@@ -32,7 +32,7 @@ export default async function AccountPage({ params }: PageProps) {
     .join(' ');
 
   // If authenticated, try to load client contact profile
-  let clientProfile = {
+  const clientProfile = {
     firstName: '',
     lastName: '',
     email: '',
