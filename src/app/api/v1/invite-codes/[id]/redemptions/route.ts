@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { requireAuth } from '@/lib/api/auth-guard';
 
 /**
  * GET /api/v1/invite-codes/:id/redemptions — Redemption log for a code
@@ -8,13 +8,12 @@ export async function GET(
   _request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { ctx, denied } = await requireAuth();
+  if (denied) return denied;
 
   const { id } = await params;
 
-  const { data: redemptions, error } = await supabase
+  const { data: redemptions, error } = await ctx.supabase
     .from('invite_code_redemptions')
     .select('*, users!invite_code_redemptions_user_id_fkey(email, display_name)')
     .eq('invite_code_id', id)

@@ -1,16 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { requireAuth } from '@/lib/api/auth-guard';
 import { checkHarborPermission, enforceHierarchyCeiling, isSoleOwner } from '@/lib/harbor-master/permissions';
 import { checkSeatAvailability, incrementSeatUsage, decrementSeatUsage } from '@/lib/harbor-master/seats';
 import { writeAuditLog, extractIpAddress, extractUserAgent } from '@/lib/harbor-master/audit';
 import type { SeatType } from '@/types/harbor-master';
 
 export async function POST(request: NextRequest) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  const { ctx, denied } = await requireAuth();
+  if (denied) return denied;
 
   const body = await request.json().catch(() => ({}));
   const {
@@ -39,7 +36,7 @@ export async function POST(request: NextRequest) {
   }
 
   // Hierarchy ceiling
-  const { data: targetRole } = await supabase
+  const { data: targetRole } = await ctx.supabase
     .from('roles')
     .select('hierarchy_level')
     .eq('id', role_id)
@@ -52,7 +49,7 @@ export async function POST(request: NextRequest) {
   }
 
   // Existing membership check
-  const { data: existing } = await supabase
+  const { data: existing } = await ctx.supabase
     .from('organization_memberships')
     .select('id')
     .eq('user_id', targetUserId)
@@ -69,7 +66,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: seatCheck.reason }, { status: 402 });
   }
 
-  const { data: membership, error } = await supabase
+  const { data: membership, error } = await ctx.supabase
     .from('organization_memberships')
     .insert({
       user_id: targetUserId,
@@ -78,7 +75,7 @@ export async function POST(request: NextRequest) {
       seat_type,
       status: 'active',
       joined_via: 'manual_add',
-      invited_by: user.id,
+      invited_by: ctx.userId,
     })
     .select()
     .single();
@@ -94,7 +91,7 @@ export async function POST(request: NextRequest) {
 
   writeAuditLog({
     organizationId: organization_id,
-    actorId: user.id,
+    actorId: ctx.userId,
     actorType: 'user',
     action: 'member.added',
     resourceType: 'organization_membership',
@@ -108,11 +105,8 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  const { ctx, denied } = await requireAuth();
+  if (denied) return denied;
 
   const url = new URL(request.url);
   const scopeType = url.searchParams.get('scope_type') ?? 'organization';
@@ -132,7 +126,7 @@ export async function GET(request: NextRequest) {
     scopeColumn = 'project_id';
   }
 
-  const { data: memberships, error } = await supabase
+  const { data: memberships, error } = await ctx.supabase
     .from(table)
     .select('*, user:users!inner(id, email, display_name, avatar_url)')
     .eq(scopeColumn, scopeId)

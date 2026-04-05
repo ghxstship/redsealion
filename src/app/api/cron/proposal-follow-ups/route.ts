@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase/server';
 import { createLogger } from '@/lib/logger';
+import { requireCronAuth } from '@/lib/api/cron-guard';
 
 const log = createLogger('cron-proposal-follow-ups');
 
@@ -18,14 +19,9 @@ const log = createLogger('cron-proposal-follow-ups');
  */
 export async function GET(request: NextRequest) {
   try {
-    // --- Verify CRON_SECRET ---
-    const cronSecret = process.env.CRON_SECRET;
-    if (cronSecret) {
-      const authHeader = request.headers.get('authorization');
-      if (authHeader !== `Bearer ${cronSecret}`) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-      }
-    }
+    // --- Verify CRON_SECRET (centralized SSOT guard) ---
+    const denied = requireCronAuth(request);
+    if (denied) return denied;
 
     const supabase = await createServiceClient();
 

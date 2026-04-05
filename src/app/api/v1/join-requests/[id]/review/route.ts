@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { requireAuth } from '@/lib/api/auth-guard';
 
 /**
  * POST /api/v1/join-requests/:id/review — Approve or deny a join request
@@ -8,9 +8,8 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { ctx, denied } = await requireAuth();
+  if (denied) return denied;
 
   const { id } = await params;
   const body = await request.json().catch(() => ({}));
@@ -25,7 +24,7 @@ export async function POST(
     return NextResponse.json({ error: 'decision must be "approve" or "deny"' }, { status: 400 });
   }
 
-  const { data: joinRequest } = await supabase
+  const { data: joinRequest } = await ctx.supabase
     .from('join_requests')
     .select()
     .eq('id', id)
@@ -37,8 +36,8 @@ export async function POST(
   }
 
   // Permission check
-  const { data: hasPerm } = await supabase.rpc('check_permission', {
-    p_user_id: user.id,
+  const { data: hasPerm } = await ctx.supabase.rpc('check_permission', {
+    p_user_id: ctx.userId,
     p_action: 'approve',
     p_resource: 'member',
     p_scope: joinRequest.scope_type,
@@ -52,16 +51,16 @@ export async function POST(
   const now = new Date().toISOString();
 
   if (decision === 'deny') {
-    await supabase.from('join_requests').update({
+    await ctx.supabase.from('join_requests').update({
       status: 'denied',
-      reviewed_by: user.id,
+      reviewed_by: ctx.userId,
       reviewed_at: now,
       deny_reason: deny_reason ?? null,
     }).eq('id', id);
 
-    supabase.from('audit_log').insert({
+    ctx.supabase.from('audit_log').insert({
       organization_id: joinRequest.organization_id,
-      user_id: user.id,
+      user_id: ctx.userId,
       actor_type: 'user',
       action: 'join_request.denied',
       entity_type: 'join_request',
@@ -82,7 +81,7 @@ export async function POST(
   // Determine role: use provided role_id or org default
   let assignedRoleId = role_id;
   if (!assignedRoleId) {
-    const { data: org } = await supabase
+    const { data: org } = await ctx.supabase
       .from('organizations')
       .select('default_member_role_id')
       .eq('id', orgId)
@@ -95,27 +94,27 @@ export async function POST(
   }
 
   if (scopeType === 'organization') {
-    await supabase.from('organization_memberships').insert({
+    await ctx.supabase.from('organization_memberships').insert({
       user_id: joinRequest.user_id,
       organization_id: scopeId,
       role_id: assignedRoleId,
       seat_type,
       status: 'active',
       joined_via: 'join_request',
-      approved_by: user.id,
+      approved_by: ctx.userId,
     });
   } else if (scopeType === 'team') {
-    await supabase.from('team_memberships').insert({
+    await ctx.supabase.from('team_memberships').insert({
       user_id: joinRequest.user_id,
       team_id: scopeId,
       organization_id: orgId,
       role_id: assignedRoleId,
       status: 'active',
       joined_via: 'join_request',
-      invited_by: user.id,
+      invited_by: ctx.userId,
     });
   } else if (scopeType === 'project') {
-    await supabase.from('project_memberships').insert({
+    await ctx.supabase.from('project_memberships').insert({
       user_id: joinRequest.user_id,
       project_id: scopeId,
       organization_id: orgId,
@@ -123,19 +122,19 @@ export async function POST(
       seat_type,
       status: 'active',
       joined_via: 'join_request',
-      approved_by: user.id,
+      approved_by: ctx.userId,
     });
   }
 
-  await supabase.from('join_requests').update({
+  await ctx.supabase.from('join_requests').update({
     status: 'approved',
-    reviewed_by: user.id,
+    reviewed_by: ctx.userId,
     reviewed_at: now,
   }).eq('id', id);
 
-  supabase.from('audit_log').insert({
+  ctx.supabase.from('audit_log').insert({
     organization_id: orgId,
-    user_id: user.id,
+    user_id: ctx.userId,
     actor_type: 'user',
     action: 'join_request.approved',
     entity_type: 'join_request',

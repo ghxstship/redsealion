@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { requireAuth } from '@/lib/api/auth-guard';
 
 /**
  * POST /api/v1/invite-codes/distribute — Distribute codes via email/CSV/QR
  */
 export async function POST(request: NextRequest) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { ctx, denied } = await requireAuth();
+  if (denied) return denied;
 
   const body = await request.json().catch(() => ({}));
   const { code_ids, method, recipients } = body as {
@@ -25,7 +24,7 @@ export async function POST(request: NextRequest) {
   }
 
   // Fetch codes
-  const { data: codes } = await supabase
+  const { data: codes } = await ctx.supabase
     .from('invite_codes')
     .select('id, code, organization_id, scope_type, role_id, expires_at')
     .in('id', code_ids);
@@ -43,7 +42,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Rate limiting check
-    const { count } = await supabase
+    const { count } = await ctx.supabase
       .from('audit_log')
       .select('id', { count: 'exact', head: true })
       .eq('organization_id', orgId)
@@ -65,9 +64,9 @@ export async function POST(request: NextRequest) {
       status: 'queued',
     }));
 
-    supabase.from('audit_log').insert({
+    ctx.supabase.from('audit_log').insert({
       organization_id: orgId,
-      user_id: user.id,
+      user_id: ctx.userId,
       actor_type: 'user',
       action: 'invite_code.distributed',
       entity_type: 'invite_code',

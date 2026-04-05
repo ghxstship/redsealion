@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { useSubscription } from '@/components/shared/SubscriptionProvider';
 import { LockIcon } from '@/components/shared/TierBadge';
 import { navSections } from '@/components/admin/sidebar/nav-data';
@@ -60,11 +60,7 @@ export default function AdminSidebar() {
   const { canAccess } = useSubscription();
 
   // Section collapse state — default all open, persist to localStorage
-  const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
-
-  useEffect(() => {
-    setCollapsed(readCollapsed());
-  }, []);
+  const [collapsed, setCollapsed] = useState<Record<string, boolean>>(readCollapsed);
 
   const toggleSection = useCallback((sectionId: string) => {
     setCollapsed((prev) => {

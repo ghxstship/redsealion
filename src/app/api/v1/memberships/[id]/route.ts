@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { requireAuth } from '@/lib/api/auth-guard';
 
 /**
  * PATCH /api/v1/memberships/:id — Change role/seat/status
@@ -9,9 +9,8 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { ctx, denied } = await requireAuth();
+  if (denied) return denied;
 
   const { id } = await params;
   const body = await request.json().catch(() => ({}));
@@ -22,7 +21,7 @@ export async function PATCH(
   };
 
   // Fetch the membership
-  const { data: membership } = await supabase
+  const { data: membership } = await ctx.supabase
     .from('organization_memberships')
     .select('*, roles!organization_memberships_role_id_fkey(hierarchy_level)')
     .eq('id', id)
@@ -35,8 +34,8 @@ export async function PATCH(
   const orgId = membership.organization_id as string;
 
   // Permission check
-  const { data: hasPerm } = await supabase.rpc('check_permission', {
-    p_user_id: user.id,
+  const { data: hasPerm } = await ctx.supabase.rpc('check_permission', {
+    p_user_id: ctx.userId,
     p_action: 'manage',
     p_resource: 'member',
     p_scope: 'organization',
@@ -48,10 +47,10 @@ export async function PATCH(
   }
 
   // Hierarchy ceiling: actor cannot change role of equal or higher rank
-  const { data: actorMem } = await supabase
+  const { data: actorMem } = await ctx.supabase
     .from('organization_memberships')
     .select('role_id, roles!organization_memberships_role_id_fkey(hierarchy_level)')
-    .eq('user_id', user.id)
+    .eq('user_id', ctx.userId)
     .eq('organization_id', orgId)
     .eq('status', 'active')
     .single();
@@ -63,13 +62,13 @@ export async function PATCH(
   const actorLevel = ((actorMem as Record<string, unknown>).roles as Record<string, number>)?.hierarchy_level ?? 99;
   const targetLevel = ((membership as Record<string, unknown>).roles as Record<string, number>)?.hierarchy_level ?? 99;
 
-  if (targetLevel <= actorLevel && user.id !== membership.user_id) {
+  if (targetLevel <= actorLevel && ctx.userId !== membership.user_id) {
     return NextResponse.json({ error: 'Cannot modify a member with equal or higher rank' }, { status: 403 });
   }
 
   // Validate new role hierarchy if changing role
   if (role_id) {
-    const { data: newRole } = await supabase
+    const { data: newRole } = await ctx.supabase
       .from('roles')
       .select('hierarchy_level')
       .eq('id', role_id)
@@ -91,7 +90,7 @@ export async function PATCH(
     return NextResponse.json({ error: 'No fields to update' }, { status: 400 });
   }
 
-  const { data: updated, error } = await supabase
+  const { data: updated, error } = await ctx.supabase
     .from('organization_memberships')
     .update(updates)
     .eq('id', id)
@@ -103,9 +102,9 @@ export async function PATCH(
   }
 
   // Audit log
-  supabase.from('audit_log').insert({
+  ctx.supabase.from('audit_log').insert({
     organization_id: orgId,
-    user_id: user.id,
+    user_id: ctx.userId,
     actor_type: 'user',
     action: role_id ? 'member.role_changed' : seat_type ? 'member.seat_type_changed' : 'member.updated',
     entity_type: 'membership',
@@ -122,13 +121,12 @@ export async function DELETE(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { ctx, denied } = await requireAuth();
+  if (denied) return denied;
 
   const { id } = await params;
 
-  const { data: membership } = await supabase
+  const { data: membership } = await ctx.supabase
     .from('organization_memberships')
     .select('*, roles!organization_memberships_role_id_fkey(hierarchy_level)')
     .eq('id', id)
@@ -141,13 +139,13 @@ export async function DELETE(
   const orgId = membership.organization_id as string;
 
   // Cannot remove self via this endpoint (use /leave instead)
-  if (membership.user_id === user.id) {
+  if (membership.user_id === ctx.userId) {
     return NextResponse.json({ error: 'Use /leave endpoint to remove yourself' }, { status: 400 });
   }
 
   // Permission check
-  const { data: hasPerm } = await supabase.rpc('check_permission', {
-    p_user_id: user.id,
+  const { data: hasPerm } = await ctx.supabase.rpc('check_permission', {
+    p_user_id: ctx.userId,
     p_action: 'manage',
     p_resource: 'member',
     p_scope: 'organization',
@@ -159,10 +157,10 @@ export async function DELETE(
   }
 
   // Hierarchy: can only remove lower-ranked members
-  const { data: actorMem } = await supabase
+  const { data: actorMem } = await ctx.supabase
     .from('organization_memberships')
     .select('roles!organization_memberships_role_id_fkey(hierarchy_level)')
-    .eq('user_id', user.id)
+    .eq('user_id', ctx.userId)
     .eq('organization_id', orgId)
     .eq('status', 'active')
     .single();
@@ -174,7 +172,7 @@ export async function DELETE(
     return NextResponse.json({ error: 'Cannot remove a member with equal or higher rank' }, { status: 403 });
   }
 
-  const { error } = await supabase.from('organization_memberships').delete().eq('id', id);
+  const { error } = await ctx.supabase.from('organization_memberships').delete().eq('id', id);
 
   if (error) {
     return NextResponse.json({ error: 'Failed to remove member', details: error.message }, { status: 500 });
@@ -182,7 +180,7 @@ export async function DELETE(
 
   // Decrement seat count
   const seatKey = membership.seat_type === 'internal' ? 'internal_seats_used' : 'external_seats_used';
-  const { data: alloc } = await supabase
+  const { data: alloc } = await ctx.supabase
     .from('seat_allocations')
     .select(seatKey)
     .eq('organization_id', orgId)
@@ -190,16 +188,16 @@ export async function DELETE(
 
   if (alloc) {
     const current = (alloc as Record<string, number>)[seatKey] ?? 0;
-    await supabase
+    await ctx.supabase
       .from('seat_allocations')
       .update({ [seatKey]: Math.max(0, current - 1) })
       .eq('organization_id', orgId);
   }
 
   // Audit log
-  supabase.from('audit_log').insert({
+  ctx.supabase.from('audit_log').insert({
     organization_id: orgId,
-    user_id: user.id,
+    user_id: ctx.userId,
     actor_type: 'user',
     action: 'member.removed',
     entity_type: 'membership',

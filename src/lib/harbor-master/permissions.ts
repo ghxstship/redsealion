@@ -102,16 +102,7 @@ export async function checkHarborPermission(
 
   hierarchyLevel = role ? (role.hierarchy_level as number) : null;
 
-  // Check role_permissions for matching permission
-  const { data: permMatch } = await supabase
-    .from('role_permissions')
-    .select(`
-      id,
-      conditions,
-      permission_catalog!inner(action, resource, scope)
-    `)
-    .eq('role_id', roleId)
-    .single();
+  // Permission check delegated to Postgres RPC function below
 
   // Use RPC call for complex permission check (delegated to Postgres function)
   const { data: allowed } = await supabase.rpc('check_permission', {

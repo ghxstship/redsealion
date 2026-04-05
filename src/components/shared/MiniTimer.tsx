@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, startTransition } from 'react';
 import Link from 'next/link';
 
 const TIMER_STORAGE_KEY = 'flytedeck_active_timer';
@@ -20,22 +20,24 @@ export default function MiniTimer() {
   const [elapsed, setElapsed] = useState<number | null>(null);
 
   const checkTimer = useCallback(() => {
-    try {
-      const stored = localStorage.getItem(TIMER_STORAGE_KEY);
-      if (!stored) {
+    startTransition(() => {
+      try {
+        const stored = localStorage.getItem(TIMER_STORAGE_KEY);
+        if (!stored) {
+          setElapsed(null);
+          return;
+        }
+        const state: TimerState = JSON.parse(stored);
+        const seconds = Math.floor((Date.now() - state.startedAt) / 1000);
+        if (seconds > 0 && seconds < 86400) {
+          setElapsed(seconds);
+        } else {
+          setElapsed(null);
+        }
+      } catch {
         setElapsed(null);
-        return;
       }
-      const state: TimerState = JSON.parse(stored);
-      const seconds = Math.floor((Date.now() - state.startedAt) / 1000);
-      if (seconds > 0 && seconds < 86400) {
-        setElapsed(seconds);
-      } else {
-        setElapsed(null);
-      }
-    } catch {
-      setElapsed(null);
-    }
+    });
   }, []);
 
   useEffect(() => {

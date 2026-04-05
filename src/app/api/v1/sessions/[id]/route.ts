@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { requireAuth } from '@/lib/api/auth-guard';
 
 /**
  * DELETE /api/v1/sessions/:id — Revoke a specific session
@@ -8,13 +8,12 @@ export async function DELETE(
   _request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { ctx, denied } = await requireAuth();
+  if (denied) return denied;
 
   const { id } = await params;
 
-  const { data: session } = await supabase
+  const { data: session } = await ctx.supabase
     .from('sessions')
     .select('id, user_id')
     .eq('id', id)
@@ -26,10 +25,10 @@ export async function DELETE(
   }
 
   // Can revoke own session, or admin can revoke others
-  const isOwn = session.user_id === user.id;
+  const isOwn = session.user_id === ctx.userId;
   if (!isOwn) {
     // Need manage:session permission for the org
-    const { data: targetMem } = await supabase
+    const { data: targetMem } = await ctx.supabase
       .from('organization_memberships')
       .select('organization_id')
       .eq('user_id', session.user_id)
@@ -38,8 +37,8 @@ export async function DELETE(
       .single();
 
     if (targetMem) {
-      const { data: hasPerm } = await supabase.rpc('check_permission', {
-        p_user_id: user.id,
+      const { data: hasPerm } = await ctx.supabase.rpc('check_permission', {
+        p_user_id: ctx.userId,
         p_action: 'manage',
         p_resource: 'session',
         p_scope: 'organization',
@@ -54,16 +53,16 @@ export async function DELETE(
     }
   }
 
-  await supabase.from('sessions').update({
+  await ctx.supabase.from('sessions').update({
     is_active: false,
     revoked_at: new Date().toISOString(),
-    revoked_by: user.id,
+    revoked_by: ctx.userId,
     revoke_reason: isOwn ? 'manual' : 'security',
   }).eq('id', id);
 
-  supabase.from('audit_log').insert({
+  ctx.supabase.from('audit_log').insert({
     organization_id: null,
-    user_id: user.id,
+    user_id: ctx.userId,
     actor_type: 'user',
     action: 'session.revoked',
     entity_type: 'session',

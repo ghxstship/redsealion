@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { requireAuth } from '@/lib/api/auth-guard';
 import { checkHarborPermission } from '@/lib/harbor-master/permissions';
 import { isFeatureEnabled } from '@/lib/harbor-master/feature-flags';
 import { writeAuditLog, extractIpAddress, extractUserAgent } from '@/lib/harbor-master/audit';
@@ -13,11 +13,8 @@ function generateCode(orgSlug: string, scopeType: string): string {
 }
 
 export async function POST(request: NextRequest) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  const { ctx, denied } = await requireAuth();
+  if (denied) return denied;
 
   const body = await request.json().catch(() => ({}));
   const {
@@ -65,20 +62,20 @@ export async function POST(request: NextRequest) {
   }
 
   // Feature flag check
-  const inviteCodesEnabled = await isFeatureEnabled('invite_codes', orgId, user.id);
+  const inviteCodesEnabled = await isFeatureEnabled('invite_codes', orgId, ctx.userId);
   if (!inviteCodesEnabled) {
     return NextResponse.json({ error: 'Invite codes feature is not enabled for your plan' }, { status: 403 });
   }
 
   if (count > 1) {
-    const bulkEnabled = await isFeatureEnabled('bulk_invitations', orgId, user.id);
+    const bulkEnabled = await isFeatureEnabled('bulk_invitations', orgId, ctx.userId);
     if (!bulkEnabled) {
       return NextResponse.json({ error: 'Bulk invitations feature is not enabled for your plan' }, { status: 403 });
     }
   }
 
   // Get org slug for code generation
-  const { data: org } = await supabase
+  const { data: org } = await ctx.supabase
     .from('organizations')
     .select('slug')
     .eq('id', orgId)
@@ -97,7 +94,7 @@ export async function POST(request: NextRequest) {
       scope_id,
       role_id,
       seat_type,
-      created_by: user.id,
+      created_by: ctx.userId,
       label: label ?? null,
       max_uses: max_uses ?? null,
       requires_approval,
@@ -107,7 +104,7 @@ export async function POST(request: NextRequest) {
     });
   }
 
-  const { data: inserted, error } = await supabase
+  const { data: inserted, error } = await ctx.supabase
     .from('invite_codes')
     .insert(codes)
     .select();
@@ -123,7 +120,7 @@ export async function POST(request: NextRequest) {
   const auditAction = count > 1 ? 'invite_code.bulk_created' : 'invite_code.created';
   writeAuditLog({
     organizationId: orgId,
-    actorId: user.id,
+    actorId: ctx.userId,
     actorType: 'user',
     action: auditAction,
     resourceType: 'invite_code',
@@ -137,13 +134,10 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  const { ctx, denied } = await requireAuth();
+  if (denied) return denied;
 
-  const { data: codes, error } = await supabase
+  const { data: codes, error } = await ctx.supabase
     .from('invite_codes')
     .select()
     .order('created_at', { ascending: false })

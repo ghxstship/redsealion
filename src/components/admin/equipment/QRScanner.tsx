@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, startTransition } from 'react';
 
 interface QRScannerProps {
   onScan: (value: string) => void;
@@ -118,10 +118,10 @@ export default function QRScanner({ onScan }: QRScannerProps) {
   // Start camera when in scan mode
   useEffect(() => {
     if (mode === 'scan') {
-      startCamera();
+      startTransition(() => { startCamera(); });
     } else {
       stopCamera();
-      setScanning(false);
+      startTransition(() => { setScanning(false); });
     }
     return () => {
       stopCamera();

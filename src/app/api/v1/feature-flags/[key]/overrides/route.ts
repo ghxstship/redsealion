@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { requireAuth } from '@/lib/api/auth-guard';
 
 /**
  * PUT /api/v1/feature-flags/:key/overrides — Set a flag override
@@ -9,9 +9,8 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ key: string }> },
 ) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { ctx, denied } = await requireAuth();
+  if (denied) return denied;
 
   const { key } = await params;
   const body = await request.json().catch(() => ({}));
@@ -32,7 +31,7 @@ export async function PUT(
   }
 
   // Fetch the flag
-  const { data: flag } = await supabase
+  const { data: flag } = await ctx.supabase
     .from('feature_flags')
     .select('id, is_platform_controlled')
     .eq('key', key)
@@ -42,8 +41,8 @@ export async function PUT(
 
   // Platform-controlled flags can only be overridden by platform admins
   if (flag.is_platform_controlled) {
-    const { data: hasPlatformPerm } = await supabase.rpc('check_permission', {
-      p_user_id: user.id,
+    const { data: hasPlatformPerm } = await ctx.supabase.rpc('check_permission', {
+      p_user_id: ctx.userId,
       p_action: 'manage',
       p_resource: 'feature_flag',
       p_scope: 'platform',
@@ -54,8 +53,8 @@ export async function PUT(
       return NextResponse.json({ error: 'Platform-controlled flags require platform admin access' }, { status: 403 });
     }
   } else if (organization_id) {
-    const { data: hasOrgPerm } = await supabase.rpc('check_permission', {
-      p_user_id: user.id,
+    const { data: hasOrgPerm } = await ctx.supabase.rpc('check_permission', {
+      p_user_id: ctx.userId,
       p_action: 'manage',
       p_resource: 'feature_flag',
       p_scope: 'organization',
@@ -68,7 +67,7 @@ export async function PUT(
   }
 
   // Upsert override
-  const { data: existing } = await supabase
+  const { data: existing } = await ctx.supabase
     .from('feature_flag_overrides')
     .select('id')
     .eq('feature_flag_id', flag.id)
@@ -76,27 +75,27 @@ export async function PUT(
     .maybeSingle();
 
   if (existing) {
-    await supabase.from('feature_flag_overrides').update({
+    await ctx.supabase.from('feature_flag_overrides').update({
       enabled,
       reason: reason ?? null,
-      set_by: user.id,
+      set_by: ctx.userId,
       expires_at: expires_at ?? null,
     }).eq('id', existing.id);
   } else {
-    await supabase.from('feature_flag_overrides').insert({
+    await ctx.supabase.from('feature_flag_overrides').insert({
       feature_flag_id: flag.id,
       organization_id: organization_id ?? null,
       user_id: targetUserId ?? null,
       enabled,
       reason: reason ?? null,
-      set_by: user.id,
+      set_by: ctx.userId,
       expires_at: expires_at ?? null,
     });
   }
 
-  supabase.from('audit_log').insert({
+  ctx.supabase.from('audit_log').insert({
     organization_id: organization_id ?? null,
-    user_id: user.id,
+    user_id: ctx.userId,
     actor_type: 'user',
     action: 'feature_flag.override_set',
     entity_type: 'feature_flag',
@@ -113,16 +112,15 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ key: string }> },
 ) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { ctx, denied } = await requireAuth();
+  if (denied) return denied;
 
   const { key } = await params;
   const url = new URL(request.url);
   const organizationId = url.searchParams.get('organization_id');
   const targetUserId = url.searchParams.get('user_id');
 
-  const { data: flag } = await supabase
+  const { data: flag } = await ctx.supabase
     .from('feature_flags')
     .select('id')
     .eq('key', key)
@@ -130,7 +128,7 @@ export async function DELETE(
 
   if (!flag) return NextResponse.json({ error: 'Feature flag not found' }, { status: 404 });
 
-  let query = supabase
+  let query = ctx.supabase
     .from('feature_flag_overrides')
     .delete()
     .eq('feature_flag_id', flag.id);
@@ -140,9 +138,9 @@ export async function DELETE(
 
   await query;
 
-  supabase.from('audit_log').insert({
+  ctx.supabase.from('audit_log').insert({
     organization_id: organizationId ?? null,
-    user_id: user.id,
+    user_id: ctx.userId,
     actor_type: 'user',
     action: 'feature_flag.override_removed',
     entity_type: 'feature_flag',

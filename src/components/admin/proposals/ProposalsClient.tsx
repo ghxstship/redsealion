@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import ProposalCard from '@/components/admin/ProposalCard';
 import ProposalFilters, { type FilterValues } from '@/components/admin/ProposalFilters';
@@ -37,9 +37,11 @@ export default function ProposalsClient({
     sort: 'date',
   });
 
-  function clientName(clientId: string): string {
-    return clients.find((c) => c.id === clientId)?.company_name ?? 'Unknown';
-  }
+  const clientName = useCallback(
+    (clientId: string): string =>
+      clients.find((c) => c.id === clientId)?.company_name ?? 'Unknown',
+    [clients],
+  );
 
   const filtered = useMemo(() => {
     let result = [...proposals];
@@ -79,7 +81,7 @@ export default function ProposalsClient({
     }
 
     return result;
-  }, [activeTab, filters, proposals, clients]);
+  }, [activeTab, filters, proposals, clientName]);
 
   const totalPipelineValue = useMemo(
     () => filtered.reduce((sum, p) => sum + p.total_value, 0),

@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { requireAuth } from '@/lib/api/auth-guard';
 
 /**
  * POST /api/v1/invitations/bulk — Bulk send invitations
  */
 export async function POST(request: NextRequest) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { ctx, denied } = await requireAuth();
+  if (denied) return denied;
 
   const body = await request.json().catch(() => ({}));
   const { invitations } = body as {
@@ -26,10 +25,10 @@ export async function POST(request: NextRequest) {
   }
 
   // Get user's org
-  const { data: membership } = await supabase
+  const { data: membership } = await ctx.supabase
     .from('organization_memberships')
     .select('organization_id')
-    .eq('user_id', user.id)
+    .eq('user_id', ctx.userId)
     .eq('status', 'active')
     .limit(1)
     .single();
@@ -39,8 +38,8 @@ export async function POST(request: NextRequest) {
   const orgId = membership.organization_id as string;
 
   // Check bulk_invite permission
-  const { data: hasBulkPerm } = await supabase.rpc('check_permission', {
-    p_user_id: user.id,
+  const { data: hasBulkPerm } = await ctx.supabase.rpc('check_permission', {
+    p_user_id: ctx.userId,
     p_action: 'bulk_invite',
     p_resource: 'member',
     p_scope: 'organization',
@@ -52,17 +51,17 @@ export async function POST(request: NextRequest) {
   }
 
   // Check feature flag
-  const { data: flagEnabled } = await supabase.rpc('evaluate_feature_flag', {
+  const { data: flagEnabled } = await ctx.supabase.rpc('evaluate_feature_flag', {
     p_key: 'bulk_invitations',
     p_org_id: orgId,
-    p_user_id: user.id,
+    p_user_id: ctx.userId,
   });
 
   if (!flagEnabled) {
     return NextResponse.json({ error: 'Bulk invitations feature is not available on your plan' }, { status: 403 });
   }
 
-  const { data: org } = await supabase
+  const { data: org } = await ctx.supabase
     .from('organizations')
     .select('invite_expiry_hours')
     .eq('id', orgId)
@@ -76,7 +75,7 @@ export async function POST(request: NextRequest) {
     const token = crypto.randomUUID() + crypto.randomUUID().replace(/-/g, '');
     const expiresAt = new Date(Date.now() + expiryHours * 60 * 60 * 1000).toISOString();
 
-    const { data: created, error } = await supabase
+    const { data: created, error } = await ctx.supabase
       .from('invitations')
       .insert({
         organization_id: orgId,
@@ -85,7 +84,7 @@ export async function POST(request: NextRequest) {
         invited_email: inv.invited_email,
         role_id: inv.role_id,
         seat_type: inv.seat_type ?? 'internal',
-        invited_by: user.id,
+        invited_by: ctx.userId,
         token,
         personal_message: inv.personal_message ?? null,
         expires_at: expiresAt,
@@ -100,9 +99,9 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  supabase.from('audit_log').insert({
+  ctx.supabase.from('audit_log').insert({
     organization_id: orgId,
-    user_id: user.id,
+    user_id: ctx.userId,
     actor_type: 'user',
     action: 'invitation.bulk_sent',
     entity_type: 'invitation',

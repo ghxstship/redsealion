@@ -1,16 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { requireAuth } from '@/lib/api/auth-guard';
 import { checkHarborPermission } from '@/lib/harbor-master/permissions';
 import { checkSeatAvailability, incrementSeatUsage } from '@/lib/harbor-master/seats';
 import { writeAuditLog, extractIpAddress, extractUserAgent } from '@/lib/harbor-master/audit';
 import type { InvitationScopeType } from '@/types/harbor-master';
 
 export async function POST(request: NextRequest) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  const { ctx, denied } = await requireAuth();
+  if (denied) return denied;
 
   const body = await request.json().catch(() => ({}));
   const { scope_type, scope_id, request_message } = body as {
@@ -28,10 +25,10 @@ export async function POST(request: NextRequest) {
   if (scope_type === 'organization') {
     orgId = scope_id;
   } else if (scope_type === 'team') {
-    const { data: team } = await supabase.from('teams').select('organization_id').eq('id', scope_id).single();
+    const { data: team } = await ctx.supabase.from('teams').select('organization_id').eq('id', scope_id).single();
     orgId = team?.organization_id as string;
   } else if (scope_type === 'project') {
-    const { data: project } = await supabase.from('projects').select('organization_id').eq('id', scope_id).single();
+    const { data: project } = await ctx.supabase.from('projects').select('organization_id').eq('id', scope_id).single();
     orgId = project?.organization_id as string;
   }
 
@@ -41,10 +38,10 @@ export async function POST(request: NextRequest) {
 
   // Check existing membership
   if (scope_type === 'organization') {
-    const { data: existing } = await supabase
+    const { data: existing } = await ctx.supabase
       .from('organization_memberships')
       .select('id')
-      .eq('user_id', user.id)
+      .eq('user_id', ctx.userId)
       .eq('organization_id', scope_id)
       .eq('status', 'active')
       .maybeSingle();
@@ -54,10 +51,10 @@ export async function POST(request: NextRequest) {
   }
 
   // Check for duplicate pending request
-  const { data: existingRequest } = await supabase
+  const { data: existingRequest } = await ctx.supabase
     .from('join_requests')
     .select('id')
-    .eq('user_id', user.id)
+    .eq('user_id', ctx.userId)
     .eq('scope_type', scope_type)
     .eq('scope_id', scope_id)
     .eq('status', 'pending')
@@ -69,19 +66,19 @@ export async function POST(request: NextRequest) {
 
   // Visibility checks for teams/projects
   if (scope_type === 'team') {
-    const { data: team } = await supabase.from('teams').select('visibility').eq('id', scope_id).single();
+    const { data: team } = await ctx.supabase.from('teams').select('visibility').eq('id', scope_id).single();
     if (team?.visibility === 'secret') {
       return NextResponse.json({ error: 'This team is not discoverable' }, { status: 404 });
     }
   }
 
   if (scope_type === 'project') {
-    const { data: project } = await supabase.from('projects').select('visibility').eq('id', scope_id).single();
+    const { data: project } = await ctx.supabase.from('projects').select('visibility').eq('id', scope_id).single();
     if (project?.visibility === 'private') {
-      const { data: orgMem } = await supabase
+      const { data: orgMem } = await ctx.supabase
         .from('organization_memberships')
         .select('id')
-        .eq('user_id', user.id)
+        .eq('user_id', ctx.userId)
         .eq('organization_id', orgId)
         .eq('status', 'active')
         .maybeSingle();
@@ -91,10 +88,10 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  const { data: joinRequest, error } = await supabase
+  const { data: joinRequest, error } = await ctx.supabase
     .from('join_requests')
     .insert({
-      user_id: user.id,
+      user_id: ctx.userId,
       organization_id: orgId,
       scope_type,
       scope_id,
@@ -113,7 +110,7 @@ export async function POST(request: NextRequest) {
 
   writeAuditLog({
     organizationId: orgId,
-    actorId: user.id,
+    actorId: ctx.userId,
     actorType: 'user',
     action: 'join_request.submitted',
     resourceType: 'join_request',
@@ -127,13 +124,10 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  const { ctx, denied } = await requireAuth();
+  if (denied) return denied;
 
-  const { data: requests, error } = await supabase
+  const { data: requests, error } = await ctx.supabase
     .from('join_requests')
     .select()
     .order('requested_at', { ascending: false })

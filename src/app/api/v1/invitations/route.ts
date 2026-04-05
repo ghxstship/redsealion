@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { requireAuth } from '@/lib/api/auth-guard';
 import { checkHarborPermission, enforceHierarchyCeiling } from '@/lib/harbor-master/permissions';
 import { checkSeatAvailability } from '@/lib/harbor-master/seats';
 import { writeAuditLog, extractIpAddress, extractUserAgent } from '@/lib/harbor-master/audit';
@@ -7,11 +7,8 @@ import { validateInvitation } from '@/lib/harbor-master/validators';
 import type { InvitationScopeType, SeatType } from '@/types/harbor-master';
 
 export async function POST(request: NextRequest) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  const { ctx, denied } = await requireAuth();
+  if (denied) return denied;
 
   const body = await request.json().catch(() => ({}));
   const {
@@ -44,14 +41,14 @@ export async function POST(request: NextRequest) {
   }
 
   // Get inviter's hierarchy level
-  const { data: inviterRole } = await supabase
+  const { data: inviterRole } = await ctx.supabase
     .from('roles')
     .select('hierarchy_level')
     .eq('id', perm.roleId)
     .single();
 
   // Get target role hierarchy level
-  const { data: targetRole } = await supabase
+  const { data: targetRole } = await ctx.supabase
     .from('roles')
     .select('hierarchy_level')
     .eq('id', role_id)
@@ -75,17 +72,17 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Organization context required' }, { status: 400 });
   }
 
-  const { data: existingMember } = await supabase
+  const { data: existingMember } = await ctx.supabase
     .from('organization_memberships')
     .select('id, status')
     .eq('organization_id', orgId)
     .eq('user_id', (
-      await supabase.from('users').select('id').eq('email', invited_email).single()
+      await ctx.supabase.from('users').select('id').eq('email', invited_email).single()
     ).data?.id ?? '00000000-0000-0000-0000-000000000000')
     .maybeSingle();
 
   // Check for existing pending invitation
-  const { data: existingInvite } = await supabase
+  const { data: existingInvite } = await ctx.supabase
     .from('invitations')
     .select('id, status')
     .eq('invited_email', invited_email)
@@ -112,7 +109,7 @@ export async function POST(request: NextRequest) {
   const token = crypto.randomUUID() + crypto.randomUUID().replace(/-/g, '');
 
   // Get org invite expiry config
-  const { data: org } = await supabase
+  const { data: org } = await ctx.supabase
     .from('organizations')
     .select('invite_expiry_hours')
     .eq('id', orgId)
@@ -121,7 +118,7 @@ export async function POST(request: NextRequest) {
   const expiryHours = (org?.invite_expiry_hours as number) ?? 168;
   const expiresAt = new Date(Date.now() + expiryHours * 60 * 60 * 1000).toISOString();
 
-  const { data: invitation, error: insertError } = await supabase
+  const { data: invitation, error: insertError } = await ctx.supabase
     .from('invitations')
     .insert({
       organization_id: orgId,
@@ -130,7 +127,7 @@ export async function POST(request: NextRequest) {
       invited_email,
       role_id,
       seat_type,
-      invited_by: user.id,
+      invited_by: ctx.userId,
       status: 'pending',
       token,
       personal_message: personal_message ?? null,
@@ -149,7 +146,7 @@ export async function POST(request: NextRequest) {
   // Audit log (fire-and-forget)
   writeAuditLog({
     organizationId: orgId,
-    actorId: user.id,
+    actorId: ctx.userId,
     actorType: 'user',
     action: 'invitation.sent',
     resourceType: 'invitation',
@@ -163,24 +160,21 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  const { ctx, denied } = await requireAuth();
+  if (denied) return denied;
 
   const url = new URL(request.url);
   const filter = url.searchParams.get('filter'); // 'sent' | 'received' | 'all'
 
-  let query = supabase.from('invitations').select();
+  let query = ctx.supabase.from('invitations').select();
 
   if (filter === 'sent') {
-    query = query.eq('invited_by', user.id);
+    query = query.eq('invited_by', ctx.userId);
   } else if (filter === 'received') {
-    const { data: userData } = await supabase
+    const { data: userData } = await ctx.supabase
       .from('users')
       .select('email')
-      .eq('id', user.id)
+      .eq('id', ctx.userId)
       .single();
     if (userData) {
       query = query.eq('invited_email', userData.email as string);

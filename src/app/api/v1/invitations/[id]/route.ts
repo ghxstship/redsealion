@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { requireAuth } from '@/lib/api/auth-guard';
 
 /**
  * POST /api/v1/invitations/:id/accept — Accept invitation
@@ -12,9 +12,8 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { ctx, denied } = await requireAuth();
+  if (denied) return denied;
 
   const { id } = await params;
   const body = await request.json().catch(() => ({}));
@@ -25,7 +24,7 @@ export async function POST(
   }
 
   // Fetch the invitation
-  const { data: invitation, error: fetchErr } = await supabase
+  const { data: invitation, error: fetchErr } = await ctx.supabase
     .from('invitations')
     .select()
     .eq('id', id)
@@ -41,11 +40,11 @@ export async function POST(
 
   // Check expiry
   if (new Date(invitation.expires_at as string) < new Date()) {
-    await supabase.from('invitations').update({ status: 'expired' }).eq('id', id);
+    await ctx.supabase.from('invitations').update({ status: 'expired' }).eq('id', id);
     return NextResponse.json({ error: 'Invitation has expired' }, { status: 410 });
   }
 
-  const { data: userData } = await supabase.from('users').select('email').eq('id', user.id).single();
+  const { data: userData } = await ctx.supabase.from('users').select('email').eq('id', ctx.userId).single();
 
   if (action === 'accept') {
     // Email match check (STRICT)
@@ -59,8 +58,8 @@ export async function POST(
     const orgId = invitation.organization_id as string;
 
     if (scopeType === 'organization') {
-      const { error: memErr } = await supabase.from('organization_memberships').insert({
-        user_id: user.id,
+      const { error: memErr } = await ctx.supabase.from('organization_memberships').insert({
+        user_id: ctx.userId,
         organization_id: scopeId,
         role_id: invitation.role_id,
         seat_type: invitation.seat_type,
@@ -75,10 +74,10 @@ export async function POST(
 
       // Increment seat count
       const seatKey = invitation.seat_type === 'internal' ? 'internal_seats_used' : 'external_seats_used';
-      await supabase.rpc('increment_counter', { table_name: 'seat_allocations', column_name: seatKey, row_id: orgId });
+      await ctx.supabase.rpc('increment_counter', { table_name: 'seat_allocations', column_name: seatKey, row_id: orgId });
     } else if (scopeType === 'team') {
-      await supabase.from('team_memberships').insert({
-        user_id: user.id,
+      await ctx.supabase.from('team_memberships').insert({
+        user_id: ctx.userId,
         team_id: scopeId,
         organization_id: orgId,
         role_id: invitation.role_id,
@@ -87,8 +86,8 @@ export async function POST(
         invited_by: invitation.invited_by,
       });
     } else if (scopeType === 'project') {
-      await supabase.from('project_memberships').insert({
-        user_id: user.id,
+      await ctx.supabase.from('project_memberships').insert({
+        user_id: ctx.userId,
         project_id: scopeId,
         organization_id: orgId,
         role_id: invitation.role_id,
@@ -100,15 +99,15 @@ export async function POST(
     }
 
     // Mark invitation accepted
-    await supabase.from('invitations').update({
+    await ctx.supabase.from('invitations').update({
       status: 'accepted',
       accepted_at: new Date().toISOString(),
     }).eq('id', id);
 
     // Audit log
-    supabase.from('audit_log').insert({
+    ctx.supabase.from('audit_log').insert({
       organization_id: orgId,
-      user_id: user.id,
+      user_id: ctx.userId,
       actor_type: 'user',
       action: 'invitation.accepted',
       entity_type: 'invitation',
@@ -126,7 +125,7 @@ export async function POST(
       return NextResponse.json({ error: 'Only the invitee can decline' }, { status: 403 });
     }
 
-    await supabase.from('invitations').update({
+    await ctx.supabase.from('invitations').update({
       status: 'declined',
       declined_at: new Date().toISOString(),
     }).eq('id', id);
@@ -136,12 +135,12 @@ export async function POST(
 
   if (action === 'revoke') {
     // Only inviter or admin can revoke
-    const isInviter = user.id === invitation.invited_by;
+    const isInviter = ctx.userId === invitation.invited_by;
     let isApprover = false;
 
     if (!isInviter) {
-      const { data: hasPerm } = await supabase.rpc('check_permission', {
-        p_user_id: user.id,
+      const { data: hasPerm } = await ctx.supabase.rpc('check_permission', {
+        p_user_id: ctx.userId,
         p_action: 'approve',
         p_resource: 'member',
         p_scope: 'organization',
@@ -154,10 +153,10 @@ export async function POST(
       return NextResponse.json({ error: 'Insufficient permissions to revoke' }, { status: 403 });
     }
 
-    await supabase.from('invitations').update({
+    await ctx.supabase.from('invitations').update({
       status: 'revoked',
       revoked_at: new Date().toISOString(),
-      revoked_by: user.id,
+      revoked_by: ctx.userId,
     }).eq('id', id);
 
     return NextResponse.json({ success: true, action: 'revoked' });

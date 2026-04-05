@@ -1,19 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { requireAuth } from '@/lib/api/auth-guard';
 import { checkHarborPermission, enforceHierarchyCeiling } from '@/lib/harbor-master/permissions';
 import { writeAuditLog, extractIpAddress, extractUserAgent } from '@/lib/harbor-master/audit';
 
 export async function GET(request: NextRequest) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  const { ctx, denied } = await requireAuth();
+  if (denied) return denied;
 
   const url = new URL(request.url);
-  const orgId = url.searchParams.get('organization_id');
+  const orgId = url.searchParams.get('organization_id') ?? ctx.organizationId;
 
-  let query = supabase.from('roles').select().order('hierarchy_level', { ascending: true });
+  let query = ctx.supabase.from('roles').select().order('hierarchy_level', { ascending: true });
 
   if (orgId) {
     // System roles (org_id IS NULL) + custom roles for this org
@@ -32,11 +29,8 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  const { ctx, denied } = await requireAuth();
+  if (denied) return denied;
 
   const body = await request.json().catch(() => ({}));
   const { organization_id, name, display_name, description, scope, hierarchy_level, permission_ids } = body as {
@@ -70,7 +64,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { data: role, error } = await supabase
+  const { data: role, error } = await ctx.supabase
     .from('roles')
     .insert({
       organization_id,
@@ -80,7 +74,7 @@ export async function POST(request: NextRequest) {
       scope,
       hierarchy_level,
       is_system: false,
-      created_by: user.id,
+      created_by: ctx.userId,
     })
     .select()
     .single();
@@ -97,15 +91,15 @@ export async function POST(request: NextRequest) {
     const permRows = permission_ids.map(pid => ({
       role_id: role.id as string,
       permission_id: pid,
-      granted_by: user.id,
+      granted_by: ctx.userId,
     }));
 
-    await supabase.from('role_permissions').insert(permRows);
+    await ctx.supabase.from('role_permissions').insert(permRows);
   }
 
   writeAuditLog({
     organizationId: organization_id,
-    actorId: user.id,
+    actorId: ctx.userId,
     actorType: 'user',
     action: 'role.created',
     resourceType: 'role',

@@ -1,20 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { requireAuth } from '@/lib/api/auth-guard';
 
 export async function GET() {
+  const { ctx, denied } = await requireAuth();
+  if (denied) return denied;
+
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
   const { data: profile, error } = await supabase
     .from('users')
     .select('id, email, full_name, first_name, last_name, phone, title, avatar_url, created_at')
-    .eq('id', user.id)
+    .eq('id', ctx.userId)
     .single();
 
   if (error || !profile) {
@@ -25,14 +21,8 @@ export async function GET() {
 }
 
 export async function PUT(request: NextRequest) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  const { ctx, denied } = await requireAuth();
+  if (denied) return denied;
 
   const body = await request.json();
   const { full_name, phone, title } = body;
@@ -58,6 +48,7 @@ export async function PUT(request: NextRequest) {
     );
   }
 
+  const supabase = await createClient();
   const { data: updated, error } = await supabase
     .from('users')
     .update({
@@ -66,7 +57,7 @@ export async function PUT(request: NextRequest) {
       title: title?.trim() || null,
       updated_at: new Date().toISOString(),
     })
-    .eq('id', user.id)
+    .eq('id', ctx.userId)
     .select('id, email, full_name, first_name, last_name, phone, title, avatar_url')
     .single();
 

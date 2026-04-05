@@ -1,30 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-
-const ZAPIER_SECRET = process.env.ZAPIER_WEBHOOK_SECRET;
-
-function validateSecret(request: NextRequest): boolean {
-  if (!ZAPIER_SECRET) {
-    // No secret configured -- allow all requests in development
-    return true;
-  }
-
-  // Check header first, then query param
-  const headerSecret = request.headers.get('x-zapier-secret');
-  if (headerSecret === ZAPIER_SECRET) return true;
-
-  const { searchParams } = new URL(request.url);
-  const querySecret = searchParams.get('secret');
-  if (querySecret === ZAPIER_SECRET) return true;
-
-  return false;
-}
+import { requireWebhookSecret } from '@/lib/api/auth-guard';
 
 // Zapier polling trigger: return recent events
 export async function GET(request: NextRequest) {
-  if (!validateSecret(request)) {
-    return NextResponse.json({ error: 'Invalid secret' }, { status: 401 });
-  }
+  const denied = requireWebhookSecret(request, 'ZAPIER_WEBHOOK_SECRET', {
+    headerName: 'x-zapier-secret',
+    queryParam: 'secret',
+    useBearerPrefix: false,
+  });
+  if (denied) return denied;
 
   const { searchParams } = new URL(request.url);
   const eventType = searchParams.get('event_type') ?? 'all';
@@ -55,12 +40,14 @@ export async function GET(request: NextRequest) {
 
 // Zapier action: receive data from Zapier and forward to main webhook handler
 export async function POST(request: NextRequest) {
-  if (!validateSecret(request)) {
-    return NextResponse.json({ error: 'Invalid secret' }, { status: 401 });
-  }
+  const denied = requireWebhookSecret(request, 'ZAPIER_WEBHOOK_SECRET', {
+    headerName: 'x-zapier-secret',
+    queryParam: 'secret',
+    useBearerPrefix: false,
+  });
+  if (denied) return denied;
 
   try {
-
     const body = await request.json();
 
     // Extract event info from Zapier payload

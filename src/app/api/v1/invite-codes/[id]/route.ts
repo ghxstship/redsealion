@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { requireAuth } from '@/lib/api/auth-guard';
 
 /**
  * PATCH /api/v1/invite-codes/:id — Deactivate or extend expiry
@@ -8,22 +8,21 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { ctx, denied } = await requireAuth();
+  if (denied) return denied;
 
   const { id } = await params;
   const body = await request.json().catch(() => ({}));
   const { is_active, expires_at } = body as { is_active?: boolean; expires_at?: string };
 
-  const { data: code } = await supabase.from('invite_codes').select().eq('id', id).single();
+  const { data: code } = await ctx.supabase.from('invite_codes').select().eq('id', id).single();
   if (!code) return NextResponse.json({ error: 'Invite code not found' }, { status: 404 });
 
-  const isCreator = code.created_by === user.id;
+  const isCreator = code.created_by === ctx.userId;
   let isAdmin = false;
   if (!isCreator) {
-    const { data: hasPerm } = await supabase.rpc('check_permission', {
-      p_user_id: user.id,
+    const { data: hasPerm } = await ctx.supabase.rpc('check_permission', {
+      p_user_id: ctx.userId,
       p_action: 'manage',
       p_resource: 'invite_code',
       p_scope: 'organization',
@@ -44,7 +43,7 @@ export async function PATCH(
     return NextResponse.json({ error: 'No fields to update' }, { status: 400 });
   }
 
-  const { data: updated, error } = await supabase
+  const { data: updated, error } = await ctx.supabase
     .from('invite_codes')
     .update(updates)
     .eq('id', id)
@@ -54,9 +53,9 @@ export async function PATCH(
   if (error) return NextResponse.json({ error: 'Failed to update' }, { status: 500 });
 
   if (is_active === false) {
-    supabase.from('audit_log').insert({
+    ctx.supabase.from('audit_log').insert({
       organization_id: code.organization_id,
-      user_id: user.id,
+      user_id: ctx.userId,
       actor_type: 'user',
       action: 'invite_code.deactivated',
       entity_type: 'invite_code',

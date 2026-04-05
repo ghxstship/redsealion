@@ -1,16 +1,13 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { generateICalFeed } from '@/lib/calendar/ical';
-import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import { requireAuth } from '@/lib/api/auth-guard';
 
 export async function GET() {
+  const { ctx, denied } = await requireAuth();
+  if (denied) return denied;
+
   const supabase = await createClient();
-  const ctx = await resolveCurrentOrg();
-
-  if (!ctx) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
   const orgId = ctx.organizationId;
 
   // Fetch proposals with venue info

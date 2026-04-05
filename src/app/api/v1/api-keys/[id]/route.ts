@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { requireAuth } from '@/lib/api/auth-guard';
 
 /**
  * PATCH /api/v1/api-keys/:id — Update API key settings
@@ -9,9 +9,8 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { ctx, denied } = await requireAuth();
+  if (denied) return denied;
 
   const { id } = await params;
   const body = await request.json().catch(() => ({}));
@@ -23,7 +22,7 @@ export async function PATCH(
     allowed_ips?: string[];
   };
 
-  const { data: apiKey } = await supabase
+  const { data: apiKey } = await ctx.supabase
     .from('api_keys')
     .select('id, organization_id')
     .eq('id', id)
@@ -31,8 +30,8 @@ export async function PATCH(
 
   if (!apiKey) return NextResponse.json({ error: 'API key not found' }, { status: 404 });
 
-  const { data: hasPerm } = await supabase.rpc('check_permission', {
-    p_user_id: user.id,
+  const { data: hasPerm } = await ctx.supabase.rpc('check_permission', {
+    p_user_id: ctx.userId,
     p_action: 'manage',
     p_resource: 'api_key',
     p_scope: 'organization',
@@ -52,7 +51,7 @@ export async function PATCH(
     return NextResponse.json({ error: 'No fields to update' }, { status: 400 });
   }
 
-  const { data: updated, error } = await supabase
+  const { data: updated, error } = await ctx.supabase
     .from('api_keys')
     .update(updates)
     .eq('id', id)
@@ -68,13 +67,12 @@ export async function DELETE(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { ctx, denied } = await requireAuth();
+  if (denied) return denied;
 
   const { id } = await params;
 
-  const { data: apiKey } = await supabase
+  const { data: apiKey } = await ctx.supabase
     .from('api_keys')
     .select('id, organization_id')
     .eq('id', id)
@@ -82,8 +80,8 @@ export async function DELETE(
 
   if (!apiKey) return NextResponse.json({ error: 'API key not found' }, { status: 404 });
 
-  const { data: hasPerm } = await supabase.rpc('check_permission', {
-    p_user_id: user.id,
+  const { data: hasPerm } = await ctx.supabase.rpc('check_permission', {
+    p_user_id: ctx.userId,
     p_action: 'manage',
     p_resource: 'api_key',
     p_scope: 'organization',
@@ -92,14 +90,14 @@ export async function DELETE(
 
   if (!hasPerm) return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 });
 
-  await supabase.from('api_keys').update({
+  await ctx.supabase.from('api_keys').update({
     revoked_at: new Date().toISOString(),
     is_active: false,
   }).eq('id', id);
 
-  supabase.from('audit_log').insert({
+  ctx.supabase.from('audit_log').insert({
     organization_id: apiKey.organization_id,
-    user_id: user.id,
+    user_id: ctx.userId,
     actor_type: 'user',
     action: 'api_key.revoked',
     entity_type: 'api_key',

@@ -1,15 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { requireAuth } from '@/lib/api/auth-guard';
 import { isFeatureEnabled } from '@/lib/harbor-master/feature-flags';
 import { checkSeatAvailability, incrementSeatUsage } from '@/lib/harbor-master/seats';
 import { writeAuditLog, extractIpAddress, extractUserAgent } from '@/lib/harbor-master/audit';
 
 export async function POST(request: NextRequest) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  const { ctx, denied } = await requireAuth();
+  if (denied) return denied;
 
   const body = await request.json().catch(() => ({}));
   const { code } = body as { code?: string };
@@ -19,7 +16,7 @@ export async function POST(request: NextRequest) {
   }
 
   // Fetch invite code
-  const { data: inviteCode } = await supabase
+  const { data: inviteCode } = await ctx.supabase
     .from('invite_codes')
     .select()
     .eq('code', code)
@@ -32,7 +29,7 @@ export async function POST(request: NextRequest) {
   const orgId = inviteCode.organization_id as string;
 
   // Feature flag
-  const enabled = await isFeatureEnabled('invite_codes', orgId, user.id);
+  const enabled = await isFeatureEnabled('invite_codes', orgId, ctx.userId);
   if (!enabled) {
     return NextResponse.json({ error: 'Invite codes feature is not enabled' }, { status: 403 });
   }
@@ -55,7 +52,7 @@ export async function POST(request: NextRequest) {
   // Scope toggle
   const scopeType = inviteCode.scope_type as string;
   if (scopeType === 'organization') {
-    const { data: org } = await supabase
+    const { data: org } = await ctx.supabase
       .from('organizations')
       .select('invite_code_enabled')
       .eq('id', orgId)
@@ -66,11 +63,11 @@ export async function POST(request: NextRequest) {
   }
 
   // Already redeemed
-  const { data: existingRedemption } = await supabase
+  const { data: existingRedemption } = await ctx.supabase
     .from('invite_code_redemptions')
     .select('id')
     .eq('invite_code_id', inviteCode.id)
-    .eq('user_id', user.id)
+    .eq('user_id', ctx.userId)
     .maybeSingle();
 
   if (existingRedemption) {
@@ -78,10 +75,10 @@ export async function POST(request: NextRequest) {
   }
 
   // Already member
-  const { data: existingMembership } = await supabase
+  const { data: existingMembership } = await ctx.supabase
     .from('organization_memberships')
     .select('id, status')
-    .eq('user_id', user.id)
+    .eq('user_id', ctx.userId)
     .eq('organization_id', orgId)
     .eq('status', 'active')
     .maybeSingle();
@@ -91,10 +88,10 @@ export async function POST(request: NextRequest) {
   }
 
   // Domain restriction
-  const { data: userData } = await supabase
+  const { data: userData } = await ctx.supabase
     .from('users')
     .select('email')
-    .eq('id', user.id)
+    .eq('id', ctx.userId)
     .single();
   const userEmail = userData?.email as string;
 
@@ -122,10 +119,10 @@ export async function POST(request: NextRequest) {
 
   // Requires approval?
   if (inviteCode.requires_approval) {
-    const { data: joinRequest } = await supabase
+    const { data: joinRequest } = await ctx.supabase
       .from('join_requests')
       .insert({
-        user_id: user.id,
+        user_id: ctx.userId,
         organization_id: orgId,
         scope_type: inviteCode.scope_type,
         scope_id: inviteCode.scope_id,
@@ -136,14 +133,14 @@ export async function POST(request: NextRequest) {
       .single();
 
     // Record redemption without membership
-    await supabase.from('invite_code_redemptions').insert({
+    await ctx.supabase.from('invite_code_redemptions').insert({
       invite_code_id: inviteCode.id,
-      user_id: user.id,
+      user_id: ctx.userId,
       membership_scope: scopeType,
     });
 
     // Increment uses
-    await supabase
+    await ctx.supabase
       .from('invite_codes')
       .update({ current_uses: (inviteCode.current_uses as number) + 1 })
       .eq('id', inviteCode.id);
@@ -156,10 +153,10 @@ export async function POST(request: NextRequest) {
   }
 
   // Create membership
-  const { data: membership, error: memberError } = await supabase
+  const { data: membership, error: memberError } = await ctx.supabase
     .from('organization_memberships')
     .insert({
-      user_id: user.id,
+      user_id: ctx.userId,
       organization_id: orgId,
       role_id: inviteCode.role_id,
       seat_type: seatType,
@@ -177,15 +174,15 @@ export async function POST(request: NextRequest) {
   }
 
   // Record redemption
-  await supabase.from('invite_code_redemptions').insert({
+  await ctx.supabase.from('invite_code_redemptions').insert({
     invite_code_id: inviteCode.id,
-    user_id: user.id,
+    user_id: ctx.userId,
     resulted_in_membership_id: membership.id,
     membership_scope: scopeType,
   });
 
   // Increment uses
-  await supabase
+  await ctx.supabase
     .from('invite_codes')
     .update({ current_uses: (inviteCode.current_uses as number) + 1 })
     .eq('id', inviteCode.id);
@@ -196,7 +193,7 @@ export async function POST(request: NextRequest) {
   // Audit
   writeAuditLog({
     organizationId: orgId,
-    actorId: user.id,
+    actorId: ctx.userId,
     actorType: 'user',
     action: 'invite_code.redeemed',
     resourceType: 'invite_code',

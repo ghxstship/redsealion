@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo, startTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import type { FeatureKey } from '@/lib/subscription';
 
@@ -146,8 +146,10 @@ export default function CommandPalette() {
   // Focus input when opened
   useEffect(() => {
     if (open) {
-      setQuery('');
-      setSelectedIndex(0);
+      startTransition(() => {
+        setQuery('');
+        setSelectedIndex(0);
+      });
       setTimeout(() => inputRef.current?.focus(), 50);
     }
   }, [open]);
