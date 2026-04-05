@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { requireFeature } from '@/lib/api/tier-guard';
 import { requirePermission } from '@/lib/api/permission-guard';
 import { sendEmail } from '@/lib/email';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 interface ActionResult {
   action_type: string;
@@ -175,23 +176,13 @@ export async function POST(request: NextRequest) {
     if (permError) return permError;
 
     const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const ctx = await resolveCurrentOrg();
 
-    if (!user) {
+    if (!ctx) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-
-    if (!userData) {
-      return NextResponse.json({ error: 'No organization' }, { status: 400 });
-    }
+    const orgId = ctx.organizationId;
 
     const body = await request.json();
     const automationId: string | undefined = body.automationId;
@@ -206,7 +197,7 @@ export async function POST(request: NextRequest) {
       .from('automations')
       .select()
       .eq('id', automationId)
-      .eq('organization_id', userData.organization_id)
+      .eq('organization_id', orgId)
       .single();
 
     if (!automation) {
@@ -222,7 +213,7 @@ export async function POST(request: NextRequest) {
       .from('automation_runs')
       .insert({
         automation_id: automationId,
-        organization_id: userData.organization_id,
+        organization_id: orgId,
         status: 'running',
         trigger_data: triggerData,
       })

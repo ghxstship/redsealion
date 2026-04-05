@@ -41,7 +41,10 @@ function formatLabel(s: string): string {
 }
 
 function formatDate(dateStr: string): string {
-  return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', {
+  // Handle both ISO timestamps (2026-04-05T15:10:22Z) and date-only (2026-04-05)
+  const d = dateStr.includes('T') ? new Date(dateStr) : new Date(dateStr + 'T00:00:00');
+  if (isNaN(d.getTime())) return '—';
+  return d.toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
     year: 'numeric',

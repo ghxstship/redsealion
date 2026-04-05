@@ -24,17 +24,22 @@ export async function requirePortalPermission(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { data: userData } = await supabase
-    .from('users')
-    .select('role')
-    .eq('id', user.id)
+  // Resolve role via organization_memberships (SSOT — users.role was dropped in 00033)
+  const { data: membership } = await supabase
+    .from('organization_memberships')
+    .select('roles(name)')
+    .eq('user_id', user.id)
+    .eq('status', 'active')
+    .order('created_at', { ascending: true })
+    .limit(1)
     .single();
 
-  if (!userData) {
+  if (!membership) {
     return NextResponse.json({ error: 'User not found' }, { status: 404 });
   }
 
-  const role = userData.role as OrganizationRole;
+  const roleData = membership.roles as unknown as { name: string } | null;
+  const role = (roleData?.name ?? 'org_admin') as OrganizationRole;
 
   // Admin roles always have access (they can view the portal too)
   if (role === 'super_admin' || role === 'org_admin' || role === 'project_manager') {

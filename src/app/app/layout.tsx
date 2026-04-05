@@ -38,24 +38,40 @@ async function getSessionContext(): Promise<SessionContext> {
 
     const { data: userData } = await supabase
       .from('users')
-      .select('full_name, email, role, avatar_url, organization_id')
+      .select('full_name, email, avatar_url')
       .eq('id', authUser.id)
       .single();
 
     if (!userData) return DEFAULT_CONTEXT;
 
-    const { data: org } = await supabase
-      .from('organizations')
-      .select('name, subscription_tier')
-      .eq('id', userData.organization_id)
+    // Resolve org via organization_memberships (SSOT — users.organization_id was dropped in 00033)
+    const { data: membership } = await supabase
+      .from('organization_memberships')
+      .select('organization_id, roles(name)')
+      .eq('user_id', authUser.id)
+      .eq('status', 'active')
+      .order('created_at', { ascending: true })
+      .limit(1)
       .single();
+
+    const orgId = membership?.organization_id;
+    const roleData = membership?.roles as unknown as { name: string } | null;
+    const role = roleData?.name || 'org_admin';
+
+    const { data: org } = orgId
+      ? await supabase
+          .from('organizations')
+          .select('name, subscription_tier')
+          .eq('id', orgId)
+          .single()
+      : { data: null };
 
     return {
       tier: (org?.subscription_tier as SubscriptionTier) || 'free',
       user: {
         fullName: userData.full_name || 'User',
         email: userData.email || authUser.email || '',
-        role: userData.role || 'org_admin',
+        role: role,
         avatarUrl: userData.avatar_url,
       },
       orgName: org?.name || 'FlyteDeck',
