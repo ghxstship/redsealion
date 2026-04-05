@@ -19,7 +19,6 @@
 import { describe, it, expect } from 'vitest';
 import {
   DEFAULT_PERMISSIONS,
-  PORTAL_PERMISSIONS,
   ALL_RESOURCES,
   ALL_ACTIONS,
   INTERNAL_ROLES,
@@ -34,7 +33,7 @@ import {
   tierMeetsMinimum,
   getTierLabel,
 } from '@/lib/subscription';
-import type { OrganizationRole, SubscriptionTier } from '@/types/database';
+import type { OrganizationRole } from '@/types/database';
 
 describe('Permission System', () => {
   // -----------------------------------------------------------------------
@@ -420,7 +419,7 @@ describe('Subscription Tier System', () => {
 
   describe('Tier helper functions', () => {
     it('getRequiredTier returns correct tier for features', () => {
-      expect(getRequiredTier('proposals')).toBe('starter');
+      expect(getRequiredTier('proposals')).toBe('portal');
       expect(getRequiredTier('automations')).toBe('professional');
       expect(getRequiredTier('tasks')).toBe('enterprise');
     });

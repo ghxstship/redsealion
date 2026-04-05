@@ -105,6 +105,18 @@ export async function convertLeadToProject(leadId: string, orgId: string): Promi
 
     const currency = (orgData as Record<string, unknown>)?.currency as string || 'USD';
 
+    // Resolve the org owner to use as created_by (FK requires valid user)
+    const { data: ownerMembership } = await supabase
+      .from('organization_memberships')
+      .select('user_id')
+      .eq('organization_id', orgId)
+      .eq('status', 'active')
+      .order('created_at', { ascending: true })
+      .limit(1)
+      .single();
+
+    const createdBy = ownerMembership?.user_id as string | null;
+
     const { error: proposalError } = await supabase
       .from('proposals')
       .insert({
@@ -116,7 +128,7 @@ export async function convertLeadToProject(leadId: string, orgId: string): Promi
         total_value: lead.estimated_budget || 0,
         total_with_addons: lead.estimated_budget || 0,
         source: lead.source || 'Website Intake',
-        created_by: '00000000-0000-0000-0000-000000000000',
+        created_by: createdBy,
       });
 
     if (proposalError) {

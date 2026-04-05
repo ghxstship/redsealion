@@ -137,15 +137,6 @@ export default async function CrewMemberPage({
 
   return (
     <>
-      {/* Breadcrumb */}
-      <nav className="mb-6 flex items-center gap-2 text-sm text-text-muted">
-        <Link href="/app/crew" className="hover:text-foreground transition-colors">
-          Crew
-        </Link>
-        <span>/</span>
-        <span className="text-foreground font-medium">{member.full_name}</span>
-      </nav>
-
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-8">
         <div>

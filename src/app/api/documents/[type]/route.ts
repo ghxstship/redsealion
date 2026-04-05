@@ -140,7 +140,7 @@ export async function GET(
 // Shared data-fetching helpers
 // ---------------------------------------------------------------------------
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 type SupabaseClient = Awaited<ReturnType<typeof createClient>>;
 
 async function fetchProposalAndClient(

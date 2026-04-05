@@ -3,8 +3,6 @@ import './globals.css';
 import ServiceWorkerRegistration from '@/components/ServiceWorkerRegistration';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 
-const fontVariables = '--font-inter --font-jetbrains-mono';
-
 export const metadata: Metadata = {
   metadataBase: new URL('https://flytedeck.io'),
   title: {

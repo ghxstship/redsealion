@@ -22,7 +22,6 @@ import {
   heading,
   body,
   spacer,
-  pageBreak,
   signatureBlock,
   buildSection,
   createDocument,

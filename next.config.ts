@@ -34,7 +34,7 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "img-src 'self' data: blob: https:",
       "font-src 'self' https://fonts.gstatic.com",
-      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com",
+      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com http://127.0.0.1:* http://localhost:* ws://127.0.0.1:* ws://localhost:*",
       "frame-src 'self' https://js.stripe.com https://hooks.stripe.com",
       "object-src 'none'",
       "base-uri 'self'",

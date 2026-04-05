@@ -2,10 +2,11 @@
 
 import { useState } from 'react';
 import { useSubscription } from '@/components/shared/SubscriptionProvider';
+import type { SubscriptionTier } from '@/types/database';
 
 interface Plan {
   name: string;
-  tier: 'free' | 'starter' | 'professional' | 'enterprise';
+  tier: SubscriptionTier;
   price: string;
   period: string;
   features: string[];

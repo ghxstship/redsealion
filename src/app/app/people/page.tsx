@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import Link from 'next/link';
-import Breadcrumbs from '@/components/shared/Breadcrumbs';
 import PeopleHeader from '@/components/admin/people/PeopleHeader';
 import PeopleGrid from '@/components/admin/people/PeopleGrid';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
@@ -48,8 +47,6 @@ export default async function PeoplePage() {
 
   return (
     <TierGate feature="people_hr">
-      <Breadcrumbs />
-
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">People</h1>

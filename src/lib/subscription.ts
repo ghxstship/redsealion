@@ -66,17 +66,20 @@ export type FeatureKey =
 
 // Maps each feature to the minimum subscription tier required
 const featureRegistry: Record<FeatureKey, SubscriptionTier> = {
+  // Portal tier — read-only demo experience
+  proposals: 'portal',
+  clients: 'portal',
+  pipeline: 'portal',
+  leads: 'portal',
+  invoices: 'portal',
+  reports: 'portal',
+
   // Starter tier — CRM, sales, presentation
-  proposals: 'starter',
-  clients: 'starter',
   portfolio: 'starter',
   assets: 'starter',
   team: 'starter',
   templates: 'starter',
   terms: 'starter',
-  pipeline: 'starter',
-  invoices: 'starter',
-  reports: 'starter',
   export_docx: 'starter',
   export_pdf: 'starter',
 
@@ -116,7 +119,6 @@ const featureRegistry: Record<FeatureKey, SubscriptionTier> = {
   equipment: 'professional',
   esign: 'professional',
   calendar: 'professional',
-  leads: 'starter',
   online_payments: 'professional',
   warehouse: 'enterprise',
   onboarding: 'professional',
@@ -133,6 +135,7 @@ const featureRegistry: Record<FeatureKey, SubscriptionTier> = {
 };
 
 const tierRank: Record<SubscriptionTier, number> = {
+  portal: -1,
   free: 0,
   starter: 1,
   professional: 2,
@@ -160,6 +163,7 @@ export function tierMeetsMinimum(
 
 export function getTierLabel(tier: SubscriptionTier): string {
   const labels: Record<SubscriptionTier, string> = {
+    portal: 'Portal Demo',
     free: 'Free',
     starter: 'Starter',
     professional: 'Professional',

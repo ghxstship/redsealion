@@ -143,15 +143,6 @@ export default async function EquipmentDetailPage({
 
   return (
     <>
-      {/* Breadcrumb */}
-      <nav className="mb-6 flex items-center gap-2 text-sm text-text-muted">
-        <Link href="/app/equipment" className="hover:text-foreground transition-colors">
-          Equipment
-        </Link>
-        <span>/</span>
-        <span className="text-foreground font-medium">{item.name}</span>
-      </nav>
-
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-8">
         <div>

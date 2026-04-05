@@ -7,7 +7,6 @@
  */
 import type {
   SeatType,
-  InvitationStatus,
   Invitation,
   InviteCode,
   OrganizationMembership,

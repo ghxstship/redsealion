@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { formatCurrency, statusColor } from '@/lib/utils';
 import { TierGate } from '@/components/shared/TierGate';
-import Breadcrumbs from '@/components/shared/Breadcrumbs';
 import { createClient } from '@/lib/supabase/server';
 import type { DealStage } from '@/types/database';
 
@@ -105,8 +104,6 @@ export default async function DealDetailPage({
 
   return (
     <TierGate feature="pipeline">
-      <Breadcrumbs currentLabel={deal.title} />
-
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-8">
         <div>

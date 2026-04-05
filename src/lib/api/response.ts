@@ -9,7 +9,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { AppError, isAppError, RateLimitError } from '@/lib/errors';
+import { isAppError, RateLimitError } from '@/lib/errors';
 import { createLogger } from '@/lib/logger';
 
 const log = createLogger('api');

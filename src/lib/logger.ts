@@ -72,7 +72,6 @@ function emit(entry: LogEntry): void {
   } else if (entry.level === 'warn') {
     console.warn(output);
   } else {
-    // eslint-disable-next-line no-console
     console.log(output);
   }
 }

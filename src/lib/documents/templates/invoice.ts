@@ -6,16 +6,9 @@
  */
 
 import {
-  Document,
   Paragraph,
-  TextRun,
   Table,
-  TableRow,
-  TableCell,
   AlignmentType,
-  WidthType,
-  ShadingType,
-  BorderStyle,
 } from 'docx';
 
 import type {
@@ -31,8 +24,6 @@ import type {
 import {
   brandFromOrg,
   buildSection,
-  buildStyles,
-  buildNumbering,
   heading,
   body,
   spacer,
@@ -44,7 +35,6 @@ import {
   formatDate,
   createDocument,
   packDocument,
-  CONTENT_WIDTH,
   type DocBrand,
   type TableColumn,
 } from '../engine';
@@ -72,7 +62,7 @@ function statusLabel(status: string): string {
   return status.replace(/_/g, ' ').toUpperCase();
 }
 
-function buildBillTo(data: InvoiceDocumentData, brand: DocBrand): (Paragraph | Table)[] {
+function buildBillTo(data: InvoiceDocumentData, _brand: DocBrand): (Paragraph | Table)[] {
   const { client, clientContact } = data;
   const parts: (Paragraph | Table)[] = [heading('Bill To', 2)];
 

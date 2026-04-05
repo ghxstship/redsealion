@@ -156,21 +156,6 @@ export default async function TaskDetailPage({
 
   return (
     <TierGate feature="tasks">
-      {/* Breadcrumb */}
-      <div className="mb-6 flex items-center gap-2 text-sm text-text-muted">
-        <Link href="/app/tasks" className="hover:text-foreground transition-colors">Tasks</Link>
-        <span>/</span>
-        {task.parentTaskId && task.parentTaskTitle && (
-          <>
-            <Link href={`/app/tasks/${task.parentTaskId}`} className="hover:text-foreground transition-colors">
-              {task.parentTaskTitle}
-            </Link>
-            <span>/</span>
-          </>
-        )}
-        <span className="text-foreground">{task.title}</span>
-      </div>
-
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         {/* Main content */}
         <div className="lg:col-span-2 space-y-6">

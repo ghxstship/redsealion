@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase/server';
 import { notifyPaymentReminder } from '@/lib/notifications/triggers';
+import { requireCronAuth } from '@/lib/api/cron-guard';
 
 /**
  * Cron-compatible endpoint that sends payment reminders for overdue invoices.
@@ -13,14 +14,9 @@ import { notifyPaymentReminder } from '@/lib/notifications/triggers';
  *   { "crons": [{ "path": "/api/invoices/send-reminders", "schedule": "0 9 * * *" }] }
  */
 export async function GET(request: Request) {
-  // Verify cron secret
-  const cronSecret = process.env.CRON_SECRET;
-  if (cronSecret) {
-    const authHeader = request.headers.get('authorization');
-    if (authHeader !== `Bearer ${cronSecret}`) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-  }
+  // --- Verify CRON_SECRET (centralized SSOT guard) ---
+  const denied = requireCronAuth(request);
+  if (denied) return denied;
 
   try {
     const supabase = await createServiceClient();

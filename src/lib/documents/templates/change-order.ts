@@ -34,7 +34,6 @@ import {
   formatDate,
   createDocument,
   packDocument,
-  CONTENT_WIDTH,
   type DocBrand,
   type TableColumn,
 } from '../engine';

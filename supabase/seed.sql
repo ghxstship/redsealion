@@ -47,21 +47,24 @@ BEGIN
         v_user_id := cast(md5(v_role.name || '_user') as uuid);
         v_base_email := v_role.name || '@redsealion.test';
 
-        -- Insert to auth.users
+        -- Insert to auth.users (GoTrue requires token columns to be '' not NULL)
         INSERT INTO auth.users (
             instance_id, id, aud, role, email, encrypted_password, 
             email_confirmed_at, raw_app_meta_data, raw_user_meta_data, 
+            confirmation_token, recovery_token,
+            email_change_token_new, email_change_token_current, email_change,
             created_at, updated_at
         ) VALUES (
             '00000000-0000-0000-0000-000000000000', v_user_id, 'authenticated', 'authenticated', 
             v_base_email, crypt('password123', gen_salt('bf')), 
             now(), '{"provider":"email","providers":["email"]}'::jsonb, '{}'::jsonb, 
+            '', '', '', '', '',
             now(), now()
         ) ON CONFLICT (id) DO NOTHING;
 
-        -- Insert into public.users
-        INSERT INTO public.users (id, email, full_name, first_name, last_name, organization_id)
-        VALUES (v_user_id, v_base_email, 'Test ' || v_role.display_name, 'Test', v_role.display_name, v_org_id)
+        -- Insert into public.users (organization_id dropped in migration 00033)
+        INSERT INTO public.users (id, email, full_name, first_name, last_name)
+        VALUES (v_user_id, v_base_email, 'Test ' || v_role.display_name, 'Test', v_role.display_name)
         ON CONFLICT (id) DO NOTHING;
 
         -- Assign memberships based on scope

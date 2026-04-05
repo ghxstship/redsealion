@@ -9,7 +9,6 @@ import {
   Paragraph,
   TextRun,
   AlignmentType,
-  PageBreak,
   ImageRun,
 } from 'docx';
 
@@ -47,8 +46,6 @@ import {
   packDocument,
   spacer,
   pageBreak,
-  labelValue,
-  CONTENT_WIDTH,
   type DocBrand,
   type TableColumn,
 } from '../engine';

@@ -29,7 +29,6 @@ import {
   spacer,
   pageBreak,
   checkbox,
-  labelValue,
   calloutBox,
   dataTable,
   kvTable,

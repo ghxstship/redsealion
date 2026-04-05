@@ -75,15 +75,6 @@ export default async function AssetDetailPage({
 
   return (
     <>
-      {/* Breadcrumb */}
-      <nav className="mb-6 flex items-center gap-2 text-sm text-text-muted">
-        <Link href="/app/assets" className="hover:text-foreground transition-colors">
-          Assets
-        </Link>
-        <span>/</span>
-        <span className="text-foreground font-medium truncate">{asset.name}</span>
-      </nav>
-
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-8">
         <div>

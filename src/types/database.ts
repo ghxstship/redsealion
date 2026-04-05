@@ -10,7 +10,7 @@ export type OrganizationRole =
   | 'client_primary'
   | 'client_viewer';
 
-export type SubscriptionTier = 'free' | 'starter' | 'professional' | 'enterprise';
+export type SubscriptionTier = 'portal' | 'free' | 'starter' | 'professional' | 'enterprise';
 
 export type ProposalStatus =
   | 'draft'

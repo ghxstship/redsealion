@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { formatCurrency, statusColor } from '@/lib/utils';
-import Breadcrumbs from '@/components/shared/Breadcrumbs';
 import ClientInteractions from '@/components/admin/clients/ClientInteractions';
 import ClientDetailActions from './ClientDetailActions';
 import { getClient, formatStatus, formatDate, roleLabel } from './_data';
@@ -16,8 +15,6 @@ export default async function ClientDetailPage({
 
   return (
     <>
-      <Breadcrumbs currentLabel={client.company_name} />
-
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-8">
         <div>

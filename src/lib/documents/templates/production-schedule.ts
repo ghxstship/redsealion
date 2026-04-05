@@ -20,7 +20,6 @@ import type {
 import {
   brandFromOrg,
   buildSection,
-  buildNumbering,
   createDocument,
   packDocument,
   heading,
@@ -32,7 +31,6 @@ import {
   labelValue,
   dataTable,
   formatDate,
-  formatCurrency,
   type TableColumn,
   CONTENT_WIDTH,
 } from '../engine';

@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
 interface CalendarEvent {

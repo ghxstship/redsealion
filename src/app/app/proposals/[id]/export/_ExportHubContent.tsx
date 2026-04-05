@@ -152,15 +152,6 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
 
   return (
     <>
-      {/* Breadcrumb */}
-      <nav className="mb-6 flex items-center gap-2 text-sm text-text-muted">
-        <Link href="/app/proposals" className="hover:text-foreground transition-colors">Proposals</Link>
-        <span>/</span>
-        <Link href={`/app/proposals/${id}`} className="hover:text-foreground transition-colors">{proposal.name}</Link>
-        <span>/</span>
-        <span className="text-foreground font-medium">Export Hub</span>
-      </nav>
-
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-semibold tracking-tight text-foreground">Export Hub</h1>

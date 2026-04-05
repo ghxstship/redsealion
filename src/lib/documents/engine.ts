@@ -29,7 +29,6 @@ import {
   LevelFormat,
   TabStopType,
   TabStopPosition,
-  ExternalHyperlink,
 } from 'docx';
 
 import type { Organization, BrandConfig } from '@/types/database';
@@ -479,7 +478,7 @@ export function kvTable(
     width: { size: CONTENT_WIDTH, type: WidthType.DXA },
     columnWidths: [labelWidth, valueWidth],
     rows: pairs.map(
-      ([label, value], idx) =>
+      ([label, value], _idx) =>
         new TableRow({
           children: [
             new TableCell({

@@ -182,16 +182,6 @@ function invoiceStatusSection(
 ): (Paragraph | Table)[] {
   if (invoices.length === 0) return [];
 
-  const statusColorMap: Record<string, string> = {
-    paid: '16A34A',
-    partially_paid: 'CA8A04',
-    sent: '2563EB',
-    viewed: '2563EB',
-    overdue: 'DC2626',
-    draft: '71717A',
-    void: '71717A',
-  };
-
   const columns: TableColumn[] = [
     { header: 'Invoice #', width: 1800 },
     { header: 'Type', width: 1600, align: AlignmentType.CENTER },
