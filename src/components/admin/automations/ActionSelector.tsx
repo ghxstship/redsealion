@@ -4,6 +4,8 @@ import { useState } from 'react';
 
 const ACTION_TYPES = [
   { value: 'send_email', label: 'Send Email', description: 'Send an email notification' },
+  { value: 'send_follow_up_email', label: 'Send Follow-Up Email', description: 'Send a proposal follow-up nudge to the client' },
+  { value: 'send_review_request', label: 'Request Review', description: 'Ask the client for a review after project completion' },
   { value: 'send_slack', label: 'Send Slack Message', description: 'Post a message to a Slack channel' },
   { value: 'create_invoice', label: 'Create Invoice', description: 'Auto-generate an invoice' },
   { value: 'update_deal_stage', label: 'Update Deal Stage', description: 'Move a deal to a different stage' },
@@ -108,6 +110,69 @@ export function ActionSelector({ value, config, onChange }: ActionSelectorProps)
             placeholder="#general"
             className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
           />
+        </div>
+      )}
+
+      {selectedType === 'send_follow_up_email' && (
+        <div className="mt-3 space-y-2">
+          <div>
+            <label className="block text-xs font-medium text-text-secondary mb-1">Email Template</label>
+            <select
+              value={(config.template as string) ?? 'gentle_reminder'}
+              onChange={(e) => onChange(selectedType, { ...config, template: e.target.value })}
+              className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
+            >
+              <option value="gentle_reminder">Gentle Reminder</option>
+              <option value="value_highlight">Value Highlight</option>
+              <option value="urgency_close">Urgency Close</option>
+              <option value="custom">Custom</option>
+            </select>
+          </div>
+          {(config.template as string) === 'custom' && (
+            <div>
+              <label className="block text-xs font-medium text-text-secondary mb-1">Custom Subject</label>
+              <input
+                type="text"
+                value={(config.subject as string) ?? ''}
+                onChange={(e) => onChange(selectedType, { ...config, subject: e.target.value })}
+                placeholder="Following up on your proposal"
+                className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
+              />
+            </div>
+          )}
+          <div className="rounded-lg border border-border bg-bg-secondary/50 p-3">
+            <p className="text-xs text-text-muted">
+              <strong>Available variables:</strong> {'{client_name}'}, {'{proposal_name}'}, {'{proposal_value}'}, {'{portal_link}'}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {selectedType === 'send_review_request' && (
+        <div className="mt-3 space-y-2">
+          <div>
+            <label className="block text-xs font-medium text-text-secondary mb-1">Review Platform URL</label>
+            <input
+              type="url"
+              value={(config.reviewUrl as string) ?? ''}
+              onChange={(e) => onChange(selectedType, { ...config, reviewUrl: e.target.value })}
+              placeholder="https://g.page/your-business/review"
+              className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-text-secondary mb-1">Delay After Completion</label>
+            <select
+              value={(config.delayDays as number) ?? 1}
+              onChange={(e) => onChange(selectedType, { ...config, delayDays: Number(e.target.value) })}
+              className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
+            >
+              <option value={0}>Immediately</option>
+              <option value={1}>1 day</option>
+              <option value={3}>3 days</option>
+              <option value={7}>7 days</option>
+            </select>
+          </div>
         </div>
       )}
     </div>

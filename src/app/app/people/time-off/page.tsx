@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import { statusColor } from '@/lib/utils';
 import TimeOffCalendar from '@/components/admin/people/TimeOffCalendar';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 interface TimeOffRow {
   id: string;
@@ -16,20 +17,13 @@ interface TimeOffRow {
 async function getTimeOffRequests(): Promise<TimeOffRow[]> {
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return [];
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-    if (!userData) return [];
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
 
     const { data } = await supabase
       .from('time_off_requests')
       .select('id, user_id, start_date, end_date, days_requested, reason, status')
-      .eq('organization_id', userData.organization_id)
+      .eq('organization_id', ctx.organizationId)
       .order('start_date', { ascending: false })
       .limit(20);
 

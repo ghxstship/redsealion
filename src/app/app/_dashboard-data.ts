@@ -10,6 +10,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { canAccessFeature } from '@/lib/subscription';
 import type { SubscriptionTier } from '@/types/database';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 /* ─── Types ─────────────────────────────────────────────── */
 
@@ -69,21 +70,14 @@ export async function getDashboardData(): Promise<{
 }> {
   try {
     const supabase = await createClient();
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
     if (!user) return { stats: fallbackStats, tier: 'free' };
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-
-    if (!userData) return { stats: fallbackStats, tier: 'free' };
-
-    const orgId = userData.organization_id;
+const orgId = ctx.organizationId;
 
     // Get org tier
     const { data: org } = await supabase

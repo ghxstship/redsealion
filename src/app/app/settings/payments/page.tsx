@@ -1,6 +1,36 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import StripeConnectSetup from '@/components/admin/payments/StripeConnectSetup';
 
 export default function PaymentSettingsPage() {
+  const [instructions, setInstructions] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/settings/general')
+      .then((r) => r.json())
+      .then((data) => {
+        setInstructions(data.organization?.payment_instructions ?? '');
+        setLoaded(true);
+      })
+      .catch(() => setLoaded(true));
+  }, []);
+
+  async function handleSave() {
+    setSaving(true);
+    try {
+      await fetch('/api/settings/payment-terms', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ payment_instructions: instructions }),
+      });
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return (
     <>
       <div className="mb-8">
@@ -24,6 +54,8 @@ export default function PaymentSettingsPage() {
           </p>
           <textarea
             rows={4}
+            value={loaded ? instructions : ''}
+            onChange={(e) => setInstructions(e.target.value)}
             placeholder="Enter payment instructions for your clients..."
             className="w-full rounded-lg border border-border bg-white px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20 resize-none"
           />
@@ -45,8 +77,12 @@ export default function PaymentSettingsPage() {
         </div>
 
         <div className="flex justify-end">
-          <button className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-foreground/90">
-            Save Changes
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-foreground/90 disabled:opacity-50"
+          >
+            {saving ? 'Saving...' : 'Save Changes'}
           </button>
         </div>
       </div>

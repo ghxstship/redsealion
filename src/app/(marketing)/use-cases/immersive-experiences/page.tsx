@@ -184,7 +184,7 @@ export default function ImmersiveExperiencesPage() {
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-3xl font-bold tracking-tight text-zinc-900">Start producing immersive experiences with FlyteDeck</h2>
           <p className="mt-4 text-lg text-zinc-600">
-            Join production teams building the world's most ambitious immersive environments.
+            Join production teams building the world&apos;s most ambitious immersive environments.
             Start your free trial and build your first proposal in minutes.
           </p>
           <div className="mt-8 flex items-center justify-center gap-4">

@@ -64,8 +64,8 @@ describe('Permission System', () => {
   // -----------------------------------------------------------------------
 
   describe('Resources and actions', () => {
-    it('defines 19 permission resources', () => {
-      expect(ALL_RESOURCES).toHaveLength(19);
+    it('defines 24 permission resources', () => {
+      expect(ALL_RESOURCES).toHaveLength(24);
     });
 
     it('includes all core resources', () => {

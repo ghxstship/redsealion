@@ -134,6 +134,7 @@ export default async function ProposalJourneyPage({ params }: PageProps) {
 
   return (
     <JourneyContent
+      proposalId={id}
       proposalName={proposal.name}
       proposalSubtitle={proposal.subtitle}
       phases={phaseData}

@@ -1,40 +1,26 @@
 import { TierGate } from '@/components/shared/TierGate';
 import PermissionMatrix from '@/components/admin/security/PermissionMatrix';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { createClient } from '@/lib/supabase/server';
 
 async function getPermissionData() {
   try {
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) return { organizationId: '', overrides: [] };
+
     const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const { data: rolePermissions } = await supabase
+      .from('role_permissions')
+      .select('roles(name), permission_catalog(resource, action), granted');
 
-    if (!user) return { organizationId: '', overrides: [] };
+    const overrides = (rolePermissions ?? []).map((rp: Record<string, unknown>) => ({
+      role: ((rp.roles as Record<string, unknown>)?.name as string) || '',
+      resource: ((rp.permission_catalog as Record<string, unknown>)?.resource as string) || '',
+      action: ((rp.permission_catalog as Record<string, unknown>)?.action as string) || '',
+      allowed: (rp.granted as boolean) ?? true,
+    }));
 
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-
-    if (!userData) return { organizationId: '', overrides: [] };
-
-    const organizationId = userData.organization_id as string;
-
-    const { data: overrides } = await supabase
-      .from('permissions')
-      .select('role, resource, action, allowed')
-      .eq('organization_id', organizationId);
-
-    return {
-      organizationId,
-      overrides: (overrides ?? []) as Array<{
-        role: string;
-        resource: string;
-        action: string;
-        allowed: boolean;
-      }>,
-    };
+    return { organizationId: ctx.organizationId, overrides };
   } catch {
     return { organizationId: '', overrides: [] };
   }

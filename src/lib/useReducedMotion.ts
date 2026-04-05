@@ -25,8 +25,6 @@ export function useReducedMotion(): boolean {
     const handler = (e: MediaQueryListEvent) => setPrefersReduced(e.matches);
 
     mql.addEventListener('change', handler);
-    // Sync in case SSR value differs
-    setPrefersReduced(mql.matches);
 
     return () => mql.removeEventListener('change', handler);
   }, []);

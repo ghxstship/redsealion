@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import TimesheetApprovalCard from '@/components/admin/time/TimesheetApprovalCard';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 interface PendingTimesheet {
   id: string;
@@ -14,22 +15,16 @@ interface PendingTimesheet {
 async function getPendingTimesheets(): Promise<PendingTimesheet[]> {
   try {
     const supabase = await createClient();
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
     const {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) return [];
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-    if (!userData) return [];
-
-    const { data } = await supabase
+const { data } = await supabase
       .from('timesheets')
       .select('id, user_id, week_start, total_hours, submitted_at, status')
-      .eq('organization_id', userData.organization_id)
+      .eq('organization_id', ctx.organizationId)
       .eq('status', 'submitted')
       .order('submitted_at', { ascending: false })
       .limit(20);

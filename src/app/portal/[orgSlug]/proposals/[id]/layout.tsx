@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
+import { createClient } from '@/lib/supabase/server';
 
 interface ProposalLayoutProps {
   children: ReactNode;
@@ -20,8 +21,15 @@ export default async function ProposalLayout({ children, params }: ProposalLayou
 
   const basePath = `/portal/${orgSlug}/proposals/${id}`;
 
-  // Placeholder — will be replaced with Supabase fetch
-  const proposalName = 'Nike Air Max Day Experience';
+  // Fetch proposal name from Supabase
+  const supabase = await createClient();
+  const { data: proposal } = await supabase
+    .from('proposals')
+    .select('name')
+    .eq('id', id)
+    .single();
+
+  const proposalName = proposal?.name ?? 'Proposal';
 
   return (
     <div className="space-y-6">

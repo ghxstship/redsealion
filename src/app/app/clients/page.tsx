@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { formatCurrency } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import ClientsSearch from '@/components/admin/clients/ClientsSearch';
+import ClientsHeader from '@/components/admin/clients/ClientsHeader';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 interface ClientRow {
   id: string;
@@ -16,24 +18,13 @@ interface ClientRow {
 async function getClients(): Promise<ClientRow[]> {
   try {
     const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) return [];
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-
-    if (!userData) return [];
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) return [];
 
     const { data: clients } = await supabase
       .from('clients')
       .select()
-      .eq('organization_id', userData.organization_id)
+      .eq('organization_id', ctx.organizationId)
       .order('company_name');
 
     if (!clients) return [];
@@ -68,21 +59,7 @@ export default async function ClientsPage() {
             {clients.length} clients &middot; {formatCurrency(totalValue)} total pipeline
           </p>
         </div>
-        <button className="inline-flex items-center justify-center gap-2 rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-foreground/90">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-          >
-            <line x1="8" y1="2" x2="8" y2="14" />
-            <line x1="2" y1="8" x2="14" y2="8" />
-          </svg>
-          Add Client
-        </button>
+        <ClientsHeader />
       </div>
 
       {/* Search */}

@@ -265,7 +265,10 @@ export interface Organization {
   facilities: Facility[];
   default_payment_terms: PaymentTerms;
   default_phase_template_id: string | null;
-  settings: OrgSettings;
+  timezone: string;
+  currency: string;
+  invoice_prefix: string;
+  proposal_prefix: string;
   subscription_tier: SubscriptionTier;
   stripe_customer_id: string | null;
   stripe_connect_account_id: string | null;
@@ -326,13 +329,10 @@ export interface User {
   first_name: string;
   last_name: string;
   avatar_url: string | null;
-  organization_id: string;
-  role: OrganizationRole;
   title: string | null;
   phone: string | null;
   rate_card: string | null;
   facility_id: string | null;
-  notification_preferences: Record<string, unknown>;
   created_at: string;
   updated_at: string;
 }
@@ -397,9 +397,6 @@ export interface Proposal {
   created_by: string;
   parent_proposal_id: string | null;
   phase_template_id: string | null;
-  deal_stage: DealStage | null;
-  expected_close_date: string | null;
-  pipeline_id: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -761,17 +758,7 @@ export interface EmailNotification {
   created_at: string;
 }
 
-export interface SavedReport {
-  id: string;
-  organization_id: string;
-  name: string;
-  type: string;
-  config: Record<string, unknown>;
-  created_by: string | null;
-  is_favorite: boolean;
-  created_at: string;
-  updated_at: string;
-}
+// SavedReport type REMOVED — merged into custom_reports (V-06)
 
 // Change Orders
 // ChangeOrderStatus type moved to BEDROCK ENUM section above
@@ -1798,4 +1785,149 @@ export interface DocumentDefault {
   content: string;
   created_at: string;
   updated_at: string;
+}
+
+// ═══════════════════════════════════════════════════════
+// Feature Parity — Tiers 2 & 3
+// ═══════════════════════════════════════════════════════
+
+export type WorkOrderStatus = 'draft' | 'dispatched' | 'accepted' | 'in_progress' | 'completed' | 'cancelled';
+export type WorkOrderAssignmentStatus = 'assigned' | 'accepted' | 'declined' | 'completed';
+export type PhotoType = 'before' | 'progress' | 'completion' | 'issue' | 'reference';
+export type ReferralStatus = 'pending' | 'signed_up' | 'converted' | 'rewarded' | 'expired';
+export type CampaignStatus = 'draft' | 'scheduled' | 'sending' | 'sent' | 'cancelled';
+export type CampaignRecipientStatus = 'pending' | 'sent' | 'delivered' | 'opened' | 'clicked' | 'bounced' | 'unsubscribed';
+
+export interface WorkOrder {
+  id: string;
+  organization_id: string;
+  proposal_id: string | null;
+  task_id: string | null;
+  wo_number: string;
+  title: string;
+  description: string | null;
+  status: WorkOrderStatus;
+  priority: TaskPriority;
+  location_name: string | null;
+  location_address: string | null;
+  scheduled_start: string | null;
+  scheduled_end: string | null;
+  actual_start: string | null;
+  actual_end: string | null;
+  dispatched_by: string | null;
+  dispatched_at: string | null;
+  completed_by: string | null;
+  completed_at: string | null;
+  completion_notes: string | null;
+  checklist: Array<{ text: string; checked: boolean }>;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WorkOrderAssignment {
+  id: string;
+  work_order_id: string;
+  crew_profile_id: string;
+  role: string | null;
+  status: WorkOrderAssignmentStatus;
+  assigned_at: string;
+  responded_at: string | null;
+}
+
+export interface JobSitePhoto {
+  id: string;
+  organization_id: string;
+  task_id: string | null;
+  work_order_id: string | null;
+  proposal_id: string | null;
+  file_url: string;
+  thumbnail_url: string | null;
+  file_name: string | null;
+  file_size_bytes: number | null;
+  mime_type: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  caption: string | null;
+  photo_type: PhotoType;
+  taken_at: string;
+  uploaded_by: string | null;
+  created_at: string;
+}
+
+export interface CrewRating {
+  id: string;
+  organization_id: string;
+  crew_profile_id: string;
+  proposal_id: string | null;
+  work_order_id: string | null;
+  rating: number;
+  categories: Record<string, number>;
+  comment: string | null;
+  rated_by: string;
+  created_at: string;
+}
+
+export interface ReferralProgram {
+  id: string;
+  organization_id: string;
+  name: string;
+  is_active: boolean;
+  reward_type: 'fixed' | 'percentage';
+  reward_amount: number;
+  reward_currency: string;
+  min_invoice_value: number | null;
+  require_paid_invoice: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Referral {
+  id: string;
+  organization_id: string;
+  program_id: string;
+  referrer_client_id: string;
+  referral_code: string;
+  referred_name: string | null;
+  referred_email: string | null;
+  referred_client_id: string | null;
+  status: ReferralStatus;
+  reward_amount: number | null;
+  reward_credited_at: string | null;
+  clicked_at: string | null;
+  converted_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Campaign {
+  id: string;
+  organization_id: string;
+  name: string;
+  subject: string;
+  body_html: string | null;
+  body_text: string | null;
+  status: CampaignStatus;
+  target_tags: string[];
+  target_all_clients: boolean;
+  total_recipients: number;
+  sent_count: number;
+  open_count: number;
+  click_count: number;
+  bounce_count: number;
+  scheduled_at: string | null;
+  sent_at: string | null;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CampaignRecipient {
+  id: string;
+  campaign_id: string;
+  client_id: string;
+  email: string;
+  status: CampaignRecipientStatus;
+  sent_at: string | null;
+  opened_at: string | null;
+  clicked_at: string | null;
 }

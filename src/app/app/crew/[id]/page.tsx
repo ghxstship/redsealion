@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
+import ComplianceDocumentsPanel from '@/components/admin/crew/ComplianceDocumentsPanel';
+import CrewRatingsPanel from '@/components/admin/crew/CrewRatingsPanel';
 
 interface CrewDetail {
   full_name: string;
@@ -321,6 +323,12 @@ export default async function CrewMemberPage({
               </div>
             )}
           </div>
+
+          {/* Compliance Documents */}
+          <ComplianceDocumentsPanel crewId={id} />
+
+          {/* Performance Ratings */}
+          <CrewRatingsPanel crewId={id} />
         </div>
       </div>
     </>

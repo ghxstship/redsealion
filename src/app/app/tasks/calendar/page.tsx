@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import Link from 'next/link';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 interface CalendarTask {
   id: string;
@@ -29,15 +30,8 @@ function priorityColor(priority: string): string {
 async function getTasksForMonth(year: number, month: number): Promise<CalendarTask[]> {
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return [];
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-    if (!userData) return [];
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
 
     // Query tasks with due dates in the given month
     const startDate = new Date(year, month, 1).toISOString();
@@ -46,7 +40,7 @@ async function getTasksForMonth(year: number, month: number): Promise<CalendarTa
     const { data } = await supabase
       .from('tasks')
       .select('id, title, status, priority, due_date')
-      .eq('organization_id', userData.organization_id)
+      .eq('organization_id', ctx.organizationId)
       .not('due_date', 'is', null)
       .gte('due_date', startDate)
       .lte('due_date', endDate)

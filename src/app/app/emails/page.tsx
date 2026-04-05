@@ -1,5 +1,6 @@
 import { TierGate } from '@/components/shared/TierGate';
 import { createClient } from '@/lib/supabase/server';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 interface EmailThreadRow {
   id: string;
@@ -44,25 +45,18 @@ const FALLBACK_THREADS: EmailThreadRow[] = [
 async function getEmailThreads(): Promise<EmailThreadRow[]> {
   try {
     const supabase = await createClient();
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
     if (!user) throw new Error('No auth');
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-
-    if (!userData) throw new Error('No org');
-
-    // Try email_threads table first
+// Try email_threads table first
     const { data: threads, error } = await supabase
       .from('email_threads')
       .select()
-      .eq('organization_id', userData.organization_id)
+      .eq('organization_id', ctx.organizationId)
       .order('last_message_at', { ascending: false });
 
     if (error) {
@@ -70,7 +64,7 @@ async function getEmailThreads(): Promise<EmailThreadRow[]> {
       const { data: messages } = await supabase
         .from('email_messages')
         .select()
-        .eq('organization_id', userData.organization_id)
+        .eq('organization_id', ctx.organizationId)
         .order('sent_at', { ascending: false });
 
       if (!messages || messages.length === 0) throw new Error('No messages');

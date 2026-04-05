@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { TierGate } from '@/components/shared/TierGate';
 import { createClient } from '@/lib/supabase/server';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 interface AutomationRow {
   id: string;
@@ -57,24 +58,17 @@ function formatAction(type: string): string {
 async function getAutomations(): Promise<AutomationRow[]> {
   try {
     const supabase = await createClient();
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
     if (!user) throw new Error('No auth');
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-
-    if (!userData) throw new Error('No org');
-
-    const { data: automations } = await supabase
+const { data: automations } = await supabase
       .from('automations')
       .select()
-      .eq('organization_id', userData.organization_id)
+      .eq('organization_id', ctx.organizationId)
       .order('created_at', { ascending: false });
 
     if (!automations) throw new Error('No automations');

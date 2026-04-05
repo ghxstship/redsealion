@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { TierGate } from '@/components/shared/TierGate';
 import InvoiceForm from '@/components/admin/invoices/InvoiceForm';
 import { createClient } from '@/lib/supabase/server';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 interface SelectOption {
   id: string;
@@ -14,30 +15,23 @@ async function getOptions(): Promise<{
 }> {
   try {
     const supabase = await createClient();
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
     if (!user) throw new Error('No auth');
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-
-    if (!userData) throw new Error('No org');
-
-    const { data: clients } = await supabase
+const { data: clients } = await supabase
       .from('clients')
       .select('id, company_name')
-      .eq('organization_id', userData.organization_id)
+      .eq('organization_id', ctx.organizationId)
       .order('company_name');
 
     const { data: proposals } = await supabase
       .from('proposals')
       .select('id, name')
-      .eq('organization_id', userData.organization_id)
+      .eq('organization_id', ctx.organizationId)
       .order('name');
 
     return {

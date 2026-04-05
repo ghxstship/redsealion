@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import PortalHeader from '@/components/portal/PortalHeader';
 import PortalFooter from '@/components/portal/PortalFooter';
 import { getBrandCSSVariables, getDefaultBrandConfig } from '@/lib/brand';
+import type { BrandConfig } from '@/types/database';
 import { createClient } from '@/lib/supabase/server';
 
 interface PortalLayoutProps {
@@ -13,20 +14,29 @@ interface PortalLayoutProps {
 export default async function PortalLayout({ children, params }: PortalLayoutProps) {
   const { orgSlug } = await params;
 
-  const supabase = await createClient();
+  let org: { id: string; name: string; slug: string; logo_url: string | null; brand_config: Record<string, unknown> | null } | null = null;
 
-  // Look up the organization by slug
-  const { data: org } = await supabase
-    .from('organizations')
-    .select('id, name, slug, logo_url, brand_config')
-    .eq('slug', orgSlug)
-    .single();
+  try {
+    const supabase = await createClient();
+
+    // Look up the organization by slug
+    const { data } = await supabase
+      .from('organizations')
+      .select('id, name, slug, logo_url, brand_config')
+      .eq('slug', orgSlug)
+      .single();
+
+    org = data;
+  } catch {
+    // Supabase client creation may fail if env vars are not configured
+    redirect('/');
+  }
 
   if (!org) {
     redirect('/');
   }
 
-  const brandConfig = org.brand_config ?? getDefaultBrandConfig();
+  const brandConfig = (org.brand_config as BrandConfig | null) ?? getDefaultBrandConfig();
   const cssVariables = getBrandCSSVariables(brandConfig);
 
   return (

@@ -3,6 +3,13 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { formatCurrency } from '@/lib/utils';
+import { useSelection } from '@/hooks/useSelection';
+import { useSort } from '@/hooks/useSort';
+import BulkActionBar from '@/components/shared/BulkActionBar';
+import ExportButton from '@/components/shared/ExportButton';
+import ConfirmDialog from '@/components/shared/ConfirmDialog';
+import SortableHeader from '@/components/shared/SortableHeader';
+import ImportDialog from '@/components/shared/ImportDialog';
 
 interface ClientRow {
   id: string;
@@ -22,8 +29,19 @@ function formatDate(dateStr: string): string {
   });
 }
 
+const EXPORT_COLUMNS = [
+  { key: 'company_name' as const, label: 'Company' },
+  { key: 'industry' as const, label: 'Industry' },
+  { key: 'tags' as const, label: 'Tags' },
+  { key: 'proposals' as const, label: 'Proposals' },
+  { key: 'total_value' as const, label: 'Total Value' },
+  { key: 'last_activity' as const, label: 'Last Activity' },
+];
+
 export default function ClientsSearch({ clients }: { clients: ClientRow[] }) {
   const [search, setSearch] = useState('');
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
+  const [showImport, setShowImport] = useState(false);
 
   const filtered = useMemo(() => {
     if (!search) return clients;
@@ -36,9 +54,26 @@ export default function ClientsSearch({ clients }: { clients: ClientRow[] }) {
     );
   }, [clients, search]);
 
+  const { sorted, sort, handleSort } = useSort(filtered);
+  const allIds = useMemo(() => sorted.map((c) => c.id), [sorted]);
+  const { selectedIds, isSelected, toggle, toggleAll, isAllSelected, isSomeSelected, deselectAll, count } = useSelection(allIds);
+
+  async function handleDelete(id: string) {
+    const res = await fetch(`/api/clients/${id}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error('Failed to delete');
+    setShowDeleteConfirm(null);
+    window.location.reload();
+  }
+
+  async function handleBulkDelete(ids: string[]) {
+    await Promise.all(ids.map((id) => fetch(`/api/clients/${id}`, { method: 'DELETE' })));
+    window.location.reload();
+  }
+
   return (
     <>
-      <div className="mb-6">
+      {/* Search + Export row */}
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <input
           type="text"
           placeholder="Search clients..."
@@ -46,7 +81,32 @@ export default function ClientsSearch({ clients }: { clients: ClientRow[] }) {
           onChange={(e) => setSearch(e.target.value)}
           className="w-full max-w-sm rounded-lg border border-border bg-white px-4 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
         />
+        <div className="flex items-center gap-3">
+          <button onClick={() => setShowImport(true)} className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M7 2v10M3 8l4 4 4-4" /></svg>
+            Import
+          </button>
+          <ExportButton data={sorted} columns={EXPORT_COLUMNS} filename="clients-export" />
+        </div>
       </div>
+
+      {/* Bulk action bar */}
+      <BulkActionBar
+        selectedIds={selectedIds}
+        onDeselectAll={deselectAll}
+        entityLabel="client"
+        actions={[
+          {
+            label: 'Delete',
+            variant: 'danger',
+            confirm: {
+              title: 'Delete Clients',
+              message: `Are you sure you want to delete ${count} client(s)? This action cannot be undone.`,
+            },
+            onClick: handleBulkDelete,
+          },
+        ]}
+      />
 
       {/* Table */}
       <div className="rounded-xl border border-border bg-white overflow-hidden">
@@ -54,70 +114,103 @@ export default function ClientsSearch({ clients }: { clients: ClientRow[] }) {
           <table className="w-full">
             <thead>
               <tr className="border-b border-border bg-bg-secondary">
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">
-                  Company
+                <th className="px-4 py-3 text-left w-10">
+                  <input
+                    type="checkbox"
+                    checked={isAllSelected}
+                    ref={(el) => { if (el) el.indeterminate = isSomeSelected; }}
+                    onChange={toggleAll}
+                    className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/20"
+                  />
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">
-                  Industry
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">
-                  Tags
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">
-                  Proposals
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">
-                  Total Value
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">
-                  Last Activity
-                </th>
+                <th className="px-6 py-3"><SortableHeader label="Company" field="company_name" currentSort={sort} onSort={handleSort} /></th>
+                <th className="px-6 py-3"><SortableHeader label="Industry" field="industry" currentSort={sort} onSort={handleSort} /></th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Tags</th>
+                <th className="px-6 py-3"><SortableHeader label="Proposals" field="proposals" currentSort={sort} onSort={handleSort} /></th>
+                <th className="px-6 py-3"><SortableHeader label="Total Value" field="total_value" currentSort={sort} onSort={handleSort} /></th>
+                <th className="px-6 py-3"><SortableHeader label="Last Activity" field="last_activity" currentSort={sort} onSort={handleSort} /></th>
+                <th className="px-6 py-3 w-12"><span className="sr-only">Actions</span></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {filtered.map((client) => (
+              {sorted.map((client) => (
                 <tr
                   key={client.id}
-                  className="transition-colors hover:bg-bg-secondary/50"
+                  className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(client.id) ? 'bg-blue-50/50' : ''}`}
                 >
+                  <td className="px-4 py-3.5">
+                    <input
+                      type="checkbox"
+                      checked={isSelected(client.id)}
+                      onChange={() => toggle(client.id)}
+                      className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/20"
+                    />
+                  </td>
                   <td className="px-6 py-4">
-                    <Link
-                      href={`/app/clients/${client.id}`}
-                      className="text-sm font-medium text-foreground hover:underline"
-                    >
+                    <Link href={`/app/clients/${client.id}`} className="text-sm font-medium text-foreground hover:underline">
                       {client.company_name}
                     </Link>
                   </td>
-                  <td className="px-6 py-4 text-sm text-text-secondary">
-                    {client.industry}
-                  </td>
+                  <td className="px-6 py-4 text-sm text-text-secondary">{client.industry ?? '\u2014'}</td>
                   <td className="px-6 py-4">
                     <div className="flex flex-wrap gap-1.5">
                       {client.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary"
-                        >
+                        <span key={tag} className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">
                           {tag}
                         </span>
                       ))}
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-right text-sm tabular-nums text-foreground">
-                    {client.proposals}
-                  </td>
-                  <td className="px-6 py-4 text-right text-sm font-medium tabular-nums text-foreground">
-                    {formatCurrency(client.total_value)}
-                  </td>
-                  <td className="px-6 py-4 text-right text-sm text-text-muted">
-                    {formatDate(client.last_activity)}
+                  <td className="px-6 py-4 text-right text-sm tabular-nums text-foreground">{client.proposals}</td>
+                  <td className="px-6 py-4 text-right text-sm font-medium tabular-nums text-foreground">{formatCurrency(client.total_value)}</td>
+                  <td className="px-6 py-4 text-right text-sm text-text-muted">{formatDate(client.last_activity)}</td>
+                  <td className="px-6 py-4">
+                    <button
+                      onClick={() => setShowDeleteConfirm(client.id)}
+                      className="text-text-muted hover:text-red-600 transition-colors"
+                      title="Delete client"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                        <path d="M2 4h10M5 4V3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1M9 4v7a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4" />
+                      </svg>
+                    </button>
                   </td>
                 </tr>
               ))}
+              {filtered.length === 0 && (
+                <tr>
+                  <td colSpan={8} className="px-6 py-12 text-center text-sm text-text-muted">No clients match your search.</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
       </div>
+
+      {showDeleteConfirm && (
+        <ConfirmDialog
+          open
+          title="Delete Client"
+          message="Are you sure you want to delete this client? This action cannot be undone."
+          confirmLabel="Delete"
+          variant="danger"
+          onConfirm={() => handleDelete(showDeleteConfirm)}
+          onCancel={() => setShowDeleteConfirm(null)}
+        />
+      )}
+
+      <ImportDialog
+        open={showImport}
+        onClose={() => setShowImport(false)}
+        entityType="Clients"
+        targetFields={[
+          { key: 'company_name', label: 'Company Name', required: true },
+          { key: 'industry', label: 'Industry' },
+          { key: 'website', label: 'Website' },
+          { key: 'address', label: 'Address' },
+        ]}
+        apiEndpoint="/api/clients"
+      />
     </>
   );
 }

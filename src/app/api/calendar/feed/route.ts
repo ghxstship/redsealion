@@ -1,28 +1,17 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { generateICalFeed } from '@/lib/calendar/ical';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 export async function GET() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const ctx = await resolveCurrentOrg();
 
-  if (!user) {
+  if (!ctx) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { data: userData } = await supabase
-    .from('users')
-    .select('organization_id')
-    .eq('id', user.id)
-    .single();
-
-  if (!userData) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
-  const orgId = userData.organization_id as string;
+  const orgId = ctx.organizationId;
 
   // Fetch proposals with venue info
   const { data: proposals } = await supabase
@@ -42,7 +31,7 @@ export async function GET() {
     .from('crew_bookings')
     .select('id, proposal_id, role, start_date, end_date, start_time, end_time, proposals(name)')
     .eq('organization_id', orgId)
-    .eq('user_id', user.id);
+    .eq('user_id', ctx.userId);
 
   const events: Array<{
     uid: string;

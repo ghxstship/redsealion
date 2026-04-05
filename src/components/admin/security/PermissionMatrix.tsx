@@ -44,6 +44,11 @@ const RESOURCE_LABELS: Record<PermissionResource, string> = {
   equipment: 'Equipment',
   leads: 'Leads',
   warehouse: 'Warehouse',
+  resources: 'Resources',
+  ai_drafting: 'AI Drafting',
+  email_campaigns: 'Email Campaigns',
+  referral_program: 'Referral Program',
+  work_orders: 'Work Orders',
 };
 
 const ROLE_LABELS: Record<string, string> = {
@@ -100,17 +105,48 @@ export default function PermissionMatrix({ organizationId, overrides }: Permissi
 
       try {
         const supabase = createClient();
+        // Look up the permission catalog entry for this resource+action
+        const { data: catalogEntry } = await supabase
+          .from('permission_catalog')
+          .select('id')
+          .eq('resource', resource)
+          .eq('action', action)
+          .single();
+
+        if (!catalogEntry) {
+          setError('Permission not found in catalog.');
+          setPermissions((prev) => ({
+            ...prev,
+            [role]: { ...prev[role], [key]: current },
+          }));
+          return;
+        }
+
+        // Look up the role ID
+        const { data: roleEntry } = await supabase
+          .from('roles')
+          .select('id')
+          .eq('name', role)
+          .single();
+
+        if (!roleEntry) {
+          setError('Role not found.');
+          setPermissions((prev) => ({
+            ...prev,
+            [role]: { ...prev[role], [key]: current },
+          }));
+          return;
+        }
+
         const { error: upsertError } = await supabase
-          .from('permissions')
+          .from('role_permissions')
           .upsert(
             {
-              organization_id: organizationId,
-              role,
-              resource,
-              action,
-              allowed: newValue,
+              role_id: roleEntry.id,
+              permission_id: catalogEntry.id,
+              granted: newValue,
             },
-            { onConflict: 'organization_id,role,resource,action' },
+            { onConflict: 'role_id,permission_id' },
           );
 
         if (upsertError) {

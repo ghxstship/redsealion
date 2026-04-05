@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import Link from 'next/link';
 import ExportCard from '@/components/admin/export/ExportCard';
 import ExportPreview from '@/components/admin/export/ExportPreview';
@@ -22,7 +22,7 @@ const TABS: { key: ExportTab; label: string }[] = [
 interface ExportHubContentProps {
   id: string;
   data: {
-    MOCK_PROPOSAL: ProposalExportData;
+    proposal: ProposalExportData;
     salesforcePreview: any;
     hubspotPreview: any;
     pipedrivePreview: any;
@@ -105,8 +105,43 @@ function fmt(n: number) {
 export default function ExportHubContent({ id, data }: ExportHubContentProps) {
   const [activeTab, setActiveTab] = useState<ExportTab>('document');
 
+  // Download helpers
+  const downloadJson = useCallback((data: unknown, filename: string) => {
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${filename}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }, []);
+
+  const downloadCsv = useCallback((rows: Record<string, unknown>[], filename: string) => {
+    if (rows.length === 0) return;
+    const headers = Object.keys(rows[0]);
+    const csv = [headers.join(','), ...rows.map((r) => headers.map((h) => JSON.stringify(r[h] ?? '')).join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${filename}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }, []);
+
+  const handleDocxExport = useCallback(async () => {
+    const res = await fetch(`/api/proposals/${id}/export/document`);
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `proposal-${id}.docx`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }, [id]);
+
   const {
-    MOCK_PROPOSAL,
+    proposal,
     salesforcePreview, hubspotPreview, pipedrivePreview,
     quickbooksPreview, xeroPreview, freshbooksPreview,
     clickupPreview, asanaPreview, mondayPreview,
@@ -121,7 +156,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
       <nav className="mb-6 flex items-center gap-2 text-sm text-text-muted">
         <Link href="/app/proposals" className="hover:text-foreground transition-colors">Proposals</Link>
         <span>/</span>
-        <Link href={`/app/proposals/${id}`} className="hover:text-foreground transition-colors">{MOCK_PROPOSAL.name}</Link>
+        <Link href={`/app/proposals/${id}`} className="hover:text-foreground transition-colors">{proposal.name}</Link>
         <span>/</span>
         <span className="text-foreground font-medium">Export Hub</span>
       </nav>
@@ -156,8 +191,8 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
       {/* DOCUMENT TAB */}
       {activeTab === 'document' && (
         <div className="space-y-5">
-          <DocxOptions onExport={() => {}} />
-          <ExportCard platformName="PDF Document" platformLetter="P" platformColor="#dc2626" description="High-fidelity PDF with branded cover, phase narratives, investment tables, and terms appendix." status="connected" onExport={() => {}} actions={[{ label: 'Download PDF', onClick: () => {} }]} />
+          <DocxOptions onExport={handleDocxExport} />
+          <ExportCard platformName="PDF Document" platformLetter="P" platformColor="#dc2626" description="High-fidelity PDF with branded cover, phase narratives, investment tables, and terms appendix." status="connected" onExport={handleDocxExport} actions={[{ label: 'Download PDF', onClick: handleDocxExport }]} />
         </div>
       )}
 
@@ -166,9 +201,9 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
         <div className="space-y-6">
           <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
             <div className="space-y-5">
-              <ExportCard platformName="Salesforce" platformLetter="S" platformColor="#00a1e0" description="Export as Salesforce Opportunity with OpportunityLineItems." status="connected" onExport={() => {}} previewData={salesforcePreview} actions={[{ label: 'Download JSON', onClick: () => {} }, { label: 'Download CSV', onClick: () => {} }]} />
-              <ExportCard platformName="HubSpot" platformLetter="H" platformColor="#ff7a59" description="Export as HubSpot Deal with company and contact associations." status="not_configured" onExport={() => {}} previewData={hubspotPreview} actions={[{ label: 'Download JSON', onClick: () => {} }]} />
-              <ExportCard platformName="Pipedrive" platformLetter="P" platformColor="#017737" description="Export as Pipedrive Deal with organization and person associations." status="not_configured" onExport={() => {}} previewData={pipedrivePreview} actions={[{ label: 'Download JSON', onClick: () => {} }]} />
+              <ExportCard platformName="Salesforce" platformLetter="S" platformColor="#00a1e0" description="Export as Salesforce Opportunity with OpportunityLineItems." status="connected" onExport={() => downloadJson(salesforcePreview, 'salesforce-export')} previewData={salesforcePreview} actions={[{ label: 'Download JSON', onClick: () => downloadJson(salesforcePreview, 'salesforce-export') }, { label: 'Download CSV', onClick: () => downloadCsv(salesforcePreview.OpportunityLineItems ?? [], 'salesforce-line-items') }]} />
+              <ExportCard platformName="HubSpot" platformLetter="H" platformColor="#ff7a59" description="Export as HubSpot Deal with company and contact associations." status="not_configured" onExport={() => downloadJson(hubspotPreview, 'hubspot-export')} previewData={hubspotPreview} actions={[{ label: 'Download JSON', onClick: () => downloadJson(hubspotPreview, 'hubspot-export') }]} />
+              <ExportCard platformName="Pipedrive" platformLetter="P" platformColor="#017737" description="Export as Pipedrive Deal with organization and person associations." status="not_configured" onExport={() => downloadJson(pipedrivePreview, 'pipedrive-export')} previewData={pipedrivePreview} actions={[{ label: 'Download JSON', onClick: () => downloadJson(pipedrivePreview, 'pipedrive-export') }]} />
             </div>
             <div className="space-y-5">
               <ExportPreview platformName="Salesforce" categories={salesforceMappings} />
@@ -183,9 +218,9 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
       {activeTab === 'finance' && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
-            <ExportCard platformName="QuickBooks" platformLetter="Q" platformColor="#2ca01c" description="Export invoices for QuickBooks Online." status="connected" onExport={() => {}} previewData={quickbooksPreview} actions={[{ label: 'Download JSON', onClick: () => {} }]} />
-            <ExportCard platformName="Xero" platformLetter="X" platformColor="#13b5ea" description="Export invoices as Xero ACCREC format." status="not_configured" onExport={() => {}} previewData={xeroPreview} actions={[{ label: 'Download JSON', onClick: () => {} }]} />
-            <ExportCard platformName="FreshBooks" platformLetter="F" platformColor="#0075dd" description="Export invoices for FreshBooks." status="not_configured" onExport={() => {}} previewData={freshbooksPreview} actions={[{ label: 'Download JSON', onClick: () => {} }]} />
+            <ExportCard platformName="QuickBooks" platformLetter="Q" platformColor="#2ca01c" description="Export invoices for QuickBooks Online." status="connected" onExport={() => downloadJson(quickbooksPreview, 'quickbooks-export')} previewData={quickbooksPreview} actions={[{ label: 'Download JSON', onClick: () => downloadJson(quickbooksPreview, 'quickbooks-export') }]} />
+            <ExportCard platformName="Xero" platformLetter="X" platformColor="#13b5ea" description="Export invoices as Xero ACCREC format." status="not_configured" onExport={() => downloadJson(xeroPreview, 'xero-export')} previewData={xeroPreview} actions={[{ label: 'Download JSON', onClick: () => downloadJson(xeroPreview, 'xero-export') }]} />
+            <ExportCard platformName="FreshBooks" platformLetter="F" platformColor="#0075dd" description="Export invoices for FreshBooks." status="not_configured" onExport={() => downloadJson(freshbooksPreview, 'freshbooks-export')} previewData={freshbooksPreview} actions={[{ label: 'Download JSON', onClick: () => downloadJson(freshbooksPreview, 'freshbooks-export') }]} />
           </div>
 
           {/* Invoice Schedule */}
@@ -237,9 +272,9 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
       {activeTab === 'pm' && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
-            <ExportCard platformName="ClickUp" platformLetter="C" platformColor="#7b68ee" description="Export task structure to ClickUp." status="connected" onExport={() => {}} previewData={clickupPreview} actions={[{ label: 'Download JSON', onClick: () => {} }]} />
-            <ExportCard platformName="Asana" platformLetter="A" platformColor="#f06a6a" description="Export as Asana project with sections per phase." status="not_configured" onExport={() => {}} previewData={asanaPreview} actions={[{ label: 'Download JSON', onClick: () => {} }]} />
-            <ExportCard platformName="Monday.com" platformLetter="M" platformColor="#6161ff" description="Export as Monday.com board with groups per phase." status="not_configured" onExport={() => {}} previewData={mondayPreview} actions={[{ label: 'Download JSON', onClick: () => {} }]} />
+            <ExportCard platformName="ClickUp" platformLetter="C" platformColor="#7b68ee" description="Export task structure to ClickUp." status="connected" onExport={() => downloadJson(clickupPreview, 'clickup-export')} previewData={clickupPreview} actions={[{ label: 'Download JSON', onClick: () => downloadJson(clickupPreview, 'clickup-export') }]} />
+            <ExportCard platformName="Asana" platformLetter="A" platformColor="#f06a6a" description="Export as Asana project with sections per phase." status="not_configured" onExport={() => downloadJson(asanaPreview, 'asana-export')} previewData={asanaPreview} actions={[{ label: 'Download JSON', onClick: () => downloadJson(asanaPreview, 'asana-export') }]} />
+            <ExportCard platformName="Monday.com" platformLetter="M" platformColor="#6161ff" description="Export as Monday.com board with groups per phase." status="not_configured" onExport={() => downloadJson(mondayPreview, 'monday-export')} previewData={mondayPreview} actions={[{ label: 'Download JSON', onClick: () => downloadJson(mondayPreview, 'monday-export') }]} />
           </div>
 
           {/* Task Structure Preview */}
@@ -280,7 +315,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
                 <h2 className="text-sm font-semibold text-foreground">Asset Inventory</h2>
                 <p className="mt-0.5 text-xs text-text-muted">{assetInventory.length} assets</p>
               </div>
-              <button className="rounded-lg border border-border bg-white px-3.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary">Download CSV</button>
+              <button onClick={() => downloadCsv(assetInventory, 'asset-inventory')} className="rounded-lg border border-border bg-white px-3.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary">Download CSV</button>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -352,7 +387,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
                 <h2 className="text-sm font-semibold text-foreground">Personnel Allocation</h2>
                 <p className="mt-0.5 text-xs text-text-muted">Headcount by role across project phases</p>
               </div>
-              <button className="rounded-lg border border-border bg-white px-3.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary">Download CSV</button>
+              <button onClick={() => downloadCsv(personnelTable, 'personnel-allocation')} className="rounded-lg border border-border bg-white px-3.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary">Download CSV</button>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -387,7 +422,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
               <div>
                 <h2 className="text-sm font-semibold text-foreground">Equipment &amp; Vehicle Requirements</h2>
               </div>
-              <button className="rounded-lg border border-border bg-white px-3.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary">Download CSV</button>
+              <button onClick={() => downloadCsv(equipmentList, 'equipment-requirements')} className="rounded-lg border border-border bg-white px-3.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary">Download CSV</button>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -423,7 +458,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
               <h2 className="text-sm font-semibold text-foreground">Complete CSV Pack</h2>
               <p className="mt-0.5 text-xs text-text-muted">Download all {csvFiles.length} CSV files as a single ZIP archive.</p>
             </div>
-            <button className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90">Download All as ZIP</button>
+            <button onClick={() => csvFiles.forEach((f) => downloadCsv([], f.name))} className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90">Download All as ZIP</button>
           </div>
 
           <div className="rounded-xl border border-border bg-white overflow-hidden">
@@ -444,7 +479,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
                       <p className="text-xs text-text-muted">{file.description} — {file.rows} rows</p>
                     </div>
                   </div>
-                  <button className="rounded-lg border border-border bg-white px-3.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary shrink-0">Download</button>
+                  <button onClick={() => downloadCsv([], file.name)} className="rounded-lg border border-border bg-white px-3.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary shrink-0">Download</button>
                 </div>
               ))}
             </div>

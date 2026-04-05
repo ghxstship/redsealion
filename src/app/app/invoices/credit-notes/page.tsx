@@ -1,6 +1,8 @@
 import { TierGate } from '@/components/shared/TierGate';
 import { formatCurrency } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import CreditNotesHeader from '@/components/admin/invoices/CreditNotesHeader';
 
 interface CreditNoteRow {
   id: string;
@@ -36,24 +38,17 @@ const FALLBACK_CREDIT_NOTES: CreditNoteRow[] = [
 async function getCreditNotes(): Promise<CreditNoteRow[]> {
   try {
     const supabase = await createClient();
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
     if (!user) throw new Error('No auth');
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-
-    if (!userData) throw new Error('No org');
-
-    const { data: creditNotes } = await supabase
+const { data: creditNotes } = await supabase
       .from('credit_notes')
       .select('*, invoices(invoice_number), clients(company_name)')
-      .eq('organization_id', userData.organization_id)
+      .eq('organization_id', ctx.organizationId)
       .order('issued_date', { ascending: false });
 
     if (!creditNotes) throw new Error('No credit notes');
@@ -86,9 +81,7 @@ export default async function CreditNotesPage() {
             Manage credit notes issued against invoices.
           </p>
         </div>
-        <button className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity">
-          Issue Credit Note
-        </button>
+        <CreditNotesHeader />
       </div>
 
       <div className="rounded-xl border border-border bg-white divide-y divide-border overflow-x-auto">

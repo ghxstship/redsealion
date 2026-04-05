@@ -21,7 +21,7 @@ export async function updateSession(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
+          cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value)
           );
           supabaseResponse = NextResponse.next({ request });
@@ -39,10 +39,6 @@ export async function updateSession(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
 
-  // Public routes that don't require auth
-  const publicRoutes = ['/', '/pricing', '/login', '/signup', '/reactivate', '/auth/callback', '/client-metadata.json', '/jwks.json'];
-  const isPublicRoute = publicRoutes.includes(pathname);
-  const isPortalRoute = pathname.startsWith('/portal/');
   const isAuthRoute = pathname === '/login' || pathname === '/signup';
   const isAppRoute = pathname.startsWith('/app');
   const isApiRoute = pathname.startsWith('/api/');

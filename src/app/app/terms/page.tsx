@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface TermsSection {
   number: string;
@@ -45,7 +46,9 @@ const sections: TermsSection[] = [
 ];
 
 export default function TermsPage() {
+  const router = useRouter();
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
+  const [creating, setCreating] = useState(false);
 
   function toggleSection(number: string) {
     setExpandedSections((prev) => {
@@ -83,8 +86,22 @@ export default function TermsPage() {
           <button className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary">
             Edit
           </button>
-          <button className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90">
-            New Version
+          <button
+            disabled={creating}
+            onClick={async () => {
+              setCreating(true);
+              try {
+                const res = await fetch('/api/terms', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ title: `${termsDocument.title} v${termsDocument.version + 1}`, sections }),
+                });
+                if (res.ok) router.refresh();
+              } finally { setCreating(false); }
+            }}
+            className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90 disabled:opacity-50"
+          >
+            {creating ? 'Creating...' : 'New Version'}
           </button>
         </div>
       </div>

@@ -1,34 +1,28 @@
 import ProposalsClient from '@/components/admin/proposals/ProposalsClient';
 import { createClient } from '@/lib/supabase/server';
 import type { Proposal, Client } from '@/types/database';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 async function getData(): Promise<{ proposals: Proposal[]; clients: Client[] }> {
   try {
     const supabase = await createClient();
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
     if (!user) return { proposals: [], clients: [] };
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-
-    if (!userData) return { proposals: [], clients: [] };
-
-    const { data: proposals } = await supabase
+const { data: proposals } = await supabase
       .from('proposals')
       .select()
-      .eq('organization_id', userData.organization_id)
+      .eq('organization_id', ctx.organizationId)
       .order('created_at', { ascending: false });
 
     const { data: clients } = await supabase
       .from('clients')
       .select()
-      .eq('organization_id', userData.organization_id);
+      .eq('organization_id', ctx.organizationId);
 
     return {
       proposals: (proposals ?? []) as Proposal[],

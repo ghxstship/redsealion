@@ -117,7 +117,7 @@ export default function ConcertsFestivalsPage() {
       <section className="bg-zinc-50 px-8 py-20 lg:px-16">
         <div className="mx-auto max-w-5xl">
           <h2 className="text-3xl font-bold tracking-tight text-zinc-900">The challenges live music teams face</h2>
-          <p className="mt-4 max-w-2xl text-zinc-600">Show day doesn't wait for your spreadsheet to catch up. These are the problems FlyteDeck eliminates.</p>
+          <p className="mt-4 max-w-2xl text-zinc-600">Show day doesn&apos;t wait for your spreadsheet to catch up. These are the problems FlyteDeck eliminates.</p>
           <div className="mt-12 grid gap-8 sm:grid-cols-3">
             {painPoints.map((point) => (
               <div key={point.title} className="rounded-2xl border border-zinc-200 bg-white p-8">

@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import AuditLogTable from '@/components/admin/security/AuditLogTable';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 interface AuditRow {
   id: string;
@@ -14,20 +15,13 @@ interface AuditRow {
 async function getAuditLog(): Promise<AuditRow[]> {
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return [];
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-    if (!userData) return [];
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
 
     const { data } = await supabase
       .from('audit_log')
       .select('id, action, entity_type, entity_id, user_id, created_at')
-      .eq('organization_id', userData.organization_id)
+      .eq('organization_id', ctx.organizationId)
       .order('created_at', { ascending: false })
       .limit(50);
 

@@ -1,6 +1,8 @@
 import { TierGate } from '@/components/shared/TierGate';
 import { createClient } from '@/lib/supabase/server';
 import { formatRate, DEFAULT_COST_RATES } from '@/lib/cost-rates';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import CostRatesHeader from '@/components/admin/settings/CostRatesHeader';
 
 interface RateRow {
   id: string;
@@ -14,20 +16,13 @@ interface RateRow {
 async function getCostRates(): Promise<RateRow[]> {
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return getDefaultRates();
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-    if (!userData) return getDefaultRates();
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
 
     const { data } = await supabase
       .from('cost_rates')
       .select('id, role, hourly_cost, hourly_billable, effective_from')
-      .eq('organization_id', userData.organization_id)
+      .eq('organization_id', ctx.organizationId)
       .order('role');
 
     if (!data || data.length === 0) return getDefaultRates();
@@ -79,9 +74,7 @@ export default async function CostRatesPage() {
             Manage role-based cost and billable rates for profitability tracking.
           </p>
         </div>
-        <button className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity">
-          Add Rate
-        </button>
+        <CostRatesHeader />
       </div>
 
       <div className="rounded-xl border border-border bg-white overflow-hidden">

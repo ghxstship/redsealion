@@ -14,6 +14,8 @@ export async function POST(request: NextRequest) {
       source,
       company_name,
       contact_name,
+      contact_first_name,
+      contact_last_name,
       contact_email,
       contact_phone,
       event_type,
@@ -32,9 +34,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!contact_name || !contact_email) {
+    // Support both legacy contact_name and new first/last split
+    const firstName = contact_first_name || (contact_name ? contact_name.split(' ')[0] : '');
+    const lastName = contact_last_name || (contact_name ? contact_name.split(' ').slice(1).join(' ') : '');
+
+    if (!firstName || !contact_email) {
       return NextResponse.json(
-        { error: 'contact_name and contact_email are required.' },
+        { error: 'contact_first_name (or contact_name) and contact_email are required.' },
         { status: 400 },
       );
     }
@@ -49,7 +55,8 @@ export async function POST(request: NextRequest) {
         organization_id: targetOrgId,
         source: source || 'Website Intake',
         company_name: company_name || null,
-        contact_name,
+        contact_first_name: firstName,
+        contact_last_name: lastName,
         contact_email: contact_email || null,
         contact_phone: contact_phone || null,
         event_type: event_type || null,

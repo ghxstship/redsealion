@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { TierGate } from '@/components/shared/TierGate';
-
+import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
 interface Pipeline {
   id: string;
   name: string;
@@ -22,32 +22,17 @@ export default function PipelineSettingsPage() {
   useEffect(() => {
     async function loadPipelines() {
       try {
+        const ctx = await resolveClientOrg();
+        if (!ctx) return;
+        setOrgId(ctx.organizationId);
+
         const { createClient } = await import('@/lib/supabase/client');
         const supabase = createClient();
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-        if (!user) {
-          setLoaded(true);
-          return;
-        }
-
-        const { data: userData } = await supabase
-          .from('users')
-          .select('organization_id')
-          .eq('id', user.id)
-          .single();
-        if (!userData) {
-          setLoaded(true);
-          return;
-        }
-
-        setOrgId(userData.organization_id);
 
         const { data: org } = await supabase
           .from('organizations')
           .select('settings')
-          .eq('id', userData.organization_id)
+          .eq('id', ctx.organizationId)
           .single();
 
         if (org?.settings) {

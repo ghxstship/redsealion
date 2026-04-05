@@ -131,13 +131,30 @@ export default function PipelineBoard({
       const newStage = over.id as DealStage;
       if (!ACTIVE_STAGES.includes(newStage)) return;
 
+      // Optimistic update
       setDeals((prev) =>
         prev.map((d) =>
           d.id === active.id ? { ...d, stage: newStage } : d
         )
       );
+
+      // Persist to API
+      fetch(`/api/deals/${active.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ stage: newStage }),
+      }).catch(() => {
+        // Revert on failure
+        setDeals((prev) =>
+          prev.map((d) =>
+            d.id === active.id
+              ? { ...d, stage: initialDeals.find((id) => id.id === active.id)?.stage ?? d.stage }
+              : d
+          )
+        );
+      });
     },
-    []
+    [initialDeals]
   );
 
   const handleFilterChange = useCallback((f: PipelineFilterValues) => {

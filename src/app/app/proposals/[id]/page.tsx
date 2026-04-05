@@ -4,6 +4,8 @@ import { use, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { formatCurrency, statusColor } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/client';
+import ShareDialog from '@/components/shared/ShareDialog';
+import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import {
   detailTabs,
   formatStatus,
@@ -23,6 +25,8 @@ export default function ProposalDetailPage({
   const [proposal, setProposal] = useState<ProposalData | null>(null);
   const [phases, setPhases] = useState<PhaseData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showShare, setShowShare] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -145,7 +149,22 @@ export default function ProposalDetailPage({
           >
             Edit in Builder
           </Link>
-          <button className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90">
+          <button
+            onClick={() => setShowShare(true)}
+            className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
+          >
+            Share
+          </button>
+          <button
+            onClick={() => setShowDelete(true)}
+            className="rounded-lg border border-red-200 bg-white px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
+          >
+            Delete
+          </button>
+          <button
+            onClick={() => setShowShare(true)}
+            className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90"
+          >
             Send to Client
           </button>
         </div>
@@ -214,6 +233,32 @@ export default function ProposalDetailPage({
             Proposal activity will appear here as your team and clients interact with this proposal.
           </p>
         </div>
+      )}
+
+      {proposal && (
+        <ShareDialog
+          open={showShare}
+          onClose={() => setShowShare(false)}
+          entityType="proposals"
+          entityId={id}
+          entityName={proposal.name}
+        />
+      )}
+
+      {proposal && (
+        <ConfirmDialog
+          open={showDelete}
+          title="Delete Proposal"
+          message={`Are you sure you want to delete "${proposal.name}"? This action cannot be undone.`}
+          confirmLabel="Delete"
+          variant="danger"
+          onConfirm={async () => {
+            const res = await fetch(`/api/proposals/${id}`, { method: 'DELETE' });
+            if (!res.ok) throw new Error('Failed to delete');
+            window.location.href = '/app/proposals';
+          }}
+          onCancel={() => setShowDelete(false)}
+        />
       )}
     </>
   );

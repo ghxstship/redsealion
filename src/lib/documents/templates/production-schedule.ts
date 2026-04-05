@@ -252,9 +252,6 @@ export async function generateProductionSchedule(data: ProductionScheduleData): 
   if (proposal.valid_until) {
     children.push(bullet(`Valid Until: ${formatDate(proposal.valid_until)}`));
   }
-  if (proposal.expected_close_date) {
-    children.push(bullet(`Expected Close: ${formatDate(proposal.expected_close_date)}`));
-  }
 
   // Venue activation dates
   for (const v of venues.sort((a, b) => a.sequence - b.sequence)) {

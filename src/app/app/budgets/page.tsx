@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 interface BudgetSummary {
   id: string;
@@ -14,20 +15,13 @@ interface BudgetSummary {
 async function getBudgets(): Promise<BudgetSummary[]> {
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return [];
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-    if (!userData) return [];
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
 
     const { data } = await supabase
       .from('project_budgets')
       .select('id, proposal_id, total_budget, spent')
-      .eq('organization_id', userData.organization_id)
+      .eq('organization_id', ctx.organizationId)
       .order('created_at', { ascending: false })
       .limit(20);
 

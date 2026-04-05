@@ -126,10 +126,12 @@ export default function AdminSidebar() {
       {/* Sidebar */}
       <aside
         className={`
-          fixed top-0 left-0 z-40 h-screen w-64 bg-white border-r border-border
+          fixed top-0 left-0 z-40 h-screen w-64
+          bg-white/80 backdrop-blur-xl backdrop-saturate-150
+          border-r border-border/60
           flex flex-col
           transition-transform duration-normal ease-in-out
-          md:translate-x-0 md:static md:z-auto
+          md:translate-x-0
           ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}
         `}
       >
@@ -213,16 +215,10 @@ export default function AdminSidebar() {
           </div>
         </nav>
 
-        {/* User section */}
-        <div className="border-t border-border px-4 py-4">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-bg-tertiary flex items-center justify-center">
-              <span className="text-xs font-medium text-text-secondary">JC</span>
-            </div>
-            <div className="min-w-0">
-              <p className="text-sm font-medium text-foreground truncate">Julian Clarkson</p>
-              <p className="text-xs text-text-muted truncate">Admin</p>
-            </div>
+        {/* Minimal indicator — full identity in AppHeader UserMenu */}
+        <div className="border-t border-border px-4 py-3 flex items-center justify-center">
+          <div className="w-7 h-7 rounded-full bg-bg-tertiary flex items-center justify-center">
+            <span className="text-[10px] font-medium text-text-secondary">⚙</span>
           </div>
         </div>
       </aside>

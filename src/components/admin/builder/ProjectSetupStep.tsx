@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import type { NarrativeContext, PaymentTerms } from '@/types/database';
 import { createClient } from '@/lib/supabase/client';
-
+import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
 export interface ProjectSetupData {
   clientId: string;
   clientSearch: string;
@@ -43,22 +43,13 @@ export default function ProjectSetupStep({
     async function loadOptions() {
       try {
         const supabase = createClient();
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-        if (!user) return;
-
-        const { data: userData } = await supabase
-          .from('users')
-          .select('organization_id')
-          .eq('id', user.id)
-          .single();
-        if (!userData) return;
+        const ctx = await resolveClientOrg();
+        if (!ctx) return;
 
         const { data: clientRows } = await supabase
           .from('clients')
           .select('id, company_name')
-          .eq('organization_id', userData.organization_id)
+          .eq('organization_id', ctx.organizationId)
           .order('company_name');
 
         setClients(
@@ -71,7 +62,7 @@ export default function ProjectSetupStep({
         const { data: templateRows } = await supabase
           .from('phase_templates')
           .select('id, name')
-          .eq('organization_id', userData.organization_id)
+          .eq('organization_id', ctx.organizationId)
           .order('name');
 
         setTemplates(

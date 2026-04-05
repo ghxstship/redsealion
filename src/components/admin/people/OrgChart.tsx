@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-
+import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
 interface OrgNode {
   id: string;
   name: string;
@@ -74,31 +74,17 @@ export default function OrgChart() {
   useEffect(() => {
     async function loadOrg() {
       try {
+        const ctx = await resolveClientOrg();
+        if (!ctx) return;
+
         const { createClient } = await import('@/lib/supabase/client');
         const supabase = createClient();
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-        if (!user) {
-          setLoading(false);
-          return;
-        }
-
-        const { data: userData } = await supabase
-          .from('users')
-          .select('organization_id')
-          .eq('id', user.id)
-          .single();
-        if (!userData) {
-          setLoading(false);
-          return;
-        }
 
         // Fetch from org_chart_positions with user join
         const { data: positions } = await supabase
           .from('org_chart_positions')
           .select('id, title, reports_to, user_id, users!org_chart_positions_user_id_fkey(full_name)')
-          .eq('organization_id', userData.organization_id)
+          .eq('organization_id', ctx.organizationId)
           .order('level', { ascending: true });
 
         if (positions && positions.length > 0) {

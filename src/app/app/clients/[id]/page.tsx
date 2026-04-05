@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { formatCurrency, statusColor } from '@/lib/utils';
 import Breadcrumbs from '@/components/shared/Breadcrumbs';
 import ClientInteractions from '@/components/admin/clients/ClientInteractions';
+import ClientDetailActions from './ClientDetailActions';
 import { getClient, formatStatus, formatDate, roleLabel } from './_data';
 
 
@@ -37,17 +38,7 @@ export default async function ClientDetailPage({
             ))}
           </div>
         </div>
-        <div className="flex items-center gap-3 shrink-0">
-          <button className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary">
-            Edit Client
-          </button>
-          <Link
-            href="/app/proposals/new"
-            className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90"
-          >
-            New Proposal
-          </Link>
-        </div>
+        <ClientDetailActions clientId={id} clientName={client.company_name} />
       </div>
 
       <div className="space-y-8">

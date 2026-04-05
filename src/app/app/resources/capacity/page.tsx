@@ -1,5 +1,6 @@
 import { TierGate } from '@/components/shared/TierGate';
 import { createClient } from '@/lib/supabase/server';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 interface CapacityRow {
   name: string;
@@ -20,24 +21,17 @@ const FALLBACK_CAPACITY: CapacityRow[] = [
 async function getCapacity(): Promise<CapacityRow[]> {
   try {
     const supabase = await createClient();
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
     if (!user) throw new Error('No auth');
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-
-    if (!userData) throw new Error('No org');
-
-    const { data: members } = await supabase
+const { data: members } = await supabase
       .from('users')
       .select('id, full_name, role')
-      .eq('organization_id', userData.organization_id);
+      .eq('organization_id', ctx.organizationId);
 
     if (!members || members.length === 0) throw new Error('No members');
 
@@ -54,7 +48,7 @@ async function getCapacity(): Promise<CapacityRow[]> {
     const { data: allocations } = await supabase
       .from('resource_allocations')
       .select('user_id, hours_per_day')
-      .eq('organization_id', userData.organization_id)
+      .eq('organization_id', ctx.organizationId)
       .gte('end_date', weekStart.toISOString().split('T')[0])
       .lte('start_date', weekEnd.toISOString().split('T')[0]);
 

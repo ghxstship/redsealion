@@ -1,21 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sendEmail } from '@/lib/email';
 import { createClient } from '@/lib/supabase/server';
-
+import { checkPermission } from '@/lib/api/permission-guard';
 import { createLogger } from '@/lib/logger';
 
 const log = createLogger('notifications');
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const perm = await checkPermission('settings', 'edit');
+    if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
     const body = await request.json();
     const {
@@ -43,17 +38,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get user's org
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-
-    if (!userData) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
-    }
-
     // Send email
     const result = await sendEmail({
       to: recipient_email,
@@ -63,10 +47,11 @@ export async function POST(request: NextRequest) {
     });
 
     // Record in database
+    const supabase = await createClient();
     const { error: dbError } = await supabase
       .from('email_notifications')
       .insert({
-        organization_id: userData.organization_id,
+        organization_id: perm.organizationId,
         recipient_email,
         recipient_name: recipient_name ?? null,
         subject,

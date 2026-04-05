@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 interface MaintenanceEntry {
   id: string;
@@ -37,22 +38,16 @@ const TYPE_COLORS: Record<string, string> = {
 async function getMaintenance(): Promise<MaintenanceEntry[]> {
   try {
     const supabase = await createClient();
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
     const {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) throw new Error('No auth');
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-    if (!userData) throw new Error('No org');
-
-    const { data: records } = await supabase
+const { data: records } = await supabase
       .from('maintenance_records')
       .select('*, assets:asset_id(name)')
-      .eq('organization_id', userData.organization_id)
+      .eq('organization_id', ctx.organizationId)
       .order('scheduled_date', { ascending: false });
 
     if (!records || records.length === 0) throw new Error('No records');

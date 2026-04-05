@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function InputField({
   label,
@@ -50,7 +50,7 @@ export default function ProfileSettingsPage() {
   const [loaded, setLoaded] = useState(false);
 
   // Load profile on mount
-  useState(() => {
+  useEffect(() => {
     fetch('/api/settings/profile')
       .then((res) => res.json())
       .then((data) => {
@@ -62,7 +62,7 @@ export default function ProfileSettingsPage() {
         setLoaded(true);
       })
       .catch(() => setLoaded(true));
-  });
+  }, []);
 
   async function handleSave() {
     setSaving(true);

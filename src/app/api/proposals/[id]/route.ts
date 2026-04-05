@@ -47,7 +47,7 @@ export async function PATCH(
   const allowedFields = [
     'name', 'subtitle', 'status', 'probability', 'currency',
     'total_value', 'total_with_addons', 'narrative_context', 'payment_terms',
-    'assumptions', 'tags', 'valid_until', 'deal_stage', 'expected_close_date',
+    'assumptions', 'tags', 'valid_until',
   ];
 
   const updates: Record<string, unknown> = {};

@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 interface ProjectProfit {
   proposalId: string;
@@ -15,20 +16,13 @@ interface ProjectProfit {
 async function getProfitability(): Promise<ProjectProfit[]> {
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return [];
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-    if (!userData) return [];
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
 
     const { data: proposals } = await supabase
       .from('proposals')
       .select('id, name, total_value')
-      .eq('organization_id', userData.organization_id)
+      .eq('organization_id', ctx.organizationId)
       .in('status', ['approved', 'in_production', 'active', 'complete'])
       .order('created_at', { ascending: false })
       .limit(20);

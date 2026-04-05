@@ -114,11 +114,13 @@ export default function Breadcrumbs({ currentLabel }: BreadcrumbsProps) {
     crumbs.push({ label, href });
   }
 
-  // Don't render breadcrumbs on top-level list pages (only 1 segment after "app")
-  if (crumbs.length <= 1) return null;
+  // If no crumbs (dashboard root), show a single "Dashboard" label
+  if (crumbs.length === 0) {
+    crumbs.push({ label: 'Dashboard', href: '/app' });
+  }
 
   return (
-    <nav aria-label="Breadcrumb" className="mb-6 flex items-center gap-2 text-sm">
+    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm">
       <Link
         href="/app"
         className="text-text-muted hover:text-foreground transition-colors duration-fast"

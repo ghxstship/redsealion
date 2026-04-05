@@ -20,12 +20,12 @@ const VISUALIZATION_TYPES = [
 ];
 
 const FIELD_OPTIONS: Record<string, string[]> = {
-  proposals: ['name', 'status', 'total_value', 'currency', 'created_at', 'prepared_date', 'deal_stage'],
-  deals: ['title', 'value', 'stage', 'probability', 'expected_close_date', 'created_at'],
+  proposals: ['name', 'status', 'total_value', 'currency', 'created_at', 'prepared_date'],
+  deals: ['title', 'deal_value', 'stage', 'probability', 'expected_close_date', 'created_at'],
   clients: ['company_name', 'industry', 'source', 'created_at'],
   invoices: ['invoice_number', 'type', 'status', 'total', 'amount_paid', 'issue_date', 'due_date', 'paid_date'],
   assets: ['name', 'type', 'category', 'status', 'condition', 'acquisition_cost', 'current_value'],
-  team: ['full_name', 'email', 'role', 'title'],
+  team: ['first_name', 'last_name', 'email', 'title'],
 };
 
 interface ReportColumn {

@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import BundlesHeader from '@/components/admin/equipment/BundlesHeader';
 
 interface Bundle {
   id: string;
@@ -21,22 +23,16 @@ const fallbackBundles: Bundle[] = [
 async function getBundles(): Promise<Bundle[]> {
   try {
     const supabase = await createClient();
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
     const {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) throw new Error('No auth');
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-    if (!userData) throw new Error('No org');
-
-    const { data: bundles } = await supabase
+const { data: bundles } = await supabase
       .from('equipment_bundles')
       .select()
-      .eq('organization_id', userData.organization_id)
+      .eq('organization_id', ctx.organizationId)
       .order('name');
 
     if (!bundles || bundles.length === 0) throw new Error('No bundles');
@@ -84,21 +80,7 @@ export default async function BundlesPage() {
           >
             All Equipment
           </Link>
-          <button className="inline-flex items-center justify-center gap-2 rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-foreground/90">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            >
-              <line x1="8" y1="2" x2="8" y2="14" />
-              <line x1="2" y1="8" x2="14" y2="8" />
-            </svg>
-            Create Bundle
-          </button>
+          <BundlesHeader />
         </div>
       </div>
 

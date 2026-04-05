@@ -1,11 +1,15 @@
 'use client';
 
+import { useState } from 'react';
+import FacilityFormModal from '@/components/admin/settings/FacilityFormModal';
+
 const facilities = [
   { id: 'fac_001', name: 'Meridian HQ', city: 'Los Angeles', state: 'CA', type: 'headquarters', isHQ: true },
   { id: 'fac_002', name: 'Meridian Fabrication', city: 'Long Beach', state: 'CA', type: 'warehouse', isHQ: false },
 ];
 
 export default function FacilitiesSettingsPage() {
+  const [showCreate, setShowCreate] = useState(false);
   return (
     <div className="max-w-2xl space-y-6">
       <div className="flex items-center justify-between">
@@ -13,9 +17,10 @@ export default function FacilitiesSettingsPage() {
           <h2 className="text-lg font-semibold text-foreground">Facilities</h2>
           <p className="mt-1 text-sm text-text-secondary">Manage warehouses, offices, and production spaces.</p>
         </div>
-        <button className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90">
+        <button onClick={() => setShowCreate(true)} className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90">
           Add Facility
         </button>
+        <FacilityFormModal open={showCreate} onClose={() => setShowCreate(false)} onCreated={() => window.location.reload()} />
       </div>
 
       <div className="rounded-xl border border-border bg-white overflow-hidden">

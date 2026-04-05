@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import CustomFieldRenderer from '@/components/admin/custom-fields/CustomFieldRenderer';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 interface FieldDef {
   id: string;
@@ -13,20 +14,13 @@ interface FieldDef {
 async function getCustomFields(): Promise<FieldDef[]> {
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return [];
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-    if (!userData) return [];
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
 
     const { data } = await supabase
       .from('custom_field_definitions')
       .select('id, entity_type, field_name, field_type, required')
-      .eq('organization_id', userData.organization_id)
+      .eq('organization_id', ctx.organizationId)
       .order('sort_order');
 
     return (data ?? []).map((f) => ({

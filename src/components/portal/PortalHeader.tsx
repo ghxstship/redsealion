@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { clsx } from '@/lib/clsx';
 
 interface PortalHeaderProps {
@@ -11,6 +12,9 @@ interface PortalHeaderProps {
 
 export default function PortalHeader({ orgName, logoUrl }: PortalHeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+  // Extract orgSlug from pathname: /portal/{orgSlug}/...
+  const orgSlug = pathname.split('/')[2] || '';
 
   return (
     <header className="border-b border-border bg-background/80 backdrop-blur-sm sticky top-0 z-50">
@@ -37,14 +41,25 @@ export default function PortalHeader({ orgName, logoUrl }: PortalHeaderProps) {
           {/* Desktop navigation */}
           <nav className="hidden md:flex items-center gap-8">
             <Link
-              href="#"
+              href={`/portal/${orgSlug}`}
               className="text-sm font-medium text-text-secondary hover:text-foreground transition-colors"
-              style={{ '--tw-hover-color': 'var(--org-primary)' } as React.CSSProperties}
             >
               Proposals
             </Link>
             <Link
-              href="#"
+              href={`/portal/${orgSlug}/request`}
+              className="text-sm font-medium text-text-secondary hover:text-foreground transition-colors"
+            >
+              Request Work
+            </Link>
+            <Link
+              href={`/portal/${orgSlug}/refer`}
+              className="text-sm font-medium text-text-secondary hover:text-foreground transition-colors"
+            >
+              Refer
+            </Link>
+            <Link
+              href={`/portal/${orgSlug}/account`}
               className="text-sm font-medium text-text-secondary hover:text-foreground transition-colors"
             >
               Account
@@ -83,13 +98,25 @@ export default function PortalHeader({ orgName, logoUrl }: PortalHeaderProps) {
         >
           <nav className="flex flex-col gap-3 pt-2">
             <Link
-              href="#"
+              href={`/portal/${orgSlug}`}
               className="text-sm font-medium text-text-secondary hover:text-foreground transition-colors"
             >
               Proposals
             </Link>
             <Link
-              href="#"
+              href={`/portal/${orgSlug}/request`}
+              className="text-sm font-medium text-text-secondary hover:text-foreground transition-colors"
+            >
+              Request Work
+            </Link>
+            <Link
+              href={`/portal/${orgSlug}/refer`}
+              className="text-sm font-medium text-text-secondary hover:text-foreground transition-colors"
+            >
+              Refer
+            </Link>
+            <Link
+              href={`/portal/${orgSlug}/account`}
               className="text-sm font-medium text-text-secondary hover:text-foreground transition-colors"
             >
               Account

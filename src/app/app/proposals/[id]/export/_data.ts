@@ -288,7 +288,7 @@ export async function getExportData(proposalId: string) {
   ];
 
   return {
-    MOCK_PROPOSAL: proposalData,
+    proposal: proposalData,
     salesforcePreview,
     hubspotPreview,
     pipedrivePreview,

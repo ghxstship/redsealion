@@ -81,9 +81,9 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
           Manage your organization and account preferences.
         </p>
       </div>
-      <div className="flex gap-8">
-        <nav className="w-52 shrink-0 hidden md:block">
-          <div className="sticky top-6 space-y-5">
+      <div className="flex gap-8 items-start">
+        <nav className="w-52 shrink-0 hidden md:block sticky top-16">
+          <div className="space-y-5 max-h-[calc(100vh-5rem)] overflow-y-auto">
             {sections.map((section) => (
               <div key={section.title}>
                 <p className="text-[11px] font-semibold text-text-muted uppercase tracking-wider mb-1.5 px-3">

@@ -4,28 +4,22 @@ import { createClient } from '@/lib/supabase/server';
 import MetricGrid from '@/components/admin/reports/MetricGrid';
 import ChartContainer from '@/components/admin/reports/ChartContainer';
 import type { DealStage } from '@/types/database';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 async function getDealsData() {
   try {
     const supabase = await createClient();
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
     if (!user) throw new Error('No auth');
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-
-    if (!userData) throw new Error('No org');
-
-    const { data: deals } = await supabase
+const { data: deals } = await supabase
       .from('deals')
       .select('*, clients(company_name)')
-      .eq('organization_id', userData.organization_id);
+      .eq('organization_id', ctx.organizationId);
 
     return {
       deals: (deals ?? []) as Array<{

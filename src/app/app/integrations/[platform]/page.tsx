@@ -37,8 +37,36 @@ export default function IntegrationConfigPage({
 }) {
   const { platform } = use(params);
   const [activeTab, setActiveTab] = useState<ConfigTab>('settings');
+  const [syncDirection, setSyncDirection] = useState('bidirectional');
+  const [syncFrequency, setSyncFrequency] = useState('realtime');
+  const [saving, setSaving] = useState(false);
 
   const meta = PLATFORM_META[platform] ?? { displayName: platform, category: 'unknown' };
+
+  async function handleSaveSettings() {
+    setSaving(true);
+    try {
+      await fetch(`/api/integrations/${platform}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          config: { syncDirection, syncFrequency },
+        }),
+      });
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleSaveMappings(mappings: { id: string; sourceField: string; targetField: string; transform: string }[]) {
+    await fetch(`/api/integrations/${platform}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        config: { fieldMappings: mappings },
+      }),
+    });
+  }
 
   return (
     <TierGate feature="integrations">
@@ -107,7 +135,11 @@ export default function IntegrationConfigPage({
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className="block text-xs font-medium text-text-secondary mb-1">Sync Direction</label>
-              <select className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground">
+              <select
+                value={syncDirection}
+                onChange={(e) => setSyncDirection(e.target.value)}
+                className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
+              >
                 <option value="bidirectional">Bidirectional</option>
                 <option value="inbound">Inbound Only</option>
                 <option value="outbound">Outbound Only</option>
@@ -115,7 +147,11 @@ export default function IntegrationConfigPage({
             </div>
             <div>
               <label className="block text-xs font-medium text-text-secondary mb-1">Sync Frequency</label>
-              <select className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground">
+              <select
+                value={syncFrequency}
+                onChange={(e) => setSyncFrequency(e.target.value)}
+                className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
+              >
                 <option value="realtime">Real-time</option>
                 <option value="hourly">Every hour</option>
                 <option value="daily">Daily</option>
@@ -124,8 +160,12 @@ export default function IntegrationConfigPage({
             </div>
           </div>
           <div className="flex justify-end pt-2">
-            <button className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity">
-              Save Settings
+            <button
+              onClick={handleSaveSettings}
+              disabled={saving}
+              className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity disabled:opacity-50"
+            >
+              {saving ? 'Saving...' : 'Save Settings'}
             </button>
           </div>
         </div>
@@ -137,10 +177,7 @@ export default function IntegrationConfigPage({
             platform={platform}
             sourceFields={CRM_SOURCE_FIELDS}
             targetFields={CRM_TARGET_FIELDS}
-            onSave={(mappings) => {
-              // Stub: persist mappings to integration config via PATCH /api/integrations/[platform]
-              void mappings;
-            }}
+            onSave={handleSaveMappings}
           />
         </div>
       )}

@@ -1,4 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import PortfolioHeader from '@/components/admin/portfolio/PortfolioHeader';
 
 const CATEGORIES = ['All', 'Pop-Up', 'Installation', 'Festival', 'Launch', 'Retail'];
 
@@ -15,24 +17,17 @@ interface PortfolioItem {
 async function getPortfolioItems(): Promise<PortfolioItem[]> {
   try {
     const supabase = await createClient();
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
     if (!user) return [];
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-
-    if (!userData) return [];
-
-    const { data: items } = await supabase
+const { data: items } = await supabase
       .from('portfolio_library')
       .select('id, project_name, project_year, category, client_name, description, image_url')
-      .eq('organization_id', userData.organization_id)
+      .eq('organization_id', ctx.organizationId)
       .order('project_year', { ascending: false });
 
     return (items ?? []) as PortfolioItem[];
@@ -56,20 +51,7 @@ export default async function PortfolioPage() {
             {portfolioItems.length} project{portfolioItems.length !== 1 ? 's' : ''} in your portfolio library.
           </p>
         </div>
-        <button className="inline-flex items-center justify-center gap-2 rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-foreground/90">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-          >
-            <path d="M8 2v12M2 8h12" />
-          </svg>
-          Upload Project
-        </button>
+        <PortfolioHeader />
       </div>
 
       {/* Category filters */}

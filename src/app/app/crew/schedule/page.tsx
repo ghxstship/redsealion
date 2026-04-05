@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 interface ScheduleEntry {
   id: string;
@@ -25,22 +26,16 @@ const fallbackSchedule: ScheduleEntry[] = [
 async function getSchedule(): Promise<ScheduleEntry[]> {
   try {
     const supabase = await createClient();
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
     const {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) throw new Error('No auth');
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-    if (!userData) throw new Error('No org');
-
-    const { data: bookings } = await supabase
+const { data: bookings } = await supabase
       .from('crew_bookings')
       .select('*, crew_profiles(full_name)')
-      .eq('organization_id', userData.organization_id)
+      .eq('organization_id', ctx.organizationId)
       .gte('date', new Date().toISOString().split('T')[0])
       .order('date', { ascending: true });
 

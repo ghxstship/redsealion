@@ -1,18 +1,21 @@
 'use client';
 
+import { useState, useEffect } from 'react';
+
 const fontOptions = ['Inter', 'DM Sans', 'Plus Jakarta Sans', 'Manrope', 'Outfit', 'Space Grotesk'];
 
-function ColorField({ label, defaultValue }: { label: string; defaultValue: string }) {
+function ColorField({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
   return (
     <div>
       <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
         {label}
       </label>
       <div className="flex items-center gap-3">
-        <div className="h-9 w-9 shrink-0 rounded-lg border border-border" style={{ backgroundColor: defaultValue }} />
+        <div className="h-9 w-9 shrink-0 rounded-lg border border-border" style={{ backgroundColor: value }} />
         <input
           type="text"
-          defaultValue={defaultValue}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
           className="flex-1 rounded-lg border border-border bg-white px-3.5 py-2 text-sm font-mono text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
         />
       </div>
@@ -20,7 +23,7 @@ function ColorField({ label, defaultValue }: { label: string; defaultValue: stri
   );
 }
 
-function InputField({ label, defaultValue, type = 'text' }: { label: string; defaultValue: string; type?: string }) {
+function InputField({ label, value, onChange, type = 'text' }: { label: string; value: string; onChange: (v: string) => void; type?: string }) {
   return (
     <div>
       <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
@@ -28,21 +31,23 @@ function InputField({ label, defaultValue, type = 'text' }: { label: string; def
       </label>
       <input
         type={type}
-        defaultValue={defaultValue}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
         className="w-full rounded-lg border border-border bg-white px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
       />
     </div>
   );
 }
 
-function SelectField({ label, options, defaultValue }: { label: string; options: string[]; defaultValue: string }) {
+function SelectField({ label, options, value, onChange }: { label: string; options: string[]; value: string; onChange: (v: string) => void }) {
   return (
     <div>
       <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
         {label}
       </label>
       <select
-        defaultValue={defaultValue}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
         className="w-full rounded-lg border border-border bg-white px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
       >
         {options.map((opt) => (
@@ -54,6 +59,82 @@ function SelectField({ label, options, defaultValue }: { label: string; options:
 }
 
 export default function BrandingSettingsPage() {
+  const [primary, setPrimary] = useState('#0f172a');
+  const [secondary, setSecondary] = useState('#3b82f6');
+  const [accent, setAccent] = useState('#6366f1');
+  const [bg, setBg] = useState('#ffffff');
+  const [headingFont, setHeadingFont] = useState('Inter');
+  const [bodyFont, setBodyFont] = useState('Inter');
+  const [portalTitle, setPortalTitle] = useState('');
+  const [tagline, setTagline] = useState('');
+  const [footer, setFooter] = useState('');
+  const [emailFrom, setEmailFrom] = useState('');
+  const [emailReplyTo, setEmailReplyTo] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/settings/general')
+      .then((r) => r.json())
+      .then((data) => {
+        const bc = data.organization?.brand_config;
+        if (bc) {
+          setPrimary(bc.primaryColor ?? '#0f172a');
+          setSecondary(bc.secondaryColor ?? '#3b82f6');
+          setAccent(bc.accentColor ?? '#6366f1');
+          setBg(bc.backgroundColor ?? '#ffffff');
+          setHeadingFont(bc.fontHeading ?? 'Inter');
+          setBodyFont(bc.fontBody ?? 'Inter');
+          setPortalTitle(bc.portalTitle ?? '');
+          setTagline(bc.companyTagline ?? '');
+          setFooter(bc.footerText ?? '');
+          setEmailFrom(bc.emailFromName ?? '');
+          setEmailReplyTo(bc.emailReplyTo ?? '');
+        }
+        setLoaded(true);
+      })
+      .catch(() => setLoaded(true));
+  }, []);
+
+  async function handleSave() {
+    setSaving(true);
+    try {
+      await fetch('/api/settings/branding', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          brand_config: {
+            primaryColor: primary,
+            secondaryColor: secondary,
+            accentColor: accent,
+            backgroundColor: bg,
+            fontHeading: headingFont,
+            fontBody: bodyFont,
+            portalTitle,
+            companyTagline: tagline,
+            footerText: footer,
+            emailFromName: emailFrom,
+            emailReplyTo,
+          },
+        }),
+      });
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  if (!loaded) {
+    return (
+      <div className="max-w-2xl space-y-6">
+        <div>
+          <h2 className="text-lg font-semibold text-foreground">Branding</h2>
+          <p className="mt-1 text-sm text-text-secondary">Customize colors, fonts, and portal appearance.</p>
+        </div>
+        <div className="rounded-xl border border-border bg-white px-6 py-6 animate-pulse h-64" />
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-2xl space-y-6">
       <div>
@@ -64,18 +145,18 @@ export default function BrandingSettingsPage() {
       <div className="rounded-xl border border-border bg-white px-6 py-6">
         <h3 className="text-sm font-semibold text-foreground mb-5">Colors</h3>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-          <ColorField label="Primary Color" defaultValue="#0f172a" />
-          <ColorField label="Secondary Color" defaultValue="#3b82f6" />
-          <ColorField label="Accent Color" defaultValue="#6366f1" />
-          <ColorField label="Background Color" defaultValue="#ffffff" />
+          <ColorField label="Primary Color" value={primary} onChange={setPrimary} />
+          <ColorField label="Secondary Color" value={secondary} onChange={setSecondary} />
+          <ColorField label="Accent Color" value={accent} onChange={setAccent} />
+          <ColorField label="Background Color" value={bg} onChange={setBg} />
         </div>
       </div>
 
       <div className="rounded-xl border border-border bg-white px-6 py-6">
         <h3 className="text-sm font-semibold text-foreground mb-5">Typography</h3>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-          <SelectField label="Heading Font" options={fontOptions} defaultValue="Inter" />
-          <SelectField label="Body Font" options={fontOptions} defaultValue="Inter" />
+          <SelectField label="Heading Font" options={fontOptions} value={headingFont} onChange={setHeadingFont} />
+          <SelectField label="Body Font" options={fontOptions} value={bodyFont} onChange={setBodyFont} />
         </div>
       </div>
 
@@ -106,17 +187,21 @@ export default function BrandingSettingsPage() {
       <div className="rounded-xl border border-border bg-white px-6 py-6">
         <h3 className="text-sm font-semibold text-foreground mb-5">Portal Copy</h3>
         <div className="space-y-5">
-          <InputField label="Portal Title" defaultValue="Meridian Experiential" />
-          <InputField label="Tagline" defaultValue="Experiences that move people." />
-          <InputField label="Footer Text" defaultValue="© 2026 Meridian Experiential LLC" />
-          <InputField label="Email From Name" defaultValue="Meridian Experiential" />
-          <InputField label="Email Reply-To" defaultValue="hello@meridian.co" type="email" />
+          <InputField label="Portal Title" value={portalTitle} onChange={setPortalTitle} />
+          <InputField label="Tagline" value={tagline} onChange={setTagline} />
+          <InputField label="Footer Text" value={footer} onChange={setFooter} />
+          <InputField label="Email From Name" value={emailFrom} onChange={setEmailFrom} />
+          <InputField label="Email Reply-To" value={emailReplyTo} onChange={setEmailReplyTo} type="email" />
         </div>
       </div>
 
       <div className="flex justify-end">
-        <button className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-foreground/90">
-          Save Changes
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-foreground/90 disabled:opacity-50"
+        >
+          {saving ? 'Saving...' : 'Save Changes'}
         </button>
       </div>
     </div>

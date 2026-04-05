@@ -1,5 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import type { OrganizationRole } from '@/types/database';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import TeamHeader from '@/components/admin/settings/TeamHeader';
 
 interface TeamMember {
   id: string;
@@ -85,9 +87,7 @@ export default async function TeamSettingsPage() {
             {members.length} member{members.length !== 1 ? 's' : ''} in your organization.
           </p>
         </div>
-        <button className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-white hover:bg-foreground/90 transition-colors">
-          Invite Member
-        </button>
+        <TeamHeader />
       </div>
 
       <div className="rounded-xl border border-border bg-white overflow-hidden">

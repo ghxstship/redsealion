@@ -197,7 +197,7 @@ describe('Asset Lifecycle Workflow', () => {
 
     it('tracks purchase cost for depreciation', () => {
       const asset = makeAsset({ purchase_cost: 5000 });
-      expect(asset.purchase_cost).toBe(5000);
+      expect(asset.acquisition_cost).toBe(5000);
     });
   });
 });

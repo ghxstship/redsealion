@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import { formatCurrency } from '@/lib/utils';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 interface WipRow {
   projectId: string;
@@ -16,17 +17,10 @@ interface WipRow {
 async function getWipData(): Promise<WipRow[]> {
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return [];
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
 
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-    if (!userData) return [];
-
-    const orgId = userData.organization_id;
+    const orgId = ctx.organizationId;
 
     // Get active proposals (in production or active)
     const { data: proposals } = await supabase

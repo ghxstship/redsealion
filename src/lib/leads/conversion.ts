@@ -6,8 +6,10 @@ const log = createLogger('lib-leads-conversion');
 
 /**
  * Automates the creation of an entire project lifecycle (Client -> Deal -> Proposal)
- * directly from a lead submission.
- * 
+ * directly from a lead submission. Sets FK back-references on the lead record to
+ * maintain SSOT traceability (converted_to_client_id, converted_to_contact_id,
+ * converted_to_deal_id).
+ *
  * @param leadId The ID of the newly created lead
  * @param orgId The organization to which the lead belongs
  */
@@ -29,11 +31,12 @@ export async function convertLeadToProject(leadId: string, orgId: string): Promi
     }
 
     if (lead.status === 'converted' && lead.converted_to_deal_id) {
-      // Already converted
       return true;
     }
 
-    const companyName = lead.company_name || lead.contact_name || 'Individual Client';
+    const contactFirst = (lead as Record<string, unknown>).contact_first_name as string || 'Unknown';
+    const contactLast = (lead as Record<string, unknown>).contact_last_name as string || '';
+    const companyName = lead.company_name || `${contactFirst} ${contactLast}`.trim() || 'Individual Client';
 
     // 2. Create the Client
     const { data: client, error: clientError } = await supabase
@@ -53,22 +56,23 @@ export async function convertLeadToProject(leadId: string, orgId: string): Promi
     }
 
     // 3. Create Client Contact
-    const { error: contactError } = await supabase
+    const { data: contact, error: contactError } = await supabase
       .from('client_contacts')
       .insert({
         client_id: client.id,
-        first_name: lead.contact_name?.split(' ')[0] || 'Unknown',
-        last_name: lead.contact_name?.split(' ').slice(1).join(' ') || '',
+        first_name: contactFirst,
+        last_name: contactLast,
         email: lead.contact_email || `${randomUUID()}@unknown.com`,
         phone: lead.contact_phone || null,
         contact_role: 'primary',
         is_decision_maker: true,
         is_signatory: true,
-      });
+      })
+      .select('id')
+      .single();
 
     if (contactError) {
       log.error(`Failed to create client contact from lead: ${leadId}`, {}, contactError);
-      // Non-fatal, we can continue
     }
 
     // 4. Create the Deal
@@ -81,7 +85,7 @@ export async function convertLeadToProject(leadId: string, orgId: string): Promi
         title: dealTitle,
         deal_value: lead.estimated_budget || 0,
         stage: 'lead',
-        probability: 10, // Initial default
+        probability: 10,
         notes: lead.message || null,
       })
       .select('id')
@@ -92,14 +96,14 @@ export async function convertLeadToProject(leadId: string, orgId: string): Promi
       return false;
     }
 
-    // 5. Create the Proposal (Project)
+    // 5. Create the Proposal (Project) — deal_stage now lives on deals, not proposals
     const { data: orgData } = await supabase
       .from('organizations')
-      .select('settings')
+      .select('currency')
       .eq('id', orgId)
       .single();
 
-    const currency = (orgData?.settings as any)?.currency || 'USD';
+    const currency = (orgData as Record<string, unknown>)?.currency as string || 'USD';
 
     const { error: proposalError } = await supabase
       .from('proposals')
@@ -108,12 +112,11 @@ export async function convertLeadToProject(leadId: string, orgId: string): Promi
         client_id: client.id,
         name: lead.event_type || dealTitle,
         status: 'draft',
-        deal_stage: 'lead',
         currency,
         total_value: lead.estimated_budget || 0,
         total_with_addons: lead.estimated_budget || 0,
         source: lead.source || 'Website Intake',
-        created_by: '00000000-0000-0000-0000-000000000000', // System user or a default admin placeholder
+        created_by: '00000000-0000-0000-0000-000000000000',
       });
 
     if (proposalError) {
@@ -121,13 +124,15 @@ export async function convertLeadToProject(leadId: string, orgId: string): Promi
       return false;
     }
 
-    // 6. Mark Lead as converted
+    // 6. Mark Lead as converted with FK back-references
     const { error: updateError } = await supabase
       .from('leads')
       .update({
         status: 'converted',
         converted_to_deal_id: deal.id,
-      })
+        converted_to_client_id: client.id,
+        converted_to_contact_id: contact?.id || null,
+      } as Record<string, unknown>)
       .eq('id', leadId);
 
     if (updateError) {

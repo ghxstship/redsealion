@@ -24,7 +24,7 @@ export async function POST() {
     supabase.from('invoices').select('*').eq('organization_id', orgId),
     supabase.from('clients').select('*').eq('organization_id', orgId),
     supabase.from('assets').select('*').eq('organization_id', orgId),
-    supabase.from('users').select('id, full_name, email, role, title, phone, created_at').eq('organization_id', orgId),
+    supabase.from('organization_memberships').select('user_id, users!user_id(id, first_name, last_name, email, title, phone, created_at), roles(name)').eq('organization_id', orgId).eq('status', 'active'),
     supabase.from('tags').select('*').eq('organization_id', orgId),
     supabase.from('crew_profiles').select('*').eq('organization_id', orgId),
   ]);

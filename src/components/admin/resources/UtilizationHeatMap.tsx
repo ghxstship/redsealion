@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
-
+import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
 interface UtilizationHeatMapProps {
   teamMembers: Array<{ id: string; name: string; role: string }>;
 }
@@ -98,17 +98,8 @@ export default function UtilizationHeatMap({ teamMembers }: UtilizationHeatMapPr
   const loadAllocations = useCallback(async () => {
     try {
       const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { data: userData } = await supabase
-        .from('users')
-        .select('organization_id')
-        .eq('id', user.id)
-        .single();
-      if (!userData) return;
+      const ctx = await resolveClientOrg();
+      if (!ctx) return;
 
       // Fetch allocations for the next 4 weeks
       const startStr = weeks[0].start.toISOString().split('T')[0];
@@ -117,7 +108,7 @@ export default function UtilizationHeatMap({ teamMembers }: UtilizationHeatMapPr
       const { data: rows } = await supabase
         .from('resource_allocations')
         .select('*, proposals(name)')
-        .eq('organization_id', userData.organization_id)
+        .eq('organization_id', ctx.organizationId)
         .gte('end_date', startStr)
         .lte('start_date', endStr);
 

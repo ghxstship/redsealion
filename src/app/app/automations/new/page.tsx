@@ -7,7 +7,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import { TriggerSelector } from '@/components/admin/automations/TriggerSelector';
 import { ActionSelector } from '@/components/admin/automations/ActionSelector';
 import { createClient } from '@/lib/supabase/client';
-
+import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
 export default function NewAutomationPage() {
   const router = useRouter();
   const [name, setName] = useState('');
@@ -27,30 +27,29 @@ export default function NewAutomationPage() {
     try {
       const supabase = createClient();
 
-      // Get current user's organization
-      const {
-        data: { user },
-        error: authError,
-      } = await supabase.auth.getUser();
-
+      // Get current user
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
       if (authError || !user) {
         setError('You must be logged in to create automations.');
         return;
       }
 
-      const { data: userData, error: userError } = await supabase
-        .from('users')
+      // Resolve org via Harbor Master membership
+      const { data: membership } = await supabase
+        .from('organization_memberships')
         .select('organization_id')
-        .eq('id', user.id)
+        .eq('user_id', user.id)
+        .eq('status', 'active')
+        .limit(1)
         .single();
 
-      if (userError || !userData?.organization_id) {
+      if (!membership?.organization_id) {
         setError('Could not determine your organization.');
         return;
       }
 
       const { error: insertError } = await supabase.from('automations').insert({
-        organization_id: userData.organization_id,
+        organization_id: membership.organization_id,
         name,
         description: description || null,
         trigger_type: triggerType,

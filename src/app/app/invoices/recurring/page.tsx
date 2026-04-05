@@ -1,6 +1,8 @@
 import { TierGate } from '@/components/shared/TierGate';
 import { formatCurrency } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import RecurringHeader from '@/components/admin/invoices/RecurringHeader';
 
 interface RecurringScheduleRow {
   id: string;
@@ -55,24 +57,17 @@ function formatFrequency(freq: string): string {
 async function getRecurringSchedules(): Promise<RecurringScheduleRow[]> {
   try {
     const supabase = await createClient();
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
     if (!user) throw new Error('No auth');
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-
-    if (!userData) throw new Error('No org');
-
-    const { data: schedules } = await supabase
+const { data: schedules } = await supabase
       .from('recurring_invoice_schedules')
       .select('*, clients(company_name)')
-      .eq('organization_id', userData.organization_id)
+      .eq('organization_id', ctx.organizationId)
       .order('next_issue_date', { ascending: true });
 
     if (!schedules) throw new Error('No schedules');
@@ -105,9 +100,7 @@ export default async function RecurringInvoicesPage() {
             Manage automatic invoice generation schedules.
           </p>
         </div>
-        <button className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity">
-          New Schedule
-        </button>
+        <RecurringHeader />
       </div>
 
       <div className="rounded-xl border border-border bg-white divide-y divide-border">

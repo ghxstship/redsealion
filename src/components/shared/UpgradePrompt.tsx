@@ -41,7 +41,7 @@ export function UpgradePrompt({
         and above. Upgrade to unlock this feature.
       </p>
       <Link
-        href="/app/settings"
+        href="/app/settings/billing"
         className="mt-6 inline-flex items-center gap-2 rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-foreground/90"
       >
         <svg

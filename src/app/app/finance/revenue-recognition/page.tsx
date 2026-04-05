@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import { formatCurrency } from '@/lib/utils';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 interface RevRecRow {
   id: string;
@@ -15,20 +16,13 @@ interface RevRecRow {
 async function getRevRecData(): Promise<RevRecRow[]> {
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return [];
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-    if (!userData) return [];
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
 
     const { data } = await supabase
       .from('revenue_recognition')
       .select('id, proposal_id, period_start, period_end, recognized_amount, deferred_amount, method')
-      .eq('organization_id', userData.organization_id)
+      .eq('organization_id', ctx.organizationId)
       .order('period_start', { ascending: false })
       .limit(20);
 

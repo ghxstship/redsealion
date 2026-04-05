@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-
+import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
 interface KanbanTask {
   id: string;
   title: string;
@@ -46,24 +46,15 @@ export default function KanbanBoard() {
   useEffect(() => {
     async function loadTasks() {
       try {
+        const ctx = await resolveClientOrg();
+        if (!ctx) return;
+
         const { createClient } = await import('@/lib/supabase/client');
         const supabase = createClient();
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-        if (!user) return;
-
-        const { data: userData } = await supabase
-          .from('users')
-          .select('organization_id')
-          .eq('id', user.id)
-          .single();
-        if (!userData) return;
-
         const { data: taskRows } = await supabase
           .from('tasks')
           .select('id, title, priority, status, assigned_to, users!tasks_assigned_to_fkey(full_name)')
-          .eq('organization_id', userData.organization_id)
+          .eq('organization_id', ctx.organizationId)
           .order('sort_order', { ascending: true });
 
         if (!taskRows || taskRows.length === 0) return;

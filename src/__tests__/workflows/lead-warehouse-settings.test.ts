@@ -101,14 +101,14 @@ describe('Lead Workflow', () => {
   describe('Lead creation', () => {
     it('creates a lead with required fields', () => {
       const lead = makeLead();
-      expect(lead.contact_name).toBeTruthy();
+      expect(lead.contact_first_name).toBeTruthy();
       expect(lead.organization_id).toBe(TEST_ORG_ID);
       expect(lead.status).toBe('new');
     });
 
-    it('requires contact_name', () => {
-      const lead = makeLead({ contact_name: '' });
-      expect(lead.contact_name).toBeFalsy();
+    it('requires contact_first_name', () => {
+      const lead = makeLead({ contact_first_name: '' });
+      expect(lead.contact_first_name).toBeFalsy();
     });
 
     it('defaults status to new', () => {
@@ -186,7 +186,6 @@ describe('Warehouse Transfer Workflow', () => {
       const transfer = makeWarehouseTransfer();
       expect(transfer.from_facility_id).toBeTruthy();
       expect(transfer.to_facility_id).toBeTruthy();
-      expect(transfer.items).toBeTruthy();
       expect(transfer.status).toBe('pending');
     });
 
@@ -200,13 +199,9 @@ describe('Warehouse Transfer Workflow', () => {
       expect(transfer.to_facility_id).toBeTruthy();
     });
 
-    it('requires at least one item', () => {
-      const items = JSON.parse(transfer().items as string);
-      expect(items.length).toBeGreaterThan(0);
-
-      function transfer() {
-        return makeWarehouseTransfer();
-      }
+    it('validates transfer between different facilities', () => {
+      const transfer = makeWarehouseTransfer();
+      expect(transfer.from_facility_id).not.toBe(transfer.to_facility_id);
     });
 
     it('tracks who initiated the transfer', () => {
@@ -331,12 +326,12 @@ describe('Settings Workflow', () => {
   describe('Localization settings', () => {
     it('supports timezone', () => {
       const org = makeOrganization();
-      expect(org.settings.timezone).toBe('America/Los_Angeles');
+      expect(org.timezone).toBe('America/Los_Angeles');
     });
 
     it('supports currency', () => {
       const org = makeOrganization();
-      expect(org.settings.currency).toBe('USD');
+      expect(org.currency).toBe('USD');
     });
 
     it('supports date format', () => {

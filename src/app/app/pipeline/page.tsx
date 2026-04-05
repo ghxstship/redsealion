@@ -1,31 +1,26 @@
 import { TierGate } from '@/components/shared/TierGate';
 import PipelineBoard from '@/components/admin/pipeline/PipelineBoard';
+import PipelineHeader from '@/components/admin/pipeline/PipelineHeader';
 import { createClient } from '@/lib/supabase/server';
 import type { Deal } from '@/types/database';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 type DealWithClient = Deal & { client_name: string };
 
 async function getDeals(): Promise<DealWithClient[]> {
   try {
     const supabase = await createClient();
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
     if (!user) return [];
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-
-    if (!userData) return [];
-
-    const { data: deals } = await supabase
+const { data: deals } = await supabase
       .from('deals')
       .select('*, clients(company_name)')
-      .eq('organization_id', userData.organization_id)
+      .eq('organization_id', ctx.organizationId)
       .order('created_at', { ascending: false });
 
     if (!deals) return [];
@@ -56,21 +51,7 @@ export default async function PipelinePage() {
             Track deals from lead to close
           </p>
         </div>
-        <button className="inline-flex items-center justify-center gap-2 rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-foreground/90">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-          >
-            <line x1="8" y1="2" x2="8" y2="14" />
-            <line x1="2" y1="8" x2="14" y2="8" />
-          </svg>
-          New Deal
-        </button>
+        <PipelineHeader />
       </div>
 
       <TierGate feature="pipeline">

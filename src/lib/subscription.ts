@@ -53,7 +53,16 @@ export type FeatureKey =
   | 'online_payments'
   | 'warehouse'
   | 'onboarding'
-  | 'payroll_export';
+  | 'payroll_export'
+  // Feature parity — Tiers 2 & 3
+  | 'work_orders'
+  | 'job_photos'
+  | 'deposit_payments'
+  | 'ai_drafting'
+  | 'crew_ratings'
+  | 'referral_program'
+  | 'email_campaigns'
+  | 'review_requests';
 
 // Maps each feature to the minimum subscription tier required
 const featureRegistry: Record<FeatureKey, SubscriptionTier> = {
@@ -112,6 +121,15 @@ const featureRegistry: Record<FeatureKey, SubscriptionTier> = {
   warehouse: 'enterprise',
   onboarding: 'professional',
   payroll_export: 'enterprise',
+  // Feature parity — Tiers 2 & 3
+  work_orders: 'enterprise',
+  job_photos: 'professional',
+  deposit_payments: 'professional',
+  ai_drafting: 'enterprise',
+  crew_ratings: 'professional',
+  referral_program: 'professional',
+  email_campaigns: 'professional',
+  review_requests: 'professional',
 };
 
 const tierRank: Record<SubscriptionTier, number> = {

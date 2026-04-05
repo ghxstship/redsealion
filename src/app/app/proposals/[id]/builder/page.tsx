@@ -54,33 +54,32 @@ export default function EditProposalBuilderPage({
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+  const [organizationId, setOrganizationId] = useState('');
+  const [userId, setUserId] = useState('');
 
-  const empty = getEmptyState();
-  const [projectSetup, setProjectSetup] = useState<ProjectSetupData>(empty.projectSetup);
-  const [venues, setVenues] = useState<VenueData[]>(empty.venues);
-  const [team, setTeam] = useState<TeamAssignmentData[]>(empty.team);
-  const [phases, setPhases] = useState<PhaseData[]>(empty.phases);
-  const [organizationId, setOrganizationId] = useState<string | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
+  const emptyState = getEmptyState();
+  const [projectSetup, setProjectSetup] = useState<ProjectSetupData>(emptyState.projectSetup);
+  const [venues, setVenues] = useState<VenueData[]>(emptyState.venues);
+  const [team, setTeam] = useState<TeamAssignmentData[]>(emptyState.team);
+  const [phases, setPhases] = useState<PhaseData[]>(emptyState.phases);
 
-  // Load existing proposal from Supabase
   useEffect(() => {
     async function load() {
       try {
         const supabase = createClient();
-
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
+        const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
         setUserId(user.id);
 
-        const { data: userData } = await supabase
-          .from('users')
+        // Resolve org via organization_memberships (SSOT)
+        const { data: membership } = await supabase
+          .from('organization_memberships')
           .select('organization_id')
-          .eq('id', user.id)
+          .eq('user_id', user.id)
+          .eq('status', 'active')
+          .limit(1)
           .single();
-        if (userData) setOrganizationId(userData.organization_id);
+        if (membership) setOrganizationId(membership.organization_id as string);
 
         // Load proposal
         const { data: proposal } = await supabase

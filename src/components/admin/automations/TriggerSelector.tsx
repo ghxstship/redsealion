@@ -4,6 +4,8 @@ import { useState } from 'react';
 
 const TRIGGER_TYPES = [
   { value: 'proposal_status_change', label: 'Proposal Status Change', description: 'Fires when a proposal status changes' },
+  { value: 'proposal_follow_up', label: 'Proposal Follow-Up', description: 'Fires when a sent proposal has no response after a delay' },
+  { value: 'proposal_viewed_no_action', label: 'Proposal Viewed (No Action)', description: 'Fires when a proposal is viewed but not approved' },
   { value: 'deal_stage_change', label: 'Deal Stage Change', description: 'Fires when a deal moves to a new stage' },
   { value: 'invoice_paid', label: 'Invoice Paid', description: 'Fires when an invoice is fully paid' },
   { value: 'invoice_overdue', label: 'Invoice Overdue', description: 'Fires when an invoice passes its due date' },
@@ -68,6 +70,47 @@ export function TriggerSelector({ value, config, onChange }: TriggerSelectorProp
             <option value="complete">Complete</option>
             <option value="cancelled">Cancelled</option>
           </select>
+        </div>
+      )}
+
+      {(selectedType === 'proposal_follow_up' || selectedType === 'proposal_viewed_no_action') && (
+        <div className="mt-3 space-y-3">
+          <div>
+            <label className="block text-xs font-medium text-text-secondary mb-1">
+              Follow-up Cadence
+            </label>
+            <div className="flex gap-2">
+              {[1, 3, 7, 14].map((days) => (
+                <button
+                  key={days}
+                  type="button"
+                  onClick={() => onChange(selectedType, { ...config, delayDays: days })}
+                  className={`rounded-md border px-3 py-1.5 text-xs font-medium transition-colors ${
+                    (config.delayDays as number) === days
+                      ? 'border-foreground bg-foreground text-white'
+                      : 'border-border bg-white text-foreground hover:bg-bg-secondary'
+                  }`}
+                >
+                  {days} {days === 1 ? 'day' : 'days'}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-text-secondary mb-1">
+              Max follow-ups per proposal
+            </label>
+            <select
+              value={(config.maxFollowUps as number) ?? 3}
+              onChange={(e) => onChange(selectedType, { ...config, maxFollowUps: Number(e.target.value) })}
+              className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
+            >
+              <option value={1}>1 follow-up</option>
+              <option value={2}>2 follow-ups</option>
+              <option value={3}>3 follow-ups</option>
+              <option value={5}>5 follow-ups</option>
+            </select>
+          </div>
         </div>
       )}
 

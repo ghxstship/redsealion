@@ -49,8 +49,8 @@ function KeyIcon() {
 
 export default function ApiKeysPage() {
   const [keys, setKeys] = useState<ApiKeyRow[]>([]);
-  const [endpoints] = useState<WebhookEndpoint[]>([]);
-  const [deliveries] = useState<WebhookDelivery[]>([]);
+  const [endpoints, setEndpoints] = useState<WebhookEndpoint[]>([]);
+  const [deliveries, setDeliveries] = useState<WebhookDelivery[]>([]);
   const [newKeyRevealed, setNewKeyRevealed] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
 
@@ -61,6 +61,8 @@ export default function ApiKeysPage() {
         if (Array.isArray(data.keys) && data.keys.length > 0) {
           setKeys(data.keys);
         }
+        if (Array.isArray(data.endpoints)) setEndpoints(data.endpoints);
+        if (Array.isArray(data.deliveries)) setDeliveries(data.deliveries);
         setLoaded(true);
       })
       .catch(() => setLoaded(true));
@@ -99,6 +101,58 @@ export default function ApiKeysPage() {
     } catch (error) {
         void error; /* Caught: error boundary handles display */
       }
+  }
+
+  async function handleAddEndpoint() {
+    const url = prompt('Enter the webhook endpoint URL:');
+    if (!url) return;
+    const events = prompt('Enter comma-separated events (or leave empty for all):');
+    try {
+      const res = await fetch('/api/settings/api-keys', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'webhook_endpoint',
+          url,
+          events: events ? events.split(',').map((e) => e.trim()) : [],
+        }),
+      });
+      const data = await res.json();
+      if (data.endpoint) setEndpoints((prev) => [data.endpoint, ...prev]);
+    } catch (error) {
+      void error;
+    }
+  }
+
+  async function handleDeleteEndpoint(id: string) {
+    if (!confirm('Delete this webhook endpoint?')) return;
+    try {
+      await fetch('/api/settings/api-keys', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, type: 'webhook_endpoint' }),
+      });
+      setEndpoints((prev) => prev.filter((ep) => ep.id !== id));
+    } catch (error) {
+      void error;
+    }
+  }
+
+  async function handleEditEndpoint(ep: WebhookEndpoint) {
+    const url = prompt('Update endpoint URL:', ep.url);
+    if (!url) return;
+    try {
+      await fetch('/api/settings/api-keys', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: ep.id, type: 'webhook_endpoint', url }),
+      });
+      setEndpoints((prev) =>
+        prev.map((e) => (e.id === ep.id ? { ...e, url } : e))
+      );
+    } catch (error) {
+      void error;
+    }
   }
 
   if (!loaded) return null;
@@ -192,7 +246,10 @@ export default function ApiKeysPage() {
       <div className="rounded-xl border border-border bg-white px-6 py-6">
         <div className="flex items-center justify-between mb-5">
           <h3 className="text-sm font-semibold text-foreground">Webhook Endpoints</h3>
-          <button className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90">
+          <button
+            onClick={handleAddEndpoint}
+            className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90"
+          >
             Add Endpoint
           </button>
         </div>
@@ -228,8 +285,8 @@ export default function ApiKeysPage() {
                   </td>
                   <td className="py-3">
                     <div className="flex items-center gap-2">
-                      <button className="text-xs font-medium text-foreground hover:text-foreground/70">Edit</button>
-                      <button className="text-xs font-medium text-red-600 hover:text-red-800">Delete</button>
+                      <button onClick={() => handleEditEndpoint(ep)} className="text-xs font-medium text-foreground hover:text-foreground/70">Edit</button>
+                      <button onClick={() => handleDeleteEndpoint(ep.id)} className="text-xs font-medium text-red-600 hover:text-red-800">Delete</button>
                     </div>
                   </td>
                 </tr>

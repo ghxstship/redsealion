@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 interface OnboardingMember {
   id: string;
@@ -28,22 +29,16 @@ const STATUS_COLORS: Record<string, string> = {
 async function getOnboarding(): Promise<OnboardingMember[]> {
   try {
     const supabase = await createClient();
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
     const {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) throw new Error('No auth');
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-    if (!userData) throw new Error('No org');
-
-    const { data: profiles } = await supabase
+const { data: profiles } = await supabase
       .from('crew_profiles')
       .select('*, users(email)')
-      .eq('organization_id', userData.organization_id)
+      .eq('organization_id', ctx.organizationId)
       .order('full_name');
 
     if (!profiles || profiles.length === 0) throw new Error('No profiles');

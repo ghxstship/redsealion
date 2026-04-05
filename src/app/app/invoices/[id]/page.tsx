@@ -3,6 +3,7 @@ import { formatCurrency, formatCurrencyDetailed, statusColor } from '@/lib/utils
 import { TierGate } from '@/components/shared/TierGate';
 import { createClient } from '@/lib/supabase/server';
 import PaymentRecorder from '@/components/admin/invoices/PaymentRecorder';
+import InvoiceActions from '@/components/admin/invoices/InvoiceActions';
 
 interface InvoiceDetail {
   id: string;
@@ -164,11 +165,11 @@ export default async function InvoiceDetailPage({
           >
             {formatStatus(invoice.status)}
           </span>
-          {invoice.status === 'draft' && (
-            <button className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90">
-              Send Invoice
-            </button>
-          )}
+          <InvoiceActions
+            invoiceId={invoice.id}
+            invoiceNumber={invoice.invoice_number}
+            status={invoice.status}
+          />
         </div>
       </div>
 

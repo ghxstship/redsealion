@@ -3,6 +3,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import { statusColor } from '@/lib/utils';
 import Link from 'next/link';
 import TaskComments from '@/components/admin/tasks/TaskComments';
+import TaskDetailActions from '@/components/admin/tasks/TaskDetailActions';
 
 interface TaskDetail {
   id: string;
@@ -184,6 +185,7 @@ export default async function TaskDetailPage({
               </span>
             </div>
             <h1 className="text-2xl font-semibold tracking-tight text-foreground">{task.title}</h1>
+            <TaskDetailActions taskId={id} taskTitle={task.title} />
             {task.description && (
               <p className="mt-2 text-sm text-text-secondary leading-relaxed">{task.description}</p>
             )}

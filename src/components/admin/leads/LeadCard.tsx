@@ -4,7 +4,8 @@ import React from 'react';
 
 interface Lead {
   id: string;
-  contact_name: string;
+  contact_first_name: string;
+  contact_last_name: string;
   company_name: string | null;
   source: string;
   status: string;
@@ -47,7 +48,7 @@ export default function LeadCard({ lead }: LeadCardProps) {
     <div className="bg-white border border-border rounded-lg shadow-sm p-4">
       <div className="flex items-start justify-between mb-2">
         <div className="min-w-0 flex-1">
-          <h3 className="text-sm font-semibold text-foreground truncate">{lead.contact_name}</h3>
+          <h3 className="text-sm font-semibold text-foreground truncate">{lead.contact_first_name} {lead.contact_last_name}</h3>
           {lead.company_name && (
             <p className="text-xs text-text-secondary truncate">{lead.company_name}</p>
           )}

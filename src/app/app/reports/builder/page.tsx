@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { TierGate } from '@/components/shared/TierGate';
 import { ReportBuilder } from '@/components/admin/reports/ReportBuilder';
 import { createClient } from '@/lib/supabase/client';
-
+import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
 export default function ReportBuilderPage() {
   const router = useRouter();
   const [saved, setSaved] = useState(false);
@@ -35,31 +35,19 @@ export default function ReportBuilderPage() {
       const supabase = createClient();
 
       // Get current user and org
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setError('You must be logged in to save reports.');
-        setSaving(false);
-        return;
-      }
-
-      const { data: userData } = await supabase
-        .from('users')
-        .select('organization_id')
-        .eq('id', user.id)
-        .single();
-
-      if (!userData) {
-        setError('Could not determine your organization.');
+      const ctx = await resolveClientOrg();
+      if (!ctx) {
+        setError('You must be logged in.');
         setSaving(false);
         return;
       }
 
       const { error: insertError } = await supabase.from('custom_reports').insert({
-        organization_id: userData.organization_id,
+        organization_id: ctx.organizationId,
         name,
         description: descriptionRef.current?.value?.trim() || null,
         config,
-        created_by: user.id,
+        created_by: ctx.userId,
       });
 
       if (insertError) {

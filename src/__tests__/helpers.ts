@@ -123,7 +123,10 @@ export function makeOrganization(overrides: RowData = {}) {
     ],
     default_payment_terms: { structure: '50/50', depositPercent: 50, balancePercent: 50 },
     default_phase_template_id: null,
-    settings: { timezone: 'America/Los_Angeles', currency: 'USD' },
+    timezone: 'America/Los_Angeles',
+    currency: 'USD',
+    invoice_prefix: 'INV',
+    proposal_prefix: 'FD',
     subscription_tier: 'professional',
     stripe_customer_id: null,
     stripe_connect_account_id: null,
@@ -189,9 +192,6 @@ export function makeProposal(overrides: RowData = {}) {
     created_by: TEST_USER_ID,
     parent_proposal_id: null,
     phase_template_id: null,
-    deal_stage: null,
-    expected_close_date: null,
-    pipeline_id: null,
     created_at: '2026-03-01T00:00:00Z',
     updated_at: '2026-03-01T00:00:00Z',
     ...overrides,
@@ -199,10 +199,11 @@ export function makeProposal(overrides: RowData = {}) {
 }
 
 export function makePhase(overrides: RowData = {}) {
+  const { number, ...rest } = overrides;
   return {
     id: 'phase_test_001',
     proposal_id: 'prop_test_001',
-    phase_number: '1',
+    phase_number: number !== undefined ? String(number) : '1',
     name: 'Discovery & Strategy',
     subtitle: null,
     status: 'not_started',
@@ -212,7 +213,7 @@ export function makePhase(overrides: RowData = {}) {
     sort_order: 0,
     created_at: '2026-03-01T00:00:00Z',
     updated_at: '2026-03-01T00:00:00Z',
-    ...overrides,
+    ...rest,
   };
 }
 
@@ -277,13 +278,14 @@ export function makeInvoice(overrides: RowData = {}) {
 }
 
 export function makeDeal(overrides: RowData = {}) {
+  const { value, ...rest } = overrides;
   return {
     id: 'deal_test_001',
     organization_id: TEST_ORG_ID,
     client_id: TEST_CLIENT_ID,
     title: 'Nike Summer Activation',
     pipeline_id: null,
-    deal_value: 250000,
+    deal_value: value !== undefined ? value : 250000,
     probability: 50,
     expected_close_date: '2026-06-01',
     stage: 'lead',
@@ -295,7 +297,7 @@ export function makeDeal(overrides: RowData = {}) {
     lost_date: null,
     created_at: '2026-03-01T00:00:00Z',
     updated_at: '2026-03-01T00:00:00Z',
-    ...overrides,
+    ...rest,
   };
 }
 
@@ -323,6 +325,7 @@ export function makeTask(overrides: RowData = {}) {
 }
 
 export function makeAsset(overrides: RowData = {}) {
+  const { trackable, reusable, purchase_cost, ...rest } = overrides;
   return {
     id: 'asset_test_001',
     organization_id: TEST_ORG_ID,
@@ -330,21 +333,21 @@ export function makeAsset(overrides: RowData = {}) {
     name: 'LED Video Wall Panel',
     type: 'equipment',
     category: 'AV',
-    is_trackable: true,
+    is_trackable: trackable !== undefined ? trackable : true,
     status: 'planned',
     condition: 'new',
     deployment_count: 0,
     current_location: { facilityId: 'fac_001', type: 'warehouse' },
     barcode: null,
     serial_number: null,
-    photos: [],
-    is_reusable: true,
-    purchase_cost: 5000,
-    depreciation_rate: null,
+    photo_urls: [],
+    is_reusable: reusable !== undefined ? reusable : true,
+    acquisition_cost: purchase_cost !== undefined ? purchase_cost : 5000,
+    depreciation_method: null,
     notes: null,
     created_at: '2026-03-01T00:00:00Z',
     updated_at: '2026-03-01T00:00:00Z',
-    ...overrides,
+    ...rest,
   };
 }
 
@@ -437,7 +440,8 @@ export function makeLead(overrides: RowData = {}) {
     organization_id: TEST_ORG_ID,
     source: 'website',
     company_name: 'New Prospect Inc',
-    contact_name: 'Jamie Prospect',
+    contact_first_name: 'Jamie',
+    contact_last_name: 'Prospect',
     contact_email: 'jamie@prospect.com',
     contact_phone: '555-0200',
     event_type: 'brand activation',
@@ -473,6 +477,7 @@ export function makeESignatureRequest(overrides: RowData = {}) {
 }
 
 export function makeTimeEntry(overrides: RowData = {}) {
+  const { billable, ...rest } = overrides;
   return {
     id: 'time_test_001',
     organization_id: TEST_ORG_ID,
@@ -483,12 +488,12 @@ export function makeTimeEntry(overrides: RowData = {}) {
     start_time: '2026-03-20T09:00:00Z',
     end_time: '2026-03-20T11:00:00Z',
     duration_minutes: 120,
-    is_billable: true,
+    is_billable: billable !== undefined ? billable : true,
     hourly_rate: null,
     is_approved: false,
     created_at: '2026-03-20T09:00:00Z',
     updated_at: '2026-03-20T11:00:00Z',
-    ...overrides,
+    ...rest,
   };
 }
 
@@ -500,7 +505,6 @@ export function makeWarehouseTransfer(overrides: RowData = {}) {
     to_facility_id: 'fac_002',
     status: 'pending',
     initiated_by: TEST_USER_ID,
-    items: JSON.stringify([{ asset_id: 'asset_test_001', quantity: 1 }]),
     notes: null,
     created_at: '2026-03-01T00:00:00Z',
     updated_at: '2026-03-01T00:00:00Z',

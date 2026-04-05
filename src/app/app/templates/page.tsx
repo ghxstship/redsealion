@@ -1,9 +1,21 @@
-const templates = [
+import { createClient } from '@/lib/supabase/server';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import TemplatesHeader from '@/components/admin/templates/TemplatesHeader';
+
+interface TemplateRow {
+  id: string;
+  name: string;
+  description: string | null;
+  is_default: boolean;
+  phases: string[];
+  updated_at: string;
+}
+
+const FALLBACK_TEMPLATES: TemplateRow[] = [
   {
     id: 'tmpl_001',
     name: 'Experiential Production (8-Phase)',
     description: 'Full-service experiential production pipeline from discovery through strike. Suitable for large-scale brand activations, pop-ups, and multi-venue campaigns.',
-    phases_count: 8,
     is_default: true,
     phases: [
       'Discovery & Strategy',
@@ -21,7 +33,6 @@ const templates = [
     id: 'tmpl_002',
     name: 'Quick Activation (4-Phase)',
     description: 'Streamlined pipeline for smaller activations and single-venue events. Combines design and fabrication phases for faster turnaround.',
-    phases_count: 4,
     is_default: false,
     phases: [
       'Strategy & Design',
@@ -35,7 +46,6 @@ const templates = [
     id: 'tmpl_003',
     name: 'Retail Environment (6-Phase)',
     description: 'Designed for permanent and semi-permanent retail installations. Includes extended design development and long-term maintenance phases.',
-    phases_count: 6,
     is_default: false,
     phases: [
       'Discovery',
@@ -51,7 +61,6 @@ const templates = [
     id: 'tmpl_004',
     name: 'Festival & Touring (7-Phase)',
     description: 'Multi-city touring production pipeline with built-in logistics for repeatable deployments and asset tracking across venues.',
-    phases_count: 7,
     is_default: false,
     phases: [
       'Route Planning & Strategy',
@@ -74,7 +83,40 @@ function formatDate(dateStr: string): string {
   });
 }
 
-export default function TemplatesPage() {
+async function getTemplates(): Promise<TemplateRow[]> {
+  try {
+    const supabase = await createClient();
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) throw new Error('No auth');
+const { data: templates } = await supabase
+      .from('phase_templates')
+      .select('*')
+      .eq('organization_id', ctx.organizationId)
+      .order('is_default', { ascending: false });
+
+    if (!templates || templates.length === 0) return FALLBACK_TEMPLATES;
+
+    return templates.map((t: any) => ({
+      id: t.id,
+      name: t.name,
+      description: t.description,
+      is_default: t.is_default,
+      phases: t.phases,
+      updated_at: t.updated_at,
+    }));
+  } catch {
+    return FALLBACK_TEMPLATES;
+  }
+}
+
+export default async function TemplatesPage() {
+  const templates = await getTemplates();
+
   return (
     <>
       {/* Header */}
@@ -87,21 +129,7 @@ export default function TemplatesPage() {
             Define reusable phase structures for your proposals.
           </p>
         </div>
-        <button className="inline-flex items-center justify-center gap-2 rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-foreground/90">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-          >
-            <line x1="8" y1="2" x2="8" y2="14" />
-            <line x1="2" y1="8" x2="14" y2="8" />
-          </svg>
-          Create Template
-        </button>
+        <TemplatesHeader />
       </div>
 
       {/* Templates list */}
@@ -140,7 +168,7 @@ export default function TemplatesPage() {
             <div className="mt-4 flex flex-wrap gap-2">
               {template.phases.map((phase, idx) => (
                 <span
-                  key={phase}
+                  key={`${phase}-${idx}`}
                   className="inline-flex items-center gap-1.5 rounded-full bg-bg-secondary px-3 py-1 text-xs font-medium text-text-secondary"
                 >
                   <span className="text-text-muted font-mono">
@@ -156,3 +184,4 @@ export default function TemplatesPage() {
     </>
   );
 }
+

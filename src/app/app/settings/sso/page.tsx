@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 interface SsoConfig {
   id: string;
@@ -12,20 +13,13 @@ interface SsoConfig {
 async function getSsoConfig(): Promise<SsoConfig | null> {
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return null;
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-    if (!userData) return null;
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
 
     const { data } = await supabase
       .from('sso_configurations')
       .select('id, provider, client_id, metadata_url, enabled')
-      .eq('organization_id', userData.organization_id)
+      .eq('organization_id', ctx.organizationId)
       .limit(1)
       .maybeSingle();
 

@@ -52,7 +52,8 @@ export async function POST(request: NextRequest) {
   const {
     source,
     company_name,
-    contact_name,
+    contact_first_name,
+    contact_last_name,
     contact_email,
     contact_phone,
     event_type,
@@ -62,7 +63,8 @@ export async function POST(request: NextRequest) {
   } = body as {
     source?: string;
     company_name?: string;
-    contact_name?: string;
+    contact_first_name?: string;
+    contact_last_name?: string;
     contact_email?: string;
     contact_phone?: string;
     event_type?: string;
@@ -71,9 +73,9 @@ export async function POST(request: NextRequest) {
     message?: string;
   };
 
-  if (!contact_name) {
+  if (!contact_first_name) {
     return NextResponse.json(
-      { error: 'contact_name is required.' },
+      { error: 'contact_first_name is required.' },
       { status: 400 },
     );
   }
@@ -87,7 +89,8 @@ export async function POST(request: NextRequest) {
       organization_id: orgId,
       source: source || null,
       company_name: company_name || null,
-      contact_name,
+      contact_first_name,
+      contact_last_name: contact_last_name || '',
       contact_email: contact_email || null,
       contact_phone: contact_phone || null,
       event_type: event_type || null,

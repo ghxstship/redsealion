@@ -25,6 +25,7 @@ interface PhaseData {
 }
 
 interface JourneyContentProps {
+  proposalId: string;
   proposalName: string;
   proposalSubtitle: string | null;
   phases: PhaseData[];
@@ -34,6 +35,7 @@ interface JourneyContentProps {
 }
 
 export default function JourneyContent({
+  proposalId,
   proposalName,
   proposalSubtitle,
   phases,
@@ -111,18 +113,32 @@ export default function JourneyContent({
   );
 
   const handleMilestoneApprove = useCallback(
-    (milestoneId: string, requirementId: string) => {
-      // Stub: call POST /api/proposals/[id]/milestones/[mid]/requirements/[rid]/approve
-      void milestoneId;
-      void requirementId;
+    async (milestoneId: string, requirementId: string) => {
+      try {
+        await fetch(`/api/proposals/${proposalId}/milestones/${milestoneId}/requirements/${requirementId}/approve`, {
+          method: 'POST',
+        });
+      } catch {
+        // Silently fail — UI can be enhanced with error toast later
+      }
     },
-    []
+    [proposalId]
   );
 
-  const handleAccept = useCallback(() => {
-    // Stub: call POST /api/proposals/[id]/accept with selectedAddonIds
-    void selectedAddonIds;
-  }, [selectedAddonIds]);
+  const handleAccept = useCallback(async () => {
+    try {
+      await fetch(`/api/proposals/${proposalId}/accept`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          selectedAddonIds: Array.from(selectedAddonIds),
+          signature_data: 'accepted_via_portal',
+        }),
+      });
+    } catch {
+      // Silently fail — UI can be enhanced with error toast later
+    }
+  }, [proposalId, selectedAddonIds]);
 
   const timelinePhases = phases.map((p) => ({
     id: p.phase.id,

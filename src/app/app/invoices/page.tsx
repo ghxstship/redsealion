@@ -3,6 +3,7 @@ import { formatCurrency, statusColor } from '@/lib/utils';
 import { TierGate } from '@/components/shared/TierGate';
 import { createClient } from '@/lib/supabase/server';
 import InvoiceTabs from '@/components/admin/invoices/InvoiceTabs';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 interface InvoiceRow {
   id: string;
@@ -19,24 +20,17 @@ interface InvoiceRow {
 async function getInvoices(): Promise<InvoiceRow[]> {
   try {
     const supabase = await createClient();
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
     if (!user) return [];
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-
-    if (!userData) return [];
-
-    const { data: invoices } = await supabase
+const { data: invoices } = await supabase
       .from('invoices')
       .select('*, clients(company_name)')
-      .eq('organization_id', userData.organization_id)
+      .eq('organization_id', ctx.organizationId)
       .order('issue_date', { ascending: false });
 
     if (!invoices) return [];

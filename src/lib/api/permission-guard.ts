@@ -1,34 +1,84 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import type { OrganizationRole } from '@/types/database';
+import type { OrganizationRole, SubscriptionTier } from '@/types/database';
 import {
   type PermissionResource,
   type PermissionAction,
-  permKey,
   getDefaultPermission,
 } from '@/lib/permissions';
+import {
+  canAccessFeature,
+  getRequiredTier,
+  getTierLabel,
+  type FeatureKey,
+} from '@/lib/subscription';
 
 interface PermissionCheckResult {
   allowed: boolean;
   role: OrganizationRole;
   userId: string;
   organizationId: string;
+  /** True when access was denied due to subscription tier, not role */
+  tierBlocked?: boolean;
 }
 
 /**
- * Unified permission check — bridges the legacy RBAC matrix with Harbor Master.
+ * Resolves the current user's active organization membership.
+ * This is the canonical way to look up a user's org + role — reads exclusively
+ * from Harbor Master's organization_memberships + roles tables.
+ */
+export async function resolveUserMembership(supabase: Awaited<ReturnType<typeof createClient>>, userId: string) {
+  const { data: membership } = await supabase
+    .from('organization_memberships')
+    .select('organization_id, role_id, roles(name, hierarchy_level, scope)')
+    .eq('user_id', userId)
+    .eq('status', 'active')
+    .order('created_at', { ascending: true })
+    .limit(1)
+    .single();
+
+  if (!membership) return null;
+
+  const roleName = (membership as Record<string, unknown>).roles
+    ? ((membership as Record<string, unknown>).roles as Record<string, unknown>).name as string
+    : 'member';
+  const hierarchyLevel = (membership as Record<string, unknown>).roles
+    ? ((membership as Record<string, unknown>).roles as Record<string, unknown>).hierarchy_level as number
+    : 99;
+
+  // Map Harbor Master role names to legacy OrganizationRole enum
+  const role: OrganizationRole =
+    roleName === 'platform_admin' ? 'super_admin'
+    : roleName === 'org_owner' ? 'org_admin'
+    : roleName === 'org_admin' ? 'org_admin'
+    : roleName === 'project_manager' ? 'project_manager'
+    : roleName === 'member' ? 'designer'
+    : roleName === 'viewer' ? 'client_viewer'
+    : roleName === 'external_collaborator' ? 'client_viewer'
+    : 'designer';
+
+  return {
+    organizationId: membership.organization_id as string,
+    roleId: membership.role_id as string,
+    role,
+    roleName,
+    hierarchyLevel,
+  };
+}
+
+/**
+ * Unified permission check — reads exclusively from Harbor Master RBAC.
  *
  * Resolution order:
- * 1. If the user has an organization_membership (Harbor Master), check via
- *    the Postgres check_permission() RPC for hierarchical role permissions.
- * 2. Fall back to the legacy users.role + permissions table override + default matrix.
- *
- * This ensures all existing domain routes continue working while Harbor Master
- * memberships are progressively adopted.
+ * 1. Resolve user's active organization_membership.
+ * 2. If `requireFeature`, verify org's subscription tier.
+ * 3. Try Harbor Master check_permission() RPC.
+ * 4. Fall back to the in-code default permission matrix.
  */
 export async function checkPermission(
   resource: PermissionResource,
   action: PermissionAction,
+  requireFeature?: FeatureKey,
 ): Promise<PermissionCheckResult | null> {
   const supabase = await createClient();
   const {
@@ -37,86 +87,90 @@ export async function checkPermission(
 
   if (!user) return null;
 
-  const { data: userData } = await supabase
-    .from('users')
-    .select('organization_id, role')
-    .eq('id', user.id)
-    .single();
+  const membership = await resolveUserMembership(supabase, user.id);
+  if (!membership) return null;
 
-  if (!userData) return null;
+  const { role, organizationId } = membership;
 
-  const role = userData.role as OrganizationRole;
-  const organizationId = userData.organization_id as string;
+  // --- Subscription tier gate (if feature specified) ---
+  if (requireFeature) {
+    const { data: org } = await supabase
+      .from('organizations')
+      .select('subscription_tier')
+      .eq('id', organizationId)
+      .single();
+
+    const tier = (org?.subscription_tier as SubscriptionTier) ?? 'free';
+
+    if (!canAccessFeature(tier, requireFeature)) {
+      return {
+        allowed: false,
+        role,
+        userId: user.id,
+        organizationId,
+        tierBlocked: true,
+      };
+    }
+  }
 
   // Super admins and org admins always have full access
   if (role === 'super_admin' || role === 'org_admin') {
     return { allowed: true, role, userId: user.id, organizationId };
   }
 
-  // --- Harbor Master path: check organization_memberships + role_permissions ---
-  const { data: membership } = await supabase
-    .from('organization_memberships')
-    .select('role_id')
-    .eq('user_id', user.id)
-    .eq('organization_id', organizationId)
-    .eq('status', 'active')
-    .maybeSingle();
+  // --- Harbor Master RPC path ---
+  const hmAction = action === 'view' ? 'read'
+    : action === 'create' ? 'create'
+    : action === 'edit' ? 'update'
+    : action === 'delete' ? 'delete'
+    : action;
 
-  if (membership?.role_id) {
-    // Map legacy action names to Harbor Master action names
-    const hmAction = action === 'view' ? 'read'
-      : action === 'create' ? 'create'
-      : action === 'edit' ? 'update'
-      : action === 'delete' ? 'delete'
-      : action;
+  const { data: hmAllowed } = await supabase.rpc('check_permission', {
+    p_user_id: user.id,
+    p_action: hmAction,
+    p_resource: resource,
+    p_scope: 'organization',
+    p_scope_id: organizationId,
+  });
 
-    const { data: allowed } = await supabase.rpc('check_permission', {
-      p_user_id: user.id,
-      p_action: hmAction,
-      p_resource: resource,
-      p_scope: 'organization',
-      p_scope_id: organizationId,
-    });
-
-    if (allowed === true) {
-      return { allowed: true, role, userId: user.id, organizationId };
-    }
-
-    // If Harbor Master explicitly denied and membership exists, still fall through
-    // to legacy — Harbor Master permissions are additive during migration
+  if (hmAllowed === true) {
+    return { allowed: true, role, userId: user.id, organizationId };
   }
 
-  // --- Legacy path: permissions table override → default matrix ---
-  const key = permKey(resource, action);
-  const { data: override } = await supabase
-    .from('permissions')
-    .select('allowed')
-    .eq('organization_id', organizationId)
-    .eq('role', role)
-    .eq('resource', resource)
-    .eq('action', action)
-    .maybeSingle();
-
-  const allowed = override ? (override.allowed as boolean) : getDefaultPermission(role, resource, action);
+  // --- Fallback: in-code default permission matrix (no DB table) ---
+  const allowed = getDefaultPermission(role, resource, action);
 
   return { allowed, role, userId: user.id, organizationId };
 }
 
 /**
- * Guard an API route by permission. Returns null if access is granted,
- * or a 401/403 NextResponse if denied.
+ * Guard an API route by permission + optional feature tier.
+ * Returns null if access is granted, or a 401/403 NextResponse if denied.
  */
 export async function requirePermission(
   resource: PermissionResource,
   action: PermissionAction,
+  requireFeature?: FeatureKey,
 ): Promise<NextResponse | null> {
-  const result = await checkPermission(resource, action);
+  const result = await checkPermission(resource, action, requireFeature);
 
   if (!result) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   if (!result.allowed) {
+    if (result.tierBlocked && requireFeature) {
+      const requiredTier = getRequiredTier(requireFeature);
+      return NextResponse.json(
+        {
+          error: 'Plan upgrade required',
+          message: `This feature requires the ${getTierLabel(requiredTier)} plan or above.`,
+          required_tier: requiredTier,
+        },
+        { status: 403 },
+      );
+    }
+
     return NextResponse.json(
       {
         error: 'Forbidden',

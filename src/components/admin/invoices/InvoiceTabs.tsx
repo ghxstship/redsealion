@@ -3,6 +3,11 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { formatCurrency, statusColor } from '@/lib/utils';
+import { useSelection } from '@/hooks/useSelection';
+import { useSort } from '@/hooks/useSort';
+import BulkActionBar from '@/components/shared/BulkActionBar';
+import ExportButton from '@/components/shared/ExportButton';
+import SortableHeader from '@/components/shared/SortableHeader';
 
 interface InvoiceRow {
   id: string;
@@ -27,30 +32,54 @@ const tabs: { key: Tab; label: string }[] = [
 ];
 
 function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
+  return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
 function formatStatus(status: string): string {
-  return status
-    .split('_')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ');
+  return status.split('_').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 }
+
+const EXPORT_COLUMNS = [
+  { key: 'invoice_number' as const, label: 'Invoice #' },
+  { key: 'client_name' as const, label: 'Client' },
+  { key: 'type' as const, label: 'Type' },
+  { key: 'status' as const, label: 'Status' },
+  { key: 'total' as const, label: 'Amount' },
+  { key: 'amount_paid' as const, label: 'Paid' },
+  { key: 'issue_date' as const, label: 'Issue Date' },
+  { key: 'due_date' as const, label: 'Due Date' },
+];
 
 export default function InvoiceTabs({ invoices }: { invoices: InvoiceRow[] }) {
   const [activeTab, setActiveTab] = useState<Tab>('all');
+  const [search, setSearch] = useState('');
 
   const filtered = useMemo(() => {
-    if (activeTab === 'all') return invoices;
-    return invoices.filter((inv) => inv.status === activeTab);
-  }, [invoices, activeTab]);
+    let result = invoices;
+    if (activeTab !== 'all') result = result.filter((inv) => inv.status === activeTab);
+    if (search) {
+      const q = search.toLowerCase();
+      result = result.filter(
+        (inv) =>
+          inv.invoice_number.toLowerCase().includes(q) ||
+          inv.client_name.toLowerCase().includes(q),
+      );
+    }
+    return result;
+  }, [invoices, activeTab, search]);
+
+  const { sorted, sort, handleSort } = useSort(filtered);
+  const allIds = useMemo(() => sorted.map((i) => i.id), [sorted]);
+  const { selectedIds, isSelected, toggle, toggleAll, isAllSelected, isSomeSelected, deselectAll, count } = useSelection(allIds);
+
+  async function handleBulkVoid(ids: string[]) {
+    await Promise.all(ids.map((id) => fetch(`/api/invoices/${id}/void`, { method: 'POST' })));
+    window.location.reload();
+  }
 
   return (
     <>
+      {/* Tabs */}
       <div className="mb-6 border-b border-border">
         <nav className="-mb-px flex gap-6">
           {tabs.map((tab) => (
@@ -72,61 +101,74 @@ export default function InvoiceTabs({ invoices }: { invoices: InvoiceRow[] }) {
         </nav>
       </div>
 
+      {/* Search + Export */}
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <input
+          type="text"
+          placeholder="Search invoices..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full max-w-xs rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10"
+        />
+        <ExportButton data={filtered} columns={EXPORT_COLUMNS} filename="invoices-export" />
+      </div>
+
+      {/* Bulk bar */}
+      <BulkActionBar
+        selectedIds={selectedIds}
+        onDeselectAll={deselectAll}
+        entityLabel="invoice"
+        actions={[
+          {
+            label: 'Void',
+            variant: 'danger',
+            confirm: { title: 'Void Invoices', message: `Are you sure you want to void ${count} invoice(s)?` },
+            onClick: handleBulkVoid,
+          },
+        ]}
+      />
+
+      {/* Table */}
       <div className="rounded-xl border border-border bg-white overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-border bg-bg-secondary">
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Invoice</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Client</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Type</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Amount</th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Paid</th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Due Date</th>
+                <th className="px-4 py-3 text-left w-10">
+                  <input type="checkbox" checked={isAllSelected} ref={(el) => { if (el) el.indeterminate = isSomeSelected; }} onChange={toggleAll} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/20" />
+                </th>
+                <th className="px-6 py-3"><SortableHeader label="Invoice" field="invoice_number" currentSort={sort} onSort={handleSort} /></th>
+                <th className="px-6 py-3"><SortableHeader label="Client" field="client_name" currentSort={sort} onSort={handleSort} /></th>
+                <th className="px-6 py-3"><SortableHeader label="Type" field="type" currentSort={sort} onSort={handleSort} /></th>
+                <th className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></th>
+                <th className="px-6 py-3"><SortableHeader label="Amount" field="total_amount" currentSort={sort} onSort={handleSort} /></th>
+                <th className="px-6 py-3"><SortableHeader label="Paid" field="amount_paid" currentSort={sort} onSort={handleSort} /></th>
+                <th className="px-6 py-3"><SortableHeader label="Due Date" field="due_date" currentSort={sort} onSort={handleSort} /></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {filtered.map((inv) => (
-                <tr key={inv.id} className="transition-colors hover:bg-bg-secondary/50">
-                  <td className="px-6 py-4">
-                    <Link
-                      href={`/app/invoices/${inv.id}`}
-                      className="text-sm font-medium text-foreground hover:underline"
-                    >
-                      {inv.invoice_number}
-                    </Link>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-text-secondary">
-                    {inv.client_name}
+              {sorted.map((inv) => (
+                <tr key={inv.id} className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(inv.id) ? 'bg-blue-50/50' : ''}`}>
+                  <td className="px-4 py-3.5">
+                    <input type="checkbox" checked={isSelected(inv.id)} onChange={() => toggle(inv.id)} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/20" />
                   </td>
                   <td className="px-6 py-4">
-                    <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary capitalize">
-                      {inv.type}
-                    </span>
+                    <Link href={`/app/invoices/${inv.id}`} className="text-sm font-medium text-foreground hover:underline">{inv.invoice_number}</Link>
+                  </td>
+                  <td className="px-6 py-4 text-sm text-text-secondary">{inv.client_name}</td>
+                  <td className="px-6 py-4">
+                    <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary capitalize">{inv.type}</span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColor(inv.status)}`}>
-                      {formatStatus(inv.status)}
-                    </span>
+                    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColor(inv.status)}`}>{formatStatus(inv.status)}</span>
                   </td>
-                  <td className="px-6 py-4 text-right text-sm font-medium tabular-nums text-foreground">
-                    {formatCurrency(inv.total)}
-                  </td>
-                  <td className="px-6 py-4 text-right text-sm tabular-nums text-text-secondary">
-                    {formatCurrency(inv.amount_paid)}
-                  </td>
-                  <td className="px-6 py-4 text-right text-sm text-text-muted">
-                    {formatDate(inv.due_date)}
-                  </td>
+                  <td className="px-6 py-4 text-right text-sm font-medium tabular-nums text-foreground">{formatCurrency(inv.total)}</td>
+                  <td className="px-6 py-4 text-right text-sm tabular-nums text-text-secondary">{formatCurrency(inv.amount_paid)}</td>
+                  <td className="px-6 py-4 text-right text-sm text-text-muted">{formatDate(inv.due_date)}</td>
                 </tr>
               ))}
-              {filtered.length === 0 && (
-                <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-sm text-text-muted">
-                    No invoices in this category.
-                  </td>
-                </tr>
+              {sorted.length === 0 && (
+                <tr><td colSpan={8} className="px-6 py-12 text-center text-sm text-text-muted">No invoices match your filters.</td></tr>
               )}
             </tbody>
           </table>

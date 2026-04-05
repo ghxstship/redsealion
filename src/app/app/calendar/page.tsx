@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-
+import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
 interface CalendarEvent {
   id: string;
   title: string;
@@ -45,21 +45,12 @@ export default function CalendarPage() {
   useEffect(() => {
     async function loadEvents() {
       try {
+        const ctx = await resolveClientOrg();
+        if (!ctx) return;
+        const orgId = ctx.organizationId;
+
         const { createClient } = await import('@/lib/supabase/client');
         const supabase = createClient();
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-        if (!user) return;
-
-        const { data: userData } = await supabase
-          .from('users')
-          .select('organization_id')
-          .eq('id', user.id)
-          .single();
-        if (!userData) return;
-
-        const orgId = userData.organization_id;
 
         // Fetch proposals with dates as "proposal" events
         const { data: proposals } = await supabase

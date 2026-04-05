@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { requireFeature } from '@/lib/api/tier-guard';
 import { TOKEN_ENDPOINTS, envPrefix } from '@/lib/integrations/registry';
 import { randomBytes, createCipheriv } from 'crypto';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 /**
  * Encrypt an OAuth token for at-rest storage.
@@ -61,6 +62,8 @@ export async function GET(
 
   try {
     const supabase = await createClient();
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -72,7 +75,7 @@ export async function GET(
     const { data: userData } = await supabase
       .from('users')
       .select('organization_id')
-      .eq('id', user.id)
+      .eq('id', ctx.userId)
       .single();
 
     if (!userData) {
@@ -127,7 +130,7 @@ export async function GET(
     // Store encrypted tokens and mark integration as connected
     await supabase.from('integrations').upsert(
       {
-        organization_id: userData.organization_id,
+        organization_id: ctx.organizationId,
         platform,
         status: 'connected',
         access_token_encrypted: encryptToken(accessToken),

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 interface Proposal {
   id: string;
@@ -38,22 +39,16 @@ const fallbackPackingItems: PackingItem[] = [
 async function getProposals(): Promise<Proposal[]> {
   try {
     const supabase = await createClient();
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
     const {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) throw new Error('No auth');
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-    if (!userData) throw new Error('No org');
-
-    const { data: proposals } = await supabase
+const { data: proposals } = await supabase
       .from('proposals')
       .select('id, name, clients(company_name)')
-      .eq('organization_id', userData.organization_id)
+      .eq('organization_id', ctx.organizationId)
       .in('status', ['approved', 'in_production', 'sent'])
       .order('name');
 

@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import Link from 'next/link';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 interface ResourceStats {
   totalAllocations: number;
@@ -12,25 +13,18 @@ async function getResourceStats(): Promise<ResourceStats> {
   const fallback: ResourceStats = { totalAllocations: 0, teamMembers: 0, avgUtilization: 0 };
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return fallback;
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-    if (!userData) return fallback;
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
 
     const [allocRes, teamRes] = await Promise.all([
       supabase
         .from('resource_allocations')
         .select('id', { count: 'exact', head: true })
-        .eq('organization_id', userData.organization_id),
+        .eq('organization_id', ctx.organizationId),
       supabase
         .from('users')
         .select('id', { count: 'exact', head: true })
-        .eq('organization_id', userData.organization_id),
+        .eq('organization_id', ctx.organizationId),
     ]);
 
     return {

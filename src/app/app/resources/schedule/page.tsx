@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import UtilizationHeatMap from '@/components/admin/resources/UtilizationHeatMap';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 interface ScheduleData {
   teamMembers: Array<{ id: string; name: string; role: string }>;
@@ -9,20 +10,13 @@ interface ScheduleData {
 async function getScheduleData(): Promise<ScheduleData> {
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return { teamMembers: [] };
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-    if (!userData) return { teamMembers: [] };
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
 
     const { data: members } = await supabase
       .from('users')
       .select('id, full_name, role')
-      .eq('organization_id', userData.organization_id)
+      .eq('organization_id', ctx.organizationId)
       .limit(20);
 
     return {

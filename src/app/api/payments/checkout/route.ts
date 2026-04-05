@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { checkPermission } from '@/lib/api/permission-guard';
 
 const STRIPE_API_BASE = 'https://api.stripe.com/v1';
 
@@ -24,33 +25,16 @@ export async function POST(request: Request) {
       );
     }
 
+    const perm = await checkPermission('settings', 'edit');
+    if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+
     const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    // Get the org's stripe_customer_id
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-
-    if (!userData) {
-      return NextResponse.json(
-        { error: 'User profile not found' },
-        { status: 404 },
-      );
-    }
 
     const { data: org } = await supabase
       .from('organizations')
       .select('id, stripe_customer_id, name')
-      .eq('id', userData.organization_id)
+      .eq('id', perm.organizationId)
       .single();
 
     if (!org) {
@@ -78,10 +62,10 @@ export async function POST(request: Request) {
 
     if (!stripeCustomerId) {
       const customerBody = new URLSearchParams({
-        'email': user.email ?? '',
+        'email': '',
         'name': org.name,
         'metadata[organization_id]': org.id,
-        'metadata[supabase_user_id]': user.id,
+        'metadata[supabase_user_id]': perm.userId,
       });
 
       const customerRes = await fetch(`${STRIPE_API_BASE}/customers`, {

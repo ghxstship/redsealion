@@ -21,15 +21,19 @@ export async function gatherContext(
   };
 
   try {
-    const { data: userData } = await supabase
-      .from('users')
+    // Use organization_memberships to resolve org (SSOT)
+    const { data: membership } = await supabase
+      .from('organization_memberships')
       .select('organization_id')
-      .eq('id', userId)
+      .eq('user_id', userId)
+      .eq('status', 'active')
+      .order('created_at', { ascending: true })
+      .limit(1)
       .single();
 
-    if (!userData) return fallback;
+    if (!membership) return fallback;
 
-    const orgId = userData.organization_id;
+    const orgId = membership.organization_id as string;
 
     const [orgRes, proposalCountRes, teamRes, activeRes, recentRes] = await Promise.all([
       supabase.from('organizations').select('name').eq('id', orgId).single(),
@@ -38,9 +42,10 @@ export async function gatherContext(
         .select('id', { count: 'exact', head: true })
         .eq('organization_id', orgId),
       supabase
-        .from('users')
+        .from('organization_memberships')
         .select('id', { count: 'exact', head: true })
-        .eq('organization_id', orgId),
+        .eq('organization_id', orgId)
+        .eq('status', 'active'),
       supabase
         .from('proposals')
         .select('id', { count: 'exact', head: true })

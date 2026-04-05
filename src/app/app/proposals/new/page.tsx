@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import BuilderStepIndicator from '@/components/admin/builder/BuilderStepIndicator';
 import ProjectSetupStep, { type ProjectSetupData } from '@/components/admin/builder/ProjectSetupStep';
 import VenueStep, { type VenueData } from '@/components/admin/builder/VenueStep';
@@ -58,7 +59,10 @@ function initialProjectSetup(): ProjectSetupData {
 }
 
 export default function NewProposalPage() {
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   // Form state
   const [projectSetup, setProjectSetup] = useState<ProjectSetupData>(initialProjectSetup);
@@ -91,13 +95,35 @@ export default function NewProposalPage() {
     });
   };
 
-  const handleSendToClient = () => {
-    alert('Proposal sent to client! (placeholder)');
-  };
+  async function saveProposal(status: 'draft' | 'sent') {
+    setSaving(true);
+    setSaveError(null);
 
-  const handleSaveAsDraft = () => {
-    alert('Proposal saved as draft! (placeholder)');
-  };
+    try {
+      const res = await fetch('/api/proposals', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ projectSetup, venues, phases, team, status }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setSaveError(data.error ?? 'Failed to save proposal.');
+        return;
+      }
+
+      // Redirect to the new proposal detail page
+      router.push(`/app/proposals/${data.id}`);
+    } catch {
+      setSaveError('An unexpected error occurred. Please try again.');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  const handleSendToClient = () => saveProposal('sent');
+  const handleSaveAsDraft = () => saveProposal('draft');
 
   const renderStep = () => {
     if (currentStep === 0) {
@@ -157,6 +183,20 @@ export default function NewProposalPage() {
       <div className="rounded-xl border border-border bg-white px-6 py-6 md:px-8 md:py-8">
         {renderStep()}
       </div>
+
+      {/* Save error */}
+      {saveError && (
+        <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {saveError}
+        </div>
+      )}
+
+      {/* Saving overlay */}
+      {saving && (
+        <div className="mt-4 text-center text-sm text-text-muted animate-pulse">
+          Saving proposal...
+        </div>
+      )}
 
       {/* Navigation */}
       {currentStep !== reviewIndex && (

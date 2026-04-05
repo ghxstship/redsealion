@@ -20,8 +20,8 @@ export function LeadIntakeForm({ organizationId }: { organizationId: string }) {
     const formData = new FormData(e.currentTarget);
     const payload = {
       organization_id: organizationId,
-      company_name: formData.get('company_name'),
-      contact_name: formData.get('contact_name'),
+      contact_first_name: formData.get('contact_first_name'),
+      contact_last_name: formData.get('contact_last_name'),
       contact_email: formData.get('contact_email'),
       contact_phone: formData.get('contact_phone'),
       event_type: formData.get('event_type'),
@@ -87,14 +87,24 @@ export function LeadIntakeForm({ organizationId }: { organizationId: string }) {
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <div className="space-y-1">
-              <label htmlFor="contact_name" className="text-sm font-medium text-white/80">Full Name *</label>
+              <label htmlFor="contact_first_name" className="text-sm font-medium text-white/80">First Name *</label>
               <input
                 required
                 type="text"
-                id="contact_name"
-                name="contact_name"
+                id="contact_first_name"
+                name="contact_first_name"
                 className="w-full rounded-xl border border-white/10 bg-white/5 py-3 px-4 text-white placeholder-white/30 transition-colors focus:border-white/30 focus:bg-white/10 focus:outline-none focus:ring-4 focus:ring-white/5"
-                placeholder="Jane Doe"
+                placeholder="Jane"
+              />
+            </div>
+            <div className="space-y-1">
+              <label htmlFor="contact_last_name" className="text-sm font-medium text-white/80">Last Name</label>
+              <input
+                type="text"
+                id="contact_last_name"
+                name="contact_last_name"
+                className="w-full rounded-xl border border-white/10 bg-white/5 py-3 px-4 text-white placeholder-white/30 transition-colors focus:border-white/30 focus:bg-white/10 focus:outline-none focus:ring-4 focus:ring-white/5"
+                placeholder="Doe"
               />
             </div>
             <div className="space-y-1">

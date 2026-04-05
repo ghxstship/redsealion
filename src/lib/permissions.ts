@@ -23,7 +23,12 @@ export type PermissionResource =
   | 'crew'
   | 'equipment'
   | 'leads'
-  | 'warehouse';
+  | 'warehouse'
+  | 'resources'
+  | 'ai_drafting'
+  | 'email_campaigns'
+  | 'referral_program'
+  | 'work_orders';
 
 export type PermissionAction = 'view' | 'create' | 'edit' | 'delete';
 
@@ -47,6 +52,11 @@ export const ALL_RESOURCES: PermissionResource[] = [
   'equipment',
   'leads',
   'warehouse',
+  'resources',
+  'ai_drafting',
+  'email_campaigns',
+  'referral_program',
+  'work_orders',
 ];
 
 export const ALL_ACTIONS: PermissionAction[] = ['view', 'create', 'edit', 'delete'];

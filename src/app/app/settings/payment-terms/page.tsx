@@ -1,13 +1,26 @@
 'use client';
 
-function SelectField({ label, options, defaultValue }: { label: string; options: string[]; defaultValue: string }) {
+import { useState, useEffect } from 'react';
+
+function SelectField({
+  label,
+  options,
+  value,
+  onChange,
+}: {
+  label: string;
+  options: string[];
+  value: string;
+  onChange: (v: string) => void;
+}) {
   return (
     <div>
       <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
         {label}
       </label>
       <select
-        defaultValue={defaultValue}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
         className="w-full rounded-lg border border-border bg-white px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
       >
         {options.map((opt) => (
@@ -18,7 +31,17 @@ function SelectField({ label, options, defaultValue }: { label: string; options:
   );
 }
 
-function PercentField({ label, defaultValue, step = '1' }: { label: string; defaultValue: string; step?: string }) {
+function PercentField({
+  label,
+  value,
+  onChange,
+  step = '1',
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  step?: string;
+}) {
   return (
     <div>
       <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
@@ -27,7 +50,8 @@ function PercentField({ label, defaultValue, step = '1' }: { label: string; defa
       <div className="relative">
         <input
           type="number"
-          defaultValue={defaultValue}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
           step={step}
           className="w-full rounded-lg border border-border bg-white px-3.5 py-2 pr-8 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
         />
@@ -38,6 +62,67 @@ function PercentField({ label, defaultValue, step = '1' }: { label: string; defa
 }
 
 export default function PaymentTermsSettingsPage() {
+  const [structure, setStructure] = useState('50/50');
+  const [deposit, setDeposit] = useState('50');
+  const [balance, setBalance] = useState('50');
+  const [lateFee, setLateFee] = useState('1.5');
+  const [ccSurcharge, setCcSurcharge] = useState('3');
+  const [instructions, setInstructions] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/settings/general')
+      .then((r) => r.json())
+      .then((data) => {
+        const terms = data.organization?.default_payment_terms;
+        if (terms) {
+          setStructure(terms.structure ?? '50/50');
+          setDeposit(String(terms.depositPercent ?? 50));
+          setBalance(String(terms.balancePercent ?? 50));
+          setLateFee(String(terms.lateFeeRate ?? 1.5));
+          setCcSurcharge(String(terms.creditCardSurcharge ?? 3));
+        }
+        setInstructions(data.organization?.payment_instructions ?? '');
+        setLoaded(true);
+      })
+      .catch(() => setLoaded(true));
+  }, []);
+
+  async function handleSave() {
+    setSaving(true);
+    try {
+      await fetch('/api/settings/payment-terms', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          default_payment_terms: {
+            structure,
+            depositPercent: parseFloat(deposit),
+            balancePercent: parseFloat(balance),
+            lateFeeRate: parseFloat(lateFee),
+            creditCardSurcharge: parseFloat(ccSurcharge),
+          },
+          payment_instructions: instructions,
+        }),
+      });
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  if (!loaded) {
+    return (
+      <div className="max-w-2xl space-y-6">
+        <div>
+          <h2 className="text-lg font-semibold text-foreground">Payment Terms</h2>
+          <p className="mt-1 text-sm text-text-secondary">Default payment structure for new proposals.</p>
+        </div>
+        <div className="rounded-xl border border-border bg-white px-6 py-6 animate-pulse h-48" />
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-2xl space-y-6">
       <div>
@@ -51,11 +136,12 @@ export default function PaymentTermsSettingsPage() {
           <SelectField
             label="Payment Structure"
             options={['50/50', '40/40/20', '30/30/30/10', '100% Upfront', '100% On Completion', 'Custom']}
-            defaultValue="50/50"
+            value={structure}
+            onChange={setStructure}
           />
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-            <PercentField label="Deposit Percentage" defaultValue="50" />
-            <PercentField label="Balance Percentage" defaultValue="50" />
+            <PercentField label="Deposit Percentage" value={deposit} onChange={setDeposit} />
+            <PercentField label="Balance Percentage" value={balance} onChange={setBalance} />
           </div>
         </div>
       </div>
@@ -63,8 +149,8 @@ export default function PaymentTermsSettingsPage() {
       <div className="rounded-xl border border-border bg-white px-6 py-6">
         <h3 className="text-sm font-semibold text-foreground mb-5">Fees &amp; Surcharges</h3>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-          <PercentField label="Late Fee Rate (Monthly)" defaultValue="1.5" step="0.1" />
-          <PercentField label="Credit Card Surcharge" defaultValue="3" step="0.1" />
+          <PercentField label="Late Fee Rate (Monthly)" value={lateFee} onChange={setLateFee} step="0.1" />
+          <PercentField label="Credit Card Surcharge" value={ccSurcharge} onChange={setCcSurcharge} step="0.1" />
         </div>
       </div>
 
@@ -76,15 +162,20 @@ export default function PaymentTermsSettingsPage() {
           </label>
           <textarea
             rows={3}
-            defaultValue="Wire transfer to Meridian Experiential LLC. Contact accounting@meridianxp.com for details."
+            value={instructions}
+            onChange={(e) => setInstructions(e.target.value)}
             className="w-full rounded-lg border border-border bg-white px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20 resize-none"
           />
         </div>
       </div>
 
       <div className="flex justify-end">
-        <button className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-foreground/90">
-          Save Changes
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-foreground/90 disabled:opacity-50"
+        >
+          {saving ? 'Saving...' : 'Save Changes'}
         </button>
       </div>
     </div>

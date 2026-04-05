@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import type { SubscriptionTier } from '@/types/database';
 import { tierMeetsMinimum, type FeatureKey, getRequiredTier } from '@/lib/subscription';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 /**
  * Server-side tier guard for API routes.
@@ -11,6 +12,8 @@ export async function requireTier(
   requiredTier: SubscriptionTier
 ): Promise<NextResponse | null> {
   const supabase = await createClient();
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -22,7 +25,7 @@ export async function requireTier(
   const { data: userData } = await supabase
     .from('users')
     .select('organization_id')
-    .eq('id', user.id)
+    .eq('id', ctx.userId)
     .single();
 
   if (!userData) {
@@ -32,7 +35,7 @@ export async function requireTier(
   const { data: org } = await supabase
     .from('organizations')
     .select('subscription_tier')
-    .eq('id', userData.organization_id)
+    .eq('id', ctx.organizationId)
     .single();
 
   if (!org) {

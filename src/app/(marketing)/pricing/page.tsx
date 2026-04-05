@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 
@@ -153,8 +154,8 @@ export default function PricingPage() {
             </thead>
             <tbody>
               {comparisonData.map((category) => (
-                <>
-                  <tr key={`cat-${category.name}`}>
+                <Fragment key={`cat-${category.name}`}>
+                  <tr>
                     <td
                       colSpan={4}
                       className="border-b border-zinc-100 pb-3 pt-8 text-sm font-semibold text-zinc-900"
@@ -181,7 +182,7 @@ export default function PricingPage() {
                       </td>
                     </tr>
                   ))}
-                </>
+                </Fragment>
               ))}
             </tbody>
           </table>

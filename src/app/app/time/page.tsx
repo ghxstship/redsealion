@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import WeeklyTimesheet from '@/components/admin/time/WeeklyTimesheet';
 import Link from 'next/link';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 interface TimeStats {
   hoursThisWeek: number;
@@ -20,19 +21,13 @@ async function getTimeStats(): Promise<TimeStats> {
 
   try {
     const supabase = await createClient();
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
     const {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) return fallback;
-
-    const { data: userData } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-    if (!userData) return fallback;
-
-    // Get current week start (Monday)
+// Get current week start (Monday)
     const now = new Date();
     const dayOfWeek = now.getDay();
     const diff = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
@@ -44,17 +39,17 @@ async function getTimeStats(): Promise<TimeStats> {
       supabase
         .from('time_entries')
         .select('duration_minutes, billable')
-        .eq('user_id', user.id)
+        .eq('user_id', ctx.userId)
         .gte('start_time', weekStart.toISOString()),
       supabase
         .from('timesheets')
         .select('id', { count: 'exact', head: true })
-        .eq('organization_id', userData.organization_id)
+        .eq('organization_id', ctx.organizationId)
         .eq('status', 'submitted'),
       supabase
         .from('time_entries')
         .select('id', { count: 'exact', head: true })
-        .eq('user_id', user.id)
+        .eq('user_id', ctx.userId)
         .is('end_time', null),
     ]);
 
