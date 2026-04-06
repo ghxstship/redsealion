@@ -2,12 +2,16 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useSelection } from '@/hooks/useSelection';
 import { useSort } from '@/hooks/useSort';
 import BulkActionBar from '@/components/shared/BulkActionBar';
-import ExportButton from '@/components/shared/ExportButton';
+import DataExportMenu from '@/components/shared/DataExportMenu';
 import SortableHeader from '@/components/shared/SortableHeader';
-import ImportDialog from '@/components/shared/ImportDialog';
+import DataImportDialog from '@/components/shared/DataImportDialog';
+import { formatLabel, formatCurrency, formatDate } from '@/lib/utils';
+import StatusBadge, { LEAD_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import LeadEditModal from './LeadEditModal';
 
 interface Lead {
   id: string;
@@ -19,64 +23,24 @@ interface Lead {
   status: string;
   source: string;
   estimated_budget: number | null;
+  message: string | null;
   created_at: string;
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  new: 'bg-blue-50 text-blue-700',
-  contacted: 'bg-yellow-50 text-yellow-700',
-  qualified: 'bg-green-50 text-green-700',
-  proposal_sent: 'bg-purple-50 text-purple-700',
-  won: 'bg-green-100 text-green-800',
-  lost: 'bg-red-50 text-red-700',
-  archived: 'bg-gray-100 text-gray-600',
-  disqualified: 'bg-red-50 text-red-700',
-};
 
-function formatLabel(s: string): string {
-  return s
-    .split('_')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ');
-}
 
-function formatDate(dateStr: string): string {
-  // Handle both ISO timestamps (2026-04-05T15:10:22Z) and date-only (2026-04-05)
-  const d = dateStr.includes('T') ? new Date(dateStr) : new Date(dateStr + 'T00:00:00');
-  if (isNaN(d.getTime())) return '—';
-  return d.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
-}
 
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(amount);
-}
 
 const statusTabs = ['all', 'new', 'contacted', 'qualified'] as const;
 
-const EXPORT_COLUMNS = [
-  { key: 'contact_first_name' as const, label: 'First Name' },
-  { key: 'contact_last_name' as const, label: 'Last Name' },
-  { key: 'contact_email' as const, label: 'Email' },
-  { key: 'company_name' as const, label: 'Company' },
-  { key: 'source' as const, label: 'Source' },
-  { key: 'estimated_budget' as const, label: 'Budget' },
-  { key: 'status' as const, label: 'Status' },
-  { key: 'created_at' as const, label: 'Date' },
-];
+
 
 export default function LeadsTable({ leads }: { leads: Lead[] }) {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<string>('all');
   const [search, setSearch] = useState('');
   const [showImport, setShowImport] = useState(false);
+  const [editingLead, setEditingLead] = useState<Lead | null>(null);
 
   const filtered = useMemo(() => {
     let result = leads;
@@ -102,7 +66,7 @@ export default function LeadsTable({ leads }: { leads: Lead[] }) {
   async function handleBulkDelete(ids: string[]) {
     // TODO: Wire to batch delete API when available
     await Promise.all(ids.map((id) => fetch(`/api/leads/${id}`, { method: 'DELETE' })));
-    window.location.reload();
+    router.refresh();
   }
 
   async function handleBulkStatusChange(ids: string[], status: string) {
@@ -115,7 +79,7 @@ export default function LeadsTable({ leads }: { leads: Lead[] }) {
         }),
       ),
     );
-    window.location.reload();
+    router.refresh();
   }
 
   return (
@@ -149,7 +113,7 @@ export default function LeadsTable({ leads }: { leads: Lead[] }) {
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M7 2v10M3 8l4 4 4-4" /></svg>
             Import
           </button>
-          <ExportButton data={sorted as unknown as Record<string, unknown>[]} columns={EXPORT_COLUMNS} filename="leads-export" />
+          <DataExportMenu data={sorted as unknown as Record<string, unknown>[]} entityKey="leads" filename="leads-export" entityType="Leads" />
         </div>
       </div>
 
@@ -166,6 +130,19 @@ export default function LeadsTable({ leads }: { leads: Lead[] }) {
           {
             label: 'Mark Qualified',
             onClick: (ids) => handleBulkStatusChange(ids, 'qualified'),
+          },
+          {
+            label: 'Reassign',
+            onClick: async (ids) => {
+              const assignee = window.prompt('Assign to (enter team member name):');
+              if (!assignee) return;
+              await Promise.all(ids.map((id) => fetch(`/api/leads/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ assigned_to: assignee }),
+              })));
+              router.refresh();
+            },
           },
           {
             label: 'Delete',
@@ -239,16 +216,17 @@ export default function LeadsTable({ leads }: { leads: Lead[] }) {
                     : '\u2014'}
                 </td>
                 <td className="px-6 py-3.5">
-                  <span
-                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                      STATUS_COLORS[lead.status] ?? 'bg-gray-100 text-gray-600'
-                    }`}
-                  >
-                    {formatLabel(lead.status)}
-                  </span>
+                  <StatusBadge status={lead.status} colorMap={LEAD_STATUS_COLORS} />
                 </td>
                 <td className="px-6 py-3.5 text-sm text-text-muted">
                   {formatDate(lead.created_at)}
+                </td>
+                <td className="px-4 py-3.5">
+                  <button onClick={() => setEditingLead(lead)} title="Edit lead" className="text-text-muted hover:text-foreground transition-colors">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M11.5 1.5l3 3L5 14H2v-3L11.5 1.5z" />
+                    </svg>
+                  </button>
                 </td>
               </tr>
             ))}
@@ -263,20 +241,23 @@ export default function LeadsTable({ leads }: { leads: Lead[] }) {
         </table>
       </div>
 
-      <ImportDialog
+      <DataImportDialog
         open={showImport}
         onClose={() => setShowImport(false)}
         entityType="Leads"
-        targetFields={[
-          { key: 'contact_first_name', label: 'First Name', required: true },
-          { key: 'contact_last_name', label: 'Last Name', required: true },
-          { key: 'contact_email', label: 'Email' },
-          { key: 'company_name', label: 'Company' },
-          { key: 'source', label: 'Source' },
-          { key: 'estimated_budget', label: 'Budget' },
-        ]}
+        entityKey="leads"
         apiEndpoint="/api/leads"
+        onComplete={() => router.refresh()}
       />
+
+      {editingLead && (
+        <LeadEditModal
+          open={!!editingLead}
+          onClose={() => setEditingLead(null)}
+          onSaved={() => router.refresh()}
+          lead={{ ...editingLead, contact_email: editingLead.contact_email ?? '', contact_phone: editingLead.contact_phone ?? null, message: editingLead.message ?? null }}
+        />
+      )}
     </>
   );
 }

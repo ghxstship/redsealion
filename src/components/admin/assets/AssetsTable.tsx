@@ -6,7 +6,8 @@ import { useRouter } from 'next/navigation';
 import { formatCurrency, statusColor } from '@/lib/utils';
 import { useSort } from '@/hooks/useSort';
 import { useSelection } from '@/hooks/useSelection';
-import ExportButton from '@/components/shared/ExportButton';
+import DataExportMenu from '@/components/shared/DataExportMenu';
+import DataImportDialog from '@/components/shared/DataImportDialog';
 import SortableHeader from '@/components/shared/SortableHeader';
 import BulkActionBar from '@/components/shared/BulkActionBar';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
@@ -33,20 +34,14 @@ const conditionColors: Record<string, string> = {
 
 const statusFilters = ['all', 'deployed', 'in_storage', 'in_production', 'in_transit', 'planned'] as const;
 
-const EXPORT_COLUMNS = [
-  { key: 'name' as const, label: 'Name' },
-  { key: 'type' as const, label: 'Type' },
-  { key: 'status' as const, label: 'Status' },
-  { key: 'condition' as const, label: 'Condition' },
-  { key: 'location_name' as const, label: 'Location' },
-  { key: 'current_value' as const, label: 'Value' },
-];
+
 
 export default function AssetsTable({ assets }: { assets: AssetRow[] }) {
   const router = useRouter();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
+  const [showImport, setShowImport] = useState(false);
 
   const filtered = useMemo(() => {
     let result = assets;
@@ -108,7 +103,11 @@ export default function AssetsTable({ assets }: { assets: AssetRow[] }) {
             onChange={(e) => setSearch(e.target.value)}
             className="w-full max-w-xs rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10"
           />
-          <ExportButton data={sorted} columns={EXPORT_COLUMNS} filename="assets-export" />
+          <button onClick={() => setShowImport(true)} className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M7 2v10M3 8l4 4 4-4" /></svg>
+            Import
+          </button>
+          <DataExportMenu data={sorted} entityKey="assets" filename="assets-export" entityType="Assets" />
         </div>
       </div>
 
@@ -198,6 +197,15 @@ export default function AssetsTable({ assets }: { assets: AssetRow[] }) {
           onCancel={() => setShowDeleteConfirm(null)}
         />
       )}
+
+      <DataImportDialog
+        open={showImport}
+        onClose={() => setShowImport(false)}
+        entityType="Assets"
+        entityKey="assets"
+        apiEndpoint="/api/assets"
+        onComplete={() => router.refresh()}
+      />
     </>
   );
 }

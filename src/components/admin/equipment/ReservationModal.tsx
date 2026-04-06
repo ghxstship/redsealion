@@ -1,16 +1,16 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import ModalShell from '@/components/ui/ModalShell';
+import FormLabel from '@/components/ui/FormLabel';
+import FormSelect from '@/components/ui/FormSelect';
+import FormTextarea from '@/components/ui/FormTextarea';
+import FormInput from '@/components/ui/FormInput';
+import Button from '@/components/ui/Button';
+import Alert from '@/components/ui/Alert';
 
-interface Proposal {
-  id: string;
-  name: string;
-}
-
-interface Venue {
-  id: string;
-  name: string;
-}
+interface Proposal { id: string; name: string; }
+interface Venue { id: string; name: string; }
 
 interface ReservationModalProps {
   assetId: string;
@@ -39,10 +39,7 @@ export default function ReservationModal({ assetId, assetName, onClose, onCreate
   }, []);
 
   useEffect(() => {
-    if (!proposalId) {
-      setVenues([]);
-      return;
-    }
+    if (!proposalId) { setVenues([]); return; }
     fetch(`/api/proposals/${proposalId}/venues`)
       .then((r) => r.json())
       .then((data) => setVenues(data))
@@ -59,13 +56,8 @@ export default function ReservationModal({ assetId, assetName, onClose, onCreate
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          asset_id: assetId,
-          proposal_id: proposalId,
-          venue_id: venueId || null,
-          quantity,
-          reserved_from: dateFrom,
-          reserved_until: dateTo,
-          notes: notes || null,
+          asset_id: assetId, proposal_id: proposalId, venue_id: venueId || null,
+          quantity, reserved_from: dateFrom, reserved_until: dateTo, notes: notes || null,
         }),
       });
 
@@ -86,118 +78,52 @@ export default function ReservationModal({ assetId, assetName, onClose, onCreate
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/40 animate-modal-backdrop" onClick={onClose} />
-      <div className="relative bg-white border border-border rounded-lg shadow-sm w-full max-w-md mx-4 animate-modal-content">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-border">
-          <h2 className="text-base font-semibold text-foreground">
-            Reserve: {assetName}
-          </h2>
-          <button onClick={onClose} className="text-text-muted hover:text-foreground text-lg leading-none">
-            &times;
-          </button>
+    <ModalShell open={true} onClose={onClose} title={`Reserve: ${assetName}`} size="md" sectioned>
+      <form onSubmit={handleSubmit} className="px-5 py-4 space-y-4">
+        {error && <Alert>{error}</Alert>}
+
+        <div>
+          <FormLabel>Proposal</FormLabel>
+          <FormSelect value={proposalId} onChange={(e) => setProposalId(e.target.value)} required>
+            <option value="">Select proposal</option>
+            {proposals.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+          </FormSelect>
         </div>
 
-        <form onSubmit={handleSubmit} className="px-5 py-4 space-y-4">
-          {error && (
-            <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-800">
-              {error}
-            </div>
-          )}
+        <div>
+          <FormLabel>Venue</FormLabel>
+          <FormSelect value={venueId} onChange={(e) => setVenueId(e.target.value)} disabled={!proposalId}>
+            <option value="">Select venue</option>
+            {venues.map((v) => <option key={v.id} value={v.id}>{v.name}</option>)}
+          </FormSelect>
+        </div>
 
+        <div>
+          <FormLabel>Quantity</FormLabel>
+          <FormInput type="number" min={1} value={quantity} onChange={(e) => setQuantity(Number(e.target.value))} required />
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Proposal</label>
-            <select
-              value={proposalId}
-              onChange={(e) => setProposalId(e.target.value)}
-              required
-              className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-white text-foreground"
-            >
-              <option value="">Select proposal</option>
-              {proposals.map((p) => (
-                <option key={p.id} value={p.id}>{p.name}</option>
-              ))}
-            </select>
+            <FormLabel>From</FormLabel>
+            <FormInput type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} required />
           </div>
-
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Venue</label>
-            <select
-              value={venueId}
-              onChange={(e) => setVenueId(e.target.value)}
-              disabled={!proposalId}
-              className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-white text-foreground"
-            >
-              <option value="">Select venue</option>
-              {venues.map((v) => (
-                <option key={v.id} value={v.id}>{v.name}</option>
-              ))}
-            </select>
+            <FormLabel>To</FormLabel>
+            <FormInput type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} required />
           </div>
+        </div>
 
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Quantity</label>
-            <input
-              type="number"
-              min={1}
-              value={quantity}
-              onChange={(e) => setQuantity(Number(e.target.value))}
-              required
-              className="w-full border border-border rounded-lg px-3 py-2 text-sm text-foreground"
-            />
-          </div>
+        <div>
+          <FormLabel>Notes</FormLabel>
+          <FormTextarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} />
+        </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1">From</label>
-              <input
-                type="date"
-                value={dateFrom}
-                onChange={(e) => setDateFrom(e.target.value)}
-                required
-                className="w-full border border-border rounded-lg px-3 py-2 text-sm text-foreground"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1">To</label>
-              <input
-                type="date"
-                value={dateTo}
-                onChange={(e) => setDateTo(e.target.value)}
-                required
-                className="w-full border border-border rounded-lg px-3 py-2 text-sm text-foreground"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Notes</label>
-            <textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              rows={2}
-              className="w-full border border-border rounded-lg px-3 py-2 text-sm text-foreground resize-none"
-            />
-          </div>
-
-          <div className="flex justify-end gap-2 pt-2">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 text-sm rounded-lg bg-bg-secondary text-foreground hover:bg-bg-tertiary"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={submitting}
-              className="px-4 py-2 text-sm rounded-lg bg-foreground text-white hover:opacity-90 disabled:opacity-50"
-            >
-              {submitting ? 'Reserving...' : 'Reserve'}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        <div className="flex justify-end gap-3 pt-2">
+          <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
+          <Button type="submit" loading={submitting}>{submitting ? 'Reserving...' : 'Reserve'}</Button>
+        </div>
+      </form>
+    </ModalShell>
   );
 }

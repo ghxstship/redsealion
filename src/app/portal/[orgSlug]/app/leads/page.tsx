@@ -17,6 +17,7 @@ interface Lead {
   status: string;
   source: string;
   estimated_budget: number | null;
+  message: string | null;
   created_at: string;
 }
 
@@ -42,6 +43,7 @@ async function getLeads(orgId: string): Promise<Lead[]> {
       status: (l.status as string) ?? 'new',
       source: (l.source as string) ?? 'Unknown',
       estimated_budget: (l.estimated_budget as number) ?? null,
+      message: (l.message as string) ?? null,
       created_at: l.created_at as string,
     }));
   } catch {

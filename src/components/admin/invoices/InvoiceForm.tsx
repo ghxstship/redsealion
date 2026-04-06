@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import InvoicePreview from './InvoicePreview';
+import FormSelect from '@/components/ui/FormSelect';
+import FormTextarea from '@/components/ui/FormTextarea';
 
 interface SelectOption {
   id: string;
@@ -116,49 +118,43 @@ export default function InvoiceForm({
 
           <div>
             <label className="block text-xs font-medium text-text-muted mb-1">Client</label>
-            <select
+            <FormSelect
               value={clientId}
-              onChange={(e) => setClientId(e.target.value)}
-              className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10"
-            >
+              onChange={(e) => setClientId(e.target.value)}>
               <option value="">Select client...</option>
               {clients.map((c) => (
                 <option key={c.id} value={c.id}>{c.label}</option>
               ))}
-            </select>
+            </FormSelect>
           </div>
 
           <div>
             <label className="block text-xs font-medium text-text-muted mb-1">
               Linked Proposal (optional)
             </label>
-            <select
+            <FormSelect
               value={proposalId}
-              onChange={(e) => setProposalId(e.target.value)}
-              className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10"
-            >
+              onChange={(e) => setProposalId(e.target.value)}>
               <option value="">None</option>
               {proposals.map((p) => (
                 <option key={p.id} value={p.id}>{p.label}</option>
               ))}
-            </select>
+            </FormSelect>
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className="block text-xs font-medium text-text-muted mb-1">Type</label>
-              <select
+              <FormSelect
                 value={type}
-                onChange={(e) => setType(e.target.value)}
-                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10"
-              >
+                onChange={(e) => setType(e.target.value)}>
                 <option value="deposit">Deposit</option>
                 <option value="balance">Balance</option>
                 <option value="change_order">Change Order</option>
                 <option value="addon">Add-on</option>
                 <option value="final">Final</option>
                 <option value="recurring">Recurring</option>
-              </select>
+              </FormSelect>
             </div>
             <div>
               <label className="block text-xs font-medium text-text-muted mb-1">Due Date</label>
@@ -173,7 +169,7 @@ export default function InvoiceForm({
 
           <div>
             <label className="block text-xs font-medium text-text-muted mb-1">Memo</label>
-            <textarea
+            <FormTextarea
               value={memo}
               onChange={(e) => setMemo(e.target.value)}
               rows={3}
@@ -202,9 +198,7 @@ export default function InvoiceForm({
                 <input
                   type="text"
                   value={li.description}
-                  onChange={(e) => updateLineItem(index, { description: e.target.value })}
-                  className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10"
-                />
+                  onChange={(e) => updateLineItem(index, { description: e.target.value })} />
               </div>
               <div className="col-span-2">
                 <label className="block text-xs font-medium text-text-muted mb-1">Qty</label>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { formatLabel } from '@/lib/utils';
 
 interface ComplianceDocument {
   id: string;
@@ -41,12 +42,7 @@ const STATUS_STYLES: Record<string, string> = {
   rejected: 'bg-gray-100 text-gray-600',
 };
 
-function formatLabel(s: string): string {
-  return s
-    .split('_')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ');
-}
+
 
 function isExpiringSoon(expiryDate: string | null): boolean {
   if (!expiryDate) return false;

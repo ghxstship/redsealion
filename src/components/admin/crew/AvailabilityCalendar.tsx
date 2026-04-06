@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { AVAILABILITY_STATUS_COLORS } from '@/components/ui/StatusBadge';
 
 interface CalendarEntry {
   userId: string;
@@ -15,11 +16,7 @@ interface AvailabilityCalendarProps {
   onMonthChange: (month: number, year: number) => void;
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  available: 'bg-green-400',
-  unavailable: 'bg-red-400',
-  tentative: 'bg-yellow-400',
-};
+
 
 export default function AvailabilityCalendar({
   entries,
@@ -110,7 +107,7 @@ export default function AvailabilityCalendar({
               {days.map((d) => {
                 const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                 const status = entry.dates[dateStr];
-                const colorClass = status ? STATUS_COLORS[status] : 'bg-bg-secondary';
+                const colorClass = status ? AVAILABILITY_STATUS_COLORS[status] : 'bg-bg-secondary';
                 return (
                   <td key={d} className="py-1 px-1 text-center">
                     <button

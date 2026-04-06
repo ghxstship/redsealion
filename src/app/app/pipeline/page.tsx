@@ -1,5 +1,5 @@
 import { TierGate } from '@/components/shared/TierGate';
-import PipelineBoard from '@/components/admin/pipeline/PipelineBoard';
+import PipelineViewSwitcher from '@/components/admin/pipeline/PipelineViewSwitcher';
 import PipelineHeader from '@/components/admin/pipeline/PipelineHeader';
 import { createClient } from '@/lib/supabase/server';
 import type { Deal } from '@/types/database';
@@ -55,7 +55,7 @@ export default async function PipelinePage() {
       </div>
 
       <TierGate feature="pipeline">
-        <PipelineBoard initialDeals={deals} />
+        <PipelineViewSwitcher deals={deals} />
       </TierGate>
     </>
   );

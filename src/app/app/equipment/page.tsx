@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import EquipmentTable from '@/components/admin/equipment/EquipmentTable';
+import EquipmentHeader from '@/components/admin/equipment/EquipmentHeader';
 
 interface EquipmentItem {
   id: string;
@@ -68,12 +69,13 @@ export default async function EquipmentPage() {
         <div className="flex gap-3">
           <Link href="/app/equipment/bundles" className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary">Bundles</Link>
           <Link href="/app/equipment/maintenance" className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary">Maintenance</Link>
+          <EquipmentHeader />
         </div>
       </div>
 
       {/* Status summary cards */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">
-        {(['available', 'deployed', 'reserved', 'maintenance'] as const).map((status) => (
+        {(['planned', 'deployed', 'in_storage', 'retired'] as const).map((status) => (
           <div key={status} className="rounded-xl border border-border bg-white p-4">
             <p className="text-xs text-text-muted">{formatLabel(status)}</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{statusCounts[status] ?? 0}</p>

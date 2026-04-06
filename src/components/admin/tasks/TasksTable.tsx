@@ -2,13 +2,16 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useSelection } from '@/hooks/useSelection';
 import { useSort } from '@/hooks/useSort';
 import BulkActionBar from '@/components/shared/BulkActionBar';
-import ExportButton from '@/components/shared/ExportButton';
+import DataExportMenu from '@/components/shared/DataExportMenu';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import SortableHeader from '@/components/shared/SortableHeader';
-import ImportDialog from '@/components/shared/ImportDialog';
+import DataImportDialog from '@/components/shared/DataImportDialog';
+import { formatLabel } from '@/lib/utils';
+import StatusBadge, { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS } from '@/components/ui/StatusBadge';
 
 interface TaskRow {
   id: string;
@@ -20,48 +23,15 @@ interface TaskRow {
   subtaskCount: number;
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  not_started: 'bg-gray-100 text-gray-700',
-  in_progress: 'bg-blue-50 text-blue-700',
-  review: 'bg-purple-50 text-purple-700',
-  done: 'bg-green-50 text-green-700',
-  blocked: 'bg-red-50 text-red-700',
-};
 
-const PRIORITY_COLORS: Record<string, string> = {
-  urgent: 'bg-red-50 text-red-700',
-  high: 'bg-orange-50 text-orange-700',
-  medium: 'bg-yellow-50 text-yellow-700',
-  low: 'bg-gray-100 text-gray-600',
-};
 
-function formatLabel(s: string): string {
-  return s
-    .split('_')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ');
-}
 
-const EXPORT_COLUMNS = [
-  { key: 'title' as const, label: 'Title' },
-  { key: 'status' as const, label: 'Status' },
-  { key: 'priority' as const, label: 'Priority' },
-  { key: 'assigneeName' as const, label: 'Assignee' },
-  { key: 'dueDate' as const, label: 'Due Date' },
-];
 
 const statusOptions = ['all', 'not_started', 'in_progress', 'review', 'done', 'blocked'] as const;
 const priorityOptions = ['all', 'urgent', 'high', 'medium', 'low'] as const;
 
-const IMPORT_FIELDS = [
-  { key: 'title', label: 'Title', required: true },
-  { key: 'status', label: 'Status' },
-  { key: 'priority', label: 'Priority' },
-  { key: 'description', label: 'Description' },
-  { key: 'due_date', label: 'Due Date' },
-];
-
 export default function TasksTable({ tasks }: { tasks: TaskRow[] }) {
+  const router = useRouter();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [priorityFilter, setPriorityFilter] = useState('all');
@@ -95,12 +65,12 @@ export default function TasksTable({ tasks }: { tasks: TaskRow[] }) {
     const res = await fetch(`/api/tasks/${id}`, { method: 'DELETE' });
     if (!res.ok) throw new Error('Failed to delete');
     setShowDeleteConfirm(null);
-    window.location.reload();
+    router.refresh();
   }
 
   async function handleBulkDelete(ids: string[]) {
     await Promise.all(ids.map((id) => fetch(`/api/tasks/${id}`, { method: 'DELETE' })));
-    window.location.reload();
+    router.refresh();
   }
 
   async function handleBulkStatusChange(ids: string[], status: string) {
@@ -113,7 +83,7 @@ export default function TasksTable({ tasks }: { tasks: TaskRow[] }) {
         }),
       ),
     );
-    window.location.reload();
+    router.refresh();
   }
 
   return (
@@ -164,7 +134,7 @@ export default function TasksTable({ tasks }: { tasks: TaskRow[] }) {
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M7 2v10M3 8l4 4 4-4" /></svg>
             Import
           </button>
-          <ExportButton data={sorted} columns={EXPORT_COLUMNS} filename="tasks-export" />
+          <DataExportMenu data={sorted} entityKey="tasks" filename="tasks-export" entityType="Tasks" />
         </div>
       </div>
 
@@ -181,6 +151,32 @@ export default function TasksTable({ tasks }: { tasks: TaskRow[] }) {
           {
             label: 'Mark In Progress',
             onClick: (ids) => handleBulkStatusChange(ids, 'in_progress'),
+          },
+          {
+            label: 'Reassign',
+            onClick: async (ids) => {
+              const assignee = window.prompt('Assign to (enter team member name):');
+              if (!assignee) return;
+              await Promise.all(ids.map((id) => fetch(`/api/tasks/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ assigned_to_name: assignee }),
+              })));
+              router.refresh();
+            },
+          },
+          {
+            label: 'Tag',
+            onClick: async (ids) => {
+              const tag = window.prompt('Enter tag to apply:');
+              if (!tag) return;
+              await Promise.all(ids.map((id) => fetch(`/api/tasks/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tags: [tag] }),
+              })));
+              router.refresh();
+            },
           },
           {
             label: 'Delete',
@@ -246,14 +242,10 @@ export default function TasksTable({ tasks }: { tasks: TaskRow[] }) {
                   )}
                 </td>
                 <td className="px-6 py-3.5">
-                  <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_COLORS[task.status] ?? 'bg-gray-100 text-gray-600'}`}>
-                    {formatLabel(task.status)}
-                  </span>
+                  <StatusBadge status={task.status} colorMap={TASK_STATUS_COLORS} />
                 </td>
                 <td className="px-6 py-3.5">
-                  <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${PRIORITY_COLORS[task.priority] ?? 'bg-gray-100 text-gray-600'}`}>
-                    {formatLabel(task.priority)}
-                  </span>
+                  <StatusBadge status={task.priority} colorMap={TASK_PRIORITY_COLORS} />
                 </td>
                 <td className="px-6 py-3.5 text-sm text-text-secondary">{task.assigneeName ?? '\u2014'}</td>
                 <td className="px-6 py-3.5 text-sm text-text-secondary">
@@ -296,12 +288,13 @@ export default function TasksTable({ tasks }: { tasks: TaskRow[] }) {
         />
       )}
 
-      <ImportDialog
+      <DataImportDialog
         open={showImport}
         onClose={() => setShowImport(false)}
         entityType="Tasks"
-        targetFields={IMPORT_FIELDS}
+        entityKey="tasks"
         apiEndpoint="/api/tasks"
+        onComplete={() => router.refresh()}
       />
     </>
   );

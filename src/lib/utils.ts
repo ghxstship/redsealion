@@ -64,6 +64,25 @@ export function relativeTime(date: string | Date): string {
   return d.toLocaleDateString();
 }
 
+/** Converts snake_case strings to Title Case (e.g. 'in_progress' → 'In Progress'). */
+export function formatLabel(s: string): string {
+  return s
+    .split('_')
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+}
+
+/** Format a date string to a human-readable short format (e.g. 'Apr 5, 2026'). */
+export function formatDate(dateStr: string): string {
+  const d = dateStr.includes('T') ? new Date(dateStr) : new Date(dateStr + 'T00:00:00');
+  if (isNaN(d.getTime())) return '—';
+  return d.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+}
+
 export function statusColor(status: string): string {
   const colors: Record<string, string> = {
     draft: 'bg-gray-100 text-gray-700',

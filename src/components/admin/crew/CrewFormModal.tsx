@@ -1,6 +1,13 @@
 'use client';
 
 import { useState, useEffect, type FormEvent } from 'react';
+import ModalShell from '@/components/ui/ModalShell';
+import FormLabel from '@/components/ui/FormLabel';
+import FormInput from '@/components/ui/FormInput';
+import FormSelect from '@/components/ui/FormSelect';
+import FormTextarea from '@/components/ui/FormTextarea';
+import Button from '@/components/ui/Button';
+import Alert from '@/components/ui/Alert';
 
 interface CrewFormModalProps {
   open: boolean;
@@ -28,15 +35,12 @@ export default function CrewFormModal({ open, onClose, onCreated }: CrewFormModa
 
   useEffect(() => {
     if (!open) return;
-    // Fetch org users for the dropdown
     fetch('/api/settings/team')
       .then((r) => r.json())
       .then((data) => {
         if (Array.isArray(data.members)) {
           setUsers(data.members.map((m: Record<string, unknown>) => ({
-            id: m.id as string,
-            full_name: m.full_name as string,
-            email: m.email as string,
+            id: m.id as string, full_name: m.full_name as string, email: m.email as string,
           })));
         }
       })
@@ -44,14 +48,8 @@ export default function CrewFormModal({ open, onClose, onCreated }: CrewFormModa
   }, [open]);
 
   function resetForm() {
-    setUserId('');
-    setSkills('');
-    setHourlyRate('');
-    setDayRate('');
-    setEmergencyName('');
-    setEmergencyPhone('');
-    setNotes('');
-    setError(null);
+    setUserId(''); setSkills(''); setHourlyRate(''); setDayRate('');
+    setEmergencyName(''); setEmergencyPhone(''); setNotes(''); setError(null);
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -89,124 +87,61 @@ export default function CrewFormModal({ open, onClose, onCreated }: CrewFormModa
     }
   }
 
-  if (!open) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/40 animate-modal-backdrop" onClick={onClose} />
-      <div className="relative w-full max-w-lg rounded-xl border border-border bg-white p-6 shadow-xl animate-modal-content">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-semibold text-foreground">Add Crew Member</h2>
-          <button onClick={onClose} className="text-text-muted hover:text-foreground transition-colors">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <line x1="5" y1="5" x2="15" y2="15" />
-              <line x1="15" y1="5" x2="5" y2="15" />
-            </svg>
-          </button>
+    <ModalShell open={open} onClose={onClose} title="Add Crew Member">
+      {error && <Alert className="mb-4">{error}</Alert>}
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <FormLabel>Team Member</FormLabel>
+          <FormSelect required value={userId} onChange={(e) => setUserId(e.target.value)}>
+            <option value="">Select a team member...</option>
+            {users.map((u) => <option key={u.id} value={u.id}>{u.full_name} ({u.email})</option>)}
+          </FormSelect>
         </div>
 
-        {error && (
-          <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
-        )}
+        <div>
+          <FormLabel>Skills</FormLabel>
+          <FormInput type="text" value={skills} onChange={(e) => setSkills(e.target.value)} placeholder="Lighting, Rigging, Stage Design (comma-separated)" />
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Team Member</label>
-            <select
-              required
-              value={userId}
-              onChange={(e) => setUserId(e.target.value)}
-              className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10"
-            >
-              <option value="">Select a team member...</option>
-              {users.map((u) => (
-                <option key={u.id} value={u.id}>{u.full_name} ({u.email})</option>
-              ))}
-            </select>
+            <FormLabel>Hourly Rate ($)</FormLabel>
+            <FormInput type="number" min={0} step="0.01" value={hourlyRate} onChange={(e) => setHourlyRate(e.target.value)} placeholder="75.00" />
           </div>
-
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Skills</label>
-            <input
-              type="text"
-              value={skills}
-              onChange={(e) => setSkills(e.target.value)}
-              placeholder="Lighting, Rigging, Stage Design (comma-separated)"
-              className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10"
-            />
+            <FormLabel>Day Rate ($)</FormLabel>
+            <FormInput type="number" min={0} step="0.01" value={dayRate} onChange={(e) => setDayRate(e.target.value)} placeholder="600.00" />
           </div>
+        </div>
 
+        <div className="border-t border-border pt-4">
+          <p className="text-xs font-medium uppercase tracking-wider text-text-muted mb-3">Emergency Contact</p>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1">Hourly Rate ($)</label>
-              <input
-                type="number"
-                min={0}
-                step="0.01"
-                value={hourlyRate}
-                onChange={(e) => setHourlyRate(e.target.value)}
-                placeholder="75.00"
-                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10"
-              />
+              <FormLabel>Name</FormLabel>
+              <FormInput type="text" value={emergencyName} onChange={(e) => setEmergencyName(e.target.value)} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1">Day Rate ($)</label>
-              <input
-                type="number"
-                min={0}
-                step="0.01"
-                value={dayRate}
-                onChange={(e) => setDayRate(e.target.value)}
-                placeholder="600.00"
-                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10"
-              />
+              <FormLabel>Phone</FormLabel>
+              <FormInput type="tel" value={emergencyPhone} onChange={(e) => setEmergencyPhone(e.target.value)} />
             </div>
           </div>
+        </div>
 
-          <div className="border-t border-border pt-4">
-            <p className="text-xs font-medium uppercase tracking-wider text-text-muted mb-3">Emergency Contact</p>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Name</label>
-                <input
-                  type="text"
-                  value={emergencyName}
-                  onChange={(e) => setEmergencyName(e.target.value)}
-                  className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Phone</label>
-                <input
-                  type="tel"
-                  value={emergencyPhone}
-                  onChange={(e) => setEmergencyPhone(e.target.value)}
-                  className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10"
-                />
-              </div>
-            </div>
-          </div>
+        <div>
+          <FormLabel>Notes</FormLabel>
+          <FormTextarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} />
+        </div>
 
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Notes</label>
-            <textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              rows={2}
-              className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 resize-none"
-            />
-          </div>
-
-          <div className="flex items-center justify-end gap-3 pt-2">
-            <button type="button" onClick={onClose} className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary">
-              Cancel
-            </button>
-            <button type="submit" disabled={submitting} className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90 disabled:opacity-50">
-              {submitting ? 'Adding...' : 'Add Crew Member'}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        <div className="flex items-center justify-end gap-3 pt-2">
+          <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
+          <Button type="submit" loading={submitting}>
+            {submitting ? 'Adding...' : 'Add Crew Member'}
+          </Button>
+        </div>
+      </form>
+    </ModalShell>
   );
 }

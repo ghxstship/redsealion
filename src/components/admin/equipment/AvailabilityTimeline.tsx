@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { RESERVATION_STATUS_COLORS } from '@/components/ui/StatusBadge';
 
 interface Reservation {
   id: string;
@@ -16,11 +17,7 @@ interface AvailabilityTimelineProps {
   to: string;
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  reserved: 'bg-blue-400',
-  checked_out: 'bg-green-500',
-  returned: 'bg-gray-400',
-};
+
 
 export default function AvailabilityTimeline({ reservations, from, to }: AvailabilityTimelineProps) {
   const startDate = new Date(from);
@@ -57,7 +54,7 @@ export default function AvailabilityTimeline({ reservations, from, to }: Availab
             const left = getPosition(r.reservedFrom);
             const right = getPosition(r.reservedUntil);
             const width = Math.max(1, right - left);
-            const color = STATUS_COLORS[r.status] ?? 'bg-gray-300';
+            const color = RESERVATION_STATUS_COLORS[r.status] ?? 'bg-gray-300';
 
             return (
               <div

@@ -38,9 +38,9 @@ export async function PATCH(
   const supabase = await createClient();
 
   const allowedFields = [
-    'name', 'type', 'category', 'trackable', 'status', 'condition',
-    'reusable', 'barcode', 'serial_number', 'purchase_cost', 'current_location',
-    'notes', 'deployment_count',
+    'name', 'type', 'category', 'is_trackable', 'status', 'condition',
+    'is_reusable', 'barcode', 'serial_number', 'acquisition_cost', 'current_location',
+    'description', 'deployment_count',
   ];
   const updates: Record<string, unknown> = {};
   for (const f of allowedFields) {

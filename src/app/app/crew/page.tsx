@@ -6,8 +6,10 @@ import { useRouter } from 'next/navigation';
 import CrewFormModal from '@/components/admin/crew/CrewFormModal';
 import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
 import { useSelection } from '@/hooks/useSelection';
+import { formatLabel } from '@/lib/utils';
 import BulkActionBar from '@/components/shared/BulkActionBar';
-import ExportButton from '@/components/shared/ExportButton';
+import DataExportMenu from '@/components/shared/DataExportMenu';
+import DataImportDialog from '@/components/shared/DataImportDialog';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
 
 interface CrewMember {
@@ -32,18 +34,9 @@ const ONBOARDING_COLORS: Record<string, string> = {
   pending: 'bg-gray-100 text-gray-600',
 };
 
-function formatLabel(s: string): string {
-  return s.split('_').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-}
 
-const EXPORT_COLUMNS = [
-  { key: 'full_name' as const, label: 'Name' },
-  { key: 'email' as const, label: 'Email' },
-  { key: 'skills' as const, label: 'Skills' },
-  { key: 'hourly_rate' as const, label: 'Rate' },
-  { key: 'availability_status' as const, label: 'Availability' },
-  { key: 'onboarding_status' as const, label: 'Onboarding' },
-];
+
+
 
 export default function CrewPage() {
   const router = useRouter();
@@ -51,6 +44,7 @@ export default function CrewPage() {
   const [search, setSearch] = useState('');
   const [showCreate, setShowCreate] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
+  const [showImport, setShowImport] = useState(false);
 
   useEffect(() => {
     async function loadCrew() {
@@ -103,12 +97,12 @@ export default function CrewPage() {
   async function handleDelete(id: string) {
     await fetch(`/api/crew/${id}`, { method: 'DELETE' });
     setShowDeleteConfirm(null);
-    window.location.reload();
+    router.refresh();
   }
 
   async function handleBulkDelete(ids: string[]) {
     await Promise.all(ids.map((id) => fetch(`/api/crew/${id}`, { method: 'DELETE' })));
-    window.location.reload();
+    router.refresh();
   }
 
   return (
@@ -140,7 +134,13 @@ export default function CrewPage() {
           onChange={(e) => setSearch(e.target.value)}
           className="w-full max-w-md rounded-lg border border-border bg-white px-4 py-2.5 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/20"
         />
-        <ExportButton data={filtered} columns={EXPORT_COLUMNS} filename="crew-export" />
+        <div className="flex items-center gap-3">
+          <button onClick={() => setShowImport(true)} className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M7 2v10M3 8l4 4 4-4" /></svg>
+            Import
+          </button>
+          <DataExportMenu data={filtered} entityKey="crew" filename="crew-export" entityType="Crew" />
+        </div>
       </div>
 
       {/* Bulk bar */}
@@ -218,6 +218,15 @@ export default function CrewPage() {
       {showDeleteConfirm && (
         <ConfirmDialog open title="Delete Crew Member" message="Are you sure? This cannot be undone." confirmLabel="Delete" variant="danger" onConfirm={() => handleDelete(showDeleteConfirm)} onCancel={() => setShowDeleteConfirm(null)} />
       )}
+
+      <DataImportDialog
+        open={showImport}
+        onClose={() => setShowImport(false)}
+        entityType="Crew Members"
+        entityKey="crew"
+        apiEndpoint="/api/crew"
+        onComplete={() => router.refresh()}
+      />
     </>
   );
 }

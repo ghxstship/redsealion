@@ -1,6 +1,14 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
+import { formatLabel } from '@/lib/utils';
+import ModalShell from '@/components/ui/ModalShell';
+import FormLabel from '@/components/ui/FormLabel';
+import FormInput from '@/components/ui/FormInput';
+import FormSelect from '@/components/ui/FormSelect';
+import FormTextarea from '@/components/ui/FormTextarea';
+import Button from '@/components/ui/Button';
+import Alert from '@/components/ui/Alert';
 
 interface TaskFormModalProps {
   open: boolean;
@@ -22,13 +30,8 @@ export default function TaskFormModal({ open, onClose, onCreated }: TaskFormModa
   const [error, setError] = useState<string | null>(null);
 
   function resetForm() {
-    setTitle('');
-    setDescription('');
-    setPriority('medium');
-    setStatus('todo');
-    setDueDate('');
-    setEstimatedHours('');
-    setError(null);
+    setTitle(''); setDescription(''); setPriority('medium');
+    setStatus('todo'); setDueDate(''); setEstimatedHours(''); setError(null);
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -65,115 +68,55 @@ export default function TaskFormModal({ open, onClose, onCreated }: TaskFormModa
     }
   }
 
-  if (!open) return null;
-
-  function formatLabel(s: string): string {
-    return s.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
-  }
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/40 animate-modal-backdrop" onClick={onClose} />
-      <div className="relative w-full max-w-lg rounded-xl border border-border bg-white p-6 shadow-xl animate-modal-content">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-semibold text-foreground">New Task</h2>
-          <button onClick={onClose} className="text-text-muted hover:text-foreground transition-colors">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <line x1="5" y1="5" x2="15" y2="15" />
-              <line x1="15" y1="5" x2="5" y2="15" />
-            </svg>
-          </button>
+    <ModalShell open={open} onClose={onClose} title="New Task">
+      {error && <Alert className="mb-4">{error}</Alert>}
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <FormLabel>Title</FormLabel>
+          <FormInput type="text" required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Design stage layout for Nike activation" />
         </div>
 
-        {error && (
-          <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
-        )}
+        <div>
+          <FormLabel>Description</FormLabel>
+          <FormTextarea value={description} onChange={(e) => setDescription(e.target.value)} rows={2}
+            placeholder="Task details..." />
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Title</label>
-            <input
-              type="text"
-              required
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Design stage layout for Nike activation"
-              className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10"
-            />
+            <FormLabel>Priority</FormLabel>
+            <FormSelect value={priority} onChange={(e) => setPriority(e.target.value)}>
+              {PRIORITY_OPTIONS.map((p) => <option key={p} value={p}>{formatLabel(p)}</option>)}
+            </FormSelect>
           </div>
-
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Description</label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={2}
-              placeholder="Task details..."
-              className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 resize-none"
-            />
+            <FormLabel>Status</FormLabel>
+            <FormSelect value={status} onChange={(e) => setStatus(e.target.value)}>
+              {STATUS_OPTIONS.map((s) => <option key={s} value={s}>{formatLabel(s)}</option>)}
+            </FormSelect>
           </div>
+        </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1">Priority</label>
-              <select
-                value={priority}
-                onChange={(e) => setPriority(e.target.value)}
-                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10"
-              >
-                {PRIORITY_OPTIONS.map((p) => (
-                  <option key={p} value={p}>{formatLabel(p)}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1">Status</label>
-              <select
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10"
-              >
-                {STATUS_OPTIONS.map((s) => (
-                  <option key={s} value={s}>{formatLabel(s)}</option>
-                ))}
-              </select>
-            </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <FormLabel>Due Date</FormLabel>
+            <FormInput type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
           </div>
+          <div>
+            <FormLabel>Est. Hours</FormLabel>
+            <FormInput type="number" min={0} step="0.5" value={estimatedHours} onChange={(e) => setEstimatedHours(e.target.value)} placeholder="0" />
+          </div>
+        </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1">Due Date</label>
-              <input
-                type="date"
-                value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
-                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1">Est. Hours</label>
-              <input
-                type="number"
-                min={0}
-                step="0.5"
-                value={estimatedHours}
-                onChange={(e) => setEstimatedHours(e.target.value)}
-                placeholder="0"
-                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10"
-              />
-            </div>
-          </div>
-
-          <div className="flex items-center justify-end gap-3 pt-2">
-            <button type="button" onClick={onClose} className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary">
-              Cancel
-            </button>
-            <button type="submit" disabled={submitting} className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90 disabled:opacity-50">
-              {submitting ? 'Creating...' : 'Create Task'}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        <div className="flex items-center justify-end gap-3 pt-2">
+          <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
+          <Button type="submit" loading={submitting}>
+            {submitting ? 'Creating...' : 'Create Task'}
+          </Button>
+        </div>
+      </form>
+    </ModalShell>
   );
 }

@@ -1,6 +1,13 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
+import ModalShell from '@/components/ui/ModalShell';
+import FormLabel from '@/components/ui/FormLabel';
+import FormSelect from '@/components/ui/FormSelect';
+import FormTextarea from '@/components/ui/FormTextarea';
+import FormInput from '@/components/ui/FormInput';
+import Button from '@/components/ui/Button';
+import Alert from '@/components/ui/Alert';
 
 interface PortfolioFormModalProps { open: boolean; onClose: () => void; onCreated: () => void; }
 const CATEGORIES = ['Brand Activation', 'Concert & Festival', 'Corporate Event', 'Film & TV', 'Immersive Experience', 'Pop-Up', 'Trade Show', 'Other'] as const;
@@ -25,10 +32,8 @@ export default function PortfolioFormModal({ open, onClose, onCreated }: Portfol
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          project_name: projectName,
-          client_name: clientName || undefined,
-          category,
-          description: description || undefined,
+          project_name: projectName, client_name: clientName || undefined,
+          category, description: description || undefined,
           project_year: parseInt(projectYear) || new Date().getFullYear(),
         }),
       });
@@ -38,53 +43,42 @@ export default function PortfolioFormModal({ open, onClose, onCreated }: Portfol
     finally { setSubmitting(false); }
   }
 
-  if (!open) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/40 animate-modal-backdrop" onClick={onClose} />
-      <div className="relative w-full max-w-lg rounded-xl border border-border bg-white p-6 shadow-xl animate-modal-content">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-semibold text-foreground">Add Portfolio Project</h2>
-          <button onClick={onClose} className="text-text-muted hover:text-foreground transition-colors">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="5" y1="5" x2="15" y2="15" /><line x1="15" y1="5" x2="5" y2="15" /></svg>
-          </button>
-        </div>
-        {error && <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1">Project Name</label>
-              <input type="text" required value={projectName} onChange={(e) => setProjectName(e.target.value)} placeholder="e.g. Nike Air Max Launch" className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1">Client</label>
-              <input type="text" value={clientName} onChange={(e) => setClientName(e.target.value)} placeholder="e.g. Nike" className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10" />
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1">Category</label>
-              <select required value={category} onChange={(e) => setCategory(e.target.value)} className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10">
-                <option value="">Select...</option>
-                {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1">Year</label>
-              <input type="number" value={projectYear} onChange={(e) => setProjectYear(e.target.value)} min={2000} max={2100} className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10" />
-            </div>
+    <ModalShell open={open} onClose={onClose} title="Add Portfolio Project">
+      {error && <Alert className="mb-4">{error}</Alert>}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <FormLabel>Project Name</FormLabel>
+            <FormInput type="text" required value={projectName} onChange={(e) => setProjectName(e.target.value)} placeholder="e.g. Nike Air Max Launch" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Description</label>
-            <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={2} placeholder="Brief project description..." className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 resize-none" />
+            <FormLabel>Client</FormLabel>
+            <FormInput type="text" value={clientName} onChange={(e) => setClientName(e.target.value)} placeholder="e.g. Nike" />
           </div>
-          <div className="flex items-center justify-end gap-3 pt-2">
-            <button type="button" onClick={onClose} className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary">Cancel</button>
-            <button type="submit" disabled={submitting} className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90 disabled:opacity-50">{submitting ? 'Adding...' : 'Add Project'}</button>
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <FormLabel>Category</FormLabel>
+            <FormSelect required value={category} onChange={(e) => setCategory(e.target.value)}>
+              <option value="">Select...</option>
+              {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+            </FormSelect>
           </div>
-        </form>
-      </div>
-    </div>
+          <div>
+            <FormLabel>Year</FormLabel>
+            <FormInput type="number" value={projectYear} onChange={(e) => setProjectYear(e.target.value)} min={2000} max={2100} />
+          </div>
+        </div>
+        <div>
+          <FormLabel>Description</FormLabel>
+          <FormTextarea value={description} onChange={(e) => setDescription(e.target.value)} rows={2} placeholder="Brief project description..." />
+        </div>
+        <div className="flex items-center justify-end gap-3 pt-2">
+          <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
+          <Button type="submit" loading={submitting}>{submitting ? 'Adding...' : 'Add Project'}</Button>
+        </div>
+      </form>
+    </ModalShell>
   );
 }

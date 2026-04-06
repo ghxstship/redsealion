@@ -2,12 +2,15 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { formatCurrency, statusColor } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
+import { formatCurrency, formatDate, formatLabel, statusColor } from '@/lib/utils';
 import { useSelection } from '@/hooks/useSelection';
 import { useSort } from '@/hooks/useSort';
 import BulkActionBar from '@/components/shared/BulkActionBar';
-import ExportButton from '@/components/shared/ExportButton';
+import DataExportMenu from '@/components/shared/DataExportMenu';
+import DataImportDialog from '@/components/shared/DataImportDialog';
 import SortableHeader from '@/components/shared/SortableHeader';
+import ConfirmDialog from '@/components/shared/ConfirmDialog';
 
 interface InvoiceRow {
   id: string;
@@ -31,28 +34,16 @@ const tabs: { key: Tab; label: string }[] = [
   { key: 'overdue', label: 'Overdue' },
 ];
 
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-}
 
-function formatStatus(status: string): string {
-  return status.split('_').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-}
 
-const EXPORT_COLUMNS = [
-  { key: 'invoice_number' as const, label: 'Invoice #' },
-  { key: 'client_name' as const, label: 'Client' },
-  { key: 'type' as const, label: 'Type' },
-  { key: 'status' as const, label: 'Status' },
-  { key: 'total' as const, label: 'Amount' },
-  { key: 'amount_paid' as const, label: 'Paid' },
-  { key: 'issue_date' as const, label: 'Issue Date' },
-  { key: 'due_date' as const, label: 'Due Date' },
-];
+
 
 export default function InvoiceTabs({ invoices }: { invoices: InvoiceRow[] }) {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<Tab>('all');
   const [search, setSearch] = useState('');
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [showImport, setShowImport] = useState(false);
 
   const filtered = useMemo(() => {
     let result = invoices;
@@ -74,7 +65,13 @@ export default function InvoiceTabs({ invoices }: { invoices: InvoiceRow[] }) {
 
   async function handleBulkVoid(ids: string[]) {
     await Promise.all(ids.map((id) => fetch(`/api/invoices/${id}/void`, { method: 'POST' })));
-    window.location.reload();
+    router.refresh();
+  }
+
+  async function handleDeleteInvoice(id: string) {
+    await fetch(`/api/invoices/${id}`, { method: 'DELETE' });
+    setDeleteId(null);
+    router.refresh();
   }
 
   return (
@@ -110,7 +107,13 @@ export default function InvoiceTabs({ invoices }: { invoices: InvoiceRow[] }) {
           onChange={(e) => setSearch(e.target.value)}
           className="w-full max-w-xs rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10"
         />
-        <ExportButton data={filtered} columns={EXPORT_COLUMNS} filename="invoices-export" />
+        <div className="flex items-center gap-3">
+          <button onClick={() => setShowImport(true)} className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M7 2v10M3 8l4 4 4-4" /></svg>
+            Import
+          </button>
+          <DataExportMenu data={filtered} entityKey="invoices" filename="invoices-export" entityType="Invoices" />
+        </div>
       </div>
 
       {/* Bulk bar */}
@@ -144,6 +147,7 @@ export default function InvoiceTabs({ invoices }: { invoices: InvoiceRow[] }) {
                 <th className="px-6 py-3"><SortableHeader label="Amount" field="total_amount" currentSort={sort} onSort={handleSort} /></th>
                 <th className="px-6 py-3"><SortableHeader label="Paid" field="amount_paid" currentSort={sort} onSort={handleSort} /></th>
                 <th className="px-6 py-3"><SortableHeader label="Due Date" field="due_date" currentSort={sort} onSort={handleSort} /></th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted w-16"><span className="sr-only">Actions</span></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -160,20 +164,52 @@ export default function InvoiceTabs({ invoices }: { invoices: InvoiceRow[] }) {
                     <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary capitalize">{inv.type}</span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColor(inv.status)}`}>{formatStatus(inv.status)}</span>
+                    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColor(inv.status)}`}>{formatLabel(inv.status)}</span>
                   </td>
                   <td className="px-6 py-4 text-right text-sm font-medium tabular-nums text-foreground">{formatCurrency(inv.total)}</td>
                   <td className="px-6 py-4 text-right text-sm tabular-nums text-text-secondary">{formatCurrency(inv.amount_paid)}</td>
                   <td className="px-6 py-4 text-right text-sm text-text-muted">{formatDate(inv.due_date)}</td>
+                  <td className="px-6 py-4">
+                    <button
+                      onClick={() => setDeleteId(inv.id)}
+                      className="text-text-muted hover:text-red-600 transition-colors"
+                      title="Delete invoice"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                        <path d="M2 4h10M5 4V3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1M9 4v7a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4" />
+                      </svg>
+                    </button>
+                  </td>
                 </tr>
               ))}
               {sorted.length === 0 && (
-                <tr><td colSpan={8} className="px-6 py-12 text-center text-sm text-text-muted">No invoices match your filters.</td></tr>
+                <tr><td colSpan={9} className="px-6 py-12 text-center text-sm text-text-muted">No invoices match your filters.</td></tr>
               )}
             </tbody>
           </table>
         </div>
       </div>
+
+      {deleteId && (
+        <ConfirmDialog
+          open
+          title="Delete Invoice"
+          message="Are you sure you want to delete this invoice? This action cannot be undone."
+          confirmLabel="Delete"
+          variant="danger"
+          onConfirm={() => handleDeleteInvoice(deleteId)}
+          onCancel={() => setDeleteId(null)}
+        />
+      )}
+
+      <DataImportDialog
+        open={showImport}
+        onClose={() => setShowImport(false)}
+        entityType="Invoices"
+        entityKey="invoices"
+        apiEndpoint="/api/invoices"
+        onComplete={() => router.refresh()}
+      />
     </>
   );
 }

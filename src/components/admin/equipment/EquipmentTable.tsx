@@ -5,10 +5,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useSort } from '@/hooks/useSort';
 import { useSelection } from '@/hooks/useSelection';
-import ExportButton from '@/components/shared/ExportButton';
+import DataExportMenu from '@/components/shared/DataExportMenu';
+import DataImportDialog from '@/components/shared/DataImportDialog';
 import SortableHeader from '@/components/shared/SortableHeader';
 import BulkActionBar from '@/components/shared/BulkActionBar';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
+import { formatLabel } from '@/lib/utils';
+import StatusBadge, { EQUIPMENT_STATUS_COLORS } from '@/components/ui/StatusBadge';
 
 interface EquipmentItem {
   id: string;
@@ -20,30 +23,17 @@ interface EquipmentItem {
   reservation_count: number;
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  available: 'bg-green-50 text-green-700',
-  deployed: 'bg-blue-50 text-blue-700',
-  reserved: 'bg-yellow-50 text-yellow-700',
-  maintenance: 'bg-red-50 text-red-700',
-};
 
-function formatLabel(s: string): string {
-  return s.split('_').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-}
 
-const EXPORT_COLUMNS = [
-  { key: 'name' as const, label: 'Name' },
-  { key: 'category' as const, label: 'Category' },
-  { key: 'status' as const, label: 'Status' },
-  { key: 'current_location' as const, label: 'Location' },
-  { key: 'serial_number' as const, label: 'Serial #' },
-  { key: 'reservation_count' as const, label: 'Reservations' },
-];
+
+
+
 
 export default function EquipmentTable({ equipment }: { equipment: EquipmentItem[] }) {
   const router = useRouter();
   const [search, setSearch] = useState('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
+  const [showImport, setShowImport] = useState(false);
 
   const filtered = useMemo(() => {
     if (!search) return equipment;
@@ -90,7 +80,11 @@ export default function EquipmentTable({ equipment }: { equipment: EquipmentItem
             onChange={(e) => setSearch(e.target.value)}
             className="w-full max-w-xs rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10"
           />
-          <ExportButton data={sorted} columns={EXPORT_COLUMNS} filename="equipment-export" />
+          <button onClick={() => setShowImport(true)} className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M7 2v10M3 8l4 4 4-4" /></svg>
+            Import
+          </button>
+          <DataExportMenu data={sorted} entityKey="equipment" filename="equipment-export" entityType="Equipment" />
         </div>
       </div>
 
@@ -144,7 +138,7 @@ export default function EquipmentTable({ equipment }: { equipment: EquipmentItem
                   <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">{item.category}</span>
                 </td>
                 <td className="px-6 py-3.5">
-                  <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_COLORS[item.status] ?? 'bg-gray-100 text-gray-600'}`}>{formatLabel(item.status)}</span>
+                  <StatusBadge status={item.status} colorMap={EQUIPMENT_STATUS_COLORS} />
                 </td>
                 <td className="px-6 py-3.5 text-sm text-text-secondary">{item.current_location}</td>
                 <td className="px-6 py-3.5 text-sm tabular-nums text-text-muted">{item.serial_number ?? '\u2014'}</td>
@@ -174,6 +168,15 @@ export default function EquipmentTable({ equipment }: { equipment: EquipmentItem
           onCancel={() => setShowDeleteConfirm(null)}
         />
       )}
+
+      <DataImportDialog
+        open={showImport}
+        onClose={() => setShowImport(false)}
+        entityType="Equipment"
+        entityKey="equipment"
+        apiEndpoint="/api/assets"
+        onComplete={() => router.refresh()}
+      />
     </>
   );
 }

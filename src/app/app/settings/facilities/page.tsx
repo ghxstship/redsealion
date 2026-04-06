@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import FacilityFormModal from '@/components/admin/settings/FacilityFormModal';
 
 const facilities = [
@@ -9,6 +10,7 @@ const facilities = [
 ];
 
 export default function FacilitiesSettingsPage() {
+  const router = useRouter();
   const [showCreate, setShowCreate] = useState(false);
   return (
     <div className="max-w-2xl space-y-6">
@@ -20,7 +22,7 @@ export default function FacilitiesSettingsPage() {
         <button onClick={() => setShowCreate(true)} className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90">
           Add Facility
         </button>
-        <FacilityFormModal open={showCreate} onClose={() => setShowCreate(false)} onCreated={() => window.location.reload()} />
+        <FacilityFormModal open={showCreate} onClose={() => setShowCreate(false)} onCreated={() => router.refresh()} />
       </div>
 
       <div className="rounded-xl border border-border bg-white overflow-hidden">

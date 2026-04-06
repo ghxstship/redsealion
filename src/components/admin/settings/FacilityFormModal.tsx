@@ -1,6 +1,12 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
+import ModalShell from '@/components/ui/ModalShell';
+import FormLabel from '@/components/ui/FormLabel';
+import FormInput from '@/components/ui/FormInput';
+import FormSelect from '@/components/ui/FormSelect';
+import Button from '@/components/ui/Button';
+import Alert from '@/components/ui/Alert';
 
 interface FacilityFormModalProps { open: boolean; onClose: () => void; onCreated: () => void; }
 
@@ -31,55 +37,44 @@ export default function FacilityFormModal({ open, onClose, onCreated }: Facility
     finally { setSubmitting(false); }
   }
 
-  if (!open) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/40 animate-modal-backdrop" onClick={onClose} />
-      <div className="relative w-full max-w-md rounded-xl border border-border bg-white p-6 shadow-xl animate-modal-content">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-semibold text-foreground">Add Facility</h2>
-          <button onClick={onClose} className="text-text-muted hover:text-foreground transition-colors">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="5" y1="5" x2="15" y2="15" /><line x1="15" y1="5" x2="5" y2="15" /></svg>
-          </button>
-        </div>
-        {error && <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1">Facility Name</label>
-              <input type="text" required value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Warehouse A" className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1">Type</label>
-              <select value={type} onChange={(e) => setType(e.target.value)} className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10">
-                <option value="warehouse">Warehouse</option>
-                <option value="office">Office</option>
-                <option value="studio">Studio</option>
-                <option value="storage">Storage</option>
-              </select>
-            </div>
+    <ModalShell open={open} onClose={onClose} title="Add Facility" size="md">
+      {error && <Alert className="mb-4">{error}</Alert>}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <FormLabel>Facility Name</FormLabel>
+            <FormInput type="text" required value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Warehouse A" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Street</label>
-            <input type="text" value={street} onChange={(e) => setStreet(e.target.value)} placeholder="123 Main St" className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10" />
+            <FormLabel>Type</FormLabel>
+            <FormSelect value={type} onChange={(e) => setType(e.target.value)}>
+              <option value="warehouse">Warehouse</option>
+              <option value="office">Office</option>
+              <option value="studio">Studio</option>
+              <option value="storage">Storage</option>
+            </FormSelect>
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1">City</label>
-              <input type="text" value={city} onChange={(e) => setCity(e.target.value)} placeholder="New York" className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1">State</label>
-              <input type="text" value={state} onChange={(e) => setState(e.target.value)} placeholder="NY" className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10" />
-            </div>
+        </div>
+        <div>
+          <FormLabel>Street</FormLabel>
+          <FormInput type="text" value={street} onChange={(e) => setStreet(e.target.value)} placeholder="123 Main St" />
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <FormLabel>City</FormLabel>
+            <FormInput type="text" value={city} onChange={(e) => setCity(e.target.value)} placeholder="New York" />
           </div>
-          <div className="flex items-center justify-end gap-3 pt-2">
-            <button type="button" onClick={onClose} className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary">Cancel</button>
-            <button type="submit" disabled={submitting} className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90 disabled:opacity-50">{submitting ? 'Adding...' : 'Add Facility'}</button>
+          <div>
+            <FormLabel>State</FormLabel>
+            <FormInput type="text" value={state} onChange={(e) => setState(e.target.value)} placeholder="NY" />
           </div>
-        </form>
-      </div>
-    </div>
+        </div>
+        <div className="flex items-center justify-end gap-3 pt-2">
+          <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
+          <Button type="submit" loading={submitting}>{submitting ? 'Adding...' : 'Add Facility'}</Button>
+        </div>
+      </form>
+    </ModalShell>
   );
 }

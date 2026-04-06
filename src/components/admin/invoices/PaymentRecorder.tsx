@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { formatCurrencyDetailed } from '@/lib/utils';
+import FormSelect from '@/components/ui/FormSelect';
 
 interface PaymentRecorderProps {
   invoiceId: string;
@@ -86,17 +87,15 @@ export default function PaymentRecorder({
           </div>
           <div>
             <label className="block text-xs font-medium text-text-muted mb-1">Method</label>
-            <select
+            <FormSelect
               value={method}
-              onChange={(e) => setMethod(e.target.value)}
-              className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10"
-            >
+              onChange={(e) => setMethod(e.target.value)}>
               <option value="wire">Wire Transfer</option>
               <option value="check">Check</option>
               <option value="credit_card">Credit Card</option>
               <option value="ach">ACH</option>
               <option value="cash">Cash</option>
-            </select>
+            </FormSelect>
           </div>
           <div>
             <label className="block text-xs font-medium text-text-muted mb-1">Date</label>

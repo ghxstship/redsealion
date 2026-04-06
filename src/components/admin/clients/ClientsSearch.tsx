@@ -2,14 +2,15 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { formatCurrency } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
+import { formatCurrency, formatDate } from '@/lib/utils';
 import { useSelection } from '@/hooks/useSelection';
 import { useSort } from '@/hooks/useSort';
 import BulkActionBar from '@/components/shared/BulkActionBar';
-import ExportButton from '@/components/shared/ExportButton';
+import DataExportMenu from '@/components/shared/DataExportMenu';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import SortableHeader from '@/components/shared/SortableHeader';
-import ImportDialog from '@/components/shared/ImportDialog';
+import DataImportDialog from '@/components/shared/DataImportDialog';
 
 interface ClientRow {
   id: string;
@@ -21,24 +22,12 @@ interface ClientRow {
   last_activity: string;
 }
 
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
-}
 
-const EXPORT_COLUMNS = [
-  { key: 'company_name' as const, label: 'Company' },
-  { key: 'industry' as const, label: 'Industry' },
-  { key: 'tags' as const, label: 'Tags' },
-  { key: 'proposals' as const, label: 'Proposals' },
-  { key: 'total_value' as const, label: 'Total Value' },
-  { key: 'last_activity' as const, label: 'Last Activity' },
-];
+
+
 
 export default function ClientsSearch({ clients }: { clients: ClientRow[] }) {
+  const router = useRouter();
   const [search, setSearch] = useState('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
   const [showImport, setShowImport] = useState(false);
@@ -62,12 +51,12 @@ export default function ClientsSearch({ clients }: { clients: ClientRow[] }) {
     const res = await fetch(`/api/clients/${id}`, { method: 'DELETE' });
     if (!res.ok) throw new Error('Failed to delete');
     setShowDeleteConfirm(null);
-    window.location.reload();
+    router.refresh();
   }
 
   async function handleBulkDelete(ids: string[]) {
     await Promise.all(ids.map((id) => fetch(`/api/clients/${id}`, { method: 'DELETE' })));
-    window.location.reload();
+    router.refresh();
   }
 
   return (
@@ -86,7 +75,7 @@ export default function ClientsSearch({ clients }: { clients: ClientRow[] }) {
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M7 2v10M3 8l4 4 4-4" /></svg>
             Import
           </button>
-          <ExportButton data={sorted} columns={EXPORT_COLUMNS} filename="clients-export" />
+          <DataExportMenu data={sorted} entityKey="clients" filename="clients-export" entityType="Clients" />
         </div>
       </div>
 
@@ -199,17 +188,13 @@ export default function ClientsSearch({ clients }: { clients: ClientRow[] }) {
         />
       )}
 
-      <ImportDialog
+      <DataImportDialog
         open={showImport}
         onClose={() => setShowImport(false)}
         entityType="Clients"
-        targetFields={[
-          { key: 'company_name', label: 'Company Name', required: true },
-          { key: 'industry', label: 'Industry' },
-          { key: 'website', label: 'Website' },
-          { key: 'address', label: 'Address' },
-        ]}
+        entityKey="clients"
         apiEndpoint="/api/clients"
+        onComplete={() => router.refresh()}
       />
     </>
   );

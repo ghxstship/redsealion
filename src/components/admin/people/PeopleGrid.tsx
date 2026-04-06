@@ -2,9 +2,12 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { getInitials } from '@/lib/utils';
-import ExportButton from '@/components/shared/ExportButton';
-import ImportDialog from '@/components/shared/ImportDialog';
+import DataExportMenu from '@/components/shared/DataExportMenu';
+import DataImportDialog from '@/components/shared/DataImportDialog';
+import PersonEditModal from './PersonEditModal';
+import ConfirmDialog from '@/components/shared/ConfirmDialog';
 
 interface TeamMember {
   id: string;
@@ -36,24 +39,14 @@ const ROLE_BADGE_COLORS: Record<string, string> = {
   installer: 'bg-green-50 text-green-700',
 };
 
-const EXPORT_COLUMNS = [
-  { key: 'full_name' as const, label: 'Name' },
-  { key: 'email' as const, label: 'Email' },
-  { key: 'role' as const, label: 'Role' },
-  { key: 'title' as const, label: 'Title' },
-  { key: 'rate_card' as const, label: 'Rate Card' },
-];
 
-const IMPORT_FIELDS = [
-  { key: 'full_name', label: 'Full Name', required: true },
-  { key: 'email', label: 'Email', required: true },
-  { key: 'role', label: 'Role' },
-  { key: 'title', label: 'Title' },
-];
 
 export default function PeopleGrid({ members }: { members: TeamMember[] }) {
   const [search, setSearch] = useState('');
   const [showImport, setShowImport] = useState(false);
+  const [editPerson, setEditPerson] = useState<TeamMember | null>(null);
+  const [deletePerson, setDeletePerson] = useState<TeamMember | null>(null);
+  const router = useRouter();
 
   const filtered = useMemo(() => {
     if (!search) return members;
@@ -66,6 +59,17 @@ export default function PeopleGrid({ members }: { members: TeamMember[] }) {
         m.role.toLowerCase().includes(q),
     );
   }, [members, search]);
+
+  async function handleDeletePerson(person: TeamMember) {
+    const res = await fetch(`/api/settings/team/${person.id}`, { method: 'DELETE' });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      alert(data.error || 'Failed to remove team member');
+      return;
+    }
+    setDeletePerson(null);
+    router.refresh();
+  }
 
   return (
     <>
@@ -83,7 +87,7 @@ export default function PeopleGrid({ members }: { members: TeamMember[] }) {
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M7 2v10M3 8l4 4 4-4" /></svg>
             Import
           </button>
-          <ExportButton data={filtered} columns={EXPORT_COLUMNS} filename="people-export" />
+          <DataExportMenu data={filtered} entityKey="people" filename="people-export" entityType="People" />
         </div>
       </div>
 
@@ -102,54 +106,99 @@ export default function PeopleGrid({ members }: { members: TeamMember[] }) {
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((member) => (
-            <Link
+            <div
               key={member.id}
-              href={`/app/people/${member.id}`}
-              className="group rounded-xl border border-border bg-white px-6 py-5 transition-[color,background-color,border-color,opacity,box-shadow,transform] duration-normal hover:shadow-md hover:-translate-y-0.5"
+              className="group relative rounded-xl border border-border bg-white px-6 py-5 transition-[color,background-color,border-color,opacity,box-shadow,transform] duration-normal hover:shadow-md hover:-translate-y-0.5"
             >
-              <div className="flex items-start gap-4">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-bg-tertiary">
-                  <span className="text-sm font-semibold text-text-secondary">{getInitials(member.full_name)}</span>
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-foreground truncate group-hover:underline">{member.full_name}</p>
-                  <p className="text-xs text-text-muted mt-0.5 truncate">{member.title ?? member.role.replace(/_/g, ' ')}</p>
-                </div>
+              {/* Action buttons */}
+              <div className="absolute top-3 right-3 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button
+                  onClick={(e) => { e.preventDefault(); setEditPerson(member); }}
+                  className="p-1.5 rounded-md text-text-muted hover:text-foreground hover:bg-bg-secondary transition-colors"
+                  title="Edit"
+                >
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                    <path d="M10 2l2 2L5 11H3V9l7-7z" />
+                  </svg>
+                </button>
+                <button
+                  onClick={(e) => { e.preventDefault(); setDeletePerson(member); }}
+                  className="p-1.5 rounded-md text-text-muted hover:text-red-600 hover:bg-red-50 transition-colors"
+                  title="Remove"
+                >
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                    <path d="M2 4h10M5 4V3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1M9 4v7a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4" />
+                  </svg>
+                </button>
               </div>
-              <div className="mt-4 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-text-muted">Role</span>
-                  <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${ROLE_BADGE_COLORS[member.role] ?? 'bg-gray-100 text-gray-700'}`}>
-                    {ROLE_LABELS[member.role] ?? member.role}
-                  </span>
-                </div>
-                {member.facility && (
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-text-muted">Facility</span>
-                    <span className="text-xs text-foreground text-right truncate ml-4">{member.facility}</span>
+
+              <Link href={`/app/people/${member.id}`}>
+                <div className="flex items-start gap-4">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-bg-tertiary">
+                    <span className="text-sm font-semibold text-text-secondary">{getInitials(member.full_name)}</span>
                   </div>
-                )}
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-text-muted">Rate</span>
-                  <span className="text-xs font-medium text-foreground tabular-nums">{member.rate_card ?? '\u2014'}</span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium text-foreground truncate group-hover:underline">{member.full_name}</p>
+                    <p className="text-xs text-text-muted mt-0.5 truncate">{member.title ?? member.role.replace(/_/g, ' ')}</p>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-text-muted">Email</span>
-                  <span className="text-xs text-text-secondary truncate ml-4">{member.email}</span>
+                <div className="mt-4 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-text-muted">Role</span>
+                    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${ROLE_BADGE_COLORS[member.role] ?? 'bg-gray-100 text-gray-700'}`}>
+                      {ROLE_LABELS[member.role] ?? member.role}
+                    </span>
+                  </div>
+                  {member.facility && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-text-muted">Facility</span>
+                      <span className="text-xs text-foreground text-right truncate ml-4">{member.facility}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-text-muted">Rate</span>
+                    <span className="text-xs font-medium text-foreground tabular-nums">{member.rate_card ?? '\u2014'}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-text-muted">Email</span>
+                    <span className="text-xs text-text-secondary truncate ml-4">{member.email}</span>
+                  </div>
                 </div>
-              </div>
-            </Link>
+              </Link>
+            </div>
           ))}
         </div>
       )}
 
-      <ImportDialog
+      <DataImportDialog
         open={showImport}
         onClose={() => setShowImport(false)}
         entityType="People"
-        targetFields={IMPORT_FIELDS}
+        entityKey="people"
         apiEndpoint="/api/settings/team"
+        onComplete={() => router.refresh()}
       />
+
+      {editPerson && (
+        <PersonEditModal
+          open
+          person={editPerson}
+          onClose={() => setEditPerson(null)}
+          onSaved={() => { setEditPerson(null); router.refresh(); }}
+        />
+      )}
+
+      {deletePerson && (
+        <ConfirmDialog
+          open
+          title="Remove Team Member"
+          message={`Are you sure you want to remove ${deletePerson.full_name} from the organization? They will lose access to all resources.`}
+          confirmLabel="Remove"
+          variant="danger"
+          onConfirm={() => handleDeletePerson(deletePerson)}
+          onCancel={() => setDeletePerson(null)}
+        />
+      )}
     </>
   );
 }

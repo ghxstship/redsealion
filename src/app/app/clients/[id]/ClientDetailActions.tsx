@@ -60,7 +60,7 @@ export default function ClientDetailActions({ clientId, clientName }: ClientDeta
         </Link>
       </div>
 
-      <AddContactModal clientId={clientId} open={showAddContact} onClose={() => setShowAddContact(false)} />
+      <AddContactModal clientId={clientId} open={showAddContact} onClose={() => setShowAddContact(false)} onCreated={() => router.refresh()} />
       <ShareDialog open={showShare} onClose={() => setShowShare(false)} entityType="clients" entityId={clientId} entityName={clientName} />
 
       <ConfirmDialog

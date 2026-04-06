@@ -1,6 +1,12 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
+import ModalShell from '@/components/ui/ModalShell';
+import FormLabel from '@/components/ui/FormLabel';
+import FormInput from '@/components/ui/FormInput';
+import FormSelect from '@/components/ui/FormSelect';
+import Button from '@/components/ui/Button';
+import Alert from '@/components/ui/Alert';
 
 interface RecurringScheduleFormModalProps { open: boolean; onClose: () => void; onCreated: () => void; }
 const FREQUENCIES = ['weekly', 'biweekly', 'monthly', 'quarterly', 'annually'] as const;
@@ -31,47 +37,36 @@ export default function RecurringScheduleFormModal({ open, onClose, onCreated }:
     finally { setSubmitting(false); }
   }
 
-  if (!open) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/40 animate-modal-backdrop" onClick={onClose} />
-      <div className="relative w-full max-w-md rounded-xl border border-border bg-white p-6 shadow-xl animate-modal-content">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-semibold text-foreground">New Recurring Schedule</h2>
-          <button onClick={onClose} className="text-text-muted hover:text-foreground transition-colors">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="5" y1="5" x2="15" y2="15" /><line x1="15" y1="5" x2="5" y2="15" /></svg>
-          </button>
+    <ModalShell open={open} onClose={onClose} title="New Recurring Schedule" size="md">
+      {error && <Alert className="mb-4">{error}</Alert>}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <FormLabel>Client ID</FormLabel>
+          <FormInput type="text" required value={clientId} onChange={(e) => setClientId(e.target.value)} placeholder="Client UUID" />
         </div>
-        {error && <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <FormLabel>Frequency</FormLabel>
+          <FormSelect required value={frequency} onChange={(e) => setFrequency(e.target.value)}>
+            <option value="">Select frequency...</option>
+            {FREQUENCIES.map((f) => <option key={f} value={f}>{f.charAt(0).toUpperCase() + f.slice(1)}</option>)}
+          </FormSelect>
+        </div>
+        <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Client ID</label>
-            <input type="text" required value={clientId} onChange={(e) => setClientId(e.target.value)} placeholder="Client UUID" className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10" />
+            <FormLabel>Next Issue Date</FormLabel>
+            <FormInput type="date" required value={nextIssueDate} onChange={(e) => setNextIssueDate(e.target.value)} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Frequency</label>
-            <select required value={frequency} onChange={(e) => setFrequency(e.target.value)} className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10">
-              <option value="">Select frequency...</option>
-              {FREQUENCIES.map((f) => <option key={f} value={f}>{f.charAt(0).toUpperCase() + f.slice(1)}</option>)}
-            </select>
+            <FormLabel>End Date</FormLabel>
+            <FormInput type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1">Next Issue Date</label>
-              <input type="date" required value={nextIssueDate} onChange={(e) => setNextIssueDate(e.target.value)} className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1">End Date</label>
-              <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10" />
-            </div>
-          </div>
-          <div className="flex items-center justify-end gap-3 pt-2">
-            <button type="button" onClick={onClose} className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary">Cancel</button>
-            <button type="submit" disabled={submitting} className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90 disabled:opacity-50">{submitting ? 'Creating...' : 'Create Schedule'}</button>
-          </div>
-        </form>
-      </div>
-    </div>
+        </div>
+        <div className="flex items-center justify-end gap-3 pt-2">
+          <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
+          <Button type="submit" loading={submitting}>{submitting ? 'Creating...' : 'Create Schedule'}</Button>
+        </div>
+      </form>
+    </ModalShell>
   );
 }

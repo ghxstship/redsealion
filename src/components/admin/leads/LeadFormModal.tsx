@@ -1,6 +1,13 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
+import ModalShell from '@/components/ui/ModalShell';
+import FormLabel from '@/components/ui/FormLabel';
+import FormSelect from '@/components/ui/FormSelect';
+import FormTextarea from '@/components/ui/FormTextarea';
+import FormInput from '@/components/ui/FormInput';
+import Button from '@/components/ui/Button';
+import Alert from '@/components/ui/Alert';
 
 interface LeadFormModalProps {
   open: boolean;
@@ -23,15 +30,9 @@ export default function LeadFormModal({ open, onClose, onCreated }: LeadFormModa
   const [error, setError] = useState<string | null>(null);
 
   function resetForm() {
-    setContactFirstName('');
-    setContactLastName('');
-    setContactEmail('');
-    setCompanyName('');
-    setContactPhone('');
-    setSource('');
-    setEstimatedBudget('');
-    setMessage('');
-    setError(null);
+    setContactFirstName(''); setContactLastName(''); setContactEmail('');
+    setCompanyName(''); setContactPhone(''); setSource('');
+    setEstimatedBudget(''); setMessage(''); setError(null);
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -69,133 +70,64 @@ export default function LeadFormModal({ open, onClose, onCreated }: LeadFormModa
     }
   }
 
-  if (!open) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/40 animate-modal-backdrop" onClick={onClose} />
-      <div className="relative w-full max-w-lg rounded-xl border border-border bg-white p-6 shadow-xl animate-modal-content">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-semibold text-foreground">New Lead</h2>
-          <button onClick={onClose} className="text-text-muted hover:text-foreground transition-colors">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <line x1="5" y1="5" x2="15" y2="15" />
-              <line x1="15" y1="5" x2="5" y2="15" />
-            </svg>
-          </button>
+    <ModalShell open={open} onClose={onClose} title="New Lead">
+      {error && <Alert className="mb-4">{error}</Alert>}
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <FormLabel>First Name</FormLabel>
+            <FormInput type="text" required value={contactFirstName} onChange={(e) => setContactFirstName(e.target.value)} placeholder="e.g. Rachel" />
+          </div>
+          <div>
+            <FormLabel>Last Name</FormLabel>
+            <FormInput type="text" value={contactLastName} onChange={(e) => setContactLastName(e.target.value)} placeholder="e.g. Kim" />
+          </div>
+          <div>
+            <FormLabel>Email</FormLabel>
+            <FormInput type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} placeholder="rachel@example.com" />
+          </div>
         </div>
 
-        {error && (
-          <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1">First Name</label>
-              <input
-                type="text"
-                required
-                value={contactFirstName}
-                onChange={(e) => setContactFirstName(e.target.value)}
-                placeholder="e.g. Rachel"
-                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1">Last Name</label>
-              <input
-                type="text"
-                value={contactLastName}
-                onChange={(e) => setContactLastName(e.target.value)}
-                placeholder="e.g. Kim"
-                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1">Email</label>
-              <input
-                type="email"
-                value={contactEmail}
-                onChange={(e) => setContactEmail(e.target.value)}
-                placeholder="rachel@example.com"
-                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1">Company</label>
-              <input
-                type="text"
-                value={companyName}
-                onChange={(e) => setCompanyName(e.target.value)}
-                placeholder="e.g. Nike, Google"
-                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1">Phone</label>
-              <input
-                type="tel"
-                value={contactPhone}
-                onChange={(e) => setContactPhone(e.target.value)}
-                placeholder="+1 555 000 0000"
-                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1">Source</label>
-              <select
-                value={source}
-                onChange={(e) => setSource(e.target.value)}
-                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10"
-              >
-                <option value="">Select source...</option>
-                {SOURCES.map((s) => (
-                  <option key={s} value={s}>{s}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1">Est. Budget</label>
-              <input
-                type="number"
-                min={0}
-                step="1000"
-                value={estimatedBudget}
-                onChange={(e) => setEstimatedBudget(e.target.value)}
-                placeholder="50000"
-                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10"
-              />
-            </div>
-          </div>
-
+        <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Notes</label>
-            <textarea
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              rows={2}
-              placeholder="Any additional context..."
-              className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 resize-none"
-            />
+            <FormLabel>Company</FormLabel>
+            <FormInput type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="e.g. Nike, Google" />
           </div>
+          <div>
+            <FormLabel>Phone</FormLabel>
+            <FormInput type="tel" value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} placeholder="+1 555 000 0000" />
+          </div>
+        </div>
 
-          <div className="flex items-center justify-end gap-3 pt-2">
-            <button type="button" onClick={onClose} className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary">
-              Cancel
-            </button>
-            <button type="submit" disabled={submitting} className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90 disabled:opacity-50">
-              {submitting ? 'Creating...' : 'Create Lead'}
-            </button>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <FormLabel>Source</FormLabel>
+            <FormSelect value={source} onChange={(e) => setSource(e.target.value)}>
+              <option value="">Select source...</option>
+              {SOURCES.map((s) => <option key={s} value={s}>{s}</option>)}
+            </FormSelect>
           </div>
-        </form>
-      </div>
-    </div>
+          <div>
+            <FormLabel>Est. Budget</FormLabel>
+            <FormInput type="number" min={0} step="1000" value={estimatedBudget} onChange={(e) => setEstimatedBudget(e.target.value)} placeholder="50000" />
+          </div>
+        </div>
+
+        <div>
+          <FormLabel>Notes</FormLabel>
+          <FormTextarea value={message} onChange={(e) => setMessage(e.target.value)} rows={2}
+            placeholder="Any additional context..." />
+        </div>
+
+        <div className="flex items-center justify-end gap-3 pt-2">
+          <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
+          <Button type="submit" loading={submitting}>
+            {submitting ? 'Creating...' : 'Create Lead'}
+          </Button>
+        </div>
+      </form>
+    </ModalShell>
   );
 }

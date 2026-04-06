@@ -35,31 +35,34 @@ export async function POST(request: NextRequest) {
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
   const body = await request.json().catch(() => ({}));
-  const { name, type, category, proposal_id, trackable, reusable, barcode, serial_number, purchase_cost, current_location, notes } = body as Record<string, unknown>;
+  const { name, type, category, proposal_id, is_trackable, is_reusable, barcode, serial_number, acquisition_cost, current_location, description, status } = body as Record<string, unknown>;
 
   if (!name) return NextResponse.json({ error: 'name is required' }, { status: 400 });
 
   const supabase = await createClient();
 
-  const { data: asset, error } = await supabase
-    .from('assets')
-    .insert({
+  const insertData: Record<string, unknown> = {
       organization_id: perm.organizationId,
-      proposal_id: (proposal_id as string) ?? null,
       name: name as string,
       type: (type as string) ?? 'equipment',
       category: (category as string) ?? '',
-      trackable: (trackable as boolean) ?? false,
-      status: 'planned',
+      is_trackable: (is_trackable as boolean) ?? true,
+      status: (status as string) ?? 'planned',
       condition: 'new',
       deployment_count: 0,
-      reusable: (reusable as boolean) ?? false,
+      is_reusable: (is_reusable as boolean) ?? false,
       barcode: (barcode as string) ?? null,
       serial_number: (serial_number as string) ?? null,
-      purchase_cost: (purchase_cost as number) ?? null,
+      acquisition_cost: (acquisition_cost as number) ?? null,
       current_location: (current_location as Record<string, unknown>) ?? null,
-      notes: (notes as string) ?? null,
-    })
+      description: (description as string) ?? null,
+    };
+  // Only include proposal_id if explicitly provided (standalone equipment doesn't have one)
+  if (proposal_id) insertData.proposal_id = proposal_id as string;
+
+  const { data: asset, error } = await supabase
+    .from('assets')
+    .insert(insertData)
     .select()
     .single();
 

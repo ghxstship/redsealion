@@ -1,6 +1,13 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
+import ModalShell from '@/components/ui/ModalShell';
+import FormLabel from '@/components/ui/FormLabel';
+import FormSelect from '@/components/ui/FormSelect';
+import FormTextarea from '@/components/ui/FormTextarea';
+import FormInput from '@/components/ui/FormInput';
+import Button from '@/components/ui/Button';
+import Alert from '@/components/ui/Alert';
 
 interface InviteMemberModalProps {
   open: boolean;
@@ -26,10 +33,7 @@ export default function InviteMemberModal({ open, onClose, onCreated }: InviteMe
   const [error, setError] = useState<string | null>(null);
 
   function resetForm() {
-    setEmail('');
-    setRole('project_manager');
-    setPersonalMessage('');
-    setError(null);
+    setEmail(''); setRole('project_manager'); setPersonalMessage(''); setError(null);
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -63,74 +67,36 @@ export default function InviteMemberModal({ open, onClose, onCreated }: InviteMe
     }
   }
 
-  if (!open) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/40 animate-modal-backdrop" onClick={onClose} />
-      <div className="relative w-full max-w-lg rounded-xl border border-border bg-white p-6 shadow-xl animate-modal-content">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-semibold text-foreground">Invite Team Member</h2>
-          <button onClick={onClose} className="text-text-muted hover:text-foreground transition-colors">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <line x1="5" y1="5" x2="15" y2="15" />
-              <line x1="15" y1="5" x2="5" y2="15" />
-            </svg>
-          </button>
+    <ModalShell open={open} onClose={onClose} title="Invite Team Member">
+      {error && <Alert className="mb-4">{error}</Alert>}
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <FormLabel>Email Address</FormLabel>
+          <FormInput type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="colleague@company.com" />
         </div>
 
-        {error && (
-          <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
-        )}
+        <div>
+          <FormLabel>Role</FormLabel>
+          <FormSelect required value={role} onChange={(e) => setRole(e.target.value)}>
+            {ROLES.map((r) => <option key={r.value} value={r.value}>{r.label}</option>)}
+          </FormSelect>
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Email Address</label>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="colleague@company.com"
-              className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10"
-            />
-          </div>
+        <div>
+          <FormLabel>Personal Message (optional)</FormLabel>
+          <FormTextarea value={personalMessage} onChange={(e) => setPersonalMessage(e.target.value)} rows={3}
+            placeholder="Hey! I'm inviting you to join our team on FlyteDeck..." />
+        </div>
 
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Role</label>
-            <select
-              required
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10"
-            >
-              {ROLES.map((r) => (
-                <option key={r.value} value={r.value}>{r.label}</option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Personal Message (optional)</label>
-            <textarea
-              value={personalMessage}
-              onChange={(e) => setPersonalMessage(e.target.value)}
-              rows={3}
-              placeholder="Hey! I'm inviting you to join our team on FlyteDeck..."
-              className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 resize-none"
-            />
-          </div>
-
-          <div className="flex items-center justify-end gap-3 pt-2">
-            <button type="button" onClick={onClose} className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary">
-              Cancel
-            </button>
-            <button type="submit" disabled={submitting} className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90 disabled:opacity-50">
-              {submitting ? 'Sending...' : 'Send Invitation'}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        <div className="flex items-center justify-end gap-3 pt-2">
+          <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
+          <Button type="submit" loading={submitting}>
+            {submitting ? 'Sending...' : 'Send Invitation'}
+          </Button>
+        </div>
+      </form>
+    </ModalShell>
   );
 }

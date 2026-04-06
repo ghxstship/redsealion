@@ -2,11 +2,13 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { formatCurrency, statusColor } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
+import { formatCurrency, formatLabel, statusColor } from '@/lib/utils';
 import { useSelection } from '@/hooks/useSelection';
 import { useSort } from '@/hooks/useSort';
 import BulkActionBar from '@/components/shared/BulkActionBar';
-import ExportButton from '@/components/shared/ExportButton';
+import DataExportMenu from '@/components/shared/DataExportMenu';
+import DataImportDialog from '@/components/shared/DataImportDialog';
 import SortableHeader from '@/components/shared/SortableHeader';
 
 interface ExpenseRow {
@@ -18,23 +20,17 @@ interface ExpenseRow {
   status: string;
 }
 
-const EXPORT_COLUMNS = [
-  { key: 'expense_date' as const, label: 'Date' },
-  { key: 'category' as const, label: 'Category' },
-  { key: 'description' as const, label: 'Description' },
-  { key: 'amount' as const, label: 'Amount' },
-  { key: 'status' as const, label: 'Status' },
-];
+
 
 const statusFilters = ['all', 'pending', 'approved', 'rejected'] as const;
 
-function formatLabel(s: string): string {
-  return s.charAt(0).toUpperCase() + s.slice(1);
-}
+
 
 export default function ExpensesTable({ expenses }: { expenses: ExpenseRow[] }) {
+  const router = useRouter();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [showImport, setShowImport] = useState(false);
 
   const filtered = useMemo(() => {
     let result = expenses;
@@ -56,7 +52,7 @@ export default function ExpensesTable({ expenses }: { expenses: ExpenseRow[] }) 
 
   async function handleBulkDelete(ids: string[]) {
     await Promise.all(ids.map((id) => fetch(`/api/expenses/${id}`, { method: 'DELETE' })));
-    window.location.reload();
+    router.refresh();
   }
 
   return (
@@ -82,7 +78,11 @@ export default function ExpensesTable({ expenses }: { expenses: ExpenseRow[] }) 
             onChange={(e) => setSearch(e.target.value)}
             className="w-full max-w-xs rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10"
           />
-          <ExportButton data={sorted} columns={EXPORT_COLUMNS} filename="expenses-export" />
+          <button onClick={() => setShowImport(true)} className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M7 2v10M3 8l4 4 4-4" /></svg>
+            Import
+          </button>
+          <DataExportMenu data={sorted} entityKey="expenses" filename="expenses-export" entityType="Expenses" />
         </div>
       </div>
 
@@ -137,6 +137,15 @@ export default function ExpensesTable({ expenses }: { expenses: ExpenseRow[] }) 
           </table>
         </div>
       </div>
+
+      <DataImportDialog
+        open={showImport}
+        onClose={() => setShowImport(false)}
+        entityType="Expenses"
+        entityKey="expenses"
+        apiEndpoint="/api/expenses"
+        onComplete={() => router.refresh()}
+      />
     </>
   );
 }

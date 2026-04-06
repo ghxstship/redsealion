@@ -15,17 +15,17 @@ export async function PATCH(
   }
 
   const { id } = await params;
-  const body = await request.json().catch(() => ({}));
-  const { status, assigned_to, converted_to_deal_id } = body as {
-    status?: string;
-    assigned_to?: string;
-    converted_to_deal_id?: string;
-  };
+  const body = await request.json().catch(() => ({})) as Record<string, unknown>;
 
+  const allowedFields = [
+    'contact_first_name', 'contact_last_name', 'contact_email', 'contact_phone',
+    'company_name', 'source', 'event_type', 'event_date', 'estimated_budget',
+    'message', 'status', 'assigned_to', 'converted_to_deal_id',
+  ];
   const updates: Record<string, unknown> = {};
-  if (status !== undefined) updates.status = status;
-  if (assigned_to !== undefined) updates.assigned_to = assigned_to;
-  if (converted_to_deal_id !== undefined) updates.converted_to_deal_id = converted_to_deal_id;
+  for (const f of allowedFields) {
+    if (f in body) updates[f] = body[f];
+  }
 
   if (Object.keys(updates).length === 0) {
     return NextResponse.json(
