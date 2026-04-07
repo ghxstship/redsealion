@@ -47,6 +47,41 @@ export default async function ProposalJourneyPage({ params }: PageProps) {
 
   const supabase = await createClient();
 
+  // Find user's portal permission for 'proposals.approve'
+  const { data: { user } } = await supabase.auth.getUser();
+  let canApprove = false;
+
+  // Verify the proposal belongs to the org by slug
+  const { data: org } = await supabase
+    .from('organizations')
+    .select('id')
+    .eq('slug', orgSlug)
+    .single();
+
+  if (user && org) {
+    const { data: membership } = await supabase
+      .from('organization_memberships')
+      .select('roles(name)')
+      .eq('user_id', user.id)
+      .eq('organization_id', org.id)
+      .eq('status', 'active')
+      .limit(1)
+      .single();
+
+    if (membership) {
+      const rawRole = (membership.roles as unknown as { name: string } | null)?.name ?? 'org_admin';
+      const { mapDBRoleToEnum } = await import('@/lib/permissions');
+      const role = mapDBRoleToEnum(rawRole);
+
+      if (role === 'super_admin' || role === 'org_admin' || role === 'project_manager') {
+        canApprove = true;
+      } else {
+        const { getPortalPermission } = await import('@/lib/permissions');
+        canApprove = getPortalPermission(role as any, 'proposals.approve');
+      }
+    }
+  }
+
   // Fetch the proposal
   const { data: proposal } = await supabase
     .from('proposals')
@@ -58,12 +93,7 @@ export default async function ProposalJourneyPage({ params }: PageProps) {
     notFound();
   }
 
-  // Verify the proposal belongs to the org by slug
-  const { data: org } = await supabase
-    .from('organizations')
-    .select('id')
-    .eq('slug', orgSlug)
-    .single();
+
 
   if (!org || proposal.organization_id !== org.id) {
     notFound();
@@ -141,6 +171,7 @@ export default async function ProposalJourneyPage({ params }: PageProps) {
       paymentTerms={proposal.payment_terms as PaymentTerms | null}
       currency={proposal.currency}
       currentPhaseId={proposal.current_phase_id}
+      canApprove={canApprove}
     />
   );
 }

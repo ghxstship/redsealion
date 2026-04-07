@@ -32,6 +32,7 @@ interface JourneyContentProps {
   paymentTerms: PaymentTerms | null;
   currency?: string;
   currentPhaseId: string | null;
+  canApprove?: boolean;
 }
 
 export default function JourneyContent({
@@ -42,6 +43,7 @@ export default function JourneyContent({
   paymentTerms,
   currency = 'USD',
   currentPhaseId,
+  canApprove = true,
 }: JourneyContentProps) {
   // Track selected addons
   const [selectedAddonIds, setSelectedAddonIds] = useState<Set<string>>(() => {
@@ -208,6 +210,7 @@ export default function JourneyContent({
         paymentTerms={paymentTerms}
         currency={currency}
         onAccept={handleAccept}
+        canApprove={canApprove}
       />
     </div>
   );

@@ -5,6 +5,7 @@ import {
   type PermissionResource,
   type PermissionAction,
   getDefaultPermission,
+  mapDBRoleToEnum,
 } from '@/lib/permissions';
 import {
   canAccessFeature,
@@ -47,15 +48,7 @@ export async function resolveUserMembership(supabase: Awaited<ReturnType<typeof 
     : 99;
 
   // Map Harbor Master role names to legacy OrganizationRole enum
-  const role: OrganizationRole =
-    roleName === 'platform_admin' || roleName === 'platform_superadmin' ? 'super_admin'
-    : roleName === 'owner' || roleName === 'org_owner' ? 'org_admin'
-    : roleName === 'admin' || roleName === 'org_admin' ? 'org_admin'
-    : roleName === 'project_manager' ? 'project_manager'
-    : roleName === 'member' ? 'designer'
-    : roleName === 'viewer' ? 'client_viewer'
-    : roleName === 'external_collaborator' ? 'client_viewer'
-    : 'designer';
+  const role: OrganizationRole = mapDBRoleToEnum(roleName);
 
   return {
     organizationId: membership.organization_id as string,

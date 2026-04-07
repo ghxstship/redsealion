@@ -1,26 +1,24 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import Button from '@/components/ui/Button';
 import { IconPlus } from '@/components/ui/Icons';
-import EquipmentFormModal from './EquipmentFormModal';
+import { useGlobalModals } from '@/components/shared/GlobalModalProvider';
 
 export default function EquipmentHeader() {
-  const router = useRouter();
-  const [showModal, setShowModal] = useState(false);
+  const { openModal } = useGlobalModals();
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.search.includes('action=new')) {
+      openModal('equipment');
+      window.history.replaceState(null, '', window.location.pathname);
+    }
+  }, [openModal]);
 
   return (
-    <>
-      <Button onClick={() => setShowModal(true)}>
-        <IconPlus size={16} />
-        Add Equipment
-      </Button>
-      <EquipmentFormModal
-        open={showModal}
-        onClose={() => setShowModal(false)}
-        onCreated={() => router.refresh()}
-      />
-    </>
+    <Button onClick={() => openModal('equipment')}>
+      <IconPlus size={16} />
+      Add Equipment
+    </Button>
   );
 }

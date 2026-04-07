@@ -18,8 +18,8 @@ import FormSelect from '@/components/ui/FormSelect';
 import FormInput from '@/components/ui/FormInput';
 import SearchInput from '@/components/ui/SearchInput';
 import Button from '@/components/ui/Button';
-import { Upload, Settings } from 'lucide-react';
-import Tabs from '@/components/ui/Tabs';
+import { Upload, SlidersHorizontal } from 'lucide-react';
+import FilterPills from '@/components/ui/FilterPills';
 import { useEntityViews } from '@/hooks/useEntityViews';
 import { useStoredColumnConfig } from '@/hooks/useStoredColumnConfig';
 import ViewBar from '@/components/shared/ViewBar';
@@ -144,55 +144,65 @@ export default function TasksTable({ tasks }: { tasks: TaskRow[] }) {
 
   return (
     <>
-      <ViewBar
-        views={views}
-        activeViewId={activeViewId}
-        onSelectView={setActiveViewId}
-        onCreateView={(name) => createView({ name })}
-        onDeleteView={deleteView}
-        onDuplicateView={duplicateView}
-      />
-
-      {/* Status tabs */}
-      <Tabs
-        tabs={statusOptions.map((key) => ({
-          key,
-          label: key === 'all' ? 'All' : formatLabel(key),
-          count: key === 'all' ? tasks.length : tasks.filter((t) => t.status === key).length,
-        }))}
-        activeTab={statusFilter}
-        onTabChange={setStatusFilter}
-        className="mb-6"
-      />
-
-      {/* Priority filter + Search + Export */}
-      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-2">
-          <FormSelect
-            value={priorityFilter}
-            onChange={(e) => setPriorityFilter(e.target.value)}
-          >
-            {priorityOptions.map((p) => (
-              <option key={p} value={p}>
-                {p === 'all' ? 'All Priority' : formatLabel(p)}
-              </option>
-            ))}
-          </FormSelect>
-          <ActiveFilterBadge
-            count={(statusFilter !== 'all' ? 1 : 0) + (priorityFilter !== 'all' ? 1 : 0)}
-            onClearAll={() => { setStatusFilter('all'); setPriorityFilter('all'); setSearch(''); }}
+      {/* Toolbar */}
+      <div className="mb-6 flex flex-col gap-4">
+        {/* Top row: Views & Main Actions */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <ViewBar
+            views={views}
+            activeViewId={activeViewId}
+            onSelectView={setActiveViewId}
+            onCreateView={(opts) => createView({
+              name: opts.name,
+              display_type: opts.display_type,
+              config: opts.inherit ? activeView?.config : {}
+            })}
+            onDeleteView={deleteView}
+            onDuplicateView={duplicateView}
           />
+          <div className="flex items-center gap-3">
+            <SearchInput value={search} onChange={setSearch} placeholder="Search tasks..." />
+            <Button variant="ghost" size="sm" onClick={() => setShowColumnConfig(true)} title="Column Settings">
+              <SlidersHorizontal size={14} />
+            </Button>
+            <Button variant="secondary" size="sm" onClick={() => setShowImport(true)}>
+              <Upload size={14} />
+              Import
+            </Button>
+            <DataExportMenu data={sorted} entityKey="tasks" filename="tasks-export" entityType="Tasks" />
+          </div>
         </div>
-        <div className="flex items-center gap-3">
-          <SearchInput value={search} onChange={setSearch} placeholder="Search tasks..." />
-          <Button variant="ghost" size="sm" onClick={() => setShowColumnConfig(true)} title="Column Settings">
-            <Settings size={14} />
-          </Button>
-          <Button variant="secondary" size="sm" onClick={() => setShowImport(true)}>
-            <Upload size={14} />
-            Import
-          </Button>
-          <DataExportMenu data={sorted} entityKey="tasks" filename="tasks-export" entityType="Tasks" />
+
+        {/* Second row: Filters */}
+        <div className="flex items-center justify-between bg-bg-secondary/30 rounded-lg p-2 border border-border">
+          <div className="flex items-center gap-4">
+            <FilterPills
+              items={statusOptions.map((key) => ({
+                key,
+                label: key === 'all' ? 'All Status' : formatLabel(key),
+                count: key === 'all' ? tasks.length : tasks.filter((t) => t.status === key).length,
+              }))}
+              activeKey={statusFilter}
+              onChange={setStatusFilter}
+            />
+            <div className="h-4 w-px bg-border hidden sm:block" />
+            <div className="flex items-center gap-2">
+              <FormSelect
+                value={priorityFilter}
+                onChange={(e) => setPriorityFilter(e.target.value)}
+              >
+                {priorityOptions.map((p) => (
+                  <option key={p} value={p}>
+                    {p === 'all' ? 'All Priority' : formatLabel(p)}
+                  </option>
+                ))}
+              </FormSelect>
+              <ActiveFilterBadge
+                count={(statusFilter !== 'all' ? 1 : 0) + (priorityFilter !== 'all' ? 1 : 0)}
+                onClearAll={() => { setStatusFilter('all'); setPriorityFilter('all'); setSearch(''); }}
+              />
+            </div>
+          </div>
         </div>
       </div>
 

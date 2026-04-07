@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { formatCurrency } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
-import ClientsSearch from '@/components/admin/clients/ClientsSearch';
+import ClientsTable from '@/components/admin/clients/ClientsTable';
 import ClientsHeader from '@/components/admin/clients/ClientsHeader';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
@@ -62,8 +62,7 @@ export default async function ClientsPage() {
         <ClientsHeader />
       </div>
 
-      {/* Search */}
-      <ClientsSearch clients={clients} />
+      <ClientsTable clients={clients} />
     </>
   );
 }

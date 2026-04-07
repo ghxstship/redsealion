@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useRef, useCallback, useMemo } from 'react';
+import { useState, useRef, useCallback, useMemo, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import Button from '@/components/ui/Button';
 import { Check, AlertTriangle } from 'lucide-react';
 import { getImportFields } from '@/lib/entity-fields';
@@ -104,8 +105,13 @@ export default function DataImportDialog({
     return eligible.slice(0, 10);
   }, [parsed, validations]);
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // --- Early return AFTER all hooks ---
-  if (!open) return null;
+  if (!open || !mounted) return null;
 
   // ---- File handling ----
 
@@ -268,7 +274,7 @@ export default function DataImportDialog({
   // RENDER
   // ======================================================================
 
-  return (
+  const modalContent = (
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4">
       <div className="fixed inset-0 bg-black/40 animate-modal-backdrop" onClick={onClose} />
       <div className="relative w-full max-w-3xl rounded-xl border border-border bg-white shadow-xl animate-modal-content my-auto">
@@ -667,4 +673,6 @@ export default function DataImportDialog({
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }

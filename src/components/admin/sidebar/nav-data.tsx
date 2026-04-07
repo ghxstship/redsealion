@@ -60,12 +60,69 @@ export const navSections: NavSection[] = [
         ),
       },
       {
+        label: 'Favorites',
+        href: '/app/favorites',
+        icon: (
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="9 2 11.16 6.38 16 7.08 12.5 10.5 13.33 15.32 9 13.04 4.67 15.32 5.5 10.5 2 7.08 6.84 6.38 9 2" />
+          </svg>
+        ),
+      },
+      {
         label: 'AI Assistant',
         href: '/app/ai',
         feature: 'ai_assistant',
         icon: (
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M9 2l.8 2.8a4.5 4.5 0 0 0 3.4 3.4L16 9l-2.8.8a4.5 4.5 0 0 0-3.4 3.4L9 16l-.8-2.8a4.5 4.5 0 0 0-3.4-3.4L2 9l2.8-.8a4.5 4.5 0 0 0 3.4-3.4L9 2Z" />
+          </svg>
+        ),
+      },
+      {
+        label: 'My Schedule',
+        href: '/app/my-schedule',
+        feature: 'calendar',
+        icon: (
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="2" y="3" width="14" height="13" rx="1" />
+            <line x1="2" y1="7" x2="16" y2="7" />
+            <line x1="6" y1="1" x2="6" y2="4" />
+            <line x1="12" y1="1" x2="12" y2="4" />
+            <path d="M6 11h6" />
+            <path d="M6 14h4" />
+          </svg>
+        ),
+      },
+      {
+        label: 'My Tasks',
+        href: '/app/my-tasks',
+        feature: 'tasks',
+        icon: (
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="9" cy="9" r="7" />
+            <path d="M6 9.5l2 2 4-4" />
+          </svg>
+        ),
+      },
+      {
+        label: 'My Inbox',
+        href: '/app/my-inbox',
+        icon: (
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M1 8h4l2 3h4l2-3h4v7a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V8Z" />
+            <path d="M1 8V3a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v5" />
+          </svg>
+        ),
+      },
+      {
+        label: 'My Documents',
+        href: '/app/my-documents',
+        icon: (
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M11 2H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V6Z" />
+            <path d="M11 2v4h4" />
+            <line x1="7" y1="10" x2="11" y2="10" />
+            <line x1="7" y1="13" x2="13" y2="13" />
           </svg>
         ),
       },
@@ -96,7 +153,7 @@ export const navSections: NavSection[] = [
     items: [
       { label: 'Calendar', href: '/app/calendar', feature: 'calendar', icon: (<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="14" height="13" rx="1" /><line x1="2" y1="7" x2="16" y2="7" /><line x1="6" y1="1" x2="6" y2="4" /><line x1="12" y1="1" x2="12" y2="4" /></svg>) },
       { label: 'Tasks', href: '/app/tasks', feature: 'tasks', icon: (<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H4a1 1 0 0 0-1 1v14l4-2 2 2 2-2 4 2V3a1 1 0 0 0-1-1Z" /><path d="M7 7l2 2 3-3" /></svg>) },
-      { label: 'Capacity', href: '/app/resources', feature: 'resource_scheduling', icon: (<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="3" width="16" height="12" rx="1" /><path d="M1 7h16" /><path d="M5 3v12" /><path d="M9 3v12" /><path d="M13 3v12" /></svg>) },
+      { label: 'Workloads', href: '/app/workloads', feature: 'resource_scheduling', icon: (<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="3" width="16" height="12" rx="1" /><path d="M1 7h16" /><path d="M5 3v12" /><path d="M9 3v12" /><path d="M13 3v12" /></svg>) },
       { label: 'Time', href: '/app/time', feature: 'time_tracking', icon: (<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="9" r="7.5" /><path d="M9 4.5V9l3 1.5" /></svg>) },
       { label: 'Advancing', href: '/app/advancing', feature: 'work_orders', icon: (<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8Z" /><path d="M9 2v6h6" /><path d="M7 12l2 2 4-4" /></svg>) },
       { label: 'Compliance', href: '/app/compliance', feature: 'crew', icon: (<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 1l6 3v5c0 4-2.5 6.5-6 8-3.5-1.5-6-4-6-8V4l6-3Z" /><path d="M7 9l2 2 3-3" /></svg>) },

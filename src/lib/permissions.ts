@@ -61,6 +61,20 @@ export const ALL_RESOURCES: PermissionResource[] = [
   'advances',
 ];
 
+/**
+ * Maps modern Harbor Master database roles to legacy Enum roles used by the permissions system.
+ */
+export function mapDBRoleToEnum(roleName: string): OrganizationRole {
+  return roleName === 'platform_admin' || roleName === 'platform_superadmin' ? 'super_admin'
+    : roleName === 'owner' || roleName === 'org_owner' ? 'org_admin'
+    : roleName === 'admin' || roleName === 'org_admin' ? 'org_admin'
+    : roleName === 'manager' || roleName === 'project_manager' ? 'project_manager'
+    : roleName === 'member' ? 'designer' // Standard internal members map to legacy designer role for capability parity
+    : roleName === 'viewer' ? 'client_viewer'
+    : roleName === 'guest' || roleName === 'external_collaborator' ? 'client_viewer'
+    : 'designer';
+}
+
 export const ALL_ACTIONS: PermissionAction[] = ['view', 'create', 'edit', 'delete'];
 
 export const INTERNAL_ROLES: OrganizationRole[] = [

@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 
 /* ─────────────────────────────────────────────────────────
@@ -69,6 +70,12 @@ interface KeyboardShortcutsModalProps {
 export default function KeyboardShortcutsModal({ open, onClose }: KeyboardShortcutsModalProps) {
   const panelRef = useRef<HTMLDivElement>(null);
 
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // Close on Escape
   useEffect(() => {
     if (!open) return;
@@ -82,9 +89,9 @@ export default function KeyboardShortcutsModal({ open, onClose }: KeyboardShortc
     return () => document.removeEventListener('keydown', onKeyDown);
   }, [open, onClose]);
 
-  if (!open) return null;
+  if (!open || !mounted) return null;
 
-  return (
+  const modalContent = (
     <div className="fixed inset-0 z-[100] flex items-center justify-center">
       {/* Backdrop */}
       <div
@@ -154,4 +161,6 @@ export default function KeyboardShortcutsModal({ open, onClose }: KeyboardShortc
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }

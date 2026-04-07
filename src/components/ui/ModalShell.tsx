@@ -1,6 +1,7 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { IconX } from '@/components/ui/Icons';
 
 interface ModalShellProps {
@@ -46,14 +47,20 @@ export default function ModalShell({
   className = '',
   children,
 }: ModalShellProps) {
-  if (!open) return null;
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!open || !mounted) return null;
 
   const panelPadding = sectioned ? '' : 'p-6';
   const headerClass = sectioned
     ? 'flex items-center justify-between px-5 py-4 border-b border-border'
     : 'flex items-center justify-between mb-6';
 
-  return (
+  const modalContent = (
     <div className={`fixed inset-0 ${zIndex} flex items-center justify-center overflow-y-auto p-4`}>
       <div className="fixed inset-0 bg-black/40 animate-modal-backdrop" onClick={onClose} />
       <div className={`relative w-full ${SIZE_MAP[size]} rounded-xl border border-border bg-white ${panelPadding} shadow-xl animate-modal-content my-auto ${className}`}>
@@ -72,4 +79,6 @@ export default function ModalShell({
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }

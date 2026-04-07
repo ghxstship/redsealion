@@ -35,7 +35,7 @@ const navigationItems: CommandItem[] = [
   // Production
   { id: 'nav-tasks', label: 'Tasks', section: 'Navigate', href: '/app/tasks', icon: <NavIcon />, keywords: ['todo', 'checklist'] },
   { id: 'nav-calendar', label: 'Calendar', section: 'Navigate', href: '/app/calendar', icon: <NavIcon />, keywords: ['schedule', 'events'] },
-  { id: 'nav-resources', label: 'Resources', section: 'Navigate', href: '/app/resources', icon: <NavIcon />, keywords: ['capacity', 'scheduling'] },
+  { id: 'nav-workloads', label: 'Workloads', section: 'Navigate', href: '/app/workloads', icon: <NavIcon />, keywords: ['capacity', 'scheduling'] },
   { id: 'nav-templates', label: 'Templates', section: 'Navigate', href: '/app/templates', icon: <NavIcon />, keywords: ['presets', 'phase templates'] },
   { id: 'nav-dispatch', label: 'Dispatch', section: 'Navigate', href: '/app/dispatch', icon: <NavIcon />, keywords: ['work orders', 'field'] },
 

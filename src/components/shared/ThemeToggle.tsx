@@ -38,6 +38,7 @@ function applyTheme(mode: ThemeMode) {
   const resolved = resolveTheme(mode);
   document.documentElement.setAttribute('data-theme', resolved);
   localStorage.setItem(STORAGE_KEY, mode);
+  window.dispatchEvent(new CustomEvent('fd-theme-change', { detail: mode }));
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -63,10 +64,28 @@ export default function ThemeToggle() {
     return () => mq.removeEventListener('change', handler);
   }, [mode]);
 
+  // Listen for global theme changes (e.g. from settings page)
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const customEvent = e as CustomEvent<ThemeMode>;
+      if (customEvent.detail && customEvent.detail !== mode) {
+        setMode(customEvent.detail);
+      }
+    };
+    window.addEventListener('fd-theme-change', handler);
+    return () => window.removeEventListener('fd-theme-change', handler);
+  }, [mode]);
+
   const cycle = useCallback(() => {
     setMode((prev) => {
       const next = THEME_META[prev].next;
       applyTheme(next);
+      // Save it to the API in the background
+      fetch('/api/settings/appearance', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ theme: next }),
+      }).catch(console.error);
       return next;
     });
   }, []);

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import type { OrganizationRole } from '@/types/database';
-import { getPortalPermission } from '@/lib/permissions';
+import { getPortalPermission, mapDBRoleToEnum } from '@/lib/permissions';
 
 /**
  * Guard a portal-facing API route. Verifies the user is a client role
@@ -39,7 +39,8 @@ export async function requirePortalPermission(
   }
 
   const roleData = membership.roles as unknown as { name: string } | null;
-  const role = (roleData?.name ?? 'org_admin') as OrganizationRole;
+  const rawRole = roleData?.name ?? 'org_admin';
+  const role = mapDBRoleToEnum(rawRole) as OrganizationRole;
 
   // Admin roles always have access (they can view the portal too)
   if (role === 'super_admin' || role === 'org_admin' || role === 'project_manager') {

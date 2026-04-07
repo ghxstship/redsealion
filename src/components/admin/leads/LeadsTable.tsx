@@ -14,11 +14,11 @@ import { formatLabel, formatCurrency, formatDate } from '@/lib/utils';
 import StatusBadge, { LEAD_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import LeadEditModal from './LeadEditModal';
 import SearchInput from '@/components/ui/SearchInput';
-import Tabs from '@/components/ui/Tabs';
+import FilterPills from '@/components/ui/FilterPills';
 import Button from '@/components/ui/Button';
 import { computeLeadScore, scoreBarColor, scoreTierClasses } from '@/lib/leads/lead-scoring';
 import Tooltip from '@/components/ui/Tooltip';
-import { Upload, Settings } from 'lucide-react';
+import { Upload, SlidersHorizontal } from 'lucide-react';
 import { useEntityViews } from '@/hooks/useEntityViews';
 import { useStoredColumnConfig } from '@/hooks/useStoredColumnConfig';
 import ViewBar from '@/components/shared/ViewBar';
@@ -121,38 +121,46 @@ export default function LeadsTable({ leads }: { leads: Lead[] }) {
 
   return (
     <>
-      <ViewBar
-        views={views}
-        activeViewId={activeViewId}
-        onSelectView={setActiveViewId}
-        onCreateView={(name) => createView({ name })}
-        onDeleteView={deleteView}
-        onDuplicateView={duplicateView}
-      />
-      {/* Status tabs */}
-      <Tabs
-        tabs={STATUS_TAB_KEYS.map((tab) => ({
-          key: tab,
-          label: formatLabel(tab),
-          count: tab === 'all' ? leads.length : leads.filter((l) => l.status === tab).length,
-        }))}
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-        className="mb-6"
-      />
+      {/* Toolbar */}
+      <div className="mb-6 flex flex-col gap-4">
+        {/* Top row: Views & Main Actions */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <ViewBar
+            views={views}
+            activeViewId={activeViewId}
+            onSelectView={setActiveViewId}
+            onCreateView={(opts) => createView({
+              name: opts.name,
+              display_type: opts.display_type,
+              config: opts.inherit ? activeView?.config : {}
+            })}
+            onDeleteView={deleteView}
+            onDuplicateView={duplicateView}
+          />
+          <div className="flex items-center gap-3">
+            <SearchInput value={search} onChange={setSearch} placeholder="Search leads..." />
+            <Button variant="ghost" size="sm" onClick={() => setShowColumnConfig(true)} title="Column Settings">
+              <SlidersHorizontal size={14} />
+            </Button>
+            <Button variant="secondary" size="sm" onClick={() => setShowImport(true)}>
+              <Upload size={14} />
+              Import
+            </Button>
+            <DataExportMenu data={sorted as unknown as Record<string, unknown>[]} entityKey="leads" filename="leads-export" entityType="Leads" />
+          </div>
+        </div>
 
-      {/* Search + export */}
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <SearchInput value={search} onChange={setSearch} placeholder="Search leads..." />
-        <div className="flex items-center gap-3">
-          <Button variant="ghost" size="sm" onClick={() => setShowColumnConfig(true)} title="Column Settings">
-            <Settings size={14} />
-          </Button>
-          <Button variant="secondary" size="sm" onClick={() => setShowImport(true)}>
-            <Upload size={14} />
-            Import
-          </Button>
-          <DataExportMenu data={sorted as unknown as Record<string, unknown>[]} entityKey="leads" filename="leads-export" entityType="Leads" />
+        {/* Second row: Filters */}
+        <div className="flex items-center justify-between bg-bg-secondary/30 rounded-lg p-2 border border-border">
+          <FilterPills
+            items={STATUS_TAB_KEYS.map((tab) => ({
+              key: tab,
+              label: formatLabel(tab),
+              count: tab === 'all' ? leads.length : leads.filter((l) => l.status === tab).length,
+            }))}
+            activeKey={activeTab}
+            onChange={setActiveTab}
+          />
         </div>
       </div>
 

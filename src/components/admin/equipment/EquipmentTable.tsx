@@ -15,7 +15,7 @@ import { formatLabel } from '@/lib/utils';
 import StatusBadge, { EQUIPMENT_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import SearchInput from '@/components/ui/SearchInput';
 import Button from '@/components/ui/Button';
-import { Upload, Settings } from 'lucide-react';
+import { Upload, SlidersHorizontal } from 'lucide-react';
 import { useEntityViews } from '@/hooks/useEntityViews';
 import { useStoredColumnConfig } from '@/hooks/useStoredColumnConfig';
 import ViewBar from '@/components/shared/ViewBar';
@@ -98,26 +98,32 @@ export default function EquipmentTable({ equipment }: { equipment: EquipmentItem
 
   return (
     <>
-      <ViewBar
-        views={views}
-        activeViewId={activeViewId}
-        onSelectView={setActiveViewId}
-        onCreateView={(name) => createView({ name })}
-        onDeleteView={deleteView}
-        onDuplicateView={duplicateView}
-      />
-      {/* Search + Export */}
-      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <SearchInput value={search} onChange={setSearch} placeholder="Search equipment..." />
-        <div className="flex items-center gap-3">
-          <Button variant="ghost" size="sm" onClick={() => setShowColumnConfig(true)} title="Column Settings">
-            <Settings size={14} />
-          </Button>
-          <Button variant="secondary" size="sm" onClick={() => setShowImport(true)}>
-            <Upload size={14} />
-            Import
-          </Button>
-          <DataExportMenu data={sorted} entityKey="equipment" filename="equipment-export" entityType="Equipment" />
+      {/* Toolbar */}
+      <div className="mb-6 flex flex-col gap-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <ViewBar
+            views={views}
+            activeViewId={activeViewId}
+            onSelectView={setActiveViewId}
+            onCreateView={(opts) => createView({
+              name: opts.name,
+              display_type: opts.display_type,
+              config: opts.inherit ? activeView?.config : {}
+            })}
+            onDeleteView={deleteView}
+            onDuplicateView={duplicateView}
+          />
+          <div className="flex items-center gap-3">
+            <SearchInput value={search} onChange={setSearch} placeholder="Search equipment..." />
+            <Button variant="ghost" size="sm" onClick={() => setShowColumnConfig(true)} title="Column Settings">
+              <SlidersHorizontal size={14} />
+            </Button>
+            <Button variant="secondary" size="sm" onClick={() => setShowImport(true)}>
+              <Upload size={14} />
+              Import
+            </Button>
+            <DataExportMenu data={sorted} entityKey="equipment" filename="equipment-export" entityType="Equipment" />
+          </div>
         </div>
       </div>
 

@@ -48,7 +48,10 @@ export default function AppearanceSettingsPage() {
     fetch('/api/settings/appearance')
       .then((r) => r.json())
       .then((data) => {
-        if (data.theme) setTheme(data.theme);
+        if (data.theme) {
+          setTheme(data.theme);
+          applyThemeLocally(data.theme);
+        }
         if (typeof data.sidebar_collapsed === 'boolean') setSidebarCollapsed(data.sidebar_collapsed);
         if (data.default_calendar_view) setCalendarView(data.default_calendar_view);
         if (data.density) setDensity(data.density);
@@ -56,6 +59,15 @@ export default function AppearanceSettingsPage() {
       })
       .catch(() => setLoaded(true));
   }, []);
+
+  function applyThemeLocally(mode: Theme) {
+    const resolved = mode === 'system' 
+      ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+      : mode;
+    document.documentElement.setAttribute('data-theme', resolved);
+    localStorage.setItem('fd_theme', mode);
+    window.dispatchEvent(new CustomEvent('fd-theme-change', { detail: mode }));
+  }
 
   async function handleSave() {
     setSaving(true);
@@ -92,7 +104,10 @@ export default function AppearanceSettingsPage() {
             <button
               key={opt.value}
               type="button"
-              onClick={() => setTheme(opt.value)}
+              onClick={() => {
+                setTheme(opt.value);
+                applyThemeLocally(opt.value);
+              }}
               className={`flex flex-col items-center gap-2 rounded-xl border-2 px-4 py-5 transition-[color,background-color,border-color,opacity,box-shadow] ${
                 theme === opt.value
                   ? 'border-foreground ring-2 ring-foreground/10'

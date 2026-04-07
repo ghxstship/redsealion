@@ -70,14 +70,14 @@ export const features = [
   },
   {
     category: 'OPERATIONS',
-    title: 'Resource Scheduling',
-    headline: "See your team's capacity at a glance",
+    title: 'Workload Management',
+    headline: "See your team's workloads at a glance",
     description:
       'Assign the right people to the right projects at the right time. Prevent overallocation and identify availability gaps before they become production bottlenecks.',
     bullets: [
       'Utilization heat maps across your entire team',
       'Drag-and-drop scheduling on a visual timeline',
-      'Capacity planning for upcoming projects',
+      'Workload planning for upcoming projects',
       'Availability calendar with leave and conflict detection',
     ],
     visual: 'Resource Calendar',
@@ -168,7 +168,7 @@ export const comparisonRows = [
   'Production Billing',
   'Client Portal',
   'Time Tracking',
-  'Resource Scheduling',
+  'Workload Management',
   'CRM & Pipeline',
   'Integrations',
 ];
@@ -178,7 +178,7 @@ export const comparisonData: Record<string, [boolean, boolean, boolean]> = {
   'Production Billing': [true, false, false],
   'Client Portal': [true, false, false],
   'Time Tracking': [true, false, true],
-  'Resource Scheduling': [true, false, true],
+  'Workload Management': [true, false, true],
   'CRM & Pipeline': [true, false, false],
   Integrations: [true, false, true],
 };
@@ -210,6 +210,6 @@ export const faqs = [
   },
   {
     question: 'What makes FlyteDeck different from generic project management tools?',
-    answer: 'Generic PM tools are built for software teams, not production companies. FlyteDeck is purpose-built for experiential production with features like interactive proposals, production-specific billing, client portals, resource scheduling with utilization heat maps, and an AI assistant that understands production terminology and workflows.',
+    answer: 'Generic PM tools are built for software teams, not production companies. FlyteDeck is purpose-built for experiential production with features like interactive proposals, production-specific billing, client portals, workload management with utilization heat maps, and an AI assistant that understands production terminology and workflows.',
   },
 ];

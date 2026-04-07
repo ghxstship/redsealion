@@ -71,7 +71,8 @@ export default function LeadFormModal({ open, onClose, onCreated }: LeadFormModa
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          contact_name: [contactFirstName, contactLastName].filter(Boolean).join(' '),
+          contact_first_name: contactFirstName,
+          contact_last_name: contactLastName,
           contact_email: contactEmail || undefined,
           company_name: companyName || undefined,
           contact_phone: contactPhone || undefined,

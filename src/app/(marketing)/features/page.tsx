@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Features',
   description:
-    'Explore FlyteDeck features: interactive proposals, CRM, invoicing, time tracking, resource scheduling, budgeting, profitability, integrations, and AI — built for experiential production.',
+    'Explore FlyteDeck features: interactive proposals, CRM, invoicing, time tracking, workload management, budgeting, profitability, integrations, and AI — built for experiential production.',
 };
 
 interface Feature {
@@ -101,12 +101,12 @@ const categories: FeatureCategory[] = [
           'One-click timer, weekly timesheets, and manager approvals tied directly to projects and budgets.',
       },
       {
-        title: 'Resource Scheduling',
+        title: 'Workload Management',
         description:
           'Team allocation with utilization tracking to balance workloads across your crew.',
       },
       {
-        title: 'Capacity Planning',
+        title: 'Utilization Tracking',
         description:
           'See availability gaps before they become problems so you can plan hires or freelancers ahead of time.',
       },

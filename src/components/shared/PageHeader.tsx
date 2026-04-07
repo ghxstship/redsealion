@@ -51,7 +51,7 @@ export default function PageHeader({
 
   return (
     <>
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">{title}</h1>
           {subtitle && (

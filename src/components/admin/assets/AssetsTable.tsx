@@ -15,8 +15,12 @@ import RowActionMenu from '@/components/shared/RowActionMenu';
 import ActiveFilterBadge from '@/components/shared/ActiveFilterBadge';
 import SearchInput from '@/components/ui/SearchInput';
 import Button from '@/components/ui/Button';
-import Tabs from '@/components/ui/Tabs';
-import { Upload } from 'lucide-react';
+import FilterPills from '@/components/ui/FilterPills';
+import { Upload, SlidersHorizontal } from 'lucide-react';
+import { useEntityViews } from '@/hooks/useEntityViews';
+import { useStoredColumnConfig } from '@/hooks/useStoredColumnConfig';
+import ViewBar from '@/components/shared/ViewBar';
+import ColumnConfigPanel from '@/components/shared/ColumnConfigPanel';
 
 interface AssetRow {
   id: string;
@@ -46,6 +50,37 @@ export default function AssetsTable({ assets }: { assets: AssetRow[] }) {
   const [statusFilter, setStatusFilter] = useState('all');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
   const [showImport, setShowImport] = useState(false);
+  const [showColumnConfig, setShowColumnConfig] = useState(false);
+
+  const {
+    views,
+    activeView,
+    activeViewId,
+    setActiveViewId,
+    createView,
+    updateView,
+    deleteView,
+    duplicateView,
+  } = useEntityViews({ entityType: 'assets' });
+
+  const {
+    columns,
+    isVisible,
+    rowHeight,
+    setColumns,
+    setRowHeight,
+  } = useStoredColumnConfig({
+    baseColumns: [
+      { key: 'name', label: 'Name' },
+      { key: 'type', label: 'Type' },
+      { key: 'status', label: 'Status' },
+      { key: 'condition', label: 'Condition' },
+      { key: 'location_name', label: 'Location' },
+      { key: 'current_value', label: 'Value' },
+    ],
+    activeView,
+    onUpdateView: updateView,
+  });
 
   const filtered = useMemo(() => {
     let result = assets;
@@ -77,28 +112,46 @@ export default function AssetsTable({ assets }: { assets: AssetRow[] }) {
 
   return (
     <>
-      <Tabs
-        tabs={statusFilters.map((f) => ({
-          key: f,
-          label: f === 'all' ? 'All' : formatStatus(f),
-          count: f === 'all' ? assets.length : assets.filter((a) => a.status === f).length,
-        }))}
-        activeTab={statusFilter}
-        onTabChange={setStatusFilter}
-        className="mb-6"
-      />
-
-      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap items-center gap-2">
-          <ActiveFilterBadge count={activeFilterCount} onClearAll={() => { setStatusFilter('all'); setSearch(''); }} />
+      {/* Toolbar */}
+      <div className="mb-6 flex flex-col gap-4">
+        {/* Top row: Views & Main Actions */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <ViewBar
+            views={views}
+            activeViewId={activeViewId}
+            onSelectView={setActiveViewId}
+            onCreateView={(opts) => createView({
+              name: opts.name,
+              display_type: opts.display_type,
+              config: opts.inherit ? activeView?.config : {}
+            })}
+            onDeleteView={deleteView}
+            onDuplicateView={duplicateView}
+          />
+          <div className="flex items-center gap-3">
+            <SearchInput value={search} onChange={setSearch} placeholder="Search assets..." />
+            <Button variant="ghost" size="sm" onClick={() => setShowColumnConfig(true)} title="Column Settings">
+              <SlidersHorizontal size={14} />
+            </Button>
+            <Button variant="secondary" size="sm" onClick={() => setShowImport(true)}>
+              <Upload size={14} />
+              Import
+            </Button>
+            <DataExportMenu data={sorted as unknown as Record<string, unknown>[]} entityKey="assets" filename="assets-export" entityType="Assets" />
+          </div>
         </div>
-        <div className="flex items-center gap-3">
-          <SearchInput value={search} onChange={setSearch} placeholder="Search assets..." />
-          <Button variant="secondary" size="sm" onClick={() => setShowImport(true)}>
-            <Upload size={14} />
-            Import
-          </Button>
-          <DataExportMenu data={sorted} entityKey="assets" filename="assets-export" entityType="Assets" />
+
+        {/* Second row: Filters */}
+        <div className="flex items-center justify-between bg-bg-secondary/30 rounded-lg p-2 border border-border">
+          <FilterPills
+            items={statusFilters.map((f) => ({
+              key: f,
+              label: f === 'all' ? 'All' : formatStatus(f),
+              count: f === 'all' ? assets.length : assets.filter((a) => a.status === f).length,
+            }))}
+            activeKey={statusFilter}
+            onChange={setStatusFilter}
+          />
         </div>
       </div>
 
@@ -131,12 +184,12 @@ export default function AssetsTable({ assets }: { assets: AssetRow[] }) {
                   <th className="px-4 py-3 text-left w-10">
                     <input type="checkbox" checked={isAllSelected} ref={(el) => { if (el) el.indeterminate = isSomeSelected; }} onChange={toggleAll} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
                   </th>
-                  <th className="px-6 py-3"><SortableHeader label="Name" field="name" currentSort={sort} onSort={handleSort} /></th>
-                  <th className="px-6 py-3"><SortableHeader label="Type" field="type" currentSort={sort} onSort={handleSort} /></th>
-                  <th className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></th>
-                  <th className="px-6 py-3"><SortableHeader label="Condition" field="condition" currentSort={sort} onSort={handleSort} /></th>
-                  <th className="px-6 py-3"><SortableHeader label="Location" field="location_name" currentSort={sort} onSort={handleSort} /></th>
-                  <th className="px-6 py-3"><SortableHeader label="Value" field="current_value" currentSort={sort} onSort={handleSort} /></th>
+                  {isVisible('name') && <th className="px-6 py-3"><SortableHeader label="Name" field="name" currentSort={sort} onSort={handleSort} /></th>}
+                  {isVisible('type') && <th className="px-6 py-3"><SortableHeader label="Type" field="type" currentSort={sort} onSort={handleSort} /></th>}
+                  {isVisible('status') && <th className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></th>}
+                  {isVisible('condition') && <th className="px-6 py-3"><SortableHeader label="Condition" field="condition" currentSort={sort} onSort={handleSort} /></th>}
+                  {isVisible('location_name') && <th className="px-6 py-3"><SortableHeader label="Location" field="location_name" currentSort={sort} onSort={handleSort} /></th>}
+                  {isVisible('current_value') && <th className="px-6 py-3"><SortableHeader label="Value" field="current_value" currentSort={sort} onSort={handleSort} /></th>}
                   <th className="px-6 py-3 w-12"><span className="sr-only">Actions</span></th>
                 </tr>
               </thead>
@@ -146,18 +199,24 @@ export default function AssetsTable({ assets }: { assets: AssetRow[] }) {
                     <td className="px-4 py-3.5">
                       <input type="checkbox" checked={isSelected(asset.id)} onChange={() => toggle(asset.id)} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
                     </td>
-                    <td className="px-6 py-3.5">
-                      <Link href={`/app/assets/${asset.id}`} className="text-sm font-medium text-foreground hover:underline">{asset.name}</Link>
-                    </td>
-                    <td className="px-6 py-3.5 text-sm text-text-secondary">{asset.type}</td>
-                    <td className="px-6 py-3.5">
-                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColor(asset.status)}`}>{formatStatus(asset.status)}</span>
-                    </td>
-                    <td className="px-6 py-3.5">
-                      <span className={`text-sm font-medium capitalize ${conditionColors[asset.condition] ?? 'text-text-muted'}`}>{asset.condition}</span>
-                    </td>
-                    <td className="px-6 py-3.5 text-sm text-text-secondary">{asset.location_name ?? '\u2014'}</td>
-                    <td className="px-6 py-3.5 text-right text-sm font-medium tabular-nums text-foreground">{formatCurrency(asset.current_value ?? 0)}</td>
+                    {isVisible('name') && (
+                      <td className="px-6 py-3.5">
+                        <Link href={`/app/assets/${asset.id}`} className="text-sm font-medium text-foreground hover:underline">{asset.name}</Link>
+                      </td>
+                    )}
+                    {isVisible('type') && <td className="px-6 py-3.5 text-sm text-text-secondary">{asset.type}</td>}
+                    {isVisible('status') && (
+                      <td className="px-6 py-3.5">
+                        <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColor(asset.status)}`}>{formatStatus(asset.status)}</span>
+                      </td>
+                    )}
+                    {isVisible('condition') && (
+                      <td className="px-6 py-3.5">
+                        <span className={`text-sm font-medium capitalize ${conditionColors[asset.condition] ?? 'text-text-muted'}`}>{asset.condition}</span>
+                      </td>
+                    )}
+                    {isVisible('location_name') && <td className="px-6 py-3.5 text-sm text-text-secondary">{asset.location_name ?? '\u2014'}</td>}
+                    {isVisible('current_value') && <td className="px-6 py-3.5 text-right text-sm font-medium tabular-nums text-foreground">{formatCurrency(asset.current_value ?? 0)}</td>}
                     <td className="px-6 py-3.5">
                       <RowActionMenu actions={[
                         { label: 'View', onClick: () => router.push(`/app/assets/${asset.id}`) },
@@ -177,6 +236,15 @@ export default function AssetsTable({ assets }: { assets: AssetRow[] }) {
       )}
 
       <DataImportDialog open={showImport} onClose={() => setShowImport(false)} entityType="Assets" entityKey="assets" apiEndpoint="/api/assets" onComplete={() => router.refresh()} />
+
+      <ColumnConfigPanel
+        open={showColumnConfig}
+        onClose={() => setShowColumnConfig(false)}
+        columns={columns}
+        onColumnsChange={setColumns}
+        rowHeight={rowHeight}
+        onRowHeightChange={setRowHeight}
+      />
     </>
   );
 }

@@ -98,7 +98,6 @@ export async function POST(request: NextRequest) {
       estimated_budget: estimated_budget ?? null,
       message: message || null,
       status: 'new',
-      created_by: perm.userId,
     })
     .select()
     .single();

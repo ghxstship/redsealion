@@ -1812,6 +1812,117 @@ export type Database = {
           },
         ]
       }
+      asset_audit_log: {
+        Row: {
+          asset_id: string
+          change_source: string
+          changed_at: string
+          changed_by: string | null
+          field_changed: string
+          id: string
+          new_value: string | null
+          old_value: string | null
+          organization_id: string
+        }
+        Insert: {
+          asset_id: string
+          change_source?: string
+          changed_at?: string
+          changed_by?: string | null
+          field_changed: string
+          id?: string
+          new_value?: string | null
+          old_value?: string | null
+          organization_id: string
+        }
+        Update: {
+          asset_id?: string
+          change_source?: string
+          changed_at?: string
+          changed_by?: string | null
+          field_changed?: string
+          id?: string
+          new_value?: string | null
+          old_value?: string | null
+          organization_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "asset_audit_log_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "asset_audit_log_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      asset_depreciation_entries: {
+        Row: {
+          accumulated_depreciation: number
+          asset_id: string
+          book_value: number
+          created_at: string
+          depreciation_amount: number
+          entry_date: string
+          id: string
+          is_posted: boolean
+          method: string
+          notes: string | null
+          organization_id: string
+          period_number: number
+        }
+        Insert: {
+          accumulated_depreciation: number
+          asset_id: string
+          book_value: number
+          created_at?: string
+          depreciation_amount: number
+          entry_date: string
+          id?: string
+          is_posted?: boolean
+          method: string
+          notes?: string | null
+          organization_id: string
+          period_number: number
+        }
+        Update: {
+          accumulated_depreciation?: number
+          asset_id?: string
+          book_value?: number
+          created_at?: string
+          depreciation_amount?: number
+          entry_date?: string
+          id?: string
+          is_posted?: boolean
+          method?: string
+          notes?: string | null
+          organization_id?: string
+          period_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "asset_depreciation_entries_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "asset_depreciation_entries_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       asset_location_history: {
         Row: {
           asset_id: string
@@ -1863,6 +1974,107 @@ export type Database = {
           },
         ]
       }
+      asset_templates: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string | null
+          default_depreciation_method: string | null
+          default_fields: Json
+          default_useful_life_months: number | null
+          id: string
+          name: string
+          organization_id: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          default_depreciation_method?: string | null
+          default_fields?: Json
+          default_useful_life_months?: number | null
+          id?: string
+          name: string
+          organization_id: string
+          type?: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          default_depreciation_method?: string | null
+          default_fields?: Json
+          default_useful_life_months?: number | null
+          id?: string
+          name?: string
+          organization_id?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "asset_templates_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      asset_value_history: {
+        Row: {
+          asset_id: string
+          change_type: string
+          changed_at: string
+          changed_by: string | null
+          id: string
+          new_value: number | null
+          organization_id: string
+          previous_value: number | null
+          reason: string | null
+        }
+        Insert: {
+          asset_id: string
+          change_type: string
+          changed_at?: string
+          changed_by?: string | null
+          id?: string
+          new_value?: number | null
+          organization_id: string
+          previous_value?: number | null
+          reason?: string | null
+        }
+        Update: {
+          asset_id?: string
+          change_type?: string
+          changed_at?: string
+          changed_by?: string | null
+          id?: string
+          new_value?: number | null
+          organization_id?: string
+          previous_value?: number | null
+          reason?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "asset_value_history_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "asset_value_history_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       assets: {
         Row: {
           acquisition_cost: number | null
@@ -1876,24 +2088,38 @@ export type Database = {
           depreciation_method: string | null
           description: string | null
           dimensions: string | null
+          disposal_method: string | null
+          disposal_proceeds: number | null
+          disposal_reason: string | null
+          disposed_at: string | null
           id: string
+          insurance_expiry_date: string | null
+          insurance_policy_number: string | null
           is_return_required: boolean
           is_reusable: boolean
           is_trackable: boolean
+          last_failure_at: string | null
           material: string | null
           max_deployments: number | null
           name: string
           organization_id: string
           photo_urls: string[]
           proposal_id: string | null
+          purchase_order_id: string | null
+          retired_at: string | null
           serial_number: string | null
           source_addon_id: string | null
           source_deliverable_id: string | null
           status: Database["public"]["Enums"]["asset_status"]
           storage_requirements: string | null
+          total_usage_hours: number | null
           type: string
           updated_at: string
           useful_life_months: number | null
+          vendor_name: string | null
+          warranty_end_date: string | null
+          warranty_provider: string | null
+          warranty_start_date: string | null
           weight: string | null
         }
         Insert: {
@@ -1908,24 +2134,38 @@ export type Database = {
           depreciation_method?: string | null
           description?: string | null
           dimensions?: string | null
+          disposal_method?: string | null
+          disposal_proceeds?: number | null
+          disposal_reason?: string | null
+          disposed_at?: string | null
           id?: string
+          insurance_expiry_date?: string | null
+          insurance_policy_number?: string | null
           is_return_required?: boolean
           is_reusable?: boolean
           is_trackable?: boolean
+          last_failure_at?: string | null
           material?: string | null
           max_deployments?: number | null
           name: string
           organization_id: string
           photo_urls?: string[]
           proposal_id?: string | null
+          purchase_order_id?: string | null
+          retired_at?: string | null
           serial_number?: string | null
           source_addon_id?: string | null
           source_deliverable_id?: string | null
           status?: Database["public"]["Enums"]["asset_status"]
           storage_requirements?: string | null
+          total_usage_hours?: number | null
           type: string
           updated_at?: string
           useful_life_months?: number | null
+          vendor_name?: string | null
+          warranty_end_date?: string | null
+          warranty_provider?: string | null
+          warranty_start_date?: string | null
           weight?: string | null
         }
         Update: {
@@ -1940,24 +2180,38 @@ export type Database = {
           depreciation_method?: string | null
           description?: string | null
           dimensions?: string | null
+          disposal_method?: string | null
+          disposal_proceeds?: number | null
+          disposal_reason?: string | null
+          disposed_at?: string | null
           id?: string
+          insurance_expiry_date?: string | null
+          insurance_policy_number?: string | null
           is_return_required?: boolean
           is_reusable?: boolean
           is_trackable?: boolean
+          last_failure_at?: string | null
           material?: string | null
           max_deployments?: number | null
           name?: string
           organization_id?: string
           photo_urls?: string[]
           proposal_id?: string | null
+          purchase_order_id?: string | null
+          retired_at?: string | null
           serial_number?: string | null
           source_addon_id?: string | null
           source_deliverable_id?: string | null
           status?: Database["public"]["Enums"]["asset_status"]
           storage_requirements?: string | null
+          total_usage_hours?: number | null
           type?: string
           updated_at?: string
           useful_life_months?: number | null
+          vendor_name?: string | null
+          warranty_end_date?: string | null
+          warranty_provider?: string | null
+          warranty_start_date?: string | null
           weight?: string | null
         }
         Relationships: [
@@ -1973,6 +2227,13 @@ export type Database = {
             columns: ["proposal_id"]
             isOneToOne: false
             referencedRelation: "proposals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assets_purchase_order_id_fkey"
+            columns: ["purchase_order_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_orders"
             referencedColumns: ["id"]
           },
           {
@@ -4254,12 +4515,14 @@ export type Database = {
           amount: number
           approved_at: string | null
           approved_by: string | null
+          billed_invoice_id: string | null
           category: string
           created_at: string
           currency: string
           description: string | null
           expense_date: string
           id: string
+          is_billable: boolean
           organization_id: string
           proposal_id: string | null
           receipt_url: string | null
@@ -4271,12 +4534,14 @@ export type Database = {
           amount: number
           approved_at?: string | null
           approved_by?: string | null
+          billed_invoice_id?: string | null
           category: string
           created_at?: string
           currency?: string
           description?: string | null
           expense_date?: string
           id?: string
+          is_billable?: boolean
           organization_id: string
           proposal_id?: string | null
           receipt_url?: string | null
@@ -4288,12 +4553,14 @@ export type Database = {
           amount?: number
           approved_at?: string | null
           approved_by?: string | null
+          billed_invoice_id?: string | null
           category?: string
           created_at?: string
           currency?: string
           description?: string | null
           expense_date?: string
           id?: string
+          is_billable?: boolean
           organization_id?: string
           proposal_id?: string | null
           receipt_url?: string | null
@@ -4307,6 +4574,13 @@ export type Database = {
             columns: ["approved_by"]
             isOneToOne: false
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expenses_billed_invoice_id_fkey"
+            columns: ["billed_invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
             referencedColumns: ["id"]
           },
           {
@@ -4743,6 +5017,101 @@ export type Database = {
           },
         ]
       }
+      inventory_count_lines: {
+        Row: {
+          asset_id: string
+          condition_observed: string | null
+          count_id: string
+          counted_quantity: number | null
+          expected_quantity: number
+          id: string
+          notes: string | null
+          variance: number | null
+        }
+        Insert: {
+          asset_id: string
+          condition_observed?: string | null
+          count_id: string
+          counted_quantity?: number | null
+          expected_quantity?: number
+          id?: string
+          notes?: string | null
+          variance?: number | null
+        }
+        Update: {
+          asset_id?: string
+          condition_observed?: string | null
+          count_id?: string
+          counted_quantity?: number | null
+          expected_quantity?: number
+          id?: string
+          notes?: string | null
+          variance?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_count_lines_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_count_lines_count_id_fkey"
+            columns: ["count_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_counts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory_counts: {
+        Row: {
+          completed_at: string | null
+          count_type: string
+          counted_by: string | null
+          created_at: string
+          id: string
+          location: string | null
+          notes: string | null
+          organization_id: string
+          started_at: string | null
+          status: string
+        }
+        Insert: {
+          completed_at?: string | null
+          count_type: string
+          counted_by?: string | null
+          created_at?: string
+          id?: string
+          location?: string | null
+          notes?: string | null
+          organization_id: string
+          started_at?: string | null
+          status?: string
+        }
+        Update: {
+          completed_at?: string | null
+          count_type?: string
+          counted_by?: string | null
+          created_at?: string
+          id?: string
+          location?: string | null
+          notes?: string | null
+          organization_id?: string
+          started_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_counts_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       invitations: {
         Row: {
           accepted_at: string | null
@@ -4973,6 +5342,8 @@ export type Database = {
           phase_number: string | null
           quantity: number
           rate: number
+          tax_amount: number
+          tax_rate: number
           updated_at: string
         }
         Insert: {
@@ -4988,6 +5359,8 @@ export type Database = {
           phase_number?: string | null
           quantity?: number
           rate?: number
+          tax_amount?: number
+          tax_rate?: number
           updated_at?: string
         }
         Update: {
@@ -5003,6 +5376,8 @@ export type Database = {
           phase_number?: string | null
           quantity?: number
           rate?: number
+          tax_amount?: number
+          tax_rate?: number
           updated_at?: string
         }
         Relationships: [
@@ -5585,6 +5960,78 @@ export type Database = {
           },
         ]
       }
+      maintenance_schedules: {
+        Row: {
+          asset_id: string
+          assigned_to: string | null
+          created_at: string
+          description: string | null
+          estimated_cost: number | null
+          estimated_duration_hours: number | null
+          id: string
+          interval_days: number | null
+          interval_usage: number | null
+          is_active: boolean
+          last_triggered_at: string | null
+          maintenance_type: string
+          next_due_at: string | null
+          organization_id: string
+          schedule_type: string
+          updated_at: string
+        }
+        Insert: {
+          asset_id: string
+          assigned_to?: string | null
+          created_at?: string
+          description?: string | null
+          estimated_cost?: number | null
+          estimated_duration_hours?: number | null
+          id?: string
+          interval_days?: number | null
+          interval_usage?: number | null
+          is_active?: boolean
+          last_triggered_at?: string | null
+          maintenance_type: string
+          next_due_at?: string | null
+          organization_id: string
+          schedule_type: string
+          updated_at?: string
+        }
+        Update: {
+          asset_id?: string
+          assigned_to?: string | null
+          created_at?: string
+          description?: string | null
+          estimated_cost?: number | null
+          estimated_duration_hours?: number | null
+          id?: string
+          interval_days?: number | null
+          interval_usage?: number | null
+          is_active?: boolean
+          last_triggered_at?: string | null
+          maintenance_type?: string
+          next_due_at?: string | null
+          organization_id?: string
+          schedule_type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "maintenance_schedules_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenance_schedules_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       milestone_gates: {
         Row: {
           completed_at: string | null
@@ -6020,6 +6467,7 @@ export type Database = {
           default_member_role_id: string | null
           default_payment_terms: Json
           default_phase_template_id: string | null
+          default_tax_rate: number
           facilities: Json
           favicon_url: string | null
           first_day_of_week: number
@@ -6050,6 +6498,7 @@ export type Database = {
           subscription_tier: Database["public"]["Enums"]["subscription_tier"]
           suspended_at: string | null
           suspension_reason: string | null
+          tax_label: string
           time_format: string
           timezone: string
           updated_at: string
@@ -6065,6 +6514,7 @@ export type Database = {
           default_member_role_id?: string | null
           default_payment_terms?: Json
           default_phase_template_id?: string | null
+          default_tax_rate?: number
           facilities?: Json
           favicon_url?: string | null
           first_day_of_week?: number
@@ -6095,6 +6545,7 @@ export type Database = {
           subscription_tier?: Database["public"]["Enums"]["subscription_tier"]
           suspended_at?: string | null
           suspension_reason?: string | null
+          tax_label?: string
           time_format?: string
           timezone?: string
           updated_at?: string
@@ -6110,6 +6561,7 @@ export type Database = {
           default_member_role_id?: string | null
           default_payment_terms?: Json
           default_phase_template_id?: string | null
+          default_tax_rate?: number
           facilities?: Json
           favicon_url?: string | null
           first_day_of_week?: number
@@ -6140,6 +6592,7 @@ export type Database = {
           subscription_tier?: Database["public"]["Enums"]["subscription_tier"]
           suspended_at?: string | null
           suspension_reason?: string | null
+          tax_label?: string
           time_format?: string
           timezone?: string
           updated_at?: string
@@ -6993,62 +7446,164 @@ export type Database = {
           },
         ]
       }
+      project_portals: {
+        Row: {
+          amenities: Json | null
+          call_time: string | null
+          check_in_instructions: string | null
+          created_at: string
+          faqs: Json | null
+          id: string
+          is_published: boolean
+          organization_id: string
+          parking_instructions: string | null
+          portal_type: Database["public"]["Enums"]["portal_type"]
+          pre_arrival_checklist: Json | null
+          project_id: string
+          rideshare_instructions: string | null
+          transit_instructions: string | null
+          updated_at: string
+        }
+        Insert: {
+          amenities?: Json | null
+          call_time?: string | null
+          check_in_instructions?: string | null
+          created_at?: string
+          faqs?: Json | null
+          id?: string
+          is_published?: boolean
+          organization_id: string
+          parking_instructions?: string | null
+          portal_type: Database["public"]["Enums"]["portal_type"]
+          pre_arrival_checklist?: Json | null
+          project_id: string
+          rideshare_instructions?: string | null
+          transit_instructions?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amenities?: Json | null
+          call_time?: string | null
+          check_in_instructions?: string | null
+          created_at?: string
+          faqs?: Json | null
+          id?: string
+          is_published?: boolean
+          organization_id?: string
+          parking_instructions?: string | null
+          portal_type?: Database["public"]["Enums"]["portal_type"]
+          pre_arrival_checklist?: Json | null
+          project_id?: string
+          rideshare_instructions?: string | null
+          transit_instructions?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_portals_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_portals_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       projects: {
         Row: {
           allow_external_members: boolean
+          capacity: number | null
           created_at: string
           created_by: string | null
+          daily_hours: string | null
           default_member_role_id: string | null
           description: string | null
+          doors_time: string | null
           ends_at: string | null
+          general_email: string | null
           id: string
           invite_code_enabled: boolean
           max_members: number | null
           name: string
           organization_id: string
+          presenter: string | null
+          project_code: string | null
           require_admin_approval: boolean
+          site_map_url: string | null
           slug: string
           starts_at: string | null
           status: string
+          subtitle: string | null
           updated_at: string
+          venue_address: Json | null
+          venue_name: string | null
+          venue_phone: string | null
           visibility: string
         }
         Insert: {
           allow_external_members?: boolean
+          capacity?: number | null
           created_at?: string
           created_by?: string | null
+          daily_hours?: string | null
           default_member_role_id?: string | null
           description?: string | null
+          doors_time?: string | null
           ends_at?: string | null
+          general_email?: string | null
           id?: string
           invite_code_enabled?: boolean
           max_members?: number | null
           name: string
           organization_id: string
+          presenter?: string | null
+          project_code?: string | null
           require_admin_approval?: boolean
+          site_map_url?: string | null
           slug: string
           starts_at?: string | null
           status?: string
+          subtitle?: string | null
           updated_at?: string
+          venue_address?: Json | null
+          venue_name?: string | null
+          venue_phone?: string | null
           visibility?: string
         }
         Update: {
           allow_external_members?: boolean
+          capacity?: number | null
           created_at?: string
           created_by?: string | null
+          daily_hours?: string | null
           default_member_role_id?: string | null
           description?: string | null
+          doors_time?: string | null
           ends_at?: string | null
+          general_email?: string | null
           id?: string
           invite_code_enabled?: boolean
           max_members?: number | null
           name?: string
           organization_id?: string
+          presenter?: string | null
+          project_code?: string | null
           require_admin_approval?: boolean
+          site_map_url?: string | null
           slug?: string
           starts_at?: string | null
           status?: string
+          subtitle?: string | null
           updated_at?: string
+          venue_address?: Json | null
+          venue_name?: string | null
+          venue_phone?: string | null
           visibility?: string
         }
         Relationships: [
@@ -7398,6 +7953,7 @@ export type Database = {
           status: string
           total_amount: number
           updated_at: string
+          vendor_id: string | null
           vendor_name: string
         }
         Insert: {
@@ -7412,6 +7968,7 @@ export type Database = {
           status?: string
           total_amount?: number
           updated_at?: string
+          vendor_id?: string | null
           vendor_name: string
         }
         Update: {
@@ -7426,6 +7983,7 @@ export type Database = {
           status?: string
           total_amount?: number
           updated_at?: string
+          vendor_id?: string | null
           vendor_name?: string
         }
         Relationships: [
@@ -7441,6 +7999,13 @@ export type Database = {
             columns: ["proposal_id"]
             isOneToOne: false
             referencedRelation: "proposals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_orders_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
             referencedColumns: ["id"]
           },
         ]
@@ -9283,6 +9848,80 @@ export type Database = {
           },
         ]
       }
+      vendors: {
+        Row: {
+          address: Json | null
+          category: string | null
+          created_at: string
+          currency: string
+          display_name: string | null
+          email: string | null
+          id: string
+          name: string
+          notes: string | null
+          organization_id: string
+          payment_terms: string | null
+          phone: string | null
+          status: string
+          tags: string[]
+          tax_id: string | null
+          updated_at: string
+          w9_on_file: boolean
+          w9_received_date: string | null
+          website: string | null
+        }
+        Insert: {
+          address?: Json | null
+          category?: string | null
+          created_at?: string
+          currency?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          organization_id: string
+          payment_terms?: string | null
+          phone?: string | null
+          status?: string
+          tags?: string[]
+          tax_id?: string | null
+          updated_at?: string
+          w9_on_file?: boolean
+          w9_received_date?: string | null
+          website?: string | null
+        }
+        Update: {
+          address?: Json | null
+          category?: string | null
+          created_at?: string
+          currency?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          organization_id?: string
+          payment_terms?: string | null
+          phone?: string | null
+          status?: string
+          tags?: string[]
+          tax_id?: string | null
+          updated_at?: string
+          w9_on_file?: boolean
+          w9_received_date?: string | null
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendors_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       venues: {
         Row: {
           activation_dates: Json | null
@@ -9945,6 +10584,13 @@ export type Database = {
         | "complete"
         | "skipped"
       po_status: "draft" | "sent" | "acknowledged" | "received" | "cancelled"
+      portal_type:
+        | "production"
+        | "operations"
+        | "food_beverage"
+        | "talent"
+        | "guest"
+        | "temporary"
       pricing_strategy: "fixed" | "open" | "tiered" | "market" | "computed"
       procurement_method:
         | "rent"
@@ -10353,6 +10999,14 @@ export const Constants = {
         "skipped",
       ],
       po_status: ["draft", "sent", "acknowledged", "received", "cancelled"],
+      portal_type: [
+        "production",
+        "operations",
+        "food_beverage",
+        "talent",
+        "guest",
+        "temporary",
+      ],
       pricing_strategy: ["fixed", "open", "tiered", "market", "computed"],
       procurement_method: [
         "rent",
@@ -10443,448 +11097,3 @@ export const Constants = {
   },
 } as const
 
-// ═══════════════════════════════════════════════════════════════════════
-// Convenience type aliases
-// ═══════════════════════════════════════════════════════════════════════
-
-export type OrganizationRole = Database['public']['Enums']['org_role'];
-export type SubscriptionTier = Database['public']['Enums']['subscription_tier'] | 'portal';
-export type ProposalStatus = Database['public']['Enums']['proposal_status'];
-export type PhaseStatus = Database['public']['Enums']['phase_status'];
-export type MilestoneStatus = Database['public']['Enums']['milestone_status'];
-export type RequirementStatus = Database['public']['Enums']['requirement_status'];
-export type RequirementAssignee = Database['public']['Enums']['requirement_assignee'];
-export type TermsDocumentStatus = Database['public']['Enums']['terms_document_status'];
-export type InvoiceType = Database['public']['Enums']['invoice_type'];
-export type InvoiceStatus = Database['public']['Enums']['invoice_status'];
-export type TaskStatus = Database['public']['Enums']['task_status'];
-export type TaskPriority = Database['public']['Enums']['task_priority'];
-export type ExpenseStatus = Database['public']['Enums']['expense_status'];
-export type PoStatus = Database['public']['Enums']['po_status'];
-export type TimesheetStatus = Database['public']['Enums']['timesheet_status'];
-export type TimeOffStatus = Database['public']['Enums']['time_off_status'];
-export type ChangeOrderStatus = Database['public']['Enums']['change_order_status'];
-export type CustomFieldType = Database['public']['Enums']['custom_field_type'];
-export type AssetStatus = Database['public']['Enums']['asset_status'];
-export type AssetCondition = Database['public']['Enums']['asset_condition'];
-export type ActorType = Database['public']['Enums']['actor_type'];
-export type ContactRole = Database['public']['Enums']['contact_role'];
-export type CreativeReferenceType = Database['public']['Enums']['creative_reference_type'];
-export type DealStage = Database['public']['Enums']['deal_stage'];
-export type ESignStatus = Database['public']['Enums']['esign_status'];
-export type LeadStatus = Database['public']['Enums']['lead_status'];
-export type PricingStrategy = Database['public']['Enums']['pricing_strategy'];
-export type ProcurementMethod = Database['public']['Enums']['procurement_method'];
-export type UnitOfMeasure = Database['public']['Enums']['unit_of_measure'];
-export type ModifierSelectionType = Database['public']['Enums']['modifier_selection_type'];
-export type AdvanceMode = Database['public']['Enums']['advance_mode'];
-export type AdvanceStatus = Database['public']['Enums']['advance_status'];
-export type AdvanceType = Database['public']['Enums']['advance_type'];
-export type AdvancePriority = Database['public']['Enums']['advance_priority'];
-export type FulfillmentStatus = Database['public']['Enums']['fulfillment_status'];
-export type FulfillmentType = Database['public']['Enums']['fulfillment_type'];
-export type CollaboratorRole = Database['public']['Enums']['collaborator_role'];
-export type InviteStatus = Database['public']['Enums']['invite_status'];
-export type AccessCodeType = Database['public']['Enums']['access_code_type'];
-
-export type Organization = Database['public']['Tables']['organizations']['Row'];
-export type User = Database['public']['Tables']['users']['Row'];
-export type Client = Database['public']['Tables']['clients']['Row'];
-export type ClientContact = Database['public']['Tables']['client_contacts']['Row'];
-export type Proposal = Database['public']['Tables']['proposals']['Row'];
-export type Phase = Database['public']['Tables']['phases']['Row'];
-export type PhaseDeliverable = Database['public']['Tables']['phase_deliverables']['Row'];
-export type PhaseAddon = Database['public']['Tables']['phase_addons']['Row'];
-export type Invoice = Database['public']['Tables']['invoices']['Row'];
-export type InvoiceLineItem = Database['public']['Tables']['invoice_line_items']['Row'];
-export type Asset = Database['public']['Tables']['assets']['Row'];
-export type Task = Database['public']['Tables']['tasks']['Row'];
-export type Deal = Database['public']['Tables']['deals']['Row'];
-export type Lead = Database['public']['Tables']['leads']['Row'];
-export type TimeEntry = Database['public']['Tables']['time_entries']['Row'];
-export type Expense = Database['public']['Tables']['expenses']['Row'];
-export type ProductionAdvance = Database['public']['Tables']['production_advances']['Row'];
-export type AdvanceLineItem = Database['public']['Tables']['advance_line_items']['Row'];
-export type AdvanceCollaborator = Database['public']['Tables']['advance_collaborators']['Row'];
-export type AdvanceAccessCode = Database['public']['Tables']['advance_access_codes']['Row'];
-export type AdvanceComment = Database['public']['Tables']['advance_comments']['Row'];
-export type AdvanceStatusHistoryEntry = Database['public']['Tables']['advance_status_history']['Row'];
-export type AdvanceCatalogItem = Database['public']['Tables']['advance_catalog_items']['Row'];
-export type AdvanceCatalogVariant = Database['public']['Tables']['advance_catalog_variants']['Row'];
-export type AdvanceCategoryGroup = Database['public']['Tables']['advance_category_groups']['Row'];
-export type AdvanceCategory = Database['public']['Tables']['advance_categories']['Row'];
-export type AdvanceSubcategory = Database['public']['Tables']['advance_subcategories']['Row'];
-export type AdvanceModifierList = Database['public']['Tables']['advance_modifier_lists']['Row'];
-export type AdvanceModifierOption = Database['public']['Tables']['advance_modifier_options']['Row'];
-export type AdvanceTemplate = Database['public']['Tables']['advance_templates']['Row'];
-export type AdvanceInventoryLocation = Database['public']['Tables']['advance_inventory_locations']['Row'];
-export type AdvanceInventoryLevel = Database['public']['Tables']['advance_inventory_levels']['Row'];
-
-// Additional table rows
-export type Venue = Database['public']['Tables']['venues']['Row'];
-export type MilestoneGate = Database['public']['Tables']['milestone_gates']['Row'];
-export type MilestoneRequirement = Database['public']['Tables']['milestone_requirements']['Row'];
-export type TeamAssignment = Database['public']['Tables']['team_assignments']['Row'];
-export type ChangeOrder = Database['public']['Tables']['change_orders']['Row'];
-export type CrewProfile = Database['public']['Tables']['crew_profiles']['Row'];
-export type CrewAvailability = Database['public']['Tables']['crew_availability']['Row'];
-export type CrewBooking = Database['public']['Tables']['crew_bookings']['Row'];
-export type AssetLocationHistory = Database['public']['Tables']['asset_location_history']['Row'];
-export type InvoicePayment = Database['public']['Tables']['invoice_payments']['Row'];
-export type TermsDocument = Database['public']['Tables']['terms_documents']['Row'];
-export type PhasePortfolioLink = Database['public']['Tables']['phase_portfolio_links']['Row'];
-export type ActivityLog = Database['public']['Tables']['activity_log']['Row'];
-export type CreativeReference = Database['public']['Tables']['creative_references']['Row'];
-export type PhaseTemplate = Database['public']['Tables']['phase_templates']['Row'];
-export type PortfolioItem = Database['public']['Tables']['portfolio_library']['Row'];
-export type TaskComment = Database['public']['Tables']['task_comments']['Row'];
-export type TaskDependency = Database['public']['Tables']['task_dependencies']['Row'];
-export type CustomFieldDefinition = Database['public']['Tables']['custom_field_definitions']['Row'];
-export type CustomFieldValue = Database['public']['Tables']['custom_field_values']['Row'];
-export type ProposalComment = Database['public']['Tables']['proposal_comments']['Row'];
-export type FileAttachment = Database['public']['Tables']['file_attachments']['Row'];
-export type ExportConfiguration = Database['public']['Tables']['export_configurations']['Row'];
-export type SalesPipeline = Database['public']['Tables']['sales_pipelines']['Row'];
-export type DealActivity = Database['public']['Tables']['deal_activities']['Row'];
-export type ClientInteraction = Database['public']['Tables']['client_interactions']['Row'];
-export type EmailNotification = Database['public']['Tables']['email_notifications']['Row'];
-export type CreditNote = Database['public']['Tables']['credit_notes']['Row'];
-export type RecurringInvoiceSchedule = Database['public']['Tables']['recurring_invoice_schedules']['Row'];
-export type CustomReport = Database['public']['Tables']['custom_reports']['Row'];
-export type Timesheet = Database['public']['Tables']['timesheets']['Row'];
-export type TimePolicy = Database['public']['Tables']['time_policies']['Row'];
-export type ResourceAllocation = Database['public']['Tables']['resource_allocations']['Row'];
-export type CapacityOverride = Database['public']['Tables']['capacity_overrides']['Row'];
-export type ProjectBudget = Database['public']['Tables']['project_budgets']['Row'];
-export type BudgetLineItem = Database['public']['Tables']['budget_line_items']['Row'];
-export type BudgetAlert = Database['public']['Tables']['budget_alerts']['Row'];
-export type ProjectCost = Database['public']['Tables']['project_costs']['Row'];
-export type PurchaseOrder = Database['public']['Tables']['purchase_orders']['Row'];
-export type RevenueRecognition = Database['public']['Tables']['revenue_recognition']['Row'];
-export type TimeOffPolicy = Database['public']['Tables']['time_off_policies']['Row'];
-export type TimeOffBalance = Database['public']['Tables']['time_off_balances']['Row'];
-export type TimeOffRequest = Database['public']['Tables']['time_off_requests']['Row'];
-export type HolidayCalendar = Database['public']['Tables']['holiday_calendars']['Row'];
-export type OrgChartPosition = Database['public']['Tables']['org_chart_positions']['Row'];
-export type ApprovalRequest = Database['public']['Tables']['approval_requests']['Row'];
-export type CostRate = Database['public']['Tables']['cost_rates']['Row'];
-export type AiConversation = Database['public']['Tables']['ai_conversations']['Row'];
-export type Permission = Database['public']['Tables']['permission_catalog']['Row'];
-export type SsoConfiguration = Database['public']['Tables']['sso_configurations']['Row'];
-export type UserPreferences = Database['public']['Tables']['user_preferences']['Row'];
-export type ApiKey = Database['public']['Tables']['api_keys']['Row'];
-export type Tag = Database['public']['Tables']['tags']['Row'];
-export type EmailTemplate = Database['public']['Tables']['email_templates']['Row'];
-export type DocumentDefault = Database['public']['Tables']['document_defaults']['Row'];
-export type WorkOrder = Database['public']['Tables']['work_orders']['Row'];
-export type WorkOrderAssignment = Database['public']['Tables']['work_order_assignments']['Row'];
-export type JobSitePhoto = Database['public']['Tables']['job_site_photos']['Row'];
-export type CrewRating = Database['public']['Tables']['crew_ratings']['Row'];
-export type ReferralProgram = Database['public']['Tables']['referral_programs']['Row'];
-export type Referral = Database['public']['Tables']['referrals']['Row'];
-export type Campaign = Database['public']['Tables']['campaigns']['Row'];
-export type CampaignRecipient = Database['public']['Tables']['campaign_recipients']['Row'];
-export type ESignatureRequest = Database['public']['Tables']['esignature_requests']['Row'];
-export type NotificationPreference = Database['public']['Tables']['notification_preferences']['Row'];
-export type Shift = Database['public']['Tables']['shifts']['Row'];
-export type CalendarSyncConfig = Database['public']['Tables']['calendar_sync_configs']['Row'];
-export type LeadForm = Database['public']['Tables']['lead_forms']['Row'];
-export type PaymentLink = Database['public']['Tables']['payment_links']['Row'];
-export type OnboardingDocument = Database['public']['Tables']['onboarding_documents']['Row'];
-export type WarehouseTransfer = Database['public']['Tables']['warehouse_transfers']['Row'];
-export type Automation = Database['public']['Tables']['automations']['Row'];
-export type AutomationRun = Database['public']['Tables']['automation_runs']['Row'];
-export type EmailThread = Database['public']['Tables']['email_threads']['Row'];
-export type EmailMessage = Database['public']['Tables']['email_messages']['Row'];
-export type EquipmentBundle = Database['public']['Tables']['equipment_bundles']['Row'];
-export type EquipmentReservation = Database['public']['Tables']['equipment_reservations']['Row'];
-export type MaintenanceRecord = Database['public']['Tables']['maintenance_records']['Row'];
-export type ProposalScenario = Database['public']['Tables']['proposal_scenarios']['Row'];
-export type ComplianceDocument = Database['public']['Tables']['compliance_documents']['Row'];
-export type Integration = Database['public']['Tables']['integrations']['Row'];
-export type IntegrationSyncLog = Database['public']['Tables']['integration_sync_log']['Row'];
-export type WebhookEndpoint = Database['public']['Tables']['webhook_endpoints']['Row'];
-export type WebhookDelivery = Database['public']['Tables']['webhook_deliveries']['Row'];
-
-// Additional enum aliases
-export type CrewAvailabilityStatus = Database['public']['Enums']['availability_status'];
-export type CrewBookingStatus = Database['public']['Enums']['booking_status'];
-export type BookingStatus = Database['public']['Enums']['booking_status'];
-export type MaintenanceType = Database['public']['Enums']['maintenance_type'];
-export type MaintenanceStatus = Database['public']['Enums']['maintenance_status'];
-export type IntegrationStatus = Database['public']['Enums']['integration_status'];
-export type ApprovalStatus = 'pending' | 'approved' | 'rejected';
-export type RateType = Database['public']['Enums']['crew_rate_type'];
-export type OnboardingStatus = 'not_started' | 'in_progress' | 'complete';
-export type EquipmentReservationStatus = Database['public']['Enums']['reservation_status'];
-export type TransferStatus = Database['public']['Enums']['transfer_status'];
-export type NotificationChannel = 'email' | 'sms' | 'in_app';
-export type CalendarProvider = 'google' | 'outlook' | 'ical';
-export type TagEntityType = 'equipment' | 'crew' | 'project' | 'lead' | 'client';
-export type DocumentDefaultType = 'proposal' | 'invoice' | 'contract' | 'sow' | 'crew_call_sheet';
-export type DocumentDefaultSection = 'terms_and_conditions' | 'disclaimer' | 'notes' | 'scope_header' | 'scope_footer' | 'payment_instructions';
-export type WorkOrderStatus = 'draft' | 'dispatched' | 'accepted' | 'in_progress' | 'completed' | 'cancelled';
-export type WorkOrderAssignmentStatus = 'assigned' | 'accepted' | 'declined' | 'completed';
-export type PhotoType = 'before' | 'progress' | 'completion' | 'issue' | 'reference';
-export type ReferralStatus = 'pending' | 'signed_up' | 'converted' | 'rewarded' | 'expired';
-export type CampaignStatus = 'draft' | 'scheduled' | 'sending' | 'sent' | 'cancelled';
-export type CampaignRecipientStatus = 'pending' | 'sent' | 'delivered' | 'opened' | 'clicked' | 'bounced' | 'unsubscribed';
-export type DependencyType = 'finish_to_start' | 'start_to_start' | 'finish_to_finish' | 'start_to_finish';
-export type RecurrenceFrequency = 'daily' | 'weekly' | 'biweekly' | 'monthly' | 'quarterly' | 'yearly';
-export type LineItemApprovalStatus = 'pending' | 'approved' | 'rejected' | 'modified';
-export type SubmissionStatus = 'not_started' | 'in_progress' | 'submitted' | 'approved' | 'rejected';
-export type OrganizationRole_Legacy = OrganizationRole;
-
-// JSONB interface types (not table rows)
-export interface BrandConfig {
-  primaryColor: string;
-  secondaryColor: string;
-  accentColor: string;
-  backgroundColor: string;
-  fontHeading: string;
-  fontBody: string;
-  portalTitle?: string;
-  companyTagline?: string;
-  footerText?: string;
-  emailFromName?: string;
-  emailReplyTo?: string;
-}
-
-export interface Facility {
-  id: string;
-  name: string;
-  city: string;
-  state: string;
-  country: string;
-  type: string;
-  isHQ: boolean;
-}
-
-export interface PaymentTerms {
-  structure: string;
-  depositPercent: number;
-  balancePercent: number;
-  lateFeeRate?: number;
-  creditCardSurcharge?: number;
-}
-
-export interface Address {
-  street?: string;
-  city?: string;
-  state?: string;
-  zip?: string;
-  country?: string;
-}
-
-export interface VenueActivationDates {
-  start: string;
-  end: string;
-}
-
-export interface VenueLoadInStrike {
-  date: string;
-  startTime: string;
-  endTime: string;
-}
-
-export interface VenueContact {
-  name: string;
-  phone: string;
-  email: string;
-}
-
-export interface NarrativeContext {
-  brandVoice?: string;
-  audienceProfile?: string;
-  experienceGoal?: string;
-}
-
-export interface CrmExternalIds {
-  salesforce?: string;
-  hubspot?: string;
-  pipedrive?: string;
-  custom?: string;
-}
-
-export interface PmMetadata {
-  taskType?: string;
-  estimatedHours?: number;
-  assigneeRole?: string;
-  dependencies?: string[];
-}
-
-export interface AssetMetadata {
-  generates?: string;
-  trackable?: boolean;
-  reusable?: boolean;
-  dimensions?: string;
-  weight?: string;
-  material?: string;
-  storageRequirements?: string;
-}
-
-export interface ResourceMetadata {
-  requiresVehicle?: boolean;
-  vehicleType?: string;
-  requiresCrew?: boolean;
-  crewSize?: number;
-  tools?: string[];
-  requiresStaff?: boolean;
-  staffRole?: string;
-  staffQty?: number;
-  triggersProcurement?: boolean;
-}
-
-export interface FinanceTrigger {
-  triggersInvoice: boolean;
-  invoiceType?: InvoiceType;
-  percent?: number;
-}
-
-export interface TermsSection {
-  number: string;
-  title: string;
-  body: string;
-  subsections?: Array<{
-    number: string;
-    title: string;
-    body: string;
-  }>;
-}
-
-export interface PhaseTemplatePhase {
-  number: string;
-  name: string;
-  subtitle?: string;
-  defaultNarrative?: string;
-  defaultDeliverables?: Array<{
-    name: string;
-    description: string;
-    category: string;
-    unit: string;
-  }>;
-  defaultAddOns?: Array<{
-    name: string;
-    description: string;
-    category: string;
-    unit: string;
-    unitCost: number;
-  }>;
-  milestoneTemplate?: {
-    name: string;
-    requirements: Array<{
-      text: string;
-      assignee: RequirementAssignee;
-    }>;
-  };
-}
-
-export interface ExportConfig {
-  fieldMappings?: Record<string, string>;
-  apiEndpoint?: string;
-  authConfig?: Record<string, string>;
-  customFields?: Record<string, unknown>;
-}
-
-export interface AssetLocation {
-  facilityId?: string;
-  type?: string;
-  venueId?: string;
-}
-
-export interface RecurrenceRule {
-  frequency: RecurrenceFrequency;
-  interval: number;
-  days_of_week?: number[];
-  day_of_month?: number;
-  end_date?: string;
-  end_after_occurrences?: number;
-  occurrences_created?: number;
-}
-
-export interface OrgSettings {
-  timezone: string;
-  currency: string;
-  taxDefaults?: Record<string, unknown>;
-  invoicePrefix?: string;
-  proposalPrefix?: string;
-}
-
-export interface ChangeOrderLineItem {
-  description: string;
-  phase_number: string | null;
-  category: string | null;
-  qty: number;
-  unit_cost: number;
-  total: number;
-}
-
-export interface BundleItem {
-  asset_id: string;
-  quantity: number;
-}
-
-export interface LeadFormField {
-  name: string;
-  label: string;
-  type: 'text' | 'email' | 'phone' | 'textarea' | 'select' | 'date' | 'number';
-  required: boolean;
-  options?: string[];
-}
-
-export interface WarehouseTransferItem {
-  asset_id: string;
-  quantity: number;
-  condition: AssetCondition | null;
-}
-
-export interface Certification {
-  name: string;
-  issuer: string | null;
-  expires_at: string | null;
-  document_url: string | null;
-}
-
-// Expanded relation types
-export interface ProposalWithRelations extends Proposal {
-  client?: Client;
-  phases?: PhaseWithRelations[];
-  venues?: Venue[];
-  team_assignments?: (TeamAssignment & { user?: User })[];
-  terms_document?: TermsDocument;
-}
-
-export interface DealWithRelations extends Deal {
-  client?: Client;
-  proposal?: Proposal;
-  owner?: User;
-  activities?: DealActivity[];
-}
-
-export interface PhaseWithRelations extends Phase {
-  deliverables?: PhaseDeliverable[];
-  addons?: PhaseAddon[];
-  milestone_gate?: MilestoneGate & { requirements?: MilestoneRequirement[] };
-  creative_references?: CreativeReference[];
-  portfolio_links?: (PhasePortfolioLink & { portfolio_item?: PortfolioItem })[];
-}
-
-export interface CrewProfileWithUser extends CrewProfile {
-  user?: User;
-}
-
-export interface CrewBookingWithUser extends CrewBooking {
-  user?: User;
-  proposal?: Proposal;
-  venue?: Venue;
-}
-
-export interface TaskWithSubtasks extends Task {
-  subtasks?: Task[];
-  comments_count?: number;
-  assignee?: Pick<User, 'id' | 'full_name' | 'avatar_url'>;
-}
-
-export interface TaskCommentWithAuthor extends TaskComment {
-  author?: Pick<User, 'id' | 'full_name' | 'avatar_url'>;
-}

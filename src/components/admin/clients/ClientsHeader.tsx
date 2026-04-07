@@ -1,32 +1,30 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import Button from '@/components/ui/Button';
 import { IconPlus } from '@/components/ui/Icons';
-import ClientFormModal from './ClientFormModal';
 import { usePermissions } from '@/components/shared/PermissionsProvider';
+import { useGlobalModals } from '@/components/shared/GlobalModalProvider';
 
 export default function ClientsHeader() {
-  const router = useRouter();
-  const [showModal, setShowModal] = useState(false);
   const { can } = usePermissions();
+  const { openModal } = useGlobalModals();
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.search.includes('action=new')) {
+      openModal('client');
+      window.history.replaceState(null, '', window.location.pathname);
+    }
+  }, [openModal]);
 
   if (!can('clients', 'create')) {
     return null;
   }
 
   return (
-    <>
-      <Button onClick={() => setShowModal(true)}>
-        <IconPlus size={16} />
-        Add Client
-      </Button>
-      <ClientFormModal
-        open={showModal}
-        onClose={() => setShowModal(false)}
-        onCreated={() => router.refresh()}
-      />
-    </>
+    <Button onClick={() => openModal('client')}>
+      <IconPlus size={16} />
+      Add Client
+    </Button>
   );
 }

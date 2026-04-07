@@ -4,9 +4,10 @@ import PageTransition from '@/components/shared/PageTransition';
 import CommandPalette from '@/components/shared/CommandPalette';
 import { SubscriptionProvider } from '@/components/shared/SubscriptionProvider';
 import { PermissionsProvider } from '@/components/shared/PermissionsProvider';
+import { GlobalModalProvider } from '@/components/shared/GlobalModalProvider';
 import { createClient } from '@/lib/supabase/server';
 import type { SubscriptionTier, OrganizationRole } from '@/types/database';
-import { DEFAULT_PERMISSIONS } from '@/lib/permissions';
+import { DEFAULT_PERMISSIONS, mapDBRoleToEnum } from '@/lib/permissions';
 
 /* ─────────────────────────────────────────────────────────
    Server-side session context
@@ -96,22 +97,24 @@ export default async function AppLayout({
 
   return (
     <PermissionsProvider
-      role={ctx.user.role}
-      permissions={DEFAULT_PERMISSIONS[ctx.user.role as OrganizationRole] ?? {}}
+      role={mapDBRoleToEnum(ctx.user.role)}
+      permissions={DEFAULT_PERMISSIONS[mapDBRoleToEnum(ctx.user.role)] ?? {}}
     >
       <SubscriptionProvider tier={ctx.tier}>
-        <div className="flex min-h-screen bg-background">
-          <AdminSidebar user={ctx.user} />
-          <main className="flex-1 min-w-0 md:ml-64">
-            <AppHeader user={ctx.user} orgName={ctx.orgName} />
-            <div className="px-6 py-8 md:px-10 md:py-10 max-w-7xl mx-auto">
-              <PageTransition>
-                {children}
-              </PageTransition>
-            </div>
-          </main>
-        </div>
-        <CommandPalette />
+        <GlobalModalProvider>
+          <div className="flex min-h-screen bg-background">
+            <AdminSidebar user={ctx.user} />
+            <main className="flex-1 min-w-0 md:ml-64">
+              <AppHeader user={ctx.user} orgName={ctx.orgName} />
+              <div className="px-6 py-8 md:px-10 md:py-10 max-w-7xl mx-auto">
+                <PageTransition>
+                  {children}
+                </PageTransition>
+              </div>
+            </main>
+          </div>
+          <CommandPalette />
+        </GlobalModalProvider>
       </SubscriptionProvider>
     </PermissionsProvider>
   );

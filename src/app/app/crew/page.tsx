@@ -134,7 +134,7 @@ export default function CrewPage() {
         }))}
         activeTab={availabilityFilter}
         onTabChange={setAvailabilityFilter}
-        className="mt-8 mb-6"
+        className="mb-6"
       />
 
       {/* Search + Import/Export */}

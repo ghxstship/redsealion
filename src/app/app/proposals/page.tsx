@@ -1,7 +1,10 @@
-import ProposalsClient from '@/components/admin/proposals/ProposalsClient';
+import ProposalsTable from '@/components/admin/proposals/ProposalsTable';
 import { createClient } from '@/lib/supabase/server';
-import type { Proposal, Client } from '@/types/database';
+import type { Database } from '@/types/database';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+
+type Proposal = Database['public']['Tables']['proposals']['Row'];
+type Client = Database['public']['Tables']['clients']['Row'];
 
 async function getData(): Promise<{ proposals: Proposal[]; clients: Client[] }> {
   try {
@@ -36,5 +39,5 @@ const { data: proposals } = await supabase
 export default async function ProposalsPage() {
   const { proposals, clients } = await getData();
 
-  return <ProposalsClient proposals={proposals} clients={clients} />;
+  return <ProposalsTable proposals={proposals} clients={clients} />;
 }

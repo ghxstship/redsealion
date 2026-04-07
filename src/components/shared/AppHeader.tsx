@@ -8,6 +8,7 @@ import QuickActionMenu from '@/components/shared/QuickActionMenu';
 import MiniTimer from '@/components/shared/MiniTimer';
 import HelpMenu from '@/components/shared/HelpMenu';
 import ThemeToggle from '@/components/shared/ThemeToggle';
+import LocalizationMenu from '@/components/shared/LocalizationMenu';
 import KeyboardShortcutsModal from '@/components/shared/KeyboardShortcutsModal';
 
 /* ─────────────────────────────────────────────────────────
@@ -105,6 +106,7 @@ export default function AppHeader({ user, orgName }: AppHeaderProps) {
           <NotificationBell />
           <MiniTimer />
           <HelpMenu onOpenShortcuts={openShortcuts} />
+          <LocalizationMenu />
           <ThemeToggle />
 
           {/* Divider */}

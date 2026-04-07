@@ -13,6 +13,8 @@ import { ROLE_BADGE_COLORS } from '@/components/ui/StatusBadge';
 import SearchInput from '@/components/ui/SearchInput';
 import Button from '@/components/ui/Button';
 import { Upload } from 'lucide-react';
+import { useEntityViews } from '@/hooks/useEntityViews';
+import ViewBar from '@/components/shared/ViewBar';
 
 interface TeamMember {
   id: string;
@@ -42,6 +44,16 @@ export default function PeopleGrid({ members }: { members: TeamMember[] }) {
   const [deletePerson, setDeletePerson] = useState<TeamMember | null>(null);
   const router = useRouter();
 
+  const {
+    views,
+    activeView,
+    activeViewId,
+    setActiveViewId,
+    createView,
+    deleteView,
+    duplicateView,
+  } = useEntityViews({ entityType: 'people' });
+
   const filtered = useMemo(() => {
     if (!search) return members;
     const q = search.toLowerCase();
@@ -67,19 +79,34 @@ export default function PeopleGrid({ members }: { members: TeamMember[] }) {
 
   return (
     <>
-      {/* Search + Import/Export */}
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <SearchInput
-          value={search}
-          onChange={setSearch}
-          placeholder="Search people by name, email, or role..."
-        />
-        <div className="flex items-center gap-3">
-          <Button variant="secondary" size="sm" onClick={() => setShowImport(true)}>
-            <Upload size={14} />
-            Import
-          </Button>
-          <DataExportMenu data={filtered} entityKey="people" filename="people-export" entityType="People" />
+      {/* Toolbar */}
+      <div className="mb-6 flex flex-col gap-4">
+        {/* Top row: Views & Main Actions */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <ViewBar
+            views={views}
+            activeViewId={activeViewId}
+            onSelectView={setActiveViewId}
+            onCreateView={(opts) => createView({
+              name: opts.name,
+              display_type: opts.display_type,
+              config: opts.inherit ? activeView?.config : {}
+            })}
+            onDeleteView={deleteView}
+            onDuplicateView={duplicateView}
+          />
+          <div className="flex items-center gap-3">
+            <SearchInput
+              value={search}
+              onChange={setSearch}
+              placeholder="Search people..."
+            />
+            <Button variant="secondary" size="sm" onClick={() => setShowImport(true)}>
+              <Upload size={14} />
+              Import
+            </Button>
+            <DataExportMenu data={filtered as unknown as Record<string, unknown>[]} entityKey="people" filename="people-export" entityType="People" />
+          </div>
         </div>
       </div>
 

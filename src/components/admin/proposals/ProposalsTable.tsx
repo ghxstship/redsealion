@@ -1,0 +1,254 @@
+'use client';
+
+import { useState, useMemo, useCallback } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { formatCurrency, statusColor, formatLabel, formatDate } from '@/lib/utils';
+import { useSelection } from '@/hooks/useSelection';
+import { useSort } from '@/hooks/useSort';
+import BulkActionBar from '@/components/shared/BulkActionBar';
+import DataExportMenu from '@/components/shared/DataExportMenu';
+import SortableHeader from '@/components/shared/SortableHeader';
+import RowActionMenu from '@/components/shared/RowActionMenu';
+import SearchInput from '@/components/ui/SearchInput';
+import Button from '@/components/ui/Button';
+import FilterPills from '@/components/ui/FilterPills';
+import { SlidersHorizontal } from 'lucide-react';
+import { IconPlus } from '@/components/ui/Icons';
+import { useEntityViews } from '@/hooks/useEntityViews';
+import { useStoredColumnConfig } from '@/hooks/useStoredColumnConfig';
+import ViewBar from '@/components/shared/ViewBar';
+import ColumnConfigPanel from '@/components/shared/ColumnConfigPanel';
+import PageHeader from '@/components/shared/PageHeader';
+import type { Database } from '@/types/database';
+
+type Proposal = Database['public']['Tables']['proposals']['Row'];
+type Client = Database['public']['Tables']['clients']['Row'];
+
+const statusFilters = [
+  'all',
+  'draft',
+  'sent',
+  'viewed',
+  'negotiating',
+  'approved',
+  'in_production',
+  'active',
+  'complete',
+  'cancelled',
+] as const;
+
+export default function ProposalsTable({
+  proposals,
+  clients,
+}: {
+  proposals: Proposal[];
+  clients: Client[];
+}) {
+  const router = useRouter();
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [showColumnConfig, setShowColumnConfig] = useState(false);
+
+  const {
+    views,
+    activeView,
+    activeViewId,
+    setActiveViewId,
+    createView,
+    updateView,
+    deleteView,
+    duplicateView,
+  } = useEntityViews({ entityType: 'proposals' });
+
+  const {
+    columns,
+    isVisible,
+    rowHeight,
+    setColumns,
+    setRowHeight,
+  } = useStoredColumnConfig({
+    baseColumns: [
+      { key: 'name', label: 'Proposal Name' },
+      { key: 'client', label: 'Client' },
+      { key: 'status', label: 'Status' },
+      { key: 'prepared_date', label: 'Date' },
+      { key: 'total_value', label: 'Value' },
+      { key: 'probability', label: 'Probability' },
+    ],
+    activeView,
+    onUpdateView: updateView,
+  });
+
+  const clientName = useCallback(
+    (clientId: string): string =>
+      clients.find((c) => c.id === clientId)?.company_name ?? 'Unknown',
+    [clients],
+  );
+
+  const filtered = useMemo(() => {
+    let result = proposals;
+    if (statusFilter !== 'all') {
+      result = result.filter((p) => p.status === statusFilter);
+    }
+    if (search) {
+      const q = search.toLowerCase();
+      result = result.filter(
+        (p) =>
+          p.name.toLowerCase().includes(q) ||
+          clientName(p.client_id).toLowerCase().includes(q),
+      );
+    }
+    return result;
+  }, [proposals, statusFilter, search, clientName]);
+
+  const { sorted, sort, handleSort } = useSort(filtered);
+  const allIds = useMemo(() => sorted.map((p) => p.id), [sorted]);
+  const { selectedIds, isSelected, toggle, toggleAll, isAllSelected, isSomeSelected, deselectAll, count } = useSelection(allIds);
+
+  const totalPipelineValue = useMemo(
+    () => filtered.reduce((sum, p) => sum + p.total_value, 0),
+    [filtered],
+  );
+
+  async function handleBulkDelete(ids: string[]) {
+    await Promise.all(ids.map((id) => fetch(`/api/proposals/${id}`, { method: 'DELETE' })));
+    router.refresh();
+  }
+
+  return (
+    <>
+      <PageHeader
+        title="Proposals"
+        subtitle={`${filtered.length} proposal${filtered.length !== 1 ? 's' : ''} \u00B7 ${formatCurrency(totalPipelineValue)} total value`}
+      >
+        <Button href="/app/proposals/new">
+          <IconPlus size={20} />
+          New Proposal
+        </Button>
+      </PageHeader>
+
+      {/* Toolbar */}
+      <div className="mb-6 flex flex-col gap-4">
+        {/* Top row: Views & Main Actions */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <ViewBar
+            views={views}
+            activeViewId={activeViewId}
+            onSelectView={setActiveViewId}
+            onCreateView={(opts) => createView({
+              name: opts.name,
+              display_type: opts.display_type,
+              config: opts.inherit ? activeView?.config : {}
+            })}
+            onDeleteView={deleteView}
+            onDuplicateView={duplicateView}
+          />
+          <div className="flex items-center gap-3">
+            <SearchInput value={search} onChange={setSearch} placeholder="Search proposals..." />
+            <Button variant="ghost" size="sm" onClick={() => setShowColumnConfig(true)} title="Column Settings">
+              <SlidersHorizontal size={14} />
+            </Button>
+            <DataExportMenu data={sorted as unknown as Record<string, unknown>[]} entityKey="proposals" filename="proposals-export" entityType="Proposals" />
+          </div>
+        </div>
+
+        {/* Second row: Filters */}
+        <div className="flex items-center justify-between bg-bg-secondary/30 rounded-lg p-2 border border-border">
+          <FilterPills
+            items={statusFilters.map((s) => ({
+              key: s,
+              label: s === 'all' ? 'All Statuses' : formatLabel(s),
+              count: s === 'all' ? proposals.length : proposals.filter((p) => p.status === s).length,
+            }))}
+            activeKey={statusFilter}
+            onChange={setStatusFilter}
+          />
+        </div>
+      </div>
+
+      <BulkActionBar
+        selectedIds={selectedIds}
+        onDeselectAll={deselectAll}
+        entityLabel="proposal"
+        actions={[
+          {
+            label: 'Delete',
+            variant: 'danger',
+            confirm: { title: 'Delete Proposals', message: `Are you sure you want to delete ${count} proposal(s)?` },
+            onClick: handleBulkDelete,
+          },
+        ]}
+      />
+
+      <div className="rounded-xl border border-border bg-white overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-border bg-bg-secondary">
+                <th className="px-4 py-3 text-left w-10">
+                  <input type="checkbox" checked={isAllSelected} ref={(el) => { if (el) el.indeterminate = isSomeSelected; }} onChange={toggleAll} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
+                </th>
+                {isVisible('name') && <th className="px-6 py-3"><SortableHeader label="Proposal Name" field="name" currentSort={sort} onSort={handleSort} /></th>}
+                {isVisible('client') && <th className="px-6 py-3"><SortableHeader label="Client" field="client_id" currentSort={sort} onSort={handleSort} /></th>}
+                {isVisible('status') && <th className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></th>}
+                {isVisible('prepared_date') && <th className="px-6 py-3"><SortableHeader label="Date" field="prepared_date" currentSort={sort} onSort={handleSort} /></th>}
+                {isVisible('total_value') && <th className="px-6 py-3"><SortableHeader label="Value" field="total_value" currentSort={sort} onSort={handleSort} /></th>}
+                {isVisible('probability') && <th className="px-6 py-3"><SortableHeader label="Probability" field="probability_percent" currentSort={sort} onSort={handleSort} /></th>}
+                <th className="px-6 py-3 w-12"><span className="sr-only">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {sorted.map((p) => (
+                <tr key={p.id} className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(p.id) ? 'bg-blue-50/50' : ''}`}>
+                  <td className="px-4 py-3.5">
+                    <input type="checkbox" checked={isSelected(p.id)} onChange={() => toggle(p.id)} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
+                  </td>
+                  {isVisible('name') && (
+                    <td className="px-6 py-3.5">
+                      <div>
+                        <Link href={`/app/proposals/${p.id}`} className="text-sm font-medium text-foreground hover:underline">{p.name}</Link>
+                        {p.subtitle && <p className="text-xs text-text-secondary mt-0.5">{p.subtitle}</p>}
+                      </div>
+                    </td>
+                  )}
+                  {isVisible('client') && <td className="px-6 py-3.5 text-sm text-text-secondary">{clientName(p.client_id)}</td>}
+                  {isVisible('status') && (
+                    <td className="px-6 py-3.5">
+                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColor(p.status)}`}>{formatLabel(p.status)}</span>
+                    </td>
+                  )}
+                  {isVisible('prepared_date') && <td className="px-6 py-3.5 text-sm text-foreground whitespace-nowrap">{formatDate(p.prepared_date || p.created_at)}</td>}
+                  {isVisible('total_value') && <td className="px-6 py-3.5 text-right text-sm font-medium tabular-nums text-foreground">{formatCurrency(p.total_value, p.currency)}</td>}
+                  {isVisible('probability') && (
+                    <td className="px-6 py-3.5 text-right text-sm font-medium tabular-nums text-foreground">{p.probability_percent}%</td>
+                  )}
+                  <td className="px-6 py-3.5">
+                    <RowActionMenu actions={[
+                      { label: 'View', onClick: () => router.push(`/app/proposals/${p.id}`) },
+                      { label: 'Delete', variant: 'danger', onClick: () => {
+                        void fetch(`/api/proposals/${p.id}`, { method: 'DELETE' }).then(() => router.refresh());
+                      }},
+                    ]} />
+                  </td>
+                </tr>
+              ))}
+              {sorted.length === 0 && (
+                <tr><td colSpan={8} className="px-6 py-12 text-center text-sm text-text-muted">No proposals match your filters.</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <ColumnConfigPanel
+        open={showColumnConfig}
+        onClose={() => setShowColumnConfig(false)}
+        columns={columns}
+        onColumnsChange={setColumns}
+        rowHeight={rowHeight}
+        onRowHeightChange={setRowHeight}
+      />
+    </>
+  );
+}

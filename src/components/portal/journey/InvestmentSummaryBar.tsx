@@ -12,6 +12,7 @@ interface InvestmentSummaryBarProps {
   paymentTerms: PaymentTerms | null;
   currency?: string;
   onAccept: () => void;
+  canApprove?: boolean;
 }
 
 function AnimatedNumber({
@@ -44,6 +45,7 @@ export default function InvestmentSummaryBar({
   paymentTerms,
   currency = 'USD',
   onAccept,
+  canApprove = true,
 }: InvestmentSummaryBarProps) {
   const total = coreTotal + addonTotal;
   const depositPercent = paymentTerms?.depositPercent ?? 50;
@@ -104,14 +106,16 @@ export default function InvestmentSummaryBar({
               </div>
             </div>
 
-            <button
-              type="button"
-              onClick={onAccept}
-              className="w-full py-3.5 rounded-xl text-sm font-semibold tracking-wide text-white transition-[opacity,transform] duration-slow hover:opacity-90 active:scale-[0.98]"
-              style={{ backgroundColor: 'var(--org-primary)' }}
-            >
-              Accept &amp; Proceed
-            </button>
+            {canApprove && (
+              <button
+                type="button"
+                onClick={onAccept}
+                className="w-full py-3.5 rounded-xl text-sm font-semibold tracking-wide text-white transition-[opacity,transform] duration-slow hover:opacity-90 active:scale-[0.98]"
+                style={{ backgroundColor: 'var(--org-primary)' }}
+              >
+                Accept &amp; Proceed
+              </button>
+            )}
           </motion.div>
         </div>
       </div>
@@ -141,14 +145,16 @@ export default function InvestmentSummaryBar({
               </p>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={onAccept}
-            className="w-full py-3 rounded-xl text-sm font-semibold tracking-wide text-white transition-[opacity,transform] duration-slow hover:opacity-90 active:scale-[0.98]"
-            style={{ backgroundColor: 'var(--org-primary)' }}
-          >
-            Accept &amp; Proceed
-          </button>
+          {canApprove && (
+            <button
+              type="button"
+              onClick={onAccept}
+              className="w-full py-3 rounded-xl text-sm font-semibold tracking-wide text-white transition-[opacity,transform] duration-slow hover:opacity-90 active:scale-[0.98]"
+              style={{ backgroundColor: 'var(--org-primary)' }}
+            >
+              Accept &amp; Proceed
+            </button>
+          )}
         </div>
       </motion.div>
     </>
