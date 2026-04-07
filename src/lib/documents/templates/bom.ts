@@ -1,3 +1,4 @@
+
 /**
  * Bill of Materials (BOM) Document
  *
@@ -33,6 +34,11 @@ import {
   type TableColumn,
   CONTENT_WIDTH,
 } from '../engine';
+
+import { castDeliverableMeta } from '../doc-types';
+
+type MetaWithProcurement = { triggersProcurement?: boolean };
+
 
 // ---------------------------------------------------------------------------
 // Public interface
@@ -98,8 +104,8 @@ export async function generateBOM(data: BOMData): Promise<Buffer> {
 
   // Procurement items
   const procurementItems = [
-    ...deliverables.filter((d) => d.resource_metadata?.triggersProcurement),
-    ...selectedAddons.filter((a) => a.resource_metadata?.triggersProcurement),
+    ...deliverables.filter((d) => (d.resource_metadata as unknown as MetaWithProcurement)?.triggersProcurement),
+    ...selectedAddons.filter((a) => (a.resource_metadata as unknown as MetaWithProcurement)?.triggersProcurement),
   ];
 
   const children: (import('docx').Paragraph | import('docx').Table)[] = [];
@@ -170,14 +176,15 @@ export async function generateBOM(data: BOMData): Promise<Buffer> {
 
         // Asset metadata extra rows
         if (d.asset_metadata) {
-          if (d.asset_metadata.dimensions) {
-            coreRows.push(['', `Dimensions: ${d.asset_metadata.dimensions}`, '', '', '', '', '']);
+          const meta = castDeliverableMeta(d.asset_metadata);
+          if (meta.dimensions) {
+            coreRows.push(['', `Dimensions: ${meta.dimensions}`, '', '', '', '', '']);
           }
-          if (d.asset_metadata.weight) {
-            coreRows.push(['', `Weight: ${d.asset_metadata.weight}`, '', '', '', '', '']);
+          if (meta.weight) {
+            coreRows.push(['', `Weight: ${meta.weight}`, '', '', '', '', '']);
           }
-          if (d.asset_metadata.material) {
-            coreRows.push(['', `Material: ${d.asset_metadata.material}`, '', '', '', '', '']);
+          if (meta.material) {
+            coreRows.push(['', `Material: ${meta.material}`, '', '', '', '', '']);
           }
         }
       }
@@ -202,14 +209,15 @@ export async function generateBOM(data: BOMData): Promise<Buffer> {
         ]);
 
         if (a.asset_metadata) {
-          if (a.asset_metadata.dimensions) {
-            addonRows.push(['', `Dimensions: ${a.asset_metadata.dimensions}`, '', '', '', '', '']);
+          const aMeta = castDeliverableMeta(a.asset_metadata);
+          if (aMeta.dimensions) {
+            addonRows.push(['', `Dimensions: ${aMeta.dimensions}`, '', '', '', '', '']);
           }
-          if (a.asset_metadata.weight) {
-            addonRows.push(['', `Weight: ${a.asset_metadata.weight}`, '', '', '', '', '']);
+          if (aMeta.weight) {
+            addonRows.push(['', `Weight: ${aMeta.weight}`, '', '', '', '', '']);
           }
-          if (a.asset_metadata.material) {
-            addonRows.push(['', `Material: ${a.asset_metadata.material}`, '', '', '', '', '']);
+          if (aMeta.material) {
+            addonRows.push(['', `Material: ${aMeta.material}`, '', '', '', '', '']);
           }
         }
       }

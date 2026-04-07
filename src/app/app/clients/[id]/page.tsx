@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { formatCurrency, statusColor } from '@/lib/utils';
 import ClientInteractions from '@/components/admin/clients/ClientInteractions';
+import ClientHealthCard from '@/components/admin/clients/ClientHealthCard';
 import ClientDetailActions from './ClientDetailActions';
 import { getClient, formatStatus, formatDate, roleLabel } from './_data';
 
@@ -39,6 +40,23 @@ export default async function ClientDetailPage({
       </div>
 
       <div className="space-y-8">
+        {/* Client Health Score */}
+        <ClientHealthCard
+          recentInteractions={client.interactions.filter((i) => {
+            const d = Date.now() - new Date(i.occurred_at).getTime();
+            return d < 90 * 24 * 60 * 60 * 1000;
+          }).length}
+          lastInteractionDate={client.interactions[0]?.occurred_at ?? null}
+          activeDeals={client.deals.filter((d) => d.stage !== 'contract_signed' && d.stage !== 'lost').length}
+          wonDeals={client.deals.filter((d) => d.stage === 'contract_signed').length}
+          lostDeals={client.deals.filter((d) => d.stage === 'lost').length}
+          totalRevenue={client.proposals.filter((p) => p.status === 'complete' || p.status === 'approved').reduce((s, p) => s + p.total_value, 0)}
+          contactCount={client.contacts.length}
+          hasDecisionMaker={client.contacts.some((c) => c.is_decision_maker)}
+          proposalCount={client.proposals.length}
+          activeProposals={client.proposals.filter((p) => ['approved', 'in_production', 'active'].includes(p.status)).length}
+        />
+
         {/* CRM Info */}
         {(client.website || client.annual_revenue || client.employee_count) && (
           <div className="rounded-xl border border-border bg-white p-6">

@@ -48,6 +48,32 @@ export async function POST(request: NextRequest) {
     // We use the service client since this is a public endpoint with no logged-in user
     const supabase = await createServiceClient();
 
+    // Dedup check: if a lead with the same email exists in this org, update it instead of creating duplicate
+    if (contact_email) {
+      const { data: existing } = await supabase
+        .from('leads')
+        .select('id')
+        .eq('organization_id', targetOrgId)
+        .eq('contact_email', contact_email)
+        .limit(1)
+        .maybeSingle();
+
+      if (existing) {
+        log.info(`Duplicate lead detected (email: ${contact_email}). Updating existing lead ${existing.id}.`);
+        const updatePayload: Record<string, unknown> = {
+          status: 'new',
+          updated_at: new Date().toISOString(),
+        };
+        if (message) updatePayload.message = message;
+        if (estimated_budget) updatePayload.estimated_budget = Number(estimated_budget);
+        if (event_type) updatePayload.event_type = event_type;
+        if (event_date) updatePayload.event_date = event_date;
+
+        await supabase.from('leads').update(updatePayload).eq('id', existing.id);
+        return NextResponse.json({ success: true, lead_id: existing.id, deduplicated: true });
+      }
+    }
+
     // 1. Insert into leads table
     const { data: lead, error } = await supabase
       .from('leads')

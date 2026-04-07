@@ -4,6 +4,13 @@ import { statusColor } from '@/lib/utils';
 import Link from 'next/link';
 import TaskComments from '@/components/admin/tasks/TaskComments';
 import TaskDetailActions from '@/components/admin/tasks/TaskDetailActions';
+import TaskDependencies from '@/components/admin/tasks/TaskDependencies';
+import TaskChecklist from '@/components/admin/tasks/TaskChecklist';
+import TaskAttachments from '@/components/admin/tasks/TaskAttachments';
+import TaskActivityFeed from '@/components/admin/tasks/TaskActivityFeed';
+import TaskTimer from '@/components/admin/tasks/TaskTimer';
+import TaskWatchButton from '@/components/admin/tasks/TaskWatchButton';
+import FavoriteButton from '@/components/shared/FavoriteButton';
 
 interface TaskDetail {
   id: string;
@@ -169,12 +176,21 @@ export default async function TaskDetailPage({
                 {task.priority}
               </span>
             </div>
-            <h1 className="text-2xl font-semibold tracking-tight text-foreground">{task.title}</h1>
-            <TaskDetailActions taskId={id} taskTitle={task.title} />
+            <h1 className="text-2xl font-semibold tracking-tight text-foreground flex items-center gap-2">
+              <FavoriteButton entityType="task" entityId={id} />
+              {task.title}
+            </h1>
+            <div className="flex items-center gap-2 mt-1">
+              <TaskDetailActions taskId={id} taskTitle={task.title} />
+              <TaskWatchButton taskId={id} />
+            </div>
             {task.description && (
               <p className="mt-2 text-sm text-text-secondary leading-relaxed">{task.description}</p>
             )}
           </div>
+
+          {/* Timer */}
+          <TaskTimer taskId={id} taskTitle={task.title} />
 
           {/* Subtasks */}
           <div>
@@ -233,6 +249,12 @@ export default async function TaskDetailPage({
               </div>
             )}
           </div>
+
+          {/* Checklist */}
+          <TaskChecklist taskId={id} />
+
+          {/* Attachments */}
+          <TaskAttachments taskId={id} />
 
           {/* Comments */}
           <TaskComments taskId={id} />
@@ -304,6 +326,14 @@ export default async function TaskDetailPage({
               </div>
             </div>
           </div>
+
+          {/* Dependencies */}
+          <div className="rounded-xl border border-border bg-white p-5">
+            <TaskDependencies taskId={id} />
+          </div>
+
+          {/* Activity Feed */}
+          <TaskActivityFeed taskId={id} />
         </div>
       </div>
     </TierGate>

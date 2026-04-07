@@ -1,6 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import FormSelect from '@/components/ui/FormSelect';
+import FormInput from '@/components/ui/FormInput';
+import FormLabel from '@/components/ui/FormLabel';
 
 export interface PipelineFilterValues {
   owner: string;
@@ -32,54 +35,45 @@ export default function PipelineFilters({ onFilterChange }: PipelineFiltersProps
   return (
     <div className="flex flex-wrap items-center gap-3">
       <div>
-        <label className="block text-xs font-medium text-text-muted mb-1">Owner</label>
-        <select
+        <FormLabel>Owner</FormLabel>
+        <FormSelect
           value={filters.owner}
           onChange={(e) => update({ owner: e.target.value })}
-          className="rounded-lg border border-border bg-white px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10"
         >
           <option value="all">All owners</option>
-        </select>
+        </FormSelect>
       </div>
       <div>
-        <label className="block text-xs font-medium text-text-muted mb-1">Min probability</label>
-        <input
+        <FormLabel>Min probability</FormLabel>
+        <FormInput
           type="number"
           min={0}
           max={100}
           value={filters.minProbability}
-          onChange={(e) => update({ minProbability: Number(e.target.value) })}
-          className="w-20 rounded-lg border border-border bg-white px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10"
-        />
+          onChange={(e) => update({ minProbability: Number(e.target.value) })} />
       </div>
       <div>
-        <label className="block text-xs font-medium text-text-muted mb-1">Max probability</label>
-        <input
+        <FormLabel>Max probability</FormLabel>
+        <FormInput
           type="number"
           min={0}
           max={100}
           value={filters.maxProbability}
-          onChange={(e) => update({ maxProbability: Number(e.target.value) })}
-          className="w-20 rounded-lg border border-border bg-white px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10"
-        />
+          onChange={(e) => update({ maxProbability: Number(e.target.value) })} />
       </div>
       <div>
-        <label className="block text-xs font-medium text-text-muted mb-1">From</label>
-        <input
+        <FormLabel>From</FormLabel>
+        <FormInput
           type="date"
           value={filters.dateFrom}
-          onChange={(e) => update({ dateFrom: e.target.value })}
-          className="rounded-lg border border-border bg-white px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10"
-        />
+          onChange={(e) => update({ dateFrom: e.target.value })} />
       </div>
       <div>
-        <label className="block text-xs font-medium text-text-muted mb-1">To</label>
-        <input
+        <FormLabel>To</FormLabel>
+        <FormInput
           type="date"
           value={filters.dateTo}
-          onChange={(e) => update({ dateTo: e.target.value })}
-          className="rounded-lg border border-border bg-white px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10"
-        />
+          onChange={(e) => update({ dateTo: e.target.value })} />
       </div>
     </div>
   );

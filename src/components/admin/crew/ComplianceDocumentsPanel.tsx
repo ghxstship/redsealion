@@ -1,7 +1,11 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import Button from '@/components/ui/Button';
 import { formatLabel } from '@/lib/utils';
+import FormSelect from '@/components/ui/FormSelect';
+import FormInput from '@/components/ui/FormInput';
+import FormLabel from '@/components/ui/FormLabel';
 
 interface ComplianceDocument {
   id: string;
@@ -150,45 +154,37 @@ export default function ComplianceDocumentsPanel({ crewId }: ComplianceDocuments
         <div className="border-b border-border bg-bg-secondary/30 px-5 py-4 space-y-3">
           <div className="grid gap-3 sm:grid-cols-3">
             <div>
-              <label className="block text-xs font-medium text-text-secondary mb-1">Type</label>
-              <select
+              <FormLabel>Type</FormLabel>
+              <FormSelect
                 value={newDoc.document_type}
                 onChange={(e) => setNewDoc((p) => ({ ...p, document_type: e.target.value }))}
-                className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
               >
                 {Object.entries(DOC_TYPE_LABELS).map(([key, label]) => (
                   <option key={key} value={key}>{label}</option>
                 ))}
-              </select>
+              </FormSelect>
             </div>
             <div>
-              <label className="block text-xs font-medium text-text-secondary mb-1">Document Name</label>
-              <input
+              <FormLabel>Document Name</FormLabel>
+              <FormInput
                 type="text"
                 value={newDoc.document_name}
                 onChange={(e) => setNewDoc((p) => ({ ...p, document_name: e.target.value }))}
-                placeholder="e.g., General Liability COI"
-                className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
-              />
+                placeholder="e.g., General Liability COI" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-text-secondary mb-1">Expiry Date</label>
-              <input
+              <FormLabel>Expiry Date</FormLabel>
+              <FormInput
                 type="date"
                 value={newDoc.expiry_date}
-                onChange={(e) => setNewDoc((p) => ({ ...p, expiry_date: e.target.value }))}
-                className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
-              />
+                onChange={(e) => setNewDoc((p) => ({ ...p, expiry_date: e.target.value }))} />
             </div>
           </div>
           <div className="flex justify-end">
-            <button
-              onClick={handleAdd}
-              disabled={saving || !newDoc.document_name}
-              className="rounded-lg bg-foreground px-4 py-2 text-xs font-medium text-white hover:opacity-90 transition-opacity disabled:opacity-50"
-            >
+            <Button size="sm" onClick={handleAdd}
+              disabled={saving || !newDoc.document_name}>
               {saving ? 'Adding…' : 'Add Document'}
-            </button>
+            </Button>
           </div>
         </div>
       )}

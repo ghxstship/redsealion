@@ -34,7 +34,9 @@ const sections = [
     items: [
       { label: 'Plans & Billing', href: '/app/settings/billing' },
       { label: 'Payment Terms', href: '/app/settings/payment-terms' },
+      { label: 'Tax Settings', href: '/app/settings/tax' },
       { label: 'Stripe Connect', href: '/app/settings/payments' },
+      { label: 'Cost Rates', href: '/app/settings/cost-rates' },
     ],
   },
   {

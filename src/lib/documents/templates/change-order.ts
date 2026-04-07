@@ -13,12 +13,36 @@ import {
 
 import type {
   Organization,
-  ChangeOrder,
-  ChangeOrderLineItem,
   Proposal,
   Client,
   ClientContact,
 } from '@/types/database';
+
+/** Extended change order shape for document rendering (superset of DB row) */
+interface ChangeOrderDoc {
+  id: string;
+  number: number;
+  status: string;
+  title: string;
+  description: string | null;
+  reason: string | null;
+  amount: number;
+  original_value: number;
+  net_change: number;
+  revised_value: number;
+  schedule_impact_days: number | null;
+  scope_additions: ChangeOrderLineItem[];
+  scope_removals: ChangeOrderLineItem[];
+  created_at: string;
+}
+
+interface ChangeOrderLineItem {
+  description: string;
+  phase_number: string | null;
+  qty: number;
+  unit_cost: number;
+  total: number;
+}
 
 import {
   brandFromOrg,
@@ -44,7 +68,7 @@ import {
 
 export interface ChangeOrderDocumentData {
   org: Organization;
-  changeOrder: ChangeOrder;
+  changeOrder: ChangeOrderDoc;
   proposal: Proposal;
   client: Client;
   clientContact: ClientContact | null;
@@ -135,8 +159,8 @@ export async function generateChangeOrderDocument(data: ChangeOrderDocumentData)
 
   // 8. Financial Impact
   children.push(heading('Financial Impact', 2));
-  const additionsTotal = (changeOrder.scope_additions ?? []).reduce((s, i) => s + i.total, 0);
-  const removalsTotal = (changeOrder.scope_removals ?? []).reduce((s, i) => s + i.total, 0);
+  const additionsTotal = (changeOrder.scope_additions ?? []).reduce((s: number, i: ChangeOrderLineItem) => s + i.total, 0);
+  const removalsTotal = (changeOrder.scope_removals ?? []).reduce((s: number, i: ChangeOrderLineItem) => s + i.total, 0);
   const financePairs: Array<[string, string]> = [
     ['Original Value', formatCurrency(changeOrder.original_value, cur)],
     ['Additions', formatCurrency(additionsTotal, cur)],

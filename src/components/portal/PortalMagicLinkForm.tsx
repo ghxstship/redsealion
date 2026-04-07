@@ -1,6 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import Alert from '@/components/ui/Alert';
+import FormInput from '@/components/ui/FormInput';
+import FormLabel from '@/components/ui/FormLabel';
 
 interface PortalMagicLinkFormProps {
   orgSlug: string;
@@ -79,22 +82,19 @@ export default function PortalMagicLinkForm({ orgSlug, orgName }: PortalMagicLin
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-              {error}
-            </div>
+            <Alert className="mb-4">{error}</Alert>
           )}
 
           <div>
-            <label htmlFor="ml-email" className="block text-xs font-medium text-text-secondary mb-1">
+            <FormLabel htmlFor="ml-email">
               Email Address
-            </label>
-            <input
+            </FormLabel>
+            <FormInput
               id="ml-email"
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-md border border-border bg-white px-3 py-2.5 text-sm text-foreground placeholder:text-text-muted focus:border-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20"
               placeholder="your-email@company.com"
             />
           </div>

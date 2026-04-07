@@ -7,8 +7,10 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import Button from '@/components/ui/Button';
 import type { TaskCommentWithAuthor } from '@/types/database';
 import { renderMentions } from '@/lib/mentions';
+import FormTextarea from '@/components/ui/FormTextarea';
 
 interface TaskCommentsProps {
   taskId: string;
@@ -146,24 +148,19 @@ export default function TaskComments({ taskId }: TaskCommentsProps) {
 
       {/* Comment input */}
       <div className="rounded-lg border border-border bg-white focus-within:border-foreground/30 transition-colors">
-        <textarea
+        <FormTextarea
           ref={inputRef}
           value={body}
           onChange={(e) => setBody(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Leave a comment… Use @[Name](id) to mention someone"
-          rows={2}
-          className="w-full resize-none border-0 bg-transparent px-3 py-2.5 text-sm text-foreground placeholder:text-text-muted focus:outline-none"
-        />
+          rows={2} />
         <div className="flex items-center justify-between border-t border-border px-3 py-2">
           <span className="text-xs text-text-muted">⌘+Enter to submit</span>
-          <button
-            onClick={handleSubmit}
-            disabled={!body.trim() || submitting}
-            className="rounded-md bg-foreground px-3 py-1 text-xs font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50"
-          >
+          <Button size="sm" onClick={handleSubmit}
+            disabled={!body.trim() || submitting}>
             {submitting ? 'Posting…' : 'Comment'}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

@@ -6,6 +6,36 @@ import { useState, useCallback } from 'react';
 import { useSubscription } from '@/components/shared/SubscriptionProvider';
 import { LockIcon } from '@/components/shared/TierBadge';
 import { navSections } from '@/components/admin/sidebar/nav-data';
+import { Settings } from 'lucide-react';
+
+/* ─────────────────────────────────────────────────────────
+   Types
+   ───────────────────────────────────────────────────────── */
+
+interface AdminSidebarProps {
+  user?: {
+    fullName: string;
+    role: string;
+    avatarUrl: string | null;
+  };
+}
+
+const ROLE_LABELS: Record<string, string> = {
+  super_admin: 'Super Admin',
+  org_admin: 'Admin',
+  project_manager: 'PM',
+  designer: 'Designer',
+  fabricator: 'Fabricator',
+  installer: 'Installer',
+  client_primary: 'Client',
+  client_viewer: 'Viewer',
+};
+
+function getInitials(name: string): string {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  return name.slice(0, 2).toUpperCase();
+}
 
 /* ─────────────────────────────────────────────────────────
    Icons (shared)
@@ -54,7 +84,7 @@ function writeCollapsed(state: Record<string, boolean>) {
    Component
    ───────────────────────────────────────────────────────── */
 
-export default function AdminSidebar() {
+export default function AdminSidebar({ user }: AdminSidebarProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { canAccess } = useSubscription();
@@ -132,7 +162,7 @@ export default function AdminSidebar() {
         `}
       >
         {/* Brand */}
-        <div className="flex items-center gap-2.5 px-6 py-5 border-b border-border">
+        <div className="flex items-center gap-2.5 px-6 h-14 border-b border-border">
           <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-foreground">
             <span className="text-white text-xs font-semibold tracking-tight">FD</span>
           </div>
@@ -211,11 +241,33 @@ export default function AdminSidebar() {
           </div>
         </nav>
 
-        {/* Minimal indicator — full identity in AppHeader UserMenu */}
-        <div className="border-t border-border px-4 py-3 flex items-center justify-center">
-          <div className="w-7 h-7 rounded-full bg-bg-tertiary flex items-center justify-center">
-            <span className="text-[10px] font-medium text-text-secondary">⚙</span>
-          </div>
+        {/* User identity + Settings shortcut */}
+        <div className="border-t border-border px-3 py-3">
+          <Link
+            href="/app/settings"
+            className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-bg-secondary group"
+          >
+            {user?.avatarUrl ? (
+              <img
+                src={user.avatarUrl}
+                alt={user.fullName}
+                className="h-7 w-7 rounded-full object-cover ring-1 ring-border/60 shrink-0"
+              />
+            ) : (
+              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-foreground text-[10px] font-semibold text-white shrink-0">
+                {user ? getInitials(user.fullName) : 'FD'}
+              </div>
+            )}
+            <div className="min-w-0 flex-1 hidden lg:block">
+              <p className="text-xs font-medium text-text-secondary truncate group-hover:text-foreground">
+                {user?.fullName || 'FlyteDeck'}
+              </p>
+              <p className="text-[10px] text-text-muted truncate">
+                {user ? (ROLE_LABELS[user.role] || user.role) : ''}
+              </p>
+            </div>
+            <Settings size={14} className="shrink-0 text-text-muted group-hover:text-text-secondary" />
+          </Link>
         </div>
       </aside>
     </>

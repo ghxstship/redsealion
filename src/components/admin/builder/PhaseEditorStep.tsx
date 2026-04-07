@@ -14,6 +14,11 @@ import {
   formatCurrency,
 } from './types';
 import type { RequirementAssignee } from '@/types/database';
+import FormSelect from '@/components/ui/FormSelect';
+import FormTextarea from '@/components/ui/FormTextarea';
+import FormInput from '@/components/ui/FormInput';
+import FormLabel from '@/components/ui/FormLabel';
+import { IconPlus } from '@/components/ui/Icons';
 
 export type { DeliverableData, AddonData, MilestoneRequirementData, PhaseData } from './types';
 
@@ -108,34 +113,28 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
             {phase.number}
           </span>
           <div className="flex-1 space-y-3">
-            <input
+            <FormInput
               type="text"
               value={phase.name}
               onChange={(e) => update({ name: e.target.value })}
-              placeholder="Phase Name"
-              className="w-full text-lg font-semibold text-foreground border-0 border-b border-transparent bg-transparent px-0 py-1 focus:border-b-org-primary focus:outline-none"
-            />
-            <input
+              placeholder="Phase Name" />
+            <FormInput
               type="text"
               value={phase.subtitle}
               onChange={(e) => update({ subtitle: e.target.value })}
-              placeholder="Phase Subtitle"
-              className="w-full text-sm text-text-secondary border-0 border-b border-transparent bg-transparent px-0 py-1 focus:border-b-org-primary focus:outline-none"
-            />
+              placeholder="Phase Subtitle" />
           </div>
         </div>
       </div>
 
       {/* Narrative */}
       <div>
-        <label className="block text-sm font-medium text-foreground mb-2">Narrative</label>
-        <textarea
+        <FormLabel>Narrative</FormLabel>
+        <FormTextarea
           rows={5}
           value={phase.narrative}
           onChange={(e) => update({ narrative: e.target.value })}
-          placeholder="Describe this phase of the project. This text will appear in the client proposal..."
-          className="w-full rounded-lg border border-border bg-white px-4 py-3 text-sm text-foreground placeholder:text-text-muted focus:border-org-primary focus:outline-none focus:ring-1 focus:ring-org-primary resize-y leading-relaxed"
-        />
+          placeholder="Describe this phase of the project. This text will appear in the client proposal..." />
         <p className="mt-1 text-xs text-text-muted">Rich text editor coming soon. Plain text for now.</p>
       </div>
 
@@ -162,64 +161,54 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
                 {phase.deliverables.map((d, index) => (
                   <tr key={d.id} className="hover:bg-bg-secondary/50">
                     <td className="px-3 py-2">
-                      <input
+                      <FormInput
                         type="text"
                         value={d.name}
                         onChange={(e) => updateDeliverable(index, { name: e.target.value })}
-                        placeholder="Item name"
-                        className="w-full bg-transparent text-sm text-foreground border-0 px-0 py-0.5 focus:outline-none focus:ring-0"
-                      />
+                        placeholder="Item name" />
                     </td>
                     <td className="px-3 py-2">
-                      <input
+                      <FormInput
                         type="text"
                         value={d.description}
                         onChange={(e) => updateDeliverable(index, { description: e.target.value })}
-                        placeholder="Description"
-                        className="w-full bg-transparent text-sm text-foreground border-0 px-0 py-0.5 focus:outline-none focus:ring-0"
-                      />
+                        placeholder="Description" />
                     </td>
                     <td className="px-3 py-2">
-                      <select
+                      <FormSelect
                         value={d.category}
                         onChange={(e) => updateDeliverable(index, { category: e.target.value })}
-                        className="w-full bg-transparent text-sm text-foreground border-0 px-0 py-0.5 focus:outline-none focus:ring-0"
                       >
                         <option value="">--</option>
                         {CATEGORY_SUGGESTIONS.map((c) => (
                           <option key={c} value={c}>{c}</option>
                         ))}
-                      </select>
+                      </FormSelect>
                     </td>
                     <td className="px-3 py-2">
-                      <select
+                      <FormSelect
                         value={d.unit}
                         onChange={(e) => updateDeliverable(index, { unit: e.target.value })}
-                        className="w-full bg-transparent text-sm text-foreground border-0 px-0 py-0.5 focus:outline-none focus:ring-0"
                       >
                         {UNIT_OPTIONS.map((u) => (
                           <option key={u} value={u}>{u}</option>
                         ))}
-                      </select>
+                      </FormSelect>
                     </td>
                     <td className="px-3 py-2">
-                      <input
+                      <FormInput
                         type="number"
                         min={0}
                         value={d.qty}
-                        onChange={(e) => updateDeliverable(index, { qty: Number(e.target.value) })}
-                        className="w-full bg-transparent text-sm text-foreground text-right border-0 px-0 py-0.5 focus:outline-none focus:ring-0"
-                      />
+                        onChange={(e) => updateDeliverable(index, { qty: Number(e.target.value) })} />
                     </td>
                     <td className="px-3 py-2">
-                      <input
+                      <FormInput
                         type="number"
                         min={0}
                         step={0.01}
                         value={d.unitCost}
-                        onChange={(e) => updateDeliverable(index, { unitCost: Number(e.target.value) })}
-                        className="w-full bg-transparent text-sm text-foreground text-right border-0 px-0 py-0.5 focus:outline-none focus:ring-0"
-                      />
+                        onChange={(e) => updateDeliverable(index, { unitCost: Number(e.target.value) })} />
                     </td>
                     <td className="px-3 py-2 text-right text-sm font-medium text-foreground">
                       {formatCurrency(d.totalCost)}
@@ -258,9 +247,7 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
           onClick={addDeliverable}
           className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-text-secondary hover:text-org-primary transition-colors"
         >
-          <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-          </svg>
+          <IconPlus size={14} />
           Add Deliverable
         </button>
       </div>
@@ -299,76 +286,64 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
                       />
                     </td>
                     <td className="px-3 py-2">
-                      <input
+                      <FormInput
                         type="text"
                         value={a.name}
                         onChange={(e) => updateAddon(index, { name: e.target.value })}
-                        placeholder="Add-on name"
-                        className="w-full bg-transparent text-sm text-foreground border-0 px-0 py-0.5 focus:outline-none focus:ring-0"
-                      />
+                        placeholder="Add-on name" />
                     </td>
                     <td className="px-3 py-2">
-                      <input
+                      <FormInput
                         type="text"
                         value={a.description}
                         onChange={(e) => updateAddon(index, { description: e.target.value })}
-                        placeholder="Description"
-                        className="w-full bg-transparent text-sm text-foreground border-0 px-0 py-0.5 focus:outline-none focus:ring-0"
-                      />
+                        placeholder="Description" />
                     </td>
                     <td className="px-3 py-2">
-                      <select
+                      <FormSelect
                         value={a.category}
                         onChange={(e) => updateAddon(index, { category: e.target.value })}
-                        className="w-full bg-transparent text-sm text-foreground border-0 px-0 py-0.5 focus:outline-none focus:ring-0"
                       >
                         <option value="">--</option>
                         {CATEGORY_SUGGESTIONS.map((c) => (
                           <option key={c} value={c}>{c}</option>
                         ))}
-                      </select>
+                      </FormSelect>
                     </td>
                     <td className="px-3 py-2">
-                      <select
+                      <FormSelect
                         value={a.unit}
                         onChange={(e) => updateAddon(index, { unit: e.target.value })}
-                        className="w-full bg-transparent text-sm text-foreground border-0 px-0 py-0.5 focus:outline-none focus:ring-0"
                       >
                         {UNIT_OPTIONS.map((u) => (
                           <option key={u} value={u}>{u}</option>
                         ))}
-                      </select>
+                      </FormSelect>
                     </td>
                     <td className="px-3 py-2">
-                      <input
+                      <FormInput
                         type="number"
                         min={0}
                         value={a.qty}
-                        onChange={(e) => updateAddon(index, { qty: Number(e.target.value) })}
-                        className="w-full bg-transparent text-sm text-foreground text-right border-0 px-0 py-0.5 focus:outline-none focus:ring-0"
-                      />
+                        onChange={(e) => updateAddon(index, { qty: Number(e.target.value) })} />
                     </td>
                     <td className="px-3 py-2">
-                      <input
+                      <FormInput
                         type="number"
                         min={0}
                         step={0.01}
                         value={a.unitCost}
-                        onChange={(e) => updateAddon(index, { unitCost: Number(e.target.value) })}
-                        className="w-full bg-transparent text-sm text-foreground text-right border-0 px-0 py-0.5 focus:outline-none focus:ring-0"
-                      />
+                        onChange={(e) => updateAddon(index, { unitCost: Number(e.target.value) })} />
                     </td>
                     <td className="px-3 py-2 text-right text-sm font-medium text-foreground">
                       {formatCurrency(a.totalCost)}
                     </td>
                     <td className="px-3 py-2">
-                      <input
+                      <FormInput
                         type="text"
                         value={a.mutuallyExclusiveGroup}
                         onChange={(e) => updateAddon(index, { mutuallyExclusiveGroup: e.target.value })}
-                        placeholder="Group"
-                        className="w-full bg-transparent text-sm text-foreground border-0 px-0 py-0.5 focus:outline-none focus:ring-0"
-                      />
+                        placeholder="Group" />
                     </td>
                     <td className="px-3 py-2">
                       <button
@@ -393,9 +368,7 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
           onClick={addAddon}
           className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-text-secondary hover:text-addon transition-colors"
         >
-          <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-          </svg>
+          <IconPlus size={14} />
           Add Add-on
         </button>
       </div>
@@ -407,16 +380,14 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
 
         <div className="rounded-lg border border-milestone/30 bg-milestone-bg/30 px-5 py-4 space-y-4">
           <div>
-            <label className="block text-xs font-medium text-text-secondary mb-1">Milestone Name</label>
-            <input
+            <FormLabel>Milestone Name</FormLabel>
+            <FormInput
               type="text"
               value={phase.milestone.name}
               onChange={(e) =>
                 update({ milestone: { ...phase.milestone, name: e.target.value } })
               }
-              placeholder="e.g., Phase 1 Approval Gate"
-              className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:border-milestone focus:outline-none focus:ring-1 focus:ring-milestone"
-            />
+              placeholder="e.g., Phase 1 Approval Gate" />
           </div>
 
           {phase.milestone.requirements.length > 0 && (
@@ -424,28 +395,25 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
               <p className="text-xs font-medium text-text-secondary">Requirements</p>
               {phase.milestone.requirements.map((req, index) => (
                 <div key={req.id} className="flex items-center gap-3">
-                  <input
+                  <FormInput
                     type="text"
                     value={req.text}
                     onChange={(e) => updateRequirement(index, { text: e.target.value })}
-                    placeholder="Requirement description"
-                    className="flex-1 rounded-lg border border-border bg-white px-3 py-1.5 text-sm text-foreground placeholder:text-text-muted focus:border-milestone focus:outline-none focus:ring-1 focus:ring-milestone"
-                  />
-                  <select
+                    placeholder="Requirement description" />
+                  <FormSelect
                     value={req.assignee}
                     onChange={(e) =>
                       updateRequirement(index, {
                         assignee: e.target.value as RequirementAssignee,
                       })
                     }
-                    className="w-36 rounded-lg border border-border bg-white px-3 py-1.5 text-sm text-foreground focus:border-milestone focus:outline-none focus:ring-1 focus:ring-milestone"
                   >
                     {ASSIGNEE_OPTIONS.map((opt) => (
                       <option key={opt.value} value={opt.value}>
                         {opt.label}
                       </option>
                     ))}
-                  </select>
+                  </FormSelect>
                   <button
                     type="button"
                     onClick={() => removeRequirement(index)}
@@ -465,9 +433,7 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
             onClick={addRequirement}
             className="inline-flex items-center gap-1.5 text-xs font-medium text-milestone hover:text-milestone/80 transition-colors"
           >
-            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-            </svg>
+            <IconPlus size={14} />
             Add Requirement
           </button>
         </div>

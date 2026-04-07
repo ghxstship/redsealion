@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import Button from '@/components/ui/Button';
+import FormInput from '@/components/ui/FormInput';
 
 interface Message {
   id: string;
@@ -99,21 +101,16 @@ export default function AiChatPanel() {
           onSubmit={sendMessage}
           className="flex items-center gap-3 border-t border-border px-4 py-3"
         >
-          <input
+          <FormInput
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask a question..."
-            className="flex-1 rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/20"
-            disabled={loading}
-          />
-          <button
-            type="submit"
-            disabled={loading || !input.trim()}
-            className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90 disabled:opacity-50"
-          >
+            disabled={loading} />
+          <Button type="submit"
+            disabled={loading || !input.trim()}>
             Send
-          </button>
+          </Button>
         </form>
       </div>
     </div>

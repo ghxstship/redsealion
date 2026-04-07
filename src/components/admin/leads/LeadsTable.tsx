@@ -12,6 +12,9 @@ import DataImportDialog from '@/components/shared/DataImportDialog';
 import { formatLabel, formatCurrency, formatDate } from '@/lib/utils';
 import StatusBadge, { LEAD_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import LeadEditModal from './LeadEditModal';
+import FormInput from '@/components/ui/FormInput';
+import { computeLeadScore, scoreBarColor, scoreTierClasses } from '@/lib/leads/lead-scoring';
+import Tooltip from '@/components/ui/Tooltip';
 
 interface Lead {
   id: string;
@@ -102,13 +105,11 @@ export default function LeadsTable({ leads }: { leads: Lead[] }) {
           ))}
         </div>
         <div className="flex items-center gap-3">
-          <input
+          <FormInput
             type="text"
             placeholder="Search leads..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full max-w-xs rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10"
-          />
+            onChange={(e) => setSearch(e.target.value)} />
           <button onClick={() => setShowImport(true)} className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M7 2v10M3 8l4 4 4-4" /></svg>
             Import
@@ -167,7 +168,7 @@ export default function LeadsTable({ leads }: { leads: Lead[] }) {
                   checked={isAllSelected}
                   ref={(el) => { if (el) el.indeterminate = isSomeSelected; }}
                   onChange={toggleAll}
-                  className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/20"
+                  className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10"
                 />
               </th>
               <th className="px-6 py-3"><SortableHeader label="Name" field="contact_first_name" currentSort={sort} onSort={handleSort} /></th>
@@ -176,6 +177,7 @@ export default function LeadsTable({ leads }: { leads: Lead[] }) {
               <th className="px-6 py-3"><SortableHeader label="Source" field="source" currentSort={sort} onSort={handleSort} /></th>
               <th className="px-6 py-3"><SortableHeader label="Budget" field="estimated_budget" currentSort={sort} onSort={handleSort} /></th>
               <th className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></th>
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Score</th>
               <th className="px-6 py-3"><SortableHeader label="Date" field="created_at" currentSort={sort} onSort={handleSort} /></th>
             </tr>
           </thead>
@@ -190,7 +192,7 @@ export default function LeadsTable({ leads }: { leads: Lead[] }) {
                     type="checkbox"
                     checked={isSelected(lead.id)}
                     onChange={() => toggle(lead.id)}
-                    className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/20"
+                    className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10"
                   />
                 </td>
                 <td className="px-6 py-3.5 text-sm font-medium text-foreground">
@@ -218,6 +220,26 @@ export default function LeadsTable({ leads }: { leads: Lead[] }) {
                 <td className="px-6 py-3.5">
                   <StatusBadge status={lead.status} colorMap={LEAD_STATUS_COLORS} />
                 </td>
+                <td className="px-6 py-3.5">
+                  {(() => {
+                    const { score, tier, signals } = computeLeadScore(lead);
+                    return (
+                      <Tooltip label={signals.join(' · ')}>
+                        <div className="flex items-center gap-2">
+                          <div className="w-12 h-1.5 rounded-full bg-bg-secondary overflow-hidden">
+                            <div
+                              className={`h-full rounded-full transition-all ${scoreBarColor(score)}`}
+                              style={{ width: `${score}%` }}
+                            />
+                          </div>
+                          <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums ${scoreTierClasses(tier)}`}>
+                            {score}
+                          </span>
+                        </div>
+                      </Tooltip>
+                    );
+                  })()}
+                </td>
                 <td className="px-6 py-3.5 text-sm text-text-muted">
                   {formatDate(lead.created_at)}
                 </td>
@@ -232,7 +254,7 @@ export default function LeadsTable({ leads }: { leads: Lead[] }) {
             ))}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={8} className="px-6 py-12 text-center text-sm text-text-muted">
+                <td colSpan={9} className="px-6 py-12 text-center text-sm text-text-muted">
                   No leads match your filters.
                 </td>
               </tr>

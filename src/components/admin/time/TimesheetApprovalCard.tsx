@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Button from '@/components/ui/Button';
 
 interface TimesheetApprovalCardProps {
   id: string;
@@ -69,18 +70,18 @@ export default function TimesheetApprovalCard({
       </div>
 
       <div className="mt-4 flex items-center justify-end gap-3">
-        <button
+        <Button
+          variant="secondary"
           onClick={() => setStatus('rejected')}
-          className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
+          className="text-red-600 hover:bg-red-50"
         >
           Reject
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => setStatus('approved')}
-          className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90"
         >
           Approve
-        </button>
+        </Button>
       </div>
     </div>
   );

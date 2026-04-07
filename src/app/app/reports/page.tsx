@@ -13,6 +13,29 @@ const reportTypes = [
     ),
   },
   {
+    title: 'Sales Forecast',
+    description: 'Revenue projections with best case, committed, and weighted pipeline views.',
+    href: '/app/reports/forecast',
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 20h18" />
+        <path d="M3 20V4" />
+        <path d="M7 16c2-4 4-2 6-6s4-2 5-4" />
+        <path d="M18 6h-3v3" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Conversion Funnel',
+    description: 'Stage-by-stage conversion rates, drop-off analysis, and pipeline velocity.',
+    href: '/app/reports/funnel',
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M22 2L2 2l7 10v6l6 4v-10l7-10Z" />
+      </svg>
+    ),
+  },
+  {
     title: 'Win Rate',
     description: 'Track win/loss ratios over time by client, source, and deal size.',
     href: '/app/reports/win-rate',

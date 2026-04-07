@@ -5,7 +5,7 @@ import PipelineBoard from './PipelineBoard';
 import PipelineTable from './PipelineTable';
 import type { Deal } from '@/types/database';
 
-type DealWithClient = Deal & { client_name: string };
+type DealWithClient = Deal & { client_name: string; owner_name: string | null };
 
 const views = [
   { key: 'board', label: 'Board', icon: 'M2 3h20v18H2V3zM8 3v18M15 3v18' },
@@ -25,7 +25,7 @@ export default function PipelineViewSwitcher({ deals }: { deals: DealWithClient[
     stage: d.stage,
     probability: d.probability ?? 0,
     expected_close: d.expected_close_date ?? null,
-    owner_name: null,
+    owner_name: d.owner_name ?? null,
   }));
 
   return (

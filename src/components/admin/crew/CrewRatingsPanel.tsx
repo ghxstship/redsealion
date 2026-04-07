@@ -1,6 +1,9 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import Button from '@/components/ui/Button';
+import FormTextarea from '@/components/ui/FormTextarea';
+import FormLabel from '@/components/ui/FormLabel';
 
 interface Rating {
   id: string;
@@ -112,13 +115,13 @@ export default function CrewRatingsPanel({ crewId }: CrewRatingsPanelProps) {
       {showForm && (
         <div className="border-b border-border bg-bg-secondary/30 px-5 py-4 space-y-4">
           <div>
-            <label className="block text-xs font-medium text-text-secondary mb-2">Overall Rating</label>
+            <FormLabel>Overall Rating</FormLabel>
             <StarRating value={newRating.rating} onChange={(v) => setNewRating((p) => ({ ...p, rating: v }))} />
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
             {CATEGORIES.map((cat) => (
               <div key={cat}>
-                <label className="block text-[11px] font-medium text-text-muted mb-1 capitalize">{cat}</label>
+                <FormLabel>{cat}</FormLabel>
                 <StarRating
                   value={newRating.categories[cat] ?? 0}
                   onChange={(v) => setNewRating((p) => ({ ...p, categories: { ...p.categories, [cat]: v } }))}
@@ -128,23 +131,19 @@ export default function CrewRatingsPanel({ crewId }: CrewRatingsPanelProps) {
             ))}
           </div>
           <div>
-            <label className="block text-xs font-medium text-text-secondary mb-1">Comment</label>
-            <textarea
+            <FormLabel>Comment</FormLabel>
+            <FormTextarea
               value={newRating.comment}
               onChange={(e) => setNewRating((p) => ({ ...p, comment: e.target.value }))}
               rows={2}
               placeholder="Optional feedback…"
-              className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
             />
           </div>
           <div className="flex justify-end">
-            <button
-              onClick={handleSubmit}
-              disabled={saving || newRating.rating === 0}
-              className="rounded-lg bg-foreground px-4 py-2 text-xs font-medium text-white hover:opacity-90 disabled:opacity-50"
-            >
+            <Button size="sm" onClick={handleSubmit}
+              disabled={saving || newRating.rating === 0}>
               {saving ? 'Submitting…' : 'Submit Rating'}
-            </button>
+            </Button>
           </div>
         </div>
       )}

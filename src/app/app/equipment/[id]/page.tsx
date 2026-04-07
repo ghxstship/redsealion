@@ -1,136 +1,16 @@
-import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
+import { notFound } from 'next/navigation';
+import StatusBadge, { EQUIPMENT_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import MaintenanceKPIs from '@/components/admin/equipment/MaintenanceKPIs';
+import { formatDate, formatLabel, formatCurrency } from '@/lib/utils';
 
-interface Reservation {
-  id: string;
-  project_name: string;
-  start_date: string;
-  end_date: string;
-  status: string;
-}
-
-interface MaintenanceRecord {
-  id: string;
-  type: string;
-  description: string;
-  date: string;
-  performed_by: string;
-}
-
-interface EquipmentDetail {
-  name: string;
-  category: string;
-  status: string;
-  current_location: string;
-  serial_number: string | null;
-  purchase_date: string | null;
-  purchase_price: number | null;
-  notes: string | null;
-  reservations: Reservation[];
-  maintenance_history: MaintenanceRecord[];
-}
-
-const fallbackDetail: EquipmentDetail = {
-  name: 'Martin MAC Aura XB',
-  category: 'Lighting',
-  status: 'available',
-  current_location: 'Warehouse A',
-  serial_number: 'MA-2024-0891',
-  purchase_date: '2024-06-15',
-  purchase_price: 8500,
-  notes: 'Part of the main lighting rig. Recently serviced.',
-  reservations: [
-    { id: 'res_001', project_name: 'Nike SNKRS Fest 2026', start_date: '2026-04-12', end_date: '2026-04-17', status: 'confirmed' },
-    { id: 'res_002', project_name: 'Samsung Galaxy Unpacked', start_date: '2026-04-20', end_date: '2026-04-24', status: 'tentative' },
-    { id: 'res_003', project_name: 'Spotify Wrapped Live', start_date: '2026-05-08', end_date: '2026-05-12', status: 'confirmed' },
-  ],
-  maintenance_history: [
-    { id: 'mnt_001', type: 'Preventive', description: 'Lamp replacement and lens cleaning', date: '2026-03-01', performed_by: 'Tech Services Inc.' },
-    { id: 'mnt_002', type: 'Repair', description: 'Pan motor replacement', date: '2025-11-15', performed_by: 'In-house' },
-  ],
-};
-
-async function getEquipmentDetail(id: string): Promise<EquipmentDetail> {
-  try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) throw new Error('No auth');
-
-    const { data: item } = await supabase
-      .from('assets')
-      .select()
-      .eq('id', id)
-      .single();
-
-    if (!item) throw new Error('Not found');
-
-    const [resResult, mntResult] = await Promise.all([
-      supabase
-        .from('equipment_reservations')
-        .select('id, proposal_id, reserved_from, reserved_until, status')
-        .eq('asset_id', id)
-        .order('reserved_from', { ascending: true }),
-      supabase
-        .from('maintenance_records')
-        .select('id, type, description, scheduled_date, performed_by')
-        .eq('asset_id', id)
-        .order('scheduled_date', { ascending: false }),
-    ]);
-
-    return {
-      name: item.name,
-      category: item.category ?? 'Uncategorized',
-      status: item.status ?? 'available',
-      current_location: item.current_location ?? 'Unknown',
-      serial_number: item.serial_number ?? null,
-      purchase_date: item.purchase_date ?? null,
-      purchase_price: item.purchase_price ?? null,
-      notes: item.notes ?? null,
-      reservations: (resResult.data ?? []).map((r: Record<string, unknown>) => ({
-        id: r.id as string,
-        project_name: r.project_name as string,
-        start_date: r.start_date as string,
-        end_date: r.end_date as string,
-        status: r.status as string,
-      })),
-      maintenance_history: (mntResult.data ?? []).map((m: Record<string, unknown>) => ({
-        id: m.id as string,
-        type: m.type as string,
-        description: m.description as string,
-        date: m.date as string,
-        performed_by: m.performed_by as string,
-      })),
-    };
-  } catch {
-    return fallbackDetail;
-  }
-}
-
-function formatDate(dateStr: string): string {
-  return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
-}
-
-function formatLabel(s: string): string {
-  return s
-    .split('_')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ');
-}
-
-const STATUS_COLORS: Record<string, string> = {
-  available: 'bg-green-50 text-green-700',
-  deployed: 'bg-blue-50 text-blue-700',
-  reserved: 'bg-yellow-50 text-yellow-700',
-  maintenance: 'bg-red-50 text-red-700',
+const RESERVATION_COLORS: Record<string, string> = {
   confirmed: 'bg-green-50 text-green-700',
   tentative: 'bg-yellow-50 text-yellow-700',
   cancelled: 'bg-red-50 text-red-700',
+  reserved: 'bg-blue-50 text-blue-700',
+  checked_out: 'bg-purple-50 text-purple-700',
+  returned: 'bg-gray-100 text-gray-600',
 };
 
 export default async function EquipmentDetailPage({
@@ -139,78 +19,200 @@ export default async function EquipmentDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const item = await getEquipmentDetail(id);
+  const supabase = await createClient();
+
+  // Fetch asset
+  const { data: item } = await supabase
+    .from('assets')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (!item) notFound();
+
+  // Fetch reservations and maintenance in parallel
+  const [resResult, mntResult, schedResult] = await Promise.all([
+    supabase
+      .from('equipment_reservations')
+      .select('id, proposal_id, reserved_from, reserved_until, status')
+      .eq('asset_id', id)
+      .order('reserved_from', { ascending: true }),
+    supabase
+      .from('maintenance_records')
+      .select('id, type, description, scheduled_date, completed_date, performed_by, cost, status')
+      .eq('asset_id', id)
+      .order('scheduled_date', { ascending: false }),
+    supabase
+      .from('maintenance_schedules')
+      .select('*')
+      .eq('asset_id', id)
+      .eq('is_active', true)
+      .order('next_due_at', { ascending: true }),
+  ]);
+
+  const reservations = resResult.data ?? [];
+  const maintenanceRecords = mntResult.data ?? [];
+  const schedules = schedResult.data ?? [];
+
+  // Compute utilization
+  const acquisitionDate = new Date(item.created_at);
+  const daysSinceAcquisition = Math.max(1, Math.floor((Date.now() - acquisitionDate.getTime()) / (1000 * 60 * 60 * 24)));
+  const totalReservedDays = reservations.reduce((sum, r) => {
+    const from = new Date(r.reserved_from as string);
+    const until = new Date(r.reserved_until as string);
+    return sum + Math.max(0, Math.ceil((until.getTime() - from.getTime()) / (1000 * 60 * 60 * 24)));
+  }, 0);
+  const utilizationRate = Math.min(100, Math.round((totalReservedDays / daysSinceAcquisition) * 100));
+
+  // Warranty status
+  const raw = item as Record<string, unknown>;
+  const warrantyEnd = raw.warranty_end_date as string | null;
+  const warrantyProvider = raw.warranty_provider as string | null;
+  const warrantyActive = warrantyEnd && new Date(warrantyEnd) > new Date();
+  const warrantyDaysRemaining = warrantyEnd
+    ? Math.ceil((new Date(warrantyEnd).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+    : null;
+
+  // Overdue schedules
+  const now = new Date().toISOString();
+  const overdueSchedules = schedules.filter((s) => s.next_due_at && s.next_due_at < now);
+
+  const acquisitionCost = item.acquisition_cost ?? 0;
+  const currentValue = item.current_value ?? 0;
+  const currentLocation = item.current_location as { type?: string } | null;
 
   return (
     <>
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            {item.name}
-          </h1>
-          <p className="mt-1 text-sm text-text-secondary">
-            {item.category} &middot; {item.current_location}
-          </p>
-          <div className="mt-3">
-            <span
-              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                STATUS_COLORS[item.status] ?? 'bg-gray-100 text-gray-600'
-              }`}
-            >
-              {formatLabel(item.status)}
-            </span>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-semibold tracking-tight text-foreground">{item.name}</h1>
+            <StatusBadge status={item.status} colorMap={EQUIPMENT_STATUS_COLORS} />
           </div>
+          <p className="mt-1 text-sm text-text-secondary">
+            {item.category ?? 'Uncategorized'} &middot; {currentLocation?.type ?? 'Unknown location'}
+            {item.serial_number ? ` · ${item.serial_number}` : ''}
+          </p>
         </div>
-        <button className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary">
-          Edit Asset
-        </button>
       </div>
 
-      {/* Info card */}
-      <div className="rounded-xl border border-border bg-white p-6 mb-8">
-        <h2 className="text-sm font-semibold text-foreground mb-4">Asset Details</h2>
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          {item.serial_number && (
-            <div>
-              <p className="text-xs text-text-muted">Serial Number</p>
-              <p className="text-sm font-medium text-foreground">{item.serial_number}</p>
-            </div>
-          )}
-          {item.purchase_date && (
-            <div>
-              <p className="text-xs text-text-muted">Purchase Date</p>
-              <p className="text-sm text-foreground">{formatDate(item.purchase_date)}</p>
-            </div>
-          )}
-          {item.purchase_price != null && (
-            <div>
-              <p className="text-xs text-text-muted">Purchase Price</p>
-              <p className="text-sm font-medium text-foreground">
-                ${item.purchase_price.toLocaleString()}
-              </p>
-            </div>
-          )}
-          <div>
-            <p className="text-xs text-text-muted">Location</p>
-            <p className="text-sm text-foreground">{item.current_location}</p>
-          </div>
+      {/* Overdue alert */}
+      {overdueSchedules.length > 0 && (
+        <div className="rounded-lg bg-amber-50 text-amber-700 px-4 py-3 text-sm mb-6">
+          {overdueSchedules.length} maintenance schedule{overdueSchedules.length > 1 ? 's' : ''} overdue.
+          Earliest due: {formatDate(overdueSchedules[0].next_due_at!)}.
         </div>
-        {item.notes && (
-          <div className="mt-4 pt-4 border-t border-border">
-            <p className="text-xs text-text-muted mb-1">Notes</p>
-            <p className="text-sm text-text-secondary">{item.notes}</p>
-          </div>
-        )}
+      )}
+
+      {/* KPI row */}
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">
+        <div className="rounded-xl border border-border bg-white px-5 py-5">
+          <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Utilization</p>
+          <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground tabular-nums">{utilizationRate}%</p>
+          <p className="mt-0.5 text-xs text-text-muted">{totalReservedDays}d reserved / {daysSinceAcquisition}d owned</p>
+        </div>
+        <div className="rounded-xl border border-border bg-white px-5 py-5">
+          <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Book Value</p>
+          <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground tabular-nums">{formatCurrency(currentValue)}</p>
+          {acquisitionCost > 0 && (
+            <p className="mt-0.5 text-xs text-text-muted">of {formatCurrency(acquisitionCost)}</p>
+          )}
+        </div>
+        <div className="rounded-xl border border-border bg-white px-5 py-5">
+          <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Warranty</p>
+          {warrantyActive ? (
+            <>
+              <p className="mt-2 text-3xl font-semibold tracking-tight text-green-700 tabular-nums">{warrantyDaysRemaining}d</p>
+              <p className="mt-0.5 text-xs text-text-muted">{warrantyProvider ?? 'Active'}</p>
+            </>
+          ) : warrantyEnd ? (
+            <>
+              <p className="mt-2 text-3xl font-semibold tracking-tight text-red-700">Expired</p>
+              <p className="mt-0.5 text-xs text-text-muted">{formatDate(warrantyEnd)}</p>
+            </>
+          ) : (
+            <>
+              <p className="mt-2 text-3xl font-semibold tracking-tight text-text-muted">—</p>
+              <p className="mt-0.5 text-xs text-text-muted">Not configured</p>
+            </>
+          )}
+        </div>
+        <div className="rounded-xl border border-border bg-white px-5 py-5">
+          <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Deployments</p>
+          <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground tabular-nums">{item.deployment_count}</p>
+          <p className="mt-0.5 text-xs text-text-muted">{item.max_deployments ? `of ${item.max_deployments} max` : 'Unlimited'}</p>
+        </div>
       </div>
+
+      {/* Maintenance KPIs */}
+      {maintenanceRecords.length > 0 && (
+        <div className="mb-8">
+          <h2 className="text-sm font-semibold text-foreground mb-4">Maintenance Performance</h2>
+          <MaintenanceKPIs records={maintenanceRecords.map((r) => ({
+            id: r.id,
+            type: r.type,
+            status: r.status,
+            scheduled_date: r.scheduled_date,
+            completed_date: r.completed_date,
+            cost: r.cost,
+          }))} />
+        </div>
+      )}
 
       <div className="space-y-8">
-        {/* Reservation Timeline */}
+        {/* Scheduled Maintenance */}
+        {schedules.length > 0 && (
+          <div className="rounded-xl border border-border bg-white overflow-hidden">
+            <div className="px-6 py-4 border-b border-border">
+              <h2 className="text-sm font-semibold text-foreground">Preventive Schedules</h2>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-border bg-bg-secondary">
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Type</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Description</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Interval</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Next Due</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {schedules.map((s) => {
+                    const isOverdue = s.next_due_at && s.next_due_at < now;
+                    return (
+                      <tr key={s.id} className="transition-colors hover:bg-bg-secondary/50">
+                        <td className="px-6 py-3.5 text-sm text-foreground">{formatLabel(s.maintenance_type)}</td>
+                        <td className="px-6 py-3.5 text-sm text-text-secondary max-w-xs truncate">{s.description ?? '—'}</td>
+                        <td className="px-6 py-3.5 text-sm text-text-secondary tabular-nums">
+                          {s.schedule_type === 'time_based' ? `Every ${s.interval_days}d` : `Every ${s.interval_usage} uses`}
+                        </td>
+                        <td className="px-6 py-3.5 text-sm text-text-secondary">
+                          {s.next_due_at ? formatDate(s.next_due_at) : '—'}
+                        </td>
+                        <td className="px-6 py-3.5">
+                          <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                            isOverdue ? 'bg-red-50 text-red-700' : 'bg-green-50 text-green-700'
+                          }`}>
+                            {isOverdue ? 'Overdue' : 'On Track'}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* Reservations */}
         <div className="rounded-xl border border-border bg-white overflow-hidden">
           <div className="px-6 py-4 border-b border-border">
             <h2 className="text-sm font-semibold text-foreground">Reservations</h2>
           </div>
-          {item.reservations.length > 0 ? (
+          {reservations.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -222,19 +224,13 @@ export default async function EquipmentDetailPage({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
-                  {item.reservations.map((res) => (
+                  {reservations.map((res) => (
                     <tr key={res.id} className="transition-colors hover:bg-bg-secondary/50">
-                      <td className="px-6 py-3.5 text-sm font-medium text-foreground">{res.project_name}</td>
-                      <td className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(res.start_date)}</td>
-                      <td className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(res.end_date)}</td>
+                      <td className="px-6 py-3.5 text-sm font-medium text-foreground">{res.proposal_id ?? '—'}</td>
+                      <td className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(res.reserved_from as string)}</td>
+                      <td className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(res.reserved_until as string)}</td>
                       <td className="px-6 py-3.5">
-                        <span
-                          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                            STATUS_COLORS[res.status] ?? 'bg-gray-100 text-gray-600'
-                          }`}
-                        >
-                          {formatLabel(res.status)}
-                        </span>
+                        <StatusBadge status={res.status} colorMap={RESERVATION_COLORS} />
                       </td>
                     </tr>
                   ))}
@@ -242,9 +238,7 @@ export default async function EquipmentDetailPage({
               </table>
             </div>
           ) : (
-            <div className="px-6 py-12 text-center text-sm text-text-muted">
-              No reservations.
-            </div>
+            <div className="px-6 py-12 text-center text-sm text-text-muted">No reservations.</div>
           )}
         </div>
 
@@ -253,7 +247,7 @@ export default async function EquipmentDetailPage({
           <div className="px-6 py-4 border-b border-border">
             <h2 className="text-sm font-semibold text-foreground">Maintenance History</h2>
           </div>
-          {item.maintenance_history.length > 0 ? (
+          {maintenanceRecords.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -262,28 +256,30 @@ export default async function EquipmentDetailPage({
                     <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Description</th>
                     <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Date</th>
                     <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Performed By</th>
+                    <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Cost</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
-                  {item.maintenance_history.map((record) => (
+                  {maintenanceRecords.map((record) => (
                     <tr key={record.id} className="transition-colors hover:bg-bg-secondary/50">
                       <td className="px-6 py-3.5">
                         <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">
                           {record.type}
                         </span>
                       </td>
-                      <td className="px-6 py-3.5 text-sm text-text-secondary">{record.description}</td>
-                      <td className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(record.date)}</td>
-                      <td className="px-6 py-3.5 text-sm text-text-secondary">{record.performed_by}</td>
+                      <td className="px-6 py-3.5 text-sm text-text-secondary max-w-xs truncate">{record.description}</td>
+                      <td className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(record.scheduled_date)}</td>
+                      <td className="px-6 py-3.5 text-sm text-text-secondary">{record.performed_by ?? '—'}</td>
+                      <td className="px-6 py-3.5 text-sm text-right font-medium tabular-nums text-foreground">
+                        {record.cost ? formatCurrency(record.cost) : '—'}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
           ) : (
-            <div className="px-6 py-12 text-center text-sm text-text-muted">
-              No maintenance records.
-            </div>
+            <div className="px-6 py-12 text-center text-sm text-text-muted">No maintenance records.</div>
           )}
         </div>
       </div>

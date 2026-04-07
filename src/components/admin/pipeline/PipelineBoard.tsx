@@ -36,6 +36,7 @@ const ACTIVE_STAGES: DealStage[] = [
 
 interface DealWithClient extends Deal {
   client_name: string;
+  owner_name: string | null;
 }
 
 function DroppableColumn({
@@ -90,6 +91,8 @@ function DraggableDealCard({ deal }: { deal: DealWithClient }) {
         probability={deal.probability}
         expectedCloseDate={deal.expected_close_date}
         stage={deal.stage}
+        updatedAt={deal.updated_at}
+        ownerName={deal.owner_name}
       />
     </div>
   );
@@ -230,6 +233,8 @@ export default function PipelineBoard({
                 probability={activeDeal.probability}
                 expectedCloseDate={activeDeal.expected_close_date}
                 stage={activeDeal.stage}
+                updatedAt={activeDeal.updated_at}
+                ownerName={activeDeal.owner_name}
               />
             </div>
           ) : null}

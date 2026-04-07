@@ -39,6 +39,8 @@ import {
   type TableColumn,
 } from '../engine';
 
+import { castAddress, castPaymentTerms } from '../json-casts';
+
 // ---------------------------------------------------------------------------
 // Public interface
 // ---------------------------------------------------------------------------
@@ -76,13 +78,15 @@ function buildBillTo(data: InvoiceDocumentData, _brand: DocBrand): (Paragraph | 
   }
 
   if (client.billing_address) {
-    const addr = client.billing_address;
-    const lines: string[] = [];
-    if (addr.street) lines.push(addr.street);
+    const addr = castAddress(client.billing_address);
+    if (addr) {
+      const lines: string[] = [];
+      if (addr.street) lines.push(addr.street);
     const cityLine = [addr.city, addr.state].filter(Boolean).join(', ');
     if (cityLine) lines.push(`${cityLine}${addr.zip ? ` ${addr.zip}` : ''}`);
     if (addr.country && addr.country !== 'US' && addr.country !== 'USA') lines.push(addr.country);
     lines.forEach((l) => parts.push(body(l)));
+    }
   }
 
   return parts;
@@ -128,7 +132,7 @@ function buildTotalsSection(data: InvoiceDocumentData, brand: DocBrand): (Paragr
 }
 
 function buildPaymentTermsSection(data: InvoiceDocumentData, brand: DocBrand): (Paragraph | Table)[] {
-  const terms = data.org.default_payment_terms;
+  const terms = castPaymentTerms(data.org.default_payment_terms);
   if (!terms) return [];
 
   const parts: (Paragraph | Table)[] = [heading('Payment Terms', 2)];

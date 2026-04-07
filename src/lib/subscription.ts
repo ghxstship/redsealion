@@ -62,7 +62,10 @@ export type FeatureKey =
   | 'crew_ratings'
   | 'referral_program'
   | 'email_campaigns'
-  | 'review_requests';
+  | 'review_requests'
+  // Production Advancing
+  | 'advancing'
+  | 'advancing_collection';
 
 // Maps each feature to the minimum subscription tier required
 const featureRegistry: Record<FeatureKey, SubscriptionTier> = {
@@ -132,6 +135,9 @@ const featureRegistry: Record<FeatureKey, SubscriptionTier> = {
   referral_program: 'professional',
   email_campaigns: 'professional',
   review_requests: 'professional',
+  // Production Advancing
+  advancing: 'starter',
+  advancing_collection: 'professional',
 };
 
 const tierRank: Record<SubscriptionTier, number> = {

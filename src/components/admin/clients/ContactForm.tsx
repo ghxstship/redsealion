@@ -84,7 +84,7 @@ export default function ContactForm({ open, onClose, onSubmit, initialData }: Co
           <input type="checkbox" id="is_decision_maker" checked={form.is_decision_maker}
             onChange={(e) => setForm({ ...form, is_decision_maker: e.target.checked })}
             className="h-4 w-4 rounded border-border text-foreground focus:ring-foreground/10" />
-          <label htmlFor="is_decision_maker" className="text-sm text-text-secondary">Decision maker</label>
+          <FormLabel htmlFor="is_decision_maker">Decision maker</FormLabel>
         </div>
 
         <div className="flex justify-end gap-3 pt-2">

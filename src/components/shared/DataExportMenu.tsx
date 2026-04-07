@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
+import { ChevronUp, ChevronDown } from 'lucide-react';
 import { getExportFields } from '@/lib/entity-fields';
 import type { EntityField } from '@/lib/entity-fields';
 import { performExport, copyToClipboard } from '@/lib/export-formats';
@@ -271,7 +272,7 @@ export default function DataExportMenu<T extends object>({
                       type="checkbox"
                       checked={fc.visible}
                       onChange={() => toggleFieldVisibility(fc.key)}
-                      className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/20"
+                      className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10"
                     />
                     <span className="flex-1 text-sm text-foreground">{fc.label}</span>
                     <div className="flex flex-col gap-0.5">
@@ -279,12 +280,12 @@ export default function DataExportMenu<T extends object>({
                         onClick={() => moveField(index, 'up')}
                         disabled={index === 0}
                         className="text-text-muted hover:text-foreground disabled:opacity-20 text-[9px] leading-none"
-                      >▲</button>
+                      ><ChevronUp size={10} /></button>
                       <button
                         onClick={() => moveField(index, 'down')}
                         disabled={index === fieldConfig.length - 1}
                         className="text-text-muted hover:text-foreground disabled:opacity-20 text-[9px] leading-none"
-                      >▼</button>
+                      ><ChevronDown size={10} /></button>
                     </div>
                   </div>
                 ))}

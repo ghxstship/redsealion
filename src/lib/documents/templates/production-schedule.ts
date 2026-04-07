@@ -1,3 +1,4 @@
+
 /**
  * Production Schedule / Timeline Document
  *
@@ -34,6 +35,14 @@ import {
   type TableColumn,
   CONTENT_WIDTH,
 } from '../engine';
+
+import {
+  castDocAddress,
+  castActivationDates,
+  type DocVenueLoadInStrike,
+  type DocVenueActivationDates,
+} from '../doc-types';
+
 
 // ---------------------------------------------------------------------------
 // Public interface
@@ -221,17 +230,20 @@ export async function generateProductionSchedule(data: ProductionScheduleData): 
     const venueRows = venues
       .sort((a, b) => a.sequence - b.sequence)
       .map((v) => {
-        const activationStr = v.activation_dates
-          ? `${formatDate(v.activation_dates.start)} \u2013 ${formatDate(v.activation_dates.end)}`
+        const act = castActivationDates(v.activation_dates);
+        const activationStr = act
+          ? `${formatDate(act.start ?? '')} \u2013 ${formatDate(act.end ?? '')}`
           : '\u2014';
-        const loadInStr = v.load_in
-          ? `${formatDate(v.load_in.date)} ${v.load_in.startTime}\u2013${v.load_in.endTime}`
+        const li = v.load_in ? (v.load_in as unknown as DocVenueLoadInStrike) : null;
+        const loadInStr = li
+          ? `${formatDate(li.date ?? '')} ${li.startTime ?? ''}\u2013${li.endTime ?? ''}`
           : '\u2014';
-        const strikeStr = v.strike
-          ? `${formatDate(v.strike.date)} ${v.strike.startTime}\u2013${v.strike.endTime}`
+        const st = v.strike ? (v.strike as unknown as DocVenueLoadInStrike) : null;
+        const strikeStr = st
+          ? `${formatDate(st.date ?? '')} ${st.startTime ?? ''}\u2013${st.endTime ?? ''}`
           : '\u2014';
 
-        return [v.name, formatAddress(v.address), activationStr, loadInStr, strikeStr];
+        return [v.name, formatAddress(castDocAddress(v.address)), activationStr, loadInStr, strikeStr];
       });
 
     children.push(dataTable(venueCols, venueRows, brand));
@@ -253,14 +265,17 @@ export async function generateProductionSchedule(data: ProductionScheduleData): 
 
   // Venue activation dates
   for (const v of venues.sort((a, b) => a.sequence - b.sequence)) {
-    if (v.activation_dates) {
-      children.push(bullet(`${v.name} Activation: ${formatDate(v.activation_dates.start)} \u2013 ${formatDate(v.activation_dates.end)}`));
+    const vAct = castActivationDates(v.activation_dates);
+    if (vAct) {
+      children.push(bullet(`${v.name} Activation: ${formatDate(vAct.start ?? '')} \u2013 ${formatDate(vAct.end ?? '')}`));
     }
-    if (v.load_in) {
-      children.push(bullet(`${v.name} Load-In: ${formatDate(v.load_in.date)}`));
+    const vLi = v.load_in ? (v.load_in as unknown as DocVenueLoadInStrike) : null;
+    if (vLi) {
+      children.push(bullet(`${v.name} Load-In: ${formatDate(vLi.date ?? '')}`));
     }
-    if (v.strike) {
-      children.push(bullet(`${v.name} Strike: ${formatDate(v.strike.date)}`));
+    const vSt = v.strike ? (v.strike as unknown as DocVenueLoadInStrike) : null;
+    if (vSt) {
+      children.push(bullet(`${v.name} Strike: ${formatDate(vSt.date ?? '')}`));
     }
   }
 

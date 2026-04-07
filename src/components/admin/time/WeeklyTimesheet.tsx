@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import Button from '@/components/ui/Button';
+import FormInput from '@/components/ui/FormInput';
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as const;
 
@@ -62,7 +64,7 @@ export default function WeeklyTimesheet() {
               return (
                 <tr key={rowIdx} className="transition-colors hover:bg-bg-secondary/50">
                   <td className="px-6 py-2">
-                    <input
+                    <FormInput
                       type="text"
                       value={row.project}
                       onChange={(e) =>
@@ -72,21 +74,17 @@ export default function WeeklyTimesheet() {
                           )
                         )
                       }
-                      className="w-full rounded border border-transparent bg-transparent px-2 py-1 text-sm text-foreground focus:border-border focus:outline-none"
-                      placeholder="Project name"
-                    />
+                      placeholder="Project name" />
                   </td>
                   {DAYS.map((day, dayIdx) => (
                     <td key={day} className="px-2 py-2 text-center">
-                      <input
+                      <FormInput
                         type="number"
                         min="0"
                         max="24"
                         step="0.5"
                         value={row.hours[dayIdx]}
-                        onChange={(e) => updateHours(rowIdx, dayIdx, e.target.value)}
-                        className="w-16 rounded border border-border bg-white px-2 py-1 text-center text-sm tabular-nums text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20"
-                      />
+                        onChange={(e) => updateHours(rowIdx, dayIdx, e.target.value)} />
                     </td>
                   ))}
                   <td className="px-4 py-2 text-center text-sm font-medium tabular-nums text-foreground">
@@ -124,9 +122,9 @@ export default function WeeklyTimesheet() {
         >
           + Add Row
         </button>
-        <button className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90">
+        <Button>
           Submit Timesheet
-        </button>
+        </Button>
       </div>
     </div>
   );

@@ -67,7 +67,7 @@ export const AUTOMATION_TEMPLATES: AutomationTemplate[] = [
     trigger_config: { conditions: [] },
     action_type: 'send_slack',
     action_config: {
-      message: '📋 New task assigned: "{{title}}" — assigned to you by {{actor_name}}',
+      message: 'New task assigned: "{{title}}" -- assigned to you by {{actor_name}}',
     },
   },
   {
@@ -122,7 +122,64 @@ export const AUTOMATION_TEMPLATES: AutomationTemplate[] = [
     trigger_config: { conditions: [] },
     action_type: 'send_slack',
     action_config: {
-      message: '👀 {{client_name}} just viewed proposal "{{proposal_name}}" in the client portal!',
+      message: '{{client_name}} just viewed proposal "{{proposal_name}}" in the client portal.',
+    },
+  },
+  {
+    id: 'tpl_deal_inactivity_followup',
+    name: 'Auto-follow-up on deal inactivity',
+    description: 'Send a follow-up email when a deal has had no activity for 7+ days.',
+    category: 'Sales',
+    trigger_type: 'deal_inactive',
+    trigger_config: {
+      conditions: [{ field: 'days_inactive', operator: 'greater_than', value: 7 }],
+    },
+    action_type: 'send_email',
+    action_config: {
+      subject: 'Following up on {{deal_title}}',
+      body: 'Hi, I wanted to check in on {{deal_title}}. Is there anything I can help with to move things forward?',
+    },
+  },
+  {
+    id: 'tpl_lead_assignment_roundrobin',
+    name: 'Round-robin lead assignment',
+    description: 'Automatically assign new leads to team members in a round-robin rotation.',
+    category: 'Sales',
+    trigger_type: 'lead_created',
+    trigger_config: { conditions: [] },
+    action_type: 'assign_owner',
+    action_config: {
+      strategy: 'round_robin',
+      team_filter: 'sales',
+    },
+  },
+  {
+    id: 'tpl_lead_score_notify',
+    name: 'Notify on high-scoring lead',
+    description: 'Send a Slack notification when a new lead scores 70+ (hot lead).',
+    category: 'Sales',
+    trigger_type: 'lead_created',
+    trigger_config: {
+      conditions: [{ field: 'lead_score', operator: 'greater_than', value: 70 }],
+    },
+    action_type: 'send_slack',
+    action_config: {
+      message: '🔥 Hot lead! "{{contact_name}}" from {{company_name}} scored {{lead_score}}/100.',
+    },
+  },
+  {
+    id: 'tpl_deal_close_approaching',
+    name: 'Deal close date approaching',
+    description: 'Send a reminder when a deal\'s expected close date is 3 days away.',
+    category: 'Sales',
+    trigger_type: 'deal_close_approaching',
+    trigger_config: {
+      conditions: [{ field: 'days_until_close', operator: 'equals', value: 3 }],
+    },
+    action_type: 'send_email',
+    action_config: {
+      subject: 'Reminder: {{deal_title}} closing in 3 days',
+      body: 'The expected close date for {{deal_title}} ({{deal_value}}) is approaching. Please ensure all requirements are met.',
     },
   },
 ];

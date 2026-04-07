@@ -1,10 +1,14 @@
 'use client';
 
+import { useState, useCallback } from 'react';
 import Breadcrumbs from '@/components/shared/Breadcrumbs';
 import NotificationBell from '@/components/shared/NotificationBell';
 import UserMenu from '@/components/shared/UserMenu';
 import QuickActionMenu from '@/components/shared/QuickActionMenu';
 import MiniTimer from '@/components/shared/MiniTimer';
+import HelpMenu from '@/components/shared/HelpMenu';
+import ThemeToggle from '@/components/shared/ThemeToggle';
+import KeyboardShortcutsModal from '@/components/shared/KeyboardShortcutsModal';
 
 /* ─────────────────────────────────────────────────────────
    Types
@@ -68,43 +72,55 @@ function SearchTrigger() {
    ───────────────────────────────────────────────────────── */
 
 export default function AppHeader({ user, orgName }: AppHeaderProps) {
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
+
+  const openShortcuts = useCallback(() => setShortcutsOpen(true), []);
+  const closeShortcuts = useCallback(() => setShortcutsOpen(false), []);
+
   return (
-    <header
-      className="sticky top-0 z-20 flex items-center gap-3 h-14 px-6 md:px-10 glass-nav"
-      role="banner"
-      id="app-header"
-    >
-      {/* Left — Breadcrumbs */}
-      <div className="hidden md:flex items-center min-w-0 flex-1">
-        <Breadcrumbs />
-      </div>
+    <>
+      <header
+        className="sticky top-0 z-20 flex items-center gap-3 h-14 px-6 md:px-10 glass-nav"
+        role="banner"
+        id="app-header"
+      >
+        {/* Left — Breadcrumbs */}
+        <div className="hidden md:flex items-center min-w-0 flex-1">
+          <Breadcrumbs />
+        </div>
 
-      {/* Mobile — Org name fallback */}
-      <div className="flex md:hidden items-center min-w-0 flex-1">
-        <span className="text-sm font-semibold text-foreground truncate">
-          {orgName}
-        </span>
-      </div>
+        {/* Mobile — Org name fallback */}
+        <div className="flex md:hidden items-center min-w-0 flex-1">
+          <span className="text-sm font-semibold text-foreground truncate">
+            {orgName}
+          </span>
+        </div>
 
-      {/* Center — Search */}
-      <SearchTrigger />
+        {/* Center — Search */}
+        <SearchTrigger />
 
-      {/* Right — Action cluster */}
-      <div className="flex items-center gap-2">
-        <QuickActionMenu />
-        <NotificationBell />
-        <MiniTimer />
+        {/* Right — Action cluster */}
+        <div className="flex items-center gap-1">
+          <QuickActionMenu />
+          <NotificationBell />
+          <MiniTimer />
+          <HelpMenu onOpenShortcuts={openShortcuts} />
+          <ThemeToggle />
 
-        {/* Divider */}
-        <div className="hidden md:block h-5 w-px bg-border/60 mx-1" />
+          {/* Divider */}
+          <div className="hidden md:block h-5 w-px bg-border/60 mx-1" />
 
-        <UserMenu
-          fullName={user.fullName}
-          email={user.email}
-          role={user.role}
-          avatarUrl={user.avatarUrl}
-        />
-      </div>
-    </header>
+          <UserMenu
+            fullName={user.fullName}
+            email={user.email}
+            role={user.role}
+            avatarUrl={user.avatarUrl}
+          />
+        </div>
+      </header>
+
+      {/* Keyboard shortcuts modal (rendered outside header for z-index) */}
+      <KeyboardShortcutsModal open={shortcutsOpen} onClose={closeShortcuts} />
+    </>
   );
 }

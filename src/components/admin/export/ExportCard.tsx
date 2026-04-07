@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Button from '@/components/ui/Button';
 
 interface ExportCardProps {
   platformName: string;
@@ -59,12 +60,9 @@ export default function ExportCard({
         </div>
 
         <div className="mt-4 flex items-center gap-2">
-          <button
-            onClick={onExport}
-            className="rounded-lg bg-foreground px-3.5 py-1.5 text-xs font-medium text-white transition-colors hover:bg-foreground/90"
-          >
+          <Button size="sm" onClick={onExport}>
             Export
-          </button>
+          </Button>
           {actions?.map((action) => (
             <button
               key={action.label}

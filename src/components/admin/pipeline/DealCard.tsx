@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { formatCurrency } from '@/lib/utils';
 import type { DealStage } from '@/types/database';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
+import Tooltip from '@/components/ui/Tooltip';
 
 interface DealCardProps {
   id: string;
@@ -15,6 +16,26 @@ interface DealCardProps {
   probability: number;
   expectedCloseDate: string | null;
   stage: DealStage;
+  /** ISO timestamp of last update — used for deal rotting indicator. */
+  updatedAt?: string | null;
+  /** Owner display name (initials shown on card). */
+  ownerName?: string | null;
+}
+
+function getDaysSinceUpdate(updatedAt: string | null | undefined): number {
+  if (!updatedAt) return 0;
+  const ms = Date.now() - new Date(updatedAt).getTime();
+  return Math.floor(ms / (1000 * 60 * 60 * 24));
+}
+
+function getOwnerInitials(name: string | null | undefined): string {
+  if (!name) return '';
+  return name
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
 }
 
 export default function DealCard({
@@ -24,9 +45,33 @@ export default function DealCard({
   value,
   probability,
   expectedCloseDate,
+  stage,
+  updatedAt,
+  ownerName,
 }: DealCardProps) {
   const router = useRouter();
   const [showDelete, setShowDelete] = useState(false);
+
+  const daysSinceUpdate = useMemo(() => getDaysSinceUpdate(updatedAt), [updatedAt]);
+
+  // Only show rotting for active deals (not won or lost)
+  const isActive = stage !== 'contract_signed' && stage !== 'lost';
+  const isRotting = isActive && daysSinceUpdate >= 7;
+  const isCritical = isActive && daysSinceUpdate >= 14;
+
+  const rottingBorder = isCritical
+    ? 'border-red-300 ring-1 ring-red-100'
+    : isRotting
+      ? 'border-amber-300 ring-1 ring-amber-100'
+      : 'border-border';
+
+  const rottingLabel = isCritical
+    ? `Stale ${daysSinceUpdate}d — needs attention`
+    : isRotting
+      ? `Inactive for ${daysSinceUpdate} days`
+      : '';
+
+  const ownerInitials = getOwnerInitials(ownerName);
 
   async function handleDelete() {
     const res = await fetch(`/api/deals/${id}`, { method: 'DELETE' });
@@ -34,38 +79,62 @@ export default function DealCard({
     router.refresh();
   }
 
+  const card = (
+    <div className={`group relative rounded-lg border bg-white p-3 shadow-sm transition-colors hover:border-foreground/20 ${rottingBorder}`}>
+      <Link href={`/app/pipeline/${id}`} className="block">
+        <div className="flex items-start justify-between gap-1">
+          <p className="text-sm font-medium text-foreground truncate pr-6">{title}</p>
+          {ownerInitials && (
+            <span className="flex-shrink-0 flex items-center justify-center h-5 w-5 rounded-full bg-bg-secondary text-[9px] font-semibold text-text-muted" title={ownerName ?? ''}>
+              {ownerInitials}
+            </span>
+          )}
+        </div>
+        <p className="mt-1 text-xs text-text-muted truncate">{clientName}</p>
+        <div className="mt-2 flex items-center justify-between gap-2">
+          <span className="text-sm font-semibold tabular-nums text-foreground">
+            {formatCurrency(value)}
+          </span>
+          <span className="text-xs tabular-nums text-text-muted">{probability}%</span>
+        </div>
+        {expectedCloseDate && (
+          <p className="mt-1.5 text-xs text-text-muted">
+            Close:{' '}
+            {new Date(expectedCloseDate).toLocaleDateString('en-US', {
+              month: 'short',
+              day: 'numeric',
+            })}
+          </p>
+        )}
+        {isRotting && (
+          <div className={`mt-2 flex items-center gap-1 text-[10px] font-medium ${isCritical ? 'text-red-600' : 'text-amber-600'}`}>
+            <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <circle cx="8" cy="8" r="7" />
+              <path d="M8 4v4M8 10.5v.5" />
+            </svg>
+            {daysSinceUpdate}d inactive
+          </div>
+        )}
+      </Link>
+      <button
+        onClick={(e) => { e.stopPropagation(); setShowDelete(true); }}
+        className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity rounded p-1 text-text-muted hover:text-red-600 hover:bg-red-50"
+        title="Delete deal"
+      >
+        <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+          <path d="M2 4h10M5 4V3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1M9 4v7a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4" />
+        </svg>
+      </button>
+    </div>
+  );
+
   return (
     <>
-      <div className="group relative rounded-lg border border-border bg-white p-3 shadow-sm transition-colors hover:border-foreground/20">
-        <Link href={`/app/pipeline/${id}`} className="block">
-          <p className="text-sm font-medium text-foreground truncate pr-6">{title}</p>
-          <p className="mt-1 text-xs text-text-muted truncate">{clientName}</p>
-          <div className="mt-2 flex items-center justify-between gap-2">
-            <span className="text-sm font-semibold tabular-nums text-foreground">
-              {formatCurrency(value)}
-            </span>
-            <span className="text-xs tabular-nums text-text-muted">{probability}%</span>
-          </div>
-          {expectedCloseDate && (
-            <p className="mt-1.5 text-xs text-text-muted">
-              Close:{' '}
-              {new Date(expectedCloseDate).toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric',
-              })}
-            </p>
-          )}
-        </Link>
-        <button
-          onClick={(e) => { e.stopPropagation(); setShowDelete(true); }}
-          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity rounded p-1 text-text-muted hover:text-red-600 hover:bg-red-50"
-          title="Delete deal"
-        >
-          <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-            <path d="M2 4h10M5 4V3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1M9 4v7a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4" />
-          </svg>
-        </button>
-      </div>
+      {rottingLabel ? (
+        <Tooltip label={rottingLabel}>
+          {card}
+        </Tooltip>
+      ) : card}
 
       <ConfirmDialog
         open={showDelete}

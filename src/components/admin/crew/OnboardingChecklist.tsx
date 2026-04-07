@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Alert from '@/components/ui/Alert';
 
 interface Document {
   id: string;
@@ -82,9 +83,7 @@ export default function OnboardingChecklist({ userId, documents }: OnboardingChe
       </div>
 
       {error && (
-        <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-800 mb-4">
-          {error}
-        </div>
+        <Alert className="mb-4">{error}</Alert>
       )}
 
       <ul className="space-y-3">

@@ -1,3 +1,4 @@
+
 /**
  * Project Wrap Report Document
  *
@@ -37,6 +38,9 @@ import {
   type TableColumn,
   CONTENT_WIDTH,
 } from '../engine';
+
+import { castActivationDates } from '../doc-types';
+
 
 // ---------------------------------------------------------------------------
 // Public interface
@@ -145,8 +149,9 @@ export async function generateWrapReport(data: WrapReportData): Promise<Buffer> 
   const sortedVenues = [...venues].sort((a, b) => a.sequence - b.sequence);
 
   const venueRows = sortedVenues.map((v) => {
-    const activationStr = v.activation_dates
-      ? `${formatDate(v.activation_dates.start)} \u2013 ${formatDate(v.activation_dates.end)}`
+    const act = castActivationDates(v.activation_dates);
+    const activationStr = act
+      ? `${formatDate(act.start ?? '')} \u2013 ${formatDate(act.end ?? '')}`
       : '\u2014';
     return [v.name, activationStr];
   });
@@ -162,7 +167,7 @@ export async function generateWrapReport(data: WrapReportData): Promise<Buffer> 
 
   const originalValue = proposal.total_value;
   const coCount = changeOrders.length;
-  const coNetChange = changeOrders.reduce((sum, co) => sum + (co.net_change ?? 0), 0);
+  const coNetChange = changeOrders.reduce((sum, co) => sum + ((co as unknown as { net_change?: number }).net_change ?? co.amount ?? 0), 0);
   const finalValue = originalValue + coNetChange;
 
   const totalInvoiced = invoices.reduce((sum, inv) => sum + inv.total, 0);
@@ -231,7 +236,7 @@ export async function generateWrapReport(data: WrapReportData): Promise<Buffer> 
     const coRows = changeOrders.map((co, idx) => [
       String((co as ChangeOrder & { number?: number }).number ?? idx + 1),
       co.title,
-      formatCurrency(co.net_change ?? 0, currency),
+      formatCurrency((co as unknown as { net_change?: number }).net_change ?? co.amount ?? 0, currency),
       (co.status ?? '').replace(/_/g, ' '),
     ]);
 

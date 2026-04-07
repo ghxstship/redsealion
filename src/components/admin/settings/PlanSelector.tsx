@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useSubscription } from '@/components/shared/SubscriptionProvider';
 import type { SubscriptionTier } from '@/types/database';
+import Alert from '@/components/ui/Alert';
 
 interface Plan {
   name: string;
@@ -94,9 +95,7 @@ export default function PlanSelector() {
   return (
     <div className="space-y-4">
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
+        <Alert className="mb-4">{error}</Alert>
       )}
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">

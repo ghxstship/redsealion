@@ -1,8 +1,12 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, type ReactNode } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
+import {
+  Hand, AlertTriangle, Bell, Eye, ClipboardList,
+  CreditCard, BarChart3, Settings, Pin,
+} from 'lucide-react';
 
 /* ─────────────────────────────────────────────────────────
    Types
@@ -19,16 +23,18 @@ interface Notification {
   entity_id: string | null;
 }
 
-const TYPE_ICONS: Record<string, string> = {
-  approval_required: '✋',
-  invoice_overdue: '⚠️',
-  lead_new: '🔔',
-  proposal_viewed: '👁️',
-  task_assigned: '📋',
-  expense_submitted: '💳',
-  deal_stage_changed: '📊',
-  system: '⚙️',
+const TYPE_ICONS: Record<string, ReactNode> = {
+  approval_required: <Hand size={14} />,
+  invoice_overdue: <AlertTriangle size={14} />,
+  lead_new: <Bell size={14} />,
+  proposal_viewed: <Eye size={14} />,
+  task_assigned: <ClipboardList size={14} />,
+  expense_submitted: <CreditCard size={14} />,
+  deal_stage_changed: <BarChart3 size={14} />,
+  system: <Settings size={14} />,
 };
+
+const FALLBACK_ICON = <Pin size={14} />;
 
 function entityLink(type: string | null, id: string | null): string | null {
   if (!type || !id) return null;
@@ -148,20 +154,7 @@ export default function NotificationBell() {
         className="relative flex items-center justify-center w-9 h-9 rounded-lg transition-colors hover:bg-bg-secondary"
         aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ''}`}
       >
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 18 18"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="text-text-secondary"
-        >
-          <path d="M13.73 12a2 2 0 0 0 .27-1V7.5a5 5 0 0 0-10 0V11a2 2 0 0 0 .27 1H13.73Z" />
-          <path d="M7 14a2.18 2.18 0 0 0 4 0" />
-        </svg>
+        <Bell size={18} className="text-text-secondary" />
         {unreadCount > 0 && (
           <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[16px] h-4 rounded-full bg-red-500 text-white text-[10px] font-semibold px-1">
             {unreadCount > 9 ? '9+' : unreadCount}
@@ -194,10 +187,7 @@ export default function NotificationBell() {
             ) : notifications.length === 0 ? (
               <div className="px-4 py-10 text-center">
                 <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-bg-tertiary">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-text-muted">
-                    <path d="M15.73 13.5a2 2 0 0 0 .27-1V8.5a6 6 0 0 0-12 0v4a2 2 0 0 0 .27 1h11.46Z" />
-                    <path d="M8 16a2.18 2.18 0 0 0 4 0" />
-                  </svg>
+                  <Bell size={20} className="text-text-muted" />
                 </div>
                 <p className="text-sm font-medium text-foreground">All caught up</p>
                 <p className="mt-1 text-xs text-text-muted">
@@ -211,8 +201,8 @@ export default function NotificationBell() {
 
                   const content = (
                     <>
-                      <span className="mt-0.5 text-base shrink-0">
-                        {TYPE_ICONS[notification.type] ?? '📌'}
+                      <span className="mt-0.5 shrink-0 flex items-center text-text-secondary">
+                        {TYPE_ICONS[notification.type] ?? FALLBACK_ICON}
                       </span>
                       <div className="min-w-0 flex-1">
                         <p className={`text-sm ${!notification.read ? 'font-medium text-foreground' : 'text-text-secondary'}`}>

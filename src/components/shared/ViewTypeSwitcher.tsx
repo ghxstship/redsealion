@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import type { ReactNode } from 'react';
 
 interface ViewTypeSwitcherProps {
-  views: { key: string; label: string; icon: string }[];
+  views: { key: string; label: string; icon: ReactNode }[];
   activeView: string;
   onSwitch: (key: string) => void;
 }
@@ -26,7 +26,7 @@ export default function ViewTypeSwitcher({ views, activeView, onSwitch }: ViewTy
           }`}
           title={view.label}
         >
-          <span>{view.icon}</span>
+          <span className="flex items-center">{view.icon}</span>
           <span className="hidden sm:inline">{view.label}</span>
         </button>
       ))}

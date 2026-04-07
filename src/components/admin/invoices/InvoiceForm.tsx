@@ -5,6 +5,10 @@ import { useRouter } from 'next/navigation';
 import InvoicePreview from './InvoicePreview';
 import FormSelect from '@/components/ui/FormSelect';
 import FormTextarea from '@/components/ui/FormTextarea';
+import Alert from '@/components/ui/Alert';
+import FormInput from '@/components/ui/FormInput';
+import FormLabel from '@/components/ui/FormLabel';
+import Button from '@/components/ui/Button';
 
 interface SelectOption {
   id: string;
@@ -15,6 +19,7 @@ interface LineItem {
   description: string;
   quantity: number;
   rate: number;
+  tax_rate: number;
 }
 
 export default function InvoiceForm({
@@ -31,13 +36,18 @@ export default function InvoiceForm({
   const [dueDate, setDueDate] = useState('');
   const [memo, setMemo] = useState('');
   const [lineItems, setLineItems] = useState<LineItem[]>([
-    { description: '', quantity: 1, rate: 0 },
+    { description: '', quantity: 1, rate: 0, tax_rate: 0 },
   ]);
   const [saving, setSaving] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const total = lineItems.reduce((s, li) => s + li.quantity * li.rate, 0);
+  const subtotal = lineItems.reduce((s, li) => s + li.quantity * li.rate, 0);
+  const taxTotal = lineItems.reduce((s, li) => {
+    const lineAmount = li.quantity * li.rate;
+    return s + Math.round(lineAmount * (li.tax_rate / 100) * 100) / 100;
+  }, 0);
+  const total = subtotal + taxTotal;
 
   async function handleSave(andSend: boolean) {
     setError(null);
@@ -93,7 +103,7 @@ export default function InvoiceForm({
   }
 
   function addLineItem() {
-    setLineItems([...lineItems, { description: '', quantity: 1, rate: 0 }]);
+    setLineItems([...lineItems, { description: '', quantity: 1, rate: 0, tax_rate: 0 }]);
   }
 
   function updateLineItem(index: number, patch: Partial<LineItem>) {
@@ -117,7 +127,7 @@ export default function InvoiceForm({
           <h2 className="text-sm font-semibold text-foreground">Invoice Details</h2>
 
           <div>
-            <label className="block text-xs font-medium text-text-muted mb-1">Client</label>
+            <FormLabel>Client</FormLabel>
             <FormSelect
               value={clientId}
               onChange={(e) => setClientId(e.target.value)}>
@@ -129,9 +139,9 @@ export default function InvoiceForm({
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-text-muted mb-1">
+            <FormLabel>
               Linked Proposal (optional)
-            </label>
+            </FormLabel>
             <FormSelect
               value={proposalId}
               onChange={(e) => setProposalId(e.target.value)}>
@@ -144,7 +154,7 @@ export default function InvoiceForm({
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-medium text-text-muted mb-1">Type</label>
+              <FormLabel>Type</FormLabel>
               <FormSelect
                 value={type}
                 onChange={(e) => setType(e.target.value)}>
@@ -157,23 +167,20 @@ export default function InvoiceForm({
               </FormSelect>
             </div>
             <div>
-              <label className="block text-xs font-medium text-text-muted mb-1">Due Date</label>
-              <input
+              <FormLabel>Due Date</FormLabel>
+              <FormInput
                 type="date"
                 value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
-                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10"
-              />
+                onChange={(e) => setDueDate(e.target.value)} />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-text-muted mb-1">Memo</label>
+            <FormLabel>Memo</FormLabel>
             <FormTextarea
               value={memo}
               onChange={(e) => setMemo(e.target.value)}
               rows={3}
-              className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 resize-none"
             />
           </div>
         </div>
@@ -182,57 +189,69 @@ export default function InvoiceForm({
         <div className="rounded-xl border border-border bg-white p-6 space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-semibold text-foreground">Line Items</h2>
-            <button
+            <Button
+              variant="ghost"
+              size="sm"
               type="button"
               onClick={addLineItem}
-              className="text-xs font-medium text-text-muted hover:text-foreground transition-colors"
             >
               + Add item
-            </button>
+            </Button>
           </div>
 
           {lineItems.map((li, index) => (
             <div key={index} className="grid grid-cols-12 gap-3 items-end">
-              <div className="col-span-6">
-                <label className="block text-xs font-medium text-text-muted mb-1">Description</label>
-                <input
+              <div className="col-span-5">
+                <FormLabel>Description</FormLabel>
+                <FormInput
                   type="text"
                   value={li.description}
                   onChange={(e) => updateLineItem(index, { description: e.target.value })} />
               </div>
-              <div className="col-span-2">
-                <label className="block text-xs font-medium text-text-muted mb-1">Qty</label>
-                <input
+              <div className="col-span-1">
+                <FormLabel>Qty</FormLabel>
+                <FormInput
                   type="number"
                   min={1}
                   value={li.quantity}
-                  onChange={(e) => updateLineItem(index, { quantity: Number(e.target.value) })}
-                  className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10"
-                />
+                  onChange={(e) => updateLineItem(index, { quantity: Number(e.target.value) })} />
               </div>
-              <div className="col-span-3">
-                <label className="block text-xs font-medium text-text-muted mb-1">Rate</label>
-                <input
+              <div className="col-span-2">
+                <FormLabel>Rate</FormLabel>
+                <FormInput
                   type="number"
                   min={0}
                   step="0.01"
                   value={li.rate}
-                  onChange={(e) => updateLineItem(index, { rate: Number(e.target.value) })}
-                  className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10"
-                />
+                  onChange={(e) => updateLineItem(index, { rate: Number(e.target.value) })} />
               </div>
-              <div className="col-span-1">
-                <button
+              <div className="col-span-2">
+                <FormLabel>Tax %</FormLabel>
+                <FormInput
+                  type="number"
+                  min={0}
+                  max={100}
+                  step="0.01"
+                  value={li.tax_rate}
+                  onChange={(e) => updateLineItem(index, { tax_rate: Number(e.target.value) })} />
+              </div>
+              <div className="col-span-2 flex items-center gap-2">
+                <span className="text-sm tabular-nums text-foreground font-medium whitespace-nowrap">
+                  ${(li.quantity * li.rate * (1 + li.tax_rate / 100)).toFixed(2)}
+                </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
                   type="button"
                   onClick={() => removeLineItem(index)}
-                  className="text-text-muted hover:text-red-600 transition-colors p-2"
                   disabled={lineItems.length <= 1}
+                  className="text-text-muted hover:text-red-600 p-1"
                 >
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
                     <line x1="3" y1="3" x2="11" y2="11" />
                     <line x1="11" y1="3" x2="3" y2="11" />
                   </svg>
-                </button>
+                </Button>
               </div>
             </div>
           ))}
@@ -240,29 +259,26 @@ export default function InvoiceForm({
 
         {/* Error */}
         {error && (
-          <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-            {error}
-          </div>
+          <Alert className="mb-4">{error}</Alert>
         )}
 
         {/* Actions */}
         <div className="flex justify-end gap-3">
-          <button
+          <Button
+            variant="secondary"
             type="button"
             disabled={saving || sending}
             onClick={() => handleSave(false)}
-            className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary disabled:opacity-50"
           >
             {saving ? 'Saving...' : 'Save Draft'}
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             disabled={saving || sending}
             onClick={() => handleSave(true)}
-            className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90 disabled:opacity-50"
           >
             {sending ? 'Sending...' : 'Create & Send'}
-          </button>
+          </Button>
         </div>
       </div>
 

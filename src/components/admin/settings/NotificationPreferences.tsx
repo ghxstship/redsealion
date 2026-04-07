@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Button from '@/components/ui/Button';
+import Alert from '@/components/ui/Alert';
 
 interface Preference {
   event_type: string;
@@ -86,9 +88,7 @@ export default function NotificationPreferences() {
       <h2 className="text-base font-semibold text-foreground mb-4">Notification Preferences</h2>
 
       {error && (
-        <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-800 mb-4">
-          {error}
-        </div>
+        <Alert className="mb-4">{error}</Alert>
       )}
 
       {success && (
@@ -137,13 +137,10 @@ export default function NotificationPreferences() {
       </div>
 
       <div className="flex justify-end mt-4">
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="px-4 py-2 text-sm rounded-lg bg-foreground text-white hover:opacity-90 disabled:opacity-50"
-        >
+        <Button onClick={handleSave}
+          disabled={saving}>
           {saving ? 'Saving...' : 'Save Preferences'}
-        </button>
+        </Button>
       </div>
     </div>
   );

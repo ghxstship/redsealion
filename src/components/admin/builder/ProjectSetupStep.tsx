@@ -4,6 +4,10 @@ import { useState, useEffect } from 'react';
 import type { NarrativeContext, PaymentTerms } from '@/types/database';
 import { createClient } from '@/lib/supabase/client';
 import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
+import FormSelect from '@/components/ui/FormSelect';
+import FormTextarea from '@/components/ui/FormTextarea';
+import FormInput from '@/components/ui/FormInput';
+import FormLabel from '@/components/ui/FormLabel';
 export interface ProjectSetupData {
   clientId: string;
   clientSearch: string;
@@ -99,17 +103,15 @@ export default function ProjectSetupStep({
       <fieldset className="space-y-4">
         <legend className="text-sm font-medium text-foreground">Client</legend>
         <div>
-          <label htmlFor="clientSearch" className="block text-xs font-medium text-text-secondary mb-1">
+          <FormLabel htmlFor="clientSearch">
             Search clients
-          </label>
-          <input
+          </FormLabel>
+          <FormInput
             id="clientSearch"
             type="text"
             placeholder="Type to search..."
             value={data.clientSearch}
-            onChange={(e) => update({ clientSearch: e.target.value })}
-            className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:border-org-primary focus:outline-none focus:ring-1 focus:ring-org-primary"
-          />
+            onChange={(e) => update({ clientSearch: e.target.value })} />
           {data.clientSearch && !data.clientId && (
             <ul className="mt-1 rounded-lg border border-border bg-white shadow-sm max-h-40 overflow-y-auto">
               {filteredClients.map((client) => (
@@ -150,31 +152,27 @@ export default function ProjectSetupStep({
         <legend className="text-sm font-medium text-foreground">Project Details</legend>
 
         <div>
-          <label htmlFor="projectName" className="block text-xs font-medium text-text-secondary mb-1">
+          <FormLabel htmlFor="projectName">
             Project Name
-          </label>
-          <input
+          </FormLabel>
+          <FormInput
             id="projectName"
             type="text"
             placeholder="e.g., SXSW 2026 Brand Activation"
             value={data.projectName}
-            onChange={(e) => update({ projectName: e.target.value })}
-            className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:border-org-primary focus:outline-none focus:ring-1 focus:ring-org-primary"
-          />
+            onChange={(e) => update({ projectName: e.target.value })} />
         </div>
 
         <div>
-          <label htmlFor="subtitle" className="block text-xs font-medium text-text-secondary mb-1">
+          <FormLabel htmlFor="subtitle">
             Subtitle
-          </label>
-          <input
+          </FormLabel>
+          <FormInput
             id="subtitle"
             type="text"
             placeholder="e.g., Immersive Pop-Up Experience"
             value={data.subtitle}
-            onChange={(e) => update({ subtitle: e.target.value })}
-            className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:border-org-primary focus:outline-none focus:ring-1 focus:ring-org-primary"
-          />
+            onChange={(e) => update({ subtitle: e.target.value })} />
         </div>
       </fieldset>
 
@@ -183,45 +181,39 @@ export default function ProjectSetupStep({
         <legend className="text-sm font-medium text-foreground">Narrative Context</legend>
 
         <div>
-          <label htmlFor="brandVoice" className="block text-xs font-medium text-text-secondary mb-1">
+          <FormLabel htmlFor="brandVoice">
             Brand Voice
-          </label>
-          <textarea
+          </FormLabel>
+          <FormTextarea
             id="brandVoice"
             rows={2}
             placeholder="Describe the brand voice for this proposal..."
             value={data.brandVoice}
-            onChange={(e) => update({ brandVoice: e.target.value })}
-            className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:border-org-primary focus:outline-none focus:ring-1 focus:ring-org-primary resize-none"
-          />
+            onChange={(e) => update({ brandVoice: e.target.value })} />
         </div>
 
         <div>
-          <label htmlFor="audienceProfile" className="block text-xs font-medium text-text-secondary mb-1">
+          <FormLabel htmlFor="audienceProfile">
             Audience Profile
-          </label>
-          <textarea
+          </FormLabel>
+          <FormTextarea
             id="audienceProfile"
             rows={2}
             placeholder="Who is the target audience?"
             value={data.audienceProfile}
-            onChange={(e) => update({ audienceProfile: e.target.value })}
-            className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:border-org-primary focus:outline-none focus:ring-1 focus:ring-org-primary resize-none"
-          />
+            onChange={(e) => update({ audienceProfile: e.target.value })} />
         </div>
 
         <div>
-          <label htmlFor="experienceGoal" className="block text-xs font-medium text-text-secondary mb-1">
+          <FormLabel htmlFor="experienceGoal">
             Experience Goal
-          </label>
-          <textarea
+          </FormLabel>
+          <FormTextarea
             id="experienceGoal"
             rows={2}
             placeholder="What is the desired outcome of the experience?"
             value={data.experienceGoal}
-            onChange={(e) => update({ experienceGoal: e.target.value })}
-            className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:border-org-primary focus:outline-none focus:ring-1 focus:ring-org-primary resize-none"
-          />
+            onChange={(e) => update({ experienceGoal: e.target.value })} />
         </div>
       </fieldset>
 
@@ -230,32 +222,28 @@ export default function ProjectSetupStep({
         <legend className="text-sm font-medium text-foreground">Payment Terms Override</legend>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label htmlFor="depositPercent" className="block text-xs font-medium text-text-secondary mb-1">
+            <FormLabel htmlFor="depositPercent">
               Deposit %
-            </label>
-            <input
+            </FormLabel>
+            <FormInput
               id="depositPercent"
               type="number"
               min={0}
               max={100}
               value={data.depositPercent}
-              onChange={(e) => update({ depositPercent: Number(e.target.value) })}
-              className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:border-org-primary focus:outline-none focus:ring-1 focus:ring-org-primary"
-            />
+              onChange={(e) => update({ depositPercent: Number(e.target.value) })} />
           </div>
           <div>
-            <label htmlFor="balancePercent" className="block text-xs font-medium text-text-secondary mb-1">
+            <FormLabel htmlFor="balancePercent">
               Balance %
-            </label>
-            <input
+            </FormLabel>
+            <FormInput
               id="balancePercent"
               type="number"
               min={0}
               max={100}
               value={data.balancePercent}
-              onChange={(e) => update({ balancePercent: Number(e.target.value) })}
-              className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:border-org-primary focus:outline-none focus:ring-1 focus:ring-org-primary"
-            />
+              onChange={(e) => update({ balancePercent: Number(e.target.value) })} />
           </div>
         </div>
         {data.depositPercent + data.balancePercent !== 100 && (
@@ -267,14 +255,13 @@ export default function ProjectSetupStep({
       <fieldset className="space-y-4">
         <legend className="text-sm font-medium text-foreground">Phase Template</legend>
         <div>
-          <label htmlFor="phaseTemplate" className="block text-xs font-medium text-text-secondary mb-1">
+          <FormLabel htmlFor="phaseTemplate">
             Select a template
-          </label>
-          <select
+          </FormLabel>
+          <FormSelect
             id="phaseTemplate"
             value={data.phaseTemplateId}
             onChange={(e) => update({ phaseTemplateId: e.target.value })}
-            className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:border-org-primary focus:outline-none focus:ring-1 focus:ring-org-primary"
           >
             <option value="">-- Select template --</option>
             {templates.map((t) => (
@@ -282,7 +269,7 @@ export default function ProjectSetupStep({
                 {t.name}
               </option>
             ))}
-          </select>
+          </FormSelect>
         </div>
       </fieldset>
     </div>

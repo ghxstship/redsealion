@@ -11,6 +11,7 @@ import DataExportMenu from '@/components/shared/DataExportMenu';
 import DataImportDialog from '@/components/shared/DataImportDialog';
 import SortableHeader from '@/components/shared/SortableHeader';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
+import FormInput from '@/components/ui/FormInput';
 
 interface InvoiceRow {
   id: string;
@@ -100,13 +101,11 @@ export default function InvoiceTabs({ invoices }: { invoices: InvoiceRow[] }) {
 
       {/* Search + Export */}
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <input
+        <FormInput
           type="text"
           placeholder="Search invoices..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full max-w-xs rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10"
-        />
+          onChange={(e) => setSearch(e.target.value)} />
         <div className="flex items-center gap-3">
           <button onClick={() => setShowImport(true)} className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M7 2v10M3 8l4 4 4-4" /></svg>
@@ -138,7 +137,7 @@ export default function InvoiceTabs({ invoices }: { invoices: InvoiceRow[] }) {
             <thead>
               <tr className="border-b border-border bg-bg-secondary">
                 <th className="px-4 py-3 text-left w-10">
-                  <input type="checkbox" checked={isAllSelected} ref={(el) => { if (el) el.indeterminate = isSomeSelected; }} onChange={toggleAll} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/20" />
+                  <input type="checkbox" checked={isAllSelected} ref={(el) => { if (el) el.indeterminate = isSomeSelected; }} onChange={toggleAll} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
                 </th>
                 <th className="px-6 py-3"><SortableHeader label="Invoice" field="invoice_number" currentSort={sort} onSort={handleSort} /></th>
                 <th className="px-6 py-3"><SortableHeader label="Client" field="client_name" currentSort={sort} onSort={handleSort} /></th>
@@ -154,7 +153,7 @@ export default function InvoiceTabs({ invoices }: { invoices: InvoiceRow[] }) {
               {sorted.map((inv) => (
                 <tr key={inv.id} className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(inv.id) ? 'bg-blue-50/50' : ''}`}>
                   <td className="px-4 py-3.5">
-                    <input type="checkbox" checked={isSelected(inv.id)} onChange={() => toggle(inv.id)} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/20" />
+                    <input type="checkbox" checked={isSelected(inv.id)} onChange={() => toggle(inv.id)} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
                   </td>
                   <td className="px-6 py-4">
                     <Link href={`/app/invoices/${inv.id}`} className="text-sm font-medium text-foreground hover:underline">{inv.invoice_number}</Link>

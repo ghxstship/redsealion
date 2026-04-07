@@ -1,14 +1,21 @@
-import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import type { ButtonHTMLAttributes, ReactNode, AnchorHTMLAttributes } from 'react';
+import Link from 'next/link';
 
 type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost';
 type ButtonSize = 'sm' | 'default' | 'lg';
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonBaseProps {
   variant?: ButtonVariant;
   size?: ButtonSize;
   loading?: boolean;
   children: ReactNode;
+  className?: string;
 }
+
+type ButtonAsButtonProps = ButtonBaseProps & ButtonHTMLAttributes<HTMLButtonElement> & { href?: never };
+type ButtonAsLinkProps = ButtonBaseProps & AnchorHTMLAttributes<HTMLAnchorElement> & { href: string; disabled?: boolean };
+
+type ButtonProps = ButtonAsButtonProps | ButtonAsLinkProps;
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   primary: 'bg-foreground text-white hover:bg-foreground/90',
@@ -26,6 +33,7 @@ const SIZE_CLASSES: Record<ButtonSize, string> = {
 /**
  * Canonical Button atom.
  * Use variant + size to cover all button patterns across the platform.
+ * Providing an href prop will render a Next.js Link instead.
  */
 export default function Button({
   variant = 'primary',
@@ -36,11 +44,28 @@ export default function Button({
   children,
   ...rest
 }: ButtonProps) {
+  const commonClasses = `inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors disabled:opacity-50 ${VARIANT_CLASSES[variant]} ${SIZE_CLASSES[size]} ${className}`;
+
+  if ('href' in rest && rest.href) {
+    if (disabled || loading) {
+      return (
+        <span className={`${commonClasses} opacity-50 cursor-not-allowed`} aria-disabled="true">
+          {children}
+        </span>
+      );
+    }
+    return (
+      <Link className={commonClasses} {...(rest as any)}>
+        {children}
+      </Link>
+    );
+  }
+
   return (
     <button
       disabled={disabled || loading}
-      className={`inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors disabled:opacity-50 ${VARIANT_CLASSES[variant]} ${SIZE_CLASSES[size]} ${className}`}
-      {...rest}
+      className={commonClasses}
+      {...(rest as any)}
     >
       {children}
     </button>

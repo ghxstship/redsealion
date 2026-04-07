@@ -1,6 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
+import FormSelect from '@/components/ui/FormSelect';
+import FormTextarea from '@/components/ui/FormTextarea';
+import FormInput from '@/components/ui/FormInput';
+import FormLabel from '@/components/ui/FormLabel';
 
 /**
  * LeadIntakeForm
@@ -88,89 +92,74 @@ export function LeadIntakeForm({ organizationId }: { organizationId: string }) {
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <div className="space-y-1">
-              <label htmlFor="contact_first_name" className="text-sm font-medium text-white/80">First Name *</label>
-              <input
+              <FormLabel htmlFor="contact_first_name">First Name *</FormLabel>
+              <FormInput
                 required
                 type="text"
                 id="contact_first_name"
                 name="contact_first_name"
-                className="w-full rounded-xl border border-white/10 bg-white/5 py-3 px-4 text-white placeholder-white/30 transition-colors focus:border-white/30 focus:bg-white/10 focus:outline-none focus:ring-4 focus:ring-white/5"
-                placeholder="Jane"
-              />
+                placeholder="Jane" />
             </div>
             <div className="space-y-1">
-              <label htmlFor="contact_last_name" className="text-sm font-medium text-white/80">Last Name</label>
-              <input
+              <FormLabel htmlFor="contact_last_name">Last Name</FormLabel>
+              <FormInput
                 type="text"
                 id="contact_last_name"
                 name="contact_last_name"
-                className="w-full rounded-xl border border-white/10 bg-white/5 py-3 px-4 text-white placeholder-white/30 transition-colors focus:border-white/30 focus:bg-white/10 focus:outline-none focus:ring-4 focus:ring-white/5"
-                placeholder="Doe"
-              />
+                placeholder="Doe" />
             </div>
             <div className="space-y-1">
-              <label htmlFor="contact_email" className="text-sm font-medium text-white/80">Email Address *</label>
-              <input
+              <FormLabel htmlFor="contact_email">Email Address *</FormLabel>
+              <FormInput
                 required
                 type="email"
                 id="contact_email"
                 name="contact_email"
-                className="w-full rounded-xl border border-white/10 bg-white/5 py-3 px-4 text-white placeholder-white/30 transition-colors focus:border-white/30 focus:bg-white/10 focus:outline-none focus:ring-4 focus:ring-white/5"
-                placeholder="jane@example.com"
-              />
+                placeholder="jane@example.com" />
             </div>
           </div>
 
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <div className="space-y-1">
-              <label htmlFor="company_name" className="text-sm font-medium text-white/80">Company Name</label>
-              <input
+              <FormLabel htmlFor="company_name">Company Name</FormLabel>
+              <FormInput
                 type="text"
                 id="company_name"
                 name="company_name"
-                className="w-full rounded-xl border border-white/10 bg-white/5 py-3 px-4 text-white placeholder-white/30 transition-colors focus:border-white/30 focus:bg-white/10 focus:outline-none focus:ring-4 focus:ring-white/5"
-                placeholder="Acme Corp"
-              />
+                placeholder="Acme Corp" />
             </div>
             <div className="space-y-1">
-              <label htmlFor="contact_phone" className="text-sm font-medium text-white/80">Phone Number</label>
-              <input
+              <FormLabel htmlFor="contact_phone">Phone Number</FormLabel>
+              <FormInput
                 type="tel"
                 id="contact_phone"
                 name="contact_phone"
-                className="w-full rounded-xl border border-white/10 bg-white/5 py-3 px-4 text-white placeholder-white/30 transition-colors focus:border-white/30 focus:bg-white/10 focus:outline-none focus:ring-4 focus:ring-white/5"
-                placeholder="+1 (555) 123-4567"
-              />
+                placeholder="+1 (555) 123-4567" />
             </div>
           </div>
 
           <div className="space-y-1">
-             <label htmlFor="event_type" className="text-sm font-medium text-white/80">Project / Event Type</label>
-             <input
+             <FormLabel htmlFor="event_type">Project / Event Type</FormLabel>
+             <FormInput
                 type="text"
                 id="event_type"
                 name="event_type"
-                className="w-full rounded-xl border border-white/10 bg-white/5 py-3 px-4 text-white placeholder-white/30 transition-colors focus:border-white/30 focus:bg-white/10 focus:outline-none focus:ring-4 focus:ring-white/5"
-                placeholder="e.g. Brand Activation, Custom Stage, etc."
-              />
+                placeholder="e.g. Brand Activation, Custom Stage, etc." />
           </div>
 
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <div className="space-y-1">
-              <label htmlFor="event_date" className="text-sm font-medium text-white/80">Target Date</label>
-              <input
+              <FormLabel htmlFor="event_date">Target Date</FormLabel>
+              <FormInput
                 type="date"
                 id="event_date"
-                name="event_date"
-                className="w-full rounded-xl border border-white/10 bg-white/5 py-3 px-4 text-white placeholder-white/30 transition-colors focus:border-white/30 focus:bg-white/10 focus:outline-none focus:ring-4 focus:ring-white/5 [color-scheme:dark]"
-              />
+                name="event_date" />
             </div>
             <div className="space-y-1">
-              <label htmlFor="estimated_budget" className="text-sm font-medium text-white/80">Estimated Budget (USD)</label>
-              <select
+              <FormLabel htmlFor="estimated_budget">Estimated Budget (USD)</FormLabel>
+              <FormSelect
                 id="estimated_budget"
                 name="estimated_budget"
-                className="w-full rounded-xl border border-white/10 bg-white/5 py-3 px-4 text-white placeholder-white/30 transition-colors focus:border-white/30 focus:bg-white/10 focus:outline-none focus:ring-4 focus:ring-white/5 [&>option]:bg-zinc-900"
               >
                 <option value="">Select Range...</option>
                 <option value="10000">$10k - $25k</option>
@@ -178,19 +167,17 @@ export function LeadIntakeForm({ organizationId }: { organizationId: string }) {
                 <option value="50000">$50k - $100k</option>
                 <option value="100000">$100k - $250k</option>
                 <option value="500000">$500k+</option>
-              </select>
+              </FormSelect>
             </div>
           </div>
 
           <div className="space-y-1">
-            <label htmlFor="message" className="text-sm font-medium text-white/80">Additional Details</label>
-            <textarea
+            <FormLabel htmlFor="message">Additional Details</FormLabel>
+            <FormTextarea
               id="message"
               name="message"
               rows={4}
-              className="w-full rounded-xl border border-white/10 bg-white/5 py-3 px-4 text-white placeholder-white/30 transition-colors focus:border-white/30 focus:bg-white/10 focus:outline-none focus:ring-4 focus:ring-white/5 resize-none"
-              placeholder="Tell us more about the goals, scale, and requirements of the project..."
-            />
+              placeholder="Tell us more about the goals, scale, and requirements of the project..." />
           </div>
 
           <div className="pt-2">

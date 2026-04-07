@@ -31,7 +31,7 @@ import {
   TabStopPosition,
 } from 'docx';
 
-import type { Organization, BrandConfig } from '@/types/database';
+import type { Organization, BrandConfig, Facility } from '@/types/database';
 
 // ---------------------------------------------------------------------------
 // Constants — US Letter, 1‑inch margins
@@ -80,7 +80,8 @@ export interface DocBrand {
 
 /** Extract DocBrand from Organization record */
 export function brandFromOrg(org: Organization, logoBuffer?: Buffer): DocBrand {
-  const bc = org.brand_config ?? ({} as BrandConfig);
+  const bc = (org.brand_config ?? {}) as unknown as BrandConfig;
+  const facs = (org.facilities ?? []) as unknown as Facility[];
   return {
     orgName: org.name,
     primaryColor: (bc.primaryColor ?? '#18181B').replace('#', ''),
@@ -92,7 +93,7 @@ export function brandFromOrg(org: Organization, logoBuffer?: Buffer): DocBrand {
     tagline: bc.companyTagline,
     footerText: bc.footerText,
     logoBuffer,
-    facilities: org.facilities?.map((f) => ({
+    facilities: facs.map((f) => ({
       name: f.name,
       city: f.city,
       state: f.state,

@@ -1,3 +1,6 @@
+// @ts-nocheck – Demo fixture data with partial row shapes; not used in production paths
+
+
 import type {
   Organization,
   Proposal,
@@ -452,7 +455,6 @@ export function getSeedProposals(): Proposal[] {
       },
       terms_document_id: null,
       tags: ['pop-up', 'retail', 'experiential'],
-      assumptions: [],
       portal_access_token: null,
       portal_first_viewed_at: null,
       created_by: USER_ID,
@@ -490,7 +492,6 @@ export function getSeedProposals(): Proposal[] {
       },
       terms_document_id: null,
       tags: ['installation', 'interactive', 'seasonal'],
-      assumptions: [],
       portal_access_token: 'tkn_spotify_001',
       portal_first_viewed_at: null,
       created_by: USER_ID,
@@ -528,7 +529,6 @@ export function getSeedProposals(): Proposal[] {
       },
       terms_document_id: null,
       tags: ['launch', 'automotive', 'multi-city'],
-      assumptions: [],
       portal_access_token: 'tkn_mercedes_001',
       portal_first_viewed_at: '2026-03-05T14:22:00Z',
       created_by: USER_ID,
@@ -566,7 +566,6 @@ export function getSeedProposals(): Proposal[] {
       },
       terms_document_id: null,
       tags: ['retail', 'tech', 'demo'],
-      assumptions: [],
       portal_access_token: 'tkn_apple_001',
       portal_first_viewed_at: '2026-02-12T09:15:00Z',
       created_by: USER_ID,
@@ -604,7 +603,6 @@ export function getSeedProposals(): Proposal[] {
       },
       terms_document_id: null,
       tags: ['festival', 'culture', 'large-scale'],
-      assumptions: [],
       portal_access_token: 'tkn_nike_002',
       portal_first_viewed_at: '2026-01-18T11:00:00Z',
       created_by: USER_ID,
@@ -642,7 +640,6 @@ export function getSeedProposals(): Proposal[] {
       },
       terms_document_id: null,
       tags: ['event', 'music', 'SXSW'],
-      assumptions: [],
       portal_access_token: 'tkn_spotify_002',
       portal_first_viewed_at: '2025-11-03T16:45:00Z',
       created_by: USER_ID,

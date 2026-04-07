@@ -1,9 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+import Button from '@/components/ui/Button';
 import { useRouter } from 'next/navigation';
 import { formatCurrencyDetailed } from '@/lib/utils';
 import FormSelect from '@/components/ui/FormSelect';
+import Alert from '@/components/ui/Alert';
+import FormInput from '@/components/ui/FormInput';
+import FormLabel from '@/components/ui/FormLabel';
 
 interface PaymentRecorderProps {
   invoiceId: string;
@@ -65,28 +69,26 @@ export default function PaymentRecorder({
       </p>
 
       {!open ? (
-        <button
+        <Button
           onClick={() => setOpen(true)}
-          className="w-full rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90"
+          className="w-full"
         >
           Record Payment
-        </button>
+        </Button>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-3">
           <div>
-            <label className="block text-xs font-medium text-text-muted mb-1">Amount</label>
-            <input
+            <FormLabel>Amount</FormLabel>
+            <FormInput
               type="number"
               step="0.01"
               min="0.01"
               max={balanceDue}
               value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10"
-            />
+              onChange={(e) => setAmount(e.target.value)} />
           </div>
           <div>
-            <label className="block text-xs font-medium text-text-muted mb-1">Method</label>
+            <FormLabel>Method</FormLabel>
             <FormSelect
               value={method}
               onChange={(e) => setMethod(e.target.value)}>
@@ -98,45 +100,37 @@ export default function PaymentRecorder({
             </FormSelect>
           </div>
           <div>
-            <label className="block text-xs font-medium text-text-muted mb-1">Date</label>
-            <input
+            <FormLabel>Date</FormLabel>
+            <FormInput
               type="date"
               value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10"
-            />
+              onChange={(e) => setDate(e.target.value)} />
           </div>
           <div>
-            <label className="block text-xs font-medium text-text-muted mb-1">Reference (optional)</label>
-            <input
+            <FormLabel>Reference (optional)</FormLabel>
+            <FormInput
               type="text"
               value={reference}
               onChange={(e) => setReference(e.target.value)}
-              placeholder="Check #, transaction ID..."
-              className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10"
-            />
+              placeholder="Check #, transaction ID..." />
           </div>
           {error && (
-            <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
-              {error}
-            </div>
+            <Alert className="mb-4">{error}</Alert>
           )}
           <div className="flex gap-2 pt-1">
-            <button
+            <Button
+              variant="secondary"
               type="button"
               disabled={submitting}
               onClick={() => { setOpen(false); setError(null); }}
-              className="flex-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary disabled:opacity-50"
+              className="flex-1"
             >
               Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={submitting}
-              className="flex-1 rounded-lg bg-foreground px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90 disabled:opacity-50"
-            >
+            </Button>
+            <Button className="flex-1" type="submit"
+              disabled={submitting}>
               {submitting ? 'Saving...' : 'Save'}
-            </button>
+            </Button>
           </div>
         </form>
       )}

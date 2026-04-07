@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/server';
 import type { Deal } from '@/types/database';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
-type DealWithClient = Deal & { client_name: string };
+type DealWithClient = Deal & { client_name: string; owner_name: string | null };
 
 async function getDeals(): Promise<DealWithClient[]> {
   try {
@@ -19,17 +19,18 @@ async function getDeals(): Promise<DealWithClient[]> {
     if (!user) return [];
 const { data: deals } = await supabase
       .from('deals')
-      .select('*, clients(company_name)')
+      .select('*, clients(company_name), users!deals_owner_id_fkey(full_name)')
       .eq('organization_id', ctx.organizationId)
       .order('created_at', { ascending: false });
 
     if (!deals) return [];
 
     return deals.map((d: Record<string, unknown>) => {
-      const { clients: _clients, ...rest } = d;
+      const { clients: _clients, users: _users, ...rest } = d;
       return {
         ...rest,
         client_name: (_clients as Record<string, string>)?.company_name ?? 'Unknown',
+        owner_name: (_users as Record<string, string>)?.full_name ?? null,
       } as unknown as DealWithClient;
     });
   } catch {

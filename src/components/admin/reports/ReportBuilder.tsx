@@ -1,6 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import FormSelect from '@/components/ui/FormSelect';
+import FormInput from '@/components/ui/FormInput';
+import FormLabel from '@/components/ui/FormLabel';
+import Button from '@/components/ui/Button';
 
 const DATA_SOURCES = [
   { value: 'proposals', label: 'Proposals' },
@@ -93,7 +97,7 @@ export function ReportBuilder({ onSave }: ReportBuilderProps) {
     <div className="space-y-6">
       {/* Data source */}
       <div>
-        <label className="block text-sm font-medium text-foreground mb-2">Data Source</label>
+        <FormLabel>Data Source</FormLabel>
         <div className="flex flex-wrap gap-2">
           {DATA_SOURCES.map((ds) => (
             <button
@@ -118,7 +122,7 @@ export function ReportBuilder({ onSave }: ReportBuilderProps) {
 
       {/* Visualization type */}
       <div>
-        <label className="block text-sm font-medium text-foreground mb-2">Visualization</label>
+        <FormLabel>Visualization</FormLabel>
         <div className="flex flex-wrap gap-2">
           {VISUALIZATION_TYPES.map((vt) => (
             <button
@@ -140,7 +144,7 @@ export function ReportBuilder({ onSave }: ReportBuilderProps) {
       {/* Columns */}
       <div>
         <div className="flex items-center justify-between mb-2">
-          <label className="text-sm font-medium text-foreground">Columns</label>
+          <FormLabel>Columns</FormLabel>
           <button
             type="button"
             onClick={addColumn}
@@ -157,26 +161,22 @@ export function ReportBuilder({ onSave }: ReportBuilderProps) {
         <div className="space-y-2">
           {columns.map((col) => (
             <div key={col.id} className="flex items-center gap-2 rounded-lg border border-border bg-white px-3 py-2">
-              <select
+              <FormSelect
                 value={col.field}
                 onChange={(e) => updateColumn(col.id, { field: e.target.value, label: e.target.value })}
-                className="flex-1 rounded-md border border-border bg-white px-2 py-1 text-sm text-foreground"
               >
                 {availableFields.map((f) => (
                   <option key={f} value={f}>{f}</option>
                 ))}
-              </select>
-              <input
+              </FormSelect>
+              <FormInput
                 type="text"
                 value={col.label}
                 onChange={(e) => updateColumn(col.id, { label: e.target.value })}
-                placeholder="Label"
-                className="w-32 rounded-md border border-border bg-white px-2 py-1 text-sm text-foreground"
-              />
-              <select
+                placeholder="Label" />
+              <FormSelect
                 value={col.aggregate ?? ''}
                 onChange={(e) => updateColumn(col.id, { aggregate: e.target.value || undefined })}
-                className="w-24 rounded-md border border-border bg-white px-2 py-1 text-sm text-foreground"
               >
                 <option value="">None</option>
                 <option value="count">Count</option>
@@ -184,7 +184,7 @@ export function ReportBuilder({ onSave }: ReportBuilderProps) {
                 <option value="avg">Average</option>
                 <option value="min">Min</option>
                 <option value="max">Max</option>
-              </select>
+              </FormSelect>
               <button onClick={() => removeColumn(col.id)} className="text-xs text-text-muted hover:text-red-600">
                 Remove
               </button>
@@ -196,7 +196,7 @@ export function ReportBuilder({ onSave }: ReportBuilderProps) {
       {/* Filters */}
       <div>
         <div className="flex items-center justify-between mb-2">
-          <label className="text-sm font-medium text-foreground">Filters</label>
+          <FormLabel>Filters</FormLabel>
           <button
             type="button"
             onClick={addFilter}
@@ -213,33 +213,29 @@ export function ReportBuilder({ onSave }: ReportBuilderProps) {
         <div className="space-y-2">
           {filters.map((f) => (
             <div key={f.id} className="flex items-center gap-2 rounded-lg border border-border bg-white px-3 py-2">
-              <select
+              <FormSelect
                 value={f.field}
                 onChange={(e) => updateFilter(f.id, { field: e.target.value })}
-                className="flex-1 rounded-md border border-border bg-white px-2 py-1 text-sm text-foreground"
               >
                 {availableFields.map((field) => (
                   <option key={field} value={field}>{field}</option>
                 ))}
-              </select>
-              <select
+              </FormSelect>
+              <FormSelect
                 value={f.operator}
                 onChange={(e) => updateFilter(f.id, { operator: e.target.value })}
-                className="w-24 rounded-md border border-border bg-white px-2 py-1 text-sm text-foreground"
               >
                 <option value="eq">Equals</option>
                 <option value="neq">Not Equals</option>
                 <option value="gt">Greater Than</option>
                 <option value="lt">Less Than</option>
                 <option value="contains">Contains</option>
-              </select>
-              <input
+              </FormSelect>
+              <FormInput
                 type="text"
                 value={f.value}
                 onChange={(e) => updateFilter(f.id, { value: e.target.value })}
-                placeholder="Value"
-                className="w-32 rounded-md border border-border bg-white px-2 py-1 text-sm text-foreground"
-              />
+                placeholder="Value" />
               <button onClick={() => removeFilter(f.id)} className="text-xs text-text-muted hover:text-red-600">
                 Remove
               </button>
@@ -249,13 +245,13 @@ export function ReportBuilder({ onSave }: ReportBuilderProps) {
       </div>
 
       <div className="flex justify-end pt-2">
-        <button
+        <Button
           type="button"
           onClick={() => onSave({ dataSource, visualization, columns, filters })}
-          className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity"
+          className="transition-opacity"
         >
           Save Report
-        </button>
+        </Button>
       </div>
     </div>
   );

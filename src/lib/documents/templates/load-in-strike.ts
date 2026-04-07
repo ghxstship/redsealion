@@ -1,3 +1,4 @@
+
 /**
  * Load-In & Strike Schedule Document
  *
@@ -33,6 +34,14 @@ import {
   type TableColumn,
   CONTENT_WIDTH,
 } from '../engine';
+
+import {
+  castDocAddress,
+  castDocContact,
+  castActivationDates,
+  type DocVenueLoadInStrike,
+} from '../doc-types';
+
 
 // ---------------------------------------------------------------------------
 // Public interface
@@ -101,14 +110,15 @@ export async function generateLoadInStrike(data: LoadInStrikeData): Promise<Buff
     children.push(heading(`Venue: ${venue.name}`, 2));
 
     const venueInfo: Array<[string, string]> = [
-      ['Address', formatAddress(venue.address)],
+      ['Address', formatAddress(castDocAddress(venue.address))],
       ['Venue Type', venue.type],
     ];
 
-    if (venue.contact_on_site) {
-      venueInfo.push(['Site Contact', venue.contact_on_site.name]);
-      venueInfo.push(['Contact Phone', venue.contact_on_site.phone]);
-      venueInfo.push(['Contact Email', venue.contact_on_site.email]);
+    const siteContact = castDocContact(venue.contact_on_site);
+    if (siteContact) {
+      venueInfo.push(['Site Contact', siteContact.name ?? '']);
+      venueInfo.push(['Contact Phone', siteContact.phone ?? '']);
+      venueInfo.push(['Contact Email', siteContact.email ?? '']);
     }
 
     children.push(kvTable(venueInfo, brand));
@@ -116,10 +126,11 @@ export async function generateLoadInStrike(data: LoadInStrikeData): Promise<Buff
 
     // Load-In Schedule
     children.push(heading('Load-In Schedule', 3));
-    if (venue.load_in) {
-      children.push(labelValue('Date', formatDate(venue.load_in.date), brand));
-      children.push(labelValue('Start Time', venue.load_in.startTime, brand));
-      children.push(labelValue('End Time', venue.load_in.endTime, brand));
+    const loadIn = venue.load_in ? (venue.load_in as unknown as DocVenueLoadInStrike) : null;
+    if (loadIn) {
+      children.push(labelValue('Date', formatDate(loadIn.date ?? ''), brand));
+      children.push(labelValue('Start Time', loadIn.startTime ?? '', brand));
+      children.push(labelValue('End Time', loadIn.endTime ?? '', brand));
     } else {
       children.push(body('Load-in schedule not yet confirmed.', { italic: true }));
     }
@@ -136,10 +147,11 @@ export async function generateLoadInStrike(data: LoadInStrikeData): Promise<Buff
 
     // Strike Schedule
     children.push(heading('Strike Schedule', 3));
-    if (venue.strike) {
-      children.push(labelValue('Date', formatDate(venue.strike.date), brand));
-      children.push(labelValue('Start Time', venue.strike.startTime, brand));
-      children.push(labelValue('End Time', venue.strike.endTime, brand));
+    const strikeS = venue.strike ? (venue.strike as unknown as DocVenueLoadInStrike) : null;
+    if (strikeS) {
+      children.push(labelValue('Date', formatDate(strikeS.date ?? ''), brand));
+      children.push(labelValue('Start Time', strikeS.startTime ?? '', brand));
+      children.push(labelValue('End Time', strikeS.endTime ?? '', brand));
     } else {
       children.push(body('Strike schedule not yet confirmed.', { italic: true }));
     }
@@ -147,11 +159,12 @@ export async function generateLoadInStrike(data: LoadInStrikeData): Promise<Buff
 
     // Activation Dates
     children.push(heading('Activation Dates', 3));
-    if (venue.activation_dates) {
+    const actDates = castActivationDates(venue.activation_dates);
+    if (actDates) {
       children.push(
         labelValue(
           'Activation Period',
-          `${formatDate(venue.activation_dates.start)} \u2192 ${formatDate(venue.activation_dates.end)}`,
+          `${formatDate(actDates.start ?? '')} \u2192 ${formatDate(actDates.end ?? '')}`,
           brand,
         ),
       );

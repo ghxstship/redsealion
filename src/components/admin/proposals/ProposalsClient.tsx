@@ -1,11 +1,13 @@
 'use client';
 
 import { useState, useMemo, useCallback } from 'react';
-import Link from 'next/link';
 import ProposalCard from '@/components/admin/ProposalCard';
 import ProposalFilters, { type FilterValues } from '@/components/admin/ProposalFilters';
+import PageHeader from '@/components/shared/PageHeader';
+import Button from '@/components/ui/Button';
 import { formatCurrency } from '@/lib/utils';
 import type { Proposal, Client, ProposalStatus } from '@/types/database';
+import { IconPlus } from '@/components/ui/Icons';
 
 type Tab = 'all' | 'active' | 'pipeline' | 'archive';
 
@@ -90,36 +92,15 @@ export default function ProposalsClient({
 
   return (
     <>
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            Proposals
-          </h1>
-          <p className="mt-1 text-sm text-text-secondary">
-            {filtered.length} proposal{filtered.length !== 1 ? 's' : ''}
-            {' \u00B7 '}
-            {formatCurrency(totalPipelineValue)} total value
-          </p>
-        </div>
-        <Link
-          href="/app/proposals/new"
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-foreground/90"
-        >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-          >
-            <line x1="8" y1="2" x2="8" y2="14" />
-            <line x1="2" y1="8" x2="14" y2="8" />
-          </svg>
+      <PageHeader
+        title="Proposals"
+        subtitle={`${filtered.length} proposal${filtered.length !== 1 ? 's' : ''} \u00B7 ${formatCurrency(totalPipelineValue)} total value`}
+      >
+        <Button href="/app/proposals/new">
+          <IconPlus size={20} />
           New Proposal
-        </Link>
-      </div>
+        </Button>
+      </PageHeader>
 
       <div className="mb-6 border-b border-border">
         <nav className="-mb-px flex gap-6">

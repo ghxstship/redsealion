@@ -1,8 +1,19 @@
 import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
-import { formatCurrency, statusColor } from '@/lib/utils';
-import Link from 'next/link';
+import { formatCurrency } from '@/lib/utils';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import Button from '@/components/ui/Button';
+import StatusBadge from '@/components/ui/StatusBadge';
+import EmptyState from '@/components/ui/EmptyState';
+import { Plus, FileText } from 'lucide-react';
+
+const PO_STATUS_COLORS: Record<string, string> = {
+  draft: 'bg-gray-100 text-gray-700',
+  sent: 'bg-blue-50 text-blue-700',
+  acknowledged: 'bg-indigo-50 text-indigo-700',
+  fulfilled: 'bg-green-50 text-green-700',
+  cancelled: 'bg-red-50 text-red-700',
+};
 
 interface PoRow {
   id: string;
@@ -65,12 +76,10 @@ export default async function PurchaseOrdersPage() {
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">Purchase Orders</h1>
           <p className="mt-1 text-sm text-text-secondary">Manage vendor purchase orders for project procurement.</p>
         </div>
-        <Link
-          href="/app/finance/purchase-orders/new"
-          className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity"
-        >
+        <Button href="/app/finance/purchase-orders/new">
+          <Plus className="h-4 w-4" />
           New Purchase Order
-        </Link>
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-8">
@@ -89,9 +98,17 @@ export default async function PurchaseOrdersPage() {
       </div>
 
       {orders.length === 0 ? (
-        <div className="rounded-xl border border-border bg-white px-8 py-16 text-center">
-          <p className="text-sm text-text-secondary">No purchase orders yet.</p>
-        </div>
+        <EmptyState
+          icon={<FileText className="h-10 w-10" />}
+          message="No purchase orders yet"
+          description="Create a purchase order to start tracking vendor procurement."
+          action={
+            <Button href="/app/finance/purchase-orders/new" size="sm">
+              <Plus className="h-3.5 w-3.5" />
+              Create PO
+            </Button>
+          }
+        />
       ) : (
         <div className="rounded-xl border border-border bg-white overflow-hidden">
           <div className="overflow-x-auto">
@@ -113,9 +130,7 @@ export default async function PurchaseOrdersPage() {
                     <td className="px-6 py-3.5 text-sm text-foreground">{po.vendorName}</td>
                     <td className="px-6 py-3.5 text-sm text-text-secondary">{po.projectName ?? '—'}</td>
                     <td className="px-6 py-3.5">
-                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColor(po.status)}`}>
-                        {po.status.replace(/_/g, ' ')}
-                      </span>
+                      <StatusBadge status={po.status} colorMap={PO_STATUS_COLORS} />
                     </td>
                     <td className="px-6 py-3.5 text-right text-sm font-medium tabular-nums text-foreground">
                       {formatCurrency(po.totalAmount)}

@@ -1,6 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
+import Button from '@/components/ui/Button';
+import Alert from '@/components/ui/Alert';
+import FormSelect from '@/components/ui/FormSelect';
+import FormTextarea from '@/components/ui/FormTextarea';
+import FormInput from '@/components/ui/FormInput';
+import FormLabel from '@/components/ui/FormLabel';
 
 interface Facility {
   id: string;
@@ -115,45 +121,41 @@ export default function TransferForm({ facilities, onCreated, onClose }: Transfe
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
-          <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-800">
-            {error}
-          </div>
+          <Alert className="mb-4">{error}</Alert>
         )}
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">From Facility</label>
-            <select
+            <FormLabel>From Facility</FormLabel>
+            <FormSelect
               value={fromFacilityId}
               onChange={(e) => setFromFacilityId(e.target.value)}
               required
-              className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-white text-foreground"
             >
               <option value="">Select</option>
               {facilities.map((f) => (
                 <option key={f.id} value={f.id}>{f.name}</option>
               ))}
-            </select>
+            </FormSelect>
           </div>
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">To Facility</label>
-            <select
+            <FormLabel>To Facility</FormLabel>
+            <FormSelect
               value={toFacilityId}
               onChange={(e) => setToFacilityId(e.target.value)}
               required
-              className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-white text-foreground"
             >
               <option value="">Select</option>
               {facilities.map((f) => (
                 <option key={f.id} value={f.id}>{f.name}</option>
               ))}
-            </select>
+            </FormSelect>
           </div>
         </div>
 
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label className="text-sm font-medium text-foreground">Items</label>
+            <FormLabel>Items</FormLabel>
             <button
               type="button"
               onClick={addItem}
@@ -167,14 +169,12 @@ export default function TransferForm({ facilities, onCreated, onClose }: Transfe
             {items.map((item, index) => (
               <div key={index} className="flex items-center gap-2">
                 <div className="relative flex-1">
-                  <input
+                  <FormInput
                     type="text"
                     value={item.assetSearch}
                     onChange={(e) => searchAssets(index, e.target.value)}
                     placeholder="Search asset..."
-                    required={!item.assetId}
-                    className="w-full border border-border rounded-lg px-3 py-2 text-sm text-foreground"
-                  />
+                    required={!item.assetId} />
                   {searchResults[index] && searchResults[index].length > 0 && (
                     <ul className="absolute z-10 w-full mt-1 bg-white border border-border rounded-lg shadow-sm max-h-32 overflow-y-auto">
                       {searchResults[index].map((asset) => (
@@ -191,13 +191,11 @@ export default function TransferForm({ facilities, onCreated, onClose }: Transfe
                     </ul>
                   )}
                 </div>
-                <input
+                <FormInput
                   type="number"
                   min={1}
                   value={item.quantity}
-                  onChange={(e) => updateItem(index, 'quantity', Number(e.target.value))}
-                  className="w-20 border border-border rounded-lg px-3 py-2 text-sm text-foreground"
-                />
+                  onChange={(e) => updateItem(index, 'quantity', Number(e.target.value))} />
                 {items.length > 1 && (
                   <button
                     type="button"
@@ -213,13 +211,11 @@ export default function TransferForm({ facilities, onCreated, onClose }: Transfe
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Notes</label>
-          <textarea
+          <FormLabel>Notes</FormLabel>
+          <FormTextarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            rows={2}
-            className="w-full border border-border rounded-lg px-3 py-2 text-sm text-foreground resize-none"
-          />
+            rows={2} />
         </div>
 
         <div className="flex justify-end gap-2 pt-2">
@@ -230,13 +226,10 @@ export default function TransferForm({ facilities, onCreated, onClose }: Transfe
           >
             Cancel
           </button>
-          <button
-            type="submit"
-            disabled={submitting}
-            className="px-4 py-2 text-sm rounded-lg bg-foreground text-white hover:opacity-90 disabled:opacity-50"
-          >
+          <Button type="submit"
+            disabled={submitting}>
             {submitting ? 'Creating...' : 'Create Transfer'}
-          </button>
+          </Button>
         </div>
       </form>
     </div>

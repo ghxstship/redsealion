@@ -53,7 +53,7 @@ export async function POST(request: Request) {
     type?: string;
     due_date?: string;
     memo?: string;
-    line_items?: Array<{ description: string; quantity: number; rate: number }>;
+    line_items?: Array<{ description: string; quantity: number; rate: number; tax_rate?: number }>;
     status?: string;
   };
 
@@ -112,12 +112,24 @@ export async function POST(request: Request) {
 
   const invoiceNumber = `${prefix}${String(nextSeq).padStart(3, '0')}`;
 
-  // Calculate totals from line items
-  const subtotal = line_items.reduce(
-    (sum, li) => sum + li.quantity * li.rate,
-    0,
-  );
-  const taxAmount = 0; // Tax calculation can be extended later
+  // Fetch org default tax rate for fallback
+  const { data: orgData } = await supabase
+    .from('organizations')
+    .select('default_tax_rate')
+    .eq('id', orgId)
+    .single();
+  const defaultTaxRate = (orgData?.default_tax_rate as number) ?? 0;
+
+  // Calculate totals from line items with per-item tax
+  const computedItems = line_items.map((li) => {
+    const lineAmount = li.quantity * li.rate;
+    const taxRate = li.tax_rate ?? defaultTaxRate;
+    const lineTax = Math.round(lineAmount * (taxRate / 100) * 100) / 100;
+    return { ...li, lineAmount, taxRate, lineTax };
+  });
+
+  const subtotal = computedItems.reduce((sum, li) => sum + li.lineAmount, 0);
+  const taxAmount = computedItems.reduce((sum, li) => sum + li.lineTax, 0);
   const total = subtotal + taxAmount;
 
   const invoiceStatus =
@@ -153,13 +165,15 @@ export async function POST(request: Request) {
   }
 
   // Insert line items into invoice_line_items table
-  const lineItemRows = line_items.map((li) => ({
+  const lineItemRows = computedItems.map((li) => ({
     invoice_id: invoice.id,
     description: li.description,
     quantity: li.quantity,
     rate: li.rate,
-    amount: li.quantity * li.rate,
-    taxable: false,
+    amount: li.lineAmount,
+    is_taxable: li.taxRate > 0,
+    tax_rate: li.taxRate,
+    tax_amount: li.lineTax,
   }));
 
   const { error: lineItemError } = await supabase

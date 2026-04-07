@@ -5,21 +5,24 @@ import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
 interface CalendarEvent {
   id: string;
   title: string;
-  type: 'proposal' | 'venue_activation' | 'crew_booking';
+  type: 'proposal' | 'venue_activation' | 'crew_booking' | 'task';
   date: string;
   end_date?: string;
+  href?: string;
 }
 
 const EVENT_COLORS: Record<string, string> = {
   proposal: 'bg-blue-100 text-blue-800 border-blue-200',
   venue_activation: 'bg-purple-100 text-purple-800 border-purple-200',
   crew_booking: 'bg-green-100 text-green-800 border-green-200',
+  task: 'bg-amber-100 text-amber-800 border-amber-200',
 };
 
 const EVENT_LABELS: Record<string, string> = {
   proposal: 'Proposal',
   venue_activation: 'Activation',
   crew_booking: 'Crew',
+  task: 'Task',
 };
 
 function getDaysInMonth(year: number, month: number): number {
@@ -82,7 +85,25 @@ export default function CalendarPage() {
           end_date: a.end_date ? (a.end_date as string).slice(0, 10) : undefined,
         }));
 
-        setEvents([...proposalEvents, ...crewEvents]);
+        // Fetch tasks with due dates as "task" events
+        const { data: taskRows } = await supabase
+          .from('tasks')
+          .select('id, title, due_date, status, priority')
+          .eq('organization_id', orgId)
+          .not('due_date', 'is', null)
+          .neq('status', 'done');
+
+        const taskEvents: CalendarEvent[] = (taskRows ?? [])
+          .filter((t: Record<string, unknown>) => t.due_date)
+          .map((t: Record<string, unknown>) => ({
+            id: t.id as string,
+            title: t.title as string,
+            type: 'task' as const,
+            date: (t.due_date as string).slice(0, 10),
+            href: `/app/tasks/${t.id}`,
+          }));
+
+        setEvents([...proposalEvents, ...crewEvents, ...taskEvents]);
       } catch {
         // Silently fail — calendar shows empty
       }
@@ -323,6 +344,10 @@ export default function CalendarPage() {
         <div className="flex items-center gap-1.5">
           <span className="inline-block h-3 w-3 rounded border border-green-200 bg-green-100" />
           Crew Bookings
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="inline-block h-3 w-3 rounded border border-amber-200 bg-amber-100" />
+          Tasks Due
         </div>
       </div>
     </>

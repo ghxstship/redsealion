@@ -16,12 +16,13 @@ export async function POST(
 
   const { id } = await params;
   const body = await request.json().catch(() => ({}));
-  const { amount, method, reference, notes, received_date } = body as {
+  const { amount, method, reference, notes, received_date, payment_date } = body as {
     amount?: number;
     method?: string;
     reference?: string;
     notes?: string;
     received_date?: string;
+    payment_date?: string;
   };
 
   if (!amount || amount <= 0) {
@@ -71,10 +72,10 @@ export async function POST(
       invoice_id: id,
       organization_id: perm.organizationId,
       amount,
-      method,
+      payment_method: method || 'other',
       reference: reference || null,
       notes: notes || null,
-      received_date: received_date || new Date().toISOString().split('T')[0],
+      payment_date: payment_date || received_date || new Date().toISOString().split('T')[0],
       recorded_by: perm.userId,
     });
 

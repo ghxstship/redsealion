@@ -36,6 +36,11 @@ export interface DashboardStats {
     count: number;
     total_value: number;
   }>;
+  leaderboard: Array<{
+    name: string;
+    deals_won: number;
+    revenue: number;
+  }>;
 }
 
 export interface StatCard {
@@ -60,6 +65,7 @@ const fallbackStats: DashboardStats = {
   crewAvailable: 0,
   recentActivity: [],
   pipelineSummary: [],
+  leaderboard: [],
 };
 
 /* ─── Data Fetcher ──────────────────────────────────────── */
@@ -210,6 +216,32 @@ const orgId = ctx.organizationId;
       crewAvailable = count ?? 0;
     }
 
+    // Sales leaderboard (won deals grouped by owner)
+    let leaderboard: DashboardStats['leaderboard'] = [];
+    if (canAccessFeature(tier, 'pipeline')) {
+      const { data: wonDeals } = await supabase
+        .from('deals')
+        .select('deal_value, owner_id, users!deals_owner_id_fkey(full_name)')
+        .eq('organization_id', orgId)
+        .eq('stage', 'contract_signed');
+
+      if (wonDeals && wonDeals.length > 0) {
+        const ownerMap = new Map<string, { name: string; deals: number; revenue: number }>();
+        for (const d of wonDeals) {
+          const ownerId = d.owner_id ?? 'unassigned';
+          const ownerName = (d.users as unknown as Record<string, string>)?.full_name ?? 'Unassigned';
+          const entry = ownerMap.get(ownerId) ?? { name: ownerName, deals: 0, revenue: 0 };
+          entry.deals++;
+          entry.revenue += d.deal_value ?? 0;
+          ownerMap.set(ownerId, entry);
+        }
+        leaderboard = Array.from(ownerMap.values())
+          .sort((a, b) => b.revenue - a.revenue)
+          .slice(0, 5)
+          .map((e) => ({ name: e.name, deals_won: e.deals, revenue: e.revenue }));
+      }
+    }
+
     return {
       stats: {
         totalProposals: proposalsRes.count ?? 0,
@@ -224,6 +256,7 @@ const orgId = ctx.organizationId;
         crewAvailable,
         recentActivity: activityRes.data ?? [],
         pipelineSummary,
+        leaderboard,
       },
       tier,
     };

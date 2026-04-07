@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import Button from '@/components/ui/Button';
 
 interface ConnectStatus {
   connected: boolean;
@@ -126,13 +127,10 @@ export default function StripeConnectSetup() {
             Connect your Stripe account to accept payments directly into your bank account.
             You&apos;ll be redirected to Stripe to complete the setup.
           </p>
-          <button
-            onClick={handleConnect}
-            disabled={isLoading}
-            className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:opacity-90 disabled:opacity-50"
-          >
+          <Button onClick={handleConnect}
+            disabled={isLoading}>
             {isLoading ? 'Connecting...' : 'Connect with Stripe'}
-          </button>
+          </Button>
         </div>
       )}
 
@@ -156,13 +154,10 @@ export default function StripeConnectSetup() {
               enabled={status?.payouts_enabled ?? false}
             />
           </div>
-          <button
-            onClick={handleContinue}
-            disabled={isLoading}
-            className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:opacity-90 disabled:opacity-50"
-          >
+          <Button onClick={handleContinue}
+            disabled={isLoading}>
             {isLoading ? 'Loading...' : 'Continue Setup'}
-          </button>
+          </Button>
         </div>
       )}
 

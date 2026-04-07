@@ -1,6 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import Alert from '@/components/ui/Alert';
+import FormSelect from '@/components/ui/FormSelect';
+import FormTextarea from '@/components/ui/FormTextarea';
+import FormInput from '@/components/ui/FormInput';
+import FormLabel from '@/components/ui/FormLabel';
 
 interface PortalRequestFormProps {
   orgSlug: string;
@@ -82,9 +87,7 @@ export default function PortalRequestForm({ orgSlug, orgId, orgName }: PortalReq
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
+        <Alert className="mb-4">{error}</Alert>
       )}
 
       {/* Contact Info */}
@@ -92,47 +95,44 @@ export default function PortalRequestForm({ orgSlug, orgId, orgName }: PortalReq
         <h3 className="text-sm font-semibold text-foreground">Your Information</h3>
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label htmlFor="pr-contact-name" className="block text-xs font-medium text-text-secondary mb-1">
+            <FormLabel htmlFor="pr-contact-name">
               Full Name <span className="text-red-500">*</span>
-            </label>
-            <input
+            </FormLabel>
+            <FormInput
               id="pr-contact-name"
               name="contact_name"
               type="text"
               required
               value={formState.contact_name}
               onChange={handleChange}
-              className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:border-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20"
               placeholder="Jane Smith"
             />
           </div>
           <div>
-            <label htmlFor="pr-contact-email" className="block text-xs font-medium text-text-secondary mb-1">
+            <FormLabel htmlFor="pr-contact-email">
               Email <span className="text-red-500">*</span>
-            </label>
-            <input
+            </FormLabel>
+            <FormInput
               id="pr-contact-email"
               name="contact_email"
               type="email"
               required
               value={formState.contact_email}
               onChange={handleChange}
-              className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:border-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20"
               placeholder="jane@company.com"
             />
           </div>
         </div>
         <div>
-          <label htmlFor="pr-contact-phone" className="block text-xs font-medium text-text-secondary mb-1">
+          <FormLabel htmlFor="pr-contact-phone">
             Phone
-          </label>
-          <input
+          </FormLabel>
+          <FormInput
             id="pr-contact-phone"
             name="contact_phone"
             type="tel"
             value={formState.contact_phone}
             onChange={handleChange}
-            className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:border-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20"
             placeholder="+1 (555) 123-4567"
           />
         </div>
@@ -143,15 +143,14 @@ export default function PortalRequestForm({ orgSlug, orgId, orgName }: PortalReq
         <h3 className="text-sm font-semibold text-foreground">Project Details</h3>
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label htmlFor="pr-event-type" className="block text-xs font-medium text-text-secondary mb-1">
+            <FormLabel htmlFor="pr-event-type">
               Event Type
-            </label>
-            <select
+            </FormLabel>
+            <FormSelect
               id="pr-event-type"
               name="event_type"
               value={formState.event_type}
               onChange={handleChange}
-              className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground focus:border-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20"
             >
               <option value="">Select type...</option>
               <option value="corporate_event">Corporate Event</option>
@@ -163,27 +162,26 @@ export default function PortalRequestForm({ orgSlug, orgId, orgName }: PortalReq
               <option value="theatrical">Theatrical Production</option>
               <option value="film_broadcast">Film / TV / Broadcast</option>
               <option value="other">Other</option>
-            </select>
+            </FormSelect>
           </div>
           <div>
-            <label htmlFor="pr-event-date" className="block text-xs font-medium text-text-secondary mb-1">
+            <FormLabel htmlFor="pr-event-date">
               Target Date
-            </label>
-            <input
+            </FormLabel>
+            <FormInput
               id="pr-event-date"
               name="event_date"
               type="date"
               value={formState.event_date}
               onChange={handleChange}
-              className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground focus:border-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20"
             />
           </div>
         </div>
         <div>
-          <label htmlFor="pr-budget" className="block text-xs font-medium text-text-secondary mb-1">
+          <FormLabel htmlFor="pr-budget">
             Estimated Budget
-          </label>
-          <input
+          </FormLabel>
+          <FormInput
             id="pr-budget"
             name="estimated_budget"
             type="number"
@@ -191,7 +189,6 @@ export default function PortalRequestForm({ orgSlug, orgId, orgName }: PortalReq
             step="1000"
             value={formState.estimated_budget}
             onChange={handleChange}
-            className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:border-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20"
             placeholder="50000"
           />
         </div>
@@ -201,18 +198,16 @@ export default function PortalRequestForm({ orgSlug, orgId, orgName }: PortalReq
       <div className="rounded-xl border border-border bg-background p-5 space-y-4">
         <h3 className="text-sm font-semibold text-foreground">Additional Details</h3>
         <div>
-          <label htmlFor="pr-message" className="block text-xs font-medium text-text-secondary mb-1">
+          <FormLabel htmlFor="pr-message">
             Tell us about your project
-          </label>
-          <textarea
+          </FormLabel>
+          <FormTextarea
             id="pr-message"
             name="message"
             rows={4}
             value={formState.message}
             onChange={handleChange}
-            className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:border-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20"
-            placeholder="Describe the event, venue, audience size, and any special requirements..."
-          />
+            placeholder="Describe the event, venue, audience size, and any special requirements..." />
         </div>
       </div>
 

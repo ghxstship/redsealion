@@ -1,6 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import FormSelect from '@/components/ui/FormSelect';
+import FormInput from '@/components/ui/FormInput';
+import FormLabel from '@/components/ui/FormLabel';
 
 const TRIGGER_TYPES = [
   { value: 'proposal_status_change', label: 'Proposal Status Change', description: 'Fires when a proposal status changes' },
@@ -32,9 +35,9 @@ export function TriggerSelector({ value, config, onChange }: TriggerSelectorProp
 
   return (
     <div className="space-y-4">
-      <label className="block text-sm font-medium text-foreground">
+      <FormLabel>
         Trigger Event
-      </label>
+      </FormLabel>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
         {TRIGGER_TYPES.map((trigger) => (
           <button
@@ -55,13 +58,12 @@ export function TriggerSelector({ value, config, onChange }: TriggerSelectorProp
 
       {selectedType === 'proposal_status_change' && (
         <div className="mt-3">
-          <label className="block text-xs font-medium text-text-secondary mb-1">
+          <FormLabel>
             When status changes to:
-          </label>
-          <select
+          </FormLabel>
+          <FormSelect
             value={(config.targetStatus as string) ?? ''}
             onChange={(e) => onChange(selectedType, { ...config, targetStatus: e.target.value })}
-            className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
           >
             <option value="">Any status</option>
             <option value="sent">Sent</option>
@@ -69,16 +71,16 @@ export function TriggerSelector({ value, config, onChange }: TriggerSelectorProp
             <option value="in_production">In Production</option>
             <option value="complete">Complete</option>
             <option value="cancelled">Cancelled</option>
-          </select>
+          </FormSelect>
         </div>
       )}
 
       {(selectedType === 'proposal_follow_up' || selectedType === 'proposal_viewed_no_action') && (
         <div className="mt-3 space-y-3">
           <div>
-            <label className="block text-xs font-medium text-text-secondary mb-1">
+            <FormLabel>
               Follow-up Cadence
-            </label>
+            </FormLabel>
             <div className="flex gap-2">
               {[1, 3, 7, 14].map((days) => (
                 <button
@@ -97,35 +99,32 @@ export function TriggerSelector({ value, config, onChange }: TriggerSelectorProp
             </div>
           </div>
           <div>
-            <label className="block text-xs font-medium text-text-secondary mb-1">
+            <FormLabel>
               Max follow-ups per proposal
-            </label>
-            <select
+            </FormLabel>
+            <FormSelect
               value={(config.maxFollowUps as number) ?? 3}
               onChange={(e) => onChange(selectedType, { ...config, maxFollowUps: Number(e.target.value) })}
-              className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
             >
               <option value={1}>1 follow-up</option>
               <option value={2}>2 follow-ups</option>
               <option value={3}>3 follow-ups</option>
               <option value={5}>5 follow-ups</option>
-            </select>
+            </FormSelect>
           </div>
         </div>
       )}
 
       {selectedType === 'schedule' && (
         <div className="mt-3">
-          <label className="block text-xs font-medium text-text-secondary mb-1">
+          <FormLabel>
             Cron Expression
-          </label>
-          <input
+          </FormLabel>
+          <FormInput
             type="text"
             value={(config.cron as string) ?? ''}
             onChange={(e) => onChange(selectedType, { ...config, cron: e.target.value })}
-            placeholder="0 9 * * 1 (every Monday at 9 AM)"
-            className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
-          />
+            placeholder="0 9 * * 1 (every Monday at 9 AM)" />
         </div>
       )}
     </div>

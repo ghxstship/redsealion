@@ -1,6 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
+import Button from '@/components/ui/Button';
+import Alert from '@/components/ui/Alert';
+import FormSelect from '@/components/ui/FormSelect';
+import FormTextarea from '@/components/ui/FormTextarea';
+import FormLabel from '@/components/ui/FormLabel';
 
 interface CheckInOutProps {
   reservationId: string;
@@ -66,44 +71,36 @@ export default function CheckInOut({ reservationId, currentStatus, onComplete }:
       </div>
 
       {error && (
-        <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-800 mb-4">
-          {error}
-        </div>
+        <Alert className="mb-4">{error}</Alert>
       )}
 
       {actionLabel ? (
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Condition</label>
-            <select
+            <FormLabel>Condition</FormLabel>
+            <FormSelect
               value={condition}
               onChange={(e) => setCondition(e.target.value)}
-              className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-white text-foreground"
             >
               {CONDITION_OPTIONS.map((c) => (
                 <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>
               ))}
-            </select>
+            </FormSelect>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Notes</label>
-            <textarea
+            <FormLabel>Notes</FormLabel>
+            <FormTextarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={2}
-              className="w-full border border-border rounded-lg px-3 py-2 text-sm text-foreground resize-none"
-              placeholder="Any condition notes..."
-            />
+              placeholder="Any condition notes..." />
           </div>
 
-          <button
-            onClick={handleAction}
-            disabled={submitting}
-            className="w-full px-4 py-2 text-sm rounded-lg bg-foreground text-white hover:opacity-90 disabled:opacity-50"
-          >
+          <Button className="w-full" onClick={handleAction}
+            disabled={submitting}>
             {submitting ? 'Processing...' : actionLabel}
-          </button>
+          </Button>
         </div>
       ) : (
         <p className="text-sm text-text-muted">No actions available for this status.</p>

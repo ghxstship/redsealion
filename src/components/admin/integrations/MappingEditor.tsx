@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import Button from '@/components/ui/Button';
+import FormSelect from '@/components/ui/FormSelect';
 
 interface FieldMapping {
   id: string;
@@ -54,12 +56,9 @@ export function MappingEditor({
         <h3 className="text-sm font-semibold text-foreground">
           Field Mappings - {platform}
         </h3>
-        <button
-          onClick={addMapping}
-          className="rounded-lg bg-foreground px-3 py-1.5 text-xs font-medium text-white hover:opacity-90 transition-opacity"
-        >
+        <Button size="sm" onClick={addMapping}>
           Add Mapping
-        </button>
+        </Button>
       </div>
 
       {mappings.length === 0 && (
@@ -74,38 +73,35 @@ export function MappingEditor({
             key={mapping.id}
             className="flex items-center gap-3 rounded-lg border border-border bg-white px-4 py-3"
           >
-            <select
+            <FormSelect
               value={mapping.sourceField}
               onChange={(e) => updateMapping(mapping.id, 'sourceField', e.target.value)}
-              className="flex-1 rounded-md border border-border bg-white px-2 py-1.5 text-sm text-foreground"
             >
               {sourceFields.map((f) => (
                 <option key={f} value={f}>{f}</option>
               ))}
-            </select>
+            </FormSelect>
 
             <span className="text-text-muted text-xs font-medium shrink-0">maps to</span>
 
-            <select
+            <FormSelect
               value={mapping.targetField}
               onChange={(e) => updateMapping(mapping.id, 'targetField', e.target.value)}
-              className="flex-1 rounded-md border border-border bg-white px-2 py-1.5 text-sm text-foreground"
             >
               {targetFields.map((f) => (
                 <option key={f} value={f}>{f}</option>
               ))}
-            </select>
+            </FormSelect>
 
-            <select
+            <FormSelect
               value={mapping.transform}
               onChange={(e) => updateMapping(mapping.id, 'transform', e.target.value)}
-              className="w-28 rounded-md border border-border bg-white px-2 py-1.5 text-sm text-foreground"
             >
               <option value="none">No transform</option>
               <option value="uppercase">Uppercase</option>
               <option value="lowercase">Lowercase</option>
               <option value="trim">Trim</option>
-            </select>
+            </FormSelect>
 
             <button
               onClick={() => removeMapping(mapping.id)}
@@ -120,12 +116,12 @@ export function MappingEditor({
 
       {mappings.length > 0 && (
         <div className="flex justify-end">
-          <button
+          <Button
             onClick={() => onSave(mappings)}
-            className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity"
+            className="transition-opacity"
           >
             Save Mappings
-          </button>
+          </Button>
         </div>
       )}
     </div>

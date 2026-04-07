@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useRef, useCallback, useMemo } from 'react';
+import Button from '@/components/ui/Button';
+import { Check, AlertTriangle } from 'lucide-react';
 import { getImportFields } from '@/lib/entity-fields';
 import type { EntityField } from '@/lib/entity-fields';
 import {
@@ -15,6 +17,8 @@ import {
 } from '@/lib/import-parsers';
 import type { ColumnMatch, RowValidation, ParsedFile } from '@/lib/import-parsers';
 import { downloadBlob } from '@/lib/export-formats';
+import FormLabel from '@/components/ui/FormLabel';
+import { IconX } from '@/components/ui/Icons';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -244,7 +248,7 @@ export default function DataImportDialog({
   // ---- Confidence badge ----
 
   function ConfidenceBadge({ confidence }: { confidence: number }) {
-    if (confidence >= 0.8) return <span className="inline-flex items-center rounded-full bg-green-50 px-1.5 py-0.5 text-[10px] font-semibold text-green-700">✓</span>;
+    if (confidence >= 0.8) return <span className="inline-flex items-center rounded-full bg-green-50 px-1.5 py-0.5 text-green-700"><Check size={10} /></span>;
     if (confidence >= 0.5) return <span className="inline-flex items-center rounded-full bg-amber-50 px-1.5 py-0.5 text-[10px] font-semibold text-amber-700">~</span>;
     return null;
   }
@@ -281,7 +285,7 @@ export default function DataImportDialog({
             </p>
           </div>
           <button onClick={onClose} className="text-text-muted hover:text-foreground transition-colors">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="5" y1="5" x2="15" y2="15" /><line x1="15" y1="5" x2="5" y2="15" /></svg>
+            <IconX />
           </button>
         </div>
 
@@ -293,7 +297,7 @@ export default function DataImportDialog({
                 <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-bold transition-colors ${
                   i < stepIndex ? 'bg-green-500 text-white' : i === stepIndex ? 'bg-foreground text-white' : 'bg-bg-tertiary text-text-muted'
                 }`}>
-                  {i < stepIndex ? '✓' : i + 1}
+                  {i < stepIndex ? <Check size={11} /> : i + 1}
                 </div>
                 <span className={`ml-1.5 text-xs font-medium hidden sm:inline ${i === stepIndex ? 'text-foreground' : 'text-text-muted'}`}>{s.label}</span>
                 {i < steps.length - 1 && <div className={`flex-1 h-px mx-2 ${i < stepIndex ? 'bg-green-500' : 'bg-border'}`} />}
@@ -320,9 +324,9 @@ export default function DataImportDialog({
                 <p className="text-sm font-medium text-foreground">Drop your file here</p>
                 <p className="mt-1 text-xs text-text-muted">Supports CSV, Excel (.xlsx), and TSV files</p>
                 <input ref={inputRef} type="file" accept=".csv,.xlsx,.xls,.tsv" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) void handleFile(f); }} />
-                <button onClick={() => inputRef.current?.click()} className="mt-4 rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:bg-foreground/90 transition-colors">
+                <Button onClick={() => inputRef.current?.click()} className="mt-4">
                   Select File
-                </button>
+                </Button>
               </div>
 
               {/* Template download */}
@@ -421,15 +425,15 @@ export default function DataImportDialog({
               </div>
 
               {/* Filter toggle */}
-              <label className="flex items-center gap-2 cursor-pointer text-sm">
+              <FormLabel className="flex items-center gap-2 cursor-pointer text-sm">
                 <input
                   type="checkbox"
                   checked={showErrorsOnly}
                   onChange={() => setShowErrorsOnly(!showErrorsOnly)}
                   className="h-3.5 w-3.5 rounded border-border"
                 />
-                <span className="text-text-secondary">Show only rows with issues</span>
-              </label>
+                <span>Show only rows with issues</span>
+              </FormLabel>
 
               {/* Validation table */}
               <div className="overflow-x-auto rounded-lg border border-border">
@@ -475,8 +479,8 @@ export default function DataImportDialog({
                               >
                                 <span className="truncate max-w-[120px] inline-block">{value || '—'}</span>
                                 {cell?.message && (
-                                  <span className={`ml-1 text-[9px] ${cell.severity === 'error' ? 'text-red-500' : 'text-amber-500'}`}>
-                                    ⚠
+                                  <span className={`ml-1 inline-flex ${cell.severity === 'error' ? 'text-red-500' : 'text-amber-500'}`} title={cell.message}>
+                                    <AlertTriangle size={10} />
                                   </span>
                                 )}
                               </td>
@@ -632,36 +636,31 @@ export default function DataImportDialog({
 
             {/* Forward button */}
             {step === 'map' && (
-              <button
+              <Button
                 onClick={runValidation}
                 disabled={!mapping.some((m) => m.targetField) || coverage.missing.length > 0 || duplicateTargets.size > 0}
-                className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:bg-foreground/90 disabled:opacity-50 transition-colors"
               >
                 Validate
-              </button>
+              </Button>
             )}
             {step === 'validate' && (
-              <button
+              <Button
                 onClick={() => setStep('preview')}
                 disabled={validationSummary.importable === 0}
-                className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:bg-foreground/90 disabled:opacity-50 transition-colors"
               >
                 Preview
-              </button>
+              </Button>
             )}
             {step === 'preview' && (
-              <button
-                onClick={handleImport}
-                disabled={importing}
-                className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:bg-foreground/90 disabled:opacity-50 transition-colors"
-              >
+              <Button onClick={handleImport}
+                disabled={importing}>
                 Import {validationSummary.importable} Records
-              </button>
+              </Button>
             )}
             {step === 'done' && !importing && (
-              <button onClick={onClose} className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:bg-foreground/90 transition-colors">
+              <Button onClick={onClose}>
                 Done
-              </button>
+              </Button>
             )}
           </div>
         </div>

@@ -27,12 +27,14 @@ interface InvoiceDetail {
     quantity: number;
     rate: number;
     amount: number;
+    tax_rate: number;
+    tax_amount: number;
   }>;
   payments: Array<{
     id: string;
     amount: number;
-    method: string;
-    received_date: string;
+    payment_method: string;
+    payment_date: string;
     reference: string | null;
   }>;
 }
@@ -63,7 +65,7 @@ async function getInvoice(id: string): Promise<InvoiceDetail | null> {
       .from('invoice_payments')
       .select()
       .eq('invoice_id', id)
-      .order('received_date', { ascending: false });
+      .order('payment_date', { ascending: false });
 
     return {
       id: invoice.id,
@@ -87,12 +89,14 @@ async function getInvoice(id: string): Promise<InvoiceDetail | null> {
         quantity: li.quantity as number,
         rate: li.rate as number,
         amount: li.amount as number,
+        tax_rate: (li.tax_rate as number) ?? 0,
+        tax_amount: (li.tax_amount as number) ?? 0,
       })),
       payments: (payments ?? []).map((p: Record<string, unknown>) => ({
         id: p.id as string,
         amount: p.amount as number,
-        method: p.method as string,
-        received_date: p.received_date as string,
+        payment_method: (p.payment_method as string) ?? 'other',
+        payment_date: (p.payment_date as string) ?? '',
         reference: (p.reference as string) ?? null,
       })),
     };
@@ -191,26 +195,39 @@ export default async function InvoiceDetailPage({
             </div>
 
             {/* Line items */}
-            <table className="w-full mb-4">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="py-2 text-left text-xs font-medium text-text-muted">Description</th>
-                  <th className="py-2 text-right text-xs font-medium text-text-muted">Qty</th>
-                  <th className="py-2 text-right text-xs font-medium text-text-muted">Rate</th>
-                  <th className="py-2 text-right text-xs font-medium text-text-muted">Amount</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {invoice.line_items.map((li) => (
-                  <tr key={li.id}>
-                    <td className="py-3 text-sm text-foreground">{li.description}</td>
-                    <td className="py-3 text-right text-sm tabular-nums text-text-secondary">{li.quantity}</td>
-                    <td className="py-3 text-right text-sm tabular-nums text-text-secondary">{formatCurrencyDetailed(li.rate)}</td>
-                    <td className="py-3 text-right text-sm font-medium tabular-nums text-foreground">{formatCurrencyDetailed(li.amount)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            {(() => {
+              const hasTax = invoice.line_items.some((li) => li.tax_rate > 0);
+              return (
+                <table className="w-full mb-4">
+                  <thead>
+                    <tr className="border-b border-border">
+                      <th className="py-2 text-left text-xs font-medium text-text-muted">Description</th>
+                      <th className="py-2 text-right text-xs font-medium text-text-muted">Qty</th>
+                      <th className="py-2 text-right text-xs font-medium text-text-muted">Rate</th>
+                      {hasTax && <th className="py-2 text-right text-xs font-medium text-text-muted">Tax</th>}
+                      <th className="py-2 text-right text-xs font-medium text-text-muted">Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border">
+                    {invoice.line_items.map((li) => (
+                      <tr key={li.id}>
+                        <td className="py-3 text-sm text-foreground">{li.description}</td>
+                        <td className="py-3 text-right text-sm tabular-nums text-text-secondary">{li.quantity}</td>
+                        <td className="py-3 text-right text-sm tabular-nums text-text-secondary">{formatCurrencyDetailed(li.rate)}</td>
+                        {hasTax && (
+                          <td className="py-3 text-right text-sm tabular-nums text-text-secondary">
+                            {li.tax_rate > 0 ? `${li.tax_rate}%` : '—'}
+                          </td>
+                        )}
+                        <td className="py-3 text-right text-sm font-medium tabular-nums text-foreground">
+                          {formatCurrencyDetailed(li.amount + li.tax_amount)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              );
+            })()}
 
             {/* Totals */}
             <div className="border-t border-border pt-4 space-y-2">
@@ -256,8 +273,8 @@ export default async function InvoiceDetailPage({
                 {invoice.payments.map((payment) => (
                   <div key={payment.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
                     <div>
-                      <p className="text-sm font-medium text-foreground capitalize">{payment.method}</p>
-                      <p className="text-xs text-text-muted">{formatDate(payment.received_date)}</p>
+                      <p className="text-sm font-medium text-foreground capitalize">{payment.payment_method.replace(/_/g, ' ')}</p>
+                      <p className="text-xs text-text-muted">{formatDate(payment.payment_date)}</p>
                       {payment.reference && (
                         <p className="text-xs text-text-muted">Ref: {payment.reference}</p>
                       )}

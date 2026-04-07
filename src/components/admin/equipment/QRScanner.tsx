@@ -1,6 +1,10 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useCallback, startTransition } from 'react';
+import Button from '@/components/ui/Button';
+import Alert from '@/components/ui/Alert';
+import FormInput from '@/components/ui/FormInput';
+import FormLabel from '@/components/ui/FormLabel';
 
 interface QRScannerProps {
   onScan: (value: string) => void;
@@ -170,7 +174,7 @@ export default function QRScanner({ onScan }: QRScannerProps) {
       {mode === 'scan' && (
         <div className="space-y-3">
           {error ? (
-            <div className="p-4 rounded-lg bg-red-50 border border-red-200 text-sm text-red-800">
+            <Alert>
               <p className="font-medium mb-1">Camera Error</p>
               <p>{error}</p>
               <button
@@ -179,7 +183,7 @@ export default function QRScanner({ onScan }: QRScannerProps) {
               >
                 Switch to manual entry
               </button>
-            </div>
+            </Alert>
           ) : (
             <>
               {/* Viewfinder */}
@@ -243,9 +247,9 @@ export default function QRScanner({ onScan }: QRScannerProps) {
           )}
 
           {!hasBarcodeApi && (
-            <div className="p-3 rounded-lg bg-yellow-50 border border-yellow-200 text-sm text-yellow-800">
+            <Alert variant="warning">
               Your browser does not support the BarcodeDetector API. Please use Chrome/Edge or enter codes manually.
-            </div>
+            </Alert>
           )}
         </div>
       )}
@@ -253,28 +257,23 @@ export default function QRScanner({ onScan }: QRScannerProps) {
       {mode === 'manual' && (
         <form onSubmit={handleManualSubmit} className="space-y-3">
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">
+            <FormLabel>
               Barcode / Asset ID
-            </label>
-            <input
+            </FormLabel>
+            <FormInput
               type="text"
               value={manualValue}
               onChange={(e) => setManualValue(e.target.value)}
               placeholder="Scan or type barcode..."
-              autoFocus
-              className="w-full border border-border rounded-lg px-3 py-2.5 text-sm text-foreground bg-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/20"
-            />
+              autoFocus />
             <p className="mt-1 text-xs text-text-muted">
               Enter the barcode number or asset ID and press Look Up.
             </p>
           </div>
-          <button
-            type="submit"
-            disabled={!manualValue.trim()}
-            className="w-full px-4 py-2.5 text-sm rounded-lg bg-foreground text-white hover:opacity-90 disabled:opacity-50 transition-opacity"
-          >
+          <Button size="lg" className="w-full" type="submit"
+            disabled={!manualValue.trim()}>
             Look Up
-          </button>
+          </Button>
         </form>
       )}
 

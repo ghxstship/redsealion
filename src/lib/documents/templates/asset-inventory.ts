@@ -1,3 +1,4 @@
+
 /**
  * Asset Inventory & Disposition Report
  *
@@ -35,6 +36,7 @@ import {
   type TableColumn,
   CONTENT_WIDTH,
 } from '../engine';
+
 
 // ---------------------------------------------------------------------------
 // Public interface
@@ -186,7 +188,7 @@ export async function generateAssetInventory(data: AssetInventoryData): Promise<
       children.push(kvTable(pairs, brand));
 
       // Location info
-      children.push(labelValue('Current Location', formatLocation(asset.current_location), brand));
+      children.push(labelValue('Current Location', formatLocation(asset.current_location as unknown as { facilityId?: string; type?: string; venueId?: string } | null), brand));
       children.push(spacer(120));
     }
   }
@@ -210,7 +212,7 @@ export async function generateAssetInventory(data: AssetInventoryData): Promise<
       .sort((a, b) => new Date(b.moved_at).getTime() - new Date(a.moved_at).getTime())
       .map((h) => [
         h.asset_name,
-        formatLocation(h.location),
+        formatLocation(h.location as unknown as { facilityId?: string; type?: string; venueId?: string } | null),
         formatDate(h.moved_at),
         h.condition_at_move ?? '\u2014',
         h.notes ?? '',

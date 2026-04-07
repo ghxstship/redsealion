@@ -1,5 +1,8 @@
 'use client';
 
+import FormSelect from '@/components/ui/FormSelect';
+import { IconPlus } from '@/components/ui/Icons';
+
 export interface TeamAssignmentData {
   id: string;
   role: string;
@@ -101,10 +104,9 @@ export default function TeamStep({ assignments, onChange }: TeamStepProps) {
               {assignments.map((assignment, index) => (
                 <tr key={assignment.id}>
                   <td className="py-3 pr-4">
-                    <select
+                    <FormSelect
                       value={assignment.role}
                       onChange={(e) => updateAssignment(index, { role: e.target.value })}
-                      className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:border-org-primary focus:outline-none focus:ring-1 focus:ring-org-primary"
                     >
                       <option value="">Select role...</option>
                       {COMMON_ROLES.map((role) => (
@@ -112,13 +114,12 @@ export default function TeamStep({ assignments, onChange }: TeamStepProps) {
                           {role}
                         </option>
                       ))}
-                    </select>
+                    </FormSelect>
                   </td>
                   <td className="py-3 pr-4">
-                    <select
+                    <FormSelect
                       value={assignment.userId}
                       onChange={(e) => updateAssignment(index, { userId: e.target.value })}
-                      className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:border-org-primary focus:outline-none focus:ring-1 focus:ring-org-primary"
                     >
                       <option value="">Select member...</option>
                       {SEED_TEAM_MEMBERS.map((member) => (
@@ -126,13 +127,12 @@ export default function TeamStep({ assignments, onChange }: TeamStepProps) {
                           {member.name} — {member.title}
                         </option>
                       ))}
-                    </select>
+                    </FormSelect>
                   </td>
                   <td className="py-3 pr-4">
-                    <select
+                    <FormSelect
                       value={assignment.facilityId}
                       onChange={(e) => updateAssignment(index, { facilityId: e.target.value })}
-                      className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:border-org-primary focus:outline-none focus:ring-1 focus:ring-org-primary"
                     >
                       <option value="">Select facility...</option>
                       {SEED_FACILITIES.map((fac) => (
@@ -140,7 +140,7 @@ export default function TeamStep({ assignments, onChange }: TeamStepProps) {
                           {fac.name}
                         </option>
                       ))}
-                    </select>
+                    </FormSelect>
                   </td>
                   <td className="py-3">
                     <button
@@ -166,9 +166,7 @@ export default function TeamStep({ assignments, onChange }: TeamStepProps) {
         onClick={addAssignment}
         className="inline-flex items-center gap-2 rounded-lg border border-dashed border-border px-4 py-2 text-sm font-medium text-text-secondary hover:border-org-primary hover:text-org-primary transition-colors"
       >
-        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-        </svg>
+        <IconPlus size={16} />
         Add Assignment
       </button>
     </div>

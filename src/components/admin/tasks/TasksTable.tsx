@@ -12,6 +12,104 @@ import SortableHeader from '@/components/shared/SortableHeader';
 import DataImportDialog from '@/components/shared/DataImportDialog';
 import { formatLabel } from '@/lib/utils';
 import StatusBadge, { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS } from '@/components/ui/StatusBadge';
+import FormSelect from '@/components/ui/FormSelect';
+import FormInput from '@/components/ui/FormInput';
+
+/* ──────────────────────────────────────────────────────────────
+   Inline edit components
+   ────────────────────────────────────────────────────────────── */
+
+function InlineSelect({
+  value,
+  options,
+  onSave,
+}: {
+  value: string;
+  options: readonly string[];
+  onSave: (val: string) => void;
+}) {
+  const [editing, setEditing] = useState(false);
+
+  if (!editing) {
+    return (
+      <button
+        onClick={() => setEditing(true)}
+        className="w-full text-left cursor-pointer hover:opacity-70 transition-opacity"
+        title="Click to edit"
+      >
+        <StatusBadge
+          status={value}
+          colorMap={
+            options === statusOptions
+              ? TASK_STATUS_COLORS
+              : TASK_PRIORITY_COLORS
+          }
+        />
+      </button>
+    );
+  }
+
+  return (
+    <FormSelect
+      value={value}
+      autoFocus
+      onChange={(e) => {
+        onSave(e.target.value);
+        setEditing(false);
+      }}
+      onBlur={() => setEditing(false)}
+    >
+      {options
+        .filter((o) => o !== 'all')
+        .map((o) => (
+          <option key={o} value={o}>
+            {formatLabel(o)}
+          </option>
+        ))}
+    </FormSelect>
+  );
+}
+
+function InlineDateEdit({
+  value,
+  onSave,
+}: {
+  value: string | null;
+  onSave: (val: string) => void;
+}) {
+  const [editing, setEditing] = useState(false);
+
+  if (!editing) {
+    const isOverdue =
+      value && new Date(value + 'T23:59:59') < new Date();
+    return (
+      <button
+        onClick={() => setEditing(true)}
+        className={`text-sm cursor-pointer hover:opacity-70 transition-opacity ${
+          isOverdue ? 'text-red-600 font-medium' : 'text-text-secondary'
+        }`}
+        title="Click to edit"
+      >
+        {value ? new Date(value + 'T00:00:00').toLocaleDateString() : '\u2014'}
+      </button>
+    );
+  }
+
+  return (
+    <FormInput
+      type="date"
+      defaultValue={value ?? ''}
+      autoFocus
+      onChange={(e) => {
+        if (e.target.value) {
+          onSave(e.target.value);
+        }
+        setEditing(false);
+      }}
+      onBlur={() => setEditing(false)}
+    />
+  );
+}
 
 interface TaskRow {
   id: string;
@@ -86,33 +184,41 @@ export default function TasksTable({ tasks }: { tasks: TaskRow[] }) {
     router.refresh();
   }
 
+  // ---------- Inline cell patching ----------
+  async function patchTask(id: string, patch: Record<string, unknown>) {
+    const res = await fetch(`/api/tasks/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(patch),
+    });
+    if (res.ok) router.refresh();
+  }
+
   return (
     <>
       {/* Filters row */}
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2 flex-wrap">
-          <select
+          <FormSelect
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10"
           >
             {statusOptions.map((s) => (
               <option key={s} value={s}>
                 {s === 'all' ? 'All Status' : formatLabel(s)}
               </option>
             ))}
-          </select>
-          <select
+          </FormSelect>
+          <FormSelect
             value={priorityFilter}
             onChange={(e) => setPriorityFilter(e.target.value)}
-            className="rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10"
           >
             {priorityOptions.map((p) => (
               <option key={p} value={p}>
                 {p === 'all' ? 'All Priority' : formatLabel(p)}
               </option>
             ))}
-          </select>
+          </FormSelect>
           {(statusFilter !== 'all' || priorityFilter !== 'all' || search) && (
             <button
               onClick={() => { setStatusFilter('all'); setPriorityFilter('all'); setSearch(''); }}
@@ -123,13 +229,11 @@ export default function TasksTable({ tasks }: { tasks: TaskRow[] }) {
           )}
         </div>
         <div className="flex items-center gap-3">
-          <input
+          <FormInput
             type="text"
             placeholder="Search tasks..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full max-w-xs rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10"
-          />
+            onChange={(e) => setSearch(e.target.value)} />
           <button onClick={() => setShowImport(true)} className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M7 2v10M3 8l4 4 4-4" /></svg>
             Import
@@ -201,7 +305,7 @@ export default function TasksTable({ tasks }: { tasks: TaskRow[] }) {
                   checked={isAllSelected}
                   ref={(el) => { if (el) el.indeterminate = isSomeSelected; }}
                   onChange={toggleAll}
-                  className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/20"
+                  className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10"
                 />
               </th>
               <th className="px-6 py-3"><SortableHeader label="Task" field="title" currentSort={sort} onSort={handleSort} /></th>
@@ -225,7 +329,7 @@ export default function TasksTable({ tasks }: { tasks: TaskRow[] }) {
                     type="checkbox"
                     checked={isSelected(task.id)}
                     onChange={() => toggle(task.id)}
-                    className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/20"
+                    className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10"
                   />
                 </td>
                 <td className="px-6 py-3.5">
@@ -242,14 +346,25 @@ export default function TasksTable({ tasks }: { tasks: TaskRow[] }) {
                   )}
                 </td>
                 <td className="px-6 py-3.5">
-                  <StatusBadge status={task.status} colorMap={TASK_STATUS_COLORS} />
+                  <InlineSelect
+                    value={task.status}
+                    options={statusOptions}
+                    onSave={(val) => patchTask(task.id, { status: val })}
+                  />
                 </td>
                 <td className="px-6 py-3.5">
-                  <StatusBadge status={task.priority} colorMap={TASK_PRIORITY_COLORS} />
+                  <InlineSelect
+                    value={task.priority}
+                    options={priorityOptions}
+                    onSave={(val) => patchTask(task.id, { priority: val })}
+                  />
                 </td>
                 <td className="px-6 py-3.5 text-sm text-text-secondary">{task.assigneeName ?? '\u2014'}</td>
-                <td className="px-6 py-3.5 text-sm text-text-secondary">
-                  {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : '\u2014'}
+                <td className="px-6 py-3.5">
+                  <InlineDateEdit
+                    value={task.dueDate}
+                    onSave={(val) => patchTask(task.id, { due_date: val })}
+                  />
                 </td>
                 <td className="px-6 py-3.5">
                   <button

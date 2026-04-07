@@ -1,6 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
+import { IconX } from '@/components/ui/Icons';
 
 interface ModalShellProps {
   open: boolean;
@@ -8,8 +9,8 @@ interface ModalShellProps {
   title: string;
   /** Optional subtitle below the title */
   subtitle?: string;
-  /** Width class: 'sm' (max-w-sm), 'md' (max-w-md), or 'lg' (max-w-lg). Defaults to 'lg'. */
-  size?: 'sm' | 'md' | 'lg';
+  /** Width class: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl'. Defaults to 'lg'. */
+  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
   /** Override z-index (e.g. z-[60] for stacked modals). Defaults to z-50. */
   zIndex?: string;
   /** If true, header uses border-b with its own padding (px-5 py-4) and children receive no padding from shell.
@@ -24,6 +25,9 @@ const SIZE_MAP = {
   sm: 'max-w-sm',
   md: 'max-w-md',
   lg: 'max-w-lg',
+  xl: 'max-w-xl',
+  '2xl': 'max-w-2xl',
+  '3xl': 'max-w-3xl',
 } as const;
 
 /**
@@ -61,9 +65,7 @@ export default function ModalShell({
             )}
           </div>
           <button onClick={onClose} className="text-text-muted hover:text-foreground transition-colors">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <line x1="5" y1="5" x2="15" y2="15" /><line x1="15" y1="5" x2="5" y2="15" />
-            </svg>
+            <IconX />
           </button>
         </div>
         {children}

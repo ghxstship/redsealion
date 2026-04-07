@@ -28,7 +28,8 @@ export type PermissionResource =
   | 'ai_drafting'
   | 'email_campaigns'
   | 'referral_program'
-  | 'work_orders';
+  | 'work_orders'
+  | 'advances';
 
 export type PermissionAction = 'view' | 'create' | 'edit' | 'delete';
 
@@ -57,6 +58,7 @@ export const ALL_RESOURCES: PermissionResource[] = [
   'email_campaigns',
   'referral_program',
   'work_orders',
+  'advances',
 ];
 
 export const ALL_ACTIONS: PermissionAction[] = ['view', 'create', 'edit', 'delete'];
@@ -166,6 +168,9 @@ export const DEFAULT_PERMISSIONS: Record<OrganizationRole, Record<string, boolea
     // warehouse — manage (no delete)
     ...allActions(['warehouse']),
     [permKey('warehouse', 'delete')]: false,
+    // advances — manage (no delete)
+    ...allActions(['advances']),
+    [permKey('advances', 'delete')]: false,
   },
 
   // designer — creative focus
@@ -220,6 +225,11 @@ export const DEFAULT_PERMISSIONS: Record<OrganizationRole, Record<string, boolea
     ...viewOnly(['leads']),
     // warehouse — view only
     ...viewOnly(['warehouse']),
+    // advances — view + create + edit
+    [permKey('advances', 'view')]: true,
+    [permKey('advances', 'create')]: true,
+    [permKey('advances', 'edit')]: true,
+    [permKey('advances', 'delete')]: false,
   },
 
   // fabricator — production focus
@@ -273,6 +283,11 @@ export const DEFAULT_PERMISSIONS: Record<OrganizationRole, Record<string, boolea
     [permKey('warehouse', 'create')]: true,
     [permKey('warehouse', 'edit')]: true,
     [permKey('warehouse', 'delete')]: false,
+    // advances — view + create + edit (fabrication orders)
+    [permKey('advances', 'view')]: true,
+    [permKey('advances', 'create')]: true,
+    [permKey('advances', 'edit')]: true,
+    [permKey('advances', 'delete')]: false,
   },
 
   // installer — same as fabricator
@@ -320,6 +335,11 @@ export const DEFAULT_PERMISSIONS: Record<OrganizationRole, Record<string, boolea
     [permKey('warehouse', 'create')]: true,
     [permKey('warehouse', 'edit')]: true,
     [permKey('warehouse', 'delete')]: false,
+    // advances — view + create + edit (install orders)
+    [permKey('advances', 'view')]: true,
+    [permKey('advances', 'create')]: true,
+    [permKey('advances', 'edit')]: true,
+    [permKey('advances', 'delete')]: false,
   },
 
   // Client roles — portal only, no admin app access

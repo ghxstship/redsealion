@@ -1,6 +1,6 @@
-import type { InputHTMLAttributes } from 'react';
+import { forwardRef, type InputHTMLAttributes } from 'react';
 
-interface FormInputProps extends InputHTMLAttributes<HTMLInputElement> {
+export interface FormInputProps extends InputHTMLAttributes<HTMLInputElement> {
   /** Compact uses smaller padding. Defaults to 'default'. */
   inputSize?: 'default' | 'compact';
 }
@@ -14,15 +14,16 @@ const SIZE_CLASSES = {
  * Canonical form input atom.
  * Enforces consistent border-radius, border, focus ring, and padding.
  */
-export default function FormInput({
-  inputSize = 'default',
-  className = '',
-  ...rest
-}: FormInputProps) {
-  return (
-    <input
-      className={`w-full rounded-lg border border-border bg-white text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 ${SIZE_CLASSES[inputSize]} ${className}`}
-      {...rest}
-    />
-  );
-}
+const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
+  function FormInput({ inputSize = 'default', className = '', ...rest }, ref) {
+    return (
+      <input
+        ref={ref}
+        className={`w-full rounded-lg border border-border bg-white text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 ${SIZE_CLASSES[inputSize]} ${className}`}
+        {...rest}
+      />
+    );
+  },
+);
+
+export default FormInput;

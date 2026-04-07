@@ -2,6 +2,8 @@
 
 import { useState, useCallback } from 'react';
 import type { ProposalStatus } from '@/types/database';
+import FormSelect from '@/components/ui/FormSelect';
+import FormInput from '@/components/ui/FormInput';
 
 export interface FilterValues {
   status: ProposalStatus | 'all';
@@ -72,44 +74,40 @@ export default function ProposalFilters({
           <circle cx="7" cy="7" r="5" />
           <path d="M14 14l-3.5-3.5" />
         </svg>
-        <input
+        <FormInput
           type="text"
           placeholder="Search proposals..."
           value={filters.search}
-          onChange={(e) => update({ search: e.target.value })}
-          className="w-full rounded-lg border border-border bg-white py-2 pl-9 pr-3 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
-        />
+          onChange={(e) => update({ search: e.target.value })} />
       </div>
 
       {/* Status dropdown */}
-      <select
+      <FormSelect
         value={filters.status}
         onChange={(e) =>
           update({ status: e.target.value as FilterValues['status'] })
         }
-        className="rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
       >
         {statusOptions.map((opt) => (
           <option key={opt.value} value={opt.value}>
             {opt.label}
           </option>
         ))}
-      </select>
+      </FormSelect>
 
       {/* Sort dropdown */}
-      <select
+      <FormSelect
         value={filters.sort}
         onChange={(e) =>
           update({ sort: e.target.value as FilterValues['sort'] })
         }
-        className="rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
       >
         {sortOptions.map((opt) => (
           <option key={opt.value} value={opt.value}>
             Sort: {opt.label}
           </option>
         ))}
-      </select>
+      </FormSelect>
     </div>
   );
 }

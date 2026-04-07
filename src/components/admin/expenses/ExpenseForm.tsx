@@ -1,7 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+import Button from '@/components/ui/Button';
 import { useRouter } from 'next/navigation';
+import Alert from '@/components/ui/Alert';
+import FormSelect from '@/components/ui/FormSelect';
+import FormTextarea from '@/components/ui/FormTextarea';
+import FormInput from '@/components/ui/FormInput';
+import FormLabel from '@/components/ui/FormLabel';
 
 const CATEGORIES = ['travel', 'meals', 'supplies', 'equipment', 'software', 'other'] as const;
 
@@ -83,14 +89,13 @@ export default function ExpenseForm() {
     <form onSubmit={handleSubmit} className="mx-auto max-w-lg space-y-6">
       <div className="rounded-xl border border-border bg-white px-6 py-6 space-y-5">
         <div>
-          <label className="block text-xs font-medium uppercase tracking-wider text-text-muted mb-1.5">
+          <FormLabel>
             Category
-          </label>
-          <select
+          </FormLabel>
+          <FormSelect
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             required
-            className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20"
           >
             <option value="">Select category...</option>
             {CATEGORIES.map((cat) => (
@@ -98,56 +103,49 @@ export default function ExpenseForm() {
                 {cat.charAt(0).toUpperCase() + cat.slice(1)}
               </option>
             ))}
-          </select>
+          </FormSelect>
         </div>
 
         <div>
-          <label className="block text-xs font-medium uppercase tracking-wider text-text-muted mb-1.5">
+          <FormLabel>
             Amount
-          </label>
-          <input
+          </FormLabel>
+          <FormInput
             type="number"
             min="0"
             step="0.01"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             required
-            placeholder="0.00"
-            className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/20"
-          />
+            placeholder="0.00" />
         </div>
 
         <div>
-          <label className="block text-xs font-medium uppercase tracking-wider text-text-muted mb-1.5">
+          <FormLabel>
             Date
-          </label>
-          <input
+          </FormLabel>
+          <FormInput
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            required
-            className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20"
-          />
+            required />
         </div>
 
         <div>
-          <label className="block text-xs font-medium uppercase tracking-wider text-text-muted mb-1.5">
+          <FormLabel>
             Description
-          </label>
-          <textarea
+          </FormLabel>
+          <FormTextarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={3}
             placeholder="Describe the expense..."
-            className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/20 resize-none"
           />
         </div>
       </div>
 
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
+        <Alert className="mb-4">{error}</Alert>
       )}
 
       <div className="flex justify-end gap-3">
@@ -158,13 +156,10 @@ export default function ExpenseForm() {
         >
           Cancel
         </button>
-        <button
-          type="submit"
-          disabled={saving}
-          className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90 disabled:opacity-50"
-        >
+        <Button type="submit"
+          disabled={saving}>
           {saving ? 'Submitting...' : 'Submit Expense'}
-        </button>
+        </Button>
       </div>
     </form>
   );

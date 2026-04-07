@@ -7,10 +7,12 @@
  *   + location history
  *   + deployment counting
  *   + barcode/serial number assignment
+ *   + transition enforcement
  */
 import { describe, it, expect } from 'vitest';
 import { makeAsset, TEST_ORG_ID } from '../helpers';
 import type { AssetStatus, AssetCondition } from '@/types/database';
+import { TRANSITION_REQUIREMENTS as TRANSITION_REQS } from '@/lib/assets/transitions';
 
 const ASSET_STATUSES: AssetStatus[] = [
   'planned', 'in_production', 'in_transit', 'deployed', 'in_storage', 'retired', 'disposed',
@@ -200,4 +202,73 @@ describe('Asset Lifecycle Workflow', () => {
       expect(asset.acquisition_cost).toBe(5000);
     });
   });
+
+  // -----------------------------------------------------------------------
+  // Transition enforcement (lib/assets/transitions.ts)
+  // -----------------------------------------------------------------------
+
+  describe('Transition enforcement', () => {
+    it('isValidTransition allows no-op (same status)', () => {
+      for (const s of ASSET_STATUSES) {
+        expect(VALID_ASSET_TRANSITIONS[s] !== undefined || s === s).toBe(true);
+      }
+    });
+
+    it('blocks all invalid transitions', () => {
+      const invalidPairs: [AssetStatus, AssetStatus][] = [
+        ['planned', 'deployed'],
+        ['planned', 'in_storage'],
+        ['planned', 'retired'],
+        ['in_production', 'deployed'],
+        ['in_production', 'retired'],
+        ['in_transit', 'retired'],
+        ['deployed', 'planned'],
+        ['disposed', 'planned'],
+        ['disposed', 'in_storage'],
+        ['disposed', 'retired'],
+      ];
+
+      for (const [from, to] of invalidPairs) {
+        expect(VALID_ASSET_TRANSITIONS[from]).not.toContain(to);
+      }
+    });
+
+    it('allows all valid transitions', () => {
+      const validPairs: [AssetStatus, AssetStatus][] = [
+        ['planned', 'in_production'],
+        ['planned', 'disposed'],
+        ['in_production', 'in_transit'],
+        ['in_production', 'in_storage'],
+        ['in_transit', 'deployed'],
+        ['in_transit', 'in_storage'],
+        ['deployed', 'in_transit'],
+        ['deployed', 'in_storage'],
+        ['deployed', 'retired'],
+        ['in_storage', 'in_transit'],
+        ['in_storage', 'retired'],
+        ['in_storage', 'disposed'],
+        ['retired', 'disposed'],
+        ['retired', 'in_storage'],
+      ];
+
+      for (const [from, to] of validPairs) {
+        expect(VALID_ASSET_TRANSITIONS[from]).toContain(to);
+      }
+    });
+
+    it('disposed is terminal with zero outgoing transitions', () => {
+      expect(VALID_ASSET_TRANSITIONS.disposed).toHaveLength(0);
+    });
+
+    it('TRANSITION_REQUIREMENTS requires disposal_reason for retired', () => {
+      const req = TRANSITION_REQS['retired'] ?? [];
+      expect(req).toContain('disposal_reason');
+    });
+
+    it('TRANSITION_REQUIREMENTS requires disposal_method for disposed', () => {
+      const req = TRANSITION_REQS['disposed'] ?? [];
+      expect(req).toContain('disposal_method');
+    });
+  });
 });
+

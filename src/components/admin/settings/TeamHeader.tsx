@@ -2,21 +2,25 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Button from '@/components/ui/Button';
+import { IconPlus } from '@/components/ui/Icons';
 import InviteMemberModal from '@/components/admin/people/InviteMemberModal';
 
 export default function TeamHeader() {
   const router = useRouter();
-  const [open, setOpen] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   return (
     <>
-      <button
-        onClick={() => setOpen(true)}
-        className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-white hover:bg-foreground/90 transition-colors"
-      >
+      <Button onClick={() => setShowModal(true)}>
+        <IconPlus size={16} />
         Invite Member
-      </button>
-      <InviteMemberModal open={open} onClose={() => setOpen(false)} onCreated={() => { router.refresh(); setOpen(false); }} />
+      </Button>
+      <InviteMemberModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        onCreated={() => router.refresh()}
+      />
     </>
   );
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import FormLabel from '@/components/ui/FormLabel';
 
 interface DepositGateProps {
   proposalId: string;
@@ -61,7 +62,7 @@ export default function DepositGate({
         </div>
       </div>
 
-      <label className="flex items-start gap-2">
+      <FormLabel className="flex items-start gap-2">
         <input
           type="checkbox"
           checked={acknowledged}
@@ -71,12 +72,11 @@ export default function DepositGate({
         <span className="text-xs text-amber-800">
           I understand that a deposit of ${amount.toLocaleString()} is required and will be invoiced upon proposal approval.
         </span>
-      </label>
+      </FormLabel>
 
       <div className="flex justify-end">
         <button
           disabled={!acknowledged}
-          className="rounded-lg px-4 py-2 text-sm font-medium text-white transition-opacity disabled:opacity-50"
           style={{ backgroundColor: 'var(--org-primary, #d97706)' }}
         >
           Approve & Pay Deposit

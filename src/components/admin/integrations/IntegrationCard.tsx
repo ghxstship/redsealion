@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Button from '@/components/ui/Button';
 
 interface IntegrationCardProps {
   platform: string;
@@ -85,23 +86,21 @@ export function IntegrationCard({
             >
               Configure
             </a>
-            <button
+            <Button
+              size="sm"
+              className="flex-1"
               onClick={async () => {
                 await fetch(`/api/integrations/${platform}/sync`, { method: 'POST' });
               }}
-              className="flex-1 rounded-lg bg-foreground px-3 py-1.5 text-center text-xs font-medium text-white hover:opacity-90 transition-opacity"
             >
               Sync Now
-            </button>
+            </Button>
           </>
         ) : (
-          <button
-            onClick={handleConnect}
-            disabled={connecting}
-            className="w-full rounded-lg bg-foreground px-3 py-1.5 text-center text-xs font-medium text-white hover:opacity-90 transition-opacity disabled:opacity-50"
-          >
+          <Button size="sm" className="w-full" onClick={handleConnect}
+            disabled={connecting}>
             {connecting ? 'Connecting...' : 'Connect'}
-          </button>
+          </Button>
         )}
       </div>
     </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import Alert from '@/components/ui/Alert';
 import { createClient } from '@/lib/supabase/client';
 import { useSubscription } from '@/components/shared/SubscriptionProvider';
 import type { OrganizationRole } from '@/types/database';
@@ -49,6 +50,7 @@ const RESOURCE_LABELS: Record<PermissionResource, string> = {
   email_campaigns: 'Email Campaigns',
   referral_program: 'Referral Program',
   work_orders: 'Work Orders',
+  advances: 'Advances',
 };
 
 const ROLE_LABELS: Record<string, string> = {
@@ -173,15 +175,13 @@ export default function PermissionMatrix({ organizationId, overrides }: Permissi
   return (
     <div className="space-y-6">
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
-          {error}
-        </div>
+        <Alert className="mb-4">{error}</Alert>
       )}
 
       {!isEnterprise && (
-        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+        <Alert variant="warning">
           Upgrade to Enterprise to customize role permissions. The default matrix is shown below.
-        </div>
+        </Alert>
       )}
 
       {INTERNAL_ROLES.map((role) => {

@@ -12,6 +12,7 @@ import BulkActionBar from '@/components/shared/BulkActionBar';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import { formatLabel } from '@/lib/utils';
 import StatusBadge, { EQUIPMENT_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import FormInput from '@/components/ui/FormInput';
 
 interface EquipmentItem {
   id: string;
@@ -73,13 +74,11 @@ export default function EquipmentTable({ equipment }: { equipment: EquipmentItem
           )}
         </div>
         <div className="flex items-center gap-3">
-          <input
+          <FormInput
             type="text"
             placeholder="Search equipment..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full max-w-xs rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10"
-          />
+            onChange={(e) => setSearch(e.target.value)} />
           <button onClick={() => setShowImport(true)} className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M7 2v10M3 8l4 4 4-4" /></svg>
             Import
@@ -113,7 +112,7 @@ export default function EquipmentTable({ equipment }: { equipment: EquipmentItem
                   checked={isAllSelected}
                   ref={(el) => { if (el) el.indeterminate = isSomeSelected; }}
                   onChange={toggleAll}
-                  className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/20"
+                  className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10"
                 />
               </th>
               <th className="px-6 py-3"><SortableHeader label="Name" field="name" currentSort={sort} onSort={handleSort} /></th>
@@ -129,7 +128,7 @@ export default function EquipmentTable({ equipment }: { equipment: EquipmentItem
             {sorted.map((item) => (
               <tr key={item.id} className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(item.id) ? 'bg-blue-50/50' : ''}`}>
                 <td className="px-4 py-3.5">
-                  <input type="checkbox" checked={isSelected(item.id)} onChange={() => toggle(item.id)} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/20" />
+                  <input type="checkbox" checked={isSelected(item.id)} onChange={() => toggle(item.id)} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
                 </td>
                 <td className="px-6 py-3.5">
                   <Link href={`/app/equipment/${item.id}`} className="text-sm font-medium text-foreground hover:underline">{item.name}</Link>

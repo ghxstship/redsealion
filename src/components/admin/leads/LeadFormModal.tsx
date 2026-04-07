@@ -28,11 +28,37 @@ export default function LeadFormModal({ open, onClose, onCreated }: LeadFormModa
   const [message, setMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [dupWarning, setDupWarning] = useState<{ id: string; name: string } | null>(null);
 
   function resetForm() {
     setContactFirstName(''); setContactLastName(''); setContactEmail('');
     setCompanyName(''); setContactPhone(''); setSource('');
     setEstimatedBudget(''); setMessage(''); setError(null);
+    setDupWarning(null);
+  }
+
+  async function checkDuplicate(email: string) {
+    if (!email || !email.includes('@')) {
+      setDupWarning(null);
+      return;
+    }
+    try {
+      const res = await fetch(`/api/leads?email=${encodeURIComponent(email)}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.leads && data.leads.length > 0) {
+          const existing = data.leads[0];
+          setDupWarning({
+            id: existing.id,
+            name: `${existing.contact_first_name} ${existing.contact_last_name}`.trim() || existing.contact_email,
+          });
+          return;
+        }
+      }
+    } catch {
+      // silently ignore dedup check failures
+    }
+    setDupWarning(null);
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -86,7 +112,21 @@ export default function LeadFormModal({ open, onClose, onCreated }: LeadFormModa
           </div>
           <div>
             <FormLabel>Email</FormLabel>
-            <FormInput type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} placeholder="rachel@example.com" />
+            <FormInput
+              type="email"
+              value={contactEmail}
+              onChange={(e) => setContactEmail(e.target.value)}
+              onBlur={(e) => checkDuplicate(e.target.value)}
+              placeholder="rachel@example.com"
+            />
+            {dupWarning && (
+              <p className="mt-1 text-xs text-amber-600">
+                ⚠ A lead with this email already exists:{' '}
+                <a href={`/app/leads`} className="underline font-medium">
+                  {dupWarning.name}
+                </a>
+              </p>
+            )}
           </div>
         </div>
 

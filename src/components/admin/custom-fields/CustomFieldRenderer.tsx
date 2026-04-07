@@ -1,5 +1,7 @@
 'use client';
 
+import Button from '@/components/ui/Button';
+
 interface FieldDef {
   id: string;
   entityType: string;
@@ -22,9 +24,9 @@ export default function CustomFieldRenderer({ fields }: CustomFieldRendererProps
         <p className="text-sm text-text-secondary mb-4">
           No custom fields defined yet.
         </p>
-        <button className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90">
+        <Button>
           Add Custom Field
-        </button>
+        </Button>
       </div>
     );
   }

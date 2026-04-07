@@ -65,6 +65,39 @@ export const AVAILABILITY_STATUS_COLORS: Record<string, string> = {
   tentative: 'bg-yellow-400',
 };
 
+export const PIPELINE_STAGE_COLORS: Record<string, string> = {
+  discovery: 'bg-blue-50 text-blue-700',
+  qualification: 'bg-indigo-50 text-indigo-700',
+  proposal: 'bg-purple-50 text-purple-700',
+  negotiation: 'bg-amber-50 text-amber-700',
+  closed_won: 'bg-green-50 text-green-700',
+  closed_lost: 'bg-red-50 text-red-700',
+};
+
+export const PHOTO_TYPE_COLORS: Record<string, string> = {
+  before: 'bg-gray-100 text-gray-600',
+  progress: 'bg-blue-50 text-blue-700',
+  completion: 'bg-green-50 text-green-700',
+  issue: 'bg-red-50 text-red-700',
+  reference: 'bg-purple-50 text-purple-700',
+};
+
+export const LEAD_SOURCE_COLORS: Record<string, string> = {
+  referral: 'bg-bg-tertiary text-foreground',
+  website: 'bg-bg-tertiary text-foreground',
+  cold_call: 'bg-bg-tertiary text-foreground',
+  event: 'bg-bg-tertiary text-foreground',
+};
+
+export const ROLE_BADGE_COLORS: Record<string, string> = {
+  super_admin: 'bg-red-50 text-red-700',
+  org_admin: 'bg-indigo-50 text-indigo-700',
+  project_manager: 'bg-blue-50 text-blue-700',
+  designer: 'bg-purple-50 text-purple-700',
+  fabricator: 'bg-orange-50 text-orange-700',
+  installer: 'bg-green-50 text-green-700',
+};
+
 /* ────────────────────────────────────────────
  * StatusBadge Component
  * ──────────────────────────────────────────── */

@@ -45,12 +45,14 @@ export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => ({}));
   const {
     vendor_name,
+    vendor_id,
     description,
     total_amount,
     proposal_id,
     due_date,
   } = body as {
     vendor_name?: string;
+    vendor_id?: string;
     description?: string;
     total_amount?: number;
     proposal_id?: string;
@@ -77,6 +79,7 @@ export async function POST(request: NextRequest) {
       organization_id: perm.organizationId,
       po_number: poNumber,
       vendor_name,
+      vendor_id: vendor_id || null,
       description: description || null,
       total_amount,
       status: 'draft',

@@ -18,6 +18,7 @@ interface TaskFormModalProps {
 
 const PRIORITY_OPTIONS = ['low', 'medium', 'high', 'urgent'] as const;
 const STATUS_OPTIONS = ['todo', 'in_progress', 'in_review', 'done'] as const;
+const RECURRENCE_OPTIONS = ['none', 'daily', 'weekly', 'monthly', 'yearly'] as const;
 
 export default function TaskFormModal({ open, onClose, onCreated }: TaskFormModalProps) {
   const [title, setTitle] = useState('');
@@ -26,18 +27,30 @@ export default function TaskFormModal({ open, onClose, onCreated }: TaskFormModa
   const [status, setStatus] = useState('todo');
   const [dueDate, setDueDate] = useState('');
   const [estimatedHours, setEstimatedHours] = useState('');
+  const [recurrence, setRecurrence] = useState('none');
+  const [recurrenceInterval, setRecurrenceInterval] = useState('1');
+  const [recurrenceEnd, setRecurrenceEnd] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   function resetForm() {
     setTitle(''); setDescription(''); setPriority('medium');
-    setStatus('todo'); setDueDate(''); setEstimatedHours(''); setError(null);
+    setStatus('todo'); setDueDate(''); setEstimatedHours('');
+    setRecurrence('none'); setRecurrenceInterval('1'); setRecurrenceEnd('');
+    setError(null);
   }
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setSubmitting(true);
     setError(null);
+
+    const recurrenceRule = recurrence !== 'none' ? {
+      frequency: recurrence,
+      interval: parseInt(recurrenceInterval) || 1,
+      end_date: recurrenceEnd || undefined,
+      occurrences_created: 0,
+    } : undefined;
 
     try {
       const res = await fetch('/api/tasks', {
@@ -50,6 +63,7 @@ export default function TaskFormModal({ open, onClose, onCreated }: TaskFormModa
           status,
           due_date: dueDate || undefined,
           estimated_hours: estimatedHours ? parseFloat(estimatedHours) : undefined,
+          recurrence_rule: recurrenceRule,
         }),
       });
 
@@ -109,6 +123,45 @@ export default function TaskFormModal({ open, onClose, onCreated }: TaskFormModa
             <FormInput type="number" min={0} step="0.5" value={estimatedHours} onChange={(e) => setEstimatedHours(e.target.value)} placeholder="0" />
           </div>
         </div>
+
+        {/* Recurrence */}
+        <div>
+          <FormLabel>Repeat</FormLabel>
+          <FormSelect value={recurrence} onChange={(e) => setRecurrence(e.target.value)}>
+            {RECURRENCE_OPTIONS.map((r) => (
+              <option key={r} value={r}>{r === 'none' ? 'Does not repeat' : formatLabel(r)}</option>
+            ))}
+          </FormSelect>
+        </div>
+
+        {recurrence !== 'none' && (
+          <div className="grid grid-cols-2 gap-4 rounded-lg border border-border bg-bg-secondary/30 p-3">
+            <div>
+              <FormLabel>Every</FormLabel>
+              <div className="flex items-center gap-2">
+                <FormInput
+                  type="number"
+                  min={1}
+                  max={365}
+                  value={recurrenceInterval}
+                  onChange={(e) => setRecurrenceInterval(e.target.value)}
+                  className="w-20"
+                />
+                <span className="text-sm text-text-secondary">
+                  {recurrence === 'daily' ? 'day(s)' : recurrence === 'weekly' ? 'week(s)' : recurrence === 'monthly' ? 'month(s)' : 'year(s)'}
+                </span>
+              </div>
+            </div>
+            <div>
+              <FormLabel>Until (optional)</FormLabel>
+              <FormInput
+                type="date"
+                value={recurrenceEnd}
+                onChange={(e) => setRecurrenceEnd(e.target.value)}
+              />
+            </div>
+          </div>
+        )}
 
         <div className="flex items-center justify-end gap-3 pt-2">
           <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>

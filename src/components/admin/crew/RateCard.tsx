@@ -1,6 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
+import Button from '@/components/ui/Button';
+import Alert from '@/components/ui/Alert';
+import FormInput from '@/components/ui/FormInput';
+import FormLabel from '@/components/ui/FormLabel';
 
 interface Rates {
   hourly: number | null;
@@ -72,9 +76,7 @@ export default function RateCard({ profileId, rates, onSaved }: RateCardProps) {
       <h2 className="text-base font-semibold text-foreground mb-4">Rate Card</h2>
 
       {error && (
-        <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-800 mb-4">
-          {error}
-        </div>
+        <Alert className="mb-4">{error}</Alert>
       )}
 
       {success && (
@@ -86,31 +88,26 @@ export default function RateCard({ profileId, rates, onSaved }: RateCardProps) {
       <div className="space-y-3">
         {RATE_FIELDS.map(({ key, label }) => (
           <div key={key} className="flex items-center gap-3">
-            <label className="text-sm text-foreground font-medium w-32 shrink-0">{label}</label>
+            <FormLabel>{label}</FormLabel>
             <div className="relative flex-1">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-sm">$</span>
-              <input
+              <FormInput
                 type="number"
                 step="0.01"
                 min="0"
                 value={values[key] ?? ''}
                 onChange={(e) => updateField(key, e.target.value)}
-                placeholder={formatCurrency(rates[key]) || '0.00'}
-                className="w-full border border-border rounded-lg pl-7 pr-3 py-2 text-sm text-foreground"
-              />
+                placeholder={formatCurrency(rates[key]) || '0.00'} />
             </div>
           </div>
         ))}
       </div>
 
       <div className="flex justify-end mt-4">
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="px-4 py-2 text-sm rounded-lg bg-foreground text-white hover:opacity-90 disabled:opacity-50"
-        >
+        <Button onClick={handleSave}
+          disabled={saving}>
           {saving ? 'Saving...' : 'Save Rates'}
-        </button>
+        </Button>
       </div>
     </div>
   );

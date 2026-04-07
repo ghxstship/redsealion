@@ -2,21 +2,25 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Button from '@/components/ui/Button';
+import { IconPlus } from '@/components/ui/Icons';
 import CostRateFormModal from '@/components/admin/settings/CostRateFormModal';
 
 export default function CostRatesHeader() {
   const router = useRouter();
-  const [open, setOpen] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   return (
     <>
-      <button
-        onClick={() => setOpen(true)}
-        className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity"
-      >
+      <Button onClick={() => setShowModal(true)}>
+        <IconPlus size={16} />
         Add Rate
-      </button>
-      <CostRateFormModal open={open} onClose={() => setOpen(false)} onCreated={() => { router.refresh(); setOpen(false); }} />
+      </Button>
+      <CostRateFormModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        onCreated={() => router.refresh()}
+      />
     </>
   );
 }

@@ -8,6 +8,8 @@ import DataExportMenu from '@/components/shared/DataExportMenu';
 import DataImportDialog from '@/components/shared/DataImportDialog';
 import PersonEditModal from './PersonEditModal';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
+import { ROLE_BADGE_COLORS } from '@/components/ui/StatusBadge';
+import FormInput from '@/components/ui/FormInput';
 
 interface TeamMember {
   id: string;
@@ -30,14 +32,7 @@ const ROLE_LABELS: Record<string, string> = {
   client_viewer: 'Client Viewer',
 };
 
-const ROLE_BADGE_COLORS: Record<string, string> = {
-  super_admin: 'bg-red-50 text-red-700',
-  org_admin: 'bg-indigo-50 text-indigo-700',
-  project_manager: 'bg-blue-50 text-blue-700',
-  designer: 'bg-purple-50 text-purple-700',
-  fabricator: 'bg-orange-50 text-orange-700',
-  installer: 'bg-green-50 text-green-700',
-};
+
 
 
 
@@ -75,13 +70,11 @@ export default function PeopleGrid({ members }: { members: TeamMember[] }) {
     <>
       {/* Search + Export */}
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <input
+        <FormInput
           type="text"
           placeholder="Search people by name, email, or role..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full max-w-md rounded-lg border border-border bg-white px-4 py-2.5 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/20"
-        />
+          onChange={(e) => setSearch(e.target.value)} />
         <div className="flex items-center gap-3">
           <button onClick={() => setShowImport(true)} className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M7 2v10M3 8l4 4 4-4" /></svg>

@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import FormSelect from '@/components/ui/FormSelect';
+import FormInput from '@/components/ui/FormInput';
 
 interface InlineEditCellProps {
   value: string;
@@ -62,28 +64,25 @@ export default function InlineEditCell({
 
   if (type === 'select' && options) {
     return (
-      <select
+      <FormSelect
         ref={inputRef as React.RefObject<HTMLSelectElement>}
         value={draft}
         onChange={(e) => { setDraft(e.target.value); }}
         onBlur={() => void handleSave()}
-        className="rounded border border-blue-300 bg-white px-1 py-0.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-blue-400/30"
       >
         {options.map((opt) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-      </select>
+      </FormSelect>
     );
   }
 
   return (
-    <input
+    <FormInput
       ref={inputRef as React.RefObject<HTMLInputElement>}
       type="text"
       value={draft}
       onChange={(e) => setDraft(e.target.value)}
       onBlur={() => void handleSave()}
       onKeyDown={handleKeyDown}
-      disabled={saving}
-      className="w-full rounded border border-blue-300 bg-white px-1 py-0.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-blue-400/30 disabled:opacity-50"
-    />
+      disabled={saving} />
   );
 }

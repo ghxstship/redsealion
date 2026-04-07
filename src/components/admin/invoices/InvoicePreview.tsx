@@ -6,6 +6,7 @@ interface LineItem {
   description: string;
   quantity: number;
   rate: number;
+  tax_rate: number;
 }
 
 interface InvoicePreviewProps {
@@ -76,10 +77,34 @@ export default function InvoicePreview({
       </table>
       </div>
 
-      <div className="border-t border-border pt-3 flex justify-between items-center">
-        <span className="text-xs font-semibold text-foreground">Total</span>
-        <span className="text-sm font-semibold tabular-nums text-foreground">{formatCurrencyDetailed(total)}</span>
-      </div>
+      {(() => {
+        const hasTax = lineItems.some((li) => (li.tax_rate ?? 0) > 0);
+        const subtotal = lineItems.reduce((s, li) => s + li.quantity * li.rate, 0);
+        const taxAmount = lineItems.reduce((s, li) => {
+          const amt = li.quantity * li.rate;
+          return s + Math.round(amt * ((li.tax_rate ?? 0) / 100) * 100) / 100;
+        }, 0);
+        return (
+          <div className="border-t border-border pt-3 space-y-1">
+            {hasTax && (
+              <>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-text-muted">Subtotal</span>
+                  <span className="text-xs tabular-nums text-text-secondary">{formatCurrencyDetailed(subtotal)}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-text-muted">Tax</span>
+                  <span className="text-xs tabular-nums text-text-secondary">{formatCurrencyDetailed(taxAmount)}</span>
+                </div>
+              </>
+            )}
+            <div className="flex justify-between items-center pt-1">
+              <span className="text-xs font-semibold text-foreground">Total</span>
+              <span className="text-sm font-semibold tabular-nums text-foreground">{formatCurrencyDetailed(total)}</span>
+            </div>
+          </div>
+        );
+      })()}
 
       {memo && (
         <div className="mt-4 pt-3 border-t border-border">

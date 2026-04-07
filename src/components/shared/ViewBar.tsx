@@ -1,7 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import type { SavedView } from '@/hooks/useEntityViews';
+import { Table, Kanban, Calendar, GanttChart, List, LayoutGrid, ArrowRight, FileText, X } from 'lucide-react';
+import FormInput from '@/components/ui/FormInput';
+import Button from '@/components/ui/Button';
+
+const DISPLAY_ICONS: Record<string, ReactNode> = {
+  table: <Table size={12} />,
+  board: <Kanban size={12} />,
+  calendar: <Calendar size={12} />,
+  gantt: <GanttChart size={12} />,
+  list: <List size={12} />,
+  gallery: <LayoutGrid size={12} />,
+  timeline: <ArrowRight size={12} />,
+  form: <FileText size={12} />,
+};
 
 interface ViewBarProps {
   views: SavedView[];
@@ -11,17 +25,6 @@ interface ViewBarProps {
   onDeleteView: (id: string) => void;
   onDuplicateView: (id: string) => void;
 }
-
-const DISPLAY_ICONS: Record<string, string> = {
-  table: '⊞',
-  board: '◫',
-  calendar: '📅',
-  gantt: '▤',
-  list: '☰',
-  gallery: '⊟',
-  timeline: '→',
-  form: '⊡',
-};
 
 export default function ViewBar({
   views,
@@ -55,7 +58,7 @@ export default function ViewBar({
                 : 'border-transparent text-text-muted hover:text-text-secondary hover:border-border'
             }`}
           >
-            <span className="text-xs">{DISPLAY_ICONS[view.display_type] ?? '⊞'}</span>
+            <span className="flex items-center text-xs">{DISPLAY_ICONS[view.display_type] ?? <Table size={12} />}</span>
             {view.icon && <span className="text-xs">{view.icon}</span>}
             {view.name}
           </button>
@@ -101,7 +104,7 @@ export default function ViewBar({
       {/* Add view button */}
       {showNew ? (
         <div className="flex items-center gap-1 px-2 flex-shrink-0">
-          <input
+          <FormInput
             type="text"
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
@@ -110,20 +113,20 @@ export default function ViewBar({
               if (e.key === 'Escape') setShowNew(false);
             }}
             placeholder="View name"
-            autoFocus
-            className="w-28 rounded border border-border bg-white px-2 py-1 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20"
-          />
-          <button
+            autoFocus />
+          <Button
+            size="sm"
             onClick={handleCreate}
-            className="rounded bg-foreground px-2 py-1 text-xs font-medium text-white hover:bg-foreground/90 transition-colors"
+            className="px-2"
           >
             Save
-          </button>
+          </Button>
           <button
             onClick={() => setShowNew(false)}
-            className="rounded px-2 py-1 text-xs text-text-muted hover:text-foreground transition-colors"
+            className="rounded px-1 py-1 text-text-muted hover:text-foreground transition-colors"
+            title="Cancel"
           >
-            ✕
+            <X size={12} />
           </button>
         </div>
       ) : (

@@ -67,6 +67,12 @@ export default function RootLayout({
       <head>
         <meta name="theme-color" content="#0a0a0a" />
         <link rel="apple-touch-icon" href="/icons/icon.svg" />
+        {/* Theme init — runs before first paint to prevent flash */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('fd_theme');if(t==='dark'){document.documentElement.setAttribute('data-theme','dark')}else if(t==='system'&&window.matchMedia('(prefers-color-scheme:dark)').matches){document.documentElement.setAttribute('data-theme','dark')}else{document.documentElement.setAttribute('data-theme','light')}}catch(e){}})()`,
+          }}
+        />
       </head>
       <body className="min-h-full flex flex-col antialiased">
         {children}

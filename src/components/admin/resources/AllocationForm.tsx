@@ -1,6 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import Button from '@/components/ui/Button';
+import Alert from '@/components/ui/Alert';
+import FormSelect from '@/components/ui/FormSelect';
+import FormInput from '@/components/ui/FormInput';
+import FormLabel from '@/components/ui/FormLabel';
 
 interface AllocationFormProps {
   teamMembers: Array<{ id: string; name: string }>;
@@ -74,21 +79,18 @@ export default function AllocationForm({ teamMembers, onCreated }: AllocationFor
       <h4 className="text-sm font-medium text-foreground">New Allocation</h4>
 
       {error && (
-        <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
-          {error}
-        </div>
+        <Alert className="mb-4">{error}</Alert>
       )}
 
       <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-3">
         <div className="col-span-2 sm:col-span-1">
-          <label htmlFor="alloc-user" className="block text-xs font-medium text-text-secondary mb-1">
+          <FormLabel htmlFor="alloc-user">
             Team Member
-          </label>
-          <select
+          </FormLabel>
+          <FormSelect
             id="alloc-user"
             name="user_id"
             required
-            className="w-full rounded-md border border-border bg-white px-2.5 py-2 text-sm"
           >
             <option value="">Select…</option>
             {teamMembers.map((m) => (
@@ -96,54 +98,48 @@ export default function AllocationForm({ teamMembers, onCreated }: AllocationFor
                 {m.name}
               </option>
             ))}
-          </select>
+          </FormSelect>
         </div>
 
         <div className="col-span-2 sm:col-span-1">
-          <label htmlFor="alloc-role" className="block text-xs font-medium text-text-secondary mb-1">
+          <FormLabel htmlFor="alloc-role">
             Role
-          </label>
-          <input
+          </FormLabel>
+          <FormInput
             id="alloc-role"
             name="role"
             type="text"
-            placeholder="e.g. Lead Designer"
-            className="w-full rounded-md border border-border bg-white px-2.5 py-2 text-sm"
-          />
+            placeholder="e.g. Lead Designer" />
         </div>
 
         <div>
-          <label htmlFor="alloc-start" className="block text-xs font-medium text-text-secondary mb-1">
+          <FormLabel htmlFor="alloc-start">
             Start Date
-          </label>
-          <input
+          </FormLabel>
+          <FormInput
             id="alloc-start"
             name="start_date"
             type="date"
             required
-            defaultValue={today}
-            className="w-full rounded-md border border-border bg-white px-2.5 py-2 text-sm"
-          />
+            defaultValue={today} />
         </div>
 
         <div>
-          <label htmlFor="alloc-end" className="block text-xs font-medium text-text-secondary mb-1">
+          <FormLabel htmlFor="alloc-end">
             End Date
-          </label>
-          <input
+          </FormLabel>
+          <FormInput
             id="alloc-end"
             name="end_date"
             type="date"
-            required
-            className="w-full rounded-md border border-border bg-white px-2.5 py-2 text-sm"
-          />
+            required />
         </div>
 
         <div>
-          <label htmlFor="alloc-hours" className="block text-xs font-medium text-text-secondary mb-1">
+          <FormLabel htmlFor="alloc-hours">
             Hours / Day
-          </label>
-          <input
+          </FormLabel>
+          <FormInput
             id="alloc-hours"
             name="hours_per_day"
             type="number"
@@ -151,23 +147,18 @@ export default function AllocationForm({ teamMembers, onCreated }: AllocationFor
             min="0.5"
             max="24"
             defaultValue="8"
-            required
-            className="w-full rounded-md border border-border bg-white px-2.5 py-2 text-sm"
-          />
+            required />
         </div>
 
         <div className="flex items-end gap-2">
-          <button
-            type="submit"
-            disabled={saving}
-            className="rounded-md bg-foreground px-4 py-2 text-sm font-medium text-white hover:bg-foreground/90 disabled:opacity-50 transition-colors"
-          >
+          <Button type="submit"
+            disabled={saving}>
             {saving ? 'Saving…' : 'Save'}
-          </button>
+          </Button>
           <button
             type="button"
             onClick={() => setOpen(false)}
-            className="rounded-md border border-border px-4 py-2 text-sm font-medium text-text-secondary hover:bg-bg-secondary transition-colors"
+            className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-text-secondary hover:bg-bg-secondary transition-colors"
           >
             Cancel
           </button>

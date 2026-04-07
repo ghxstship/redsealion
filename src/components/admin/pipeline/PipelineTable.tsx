@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { useSort } from '@/hooks/useSort';
 import SortableHeader from '@/components/shared/SortableHeader';
 import { formatLabel, formatCurrency } from '@/lib/utils';
+import StatusBadge, { PIPELINE_STAGE_COLORS } from '@/components/ui/StatusBadge';
+import FormInput from '@/components/ui/FormInput';
 
 interface Deal {
   id: string;
@@ -17,14 +19,7 @@ interface Deal {
   owner_name: string | null;
 }
 
-const STAGE_COLORS: Record<string, string> = {
-  discovery: 'bg-blue-50 text-blue-700',
-  qualification: 'bg-indigo-50 text-indigo-700',
-  proposal: 'bg-purple-50 text-purple-700',
-  negotiation: 'bg-amber-50 text-amber-700',
-  closed_won: 'bg-green-50 text-green-700',
-  closed_lost: 'bg-red-50 text-red-700',
-};
+
 
 
 
@@ -47,13 +42,11 @@ export default function PipelineTable({ deals }: { deals: Deal[] }) {
   return (
     <>
       <div className="mb-4 flex items-center justify-between">
-        <input
+        <FormInput
           type="text"
           placeholder="Search deals..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full max-w-xs rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10"
-        />
+          onChange={(e) => setSearch(e.target.value)} />
       </div>
 
       <div className="rounded-xl border border-border bg-white overflow-hidden overflow-x-auto">
@@ -78,9 +71,7 @@ export default function PipelineTable({ deals }: { deals: Deal[] }) {
                 <td className="px-6 py-3.5 text-sm text-text-secondary">{deal.client_name ?? '\u2014'}</td>
                 <td className="px-6 py-3.5 text-sm font-medium tabular-nums text-foreground">{formatCurrency(deal.value)}</td>
                 <td className="px-6 py-3.5">
-                  <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${STAGE_COLORS[deal.stage] ?? 'bg-gray-100 text-gray-600'}`}>
-                    {formatLabel(deal.stage)}
-                  </span>
+                  <StatusBadge status={deal.stage} colorMap={PIPELINE_STAGE_COLORS} />
                 </td>
                 <td className="px-6 py-3.5 text-sm tabular-nums text-text-secondary">{deal.probability}%</td>
                 <td className="px-6 py-3.5 text-sm text-text-secondary">

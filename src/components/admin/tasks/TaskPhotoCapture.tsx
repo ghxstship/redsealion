@@ -1,6 +1,11 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import Button from '@/components/ui/Button';
+import { PHOTO_TYPE_COLORS } from '@/components/ui/StatusBadge';
+import FormSelect from '@/components/ui/FormSelect';
+import FormInput from '@/components/ui/FormInput';
+import FormLabel from '@/components/ui/FormLabel';
 
 interface Photo {
   id: string;
@@ -19,13 +24,7 @@ const TYPE_LABELS: Record<string, string> = {
   reference: 'Reference',
 };
 
-const TYPE_COLORS: Record<string, string> = {
-  before: 'bg-gray-100 text-gray-600',
-  progress: 'bg-blue-50 text-blue-700',
-  completion: 'bg-green-50 text-green-700',
-  issue: 'bg-red-50 text-red-700',
-  reference: 'bg-purple-50 text-purple-700',
-};
+
 
 interface TaskPhotoCaptureProps {
   taskId: string;
@@ -91,46 +90,38 @@ export default function TaskPhotoCapture({ taskId }: TaskPhotoCaptureProps) {
         <div className="border-b border-border bg-bg-secondary/30 px-5 py-4 space-y-3">
           <div className="grid gap-3 sm:grid-cols-3">
             <div className="sm:col-span-2">
-              <label className="block text-xs font-medium text-text-secondary mb-1">Photo URL</label>
-              <input
+              <FormLabel>Photo URL</FormLabel>
+              <FormInput
                 type="url"
                 value={newPhoto.file_url}
                 onChange={(e) => setNewPhoto((p) => ({ ...p, file_url: e.target.value }))}
-                placeholder="https://storage.example.com/photo.jpg"
-                className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
-              />
+                placeholder="https://storage.example.com/photo.jpg" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-text-secondary mb-1">Type</label>
-              <select
+              <FormLabel>Type</FormLabel>
+              <FormSelect
                 value={newPhoto.photo_type}
                 onChange={(e) => setNewPhoto((p) => ({ ...p, photo_type: e.target.value }))}
-                className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
               >
                 {Object.entries(TYPE_LABELS).map(([k, v]) => (
                   <option key={k} value={k}>{v}</option>
                 ))}
-              </select>
+              </FormSelect>
             </div>
           </div>
           <div>
-            <label className="block text-xs font-medium text-text-secondary mb-1">Caption</label>
-            <input
+            <FormLabel>Caption</FormLabel>
+            <FormInput
               type="text"
               value={newPhoto.caption}
               onChange={(e) => setNewPhoto((p) => ({ ...p, caption: e.target.value }))}
-              placeholder="Describe what this photo shows…"
-              className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
-            />
+              placeholder="Describe what this photo shows…" />
           </div>
           <div className="flex justify-end">
-            <button
-              onClick={handleUpload}
-              disabled={uploading || !newPhoto.file_url}
-              className="rounded-lg bg-foreground px-4 py-2 text-xs font-medium text-white hover:opacity-90 disabled:opacity-50"
-            >
+            <Button size="sm" onClick={handleUpload}
+              disabled={uploading || !newPhoto.file_url}>
               {uploading ? 'Uploading…' : 'Add Photo'}
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -152,7 +143,7 @@ export default function TaskPhotoCapture({ taskId }: TaskPhotoCaptureProps) {
                 className="aspect-square w-full object-cover"
               />
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
-                <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-medium ${TYPE_COLORS[photo.photo_type] ?? TYPE_COLORS.progress}`}>
+                <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-medium ${PHOTO_TYPE_COLORS[photo.photo_type] ?? PHOTO_TYPE_COLORS.progress}`}>
                   {TYPE_LABELS[photo.photo_type] ?? photo.photo_type}
                 </span>
                 {photo.caption && (

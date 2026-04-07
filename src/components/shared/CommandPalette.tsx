@@ -32,11 +32,12 @@ const navigationItems: CommandItem[] = [
   { id: 'nav-clients', label: 'Clients', section: 'Navigate', href: '/app/clients', icon: <NavIcon />, keywords: ['customers', 'accounts'] },
   { id: 'nav-proposals', label: 'Proposals', section: 'Navigate', href: '/app/proposals', icon: <NavIcon />, keywords: ['quotes', 'estimates', 'bids'] },
 
-  // Project Delivery
+  // Production
   { id: 'nav-tasks', label: 'Tasks', section: 'Navigate', href: '/app/tasks', icon: <NavIcon />, keywords: ['todo', 'checklist'] },
   { id: 'nav-calendar', label: 'Calendar', section: 'Navigate', href: '/app/calendar', icon: <NavIcon />, keywords: ['schedule', 'events'] },
   { id: 'nav-resources', label: 'Resources', section: 'Navigate', href: '/app/resources', icon: <NavIcon />, keywords: ['capacity', 'scheduling'] },
   { id: 'nav-templates', label: 'Templates', section: 'Navigate', href: '/app/templates', icon: <NavIcon />, keywords: ['presets', 'phase templates'] },
+  { id: 'nav-dispatch', label: 'Dispatch', section: 'Navigate', href: '/app/dispatch', icon: <NavIcon />, keywords: ['work orders', 'field'] },
 
   // People & Crew
   { id: 'nav-people', label: 'People', section: 'Navigate', href: '/app/people', icon: <NavIcon />, keywords: ['team', 'hr', 'directory', 'staff', 'employees'] },
@@ -50,17 +51,16 @@ const navigationItems: CommandItem[] = [
   { id: 'nav-profitability', label: 'Profitability', section: 'Navigate', href: '/app/profitability', icon: <NavIcon />, keywords: ['margin', 'profit', 'loss'] },
   { id: 'nav-time', label: 'Time Tracking', section: 'Navigate', href: '/app/time', icon: <NavIcon />, keywords: ['hours', 'timesheet', 'clock'] },
 
-  // Operations
+  // Insights & Tools
+  { id: 'nav-reports', label: 'Reports', section: 'Navigate', href: '/app/reports', icon: <NavIcon />, keywords: ['analytics', 'charts', 'data'] },
+  { id: 'nav-automations', label: 'Automations', section: 'Navigate', href: '/app/automations', icon: <NavIcon />, keywords: ['workflows', 'rules'] },
+  { id: 'nav-campaigns', label: 'Campaigns', section: 'Navigate', href: '/app/campaigns', icon: <NavIcon />, keywords: ['marketing', 'email blasts'] },
+  { id: 'nav-emails', label: 'Emails', section: 'Navigate', href: '/app/emails', icon: <NavIcon />, keywords: ['inbox', 'mail'] },
+  { id: 'nav-integrations', label: 'Integrations', section: 'Navigate', href: '/app/integrations', icon: <NavIcon />, keywords: ['connect', 'sync', 'api'] },
   { id: 'nav-assets', label: 'Assets', section: 'Navigate', href: '/app/assets', icon: <NavIcon />, keywords: ['inventory', 'physical'] },
   { id: 'nav-warehouse', label: 'Warehouse', section: 'Navigate', href: '/app/warehouse', icon: <NavIcon />, keywords: ['storage', 'logistics'] },
   { id: 'nav-portfolio', label: 'Portfolio', section: 'Navigate', href: '/app/portfolio', icon: <NavIcon />, keywords: ['showcase', 'gallery', 'work'] },
   { id: 'nav-terms', label: 'Terms & Conditions', section: 'Navigate', href: '/app/terms', icon: <NavIcon />, keywords: ['legal', 'contract'] },
-
-  // System
-  { id: 'nav-automations', label: 'Automations', section: 'Navigate', href: '/app/automations', icon: <NavIcon />, keywords: ['workflows', 'rules'] },
-  { id: 'nav-integrations', label: 'Integrations', section: 'Navigate', href: '/app/integrations', icon: <NavIcon />, keywords: ['connect', 'sync', 'api'] },
-  { id: 'nav-emails', label: 'Emails', section: 'Navigate', href: '/app/emails', icon: <NavIcon />, keywords: ['inbox', 'mail'] },
-  { id: 'nav-reports', label: 'Reports', section: 'Navigate', href: '/app/reports', icon: <NavIcon />, keywords: ['analytics', 'charts', 'data'] },
   { id: 'nav-settings', label: 'Settings', section: 'Navigate', href: '/app/settings', icon: <NavIcon />, keywords: ['preferences', 'config'] },
 
   // Settings sub-pages

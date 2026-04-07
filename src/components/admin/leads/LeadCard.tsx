@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import StatusBadge, { LEAD_STATUS_COLORS_DENSE } from '@/components/ui/StatusBadge';
+import StatusBadge, { LEAD_STATUS_COLORS_DENSE, LEAD_SOURCE_COLORS } from '@/components/ui/StatusBadge';
 
 interface Lead {
   id: string;
@@ -20,16 +20,11 @@ interface LeadCardProps {
 
 
 
-const SOURCE_COLORS: Record<string, string> = {
-  referral: 'bg-bg-tertiary text-foreground',
-  website: 'bg-bg-tertiary text-foreground',
-  cold_call: 'bg-bg-tertiary text-foreground',
-  event: 'bg-bg-tertiary text-foreground',
-};
+
 
 export default function LeadCard({ lead }: LeadCardProps) {
 
-  const sourceClass = SOURCE_COLORS[lead.source] ?? 'bg-bg-tertiary text-foreground';
+  const sourceClass = LEAD_SOURCE_COLORS[lead.source] ?? 'bg-bg-tertiary text-foreground';
 
   const formatBudget = (amount: number) =>
     new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(amount);

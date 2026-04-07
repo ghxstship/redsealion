@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import FormSelect from '@/components/ui/FormSelect';
 
 interface Interaction {
   id: string;
@@ -52,17 +53,16 @@ export default function ClientInteractions({
       <div className="px-6 py-4 border-b border-border flex items-center justify-between">
         <h2 className="text-sm font-semibold text-foreground">Interactions</h2>
         <div className="flex items-center gap-2">
-          <select
+          <FormSelect
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="rounded-lg border border-border bg-white px-3 py-1 text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10"
           >
             <option value="all">All types</option>
             <option value="meeting">Meetings</option>
             <option value="call">Calls</option>
             <option value="email">Emails</option>
             <option value="note">Notes</option>
-          </select>
+          </FormSelect>
           <button className="text-xs font-medium text-text-muted hover:text-foreground transition-colors">
             + Add
           </button>

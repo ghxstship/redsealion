@@ -9,7 +9,7 @@ interface PortalPipelinePageProps {
   params: Promise<{ orgSlug: string }>;
 }
 
-type DealWithClient = Deal & { client_name: string };
+type DealWithClient = Deal & { client_name: string; owner_name: string | null };
 
 async function getDeals(orgId: string): Promise<DealWithClient[]> {
   try {
@@ -17,17 +17,18 @@ async function getDeals(orgId: string): Promise<DealWithClient[]> {
 
     const { data: deals } = await supabase
       .from('deals')
-      .select('*, clients(company_name)')
+      .select('*, clients(company_name), users!deals_owner_id_fkey(full_name)')
       .eq('organization_id', orgId)
       .order('created_at', { ascending: false });
 
     if (!deals) return [];
 
     return deals.map((d: Record<string, unknown>) => {
-      const { clients: _clients, ...rest } = d;
+      const { clients: _clients, users: _users, ...rest } = d;
       return {
         ...rest,
         client_name: (_clients as Record<string, string>)?.company_name ?? 'Unknown',
+        owner_name: (_users as Record<string, string>)?.full_name ?? null,
       } as unknown as DealWithClient;
     });
   } catch {

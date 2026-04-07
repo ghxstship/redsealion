@@ -2,6 +2,9 @@
 
 import { useState } from 'react';
 import type { Address, VenueActivationDates, VenueLoadInStrike } from '@/types/database';
+import FormTextarea from '@/components/ui/FormTextarea';
+import FormInput from '@/components/ui/FormInput';
+import FormLabel from '@/components/ui/FormLabel';
 
 export interface VenueData {
   id: string;
@@ -90,22 +93,20 @@ export default function VenueCard({
           {/* Name & Type */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-text-secondary mb-1">
+              <FormLabel>
                 Venue Name
-              </label>
-              <input
+              </FormLabel>
+              <FormInput
                 type="text"
                 placeholder="e.g., Austin Convention Center"
                 value={venue.name}
-                onChange={(e) => onUpdate({ ...venue, name: e.target.value })}
-                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:border-org-primary focus:outline-none focus:ring-1 focus:ring-org-primary"
-              />
+                onChange={(e) => onUpdate({ ...venue, name: e.target.value })} />
             </div>
             <div className="relative">
-              <label className="block text-xs font-medium text-text-secondary mb-1">
+              <FormLabel>
                 Venue Type
-              </label>
-              <input
+              </FormLabel>
+              <FormInput
                 type="text"
                 placeholder="e.g., Convention Center"
                 value={venue.type}
@@ -114,9 +115,7 @@ export default function VenueCard({
                   setShowTypeSuggestions(true);
                 }}
                 onFocus={() => setShowTypeSuggestions(true)}
-                onBlur={() => setTimeout(() => setShowTypeSuggestions(false), 150)}
-                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:border-org-primary focus:outline-none focus:ring-1 focus:ring-org-primary"
-              />
+                onBlur={() => setTimeout(() => setShowTypeSuggestions(false), 150)} />
               {showTypeSuggestions && venue.type && filteredSuggestions.length > 0 && (
                 <ul className="absolute z-10 mt-1 w-full rounded-lg border border-border bg-white shadow-sm max-h-32 overflow-y-auto">
                   {filteredSuggestions.map((s) => (
@@ -140,58 +139,48 @@ export default function VenueCard({
 
           {/* Address */}
           <div>
-            <label className="block text-xs font-medium text-text-secondary mb-1">Street</label>
-            <input
+            <FormLabel>Street</FormLabel>
+            <FormInput
               type="text"
               value={venue.address.street ?? ''}
-              onChange={(e) => updateAddress({ street: e.target.value })}
-              className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:border-org-primary focus:outline-none focus:ring-1 focus:ring-org-primary"
-            />
+              onChange={(e) => updateAddress({ street: e.target.value })} />
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div>
-              <label className="block text-xs font-medium text-text-secondary mb-1">City</label>
-              <input
+              <FormLabel>City</FormLabel>
+              <FormInput
                 type="text"
                 value={venue.address.city ?? ''}
-                onChange={(e) => updateAddress({ city: e.target.value })}
-                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:border-org-primary focus:outline-none focus:ring-1 focus:ring-org-primary"
-              />
+                onChange={(e) => updateAddress({ city: e.target.value })} />
             </div>
             <div>
-              <label className="block text-xs font-medium text-text-secondary mb-1">State</label>
-              <input
+              <FormLabel>State</FormLabel>
+              <FormInput
                 type="text"
                 value={venue.address.state ?? ''}
-                onChange={(e) => updateAddress({ state: e.target.value })}
-                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:border-org-primary focus:outline-none focus:ring-1 focus:ring-org-primary"
-              />
+                onChange={(e) => updateAddress({ state: e.target.value })} />
             </div>
             <div>
-              <label className="block text-xs font-medium text-text-secondary mb-1">ZIP</label>
-              <input
+              <FormLabel>ZIP</FormLabel>
+              <FormInput
                 type="text"
                 value={venue.address.zip ?? ''}
-                onChange={(e) => updateAddress({ zip: e.target.value })}
-                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:border-org-primary focus:outline-none focus:ring-1 focus:ring-org-primary"
-              />
+                onChange={(e) => updateAddress({ zip: e.target.value })} />
             </div>
             <div>
-              <label className="block text-xs font-medium text-text-secondary mb-1">Country</label>
-              <input
+              <FormLabel>Country</FormLabel>
+              <FormInput
                 type="text"
                 value={venue.address.country ?? 'US'}
-                onChange={(e) => updateAddress({ country: e.target.value })}
-                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:border-org-primary focus:outline-none focus:ring-1 focus:ring-org-primary"
-              />
+                onChange={(e) => updateAddress({ country: e.target.value })} />
             </div>
           </div>
 
           {/* Activation Dates */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-medium text-text-secondary mb-1">Activation Start</label>
-              <input
+              <FormLabel>Activation Start</FormLabel>
+              <FormInput
                 type="date"
                 value={venue.activationDates?.start ?? ''}
                 onChange={(e) =>
@@ -202,13 +191,11 @@ export default function VenueCard({
                       end: venue.activationDates?.end ?? '',
                     },
                   })
-                }
-                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:border-org-primary focus:outline-none focus:ring-1 focus:ring-org-primary"
-              />
+                } />
             </div>
             <div>
-              <label className="block text-xs font-medium text-text-secondary mb-1">Activation End</label>
-              <input
+              <FormLabel>Activation End</FormLabel>
+              <FormInput
                 type="date"
                 value={venue.activationDates?.end ?? ''}
                 onChange={(e) =>
@@ -219,9 +206,7 @@ export default function VenueCard({
                       end: e.target.value,
                     },
                   })
-                }
-                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:border-org-primary focus:outline-none focus:ring-1 focus:ring-org-primary"
-              />
+                } />
             </div>
           </div>
 
@@ -267,16 +252,16 @@ export default function VenueCard({
           {venue.hasLoadIn && venue.loadIn && (
             <div className="grid grid-cols-1 gap-4 pl-4 border-l-2 border-border sm:grid-cols-3">
               <div>
-                <label className="block text-xs font-medium text-text-secondary mb-1">Load-In Date</label>
-                <input type="date" value={venue.loadIn.date} onChange={(e) => onUpdate({ ...venue, loadIn: { ...venue.loadIn!, date: e.target.value } })} className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:border-org-primary focus:outline-none focus:ring-1 focus:ring-org-primary" />
+                <FormLabel>Load-In Date</FormLabel>
+                <FormInput type="date" value={venue.loadIn.date} onChange={(e) => onUpdate({ ...venue, loadIn: { ...venue.loadIn!, date: e.target.value } })} />
               </div>
               <div>
-                <label className="block text-xs font-medium text-text-secondary mb-1">Start Time</label>
-                <input type="time" value={venue.loadIn.startTime} onChange={(e) => onUpdate({ ...venue, loadIn: { ...venue.loadIn!, startTime: e.target.value } })} className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:border-org-primary focus:outline-none focus:ring-1 focus:ring-org-primary" />
+                <FormLabel>Start Time</FormLabel>
+                <FormInput type="time" value={venue.loadIn.startTime} onChange={(e) => onUpdate({ ...venue, loadIn: { ...venue.loadIn!, startTime: e.target.value } })} />
               </div>
               <div>
-                <label className="block text-xs font-medium text-text-secondary mb-1">End Time</label>
-                <input type="time" value={venue.loadIn.endTime} onChange={(e) => onUpdate({ ...venue, loadIn: { ...venue.loadIn!, endTime: e.target.value } })} className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:border-org-primary focus:outline-none focus:ring-1 focus:ring-org-primary" />
+                <FormLabel>End Time</FormLabel>
+                <FormInput type="time" value={venue.loadIn.endTime} onChange={(e) => onUpdate({ ...venue, loadIn: { ...venue.loadIn!, endTime: e.target.value } })} />
               </div>
             </div>
           )}
@@ -285,30 +270,28 @@ export default function VenueCard({
           {venue.hasStrike && venue.strike && (
             <div className="grid grid-cols-1 gap-4 pl-4 border-l-2 border-border sm:grid-cols-3">
               <div>
-                <label className="block text-xs font-medium text-text-secondary mb-1">Strike Date</label>
-                <input type="date" value={venue.strike.date} onChange={(e) => onUpdate({ ...venue, strike: { ...venue.strike!, date: e.target.value } })} className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:border-org-primary focus:outline-none focus:ring-1 focus:ring-org-primary" />
+                <FormLabel>Strike Date</FormLabel>
+                <FormInput type="date" value={venue.strike.date} onChange={(e) => onUpdate({ ...venue, strike: { ...venue.strike!, date: e.target.value } })} />
               </div>
               <div>
-                <label className="block text-xs font-medium text-text-secondary mb-1">Start Time</label>
-                <input type="time" value={venue.strike.startTime} onChange={(e) => onUpdate({ ...venue, strike: { ...venue.strike!, startTime: e.target.value } })} className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:border-org-primary focus:outline-none focus:ring-1 focus:ring-org-primary" />
+                <FormLabel>Start Time</FormLabel>
+                <FormInput type="time" value={venue.strike.startTime} onChange={(e) => onUpdate({ ...venue, strike: { ...venue.strike!, startTime: e.target.value } })} />
               </div>
               <div>
-                <label className="block text-xs font-medium text-text-secondary mb-1">End Time</label>
-                <input type="time" value={venue.strike.endTime} onChange={(e) => onUpdate({ ...venue, strike: { ...venue.strike!, endTime: e.target.value } })} className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:border-org-primary focus:outline-none focus:ring-1 focus:ring-org-primary" />
+                <FormLabel>End Time</FormLabel>
+                <FormInput type="time" value={venue.strike.endTime} onChange={(e) => onUpdate({ ...venue, strike: { ...venue.strike!, endTime: e.target.value } })} />
               </div>
             </div>
           )}
 
           {/* Notes */}
           <div>
-            <label className="block text-xs font-medium text-text-secondary mb-1">Notes</label>
-            <textarea
+            <FormLabel>Notes</FormLabel>
+            <FormTextarea
               rows={2}
               value={venue.notes}
               onChange={(e) => onUpdate({ ...venue, notes: e.target.value })}
-              placeholder="Parking, loading dock info, restrictions..."
-              className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:border-org-primary focus:outline-none focus:ring-1 focus:ring-org-primary resize-none"
-            />
+              placeholder="Parking, loading dock info, restrictions..." />
           </div>
         </div>
       )}

@@ -75,7 +75,7 @@ export function getServerEnv(): ServerEnv {
     const formatted = result.error.issues
       .map((i) => `  • ${i.path.join('.')}: ${i.message}`)
       .join('\n');
-    throw new Error(`❌ Server environment validation failed:\n${formatted}`);
+    throw new Error(`Server environment validation failed:\n${formatted}`);
   }
 
   _serverEnv = result.data;
@@ -94,7 +94,7 @@ export function getPublicEnv(): PublicEnv {
     const formatted = result.error.issues
       .map((i) => `  • ${i.path.join('.')}: ${i.message}`)
       .join('\n');
-    throw new Error(`❌ Public environment validation failed:\n${formatted}`);
+    throw new Error(`Public environment validation failed:\n${formatted}`);
   }
 
   _publicEnv = result.data;

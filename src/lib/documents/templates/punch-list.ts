@@ -1,3 +1,4 @@
+
 /**
  * Acceptance Walk-Through & Punch List Document
  *
@@ -31,6 +32,9 @@ import {
   type TableColumn,
   CONTENT_WIDTH,
 } from '../engine';
+
+import { castDocAddress, castActivationDates } from '../doc-types';
+
 
 // ---------------------------------------------------------------------------
 // Public interface
@@ -113,14 +117,15 @@ export async function generatePunchList(data: PunchListData): Promise<Buffer> {
 
     // Venue header
     children.push(heading(`Venue: ${venue.name}`, 2));
-    children.push(labelValue('Address', formatAddress(venue.address), brand));
+    children.push(labelValue('Address', formatAddress(castDocAddress(venue.address)), brand));
     children.push(labelValue('Type', venue.type, brand));
 
-    if (venue.activation_dates) {
+    const actDates = castActivationDates(venue.activation_dates);
+    if (actDates) {
       children.push(
         labelValue(
           'Activation Dates',
-          `${formatDate(venue.activation_dates.start)} \u2013 ${formatDate(venue.activation_dates.end)}`,
+          `${formatDate(actDates.start ?? '')} \u2013 ${formatDate(actDates.end ?? '')}`,
           brand,
         ),
       );

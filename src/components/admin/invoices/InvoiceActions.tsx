@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import Button from '@/components/ui/Button';
 import { useRouter } from 'next/navigation';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
+import Alert from '@/components/ui/Alert';
 
 interface InvoiceActionsProps {
   invoiceId: string;
@@ -46,29 +48,32 @@ export default function InvoiceActions({ invoiceId, invoiceNumber, status }: Inv
   return (
     <>
       <div className="flex items-center gap-3 shrink-0">
+        <Button
+          variant="ghost"
+          href={`/api/invoices/${invoiceId}/pdf`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Download PDF
+        </Button>
         {status === 'draft' && (
-          <button
-            onClick={handleSend}
-            disabled={sending}
-            className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90 disabled:opacity-50"
-          >
+          <Button onClick={handleSend}
+            disabled={sending}>
             {sending ? 'Sending...' : 'Send Invoice'}
-          </button>
+          </Button>
         )}
         {status !== 'void' && status !== 'paid' && (
-          <button
+          <Button
+            variant="danger"
             onClick={() => setShowVoid(true)}
-            className="rounded-lg border border-red-200 bg-white px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
           >
             Void
-          </button>
+          </Button>
         )}
       </div>
 
       {sendError && (
-        <div className="mt-2 rounded-lg bg-red-50 px-3 py-2 text-xs text-red-700">
-          {sendError}
-        </div>
+        <Alert className="mt-2">{sendError}</Alert>
       )}
 
       <ConfirmDialog

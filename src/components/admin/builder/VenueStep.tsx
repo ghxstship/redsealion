@@ -5,6 +5,7 @@ import VenueCard from './VenueCard';
 
 export type { VenueData } from './VenueCard';
 import type { VenueData } from './VenueCard';
+import { IconPlus } from '@/components/ui/Icons';
 
 interface VenueStepProps {
   venues: VenueData[];
@@ -73,9 +74,7 @@ export default function VenueStep({ venues, onChange }: VenueStepProps) {
         onClick={addVenue}
         className="inline-flex items-center gap-2 rounded-lg border border-dashed border-border px-4 py-2 text-sm font-medium text-text-secondary hover:border-org-primary hover:text-org-primary transition-colors"
       >
-        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-        </svg>
+        <IconPlus size={16} />
         Add Venue
       </button>
     </div>

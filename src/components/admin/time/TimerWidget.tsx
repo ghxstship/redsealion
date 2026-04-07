@@ -1,6 +1,9 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import FormSelect from '@/components/ui/FormSelect';
+import FormInput from '@/components/ui/FormInput';
+import FormLabel from '@/components/ui/FormLabel';
 
 const TIMER_STORAGE_KEY = 'flytedeck_active_timer';
 
@@ -186,31 +189,28 @@ export default function TimerWidget() {
 
         {/* Description */}
         <div className="mt-8 text-left">
-          <label className="block text-xs font-medium uppercase tracking-wider text-text-muted mb-1.5">
+          <FormLabel>
             Description
-          </label>
-          <input
+          </FormLabel>
+          <FormInput
             type="text"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="What are you working on?"
-            className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/20"
-          />
+            placeholder="What are you working on?" />
         </div>
 
         {/* Project selector */}
         <div className="mt-4 text-left">
-          <label className="block text-xs font-medium uppercase tracking-wider text-text-muted mb-1.5">
+          <FormLabel>
             Project
-          </label>
-          <select
+          </FormLabel>
+          <FormSelect
             value={project}
             onChange={(e) => setProject(e.target.value)}
-            className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20"
           >
             <option value="">Select a project...</option>
             <option value="general">General</option>
-          </select>
+          </FormSelect>
         </div>
 
         {/* Billable toggle */}

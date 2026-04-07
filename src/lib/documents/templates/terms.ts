@@ -1,3 +1,4 @@
+
 /**
  * Terms & Conditions Document Template
  *
@@ -29,6 +30,13 @@ import {
   formatDate,
   type DocBrand,
 } from '../engine';
+
+interface TermsSection {
+  number: string;
+  title: string;
+  body?: string;
+  subsections?: Array<{ number: string; title: string; body?: string }>;
+}
 
 // ---------------------------------------------------------------------------
 // Public data interface
@@ -177,7 +185,8 @@ function tableOfContents(brand: DocBrand, data: TermsDocumentData): Paragraph[] 
   children.push(heading('Table of Contents', 1));
   children.push(spacer(100));
 
-  for (const section of data.termsDocument.sections) {
+  const sections = (data.termsDocument.sections ?? []) as unknown as TermsSection[];
+  for (const section of sections) {
     children.push(
       new Paragraph({
         spacing: { after: 60 },
@@ -217,7 +226,8 @@ function tableOfContents(brand: DocBrand, data: TermsDocumentData): Paragraph[] 
 function sectionContent(brand: DocBrand, data: TermsDocumentData): Paragraph[] {
   const children: Paragraph[] = [];
 
-  for (const section of data.termsDocument.sections) {
+  const sections2 = (data.termsDocument.sections ?? []) as unknown as TermsSection[];
+  for (const section of sections2) {
     // Section heading
     children.push(heading(`${section.number}. ${section.title}`, 2));
 

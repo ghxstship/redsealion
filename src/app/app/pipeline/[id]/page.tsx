@@ -3,6 +3,9 @@ import { formatCurrency, statusColor } from '@/lib/utils';
 import { TierGate } from '@/components/shared/TierGate';
 import { createClient } from '@/lib/supabase/server';
 import type { DealStage } from '@/types/database';
+import DealEmailDraft from '@/components/admin/pipeline/DealEmailDraft';
+import DealRiskAssessment from '@/components/admin/pipeline/DealRiskAssessment';
+import DealNextAction from '@/components/admin/pipeline/DealNextAction';
 
 const STAGE_LABELS: Record<DealStage, string> = {
   lead: 'Lead',
@@ -36,6 +39,7 @@ interface DealDetail {
   created_at: string;
   updated_at: string;
   client_name: string;
+  owner_name: string | null;
   proposal_name: string | null;
   proposal_id: string | null;
   activities: Array<{
@@ -57,7 +61,7 @@ async function getDeal(id: string): Promise<DealDetail | null> {
 
     const { data: deal } = await supabase
       .from('deals')
-      .select('*, clients(company_name), proposals(name)')
+      .select('*, clients(company_name), proposals(name), users!deals_owner_id_fkey(full_name)')
       .eq('id', id)
       .single();
 
@@ -72,6 +76,7 @@ async function getDeal(id: string): Promise<DealDetail | null> {
     return {
       ...deal,
       client_name: (deal.clients as Record<string, string>)?.company_name ?? 'Unknown',
+      owner_name: (deal.users as Record<string, string>)?.full_name ?? null,
       proposal_name: (deal.proposals as Record<string, string>)?.name ?? null,
       activities: activities ?? [],
     } as DealDetail;
@@ -115,6 +120,13 @@ export default async function DealDetailPage({
           </p>
         </div>
         <div className="flex items-center gap-3 shrink-0">
+          <DealEmailDraft
+            dealTitle={deal.title}
+            dealValue={deal.deal_value}
+            dealStage={STAGE_LABELS[deal.stage]}
+            clientName={deal.client_name}
+            notes={deal.notes}
+          />
           <span
             className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${statusColor(deal.stage)}`}
           >
@@ -222,10 +234,40 @@ export default async function DealDetailPage({
                 <dt className="text-text-muted">Client</dt>
                 <dd className="font-medium text-foreground">{deal.client_name}</dd>
               </div>
+              {deal.owner_name && (
+                <div>
+                  <dt className="text-text-muted">Owner</dt>
+                  <dd className="font-medium text-foreground flex items-center gap-2">
+                    <span className="inline-flex items-center justify-center h-5 w-5 rounded-full bg-bg-secondary text-[9px] font-semibold text-text-muted">
+                      {deal.owner_name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)}
+                    </span>
+                    {deal.owner_name}
+                  </dd>
+                </div>
+              )}
               <div>
                 <dt className="text-text-muted">Stage</dt>
                 <dd className="font-medium text-foreground">
                   {STAGE_LABELS[deal.stage]}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-text-muted">Days in Pipeline</dt>
+                <dd className="font-medium text-foreground">
+                  {(() => {
+                    const endDate = deal.won_date ? new Date(deal.won_date) : new Date();
+                    const days = Math.floor((endDate.getTime() - new Date(deal.created_at).getTime()) / (1000 * 60 * 60 * 24));
+                    const color = days > 60 ? 'text-red-600' : days > 30 ? 'text-amber-600' : 'text-green-600';
+                    return (
+                      <span className={`inline-flex items-center gap-1 ${color}`}>
+                        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                          <circle cx="8" cy="8" r="7" />
+                          <path d="M8 4v4l2.5 2.5" />
+                        </svg>
+                        {days} {deal.won_date ? 'days (closed)' : 'days'}
+                      </span>
+                    );
+                  })()}
                 </dd>
               </div>
               <div>
@@ -256,6 +298,29 @@ export default async function DealDetailPage({
               )}
             </dl>
           </div>
+
+          {/* AI Risk Assessment */}
+          <DealRiskAssessment
+            dealValue={deal.deal_value}
+            probability={deal.probability}
+            stage={deal.stage}
+            createdAt={deal.created_at}
+            updatedAt={deal.updated_at}
+            wonDate={deal.won_date}
+            expectedCloseDate={deal.expected_close_date}
+            activityCount={deal.activities.length}
+          />
+
+          {/* AI Next Best Actions */}
+          <DealNextAction
+            stage={deal.stage}
+            daysSinceUpdate={Math.floor((Date.now() - new Date(deal.updated_at).getTime()) / (1000 * 60 * 60 * 24))}
+            daysInPipeline={Math.floor((Date.now() - new Date(deal.created_at).getTime()) / (1000 * 60 * 60 * 24))}
+            probability={deal.probability}
+            activityCount={deal.activities.length}
+            hasContacts={true}
+            wonDate={deal.won_date}
+          />
         </div>
       </div>
     </TierGate>

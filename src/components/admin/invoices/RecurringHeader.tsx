@@ -2,21 +2,25 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Button from '@/components/ui/Button';
+import { IconPlus } from '@/components/ui/Icons';
 import RecurringScheduleFormModal from '@/components/admin/invoices/RecurringScheduleFormModal';
 
 export default function RecurringHeader() {
   const router = useRouter();
-  const [open, setOpen] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   return (
     <>
-      <button
-        onClick={() => setOpen(true)}
-        className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity"
-      >
+      <Button onClick={() => setShowModal(true)}>
+        <IconPlus size={16} />
         New Schedule
-      </button>
-      <RecurringScheduleFormModal open={open} onClose={() => setOpen(false)} onCreated={() => { router.refresh(); setOpen(false); }} />
+      </Button>
+      <RecurringScheduleFormModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        onCreated={() => router.refresh()}
+      />
     </>
   );
 }

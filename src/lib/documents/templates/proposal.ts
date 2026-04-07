@@ -30,6 +30,11 @@ import type {
 } from '@/types/database';
 
 import {
+  castPaymentTerms,
+  castJson,
+} from '../json-casts';
+
+import {
   brandFromOrg,
   heading,
   body,
@@ -411,10 +416,10 @@ function phaseSection(
       .map((d) => [
         d.name,
         d.description ?? '',
-        d.details.join('; '),
+        castJson<string[]>(d.details as unknown as import('@/types/database').Json, []).join('; '),
         String(d.qty),
-        formatCurrency(d.unit_cost, currency),
-        formatCurrency(d.total_cost, currency),
+        formatCurrency(d.unit_cost ?? 0, currency),
+        formatCurrency(d.total_cost ?? 0, currency),
       ]);
 
     children.push(dataTable(cols, rows, brand));
@@ -428,8 +433,8 @@ function phaseSection(
     for (const addon of data.addons.sort((a, b) => a.sort_order - b.sort_order)) {
       children.push(
         checkbox(
-          `${addon.name}${addon.description ? ' \u2014 ' + addon.description : ''} \u2014 ${formatCurrency(addon.total_cost, currency)}`,
-          addon.is_selected
+          `${addon.name}${addon.description ? ' \u2014 ' + addon.description : ''} \u2014 ${formatCurrency(addon.total_cost ?? 0, currency)}`,
+          addon.is_selected ?? false
         )
       );
     }
@@ -450,7 +455,7 @@ function phaseSection(
           font: brand.fontHeading,
         }),
         new TextRun({
-          text: formatCurrency(phase.phase_investment, currency),
+          text: formatCurrency(phase.phase_investment ?? 0, currency),
           bold: true,
           size: 24,
           color: brand.primaryColor,
@@ -461,8 +466,9 @@ function phaseSection(
   );
 
   // Contractual framework callout
-  if (phase.terms_sections.length > 0) {
-    const refs = phase.terms_sections.map((s) => `\u00A7${s}`).join(', ');
+  const termsSections = castJson<string[]>(phase.terms_sections as unknown as import('@/types/database').Json, []);
+  if (termsSections.length > 0) {
+    const refs = termsSections.map((s) => `\u00A7${s}`).join(', ');
     children.push(
       calloutBox(`Contractual Framework: ${refs}`, brand, '\u00A7')
     );
@@ -474,7 +480,7 @@ function phaseSection(
     children.push(heading(`Milestone Gate: ${data.milestone.name}`, 3));
 
     if (data.requirements.length > 0) {
-      for (const req of data.requirements.sort((a, b) => a.sort_order - b.sort_order)) {
+      for (const req of data.requirements.sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))) {
         const assigneeLabel = req.assignee === 'client' ? ' [Client]' : req.assignee === 'producer' ? ' [Producer]' : req.assignee === 'both' ? ' [Both]' : ' [Vendor]';
         children.push(checkbox(`${req.text}${assigneeLabel}`, req.status === 'complete'));
       }
@@ -512,24 +518,24 @@ function investmentSummary(
   const rows = phases.map((p) => [
     `Phase ${p.phase_number}`,
     p.name,
-    formatCurrency(p.phase_investment, currency),
+    formatCurrency(p.phase_investment ?? 0, currency),
   ]);
 
   children.push(dataTable(cols, rows, brand));
   children.push(spacer(200));
 
   // Totals
-  const addonsTotal = proposal.total_with_addons - proposal.total_value;
+  const addonsTotal = (proposal.total_with_addons ?? 0) - (proposal.total_value ?? 0);
 
   const totalPairs: [string, string][] = [
-    ['Core Scope Total', formatCurrency(proposal.total_value, currency)],
+    ['Core Scope Total', formatCurrency(proposal.total_value ?? 0, currency)],
   ];
 
   if (addonsTotal > 0) {
     totalPairs.push(['Selected Add-Ons Total', formatCurrency(addonsTotal, currency)]);
   }
 
-  totalPairs.push(['Grand Total', formatCurrency(proposal.total_with_addons, currency)]);
+  totalPairs.push(['Grand Total', formatCurrency(proposal.total_with_addons ?? 0, currency)]);
 
   children.push(kvTable(totalPairs, brand));
 
@@ -541,7 +547,7 @@ function paymentTermsSection(
   proposal: Proposal
 ): Paragraph[] {
   const children: Paragraph[] = [];
-  const pt = proposal.payment_terms;
+  const pt = castPaymentTerms(proposal.payment_terms as unknown as import('@/types/database').Json);
 
   children.push(heading('Payment Terms', 1));
 
@@ -603,21 +609,24 @@ function venueScheduleSection(
   ];
 
   const rows = venues
-    .sort((a, b) => a.sequence - b.sequence)
+    .sort((a, b) => (a.sequence ?? 0) - (b.sequence ?? 0))
     .map((v) => {
-      const addr = v.address;
+      const addr = (v.address ?? {}) as unknown as import('@/types/database').Address;
       const addrStr = [addr.street, addr.city, addr.state, addr.zip].filter(Boolean).join(', ');
 
-      const activationStr = v.activation_dates
-        ? `${formatDate(v.activation_dates.start)} \u2013 ${formatDate(v.activation_dates.end)}`
+      const ad = (v.activation_dates ?? null) as unknown as import('@/types/database').VenueActivationDates | null;
+      const activationStr = ad
+        ? `${formatDate(ad.start)} \u2013 ${formatDate(ad.end)}`
         : '\u2014';
 
-      const loadInStr = v.load_in
-        ? `${formatDate(v.load_in.date)} ${v.load_in.startTime}\u2013${v.load_in.endTime}`
+      const li = (v.load_in ?? null) as unknown as import('@/types/database').VenueLoadInStrike | null;
+      const loadInStr = li
+        ? `${formatDate(li.date)} ${li.startTime}\u2013${li.endTime}`
         : '\u2014';
 
-      const strikeStr = v.strike
-        ? `${formatDate(v.strike.date)} ${v.strike.startTime}\u2013${v.strike.endTime}`
+      const st = (v.strike ?? null) as unknown as import('@/types/database').VenueLoadInStrike | null;
+      const strikeStr = st
+        ? `${formatDate(st.date)} ${st.startTime}\u2013${st.endTime}`
         : '\u2014';
 
       return [v.name, addrStr, activationStr, loadInStr, strikeStr];
@@ -636,7 +645,7 @@ export async function generateProposalDocument(
   data: ProposalDocumentData
 ): Promise<Buffer> {
   const brand = brandFromOrg(data.org, data.logoBuffer);
-  const sortedPhases = [...data.phases].sort((a, b) => a.sort_order - b.sort_order);
+  const sortedPhases = [...data.phases].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
 
   // --- Section 1: Cover page (no header/footer) ---
   const coverSection = buildSection({
@@ -691,7 +700,8 @@ export async function generateProposalDocument(
   ];
 
   // --- Assumptions section ---
-  const assumptionParas = assumptionsSection(brand, data.proposal.assumptions);
+  const rawAssumptions = (data.proposal as unknown as Record<string, unknown>).assumptions;
+  const assumptionParas = assumptionsSection(brand, Array.isArray(rawAssumptions) ? rawAssumptions as string[] : []);
   if (assumptionParas.length > 0) {
     paymentChildren.push(pageBreak(), ...assumptionParas);
   }

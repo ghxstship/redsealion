@@ -1,6 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Button from '@/components/ui/Button';
+import Alert from '@/components/ui/Alert';
+import FormSelect from '@/components/ui/FormSelect';
+import FormTextarea from '@/components/ui/FormTextarea';
+import FormInput from '@/components/ui/FormInput';
+import FormLabel from '@/components/ui/FormLabel';
 
 interface BundleItem {
   asset_id: string;
@@ -92,36 +98,30 @@ export default function BundleEditor({ bundle, onClose, onSaved }: BundleEditorP
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
-          <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-800">
-            {error}
-          </div>
+          <Alert className="mb-4">{error}</Alert>
         )}
 
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Name</label>
-          <input
+          <FormLabel>Name</FormLabel>
+          <FormInput
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="w-full border border-border rounded-lg px-3 py-2 text-sm text-foreground"
-            placeholder="Bundle name"
-          />
+            placeholder="Bundle name" />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Description</label>
-          <textarea
+          <FormLabel>Description</FormLabel>
+          <FormTextarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            rows={2}
-            className="w-full border border-border rounded-lg px-3 py-2 text-sm text-foreground resize-none"
-          />
+            rows={2} />
         </div>
 
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label className="text-sm font-medium text-foreground">Items</label>
+            <FormLabel>Items</FormLabel>
             <button
               type="button"
               onClick={addItem}
@@ -138,24 +138,21 @@ export default function BundleEditor({ bundle, onClose, onSaved }: BundleEditorP
           <div className="space-y-2">
             {items.map((item, index) => (
               <div key={index} className="flex items-center gap-2">
-                <select
+                <FormSelect
                   value={item.asset_id}
                   onChange={(e) => updateItem(index, 'asset_id', e.target.value)}
                   required
-                  className="flex-1 border border-border rounded-lg px-3 py-2 text-sm bg-white text-foreground"
                 >
                   <option value="">Select asset</option>
                   {assets.map((a) => (
                     <option key={a.id} value={a.id}>{a.name}</option>
                   ))}
-                </select>
-                <input
+                </FormSelect>
+                <FormInput
                   type="number"
                   min={1}
                   value={item.quantity}
-                  onChange={(e) => updateItem(index, 'quantity', Number(e.target.value))}
-                  className="w-20 border border-border rounded-lg px-3 py-2 text-sm text-foreground"
-                />
+                  onChange={(e) => updateItem(index, 'quantity', Number(e.target.value))} />
                 <button
                   type="button"
                   onClick={() => removeItem(index)}
@@ -176,13 +173,10 @@ export default function BundleEditor({ bundle, onClose, onSaved }: BundleEditorP
           >
             Cancel
           </button>
-          <button
-            type="submit"
-            disabled={submitting}
-            className="px-4 py-2 text-sm rounded-lg bg-foreground text-white hover:opacity-90 disabled:opacity-50"
-          >
+          <Button type="submit"
+            disabled={submitting}>
             {submitting ? 'Saving...' : 'Save Bundle'}
-          </button>
+          </Button>
         </div>
       </form>
     </div>

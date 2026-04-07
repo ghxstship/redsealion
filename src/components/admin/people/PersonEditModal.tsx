@@ -81,8 +81,7 @@ export default function PersonEditModal({ open, onClose, onSaved, person }: Pers
 
         <div>
           <FormLabel>Email</FormLabel>
-          <input type="email" disabled value={person.email}
-            className="w-full rounded-lg border border-border bg-bg-secondary px-3 py-2 text-sm text-text-muted" />
+          <FormInput type="email" disabled value={person.email} />
           <p className="mt-1 text-xs text-text-muted">Email cannot be changed after account creation.</p>
         </div>
 

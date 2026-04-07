@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useRef, useState, useEffect, useCallback } from 'react';
+import Button from '@/components/ui/Button';
 
 interface SignatureCaptureProps {
   onSign: (dataUrl: string) => void;
@@ -107,14 +108,11 @@ export default function SignatureCapture({ onSign }: SignatureCaptureProps) {
         >
           Clear
         </button>
-        <button
-          type="button"
+        <Button type="button"
           onClick={handleSign}
-          disabled={!hasContent}
-          className="px-4 py-2 text-sm rounded-lg bg-foreground text-white hover:opacity-90 disabled:opacity-50"
-        >
+          disabled={!hasContent}>
           Sign
-        </button>
+        </Button>
       </div>
     </div>
   );

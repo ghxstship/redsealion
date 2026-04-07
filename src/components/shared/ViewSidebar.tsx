@@ -1,7 +1,14 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, type ReactNode } from 'react';
 import type { SavedView } from '@/hooks/useEntityViews';
+import {
+  Table, Kanban, Calendar, GanttChart, List, LayoutGrid,
+  ArrowRight, FileText, Users, User, Lock, Star, Check,
+} from 'lucide-react';
+import Tooltip from '@/components/ui/Tooltip';
+import FormInput from '@/components/ui/FormInput';
+import Button from '@/components/ui/Button';
 
 interface ViewSidebarProps {
   views: SavedView[];
@@ -15,13 +22,21 @@ interface ViewSidebarProps {
   loading: boolean;
 }
 
-const DISPLAY_ICONS: Record<string, string> = {
-  table: '⊞', board: '◫', calendar: '📅', gantt: '▤',
-  list: '☰', gallery: '⊟', timeline: '→', form: '⊡',
+const DISPLAY_ICONS: Record<string, ReactNode> = {
+  table: <Table size={12} />,
+  board: <Kanban size={12} />,
+  calendar: <Calendar size={12} />,
+  gantt: <GanttChart size={12} />,
+  list: <List size={12} />,
+  gallery: <LayoutGrid size={12} />,
+  timeline: <ArrowRight size={12} />,
+  form: <FileText size={12} />,
 };
 
-const COLLAB_ICONS: Record<string, string> = {
-  collaborative: '👥', personal: '👤', locked: '🔒',
+const COLLAB_ICONS: Record<string, ReactNode> = {
+  collaborative: <Users size={10} />,
+  personal: <User size={10} />,
+  locked: <Lock size={10} />,
 };
 
 const COLLAB_LABELS: Record<string, string> = {
@@ -73,27 +88,30 @@ export default function ViewSidebar({
               : 'text-text-secondary hover:bg-bg-secondary hover:text-foreground'
           }`}
         >
-          <span className="text-xs">{view.icon ?? DISPLAY_ICONS[view.display_type] ?? '⊞'}</span>
+          <span className="flex items-center text-xs">{view.icon ?? DISPLAY_ICONS[view.display_type] ?? <Table size={12} />}</span>
           <span className="flex-1 truncate">{view.name}</span>
           {/* Favorite star */}
           {onToggleFavorite && (
             <button
               onClick={(e) => { e.stopPropagation(); onToggleFavorite(view.id); }}
-              className={`text-xs transition-opacity ${view.is_favorite ? 'opacity-100 text-amber-500' : 'opacity-0 group-hover:opacity-50 text-text-muted hover:text-amber-500'}`}
+              className={`transition-opacity ${view.is_favorite ? 'opacity-100 text-amber-500' : 'opacity-0 group-hover:opacity-50 text-text-muted hover:text-amber-500'}`}
               title={view.is_favorite ? 'Remove from favorites' : 'Add to favorites'}
             >
-              {view.is_favorite ? '★' : '☆'}
+              <Star size={12} fill={view.is_favorite ? 'currentColor' : 'none'} />
             </button>
           )}
-          <span className="text-[10px]" title={COLLAB_LABELS[view.collaboration_type]}>{COLLAB_ICONS[view.collaboration_type] ?? ''}</span>
+          <Tooltip label={COLLAB_LABELS[view.collaboration_type]} position="right">
+            <span className="flex items-center">{COLLAB_ICONS[view.collaboration_type] ?? ''}</span>
+          </Tooltip>
         </button>
 
         {/* Context menu trigger */}
         <button
           onClick={(e) => { e.stopPropagation(); setContextId(contextId === view.id ? null : view.id); }}
           className="absolute right-1 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity rounded p-0.5 text-text-muted hover:text-foreground"
+          title="View options"
         >
-          ···
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><circle cx="3" cy="6" r="1" /><circle cx="6" cy="6" r="1" /><circle cx="9" cy="6" r="1" /></svg>
         </button>
 
         {contextId === view.id && (
@@ -102,8 +120,9 @@ export default function ViewSidebar({
             <div className="absolute top-full right-0 mt-1 z-40 w-44 rounded-lg border border-border bg-white shadow-xl py-1">
               <button onClick={() => { onDuplicateView(view.id); setContextId(null); }} className="w-full px-3 py-1.5 text-left text-xs text-foreground hover:bg-bg-secondary transition-colors">Duplicate</button>
               {onToggleFavorite && (
-                <button onClick={() => { onToggleFavorite(view.id); setContextId(null); }} className="w-full px-3 py-1.5 text-left text-xs text-foreground hover:bg-bg-secondary transition-colors">
-                  {view.is_favorite ? '☆ Unfavorite' : '★ Favorite'}
+                <button onClick={() => { onToggleFavorite(view.id); setContextId(null); }} className="w-full px-3 py-1.5 text-left text-xs text-foreground hover:bg-bg-secondary transition-colors flex items-center gap-1.5">
+                  <Star size={11} fill={view.is_favorite ? 'none' : 'currentColor'} />
+                  {view.is_favorite ? 'Unfavorite' : 'Favorite'}
                 </button>
               )}
               <div className="border-t border-border my-1" />
@@ -116,9 +135,9 @@ export default function ViewSidebar({
                     view.collaboration_type === type ? 'text-foreground font-medium bg-bg-secondary' : 'text-text-secondary hover:bg-bg-secondary'
                   }`}
                 >
-                  <span>{COLLAB_ICONS[type]}</span>
+                  <span className="flex items-center">{COLLAB_ICONS[type]}</span>
                   {COLLAB_LABELS[type]}
-                  {view.collaboration_type === type && <span className="ml-auto text-green-600">✓</span>}
+                  {view.collaboration_type === type && <Check size={12} className="ml-auto text-green-600" />}
                 </button>
               ))}
               <div className="border-t border-border my-1" />
@@ -152,19 +171,19 @@ export default function ViewSidebar({
 
       {/* View search */}
       <div className="px-1 mb-2">
-        <input
+        <FormInput
           type="text"
           value={viewSearch}
           onChange={(e) => setViewSearch(e.target.value)}
-          placeholder="Find a view..."
-          className="w-full rounded-lg border border-border bg-bg-secondary px-2 py-1 text-xs text-foreground placeholder:text-text-muted focus:outline-none focus:ring-1 focus:ring-foreground/20 focus:bg-white"
-        />
+          placeholder="Find a view..." />
       </div>
 
       {/* Favorited views section */}
       {favorites.length > 0 && (
         <>
-          <p className="text-[10px] font-medium uppercase tracking-wider text-text-muted px-2 mt-2 mb-1">⭐ My Views</p>
+          <p className="text-[10px] font-medium uppercase tracking-wider text-text-muted px-2 mt-2 mb-1 flex items-center gap-1">
+            <Star size={9} className="text-amber-500" fill="currentColor" /> My Views
+          </p>
           {favorites.map((view) => renderViewItem(view))}
           <div className="border-t border-border my-2" />
           <p className="text-[10px] font-medium uppercase tracking-wider text-text-muted px-2 mb-1">All Views</p>
@@ -180,18 +199,16 @@ export default function ViewSidebar({
       {/* Add view */}
       {showNew ? (
         <div className="px-2 pt-2 space-y-2">
-          <input
+          <FormInput
             type="text"
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') handleCreate(); if (e.key === 'Escape') setShowNew(false); }}
             placeholder="View name"
-            autoFocus
-            className="w-full rounded-lg border border-border bg-white px-2 py-1 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20"
-          />
+            autoFocus />
           <div className="flex gap-1">
-            <button onClick={handleCreate} className="flex-1 rounded bg-foreground px-2 py-1 text-xs font-medium text-white hover:bg-foreground/90">Save</button>
-            <button onClick={() => setShowNew(false)} className="flex-1 rounded border border-border px-2 py-1 text-xs text-text-muted hover:text-foreground">Cancel</button>
+            <Button size="sm" onClick={handleCreate} className="flex-1 px-2">Save</Button>
+            <Button size="sm" variant="secondary" onClick={() => setShowNew(false)} className="flex-1 px-2 border-border text-text-muted hover:text-foreground">Cancel</Button>
           </div>
         </div>
       ) : (

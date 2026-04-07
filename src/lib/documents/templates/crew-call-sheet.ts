@@ -1,3 +1,4 @@
+
 /**
  * Crew Call Sheet Document
  *
@@ -30,6 +31,16 @@ import {
   type TableColumn,
   CONTENT_WIDTH,
 } from '../engine';
+
+import {
+  castDocAddress,
+  castDocContact,
+  castLoadInStrike,
+  castActivationDates,
+  type DocVenueLoadInStrike,
+  type DocVenueActivationDates,
+  type DocVenueContact,
+} from '../doc-types';
 
 // ---------------------------------------------------------------------------
 // Public interface
@@ -78,7 +89,7 @@ export async function generateCrewCallSheet(data: CrewCallSheetData): Promise<Bu
   const projectInfo: Array<[string, string]> = [
     ['Project', proposal.name],
     ['Venue', venue.name],
-    ['Address', formatAddress(venue.address)],
+    ['Address', formatAddress(castDocAddress(venue.address))],
     ['Venue Type', venue.type],
   ];
 
@@ -90,10 +101,11 @@ export async function generateCrewCallSheet(data: CrewCallSheetData): Promise<Bu
   // ------------------------------------------------------------------
   children.push(heading('Venue Contact', 3));
 
-  if (venue.contact_on_site) {
-    children.push(labelValue('Name', venue.contact_on_site.name, brand));
-    children.push(labelValue('Phone', venue.contact_on_site.phone, brand));
-    children.push(labelValue('Email', venue.contact_on_site.email, brand));
+  const siteContact = castDocContact(venue.contact_on_site);
+  if (siteContact) {
+    children.push(labelValue('Name', siteContact.name ?? '', brand));
+    children.push(labelValue('Phone', siteContact.phone ?? '', brand));
+    children.push(labelValue('Email', siteContact.email ?? '', brand));
   } else {
     children.push(body('No on-site contact specified.', { italic: true }));
   }
@@ -104,31 +116,34 @@ export async function generateCrewCallSheet(data: CrewCallSheetData): Promise<Bu
   // ------------------------------------------------------------------
   children.push(heading('Schedule Times', 2));
 
-  if (venue.load_in) {
+  const loadIn = venue.load_in ? (venue.load_in as unknown as DocVenueLoadInStrike) : null;
+  if (loadIn) {
     children.push(
       labelValue(
         'Load-In',
-        `${formatDate(venue.load_in.date)}: ${venue.load_in.startTime} \u2013 ${venue.load_in.endTime}`,
+        `${formatDate(loadIn.date ?? '')}: ${loadIn.startTime ?? ''} \u2013 ${loadIn.endTime ?? ''}`,
         brand,
       ),
     );
   }
 
-  if (venue.strike) {
+  const strike = venue.strike ? (venue.strike as unknown as DocVenueLoadInStrike) : null;
+  if (strike) {
     children.push(
       labelValue(
         'Strike',
-        `${formatDate(venue.strike.date)}: ${venue.strike.startTime} \u2013 ${venue.strike.endTime}`,
+        `${formatDate(strike.date ?? '')}: ${strike.startTime ?? ''} \u2013 ${strike.endTime ?? ''}`,
         brand,
       ),
     );
   }
 
-  if (venue.activation_dates) {
+  const actDates = castActivationDates(venue.activation_dates);
+  if (actDates) {
     children.push(
       labelValue(
         'Activation',
-        `${formatDate(venue.activation_dates.start)} \u2013 ${formatDate(venue.activation_dates.end)}`,
+        `${formatDate(actDates.start ?? '')} \u2013 ${formatDate(actDates.end ?? '')}`,
         brand,
       ),
     );
@@ -203,16 +218,16 @@ export async function generateCrewCallSheet(data: CrewCallSheetData): Promise<Bu
   const scheduleRows: string[][] = [];
 
   // Pre-fill with known times
-  if (venue.load_in) {
-    scheduleRows.push([venue.load_in.startTime, 'Load-In Begins', '']);
+  if (loadIn) {
+    scheduleRows.push([loadIn.startTime ?? '', 'Load-In Begins', '']);
   }
 
-  if (venue.activation_dates) {
-    scheduleRows.push(['\u2014', 'Activation Start', formatDate(venue.activation_dates.start)]);
+  if (actDates) {
+    scheduleRows.push(['\u2014', 'Activation Start', formatDate(actDates.start ?? '')]);
   }
 
-  if (venue.strike) {
-    scheduleRows.push([venue.strike.startTime, 'Strike Begins', '']);
+  if (strike) {
+    scheduleRows.push([strike.startTime ?? '', 'Strike Begins', '']);
   }
 
   // Add blank rows for additional scheduling

@@ -2,21 +2,25 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Button from '@/components/ui/Button';
+import { IconPlus } from '@/components/ui/Icons';
 import CreditNoteFormModal from '@/components/admin/invoices/CreditNoteFormModal';
 
 export default function CreditNotesHeader() {
   const router = useRouter();
-  const [open, setOpen] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   return (
     <>
-      <button
-        onClick={() => setOpen(true)}
-        className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity"
-      >
-        Issue Credit Note
-      </button>
-      <CreditNoteFormModal open={open} onClose={() => setOpen(false)} onCreated={() => { router.refresh(); setOpen(false); }} />
+      <Button onClick={() => setShowModal(true)}>
+        <IconPlus size={16} />
+        New Credit Note
+      </Button>
+      <CreditNoteFormModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        onCreated={() => router.refresh()}
+      />
     </>
   );
 }

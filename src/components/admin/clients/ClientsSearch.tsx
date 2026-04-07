@@ -11,6 +11,7 @@ import DataExportMenu from '@/components/shared/DataExportMenu';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import SortableHeader from '@/components/shared/SortableHeader';
 import DataImportDialog from '@/components/shared/DataImportDialog';
+import FormInput from '@/components/ui/FormInput';
 
 interface ClientRow {
   id: string;
@@ -63,13 +64,11 @@ export default function ClientsSearch({ clients }: { clients: ClientRow[] }) {
     <>
       {/* Search + Export row */}
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <input
+        <FormInput
           type="text"
           placeholder="Search clients..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full max-w-sm rounded-lg border border-border bg-white px-4 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
-        />
+          onChange={(e) => setSearch(e.target.value)} />
         <div className="flex items-center gap-3">
           <button onClick={() => setShowImport(true)} className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M7 2v10M3 8l4 4 4-4" /></svg>
@@ -109,7 +108,7 @@ export default function ClientsSearch({ clients }: { clients: ClientRow[] }) {
                     checked={isAllSelected}
                     ref={(el) => { if (el) el.indeterminate = isSomeSelected; }}
                     onChange={toggleAll}
-                    className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/20"
+                    className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10"
                   />
                 </th>
                 <th className="px-6 py-3"><SortableHeader label="Company" field="company_name" currentSort={sort} onSort={handleSort} /></th>
@@ -132,7 +131,7 @@ export default function ClientsSearch({ clients }: { clients: ClientRow[] }) {
                       type="checkbox"
                       checked={isSelected(client.id)}
                       onChange={() => toggle(client.id)}
-                      className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/20"
+                      className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10"
                     />
                   </td>
                   <td className="px-6 py-4">

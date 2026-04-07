@@ -1,6 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import FormSelect from '@/components/ui/FormSelect';
+import FormTextarea from '@/components/ui/FormTextarea';
+import FormInput from '@/components/ui/FormInput';
+import FormLabel from '@/components/ui/FormLabel';
 
 const ACTION_TYPES = [
   { value: 'send_email', label: 'Send Email', description: 'Send an email notification' },
@@ -31,9 +35,9 @@ export function ActionSelector({ value, config, onChange }: ActionSelectorProps)
 
   return (
     <div className="space-y-4">
-      <label className="block text-sm font-medium text-foreground">
+      <FormLabel>
         Action
-      </label>
+      </FormLabel>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
         {ACTION_TYPES.map((action) => (
           <button
@@ -55,33 +59,28 @@ export function ActionSelector({ value, config, onChange }: ActionSelectorProps)
       {selectedType === 'send_email' && (
         <div className="mt-3 space-y-2">
           <div>
-            <label className="block text-xs font-medium text-text-secondary mb-1">To</label>
-            <input
+            <FormLabel>To</FormLabel>
+            <FormInput
               type="text"
               value={(config.to as string) ?? ''}
               onChange={(e) => onChange(selectedType, { ...config, to: e.target.value })}
-              placeholder="recipient@example.com"
-              className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
-            />
+              placeholder="recipient@example.com" />
           </div>
           <div>
-            <label className="block text-xs font-medium text-text-secondary mb-1">Subject</label>
-            <input
+            <FormLabel>Subject</FormLabel>
+            <FormInput
               type="text"
               value={(config.subject as string) ?? ''}
               onChange={(e) => onChange(selectedType, { ...config, subject: e.target.value })}
-              placeholder="Notification subject"
-              className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
-            />
+              placeholder="Notification subject" />
           </div>
           <div>
-            <label className="block text-xs font-medium text-text-secondary mb-1">Body</label>
-            <textarea
+            <FormLabel>Body</FormLabel>
+            <FormTextarea
               value={(config.body as string) ?? ''}
               onChange={(e) => onChange(selectedType, { ...config, body: e.target.value })}
               rows={3}
               placeholder="Email body..."
-              className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
             />
           </div>
         </div>
@@ -89,55 +88,48 @@ export function ActionSelector({ value, config, onChange }: ActionSelectorProps)
 
       {selectedType === 'webhook_call' && (
         <div className="mt-3">
-          <label className="block text-xs font-medium text-text-secondary mb-1">Webhook URL</label>
-          <input
+          <FormLabel>Webhook URL</FormLabel>
+          <FormInput
             type="url"
             value={(config.url as string) ?? ''}
             onChange={(e) => onChange(selectedType, { ...config, url: e.target.value })}
-            placeholder="https://example.com/webhook"
-            className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
-          />
+            placeholder="https://example.com/webhook" />
         </div>
       )}
 
       {selectedType === 'send_slack' && (
         <div className="mt-3">
-          <label className="block text-xs font-medium text-text-secondary mb-1">Channel</label>
-          <input
+          <FormLabel>Channel</FormLabel>
+          <FormInput
             type="text"
             value={(config.channel as string) ?? ''}
             onChange={(e) => onChange(selectedType, { ...config, channel: e.target.value })}
-            placeholder="#general"
-            className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
-          />
+            placeholder="#general" />
         </div>
       )}
 
       {selectedType === 'send_follow_up_email' && (
         <div className="mt-3 space-y-2">
           <div>
-            <label className="block text-xs font-medium text-text-secondary mb-1">Email Template</label>
-            <select
+            <FormLabel>Email Template</FormLabel>
+            <FormSelect
               value={(config.template as string) ?? 'gentle_reminder'}
               onChange={(e) => onChange(selectedType, { ...config, template: e.target.value })}
-              className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
             >
               <option value="gentle_reminder">Gentle Reminder</option>
               <option value="value_highlight">Value Highlight</option>
               <option value="urgency_close">Urgency Close</option>
               <option value="custom">Custom</option>
-            </select>
+            </FormSelect>
           </div>
           {(config.template as string) === 'custom' && (
             <div>
-              <label className="block text-xs font-medium text-text-secondary mb-1">Custom Subject</label>
-              <input
+              <FormLabel>Custom Subject</FormLabel>
+              <FormInput
                 type="text"
                 value={(config.subject as string) ?? ''}
                 onChange={(e) => onChange(selectedType, { ...config, subject: e.target.value })}
-                placeholder="Following up on your proposal"
-                className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
-              />
+                placeholder="Following up on your proposal" />
             </div>
           )}
           <div className="rounded-lg border border-border bg-bg-secondary/50 p-3">
@@ -151,27 +143,24 @@ export function ActionSelector({ value, config, onChange }: ActionSelectorProps)
       {selectedType === 'send_review_request' && (
         <div className="mt-3 space-y-2">
           <div>
-            <label className="block text-xs font-medium text-text-secondary mb-1">Review Platform URL</label>
-            <input
+            <FormLabel>Review Platform URL</FormLabel>
+            <FormInput
               type="url"
               value={(config.reviewUrl as string) ?? ''}
               onChange={(e) => onChange(selectedType, { ...config, reviewUrl: e.target.value })}
-              placeholder="https://g.page/your-business/review"
-              className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
-            />
+              placeholder="https://g.page/your-business/review" />
           </div>
           <div>
-            <label className="block text-xs font-medium text-text-secondary mb-1">Delay After Completion</label>
-            <select
+            <FormLabel>Delay After Completion</FormLabel>
+            <FormSelect
               value={(config.delayDays as number) ?? 1}
               onChange={(e) => onChange(selectedType, { ...config, delayDays: Number(e.target.value) })}
-              className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
             >
               <option value={0}>Immediately</option>
               <option value={1}>1 day</option>
               <option value={3}>3 days</option>
               <option value={7}>7 days</option>
-            </select>
+            </FormSelect>
           </div>
         </div>
       )}
