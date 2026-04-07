@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
 import TransfersHeader from '@/components/admin/warehouse/TransfersHeader';
-import WarehouseHubTabs from '../../WarehouseHubTabs';
+import LogisticsHubTabs from "../../LogisticsHubTabs";
 
 interface Transfer {
   id: string;

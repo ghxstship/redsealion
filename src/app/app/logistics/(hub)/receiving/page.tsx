@@ -3,7 +3,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import Link from 'next/link';
-import WarehouseHubTabs from '../../WarehouseHubTabs';
+import LogisticsHubTabs from "../../LogisticsHubTabs";
 
 async function getInboundShipments() {
   try {
@@ -43,7 +43,7 @@ export default async function ReceivingPage() {
   return (
     <TierGate feature="warehouse">
       <PageHeader title="Receiving" subtitle="Inbound shipments — materials and equipment arriving from vendors and sub-rentals." />
-      <WarehouseHubTabs />
+      <LogisticsHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">
         {[
@@ -78,7 +78,7 @@ export default async function ReceivingPage() {
             <tbody className="divide-y divide-border">
               {shipments.map((s) => (
                 <tr key={s.id} className={`hover:bg-bg-secondary/50 transition-colors ${s.status === 'in_transit' ? 'bg-blue-50/20' : ''}`}>
-                  <td className="px-4 py-3"><Link href={`/app/warehouse/receiving/${s.id}`} className="font-medium text-foreground hover:underline">{s.shipment_number}</Link></td>
+                  <td className="px-4 py-3"><Link href={`/app/logistics/receiving/${s.id}`} className="font-medium text-foreground hover:underline">{s.shipment_number}</Link></td>
                   <td className="px-4 py-3 text-text-secondary">{s.vendor_name ?? '—'}</td>
                   <td className="px-4 py-3 text-text-secondary">{s.po_number ?? '—'}</td>
                   <td className="px-4 py-3 text-text-secondary">{s.carrier ?? '—'}</td>

@@ -1,5 +1,5 @@
 import ScanPageClient from './ScanPageClient';
-import WarehouseHubTabs from '../../WarehouseHubTabs';
+import LogisticsHubTabs from "../../LogisticsHubTabs";
 
 export const metadata = {
   title: 'Scan Equipment',
@@ -17,7 +17,7 @@ export default function ScanPage() {
         </p>
       </div>
 
-      <WarehouseHubTabs />
+      <LogisticsHubTabs />
 
       <ScanPageClient />
     </div>

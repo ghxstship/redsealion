@@ -139,7 +139,7 @@ export default function CountWorksheetClient({ count, lines: initialLines }: Cou
               </Button>
             </>
           )}
-          <Button variant="ghost" href="/app/warehouse/counts">Back</Button>
+          <Button variant="ghost" href="/app/logistics/counts">Back</Button>
         </div>
       </div>
 

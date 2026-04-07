@@ -5,7 +5,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
-import WarehouseHubTabs from '../../WarehouseHubTabs';
+import LogisticsHubTabs from "../../LogisticsHubTabs";
 
 interface Proposal {
   id: string;
@@ -81,7 +81,7 @@ export default async function PackingPage() {
       {/* Header */}
       <PageHeader title="Packing" subtitle="Manage your equipment load-outs." />
 
-      <WarehouseHubTabs />
+      <LogisticsHubTabs />
 
       {/* Proposal selector */}
       <Card className="mb-8">

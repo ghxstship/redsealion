@@ -483,7 +483,7 @@ export function buildCopilotTools(
           crew: '/app/crew',
           workloads: '/app/workloads',
           equipment: '/app/equipment',
-          warehouse: '/app/warehouse',
+          warehouse: '/app/logistics',
           reports: '/app/reports',
           settings: '/app/settings',
           budgets: '/app/budgets',

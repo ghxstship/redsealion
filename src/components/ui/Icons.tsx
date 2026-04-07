@@ -141,7 +141,7 @@ export {
   Clock as IconNavTime,
   Send as IconNavDispatch,
   Package as IconNavInventory,
-  Warehouse as IconNavWarehouse,
+  Warehouse as IconNavLogistics,
 
   /* ─── Navigation: Finance Items ───────────────────────── */
   CircleDollarSign as IconNavBudgets,

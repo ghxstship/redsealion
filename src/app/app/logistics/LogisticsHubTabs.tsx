@@ -3,9 +3,9 @@
 import { useRouter, usePathname } from 'next/navigation';
 import Tabs from '@/components/ui/Tabs';
 
-type WarehouseTab = 'inventory' | 'shipping' | 'receiving' | 'transfers' | 'packing' | 'counts' | 'scan';
+type LogisticsTab = 'inventory' | 'shipping' | 'receiving' | 'transfers' | 'packing' | 'counts' | 'scan';
 
-const TABS: Array<{ key: WarehouseTab; label: string }> = [
+const TABS: Array<{ key: LogisticsTab; label: string }> = [
   { key: 'inventory', label: 'Inventory' },
   { key: 'shipping', label: 'Shipping' },
   { key: 'receiving', label: 'Receiving' },
@@ -15,17 +15,17 @@ const TABS: Array<{ key: WarehouseTab; label: string }> = [
   { key: 'scan', label: 'Scan' },
 ];
 
-const TAB_ROUTES: Record<WarehouseTab, string> = {
-  inventory: '/app/warehouse',
-  shipping: '/app/warehouse/shipping',
-  receiving: '/app/warehouse/receiving',
-  transfers: '/app/warehouse/transfers',
-  packing: '/app/warehouse/packing',
-  counts: '/app/warehouse/counts',
-  scan: '/app/warehouse/scan',
+const TAB_ROUTES: Record<LogisticsTab, string> = {
+  inventory: '/app/logistics',
+  shipping: '/app/logistics/shipping',
+  receiving: '/app/logistics/receiving',
+  transfers: '/app/logistics/transfers',
+  packing: '/app/logistics/packing',
+  counts: '/app/logistics/counts',
+  scan: '/app/logistics/scan',
 };
 
-function getActiveTab(pathname: string): WarehouseTab {
+function getActiveTab(pathname: string): LogisticsTab {
   if (pathname.includes('/shipping')) return 'shipping';
   if (pathname.includes('/receiving')) return 'receiving';
   if (pathname.includes('/transfers')) return 'transfers';
@@ -35,7 +35,7 @@ function getActiveTab(pathname: string): WarehouseTab {
   return 'inventory';
 }
 
-export default function WarehouseHubTabs() {
+export default function LogisticsHubTabs() {
   const router = useRouter();
   const pathname = usePathname();
   const activeTab = getActiveTab(pathname);

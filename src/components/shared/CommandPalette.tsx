@@ -59,7 +59,7 @@ const navigationItems: CommandItem[] = [
   { id: 'nav-emails', label: 'Emails', section: 'Navigate', href: '/app/emails', icon: <NavIcon />, keywords: ['inbox', 'mail'] },
   { id: 'nav-integrations', label: 'Integrations', section: 'Navigate', href: '/app/integrations', icon: <NavIcon />, keywords: ['connect', 'sync', 'api'] },
   { id: 'nav-assets', label: 'Assets', section: 'Navigate', href: '/app/assets', icon: <NavIcon />, keywords: ['inventory', 'physical'] },
-  { id: 'nav-warehouse', label: 'Warehouse', section: 'Navigate', href: '/app/warehouse', icon: <NavIcon />, keywords: ['storage', 'logistics'] },
+  { id: 'nav-logistics', label: 'Logistics', section: 'Navigate', href: '/app/logistics', icon: <NavIcon />, keywords: ['warehouse', 'storage', 'logistics', 'shipping', 'receiving'] },
   { id: 'nav-portfolio', label: 'Portfolio', section: 'Navigate', href: '/app/portfolio', icon: <NavIcon />, keywords: ['showcase', 'gallery', 'work'] },
   { id: 'nav-terms', label: 'Terms & Conditions', section: 'Navigate', href: '/app/terms', icon: <NavIcon />, keywords: ['legal', 'contract'] },
   { id: 'nav-settings', label: 'Settings', section: 'Navigate', href: '/app/settings', icon: <NavIcon />, keywords: ['preferences', 'config'] },

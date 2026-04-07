@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
-import WarehouseHubTabs from '../WarehouseHubTabs';
+import LogisticsHubTabs from '../LogisticsHubTabs';
 
 interface WarehouseAsset {
   id: string;
@@ -113,7 +113,7 @@ export default async function WarehousePage() {
         subtitle={`${facilities.length} facilities · ${assets.length} asset types tracked`}
       />
 
-      <WarehouseHubTabs />
+      <LogisticsHubTabs />
 
       {/* Facility summary cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-8">

@@ -7,7 +7,7 @@ import StatusBadge from '@/components/ui/StatusBadge';
 import EmptyState from '@/components/ui/EmptyState';
 import Button from '@/components/ui/Button';
 import { formatDate } from '@/lib/utils';
-import WarehouseHubTabs from '../../WarehouseHubTabs';
+import LogisticsHubTabs from "../../LogisticsHubTabs";
 
 const COUNT_STATUS_COLORS: Record<string, string> = {
   planned: 'bg-gray-100 text-gray-700',
@@ -82,7 +82,7 @@ export default async function InventoryCountsPage() {
         subtitle={`${active.length} active · ${completed.length} completed`}
       />
 
-      <WarehouseHubTabs />
+      <LogisticsHubTabs />
 
       {/* Summary cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-8">
@@ -143,7 +143,7 @@ export default async function InventoryCountsPage() {
                         </td>
                         <td className="px-6 py-3.5 text-right">
                           <Link
-                            href={`/app/warehouse/counts/${count.id}`}
+                            href={`/app/logistics/counts/${count.id}`}
                             className="text-sm font-medium text-foreground hover:underline"
                           >
                             Open →

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { IconStar, IconCalendar, IconNavWarehouse, IconNavActivations, IconUsers, IconNavAI, IconNavEvents, IconNavProduction, IconNavReports, IconChevronRight } from '@/components/ui/Icons';
+import { IconStar, IconCalendar, IconNavLogistics, IconNavActivations, IconUsers, IconNavAI, IconNavEvents, IconNavProduction, IconNavReports, IconChevronRight } from '@/components/ui/Icons';
 import StatusBadge from '@/components/ui/StatusBadge';
 import JsonLd from '@/components/marketing/JsonLd';
 
@@ -60,7 +60,7 @@ const useCases = [
     description:
       'Proposal builder and project management for trade show and exhibition design firms. Multi-venue coordination, complex BOMs, and streamlined client approvals.',
     icon: (
-      <IconNavWarehouse className="h-6 w-6" strokeWidth={1.5} />
+      <IconNavLogistics className="h-6 w-6" strokeWidth={1.5} />
     ),
   },
   {

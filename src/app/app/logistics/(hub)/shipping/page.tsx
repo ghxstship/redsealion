@@ -4,7 +4,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
-import WarehouseHubTabs from '../../WarehouseHubTabs';
+import LogisticsHubTabs from "../../LogisticsHubTabs";
 
 async function getOutboundShipments() {
   try {
@@ -44,7 +44,7 @@ export default async function ShippingPage() {
   return (
     <TierGate feature="warehouse">
       <PageHeader title="Shipping" subtitle="Outbound shipments — equipment and materials sent to events, clients, and sites." />
-      <WarehouseHubTabs />
+      <LogisticsHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">
         {[
@@ -80,7 +80,7 @@ export default async function ShippingPage() {
             <tbody className="divide-y divide-border">
               {shipments.map((s) => (
                 <tr key={s.id} className="hover:bg-bg-secondary/50 transition-colors">
-                  <td className="px-4 py-3"><Link href={`/app/warehouse/shipping/${s.id}`} className="font-medium text-foreground hover:underline">{s.shipment_number}</Link></td>
+                  <td className="px-4 py-3"><Link href={`/app/logistics/shipping/${s.id}`} className="font-medium text-foreground hover:underline">{s.shipment_number}</Link></td>
                   <td className="px-4 py-3 text-text-secondary">{s.event_name ?? s.client_name ?? s.destination ?? '—'}</td>
                   <td className="px-4 py-3 text-text-secondary">{s.carrier ?? '—'}</td>
                   <td className="px-4 py-3 font-mono text-xs text-text-muted">{s.tracking_number ?? '—'}</td>
