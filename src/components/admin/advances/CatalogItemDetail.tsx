@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo, useCallback } from 'react';
+import { X } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import FormInput from '@/components/ui/FormInput';
 import FormSelect from '@/components/ui/FormSelect';
@@ -102,7 +103,7 @@ export default function CatalogItemDetail({ item, onAddToCart, onClose }: Catalo
             className="shrink-0 rounded-lg p-1.5 text-text-muted hover:bg-bg-secondary hover:text-foreground transition-colors"
             aria-label="Close"
           >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4l8 8M12 4l-8 8" /></svg>
+            <X size={16} />
           </button>
         </div>
         {item.description && (

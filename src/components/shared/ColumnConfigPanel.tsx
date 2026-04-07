@@ -3,8 +3,25 @@
 import { useState, type ReactNode } from 'react';
 import ModalShell from '@/components/ui/ModalShell';
 import Button from '@/components/ui/Button';
-import { AlignJustify, Menu, StretchHorizontal, Pin, ChevronUp, ChevronDown } from 'lucide-react';
+import { AlignJustify, Menu, StretchHorizontal, Pin, GripVertical } from 'lucide-react';
 import Tooltip from '@/components/ui/Tooltip';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface ColumnDef {
   key: string;
@@ -28,6 +45,64 @@ const ROW_HEIGHT_OPTIONS: { key: 'compact' | 'default' | 'tall'; label: string; 
   { key: 'tall', label: 'Tall', icon: <StretchHorizontal size={13} /> },
 ];
 
+interface SortableColumnItemProps {
+  col: ColumnDef;
+  onToggleVisibility: (key: string) => void;
+  onTogglePin: (key: string) => void;
+}
+
+function SortableColumnItem({ col, onToggleVisibility, onTogglePin }: SortableColumnItemProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: col.key });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 10 : 1,
+    position: isDragging ? ('relative' as const) : undefined,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`flex items-center gap-2 rounded-lg px-3 py-2 transition-colors ${
+        isDragging ? 'bg-bg-secondary shadow-md' : 'hover:bg-bg-secondary bg-transparent'
+      }`}
+    >
+      <div 
+        {...attributes} 
+        {...listeners}
+        className="cursor-grab active:cursor-grabbing text-text-muted hover:text-foreground touch-none mr-1"
+      >
+        <GripVertical size={14} />
+      </div>
+      <input
+        type="checkbox"
+        checked={col.visible}
+        onChange={() => onToggleVisibility(col.key)}
+        className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10"
+      />
+      <span className="flex-1 text-sm text-foreground">{col.label}</span>
+      <Tooltip label={col.pinned ? 'Unpin column' : 'Pin column'}>
+        <button
+          onClick={() => onTogglePin(col.key)}
+          className={`transition-colors ${col.pinned ? 'text-blue-600' : 'text-text-muted hover:text-foreground'}`}
+        >
+          <Pin size={12} />
+        </button>
+      </Tooltip>
+    </div>
+  );
+}
+
 export default function ColumnConfigPanel({
   open,
   onClose,
@@ -50,12 +125,24 @@ export default function ColumnConfigPanel({
     );
   }
 
-  function moveColumn(index: number, direction: 'up' | 'down') {
-    const newIndex = direction === 'up' ? index - 1 : index + 1;
-    if (newIndex < 0 || newIndex >= localColumns.length) return;
-    const next = [...localColumns];
-    [next[index], next[newIndex]] = [next[newIndex], next[index]];
-    setLocalColumns(next);
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      setLocalColumns((items) => {
+        const oldIndex = items.findIndex((i) => i.key === active.id);
+        const newIndex = items.findIndex((i) => i.key === over.id);
+
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
   }
 
   function handleApply() {
@@ -91,48 +178,27 @@ export default function ColumnConfigPanel({
 
         {/* Column list */}
         <p className="text-xs font-medium uppercase tracking-wider text-text-muted mb-2">Columns</p>
-        <div className="space-y-1">
-          {localColumns.map((col, index) => (
-            <div
-              key={col.key}
-              className="flex items-center gap-2 rounded-lg px-3 py-2 hover:bg-bg-secondary transition-colors"
-            >
-              <input
-                type="checkbox"
-                checked={col.visible}
-                onChange={() => toggleVisibility(col.key)}
-                className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10"
-              />
-              <span className="flex-1 text-sm text-foreground">{col.label}</span>
-              <Tooltip label={col.pinned ? 'Unpin column' : 'Pin column'}>
-                <button
-                  onClick={() => togglePin(col.key)}
-                  className={`transition-colors ${col.pinned ? 'text-blue-600' : 'text-text-muted hover:text-foreground'}`}
-                >
-                  <Pin size={12} />
-                </button>
-              </Tooltip>
-              <div className="flex flex-col">
-                <button
-                  onClick={() => moveColumn(index, 'up')}
-                  disabled={index === 0}
-                  className="text-text-muted hover:text-foreground disabled:opacity-20 leading-none"
-                  title="Move up"
-                >
-                  <ChevronUp size={11} />
-                </button>
-                <button
-                  onClick={() => moveColumn(index, 'down')}
-                  disabled={index === localColumns.length - 1}
-                  className="text-text-muted hover:text-foreground disabled:opacity-20 leading-none"
-                  title="Move down"
-                >
-                  <ChevronDown size={11} />
-                </button>
-              </div>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={localColumns.map((c) => c.key)}
+            strategy={verticalListSortingStrategy}
+          >
+            <div className="space-y-1">
+              {localColumns.map((col) => (
+                <SortableColumnItem
+                  key={col.key}
+                  col={col}
+                  onToggleVisibility={toggleVisibility}
+                  onTogglePin={togglePin}
+                />
+              ))}
             </div>
-          ))}
-        </div>
+          </SortableContext>
+        </DndContext>
       </div>
 
       <div className="flex items-center justify-between px-5 py-4 border-t border-border">

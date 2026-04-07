@@ -19,6 +19,7 @@ import FormTextarea from '@/components/ui/FormTextarea';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
 import { IconPlus } from '@/components/ui/Icons';
+import { X } from 'lucide-react';
 
 export type { DeliverableData, AddonData, MilestoneRequirementData, PhaseData } from './types';
 
@@ -219,9 +220,7 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
                         onClick={() => removeDeliverable(index)}
                         className="p-0.5 text-text-muted hover:text-error"
                       >
-                        <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                        <X size={14} />
                       </button>
                     </td>
                   </tr>
@@ -351,9 +350,7 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
                         onClick={() => removeAddon(index)}
                         className="p-0.5 text-text-muted hover:text-error"
                       >
-                        <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                        <X size={14} />
                       </button>
                     </td>
                   </tr>
@@ -419,9 +416,7 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
                     onClick={() => removeRequirement(index)}
                     className="p-0.5 text-text-muted hover:text-error"
                   >
-                    <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                    <X size={14} />
                   </button>
                 </div>
               ))}

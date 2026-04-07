@@ -5,8 +5,8 @@ export function cn(...inputs: ClassValue[]) {
   return clsx(inputs);
 }
 
-export function formatCurrency(amount: number, currency = 'USD'): string {
-  return new Intl.NumberFormat('en-US', {
+export function formatCurrency(amount: number, currency = 'USD', locale = 'en-US'): string {
+  return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency,
     minimumFractionDigits: 0,
@@ -14,8 +14,8 @@ export function formatCurrency(amount: number, currency = 'USD'): string {
   }).format(amount);
 }
 
-export function formatCurrencyDetailed(amount: number, currency = 'USD'): string {
-  return new Intl.NumberFormat('en-US', {
+export function formatCurrencyDetailed(amount: number, currency = 'USD', locale = 'en-US'): string {
+  return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency,
     minimumFractionDigits: 2,
@@ -48,7 +48,7 @@ export function getInitials(name: string): string {
     .substring(0, 2);
 }
 
-export function relativeTime(date: string | Date): string {
+export function relativeTime(date: string | Date, locale = 'en-US'): string {
   const now = new Date();
   const d = new Date(date);
   const diff = now.getTime() - d.getTime();
@@ -61,7 +61,7 @@ export function relativeTime(date: string | Date): string {
   if (minutes < 60) return `${minutes}m ago`;
   if (hours < 24) return `${hours}h ago`;
   if (days < 7) return `${days}d ago`;
-  return d.toLocaleDateString();
+  return d.toLocaleDateString(locale);
 }
 
 /** Converts snake_case strings to Title Case (e.g. 'in_progress' → 'In Progress'). */
@@ -73,10 +73,10 @@ export function formatLabel(s: string): string {
 }
 
 /** Format a date string to a human-readable short format (e.g. 'Apr 5, 2026'). */
-export function formatDate(dateStr: string): string {
+export function formatDate(dateStr: string, locale = 'en-US'): string {
   const d = dateStr.includes('T') ? new Date(dateStr) : new Date(dateStr + 'T00:00:00');
   if (isNaN(d.getTime())) return '—';
-  return d.toLocaleDateString('en-US', {
+  return d.toLocaleDateString(locale, {
     month: 'short',
     day: 'numeric',
     year: 'numeric',

@@ -2,11 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useSubscription } from '@/components/shared/SubscriptionProvider';
 import { LockIcon } from '@/components/shared/TierBadge';
 import { navSections } from '@/components/admin/sidebar/nav-data';
-import { Settings } from 'lucide-react';
+import { useTranslation } from '@/lib/i18n/client';
+import { Settings, ChevronRight, Menu, X, ChevronsLeft, ChevronsRight } from 'lucide-react';
+import { usePreferencesSafe } from '@/components/shared/PreferencesProvider';
 
 /* ─────────────────────────────────────────────────────────
    Types
@@ -42,19 +44,10 @@ function getInitials(name: string): string {
    ───────────────────────────────────────────────────────── */
 
 const ChevronIcon = ({ open }: { open: boolean }) => (
-  <svg
-    width="14"
-    height="14"
-    viewBox="0 0 14 14"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
+  <ChevronRight
+    size={14}
     className={`shrink-0 transition-transform duration-fast ${open ? 'rotate-90' : ''}`}
-  >
-    <path d="M5 3l4 4-4 4" />
-  </svg>
+  />
 );
 
 /* ─────────────────────────────────────────────────────────
@@ -88,6 +81,26 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { canAccess } = useSubscription();
+  const { t } = useTranslation();
+  const prefs = usePreferencesSafe();
+
+  // Global sidebar rail collapse — initialized from DB preference
+  const [isRailMode, setIsRailMode] = useState(false);
+
+  // Sync from preferences when loaded (only once)
+  const [prefSynced, setPrefSynced] = useState(false);
+  if (prefs.loaded && !prefSynced) {
+    setPrefSynced(true);
+    if (prefs.sidebarCollapsed) setIsRailMode(true);
+  }
+
+  // Set canonical --sidebar-width CSS variable on <html> for layout consumption
+  useEffect(() => {
+    document.documentElement.style.setProperty(
+      '--sidebar-width',
+      isRailMode ? '4rem' : '16rem'
+    );
+  }, [isRailMode]);
 
   // Section collapse state — default all open, persist to localStorage
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>(readCollapsed);
@@ -122,23 +135,10 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
       {/* Mobile hamburger button */}
       <button
         onClick={() => setMobileOpen(!mobileOpen)}
-        className="fixed top-4 left-4 z-50 md:hidden rounded-lg border border-border bg-white p-2 shadow-sm"
+        className="fixed top-4 left-4 z-50 md:hidden rounded-lg border border-border bg-background p-2 shadow-sm"
         aria-label="Toggle navigation"
       >
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-          {mobileOpen ? (
-            <>
-              <line x1="4" y1="4" x2="16" y2="16" />
-              <line x1="16" y1="4" x2="4" y2="16" />
-            </>
-          ) : (
-            <>
-              <line x1="3" y1="5" x2="17" y2="5" />
-              <line x1="3" y1="10" x2="17" y2="10" />
-              <line x1="3" y1="15" x2="17" y2="15" />
-            </>
-          )}
-        </svg>
+        {mobileOpen ? <X size={20} /> : <Menu size={20} />}
       </button>
 
       {/* Mobile overlay */}
@@ -152,21 +152,33 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
       {/* Sidebar */}
       <aside
         className={`
-          fixed top-0 left-0 z-40 h-screen w-64
-          bg-white/80 backdrop-blur-xl backdrop-saturate-150
+          fixed top-0 left-0 z-40 h-screen
+          ${isRailMode ? 'w-16' : 'w-64'}
+          bg-background/80 backdrop-blur-xl backdrop-saturate-150
           border-r border-border/60
           flex flex-col
-          transition-transform duration-normal ease-in-out
+          transition-all duration-normal ease-in-out
           md:translate-x-0
-          ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}
+          ${mobileOpen ? 'translate-x-0 !w-64' : '-translate-x-full'}
         `}
       >
         {/* Brand */}
-        <div className="flex items-center gap-2.5 px-6 h-14 border-b border-border">
-          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-foreground">
-            <span className="text-white text-xs font-semibold tracking-tight">FD</span>
+        <div className="flex items-center gap-2.5 px-4 h-14 border-b border-border">
+          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-foreground shrink-0">
+            <span className="text-background text-xs font-semibold tracking-tight">FD</span>
           </div>
-          <span className="text-base font-semibold tracking-tight text-foreground">FlyteDeck</span>
+          {(!isRailMode || mobileOpen) && (
+            <span className="text-base font-semibold tracking-tight text-foreground">FlyteDeck</span>
+          )}
+          {/* Rail toggle — desktop only */}
+          <button
+            onClick={() => setIsRailMode(!isRailMode)}
+            className="ml-auto hidden md:flex items-center justify-center w-6 h-6 rounded transition-colors hover:bg-bg-secondary text-text-muted hover:text-text-secondary"
+            aria-label={isRailMode ? 'Expand sidebar' : 'Collapse sidebar'}
+            title={isRailMode ? 'Expand sidebar' : 'Collapse sidebar'}
+          >
+            {isRailMode ? <ChevronsRight size={14} /> : <ChevronsLeft size={14} />}
+          </button>
         </div>
 
         {/* Navigation — grouped sections */}
@@ -190,7 +202,7 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
                     `}
                   >
                     <span className="opacity-60">{section.icon}</span>
-                    <span className="flex-1 text-left">{section.label}</span>
+                    <span className="flex-1 text-left">{t(section.labelKey)}</span>
                     <ChevronIcon open={open} />
                   </button>
 
@@ -227,7 +239,7 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
                               <span className={locked ? 'text-text-muted' : active ? 'text-foreground' : 'text-text-muted'}>
                                 {item.icon}
                               </span>
-                              <span className="flex-1">{item.label}</span>
+                              <span className="flex-1">{t(item.labelKey)}</span>
                               {locked && <LockIcon className="text-text-muted" />}
                             </Link>
                           </li>
@@ -254,7 +266,7 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
                 className="h-7 w-7 rounded-full object-cover ring-1 ring-border/60 shrink-0"
               />
             ) : (
-              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-foreground text-[10px] font-semibold text-white shrink-0">
+              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-foreground text-[10px] font-semibold text-background shrink-0">
                 {user ? getInitials(user.fullName) : 'FD'}
               </div>
             )}

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { Search } from 'lucide-react';
 import Breadcrumbs from '@/components/shared/Breadcrumbs';
 import NotificationBell from '@/components/shared/NotificationBell';
 import UserMenu from '@/components/shared/UserMenu';
@@ -10,6 +11,7 @@ import HelpMenu from '@/components/shared/HelpMenu';
 import ThemeToggle from '@/components/shared/ThemeToggle';
 import LocalizationMenu from '@/components/shared/LocalizationMenu';
 import KeyboardShortcutsModal from '@/components/shared/KeyboardShortcutsModal';
+import { useTranslation } from '@/lib/i18n/client';
 
 /* ─────────────────────────────────────────────────────────
    Types
@@ -30,6 +32,7 @@ interface AppHeaderProps {
    ───────────────────────────────────────────────────────── */
 
 function SearchTrigger() {
+  const { t } = useTranslation();
   const handleClick = () => {
     document.dispatchEvent(
       new KeyboardEvent('keydown', {
@@ -43,24 +46,11 @@ function SearchTrigger() {
   return (
     <button
       onClick={handleClick}
-      className="hidden md:flex items-center gap-2 rounded-lg border border-border bg-white/80 px-3 py-1.5 text-sm text-text-muted transition-all duration-fast hover:bg-bg-secondary hover:border-text-muted/40 hover:text-text-secondary press-scale"
+      className="hidden md:flex items-center gap-2 rounded-lg border border-border bg-background/80 px-3 py-1.5 text-sm text-text-muted transition-all duration-fast hover:bg-bg-secondary hover:border-text-muted/40 hover:text-text-secondary press-scale"
       id="global-search-trigger"
     >
-      <svg
-        width="14"
-        height="14"
-        viewBox="0 0 14 14"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="shrink-0"
-      >
-        <circle cx="6" cy="6" r="4.5" />
-        <line x1="9.5" y1="9.5" x2="13" y2="13" />
-      </svg>
-      <span className="hidden lg:inline">Search…</span>
+      <Search size={14} className="shrink-0" />
+      <span className="hidden lg:inline">{t('common.search')}</span>
       <kbd className="hidden lg:inline-flex items-center gap-0.5 rounded border border-border bg-bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-text-muted ml-2">
         ⌘K
       </kbd>

@@ -6,6 +6,7 @@ import FormSelect from '@/components/ui/FormSelect';
 import FormTextarea from '@/components/ui/FormTextarea';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
+import { IconCheck } from '@/components/ui/Icons';
 
 interface PortalRequestFormProps {
   orgSlug: string;
@@ -72,9 +73,7 @@ export default function PortalRequestForm({ orgSlug, orgId, orgName }: PortalReq
     return (
       <div className="rounded-xl border border-green-200 bg-green-50 p-8 text-center">
         <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-          <svg className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-          </svg>
+          <IconCheck className="h-6 w-6 text-green-600" strokeWidth={2} />
         </div>
         <h3 className="text-lg font-semibold text-green-900">Request Submitted</h3>
         <p className="mt-2 text-sm text-green-700">

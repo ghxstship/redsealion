@@ -5,6 +5,7 @@ import FormSelect from '@/components/ui/FormSelect';
 import FormTextarea from '@/components/ui/FormTextarea';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
+import { IconCheck } from '@/components/ui/Icons';
 
 /**
  * LeadIntakeForm
@@ -59,9 +60,7 @@ export function LeadIntakeForm({ organizationId }: { organizationId: string }) {
     return (
       <div className="w-full max-w-lg mx-auto relative overflow-hidden rounded-2xl border border-white/20 bg-white/10 p-8 text-center shadow-2xl backdrop-blur-xl">
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-500/20 text-green-400">
-          <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-          </svg>
+          <IconCheck className="h-8 w-8 text-green-400" strokeWidth={2} />
         </div>
         <h3 className="mb-2 text-2xl font-semibold text-white">Thank You!</h3>
         <p className="text-white/80">

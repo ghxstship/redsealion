@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+import { SUPPORTED_LOCALES, LOCALE_COOKIE, LOCALE_STORAGE_KEY, type SupportedLocale } from '@/lib/i18n/config';
+import { useTranslation } from '@/lib/i18n/client';
 
 const dateFormatOptions = [
   { value: 'MM/DD/YYYY', label: 'MM/DD/YYYY' },
@@ -23,15 +25,6 @@ const numberFormatOptions = [
   { value: 'en-US', label: 'en-US (1,234.56)' },
   { value: 'de-DE', label: 'de-DE (1.234,56)' },
   { value: 'fr-FR', label: 'fr-FR (1 234,56)' },
-];
-
-const languageOptions = [
-  { value: 'en', label: 'English' },
-  { value: 'es', label: 'Spanish' },
-  { value: 'fr', label: 'French' },
-  { value: 'de', label: 'German' },
-  { value: 'ja', label: 'Japanese' },
-  { value: 'pt', label: 'Portuguese' },
 ];
 
 function formatPreviewDate(dateFormat: string, timeFormat: string): string {
@@ -74,11 +67,12 @@ function formatPreviewNumber(locale: string): string {
 }
 
 export default function LocalizationSettingsPage() {
+  const { t } = useTranslation();
   const [dateFormat, setDateFormat] = useState('MM/DD/YYYY');
   const [timeFormat, setTimeFormat] = useState('12h');
   const [firstDayOfWeek, setFirstDayOfWeek] = useState(0);
   const [numberFormat, setNumberFormat] = useState('en-US');
-  const [language, setLanguage] = useState('en');
+  const [language, setLanguage] = useState<SupportedLocale>('en-US');
   const [saving, setSaving] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
@@ -90,7 +84,7 @@ export default function LocalizationSettingsPage() {
         if (data.time_format) setTimeFormat(data.time_format);
         if (typeof data.first_day_of_week === 'number') setFirstDayOfWeek(data.first_day_of_week);
         if (data.number_format) setNumberFormat(data.number_format);
-        if (data.language) setLanguage(data.language);
+        if (data.language) setLanguage(data.language as SupportedLocale);
         setLoaded(true);
       })
       .catch(() => setLoaded(true));
@@ -113,6 +107,15 @@ export default function LocalizationSettingsPage() {
           language,
         }),
       });
+
+      // Sync locale to cookie + localStorage so middleware and toggle stay in sync
+      localStorage.setItem(LOCALE_STORAGE_KEY, language);
+      document.cookie = `${LOCALE_COOKIE}=${language};path=/;max-age=${60 * 60 * 24 * 365};samesite=lax`;
+      document.documentElement.lang = language;
+      window.dispatchEvent(new CustomEvent('fd-localization-change', { detail: { language } }));
+
+      // Reload to apply server-side dictionary
+      window.location.reload();
     } finally {
       setSaving(false);
     }
@@ -123,19 +126,19 @@ export default function LocalizationSettingsPage() {
   return (
     <div className="max-w-2xl space-y-6">
       <div>
-        <h2 className="text-lg font-semibold text-foreground">Localization</h2>
+        <h2 className="text-lg font-semibold text-foreground">{t('settings.localization')}</h2>
         <p className="mt-1 text-sm text-text-secondary">
-          Set date, time, and number formatting for your organization.
+          {t('settings.localizationDesc')}
         </p>
       </div>
 
       {/* Date & Time */}
       <div className="rounded-xl border border-border bg-white px-6 py-6">
-        <h3 className="text-sm font-semibold text-foreground mb-5">Date &amp; Time</h3>
+        <h3 className="text-sm font-semibold text-foreground mb-5">{t('settings.dateTime')}</h3>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           <div>
             <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
-              Date Format
+              {t('settings.dateFormat')}
             </label>
             <select
               value={dateFormat}
@@ -149,7 +152,7 @@ export default function LocalizationSettingsPage() {
           </div>
           <div>
             <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
-              Time Format
+              {t('settings.timeFormat')}
             </label>
             <select
               value={timeFormat}
@@ -163,7 +166,7 @@ export default function LocalizationSettingsPage() {
           </div>
           <div>
             <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
-              First Day of Week
+              {t('settings.firstDayOfWeek')}
             </label>
             <select
               value={firstDayOfWeek}
@@ -177,18 +180,18 @@ export default function LocalizationSettingsPage() {
           </div>
         </div>
         <div className="mt-4 rounded-lg bg-gray-50 px-4 py-3">
-          <span className="text-xs font-medium text-text-muted uppercase tracking-wider">Preview: </span>
+          <span className="text-xs font-medium text-text-muted uppercase tracking-wider">{t('settings.preview')}: </span>
           <span className="text-sm text-foreground font-mono">{preview}</span>
         </div>
       </div>
 
       {/* Numbers & Currency */}
       <div className="rounded-xl border border-border bg-white px-6 py-6">
-        <h3 className="text-sm font-semibold text-foreground mb-5">Numbers &amp; Currency</h3>
+        <h3 className="text-sm font-semibold text-foreground mb-5">{t('settings.numbersCurrency')}</h3>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           <div>
             <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
-              Number Format
+              {t('settings.numberFormat')}
             </label>
             <select
               value={numberFormat}
@@ -202,38 +205,38 @@ export default function LocalizationSettingsPage() {
           </div>
           <div>
             <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
-              Currency
+              {t('settings.currency')}
             </label>
             <div className="flex items-center rounded-lg border border-border bg-gray-50 px-3.5 py-2 text-sm text-text-secondary">
-              Set in General settings
+              {t('settings.currencySetInGeneral')}
             </div>
           </div>
         </div>
         <div className="mt-4 rounded-lg bg-gray-50 px-4 py-3">
-          <span className="text-xs font-medium text-text-muted uppercase tracking-wider">Preview: </span>
+          <span className="text-xs font-medium text-text-muted uppercase tracking-wider">{t('settings.preview')}: </span>
           <span className="text-sm text-foreground font-mono">{numberPreview}</span>
         </div>
       </div>
 
       {/* Language */}
       <div className="rounded-xl border border-border bg-white px-6 py-6">
-        <h3 className="text-sm font-semibold text-foreground mb-5">Language</h3>
+        <h3 className="text-sm font-semibold text-foreground mb-5">{t('settings.language')}</h3>
         <div>
           <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
-            Language
+            {t('settings.language')}
           </label>
           <select
             value={language}
-            onChange={(e) => setLanguage(e.target.value)}
+            onChange={(e) => setLanguage(e.target.value as SupportedLocale)}
             className="w-full rounded-lg border border-border bg-white px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
           >
-            {languageOptions.map((opt) => (
+            {SUPPORTED_LOCALES.map((opt) => (
               <option key={opt.value} value={opt.value}>{opt.label}</option>
             ))}
           </select>
         </div>
         <p className="mt-3 text-xs text-text-secondary">
-          Changing language affects the admin interface. Client portal language is set per-proposal.
+          {t('settings.languageDesc')}
         </p>
       </div>
 
@@ -243,7 +246,7 @@ export default function LocalizationSettingsPage() {
           disabled={saving}
           className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-foreground/90 disabled:opacity-50"
         >
-          {saving ? 'Saving...' : 'Save Changes'}
+          {saving ? t('common.saving') : t('common.saveChanges')}
         </button>
       </div>
     </div>

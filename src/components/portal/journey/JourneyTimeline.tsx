@@ -3,6 +3,7 @@
 import { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import type { PhaseStatus } from '@/types/database';
+import { IconCheck } from '@/components/ui/Icons';
 
 interface TimelinePhase {
   id: string;
@@ -84,15 +85,7 @@ export default function JourneyTimeline({
                   ].join(' ')}
                 >
                   {complete ? (
-                    <svg className="h-3 w-3" viewBox="0 0 12 12" fill="none">
-                      <path
-                        d="M2.5 6L5 8.5L9.5 3.5"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+                    <IconCheck className="h-3 w-3" strokeWidth={2} />
                   ) : (
                     phase.phase_number
                   )}

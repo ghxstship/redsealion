@@ -1,5 +1,7 @@
 'use client';
 
+import { Check } from 'lucide-react';
+
 import { useState } from 'react';
 import { useSubscription } from '@/components/shared/SubscriptionProvider';
 import type { SubscriptionTier } from '@/types/database';
@@ -122,17 +124,7 @@ export default function PlanSelector() {
               <ul className="mt-6 space-y-3">
                 {plan.features.map((feature) => (
                   <li key={feature} className="flex items-start gap-2 text-sm text-text-secondary">
-                    <svg
-                      className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-500"
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <polyline points="3 8 7 12 13 4" />
-                    </svg>
+                    <Check size={16} className="mt-0.5 flex-shrink-0 text-green-500" />
                     {feature}
                   </li>
                 ))}

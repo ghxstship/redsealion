@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { FileText } from 'lucide-react';
 import Link from 'next/link';
 import ExportCard from '@/components/admin/export/ExportCard';
 import ExportPreview from '@/components/admin/export/ExportPreview';
@@ -446,9 +447,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
                 <div key={file.name} className="flex items-center justify-between px-6 py-4 hover:bg-bg-secondary/50 transition-colors">
                   <div className="flex items-center gap-3.5 min-w-0">
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700">
-                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
+                      <FileText className="h-4 w-4" />
                     </div>
                     <div className="min-w-0">
                       <p className="text-sm font-medium text-foreground">{file.name}.csv</p>

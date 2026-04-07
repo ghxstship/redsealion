@@ -3,10 +3,10 @@ import { createServiceClient } from '@/lib/supabase/server';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { project_slug: string; portal_type: string } }
+  context: { params: Promise<{ project_slug: string; portal_type: string }> }
 ) {
   try {
-    const { project_slug, portal_type } = params;
+    const { project_slug, portal_type } = await context.params;
 
     // Use the service client. Since this is a public endpoint, we could use the anon client, 
     // but the service client guarantees we can fetch the project regardless of its RLS, 

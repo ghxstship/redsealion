@@ -1,5 +1,7 @@
 'use client';
 
+import { Check } from 'lucide-react';
+
 interface BuilderStepIndicatorProps {
   steps: string[];
   currentStep: number;
@@ -36,9 +38,7 @@ export default function BuilderStepIndicator({
                   `}
                 >
                   {isCompleted ? (
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                    </svg>
+                    <Check size={16} />
                   ) : (
                     index + 1
                   )}

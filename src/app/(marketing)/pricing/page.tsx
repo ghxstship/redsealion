@@ -1,6 +1,7 @@
 import { Fragment } from 'react';
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { IconCheck } from '@/components/ui/Icons';
 
 import { tiers, comparisonData, type FeatureValue } from './_data';
 
@@ -13,16 +14,11 @@ export const metadata: Metadata = {
 function CellValue({ value }: { value: FeatureValue }) {
   if (value === true) {
     return (
-      <svg
+      <IconCheck
         className="mx-auto h-5 w-5 text-zinc-900"
-        fill="none"
-        viewBox="0 0 24 24"
         strokeWidth={2}
-        stroke="currentColor"
         aria-label="Included"
-      >
-        <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-      </svg>
+      />
     );
   }
   if (value === false) {
@@ -89,21 +85,12 @@ export default function PricingPage() {
             <ul className="mb-8 flex-1 space-y-3">
               {tier.features.map((feature) => (
                 <li key={feature} className="flex items-start gap-2.5">
-                  <svg
+                  <IconCheck
                     className={`mt-0.5 h-4 w-4 shrink-0 ${
                       tier.featured ? 'text-zinc-400' : 'text-zinc-400'
                     }`}
-                    fill="none"
-                    viewBox="0 0 24 24"
                     strokeWidth={2}
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="m4.5 12.75 6 6 9-13.5"
-                    />
-                  </svg>
+                  />
                   <span
                     className={`text-sm ${tier.featured ? 'text-zinc-300' : 'text-zinc-600'}`}
                   >

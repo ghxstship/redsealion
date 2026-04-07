@@ -1,5 +1,7 @@
 'use client';
 
+import { Plus } from 'lucide-react';
+
 import { useState } from 'react';
 import Button from '@/components/ui/Button';
 import Alert from '@/components/ui/Alert';
@@ -65,10 +67,7 @@ export default function AllocationForm({ teamMembers, onCreated }: AllocationFor
         onClick={() => setOpen(true)}
         className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors"
       >
-        <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
-          <line x1="8" y1="3" x2="8" y2="13" />
-          <line x1="3" y1="8" x2="13" y2="8" />
-        </svg>
+        <Plus size={16} />
         Add Allocation
       </button>
     );

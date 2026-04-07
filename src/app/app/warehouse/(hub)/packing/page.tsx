@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Check } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import WarehouseHubTabs from '../../WarehouseHubTabs';
@@ -159,18 +160,7 @@ export default async function PackingPage() {
                       } flex items-center justify-center`}
                     >
                       {item.packed && (
-                        <svg
-                          width="10"
-                          height="10"
-                          viewBox="0 0 10 10"
-                          fill="none"
-                          stroke="white"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M1.5 5.5L4 8L8.5 2" />
-                        </svg>
+                        <Check size={10} className="text-white" />
                       )}
                     </div>
                   </td>

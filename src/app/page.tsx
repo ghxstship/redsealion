@@ -7,22 +7,8 @@ import {
   comparisonData,
   faqs,
 } from './_landing-data';
+import { IconCheck, IconX, IconChevronDown } from '@/components/ui/Icons';
 
-function CheckIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className || 'h-5 w-5 text-zinc-700'} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-    </svg>
-  );
-}
-
-function XIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className || 'h-5 w-5 text-zinc-300'} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-    </svg>
-  );
-}
 
 export default function HomePage() {
   return (
@@ -156,7 +142,7 @@ export default function HomePage() {
                     <ul className="mt-6 space-y-3">
                       {feature.bullets.map((bullet) => (
                         <li key={bullet} className="flex items-start gap-3">
-                          <CheckIcon className="mt-0.5 h-5 w-5 flex-shrink-0 text-zinc-700" />
+                          <IconCheck className="mt-0.5 h-5 w-5 flex-shrink-0 text-zinc-700" strokeWidth={2} />
                           <span className="text-sm text-zinc-600">{bullet}</span>
                         </li>
                       ))}
@@ -291,23 +277,23 @@ export default function HomePage() {
                         <td className="py-4 text-sm text-zinc-600">{row}</td>
                         <td className="py-4 text-center">
                           {flyteDeck ? (
-                            <CheckIcon className="mx-auto h-5 w-5 text-zinc-900" />
+                            <IconCheck className="mx-auto h-5 w-5 text-zinc-900" strokeWidth={2} />
                           ) : (
-                            <XIcon className="mx-auto h-5 w-5 text-zinc-300" />
+                            <IconX className="mx-auto h-5 w-5 text-zinc-300" strokeWidth={2} />
                           )}
                         </td>
                         <td className="py-4 text-center">
                           {spreadsheets ? (
-                            <CheckIcon className="mx-auto h-5 w-5 text-zinc-400" />
+                            <IconCheck className="mx-auto h-5 w-5 text-zinc-400" strokeWidth={2} />
                           ) : (
-                            <XIcon className="mx-auto h-5 w-5 text-zinc-300" />
+                            <IconX className="mx-auto h-5 w-5 text-zinc-300" strokeWidth={2} />
                           )}
                         </td>
                         <td className="py-4 text-center">
                           {generic ? (
-                            <CheckIcon className="mx-auto h-5 w-5 text-zinc-400" />
+                            <IconCheck className="mx-auto h-5 w-5 text-zinc-400" strokeWidth={2} />
                           ) : (
-                            <XIcon className="mx-auto h-5 w-5 text-zinc-300" />
+                            <IconX className="mx-auto h-5 w-5 text-zinc-300" strokeWidth={2} />
                           )}
                         </td>
                       </tr>
@@ -333,19 +319,10 @@ export default function HomePage() {
                 <details key={faq.question} className="group py-6" open>
                   <summary className="flex cursor-pointer items-center justify-between text-sm font-semibold text-zinc-900">
                     {faq.question}
-                    <svg
+                    <IconChevronDown
                       className="h-5 w-5 flex-shrink-0 text-zinc-400 transition-transform group-open:rotate-180"
-                      fill="none"
-                      viewBox="0 0 24 24"
                       strokeWidth={1.5}
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="m19.5 8.25-7.5 7.5-7.5-7.5"
-                      />
-                    </svg>
+                    />
                   </summary>
                   <p className="mt-4 text-sm leading-relaxed text-zinc-500">
                     {faq.answer}

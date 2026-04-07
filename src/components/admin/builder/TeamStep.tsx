@@ -2,6 +2,7 @@
 
 import FormSelect from '@/components/ui/FormSelect';
 import { IconPlus } from '@/components/ui/Icons';
+import { X } from 'lucide-react';
 import EmptyState from '@/components/ui/EmptyState';
 
 export interface TeamAssignmentData {
@@ -148,9 +149,7 @@ export default function TeamStep({ assignments, onChange }: TeamStepProps) {
                       className="p-1 text-text-muted hover:text-error"
                       title="Remove"
                     >
-                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                      </svg>
+                      <X size={16} />
                     </button>
                   </td>
                 </tr>

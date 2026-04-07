@@ -1,8 +1,14 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
+import { serveRateLimit } from '@/lib/api/rate-limit';
+import { logAuditAction } from '@/lib/api/audit-logger';
 
-export async function POST() {
+export async function POST(request: Request) {
+  const ip = request.headers.get('x-forwarded-for') || '127.0.0.1';
+  const { success } = await serveRateLimit(`export_${ip}`, 2, 60000 * 5); // 2 exports per 5 minutes
+  if (!success) return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+
   const perm = await checkPermission('settings', 'edit');
   if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
@@ -40,6 +46,22 @@ export async function POST() {
     tags: tags ?? [],
     crew: crew ?? [],
   };
+
+  // Log this sensitive action
+  await logAuditAction({
+    orgId,
+    action: 'DATA_EXPORT_GENERATED',
+    entity: 'organization',
+    entityId: orgId,
+    metadata: {
+      tables: ['proposals', 'invoices', 'clients', 'assets', 'users', 'tags', 'crew'],
+      recordCounts: {
+        proposals: proposals?.length || 0,
+        invoices: invoices?.length || 0,
+        clients: clients?.length || 0,
+      }
+    }
+  });
 
   return new NextResponse(JSON.stringify(exportData, null, 2), {
     status: 200,

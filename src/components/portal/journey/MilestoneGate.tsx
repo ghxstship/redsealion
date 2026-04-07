@@ -5,6 +5,8 @@ import type {
   MilestoneRequirement,
   RequirementAssignee,
 } from '@/types/database';
+import { CheckCircle } from 'lucide-react';
+import { IconCheck } from '@/components/ui/Icons';
 
 interface MilestoneGateProps {
   milestone: MilestoneGate;
@@ -34,18 +36,7 @@ export default function MilestoneGateComponent({
       {/* Gate header */}
       <div className="flex items-center gap-3 mb-6">
         <div className="h-8 w-8 rounded-full bg-milestone/10 flex items-center justify-center">
-          <svg
-            className="h-4 w-4 text-milestone"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-            <polyline points="22 4 12 14.01 9 11.01" />
-          </svg>
+          <CheckCircle className="h-4 w-4 text-milestone" strokeWidth={2} />
         </div>
         <div>
           <h4 className="text-base font-semibold text-milestone">
@@ -76,19 +67,7 @@ export default function MilestoneGateComponent({
                 <div className="mt-0.5 shrink-0">
                   {isComplete ? (
                     <div className="h-5 w-5 rounded-full bg-milestone flex items-center justify-center">
-                      <svg
-                        className="h-3 w-3 text-white"
-                        viewBox="0 0 12 12"
-                        fill="none"
-                      >
-                        <path
-                          d="M2.5 6L5 8.5L9.5 3.5"
-                          stroke="currentColor"
-                          strokeWidth={2}
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
+                      <IconCheck className="h-3 w-3 text-white" strokeWidth={2} />
                     </div>
                   ) : (
                     <div className="h-5 w-5 rounded-full border-2 border-milestone/30" />

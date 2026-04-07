@@ -11097,76 +11097,451 @@ export const Constants = {
   },
 } as const
 
-/* ═══════════════════════════════════════════════════════════════════
-   Convenience Type Aliases
-   ─────────────────────────────────────────────────────────────────
-   These are NOT auto-generated. Re-apply after `supabase gen types`.
-   They map PascalCase names used across the codebase to the
-   generated Database["public"]["Enums"] and Tables<> helpers.
-   ═══════════════════════════════════════════════════════════════════ */
 
-// ── Enum Aliases ────────────────────────────────────────────────────
-export type AdvanceMode = Database["public"]["Enums"]["advance_mode"];
-export type AdvancePriority = Database["public"]["Enums"]["advance_priority"];
-export type AdvanceStatus = Database["public"]["Enums"]["advance_status"];
-export type AdvanceType = Database["public"]["Enums"]["advance_type"];
-export type AssetCondition = Database["public"]["Enums"]["asset_condition"];
-export type AssetStatus = Database["public"]["Enums"]["asset_status"];
-export type AvailabilityStatus = Database["public"]["Enums"]["availability_status"];
-export type BookingStatus = Database["public"]["Enums"]["booking_status"];
-export type CollaboratorRole = Database["public"]["Enums"]["collaborator_role"];
-export type DealStage = Database["public"]["Enums"]["deal_stage"];
-export type FulfillmentStatus = Database["public"]["Enums"]["fulfillment_status"];
-export type FulfillmentType = Database["public"]["Enums"]["fulfillment_type"];
-export type InviteStatus = Database["public"]["Enums"]["invite_status"];
-export type InvoiceStatus = Database["public"]["Enums"]["invoice_status"];
-export type InvoiceType = Database["public"]["Enums"]["invoice_type"];
-export type MilestoneStatus = Database["public"]["Enums"]["milestone_status"];
-export type OrganizationRole = Database["public"]["Enums"]["org_role"];
-export type PhaseStatus = Database["public"]["Enums"]["phase_status"];
-export type ProposalStatus = Database["public"]["Enums"]["proposal_status"];
-export type RequirementAssignee = Database["public"]["Enums"]["requirement_assignee"];
-export type SubscriptionTier = Database["public"]["Enums"]["subscription_tier"];
-export type UnitOfMeasure = Database["public"]["Enums"]["unit_of_measure"];
+// ── RECOVERED ALIASES ──
 
-// ── Table Row Aliases ───────────────────────────────────────────────
-export type AdvanceAccessCode = Tables<"advance_access_codes">;
-export type AdvanceCatalogItem = Tables<"advance_catalog_items">;
-export type AdvanceCatalogVariant = Tables<"advance_catalog_variants">;
-export type AdvanceCategory = Tables<"advance_categories">;
-export type AdvanceCategoryGroup = Tables<"advance_category_groups">;
-export type AdvanceCollaborator = Tables<"advance_collaborators">;
-export type AdvanceComment = Tables<"advance_comments">;
-export type AdvanceLineItem = Tables<"advance_line_items">;
-export type AdvanceModifierList = Tables<"advance_modifier_lists">;
-export type AdvanceModifierOption = Tables<"advance_modifier_options">;
-export type AdvanceStatusHistoryEntry = Tables<"advance_status_history">;
-export type AdvanceSubcategory = Tables<"advance_subcategories">;
-export type ApprovalStatus = Tables<"approval_requests">;
-export type Client = Tables<"clients">;
-export type CrewAvailability = Tables<"crew_availability">;
-export type CrewBooking = Tables<"crew_bookings">;
-export type CrewProfile = Tables<"crew_profiles">;
-export type Deal = Tables<"deals">;
-export type Organization = Tables<"organizations">;
-export type PhaseAddon = Tables<"phase_addons">;
-export type ProductionAdvance = Tables<"production_advances">;
-export type Proposal = Tables<"proposals">;
-export type User = Tables<"users">;
+// ═══════════════════════════════════════════════════════════════════════
+// Convenience type aliases
+// ═══════════════════════════════════════════════════════════════════════
 
-// ── Composite / Utility Aliases ─────────────────────────────────────
-export type CrewAvailabilityStatus = AvailabilityStatus;
-export type CrewBookingStatus = BookingStatus;
-export type CrewProfileWithUser = CrewProfile & { user?: User };
+export type OrganizationRole = Database['public']['Enums']['org_role'];
+export type SubscriptionTier = Database['public']['Enums']['subscription_tier'] | 'portal';
+export type ProposalStatus = Database['public']['Enums']['proposal_status'];
+export type PhaseStatus = Database['public']['Enums']['phase_status'];
+export type MilestoneStatus = Database['public']['Enums']['milestone_status'];
+export type RequirementStatus = Database['public']['Enums']['requirement_status'];
+export type RequirementAssignee = Database['public']['Enums']['requirement_assignee'];
+export type TermsDocumentStatus = Database['public']['Enums']['terms_document_status'];
+export type InvoiceType = Database['public']['Enums']['invoice_type'];
+export type InvoiceStatus = Database['public']['Enums']['invoice_status'];
+export type TaskStatus = Database['public']['Enums']['task_status'];
+export type TaskPriority = Database['public']['Enums']['task_priority'];
+export type ExpenseStatus = Database['public']['Enums']['expense_status'];
+export type PoStatus = Database['public']['Enums']['po_status'];
+export type TimesheetStatus = Database['public']['Enums']['timesheet_status'];
+export type TimeOffStatus = Database['public']['Enums']['time_off_status'];
+export type ChangeOrderStatus = Database['public']['Enums']['change_order_status'];
+export type CustomFieldType = Database['public']['Enums']['custom_field_type'];
+export type AssetStatus = Database['public']['Enums']['asset_status'];
+export type AssetCondition = Database['public']['Enums']['asset_condition'];
+export type ActorType = Database['public']['Enums']['actor_type'];
+export type ContactRole = Database['public']['Enums']['contact_role'];
+export type CreativeReferenceType = Database['public']['Enums']['creative_reference_type'];
+export type DealStage = Database['public']['Enums']['deal_stage'];
+export type ESignStatus = Database['public']['Enums']['esign_status'];
+export type LeadStatus = Database['public']['Enums']['lead_status'];
+export type PricingStrategy = Database['public']['Enums']['pricing_strategy'];
+export type ProcurementMethod = Database['public']['Enums']['procurement_method'];
+export type UnitOfMeasure = Database['public']['Enums']['unit_of_measure'];
+export type ModifierSelectionType = Database['public']['Enums']['modifier_selection_type'];
+export type AdvanceMode = Database['public']['Enums']['advance_mode'];
+export type AdvanceStatus = Database['public']['Enums']['advance_status'];
+export type AdvanceType = Database['public']['Enums']['advance_type'];
+export type AdvancePriority = Database['public']['Enums']['advance_priority'];
+export type FulfillmentStatus = Database['public']['Enums']['fulfillment_status'];
+export type FulfillmentType = Database['public']['Enums']['fulfillment_type'];
+export type CollaboratorRole = Database['public']['Enums']['collaborator_role'];
+export type InviteStatus = Database['public']['Enums']['invite_status'];
+export type AccessCodeType = Database['public']['Enums']['access_code_type'];
 
-// ── JSON-typed Aliases ──────────────────────────────────────────────
-export type Address = Record<string, unknown>;
-export type BrandConfig = Record<string, unknown>;
-export type NarrativeContext = Record<string, unknown>;
-export type PaymentTerms = Record<string, unknown>;
-export type RecurrenceRule = Record<string, unknown>;
-export type TaskCommentWithAuthor = Record<string, unknown>;
-export type VenueActivationDates = Record<string, unknown>;
-export type VenueLoadInStrike = Record<string, unknown>;
-export type Facility = Record<string, unknown>;
+export type Organization = Database['public']['Tables']['organizations']['Row'];
+export type User = Database['public']['Tables']['users']['Row'];
+export type Client = Database['public']['Tables']['clients']['Row'];
+export type ClientContact = Database['public']['Tables']['client_contacts']['Row'];
+export type Proposal = Database['public']['Tables']['proposals']['Row'];
+export type Phase = Database['public']['Tables']['phases']['Row'];
+export type PhaseDeliverable = Database['public']['Tables']['phase_deliverables']['Row'];
+export type PhaseAddon = Database['public']['Tables']['phase_addons']['Row'];
+export type Invoice = Database['public']['Tables']['invoices']['Row'];
+export type InvoiceLineItem = Database['public']['Tables']['invoice_line_items']['Row'];
+export type Asset = Database['public']['Tables']['assets']['Row'];
+export type Task = Database['public']['Tables']['tasks']['Row'];
+export type Deal = Database['public']['Tables']['deals']['Row'];
+export type Lead = Database['public']['Tables']['leads']['Row'];
+export type TimeEntry = Database['public']['Tables']['time_entries']['Row'];
+export type Expense = Database['public']['Tables']['expenses']['Row'];
+export type ProductionAdvance = Database['public']['Tables']['production_advances']['Row'];
+export type AdvanceLineItem = Database['public']['Tables']['advance_line_items']['Row'];
+export type AdvanceCollaborator = Database['public']['Tables']['advance_collaborators']['Row'];
+export type AdvanceAccessCode = Database['public']['Tables']['advance_access_codes']['Row'];
+export type AdvanceComment = Database['public']['Tables']['advance_comments']['Row'];
+export type AdvanceStatusHistoryEntry = Database['public']['Tables']['advance_status_history']['Row'];
+export type AdvanceCatalogItem = Database['public']['Tables']['advance_catalog_items']['Row'];
+export type AdvanceCatalogVariant = Database['public']['Tables']['advance_catalog_variants']['Row'];
+export type AdvanceCategoryGroup = Database['public']['Tables']['advance_category_groups']['Row'];
+export type AdvanceCategory = Database['public']['Tables']['advance_categories']['Row'];
+export type AdvanceSubcategory = Database['public']['Tables']['advance_subcategories']['Row'];
+export type AdvanceModifierList = Database['public']['Tables']['advance_modifier_lists']['Row'];
+export type AdvanceModifierOption = Database['public']['Tables']['advance_modifier_options']['Row'];
+export type AdvanceTemplate = Database['public']['Tables']['advance_templates']['Row'];
+export type AdvanceInventoryLocation = Database['public']['Tables']['advance_inventory_locations']['Row'];
+export type AdvanceInventoryLevel = Database['public']['Tables']['advance_inventory_levels']['Row'];
 
+// Additional table rows
+export type Venue = Database['public']['Tables']['venues']['Row'];
+export type MilestoneGate = Database['public']['Tables']['milestone_gates']['Row'];
+export type MilestoneRequirement = Database['public']['Tables']['milestone_requirements']['Row'];
+export type TeamAssignment = Database['public']['Tables']['team_assignments']['Row'];
+export type ChangeOrder = Database['public']['Tables']['change_orders']['Row'];
+export type CrewProfile = Database['public']['Tables']['crew_profiles']['Row'];
+export type CrewAvailability = Database['public']['Tables']['crew_availability']['Row'];
+export type CrewBooking = Database['public']['Tables']['crew_bookings']['Row'];
+export type AssetLocationHistory = Database['public']['Tables']['asset_location_history']['Row'];
+export type InvoicePayment = Database['public']['Tables']['invoice_payments']['Row'];
+export type TermsDocument = Database['public']['Tables']['terms_documents']['Row'];
+export type PhasePortfolioLink = Database['public']['Tables']['phase_portfolio_links']['Row'];
+export type ActivityLog = Database['public']['Tables']['activity_log']['Row'];
+export type CreativeReference = Database['public']['Tables']['creative_references']['Row'];
+export type PhaseTemplate = Database['public']['Tables']['phase_templates']['Row'];
+export type PortfolioItem = Database['public']['Tables']['portfolio_library']['Row'];
+export type TaskComment = Database['public']['Tables']['task_comments']['Row'];
+export type TaskDependency = Database['public']['Tables']['task_dependencies']['Row'];
+export type CustomFieldDefinition = Database['public']['Tables']['custom_field_definitions']['Row'];
+export type CustomFieldValue = Database['public']['Tables']['custom_field_values']['Row'];
+export type ProposalComment = Database['public']['Tables']['proposal_comments']['Row'];
+export type FileAttachment = Database['public']['Tables']['file_attachments']['Row'];
+export type ExportConfiguration = Database['public']['Tables']['export_configurations']['Row'];
+export type SalesPipeline = Database['public']['Tables']['sales_pipelines']['Row'];
+export type DealActivity = Database['public']['Tables']['deal_activities']['Row'];
+export type ClientInteraction = Database['public']['Tables']['client_interactions']['Row'];
+export type EmailNotification = Database['public']['Tables']['email_notifications']['Row'];
+export type CreditNote = Database['public']['Tables']['credit_notes']['Row'];
+export type RecurringInvoiceSchedule = Database['public']['Tables']['recurring_invoice_schedules']['Row'];
+export type CustomReport = Database['public']['Tables']['custom_reports']['Row'];
+export type Timesheet = Database['public']['Tables']['timesheets']['Row'];
+export type TimePolicy = Database['public']['Tables']['time_policies']['Row'];
+export type ResourceAllocation = Database['public']['Tables']['resource_allocations']['Row'];
+export type CapacityOverride = Database['public']['Tables']['capacity_overrides']['Row'];
+export type ProjectBudget = Database['public']['Tables']['project_budgets']['Row'];
+export type BudgetLineItem = Database['public']['Tables']['budget_line_items']['Row'];
+export type BudgetAlert = Database['public']['Tables']['budget_alerts']['Row'];
+export type ProjectCost = Database['public']['Tables']['project_costs']['Row'];
+export type PurchaseOrder = Database['public']['Tables']['purchase_orders']['Row'];
+export type RevenueRecognition = Database['public']['Tables']['revenue_recognition']['Row'];
+export type TimeOffPolicy = Database['public']['Tables']['time_off_policies']['Row'];
+export type TimeOffBalance = Database['public']['Tables']['time_off_balances']['Row'];
+export type TimeOffRequest = Database['public']['Tables']['time_off_requests']['Row'];
+export type HolidayCalendar = Database['public']['Tables']['holiday_calendars']['Row'];
+export type OrgChartPosition = Database['public']['Tables']['org_chart_positions']['Row'];
+export type ApprovalRequest = Database['public']['Tables']['approval_requests']['Row'];
+export type CostRate = Database['public']['Tables']['cost_rates']['Row'];
+export type AiConversation = Database['public']['Tables']['ai_conversations']['Row'];
+export type Permission = Database['public']['Tables']['permission_catalog']['Row'];
+export type SsoConfiguration = Database['public']['Tables']['sso_configurations']['Row'];
+export type UserPreferences = Database['public']['Tables']['user_preferences']['Row'];
+export type ApiKey = Database['public']['Tables']['api_keys']['Row'];
+export type Tag = Database['public']['Tables']['tags']['Row'];
+export type EmailTemplate = Database['public']['Tables']['email_templates']['Row'];
+export type DocumentDefault = Database['public']['Tables']['document_defaults']['Row'];
+export type WorkOrder = Database['public']['Tables']['work_orders']['Row'];
+export type WorkOrderAssignment = Database['public']['Tables']['work_order_assignments']['Row'];
+export type JobSitePhoto = Database['public']['Tables']['job_site_photos']['Row'];
+export type CrewRating = Database['public']['Tables']['crew_ratings']['Row'];
+export type ReferralProgram = Database['public']['Tables']['referral_programs']['Row'];
+export type Referral = Database['public']['Tables']['referrals']['Row'];
+export type Campaign = Database['public']['Tables']['campaigns']['Row'];
+export type CampaignRecipient = Database['public']['Tables']['campaign_recipients']['Row'];
+export type ESignatureRequest = Database['public']['Tables']['esignature_requests']['Row'];
+export type NotificationPreference = Database['public']['Tables']['notification_preferences']['Row'];
+export type Shift = Database['public']['Tables']['shifts']['Row'];
+export type CalendarSyncConfig = Database['public']['Tables']['calendar_sync_configs']['Row'];
+export type LeadForm = Database['public']['Tables']['lead_forms']['Row'];
+export type PaymentLink = Database['public']['Tables']['payment_links']['Row'];
+export type OnboardingDocument = Database['public']['Tables']['onboarding_documents']['Row'];
+export type WarehouseTransfer = Database['public']['Tables']['warehouse_transfers']['Row'];
+export type Automation = Database['public']['Tables']['automations']['Row'];
+export type AutomationRun = Database['public']['Tables']['automation_runs']['Row'];
+export type EmailThread = Database['public']['Tables']['email_threads']['Row'];
+export type EmailMessage = Database['public']['Tables']['email_messages']['Row'];
+export type EquipmentBundle = Database['public']['Tables']['equipment_bundles']['Row'];
+export type EquipmentReservation = Database['public']['Tables']['equipment_reservations']['Row'];
+export type MaintenanceRecord = Database['public']['Tables']['maintenance_records']['Row'];
+export type ProposalScenario = Database['public']['Tables']['proposal_scenarios']['Row'];
+export type ComplianceDocument = Database['public']['Tables']['compliance_documents']['Row'];
+export type Integration = Database['public']['Tables']['integrations']['Row'];
+export type IntegrationSyncLog = Database['public']['Tables']['integration_sync_log']['Row'];
+export type WebhookEndpoint = Database['public']['Tables']['webhook_endpoints']['Row'];
+export type WebhookDelivery = Database['public']['Tables']['webhook_deliveries']['Row'];
+
+// Additional enum aliases
+export type CrewAvailabilityStatus = Database['public']['Enums']['availability_status'];
+export type CrewBookingStatus = Database['public']['Enums']['booking_status'];
+export type BookingStatus = Database['public']['Enums']['booking_status'];
+export type MaintenanceType = Database['public']['Enums']['maintenance_type'];
+export type MaintenanceStatus = Database['public']['Enums']['maintenance_status'];
+export type IntegrationStatus = Database['public']['Enums']['integration_status'];
+export type ApprovalStatus = 'pending' | 'approved' | 'rejected';
+export type RateType = Database['public']['Enums']['crew_rate_type'];
+export type OnboardingStatus = 'not_started' | 'in_progress' | 'complete';
+export type EquipmentReservationStatus = Database['public']['Enums']['reservation_status'];
+export type TransferStatus = Database['public']['Enums']['transfer_status'];
+export type NotificationChannel = 'email' | 'sms' | 'in_app';
+export type CalendarProvider = 'google' | 'outlook' | 'ical';
+export type TagEntityType = 'equipment' | 'crew' | 'project' | 'lead' | 'client';
+export type DocumentDefaultType = 'proposal' | 'invoice' | 'contract' | 'sow' | 'crew_call_sheet';
+export type DocumentDefaultSection = 'terms_and_conditions' | 'disclaimer' | 'notes' | 'scope_header' | 'scope_footer' | 'payment_instructions';
+export type WorkOrderStatus = 'draft' | 'dispatched' | 'accepted' | 'in_progress' | 'completed' | 'cancelled';
+export type WorkOrderAssignmentStatus = 'assigned' | 'accepted' | 'declined' | 'completed';
+export type PhotoType = 'before' | 'progress' | 'completion' | 'issue' | 'reference';
+export type ReferralStatus = 'pending' | 'signed_up' | 'converted' | 'rewarded' | 'expired';
+export type CampaignStatus = 'draft' | 'scheduled' | 'sending' | 'sent' | 'cancelled';
+export type CampaignRecipientStatus = 'pending' | 'sent' | 'delivered' | 'opened' | 'clicked' | 'bounced' | 'unsubscribed';
+export type DependencyType = 'finish_to_start' | 'start_to_start' | 'finish_to_finish' | 'start_to_finish';
+export type RecurrenceFrequency = 'daily' | 'weekly' | 'biweekly' | 'monthly' | 'quarterly' | 'yearly';
+export type LineItemApprovalStatus = 'pending' | 'approved' | 'rejected' | 'modified';
+export type SubmissionStatus = 'not_started' | 'in_progress' | 'submitted' | 'approved' | 'rejected';
+export type OrganizationRole_Legacy = OrganizationRole;
+
+// JSONB interface types (not table rows)
+export interface BrandConfig {
+  primaryColor: string;
+  secondaryColor: string;
+  accentColor: string;
+  backgroundColor: string;
+  fontHeading: string;
+  fontBody: string;
+  portalTitle?: string;
+  companyTagline?: string;
+  footerText?: string;
+  emailFromName?: string;
+  emailReplyTo?: string;
+}
+
+export interface Facility {
+  id: string;
+  name: string;
+  city: string;
+  state: string;
+  country: string;
+  type: string;
+  isHQ: boolean;
+}
+
+export interface PaymentTerms {
+  structure: string;
+  depositPercent: number;
+  balancePercent: number;
+  lateFeeRate?: number;
+  creditCardSurcharge?: number;
+}
+
+export interface Address {
+  street?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+  country?: string;
+}
+
+export interface VenueActivationDates {
+  start: string;
+  end: string;
+}
+
+export interface VenueLoadInStrike {
+  date: string;
+  startTime: string;
+  endTime: string;
+}
+
+export interface VenueContact {
+  name: string;
+  phone: string;
+  email: string;
+}
+
+export interface NarrativeContext {
+  brandVoice?: string;
+  audienceProfile?: string;
+  experienceGoal?: string;
+}
+
+export interface CrmExternalIds {
+  salesforce?: string;
+  hubspot?: string;
+  pipedrive?: string;
+  custom?: string;
+}
+
+export interface PmMetadata {
+  taskType?: string;
+  estimatedHours?: number;
+  assigneeRole?: string;
+  dependencies?: string[];
+}
+
+export interface AssetMetadata {
+  generates?: string;
+  trackable?: boolean;
+  reusable?: boolean;
+  dimensions?: string;
+  weight?: string;
+  material?: string;
+  storageRequirements?: string;
+}
+
+export interface ResourceMetadata {
+  requiresVehicle?: boolean;
+  vehicleType?: string;
+  requiresCrew?: boolean;
+  crewSize?: number;
+  tools?: string[];
+  requiresStaff?: boolean;
+  staffRole?: string;
+  staffQty?: number;
+  triggersProcurement?: boolean;
+}
+
+export interface FinanceTrigger {
+  triggersInvoice: boolean;
+  invoiceType?: InvoiceType;
+  percent?: number;
+}
+
+export interface TermsSection {
+  number: string;
+  title: string;
+  body: string;
+  subsections?: Array<{
+    number: string;
+    title: string;
+    body: string;
+  }>;
+}
+
+export interface PhaseTemplatePhase {
+  number: string;
+  name: string;
+  subtitle?: string;
+  defaultNarrative?: string;
+  defaultDeliverables?: Array<{
+    name: string;
+    description: string;
+    category: string;
+    unit: string;
+  }>;
+  defaultAddOns?: Array<{
+    name: string;
+    description: string;
+    category: string;
+    unit: string;
+    unitCost: number;
+  }>;
+  milestoneTemplate?: {
+    name: string;
+    requirements: Array<{
+      text: string;
+      assignee: RequirementAssignee;
+    }>;
+  };
+}
+
+export interface ExportConfig {
+  fieldMappings?: Record<string, string>;
+  apiEndpoint?: string;
+  authConfig?: Record<string, string>;
+  customFields?: Record<string, unknown>;
+}
+
+export interface AssetLocation {
+  facilityId?: string;
+  type?: string;
+  venueId?: string;
+}
+
+export interface RecurrenceRule {
+  frequency: RecurrenceFrequency;
+  interval: number;
+  days_of_week?: number[];
+  day_of_month?: number;
+  end_date?: string;
+  end_after_occurrences?: number;
+  occurrences_created?: number;
+}
+
+export interface OrgSettings {
+  timezone: string;
+  currency: string;
+  taxDefaults?: Record<string, unknown>;
+  invoicePrefix?: string;
+  proposalPrefix?: string;
+}
+
+export interface ChangeOrderLineItem {
+  description: string;
+  phase_number: string | null;
+  category: string | null;
+  qty: number;
+  unit_cost: number;
+  total: number;
+}
+
+export interface BundleItem {
+  asset_id: string;
+  quantity: number;
+}
+
+export interface LeadFormField {
+  name: string;
+  label: string;
+  type: 'text' | 'email' | 'phone' | 'textarea' | 'select' | 'date' | 'number';
+  required: boolean;
+  options?: string[];
+}
+
+export interface WarehouseTransferItem {
+  asset_id: string;
+  quantity: number;
+  condition: AssetCondition | null;
+}
+
+export interface Certification {
+  name: string;
+  issuer: string | null;
+  expires_at: string | null;
+  document_url: string | null;
+}
+
+// Expanded relation types
+export interface ProposalWithRelations extends Proposal {
+  client?: Client;
+  phases?: PhaseWithRelations[];
+  venues?: Venue[];
+  team_assignments?: (TeamAssignment & { user?: User })[];
+  terms_document?: TermsDocument;
+}
+
+export interface DealWithRelations extends Deal {
+  client?: Client;
+  proposal?: Proposal;
+  owner?: User;
+  activities?: DealActivity[];
+}
+
+export interface PhaseWithRelations extends Phase {
+  deliverables?: PhaseDeliverable[];
+  addons?: PhaseAddon[];
+  milestone_gate?: MilestoneGate & { requirements?: MilestoneRequirement[] };
+  creative_references?: CreativeReference[];
+  portfolio_links?: (PhasePortfolioLink & { portfolio_item?: PortfolioItem })[];
+}
+
+export interface CrewProfileWithUser extends CrewProfile {
+  user?: User;
+}
+
+export interface CrewBookingWithUser extends CrewBooking {
+  user?: User;
+  proposal?: Proposal;
+  venue?: Venue;
+}
+
+export interface TaskWithSubtasks extends Task {
+  subtasks?: Task[];
+  comments_count?: number;
+  assignee?: Pick<User, 'id' | 'full_name' | 'avatar_url'>;
+}
+
+export interface TaskCommentWithAuthor extends TaskComment {
+  author?: Pick<User, 'id' | 'full_name' | 'avatar_url'>;
+}

@@ -1,5 +1,7 @@
 'use client';
 
+import { Check } from 'lucide-react';
+
 import { useState } from 'react';
 import Button from '@/components/ui/Button';
 import { useRouter } from 'next/navigation';
@@ -56,9 +58,7 @@ export default function ExpenseForm() {
     return (
       <div className="mx-auto max-w-lg rounded-xl border border-border bg-white px-8 py-16 text-center">
         <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-50">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-600">
-            <path d="M20 6L9 17l-5-5" />
-          </svg>
+          <Check size={24} className="text-green-600" />
         </div>
         <p className="text-sm font-medium text-green-600">Expense submitted successfully.</p>
         <div className="mt-4 flex items-center justify-center gap-3">

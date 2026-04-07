@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo, startTransition } from 'react';
 import { useRouter } from 'next/navigation';
+import { ChevronRight, Settings, Plus, Search } from 'lucide-react';
 import type { FeatureKey } from '@/lib/subscription';
 
 /* ─────────────────────────────────────────────────────────
@@ -91,29 +92,15 @@ const navigationItems: CommandItem[] = [
    ───────────────────────────────────────────────────────── */
 
 function NavIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-text-muted">
-      <path d="M5 3l6 5-6 5" />
-    </svg>
-  );
+  return <ChevronRight size={16} className="shrink-0 text-text-muted" />;
 }
 
 function SettingsIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-text-muted">
-      <circle cx="8" cy="8" r="2" />
-      <path d="M8 2v1M8 13v1M12.2 3.8l-.7.7M4.5 11.5l-.7.7M14 8h-1M3 8H2M12.2 12.2l-.7-.7M4.5 4.5l-.7-.7" />
-    </svg>
-  );
+  return <Settings size={16} className="shrink-0 text-text-muted" />;
 }
 
 function ActionIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="shrink-0 text-text-muted">
-      <line x1="8" y1="3" x2="8" y2="13" />
-      <line x1="3" y1="8" x2="13" y2="8" />
-    </svg>
-  );
+  return <Plus size={16} className="shrink-0 text-text-muted" />;
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -226,20 +213,7 @@ export default function CommandPalette() {
       <div className="relative w-full max-w-lg mx-4 rounded-xl border border-border bg-white shadow-2xl animate-modal-content overflow-hidden">
         {/* Search input */}
         <div className="flex items-center gap-3 px-4 border-b border-border">
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 18 18"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="shrink-0 text-text-muted"
-          >
-            <circle cx="8" cy="8" r="5.5" />
-            <line x1="12.5" y1="12.5" x2="16" y2="16" />
-          </svg>
+          <Search size={18} className="shrink-0 text-text-muted" />
           <input
             ref={inputRef}
             type="text"

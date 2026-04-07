@@ -1,5 +1,11 @@
 import type { SubscriptionTier } from '@/types/database';
 
+/**
+ * Extends the DB-level SubscriptionTier with 'portal' for demo/preview contexts.
+ * All downstream code should use AppTier when the portal tier may appear.
+ */
+export type AppTier = SubscriptionTier | 'portal';
+
 export type FeatureKey =
   // Starter (CRM / Sales / Presentation)
   | 'proposals'
@@ -72,7 +78,7 @@ export type FeatureKey =
   | 'locations';
 
 // Maps each feature to the minimum subscription tier required
-const featureRegistry: Record<FeatureKey, SubscriptionTier> = {
+const featureRegistry: Record<FeatureKey, AppTier> = {
   // Portal tier — read-only demo experience
   proposals: 'portal',
   clients: 'portal',
@@ -148,7 +154,7 @@ const featureRegistry: Record<FeatureKey, SubscriptionTier> = {
   locations: 'professional',
 };
 
-const tierRank: Record<SubscriptionTier, number> = {
+const tierRank: Record<AppTier, number> = {
   portal: -1,
   free: 0,
   starter: 1,
@@ -156,12 +162,12 @@ const tierRank: Record<SubscriptionTier, number> = {
   enterprise: 3,
 };
 
-export function getRequiredTier(feature: FeatureKey): SubscriptionTier {
+export function getRequiredTier(feature: FeatureKey): AppTier {
   return featureRegistry[feature];
 }
 
 export function canAccessFeature(
-  currentTier: SubscriptionTier,
+  currentTier: AppTier,
   feature: FeatureKey
 ): boolean {
   const required = featureRegistry[feature];
@@ -169,14 +175,14 @@ export function canAccessFeature(
 }
 
 export function tierMeetsMinimum(
-  currentTier: SubscriptionTier,
-  requiredTier: SubscriptionTier
+  currentTier: AppTier,
+  requiredTier: AppTier
 ): boolean {
   return tierRank[currentTier] >= tierRank[requiredTier];
 }
 
-export function getTierLabel(tier: SubscriptionTier): string {
-  const labels: Record<SubscriptionTier, string> = {
+export function getTierLabel(tier: AppTier): string {
+  const labels: Record<AppTier, string> = {
     portal: 'Portal Demo',
     free: 'Free',
     starter: 'Starter',

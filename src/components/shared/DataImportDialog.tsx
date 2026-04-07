@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback, useMemo, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import Button from '@/components/ui/Button';
-import { Check, AlertTriangle } from 'lucide-react';
+import { Check, AlertTriangle, Upload, Download, ArrowRight } from 'lucide-react';
 import { getImportFields } from '@/lib/entity-fields';
 import type { EntityField } from '@/lib/entity-fields';
 import {
@@ -325,7 +325,7 @@ export default function DataImportDialog({
                 onDrop={handleDrop}
               >
                 <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-bg-tertiary">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="text-text-muted"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" /></svg>
+                  <Upload size={24} className="text-text-muted" />
                 </div>
                 <p className="text-sm font-medium text-foreground">Drop your file here</p>
                 <p className="mt-1 text-xs text-text-muted">Supports CSV, Excel (.xlsx), and TSV files</p>
@@ -345,7 +345,7 @@ export default function DataImportDialog({
                   onClick={handleDownloadTemplate}
                   className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-1.5 text-xs font-medium text-foreground hover:bg-white/80 transition-colors"
                 >
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M6 1.5v7M3.5 6L6 8.5 8.5 6M2 10h8" /></svg>
+                  <Download size={12} />
                   Template
                 </button>
               </div>
@@ -380,7 +380,7 @@ export default function DataImportDialog({
                       {m.sourceHeader}
                       {m.targetField && <ConfidenceBadge confidence={m.confidence} />}
                     </span>
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="shrink-0 text-text-muted"><path d="M2 7h10M9 4l3 3-3 3" /></svg>
+                    <ArrowRight size={14} className="shrink-0 text-text-muted" />
                     <select
                       value={m.targetField?.key ?? ''}
                       onChange={(e) => updateMapping(m.sourceIndex, e.target.value || null)}
@@ -582,7 +582,7 @@ export default function DataImportDialog({
               ) : result && (
                 <div className="text-center">
                   <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-green-100">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="text-green-600"><path d="M20 6L9 17l-5-5" /></svg>
+                    <Check size={28} className="text-green-600" />
                   </div>
                   <p className="text-base font-semibold text-foreground">Import Complete</p>
                   <div className="mt-4 flex justify-center gap-8 text-sm">
@@ -604,7 +604,7 @@ export default function DataImportDialog({
                       onClick={handleDownloadErrorReport}
                       className="mt-4 inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-1.5 text-xs font-medium text-foreground hover:bg-bg-secondary transition-colors"
                     >
-                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M6 1.5v7M3.5 6L6 8.5 8.5 6M2 10h8" /></svg>
+                      <Download size={12} />
                       Download Error Report
                     </button>
                   )}

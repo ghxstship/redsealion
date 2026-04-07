@@ -1,5 +1,7 @@
 'use client';
 
+import { X } from 'lucide-react';
+
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import InvoicePreview from './InvoicePreview';
@@ -247,10 +249,7 @@ export default function InvoiceForm({
                   disabled={lineItems.length <= 1}
                   className="text-text-muted hover:text-red-600 p-1"
                 >
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                    <line x1="3" y1="3" x2="11" y2="11" />
-                    <line x1="11" y1="3" x2="3" y2="11" />
-                  </svg>
+                  <X size={14} />
                 </Button>
               </div>
             </div>

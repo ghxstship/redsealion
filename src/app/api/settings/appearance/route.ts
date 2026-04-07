@@ -17,7 +17,7 @@ export async function GET() {
   const supabase = await createClient();
   const { data } = await supabase
     .from('user_preferences')
-    .select('theme, sidebar_collapsed, default_calendar_view')
+    .select('theme, sidebar_collapsed, default_calendar_view, density')
     .eq('user_id', perm.userId)
     .eq('organization_id', perm.organizationId)
     .maybeSingle();
@@ -44,6 +44,7 @@ export async function PUT(request: NextRequest) {
   if (theme !== undefined) upsertData.theme = theme;
   if (sidebar_collapsed !== undefined) upsertData.sidebar_collapsed = sidebar_collapsed;
   if (default_calendar_view !== undefined) upsertData.default_calendar_view = default_calendar_view;
+  if (density !== undefined) upsertData.density = density;
 
   const { data, error } = await supabase
     .from('user_preferences')

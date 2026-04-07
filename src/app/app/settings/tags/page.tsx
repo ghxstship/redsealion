@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { X } from 'lucide-react';
 import EmptyState from '@/components/ui/EmptyState';
 
 type EntityType = 'equipment' | 'crew' | 'project' | 'lead' | 'client';
@@ -205,9 +206,7 @@ export default function TagsSettingsPage() {
                   onClick={() => handleRemove(tag.id)}
                   className="ml-0.5 text-text-muted hover:text-red-500 transition-colors"
                 >
-                  <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
+                  <X className="h-3.5 w-3.5" />
                 </button>
               </span>
             ))

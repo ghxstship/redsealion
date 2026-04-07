@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Clock } from 'lucide-react';
 import { formatCurrency, statusColor } from '@/lib/utils';
 import { TierGate } from '@/components/shared/TierGate';
 import { createClient } from '@/lib/supabase/server';
@@ -300,10 +301,7 @@ export default async function DealDetailPage({
                     const color = days > 60 ? 'text-red-600' : days > 30 ? 'text-amber-600' : 'text-green-600';
                     return (
                       <span className={`inline-flex items-center gap-1 ${color}`}>
-                        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                          <circle cx="8" cy="8" r="7" />
-                          <path d="M8 4v4l2.5 2.5" />
-                        </svg>
+                        <Clock size={12} />
                         {days} {deal.won_date ? 'days (closed)' : 'days'}
                       </span>
                     );

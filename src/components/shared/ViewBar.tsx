@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, type ReactNode } from 'react';
 import type { SavedView } from '@/hooks/useEntityViews';
-import { Table, Kanban, Calendar, GanttChart, List, LayoutGrid, ArrowRight, FileText, X, Check } from 'lucide-react';
+import { Table, Kanban, Calendar, GanttChart, List, LayoutGrid, ArrowRight, FileText, X, Check, MoreVertical, Plus } from 'lucide-react';
 import FormInput from '@/components/ui/FormInput';
 import FormSelect from '@/components/ui/FormSelect';
 import Button from '@/components/ui/Button';
@@ -97,11 +97,7 @@ export default function ViewBar({
               }}
               className="absolute right-0 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity rounded p-0.5 text-text-muted hover:text-foreground"
             >
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-                <circle cx="6" cy="2" r="1" />
-                <circle cx="6" cy="6" r="1" />
-                <circle cx="6" cy="10" r="1" />
-              </svg>
+              <MoreVertical size={12} />
             </button>
 
             {/* Context menu */}
@@ -135,10 +131,7 @@ export default function ViewBar({
           onClick={() => setShowNew(true)}
           className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-text-muted hover:text-foreground hover:bg-bg-secondary/50 rounded-md transition-colors"
         >
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <line x1="6" y1="2" x2="6" y2="10" />
-            <line x1="2" y1="6" x2="10" y2="6" />
-          </svg>
+          <Plus size={12} />
           Add View
         </button>
 

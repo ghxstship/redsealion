@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { ChevronDown } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 interface TermsSection {
@@ -142,19 +143,10 @@ export default function TermsPage() {
                     {section.title}
                   </span>
                 </div>
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+                <ChevronDown
+                  size={16}
                   className={`shrink-0 text-text-muted transition-transform ${isExpanded ? 'rotate-180' : ''}`}
-                >
-                  <polyline points="4 6 8 10 12 6" />
-                </svg>
+                />
               </button>
               {!isExpanded && (
                 <div className="px-6 pb-4 -mt-1">

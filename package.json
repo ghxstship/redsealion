@@ -11,6 +11,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^3.0.67",
     "@atproto/api": "^0.19.6",
     "@atproto/jwk-jose": "^0.1.11",
     "@atproto/oauth-client-node": "^0.3.17",
@@ -24,6 +25,9 @@
     "@tiptap/pm": "^3.22.0",
     "@tiptap/react": "^3.22.0",
     "@tiptap/starter-kit": "^3.22.0",
+    "@upstash/ratelimit": "^2.0.8",
+    "@upstash/redis": "^1.37.0",
+    "ai": "^6.0.149",
     "docx": "^9.6.1",
     "file-saver": "^2.0.5",
     "framer-motion": "^12.38.0",
@@ -32,7 +36,9 @@
     "next": "16.2.2",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "react-markdown": "^10.1.0",
     "read-excel-file": "^8.0.3",
+    "remark-gfm": "^4.0.1",
     "uuid": "^13.0.0",
     "write-excel-file": "^3.0.8",
     "zod": "^4.3.6"
@@ -49,6 +55,7 @@
     "eslint-config-next": "16.2.2",
     "supabase": "^2.84.6",
     "tailwindcss": "^4",
+    "ts-morph": "^27.0.2",
     "typescript": "^5",
     "vitest": "^4.1.2"
   }

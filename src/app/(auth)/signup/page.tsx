@@ -319,6 +319,13 @@ export default function SignupPage() {
         </form>
       )}
 
+      <div className="mt-6 text-center text-xs text-zinc-500">
+        By creating an account, you agree to our{' '}
+        <Link href="/terms" className="underline hover:text-zinc-900">Terms of Service</Link>
+        {' '}and{' '}
+        <Link href="/privacy" className="underline hover:text-zinc-900">Privacy Policy</Link>.
+      </div>
+
       <div className="mt-8 border-t border-zinc-100 pt-6 text-center text-sm text-zinc-500">
         Already have an account?{' '}
         <Link

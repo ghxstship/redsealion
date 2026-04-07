@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { Check } from 'lucide-react';
 import { TierGate } from '@/components/shared/TierGate';
 import { statusColor } from '@/lib/utils';
 import { notFound } from 'next/navigation';
@@ -230,9 +231,7 @@ export default async function TaskDetailPage({
                   >
                     <div className={`h-4 w-4 rounded-full border-2 flex-shrink-0 ${sub.status === 'done' ? 'border-green-500 bg-green-500' : 'border-border'}`}>
                       {sub.status === 'done' && (
-                        <svg viewBox="0 0 16 16" fill="white" className="h-full w-full p-px">
-                          <path d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0Z" />
-                        </svg>
+                        <Check className="h-full w-full p-px text-white" />
                       )}
                     </div>
                     <span className={`flex-1 text-sm ${sub.status === 'done' ? 'text-text-muted line-through' : 'text-foreground'}`}>

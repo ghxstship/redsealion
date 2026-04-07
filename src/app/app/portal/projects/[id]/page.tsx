@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { Check } from 'lucide-react';
 import { TierGate } from '@/components/shared/TierGate';
 
 /**
@@ -152,9 +153,7 @@ export default async function PortalProjectPage({
                     }`}
                   >
                     {ms.completed && (
-                      <svg viewBox="0 0 16 16" fill="white" className="h-full w-full p-px">
-                        <path d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0Z" />
-                      </svg>
+                      <Check className="h-full w-full p-px text-white" />
                     )}
                   </div>
                   <span

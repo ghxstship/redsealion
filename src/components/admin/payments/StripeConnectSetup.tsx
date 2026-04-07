@@ -1,5 +1,7 @@
 'use client';
 
+import { CheckCircle2, Check, X } from 'lucide-react';
+
 import { useState, useEffect, useCallback } from 'react';
 import Button from '@/components/ui/Button';
 
@@ -164,9 +166,7 @@ export default function StripeConnectSetup() {
       {state === 'active' && (
         <div>
           <div className="flex items-center gap-2 mb-4">
-            <svg className="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+            <CheckCircle2 size={20} className="text-green-500" />
             <p className="text-sm font-medium text-foreground">
               Your Stripe account is fully connected and active.
             </p>
@@ -185,13 +185,9 @@ function StatusRow({ label, enabled }: { label: string; enabled: boolean }) {
   return (
     <div className="flex items-center gap-2">
       {enabled ? (
-        <svg className="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-        </svg>
+        <Check size={16} className="text-green-500" />
       ) : (
-        <svg className="h-4 w-4 text-gray-300" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>
+        <X size={16} className="text-gray-300" />
       )}
       <span className="text-sm text-text-muted">{label}</span>
     </div>

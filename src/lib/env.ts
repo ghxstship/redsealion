@@ -40,6 +40,9 @@ const serverSchema = z.object({
     .optional(),
   ZAPIER_WEBHOOK_SECRET: z.string().optional(),
 
+  // AI (optional — AI assistant degrades gracefully if not configured)
+  ANTHROPIC_API_KEY: z.string().optional(),
+
   // Logging
   LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error', 'fatal']).default('info'),
 

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
+import { hasLocale, normalizeBareCode } from '@/lib/i18n/config';
 
 export async function GET() {
   const perm = await checkPermission('settings', 'view');
@@ -35,7 +36,13 @@ export async function PUT(request: NextRequest) {
 
   for (const field of allowedFields) {
     if (body[field] !== undefined) {
-      updateData[field] = body[field];
+      // Normalize language to BCP-47 if it's a bare code
+      if (field === 'language') {
+        const lang = String(body[field]);
+        updateData[field] = hasLocale(lang) ? lang : normalizeBareCode(lang);
+      } else {
+        updateData[field] = body[field];
+      }
     }
   }
 

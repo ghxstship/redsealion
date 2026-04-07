@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { User, Upload } from 'lucide-react';
 
 function InputField({
   label,
@@ -112,15 +113,11 @@ export default function ProfileSettingsPage() {
         <h3 className="text-sm font-semibold text-foreground mb-5">Avatar</h3>
         <div className="flex items-center gap-6">
           <div className="h-20 w-20 shrink-0 rounded-full bg-gray-100 border border-border flex items-center justify-center">
-            <svg className="h-8 w-8 text-text-muted" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-            </svg>
+            <User className="h-8 w-8 text-text-muted" />
           </div>
           <div className="flex-1">
             <div className="rounded-lg border-2 border-dashed border-border bg-gray-50 px-6 py-8 text-center">
-              <svg className="mx-auto h-8 w-8 text-text-muted mb-2" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
-              </svg>
+              <Upload className="mx-auto h-8 w-8 text-text-muted mb-2" />
               <p className="text-sm text-text-secondary">
                 Drop an image here or{' '}
                 <button className="text-foreground font-medium underline underline-offset-2">browse</button>

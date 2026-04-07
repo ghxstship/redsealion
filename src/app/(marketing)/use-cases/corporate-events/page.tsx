@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { IconCheck } from '@/components/ui/Icons';
 import JsonLd from '@/components/marketing/JsonLd';
 
 export const metadata: Metadata = {
@@ -204,9 +205,7 @@ export default function CorporateEventsPage() {
             <ul className="space-y-6">
               <li className="flex gap-4">
                 <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-zinc-900 mt-0.5">
-                  <svg className="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                  </svg>
+                  <IconCheck className="h-3.5 w-3.5 text-white" strokeWidth={2.5} />
                 </div>
                 <div>
                   <h3 className="font-semibold text-zinc-900">Faster proposal turnaround</h3>
@@ -220,9 +219,7 @@ export default function CorporateEventsPage() {
               </li>
               <li className="flex gap-4">
                 <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-zinc-900 mt-0.5">
-                  <svg className="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                  </svg>
+                  <IconCheck className="h-3.5 w-3.5 text-white" strokeWidth={2.5} />
                 </div>
                 <div>
                   <h3 className="font-semibold text-zinc-900">Stronger client relationships</h3>
@@ -236,9 +233,7 @@ export default function CorporateEventsPage() {
               </li>
               <li className="flex gap-4">
                 <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-zinc-900 mt-0.5">
-                  <svg className="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                  </svg>
+                  <IconCheck className="h-3.5 w-3.5 text-white" strokeWidth={2.5} />
                 </div>
                 <div>
                   <h3 className="font-semibold text-zinc-900">Better margins through data</h3>
@@ -252,9 +247,7 @@ export default function CorporateEventsPage() {
               </li>
               <li className="flex gap-4">
                 <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-zinc-900 mt-0.5">
-                  <svg className="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                  </svg>
+                  <IconCheck className="h-3.5 w-3.5 text-white" strokeWidth={2.5} />
                 </div>
                 <div>
                   <h3 className="font-semibold text-zinc-900">Scalable operations</h3>

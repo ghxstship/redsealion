@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { FileText } from 'lucide-react';
 import { TierGate } from '@/components/shared/TierGate';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
@@ -81,13 +82,7 @@ export default async function FilesPage() {
       <div className="rounded-xl border border-border bg-white px-8 py-16 text-center">
         <div className="mx-auto max-w-md">
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-bg-secondary">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-text-muted">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
-              <path d="M14 2v6h6" />
-              <line x1="16" y1="13" x2="8" y2="13" />
-              <line x1="16" y1="17" x2="8" y2="17" />
-              <line x1="10" y1="9" x2="8" y2="9" />
-            </svg>
+            <FileText size={24} className="text-text-muted" />
           </div>
           <p className="text-sm text-text-secondary">
             Files attached to proposals, projects, and deliverables are surfaced here. Upload files from individual project pages.

@@ -2,35 +2,24 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { Globe, Check } from 'lucide-react';
+import { SUPPORTED_LOCALES, LOCALE_COOKIE, LOCALE_STORAGE_KEY, type SupportedLocale } from '@/lib/i18n/config';
 
 /* ─────────────────────────────────────────────────────────
-   Supported Locales
+   Localization Menu — top-bar locale switcher
    ───────────────────────────────────────────────────────── */
-
-const LOCALES = [
-  { value: 'en-US', label: 'English (US)' },
-  { value: 'en-GB', label: 'English (UK)' },
-  { value: 'en-AU', label: 'English (AU)' },
-  { value: 'es-ES', label: 'Español (ES)' },
-  { value: 'es-MX', label: 'Español (MX)' },
-  { value: 'fr-FR', label: 'Français' },
-  { value: 'de-DE', label: 'Deutsch' },
-];
-
-const STORAGE_KEY = 'fd_locale';
 
 export default function LocalizationMenu() {
   const [open, setOpen] = useState(false);
-  const [currentLocale, setCurrentLocale] = useState('en-US');
+  const [currentLocale, setCurrentLocale] = useState<SupportedLocale>('en-US');
   const panelRef = useRef<HTMLDivElement>(null);
 
-  // Initialize from API / localStorage
+  // Initialize from cookie / localStorage / API
   useEffect(() => {
     async function initLocale() {
       // 1. Try local storage first for immediate UI
-      const stored = localStorage.getItem(STORAGE_KEY);
+      const stored = localStorage.getItem(LOCALE_STORAGE_KEY);
       if (stored) {
-        setCurrentLocale(stored);
+        setCurrentLocale(stored as SupportedLocale);
         document.documentElement.lang = stored;
       }
 
@@ -40,8 +29,8 @@ export default function LocalizationMenu() {
         if (res.ok) {
           const data = await res.json();
           if (data.language) {
-            setCurrentLocale(data.language);
-            localStorage.setItem(STORAGE_KEY, data.language);
+            setCurrentLocale(data.language as SupportedLocale);
+            localStorage.setItem(LOCALE_STORAGE_KEY, data.language);
             document.documentElement.lang = data.language;
           }
         }
@@ -70,7 +59,7 @@ export default function LocalizationMenu() {
     const handler = (e: Event) => {
       const customEvent = e as CustomEvent<{ language?: string }>;
       if (customEvent.detail?.language && customEvent.detail.language !== currentLocale) {
-        setCurrentLocale(customEvent.detail.language);
+        setCurrentLocale(customEvent.detail.language as SupportedLocale);
         document.documentElement.lang = customEvent.detail.language;
       }
     };
@@ -78,13 +67,18 @@ export default function LocalizationMenu() {
     return () => window.removeEventListener('fd-localization-change', handler);
   }, [currentLocale]);
 
-  const selectLocale = async (localeValue: string) => {
+  const selectLocale = async (localeValue: SupportedLocale) => {
     setCurrentLocale(localeValue);
     setOpen(false);
     
     // Apply locally
-    localStorage.setItem(STORAGE_KEY, localeValue);
+    localStorage.setItem(LOCALE_STORAGE_KEY, localeValue);
     document.documentElement.lang = localeValue;
+
+    // Set cookie so middleware + server components can read it
+    document.cookie = `${LOCALE_COOKIE}=${localeValue};path=/;max-age=${60 * 60 * 24 * 365};samesite=lax`;
+
+    // Broadcast change to other components (Settings page, etc.)
     window.dispatchEvent(new CustomEvent('fd-localization-change', { detail: { language: localeValue } }));
 
     // Persist to server
@@ -97,6 +91,9 @@ export default function LocalizationMenu() {
     } catch (err) {
       console.error('Failed to save localization:', err);
     }
+
+    // Reload to apply server-side dictionary change
+    window.location.reload();
   };
 
   return (
@@ -113,10 +110,10 @@ export default function LocalizationMenu() {
       {open && (
         <div className="absolute right-0 top-full mt-2 w-48 rounded-xl border border-border bg-white shadow-lg animate-scale-in overflow-hidden z-50">
           <p className="px-4 pt-3 pb-1.5 text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-            Language & Region
+            Language &amp; Region
           </p>
           <div className="py-1 max-h-64 overflow-y-auto override-scrollbar">
-            {LOCALES.map((locale) => (
+            {SUPPORTED_LOCALES.map((locale) => (
               <button
                 key={locale.value}
                 onClick={() => selectLocale(locale.value)}

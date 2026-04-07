@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { Trash2 } from 'lucide-react';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import AddContactModal from '@/components/admin/clients/AddContactModal';
 import ShareDialog from '@/components/shared/ShareDialog';
@@ -47,9 +48,7 @@ export default function ClientDetailActions({ clientId, clientName }: ClientDeta
           onClick={() => setShowDelete(true)}
           className="rounded-lg border border-red-200 bg-white px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
         >
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="inline mr-1">
-            <path d="M2 4h10M5 4V3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1M9 4v7a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4" />
-          </svg>
+          <Trash2 size={14} className="inline mr-1" />
           Delete
         </button>
         <Link

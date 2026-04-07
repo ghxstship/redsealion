@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
 import ViewTypeSwitcher, { getPersistedView } from '@/components/shared/ViewTypeSwitcher';
 import { CalendarDays, CalendarRange } from 'lucide-react';
+import { usePreferencesSafe } from '@/components/shared/PreferencesProvider';
 
 const PERSIST_KEY = 'flytedeck:view:calendar';
 interface CalendarEvent {
@@ -43,9 +44,11 @@ function getCalendarDays(year: number, month: number): (number | null)[] {
 }
 
 export default function CalendarPage() {
+  const prefs = usePreferencesSafe();
   const [currentDate, setCurrentDate] = useState(() => new Date());
+  const defaultView = prefs.loaded ? prefs.defaultCalendarView : 'month';
   const [view, setView] = useState<'month' | 'week'>(() =>
-    getPersistedView(PERSIST_KEY, ['month', 'week'], 'month') as 'month' | 'week',
+    getPersistedView(PERSIST_KEY, ['month', 'week'], defaultView === 'day' ? 'month' : defaultView) as 'month' | 'week',
   );
   const [events, setEvents] = useState<CalendarEvent[]>([]);
 
@@ -192,7 +195,7 @@ export default function CalendarPage() {
       <div className="mb-6 flex items-center justify-between">
         <button
           onClick={goToPrev}
-          className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
+          className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
         >
           &larr; Previous
         </button>
@@ -203,7 +206,7 @@ export default function CalendarPage() {
         </h2>
         <button
           onClick={goToNext}
-          className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
+          className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
         >
           Next &rarr;
         </button>
@@ -211,7 +214,7 @@ export default function CalendarPage() {
 
       {/* Month view */}
       {view === 'month' && (
-        <div className="rounded-xl border border-border bg-white overflow-hidden overflow-x-auto">
+        <div className="rounded-xl border border-border bg-background overflow-hidden overflow-x-auto">
           <div className="grid grid-cols-7 border-b border-border bg-bg-secondary min-w-[700px]">
             {weekdays.map((wd) => (
               <div
@@ -271,7 +274,7 @@ export default function CalendarPage() {
 
       {/* Week view */}
       {view === 'week' && (
-        <div className="rounded-xl border border-border bg-white overflow-hidden overflow-x-auto">
+        <div className="rounded-xl border border-border bg-background overflow-hidden overflow-x-auto">
           <div className="grid grid-cols-7 border-b border-border bg-bg-secondary min-w-[700px]">
             {weekDays.map((d) => {
               const isToday =

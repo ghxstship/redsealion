@@ -67,7 +67,7 @@ export default function EventCalendar({ events }: EventCalendarProps) {
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   return (
-    <div className="bg-white border border-border rounded-lg shadow-sm p-4">
+    <div className="bg-background border border-border rounded-lg shadow-sm p-4">
       <div className="flex items-center justify-between mb-4">
         <button
           onClick={handlePrev}

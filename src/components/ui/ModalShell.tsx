@@ -62,17 +62,22 @@ export default function ModalShell({
 
   const modalContent = (
     <div className={`fixed inset-0 ${zIndex} flex items-center justify-center overflow-y-auto p-4`}>
-      <div className="fixed inset-0 bg-black/40 animate-modal-backdrop" onClick={onClose} />
-      <div className={`relative w-full ${SIZE_MAP[size]} rounded-xl border border-border bg-white ${panelPadding} shadow-xl animate-modal-content my-auto ${className}`}>
+      <div className="fixed inset-0 bg-black/40 animate-modal-backdrop" onClick={onClose} aria-hidden="true" />
+      <div 
+        role="dialog" 
+        aria-modal="true" 
+        aria-labelledby="modal-title" 
+        className={`relative w-full ${SIZE_MAP[size]} rounded-xl border border-border bg-white ${panelPadding} shadow-xl animate-modal-content my-auto ${className}`}
+      >
         <div className={headerClass}>
           <div>
-            <h2 className={`${sectioned ? 'text-base' : 'text-lg'} font-semibold text-foreground`}>{title}</h2>
+            <h2 id="modal-title" className={`${sectioned ? 'text-base' : 'text-lg'} font-semibold text-foreground`}>{title}</h2>
             {subtitle && (
               <p className="mt-0.5 text-xs text-text-muted">{subtitle}</p>
             )}
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-foreground transition-colors">
-            <IconX />
+          <button onClick={onClose} aria-label="Close modal" className="text-text-muted hover:text-foreground transition-colors">
+            <IconX aria-hidden="true" />
           </button>
         </div>
         {children}

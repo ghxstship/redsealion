@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { resolveOrgFromSlug } from '@/lib/auth/resolve-org-from-slug';
+import { IconCheck } from '@/components/ui/Icons';
 
 interface PricingPageProps {
   params: Promise<{ orgSlug: string }>;
@@ -116,17 +117,10 @@ export default async function PricingPage({ params }: PricingPageProps) {
                     key={feature}
                     className="flex items-start gap-2.5 text-sm text-text-secondary"
                   >
-                    <svg
+                    <IconCheck
                       className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-500"
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <polyline points="3 8 7 12 13 4" />
-                    </svg>
+                      strokeWidth={2}
+                    />
                     {feature}
                   </li>
                 ))}
@@ -153,21 +147,15 @@ export default async function PricingPage({ params }: PricingPageProps) {
           </p>
           <div className="mt-8 flex items-center justify-center gap-8">
             <div className="flex items-center gap-2 text-sm text-text-secondary">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-green-500">
-                <path d="M13 4l-7 7-3-3" />
-              </svg>
+              <IconCheck className="text-green-500" size={16} strokeWidth={1.5} />
               No credit card required
             </div>
             <div className="flex items-center gap-2 text-sm text-text-secondary">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-green-500">
-                <path d="M13 4l-7 7-3-3" />
-              </svg>
+              <IconCheck className="text-green-500" size={16} strokeWidth={1.5} />
               Cancel anytime
             </div>
             <div className="flex items-center gap-2 text-sm text-text-secondary">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-green-500">
-                <path d="M13 4l-7 7-3-3" />
-              </svg>
+              <IconCheck className="text-green-500" size={16} strokeWidth={1.5} />
               Free migration support
             </div>
           </div>

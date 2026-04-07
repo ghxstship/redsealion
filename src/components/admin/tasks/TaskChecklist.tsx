@@ -11,7 +11,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import FormInput from '@/components/ui/FormInput';
-import { GripVertical, Plus, Trash2 } from 'lucide-react';
+import { GripVertical, Plus, Trash2, Check } from 'lucide-react';
 
 interface ChecklistItem {
   id: string;
@@ -159,9 +159,7 @@ export default function TaskChecklist({ taskId }: TaskChecklistProps) {
                 }`}
               >
                 {item.done && (
-                  <svg viewBox="0 0 16 16" fill="white" className="h-3 w-3">
-                    <path d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0Z" />
-                  </svg>
+                  <Check size={12} className="text-white" />
                 )}
               </button>
               <span

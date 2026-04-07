@@ -7,25 +7,19 @@ import { useSubscription } from '@/components/shared/SubscriptionProvider';
 import { LockIcon } from '@/components/shared/TierBadge';
 import { navSections } from '@/components/admin/sidebar/nav-data';
 import { usePortalContext } from './PortalContext';
+import { IconChevronRight, IconMenu, IconX } from '@/components/ui/Icons';
+import { ArrowUp } from 'lucide-react';
 
 /* ─────────────────────────────────────────────────────────
    Icons
    ───────────────────────────────────────────────────────── */
 
 const ChevronIcon = ({ open }: { open: boolean }) => (
-  <svg
-    width="14"
-    height="14"
-    viewBox="0 0 14 14"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
+  <IconChevronRight
+    size={14}
+    strokeWidth={1.5}
     className={`shrink-0 transition-transform duration-fast ${open ? 'rotate-90' : ''}`}
-  >
-    <path d="M5 3l4 4-4 4" />
-  </svg>
+  />
 );
 
 /* ─────────────────────────────────────────────────────────
@@ -108,20 +102,11 @@ export default function PortalSidebar() {
         className="fixed top-[calc(2.5rem+6px)] left-4 z-50 md:hidden rounded-lg border border-border bg-white p-2 shadow-sm"
         aria-label="Toggle navigation"
       >
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
           {mobileOpen ? (
-            <>
-              <line x1="4" y1="4" x2="16" y2="16" />
-              <line x1="16" y1="4" x2="4" y2="16" />
-            </>
+            <IconX size={20} strokeWidth={1.5} />
           ) : (
-            <>
-              <line x1="3" y1="5" x2="17" y2="5" />
-              <line x1="3" y1="10" x2="17" y2="10" />
-              <line x1="3" y1="15" x2="17" y2="15" />
-            </>
+            <IconMenu size={20} strokeWidth={1.5} />
           )}
-        </svg>
       </button>
 
       {/* Mobile overlay */}
@@ -234,18 +219,7 @@ export default function PortalSidebar() {
             href={`/portal/${orgSlug}/pricing`}
             className="flex items-center justify-center gap-2 w-full rounded-lg bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
           >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M8 3v10M3 8l5-5 5 5" />
-            </svg>
+            <ArrowUp size={16} strokeWidth={1.5} />
             Start Free Trial
           </Link>
         </div>

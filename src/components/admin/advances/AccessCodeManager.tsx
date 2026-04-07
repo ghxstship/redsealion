@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Copy, X } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import FormInput from '@/components/ui/FormInput';
 import FormSelect from '@/components/ui/FormSelect';
@@ -150,14 +151,14 @@ export default function AccessCodeManager({ advanceId, codes, onRefresh }: Acces
                   className="rounded-md p-1.5 text-text-muted hover:bg-bg-secondary hover:text-foreground transition-colors"
                   title="Copy code"
                 >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" /></svg>
+                  <Copy size={14} />
                 </button>
                 <button
                   onClick={() => handleRevoke(code.id)}
                   className="rounded-md p-1.5 text-red-400 hover:bg-red-50 hover:text-red-600 transition-colors"
                   title="Revoke code"
                 >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                  <X size={14} />
                 </button>
               </div>
             </div>

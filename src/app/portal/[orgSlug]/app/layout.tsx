@@ -5,6 +5,7 @@ import PortalSidebar from '@/components/portal/PortalSidebar';
 import DemoBanner from '@/components/portal/DemoBanner';
 import PageTransition from '@/components/shared/PageTransition';
 import { resolveOrgFromSlug } from '@/lib/auth/resolve-org-from-slug';
+import { IconChevronRight } from '@/components/ui/Icons';
 
 interface PortalAppLayoutProps {
   children: React.ReactNode;
@@ -36,9 +37,9 @@ export default async function PortalAppLayout({ children, params }: PortalAppLay
 
         <div className="flex min-h-screen bg-background">
           <PortalSidebar />
-          <main className="flex-1 min-w-0 md:ml-64">
+          <main className="flex-1 min-w-0 transition-[margin] duration-normal md:ml-[var(--sidebar-width)]">
             {/* Simplified header for portal */}
-            <header className="sticky top-0 z-30 flex items-center justify-between border-b border-border/60 bg-white/80 backdrop-blur-xl backdrop-saturate-150 px-6 md:px-10 h-14">
+            <header className="sticky top-0 z-30 flex items-center justify-between border-b border-border/60 bg-background/80 backdrop-blur-xl backdrop-saturate-150 px-6 md:px-10 h-14">
               <div className="flex items-center gap-3">
                 {org.logoUrl ? (
                   <img
@@ -61,18 +62,7 @@ export default async function PortalAppLayout({ children, params }: PortalAppLay
                 className="hidden sm:inline-flex items-center gap-2 rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
               >
                 Upgrade
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 14 14"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M7 2v10M2 7l5-5 5 5" />
-                </svg>
+                <IconChevronRight strokeWidth={1.5} size={14} />
               </a>
             </header>
 

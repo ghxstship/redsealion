@@ -12,7 +12,7 @@ import type { TaskCommentWithAuthor } from '@/types/database';
 import { renderMentions } from '@/lib/mentions';
 import FormTextarea from '@/components/ui/FormTextarea';
 import { createClient } from '@/lib/supabase/client';
-import { useAuth } from '@clerk/nextjs';
+
 import { getInitials } from '@/lib/utils';
 import EmptyState from '@/components/ui/EmptyState';
 

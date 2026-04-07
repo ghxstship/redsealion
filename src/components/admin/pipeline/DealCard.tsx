@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { AlertCircle, Trash2 } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
 import type { DealStage } from '@/types/database';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
@@ -108,10 +109,7 @@ export default function DealCard({
         )}
         {isRotting && (
           <div className={`mt-2 flex items-center gap-1 text-[10px] font-medium ${isCritical ? 'text-red-600' : 'text-amber-600'}`}>
-            <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <circle cx="8" cy="8" r="7" />
-              <path d="M8 4v4M8 10.5v.5" />
-            </svg>
+            <AlertCircle size={10} />
             {daysSinceUpdate}d inactive
           </div>
         )}
@@ -121,9 +119,7 @@ export default function DealCard({
         className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity rounded p-1 text-text-muted hover:text-red-600 hover:bg-red-50"
         title="Delete deal"
       >
-        <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-          <path d="M2 4h10M5 4V3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1M9 4v7a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4" />
-        </svg>
+        <Trash2 size={12} />
       </button>
     </div>
   );

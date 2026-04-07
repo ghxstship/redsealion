@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { clsx } from '@/lib/clsx';
+import { IconMenu, IconX } from '@/components/ui/Icons';
 
 interface PortalHeaderProps {
   orgName: string;
@@ -73,19 +74,11 @@ export default function PortalHeader({ orgName, logoUrl }: PortalHeaderProps) {
             className="md:hidden p-2 -mr-2 text-text-secondary hover:text-foreground transition-colors"
             aria-label="Toggle menu"
           >
-            <svg
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-            >
               {mobileMenuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                <IconX className="h-5 w-5" strokeWidth={1.5} />
               ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
+                <IconMenu className="h-5 w-5" strokeWidth={1.5} />
               )}
-            </svg>
           </button>
         </div>
 

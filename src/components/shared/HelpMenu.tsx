@@ -2,40 +2,41 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { LifeBuoy, Keyboard, BookOpen, Sparkles, HelpCircle } from 'lucide-react';
+import { useTranslation } from '@/lib/i18n/client';
 
 /* ─────────────────────────────────────────────────────────
    Types
    ───────────────────────────────────────────────────────── */
 
 interface HelpMenuItem {
-  label: string;
-  description: string;
+  labelKey: string;
+  descriptionKey: string;
   icon: React.ReactNode;
   action: 'shortcuts' | 'docs' | 'changelog' | 'support';
 }
 
 const helpItems: HelpMenuItem[] = [
   {
-    label: 'Keyboard Shortcuts',
-    description: 'View all shortcuts',
+    labelKey: 'help.keyboardShortcuts',
+    descriptionKey: '',
     icon: <Keyboard size={16} />,
     action: 'shortcuts',
   },
   {
-    label: 'Documentation',
-    description: 'Guides & references',
+    labelKey: 'help.documentation',
+    descriptionKey: '',
     icon: <BookOpen size={16} />,
     action: 'docs',
   },
   {
-    label: "What's New",
-    description: 'Latest updates',
+    labelKey: 'help.changelog',
+    descriptionKey: '',
     icon: <Sparkles size={16} />,
     action: 'changelog',
   },
   {
-    label: 'Contact Support',
-    description: 'Get help from our team',
+    labelKey: 'help.contactSupport',
+    descriptionKey: '',
     icon: <HelpCircle size={16} />,
     action: 'support',
   },
@@ -52,6 +53,7 @@ interface HelpMenuProps {
 export default function HelpMenu({ onOpenShortcuts }: HelpMenuProps) {
   const [open, setOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation();
 
   // Close on click outside
   useEffect(() => {
@@ -110,7 +112,7 @@ export default function HelpMenu({ onOpenShortcuts }: HelpMenuProps) {
       {open && (
         <div className="absolute right-0 top-full mt-2 w-60 rounded-xl border border-border bg-white shadow-lg animate-scale-in overflow-hidden z-50">
           <p className="px-4 pt-3 pb-1.5 text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-            Help & Resources
+            {t('help.helpSupport')}
           </p>
           <div className="py-1">
             {helpItems.map((item) => (
@@ -124,9 +126,8 @@ export default function HelpMenu({ onOpenShortcuts }: HelpMenuProps) {
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium text-text-secondary group-hover:text-foreground">
-                    {item.label}
+                    {t(item.labelKey)}
                   </p>
-                  <p className="text-[11px] text-text-muted">{item.description}</p>
                 </div>
                 {item.action === 'shortcuts' && (
                   <kbd className="hidden sm:inline-flex items-center rounded border border-border bg-bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-text-muted">

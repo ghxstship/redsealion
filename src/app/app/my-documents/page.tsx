@@ -1,22 +1,27 @@
+'use client';
+
 import EmptyState from '@/components/ui/EmptyState';
 import { FileText } from 'lucide-react';
+import { useTranslation } from '@/lib/i18n/client';
 
 export default function MyDocumentsPage() {
+  const { t } = useTranslation();
+
   return (
     <div>
       <div className="mb-8">
         <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          My Documents
+          {t('myDocuments.title')}
         </h1>
         <p className="mt-1 text-sm text-text-secondary">
-          Your personal file repository.
+          {t('myDocuments.subtitle')}
         </p>
       </div>
 
       <EmptyState
         icon={<FileText className="w-8 h-8" />}
-        message="No documents uploaded"
-        description="Your personal document library is currently being configured."
+        message={t('myDocuments.emptyState.title')}
+        description={t('myDocuments.emptyState.description')}
       />
     </div>
   );

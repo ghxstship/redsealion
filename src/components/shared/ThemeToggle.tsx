@@ -2,14 +2,13 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { Sun, Moon, Monitor } from 'lucide-react';
+import { usePreferences } from '@/components/shared/PreferencesProvider';
 
 /* ─────────────────────────────────────────────────────────
    Types & constants
    ───────────────────────────────────────────────────────── */
 
 type ThemeMode = 'light' | 'dark' | 'system';
-
-const STORAGE_KEY = 'fd_theme';
 
 const THEME_META: Record<ThemeMode, { icon: typeof Sun; label: string; next: ThemeMode }> = {
   light: { icon: Sun, label: 'Light mode', next: 'dark' },
@@ -18,51 +17,19 @@ const THEME_META: Record<ThemeMode, { icon: typeof Sun; label: string; next: The
 };
 
 /* ─────────────────────────────────────────────────────────
-   Helpers
-   ───────────────────────────────────────────────────────── */
-
-function getStoredTheme(): ThemeMode {
-  if (typeof window === 'undefined') return 'light';
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (stored === 'dark' || stored === 'system') return stored;
-  return 'light';
-}
-
-function resolveTheme(mode: ThemeMode): 'light' | 'dark' {
-  if (mode !== 'system') return mode;
-  if (typeof window === 'undefined') return 'light';
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-}
-
-function applyTheme(mode: ThemeMode) {
-  const resolved = resolveTheme(mode);
-  document.documentElement.setAttribute('data-theme', resolved);
-  localStorage.setItem(STORAGE_KEY, mode);
-  window.dispatchEvent(new CustomEvent('fd-theme-change', { detail: mode }));
-}
-
-/* ─────────────────────────────────────────────────────────
    Component
    ───────────────────────────────────────────────────────── */
 
 export default function ThemeToggle() {
-  const [mode, setMode] = useState<ThemeMode>('light');
+  const prefs = usePreferences();
+  const [mode, setMode] = useState<ThemeMode>(prefs.theme);
 
-  // Initialize from localStorage
+  // Sync from provider when it finishes loading
   useEffect(() => {
-    const stored = getStoredTheme();
-    setMode(stored);
-    applyTheme(stored);
-  }, []);
-
-  // Listen for system theme changes when in "system" mode
-  useEffect(() => {
-    if (mode !== 'system') return;
-    const mq = window.matchMedia('(prefers-color-scheme: dark)');
-    const handler = () => applyTheme('system');
-    mq.addEventListener('change', handler);
-    return () => mq.removeEventListener('change', handler);
-  }, [mode]);
+    if (prefs.loaded) {
+      setMode(prefs.theme);
+    }
+  }, [prefs.loaded, prefs.theme]);
 
   // Listen for global theme changes (e.g. from settings page)
   useEffect(() => {
@@ -79,8 +46,8 @@ export default function ThemeToggle() {
   const cycle = useCallback(() => {
     setMode((prev) => {
       const next = THEME_META[prev].next;
-      applyTheme(next);
-      // Save it to the API in the background
+      prefs.setTheme(next);
+      // Persist to API in the background
       fetch('/api/settings/appearance', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -88,7 +55,7 @@ export default function ThemeToggle() {
       }).catch(console.error);
       return next;
     });
-  }, []);
+  }, [prefs]);
 
   const meta = THEME_META[mode];
   const Icon = meta.icon;

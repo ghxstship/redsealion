@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
+import { AlertTriangle } from 'lucide-react';
 
 interface DealRiskAssessmentProps {
   dealValue: number;
@@ -135,10 +136,7 @@ export default function DealRiskAssessment(props: DealRiskAssessmentProps) {
     <div className={`rounded-xl border ${style.border} ${style.bg} p-5`}>
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-            <path d="M8 1l7 13H1L8 1Z" />
-            <path d="M8 6v3M8 11.5v.5" />
-          </svg>
+          <AlertTriangle size={14} />
           AI Risk Assessment
         </h3>
         <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold ${style.text} ${style.bg}`}>

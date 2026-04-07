@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Alert from '@/components/ui/Alert';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
+import { Mail } from 'lucide-react';
 
 interface PortalMagicLinkFormProps {
   orgSlug: string;
@@ -47,9 +48,7 @@ export default function PortalMagicLinkForm({ orgSlug, orgName }: PortalMagicLin
     return (
       <div className="rounded-xl border border-border bg-background p-8 text-center max-w-md mx-auto">
         <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-blue-50">
-          <svg className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-          </svg>
+          <Mail className="h-6 w-6 text-blue-600" strokeWidth={1.5} />
         </div>
         <h3 className="text-lg font-semibold text-foreground">Check Your Email</h3>
         <p className="mt-2 text-sm text-text-secondary">

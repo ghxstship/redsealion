@@ -1,11 +1,10 @@
 'use client';
 
 import { createContext, useContext, useMemo } from 'react';
-import type { SubscriptionTier } from '@/types/database';
-import { canAccessFeature, type FeatureKey } from '@/lib/subscription';
+import { canAccessFeature, type AppTier, type FeatureKey } from '@/lib/subscription';
 
 interface SubscriptionContextValue {
-  tier: SubscriptionTier;
+  tier: AppTier;
   canAccess: (feature: FeatureKey) => boolean;
 }
 
@@ -18,7 +17,7 @@ export function SubscriptionProvider({
   tier,
   children,
 }: {
-  tier: SubscriptionTier;
+  tier: AppTier;
   children: React.ReactNode;
 }) {
   const value = useMemo<SubscriptionContextValue>(

@@ -60,12 +60,12 @@ export function convertAmount(
 /**
  * Format a monetary amount with the correct currency symbol and decimals.
  */
-export function formatCurrencyAmount(amount: number, currencyCode: string): string {
+export function formatCurrencyAmount(amount: number, currencyCode: string, locale = 'en-US'): string {
   const currency = SUPPORTED_CURRENCIES.find((c) => c.code === currencyCode);
   const decimals = currency?.decimals ?? 2;
 
   try {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat(locale, {
       style: 'currency',
       currency: currencyCode,
       minimumFractionDigits: decimals,

@@ -3,7 +3,9 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { User, CreditCard, Settings, LogOut } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { useTranslation } from '@/lib/i18n/client';
 
 /* ─────────────────────────────────────────────────────────
    Types
@@ -41,6 +43,7 @@ export default function UserMenu({ fullName, email, role, avatarUrl }: UserMenuP
   const [open, setOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const { t } = useTranslation();
 
   // Close on click outside
   useEffect(() => {
@@ -67,11 +70,21 @@ export default function UserMenu({ fullName, email, role, avatarUrl }: UserMenuP
   };
 
   const initials = getInitials(fullName);
-  const roleLabel = ROLE_LABELS[role] ?? role;
+  const ROLE_KEY_MAP: Record<string, string> = {
+    super_admin: 'user.superAdmin',
+    org_admin: 'user.admin',
+    project_manager: 'user.projectManager',
+    designer: 'user.designer',
+    fabricator: 'user.fabricator',
+    installer: 'user.installer',
+    client_primary: 'user.clientPrimary',
+    client_viewer: 'user.clientViewer',
+  };
+  const roleLabel = ROLE_KEY_MAP[role] ? t(ROLE_KEY_MAP[role]) : (ROLE_LABELS[role] ?? role);
 
   const menuLinks = [
-    { label: 'Profile', href: '/app/settings/profile', icon: ProfileIcon },
-    { label: 'Settings', href: '/app/settings', icon: SettingsIcon },
+    { label: t('user.profile'), href: '/app/settings/profile', icon: ProfileIcon },
+    { label: t('user.settings'), href: '/app/settings', icon: SettingsIcon },
     { label: 'Plans & Billing', href: '/app/settings/billing', icon: BillingIcon },
   ];
 
@@ -82,6 +95,9 @@ export default function UserMenu({ fullName, email, role, avatarUrl }: UserMenuP
         onClick={() => setOpen((prev) => !prev)}
         className="flex items-center gap-2 rounded-full transition-all duration-fast hover:ring-2 hover:ring-border focus-ring"
         aria-label="User menu"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        aria-controls="user-menu-dropdown"
         id="user-menu-trigger"
       >
         {avatarUrl ? (
@@ -99,7 +115,12 @@ export default function UserMenu({ fullName, email, role, avatarUrl }: UserMenuP
 
       {/* Dropdown panel */}
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-64 rounded-xl border border-border bg-white shadow-lg animate-scale-in overflow-hidden z-50">
+        <div 
+          id="user-menu-dropdown"
+          role="menu"
+          aria-labelledby="user-menu-trigger"
+          className="absolute right-0 top-full mt-2 w-64 rounded-xl border border-border bg-white shadow-lg animate-scale-in overflow-hidden z-50"
+        >
           {/* Identity header */}
           <div className="px-4 py-3.5 border-b border-border">
             <div className="flex items-center gap-3">
@@ -130,6 +151,7 @@ export default function UserMenu({ fullName, email, role, avatarUrl }: UserMenuP
               <Link
                 key={item.href}
                 href={item.href}
+                role="menuitem"
                 onClick={() => setOpen(false)}
                 className="flex items-center gap-3 px-4 py-2 text-sm text-text-secondary transition-colors hover:bg-bg-secondary hover:text-foreground"
               >
@@ -143,11 +165,12 @@ export default function UserMenu({ fullName, email, role, avatarUrl }: UserMenuP
           <div className="border-t border-border py-1">
             <button
               onClick={handleSignOut}
+              role="menuitem"
               className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 transition-colors hover:bg-red-50"
               id="sign-out-button"
             >
               <SignOutIcon />
-              Sign out
+              {t('user.signOut')}
             </button>
           </div>
         </div>
@@ -161,39 +184,17 @@ export default function UserMenu({ fullName, email, role, avatarUrl }: UserMenuP
    ───────────────────────────────────────────────────────── */
 
 function ProfileIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-text-muted">
-      <circle cx="8" cy="5.5" r="2.5" />
-      <path d="M3 14c0-2.5 2.2-4 5-4s5 1.5 5 4" />
-    </svg>
-  );
+  return <User size={16} className="shrink-0 text-text-muted" />;
 }
 
 function BillingIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-text-muted">
-      <rect x="1" y="3" width="14" height="10" rx="1.5" />
-      <path d="M1 6.5h14" />
-      <path d="M4 10h3" />
-    </svg>
-  );
+  return <CreditCard size={16} className="shrink-0 text-text-muted" />;
 }
 
 function SettingsIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-text-muted">
-      <circle cx="8" cy="8" r="2" />
-      <path d="M8 2v1M8 13v1M12.2 3.8l-.7.7M4.5 11.5l-.7.7M14 8h-1M3 8H2M12.2 12.2l-.7-.7M4.5 4.5l-.7-.7" />
-    </svg>
-  );
+  return <Settings size={16} className="shrink-0 text-text-muted" />;
 }
 
 function SignOutIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
-      <path d="M6 14H3.5A1.5 1.5 0 0 1 2 12.5v-9A1.5 1.5 0 0 1 3.5 2H6" />
-      <polyline points="10 11 14 8 10 5" />
-      <line x1="14" y1="8" x2="6" y2="8" />
-    </svg>
-  );
+  return <LogOut size={16} className="shrink-0" />;
 }

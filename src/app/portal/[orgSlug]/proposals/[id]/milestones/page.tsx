@@ -1,5 +1,7 @@
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { Minus } from 'lucide-react';
+import { IconCheck } from '@/components/ui/Icons';
 import EmptyState from '@/components/ui/EmptyState';
 import type {
   MilestoneStatus,
@@ -18,21 +20,13 @@ interface PageProps {
 
 function RequirementStatusIcon({ status }: { status: RequirementStatus }) {
   if (status === 'complete') {
-    return (
-      <svg className="h-4 w-4 text-green-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-      </svg>
-    );
+      <IconCheck className="h-4 w-4 text-green-600 shrink-0" strokeWidth={2.5} />
   }
   if (status === 'in_progress') {
     return <span className="h-4 w-4 shrink-0 rounded-full border-2 border-blue-500 bg-blue-100" />;
   }
   if (status === 'waived') {
-    return (
-      <svg className="h-4 w-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M18 12H6" />
-      </svg>
-    );
+      <Minus className="h-4 w-4 text-gray-400 shrink-0" strokeWidth={2} />
   }
   return <span className="h-4 w-4 shrink-0 rounded-full border-2 border-gray-300" />;
 }

@@ -1,5 +1,6 @@
 import { UpgradePrompt } from '@/components/shared/UpgradePrompt';
 import type { FeatureKey } from '@/lib/subscription';
+import { IconLock } from '@/components/ui/Icons';
 
 /**
  * Catch-all page for portal routes that don't have dedicated demo pages.
@@ -54,20 +55,7 @@ export default async function PortalCatchAllPage({ params }: PortalCatchAllProps
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
       <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-bg-tertiary">
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="text-text-muted"
-        >
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-        </svg>
+        <IconLock className="text-text-muted" strokeWidth={1.5} size={24} />
       </div>
       <h3 className="text-lg font-semibold text-foreground">
         Premium Feature

@@ -1,4 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
+import { XCircle } from 'lucide-react';
+import { IconCheck } from '@/components/ui/Icons';
 
 interface InvoiceSummary {
   id: string;
@@ -130,21 +132,7 @@ export default async function PaymentPage({
       <div className="min-h-screen bg-bg-secondary flex items-center justify-center p-6">
         <div className="w-full max-w-md rounded-xl border border-border bg-white p-8 text-center">
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-50">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="text-red-500"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <line x1="15" y1="9" x2="9" y2="15" />
-              <line x1="9" y1="9" x2="15" y2="15" />
-            </svg>
+            <XCircle className="text-red-500" size={24} strokeWidth={2} />
           </div>
           <h1 className="text-lg font-semibold text-foreground">Invoice Not Found</h1>
           <p className="mt-2 text-sm text-text-secondary">
@@ -217,19 +205,7 @@ export default async function PaymentPage({
         {isPaid ? (
           <div className="rounded-xl border border-green-200 bg-green-50 p-6 text-center">
             <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="text-green-600"
-              >
-                <path d="M4 10l4 4 8-8" />
-              </svg>
+              <IconCheck className="text-green-600" size={20} strokeWidth={2} />
             </div>
             <p className="text-sm font-medium text-green-800">This invoice has been paid.</p>
             <p className="mt-1 text-xs text-green-700">Thank you for your payment.</p>

@@ -1,5 +1,7 @@
 'use client';
 
+import { Heart } from 'lucide-react';
+
 import { useMemo } from 'react';
 import {
   computeClientHealth,
@@ -30,9 +32,7 @@ export default function ClientHealthCard(props: ClientHealthCardProps) {
     <div className="rounded-xl border border-border bg-white p-5">
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-            <path d="M8 1C4.5 4 2 6 2 9a6 6 0 0 0 12 0c0-3-2.5-5-6-8Z" />
-          </svg>
+          <Heart size={14} />
           Client Health
         </h3>
         <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold ${style.bg} ${style.text}`}>

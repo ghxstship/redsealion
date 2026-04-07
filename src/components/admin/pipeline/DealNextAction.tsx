@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
+import { TrendingUp } from 'lucide-react';
 
 interface DealNextActionProps {
   stage: string;
@@ -118,10 +119,7 @@ export default function DealNextAction(props: DealNextActionProps) {
   return (
     <div className="rounded-xl border border-border bg-white p-5">
       <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-          <path d="M2 12l4-4 3 3 5-5" />
-          <path d="M10 6h4v4" />
-        </svg>
+        <TrendingUp size={14} />
         Next Best Actions
       </h3>
       <ul className="space-y-2">

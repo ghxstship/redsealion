@@ -13,7 +13,7 @@ import { Edit, Eye, FolderHeart, Mail, Users2, Shield, MoreVertical, Trash2 } fr
 import type { Database } from '@/types/database';
 import StatusBadge from '@/components/ui/StatusBadge';
 import EmptyState from '@/components/ui/EmptyState';
-import QuickActionMenu, { type ActionItem } from '@/components/shared/QuickActionMenu';
+
 import { ROLE_BADGE_COLORS } from '@/components/ui/StatusBadge';
 import SearchInput from '@/components/ui/SearchInput';
 import Button from '@/components/ui/Button';

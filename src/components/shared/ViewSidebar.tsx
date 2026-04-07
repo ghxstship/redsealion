@@ -5,6 +5,7 @@ import type { SavedView } from '@/hooks/useEntityViews';
 import {
   Table, Kanban, Calendar, GanttChart, List, LayoutGrid,
   ArrowRight, FileText, Users, User, Lock, Star, Check,
+  MoreHorizontal, Plus,
 } from 'lucide-react';
 import Tooltip from '@/components/ui/Tooltip';
 import FormInput from '@/components/ui/FormInput';
@@ -111,7 +112,7 @@ export default function ViewSidebar({
           className="absolute right-1 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity rounded p-0.5 text-text-muted hover:text-foreground"
           title="View options"
         >
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><circle cx="3" cy="6" r="1" /><circle cx="6" cy="6" r="1" /><circle cx="9" cy="6" r="1" /></svg>
+          <MoreHorizontal size={12} />
         </button>
 
         {contextId === view.id && (
@@ -216,9 +217,7 @@ export default function ViewSidebar({
           onClick={() => setShowNew(true)}
           className="w-full flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-text-muted hover:text-foreground hover:bg-bg-secondary transition-colors"
         >
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <line x1="6" y1="2" x2="6" y2="10" /><line x1="2" y1="6" x2="10" y2="6" />
-          </svg>
+          <Plus size={12} />
           Add View
         </button>
       )}

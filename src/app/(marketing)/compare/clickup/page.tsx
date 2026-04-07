@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { IconCheck } from '@/components/ui/Icons';
 
 export const metadata: Metadata = {
   title: "FlyteDeck vs ClickUp — Production-Specific vs Everything-Generic",
@@ -169,19 +170,10 @@ export default function ClickUpComparisonPage() {
         <ul className="space-y-3">
           {dayOneGains.map((gain) => (
             <li key={gain} className="flex items-start gap-3">
-              <svg
+              <IconCheck
                 className="mt-0.5 h-5 w-5 shrink-0 text-zinc-400"
-                fill="none"
-                viewBox="0 0 24 24"
                 strokeWidth={2}
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="m4.5 12.75 6 6 9-13.5"
-                />
-              </svg>
+              />
               <span className="text-sm leading-relaxed text-zinc-600">{gain}</span>
             </li>
           ))}

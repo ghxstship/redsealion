@@ -15,6 +15,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 /* ─── Types ─────────────────────────────────────────────── */
 
 export interface DashboardStats {
+  userName: string;
   totalProposals: number;
   activeProjects: number;
   revenuePipeline: number;
@@ -53,6 +54,7 @@ export interface StatCard {
 /* ─── Fallback ──────────────────────────────────────────── */
 
 const fallbackStats: DashboardStats = {
+  userName: 'there',
   totalProposals: 0,
   activeProjects: 0,
   revenuePipeline: 0,
@@ -83,7 +85,15 @@ export async function getDashboardData(): Promise<{
     } = await supabase.auth.getUser();
 
     if (!user) return { stats: fallbackStats, tier: 'free' };
-const orgId = ctx.organizationId;
+    const orgId = ctx.organizationId;
+
+    // Fetch user's display name for greeting
+    const { data: userData } = await supabase
+      .from('users')
+      .select('full_name')
+      .eq('id', user.id)
+      .single();
+    const firstName = (userData?.full_name ?? 'there').split(' ')[0];
 
     // Get org tier
     const { data: org } = await supabase
@@ -244,6 +254,7 @@ const orgId = ctx.organizationId;
 
     return {
       stats: {
+        userName: firstName,
         totalProposals: proposalsRes.count ?? 0,
         activeProjects: activeRes.count ?? 0,
         revenuePipeline,

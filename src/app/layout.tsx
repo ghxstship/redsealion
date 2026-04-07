@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import ServiceWorkerRegistration from '@/components/ServiceWorkerRegistration';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
+import { CookieBanner } from '@/components/shared/CookieBanner';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://flytedeck.io'),
@@ -67,15 +68,16 @@ export default function RootLayout({
       <head>
         <meta name="theme-color" content="#0a0a0a" />
         <link rel="apple-touch-icon" href="/icons/icon.svg" />
-        {/* Theme init — runs before first paint to prevent flash */}
+        {/* Theme + density init — runs before first paint to prevent flash */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('fd_theme');if(t==='dark'){document.documentElement.setAttribute('data-theme','dark')}else if(t==='system'&&window.matchMedia('(prefers-color-scheme:dark)').matches){document.documentElement.setAttribute('data-theme','dark')}else{document.documentElement.setAttribute('data-theme','light')}}catch(e){}})()`,
+            __html: `(function(){try{var t=localStorage.getItem('fd_theme');if(t==='dark'){document.documentElement.setAttribute('data-theme','dark')}else if(t==='system'&&window.matchMedia('(prefers-color-scheme:dark)').matches){document.documentElement.setAttribute('data-theme','dark')}else{document.documentElement.setAttribute('data-theme','light')}var d=localStorage.getItem('fd_density');if(d==='compact'){document.documentElement.setAttribute('data-density','compact')}}catch(e){}})()`,
           }}
         />
       </head>
       <body className="min-h-full flex flex-col antialiased">
         {children}
+        <CookieBanner />
         <ServiceWorkerRegistration />
         <PWAInstallPrompt />
       </body>

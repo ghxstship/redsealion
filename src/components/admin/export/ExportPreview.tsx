@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { ChevronDown } from 'lucide-react';
 
 interface FieldMapping {
   flyteDeckField: string;
@@ -60,21 +61,12 @@ export default function ExportPreview({
                   <span className="text-[11px] text-text-muted">
                     {category.mappings.length} fields
                   </span>
-                  <svg
-                    className={`h-4 w-4 text-text-muted transition-transform ${
+                  <ChevronDown
+                    size={16}
+                    className={`text-text-muted transition-transform ${
                       isExpanded ? 'rotate-180' : ''
                     }`}
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
+                  />
                 </div>
               </button>
               {isExpanded && (

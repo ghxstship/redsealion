@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Home, ChevronRight } from 'lucide-react';
 
 /* ─────────────────────────────────────────────────────────
    Route label registry — human-readable names for path
@@ -126,36 +127,13 @@ export default function Breadcrumbs({ currentLabel }: BreadcrumbsProps) {
         href="/app"
         className="text-text-muted hover:text-foreground transition-colors duration-fast"
       >
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="shrink-0"
-        >
-          <path d="M2 6l6-4.5L14 6v7a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6Z" />
-          <path d="M6 14V9h4v5" />
-        </svg>
+        <Home size={16} className="shrink-0" />
       </Link>
       {crumbs.map((crumb, i) => {
         const isLast = i === crumbs.length - 1;
         return (
           <span key={crumb.href} className="flex items-center gap-2">
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 12 12"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            >
-              <path d="M4.5 2.5l3 3.5-3 3.5" />
-            </svg>
+            <ChevronRight size={12} />
             {isLast ? (
               <span className="text-foreground font-medium truncate max-w-[200px]">
                 {crumb.label}

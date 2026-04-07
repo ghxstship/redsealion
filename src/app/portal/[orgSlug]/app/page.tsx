@@ -4,6 +4,7 @@ import { canAccessFeature, type FeatureKey } from '@/lib/subscription';
 import { createClient } from '@/lib/supabase/server';
 import { resolveOrgFromSlug } from '@/lib/auth/resolve-org-from-slug';
 import { redirect } from 'next/navigation';
+import { IconLock } from '@/components/ui/Icons';
 
 /* ─────────────────────────────────────────────────────────
    Types
@@ -195,10 +196,7 @@ export default async function PortalDashboardPage({ params }: PortalDashboardPro
               Requires {card.tier} plan
             </p>
             <div className="absolute top-3 right-3">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-text-muted">
-                <rect x="2" y="6.5" width="10" height="6" rx="1" />
-                <path d="M4 6.5V4.5a3 3 0 0 1 6 0v2" />
-              </svg>
+              <IconLock className="text-text-muted" strokeWidth={1.5} size={14} />
             </div>
           </div>
         ))}

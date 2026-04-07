@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Send, Loader2, Copy } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import ModalShell from '@/components/ui/ModalShell';
 import FormSelect from '@/components/ui/FormSelect';
@@ -106,9 +107,7 @@ export default function DealEmailDraft({
         size="sm"
         onClick={handleOpen}
       >
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mr-1.5">
-          <path d="M14 2.5L7 9.5M14 2.5L9.5 14l-2.5-4.5L2.5 7l11.5-4.5z" />
-        </svg>
+        <Send size={14} className="mr-1.5" />
         Draft Follow-up
       </Button>
 
@@ -142,10 +141,7 @@ export default function DealEmailDraft({
             )}
             {loading && (
               <div className="flex items-center gap-2 text-sm text-text-muted">
-                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
+                <Loader2 size={16} className="animate-spin" />
                 Drafting email...
               </div>
             )}
@@ -159,10 +155,7 @@ export default function DealEmailDraft({
           {draft && (
             <div className="flex items-center justify-end gap-3">
               <Button variant="secondary" size="sm" onClick={handleCopy}>
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
-                  <rect x="5" y="5" width="9" height="9" rx="1" />
-                  <path d="M3 11V3a1 1 0 0 1 1-1h8" />
-                </svg>
+                <Copy size={14} className="mr-1" />
                 {copied ? 'Copied!' : 'Copy to Clipboard'}
               </Button>
               <Button variant="secondary" size="sm" onClick={generateDraft}>

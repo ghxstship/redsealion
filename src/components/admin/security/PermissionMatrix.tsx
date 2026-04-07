@@ -51,6 +51,9 @@ const RESOURCE_LABELS: Record<PermissionResource, string> = {
   referral_program: 'Referral Program',
   work_orders: 'Work Orders',
   advances: 'Advances',
+  events: 'Events',
+  activations: 'Activations',
+  locations: 'Locations',
 };
 
 const ROLE_LABELS: Record<string, string> = {

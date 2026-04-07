@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { resolveOrgFromSlug } from '@/lib/auth/resolve-org-from-slug';
-import ProposalsClient from '@/components/admin/proposals/ProposalsClient';
+import ProposalsTable from '@/components/admin/proposals/ProposalsTable';
 import type { Proposal, Client } from '@/types/database';
 
 interface PortalProposalsPageProps {
@@ -39,5 +39,5 @@ export default async function PortalProposalsPage({ params }: PortalProposalsPag
 
   const { proposals, clients } = await getData(org.organizationId);
 
-  return <ProposalsClient proposals={proposals} clients={clients} />;
+  return <ProposalsTable proposals={proposals} clients={clients} />;
 }

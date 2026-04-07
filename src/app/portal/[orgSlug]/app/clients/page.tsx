@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { resolveOrgFromSlug } from '@/lib/auth/resolve-org-from-slug';
 import { formatCurrency } from '@/lib/utils';
-import ClientsSearch from '@/components/admin/clients/ClientsSearch';
+import ClientsTable from '@/components/admin/clients/ClientsTable';
 
 interface PortalClientsPageProps {
   params: Promise<{ orgSlug: string }>;
@@ -66,7 +66,7 @@ export default async function PortalClientsPage({ params }: PortalClientsPagePro
         </div>
       </div>
 
-      <ClientsSearch clients={clients} />
+      <ClientsTable clients={clients} />
     </>
   );
 }
