@@ -7,7 +7,7 @@
  * @module app/api/ai/chat/route
  */
 
-import { streamText, stepCountIs } from 'ai';
+import { streamText, stepCountIs, convertToModelMessages, type ToolSet } from 'ai';
 import { createClient } from '@/lib/supabase/server';
 import { requireFeature } from '@/lib/api/tier-guard';
 import { requirePermission } from '@/lib/api/permission-guard';
@@ -82,7 +82,7 @@ export async function POST(request: Request) {
     const result = streamText({
       model: getCopilotModel(),
       system: systemPrompt,
-      messages,
+      messages: await convertToModelMessages(messages),
       tools,
       stopWhen: stepCountIs(5), // Allow up to 5 tool-use rounds
       temperature: 0.3, // Low temp for data queries, slightly creative for drafting

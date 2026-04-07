@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.67",
+    "@ai-sdk/react": "^3.0.151",
     "@atproto/api": "^0.19.6",
     "@atproto/jwk-jose": "^0.1.11",
     "@atproto/oauth-client-node": "^0.3.17",

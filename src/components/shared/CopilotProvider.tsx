@@ -6,6 +6,9 @@
  * Manages conversation state, streaming, and panel visibility.
  * Mounted in the root app layout alongside GlobalModalProvider.
  *
+ * Updated for AI SDK v6: uses @ai-sdk/react with UIMessage,
+ * sendMessage, and status-based loading detection.
+ *
  * @module components/shared/CopilotProvider
  */
 
@@ -17,7 +20,8 @@ import {
   useRef,
   type ReactNode,
 } from 'react';
-import { useChat, type Message } from 'ai/react';
+import { useChat, type UIMessage } from '@ai-sdk/react';
+import { DefaultChatTransport } from 'ai';
 import { usePathname } from 'next/navigation';
 
 /* ─────────────────────────────────────────────────────────
@@ -40,8 +44,8 @@ interface CopilotContextValue {
   /** Close the panel */
   close: () => void;
   /** Chat messages */
-  messages: Message[];
-  /** Current input value */
+  messages: UIMessage[];
+  /** Current input value (locally managed) */
   input: string;
   /** Set input value */
   setInput: (value: string) => void;
@@ -62,40 +66,62 @@ interface CopilotContextValue {
 const CopilotContext = createContext<CopilotContextValue | null>(null);
 
 /* ─────────────────────────────────────────────────────────
+   Helpers
+   ───────────────────────────────────────────────────────── */
+
+const WELCOME_MESSAGE: UIMessage = {
+  id: 'welcome',
+  role: 'assistant',
+  parts: [
+    {
+      type: 'text',
+      text: 'Hello! I\'m your FlyteDeck AI Copilot. I can help you query live data, draft proposals, analyze trends, and navigate your platform. What would you like to know?',
+    },
+  ],
+};
+
+const CLEARED_MESSAGE: UIMessage = {
+  id: 'welcome',
+  role: 'assistant',
+  parts: [
+    {
+      type: 'text',
+      text: 'Conversation cleared. How can I help you?',
+    },
+  ],
+};
+
+/* ─────────────────────────────────────────────────────────
    Provider
    ───────────────────────────────────────────────────────── */
 
 export function CopilotProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [entityContext, setEntityContext] = useState<EntityContext | undefined>();
+  const [input, setInput] = useState('');
   const pendingPromptRef = useRef<string | null>(null);
   const pathname = usePathname();
 
   const {
     messages,
-    input,
-    setInput,
-    handleSubmit: chatSubmit,
-    isLoading,
     setMessages,
+    sendMessage,
+    status,
     stop,
   } = useChat({
-    api: '/api/ai/chat',
-    body: {
-      context: {
-        currentPage: pathname,
-        entityContext,
+    transport: new DefaultChatTransport({
+      api: '/api/ai/chat',
+      body: {
+        context: {
+          currentPage: pathname,
+          entityContext,
+        },
       },
-    },
-    initialMessages: [
-      {
-        id: 'welcome',
-        role: 'assistant',
-        content:
-          'Hello! I\'m your FlyteDeck AI Copilot. I can help you query live data, draft proposals, analyze trends, and navigate your platform. What would you like to know?',
-      },
-    ],
+    }),
+    messages: [WELCOME_MESSAGE],
   });
+
+  const isLoading = status === 'submitted' || status === 'streaming';
 
   const toggle = useCallback(() => setIsOpen((prev) => !prev), []);
   const close = useCallback(() => setIsOpen(false), []);
@@ -108,26 +134,22 @@ export function CopilotProvider({ children }: { children: ReactNode }) {
         setInput(initialPrompt);
       }
     },
-    [setInput]
+    []
   );
 
   const clearMessages = useCallback(() => {
-    setMessages([
-      {
-        id: 'welcome',
-        role: 'assistant',
-        content:
-          'Conversation cleared. How can I help you?',
-      },
-    ]);
+    setMessages([CLEARED_MESSAGE]);
   }, [setMessages]);
 
   const handleSubmit = useCallback(
     (e?: React.FormEvent) => {
       if (e) e.preventDefault();
-      chatSubmit(e);
+      const text = input.trim();
+      if (!text) return;
+      setInput('');
+      sendMessage({ text });
     },
-    [chatSubmit]
+    [input, sendMessage]
   );
 
   return (

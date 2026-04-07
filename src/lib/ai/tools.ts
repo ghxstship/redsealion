@@ -4,10 +4,11 @@
  * Each tool maps to a Supabase query scoped to the user's organization.
  * Tools are permission-aware and return structured data for Claude to synthesize.
  *
+ * AI SDK v6: tools are plain objects with description, parameters, and execute.
+ *
  * @module lib/ai/tools
  */
 
-import { tool } from 'ai';
 import { z } from 'zod';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { createLogger } from '@/lib/logger';
@@ -23,10 +24,10 @@ export function buildCopilotTools(
   orgId: string
 ) {
   return {
-    query_proposals: tool({
+    query_proposals: {
       description:
         'Search and summarize proposals. Use when the user asks about proposals, quotes, projects, or scope.',
-      parameters: z.object({
+      inputSchema: z.object({
         status: z
           .enum([
             'draft',
@@ -51,7 +52,7 @@ export function buildCopilotTools(
           .default(10)
           .describe('Max number of results'),
       }),
-      execute: async ({ status, client_name, limit }) => {
+      execute: async ({ status, client_name, limit }: { status?: string; client_name?: string; limit: number }) => {
         try {
           let query = supabase
             .from('proposals')
@@ -83,7 +84,7 @@ export function buildCopilotTools(
                 .select('id, company_name')
                 .in('id', clientIds);
               clients = Object.fromEntries(
-                (clientData ?? []).map((c) => [c.id, c.company_name])
+                (clientData ?? []).map((c: { id: string; company_name: string }) => [c.id, c.company_name])
               );
             }
           }
@@ -119,19 +120,19 @@ export function buildCopilotTools(
           return { error: 'Failed to query proposals', count: 0, proposals: [] };
         }
       },
-    }),
+    },
 
-    query_invoices: tool({
+    query_invoices: {
       description:
         'Query invoices and accounts receivable. Use for billing, payment, revenue, and collection questions.',
-      parameters: z.object({
+      inputSchema: z.object({
         status: z
           .enum(['draft', 'sent', 'paid', 'overdue', 'void', 'partial'])
           .optional()
           .describe('Filter by invoice status'),
         limit: z.number().min(1).max(50).default(10),
       }),
-      execute: async ({ status, limit }) => {
+      execute: async ({ status, limit }: { status?: string; limit: number }) => {
         try {
           let query = supabase
             .from('invoices')
@@ -175,12 +176,12 @@ export function buildCopilotTools(
           return { error: 'Failed to query invoices', count: 0, invoices: [] };
         }
       },
-    }),
+    },
 
-    query_pipeline: tool({
+    query_pipeline: {
       description:
         'Query sales pipeline deals. Use for deal, funnel, pipeline, and sales forecast questions.',
-      parameters: z.object({
+      inputSchema: z.object({
         stage: z
           .enum([
             'lead',
@@ -195,7 +196,7 @@ export function buildCopilotTools(
           .describe('Filter by deal stage'),
         limit: z.number().min(1).max(50).default(20),
       }),
-      execute: async ({ stage, limit }) => {
+      execute: async ({ stage, limit }: { stage?: string; limit: number }) => {
         try {
           let query = supabase
             .from('deals')
@@ -242,19 +243,19 @@ export function buildCopilotTools(
           return { error: 'Failed to query pipeline', count: 0, deals: [] };
         }
       },
-    }),
+    },
 
-    query_clients: tool({
+    query_clients: {
       description:
         'Look up client/customer information and their relationship history.',
-      parameters: z.object({
+      inputSchema: z.object({
         search: z
           .string()
           .optional()
           .describe('Search clients by company name (partial match)'),
         limit: z.number().min(1).max(50).default(10),
       }),
-      execute: async ({ search, limit }) => {
+      execute: async ({ search, limit }: { search?: string; limit: number }) => {
         try {
           let query = supabase
             .from('clients')
@@ -283,18 +284,18 @@ export function buildCopilotTools(
           return { error: 'Failed to query clients', count: 0, clients: [] };
         }
       },
-    }),
+    },
 
-    query_expenses: tool({
+    query_expenses: {
       description:
         'Query expense records and pending approvals. Use for spend analysis and reimbursement questions.',
-      parameters: z.object({
+      inputSchema: z.object({
         status: z
           .enum(['pending', 'approved', 'rejected', 'reimbursed'])
           .optional(),
         limit: z.number().min(1).max(50).default(10),
       }),
-      execute: async ({ status, limit }) => {
+      execute: async ({ status, limit }: { status?: string; limit: number }) => {
         try {
           let query = supabase
             .from('expenses')
@@ -328,19 +329,19 @@ export function buildCopilotTools(
           return { error: 'Failed to query expenses', count: 0, expenses: [] };
         }
       },
-    }),
+    },
 
-    query_tasks: tool({
+    query_tasks: {
       description:
         'Query tasks and to-do items. Use for project status, workload, and task management questions.',
-      parameters: z.object({
+      inputSchema: z.object({
         status: z
           .enum(['todo', 'in_progress', 'done', 'blocked', 'cancelled'])
           .optional(),
         assignee_name: z.string().optional().describe('Filter by assignee name'),
         limit: z.number().min(1).max(50).default(10),
       }),
-      execute: async ({ status, limit }) => {
+      execute: async ({ status, limit }: { status?: string; limit: number }) => {
         try {
           let query = supabase
             .from('tasks')
@@ -375,15 +376,15 @@ export function buildCopilotTools(
           return { error: 'Failed to query tasks', count: 0, tasks: [] };
         }
       },
-    }),
+    },
 
-    query_team: tool({
+    query_team: {
       description:
         'Query team member information and headcount.',
-      parameters: z.object({
+      inputSchema: z.object({
         limit: z.number().min(1).max(100).default(20),
       }),
-      execute: async ({ limit }) => {
+      execute: async ({ limit }: { limit: number }) => {
         try {
           const { data, error, count } = await supabase
             .from('organization_memberships')
@@ -406,15 +407,15 @@ export function buildCopilotTools(
           return { error: 'Failed to query team', total_members: 0, members: [] };
         }
       },
-    }),
+    },
 
-    query_events: tool({
+    query_events: {
       description:
         'Query upcoming events, activations, and locations.',
-      parameters: z.object({
+      inputSchema: z.object({
         limit: z.number().min(1).max(20).default(10),
       }),
-      execute: async ({ limit }) => {
+      execute: async ({ limit }: { limit: number }) => {
         try {
           const { data, error } = await supabase
             .from('events')
@@ -440,12 +441,12 @@ export function buildCopilotTools(
           return { error: 'Failed to query events', count: 0, events: [] };
         }
       },
-    }),
+    },
 
-    navigate_to: tool({
+    navigate_to: {
       description:
         'Suggest a navigation link for the user. Use when the answer involves directing the user to a specific page.',
-      parameters: z.object({
+      inputSchema: z.object({
         page: z
           .enum([
             'dashboard',
@@ -469,7 +470,7 @@ export function buildCopilotTools(
           .describe('The page to navigate to'),
         reason: z.string().describe('Why the user should visit this page'),
       }),
-      execute: async ({ page, reason }) => {
+      execute: async ({ page, reason }: { page: string; reason: string }) => {
         const routes: Record<string, string> = {
           dashboard: '/app',
           proposals: '/app/proposals',
@@ -491,10 +492,10 @@ export function buildCopilotTools(
         };
         return {
           url: routes[page] ?? '/app',
-          label: page.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+          label: page.replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()),
           reason,
         };
       },
-    }),
+    },
   };
 }

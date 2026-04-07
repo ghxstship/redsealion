@@ -7,6 +7,9 @@
  * tool execution indicators, contextual suggestions, and
  * conversation management.
  *
+ * Updated for AI SDK v6: uses UIMessage.parts for content
+ * rendering instead of the deprecated content string.
+ *
  * @module components/shared/CopilotPanel
  */
 
@@ -14,6 +17,7 @@ import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Sparkles, Trash2, X, Send } from 'lucide-react';
 import { useCopilot } from './CopilotProvider';
 import { usePathname } from 'next/navigation';
+import type { UIMessage } from '@ai-sdk/react';
 
 /* ─────────────────────────────────────────────────────────
    Page-aware suggestions
@@ -72,6 +76,17 @@ function getSuggestions(pathname: string): string[] {
     pathname.startsWith(k)
   );
   return prefix ? pageSuggestions[prefix] : pageSuggestions['/app'];
+}
+
+/* ─────────────────────────────────────────────────────────
+   Helpers — extract text from UIMessage parts
+   ───────────────────────────────────────────────────────── */
+
+function getMessageText(msg: UIMessage): string {
+  return (msg.parts ?? [])
+    .filter((p): p is { type: 'text'; text: string } => p.type === 'text')
+    .map((p) => p.text)
+    .join('');
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -210,31 +225,36 @@ export default function CopilotPanel() {
 
         {/* ── Messages ────────────────────────────────── */}
         <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
-          {messages.map((msg) => (
-            <div
-              key={msg.id}
-              className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
+          {messages.map((msg) => {
+            const text = getMessageText(msg);
+            if (!text) return null;
+
+            return (
               <div
-                className={`max-w-[90%] rounded-xl px-4 py-3 ${
-                  msg.role === 'user'
-                    ? 'bg-foreground text-white'
-                    : 'bg-bg-secondary/80 text-foreground border border-border/50'
-                }`}
+                key={msg.id}
+                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
-                {msg.role === 'assistant' ? (
-                  <div
-                    className="text-sm leading-relaxed prose-sm [&_li]:text-sm [&_strong]:font-semibold [&_code]:text-xs"
-                    dangerouslySetInnerHTML={{
-                      __html: renderMarkdown(msg.content),
-                    }}
-                  />
-                ) : (
-                  <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
-                )}
+                <div
+                  className={`max-w-[90%] rounded-xl px-4 py-3 ${
+                    msg.role === 'user'
+                      ? 'bg-foreground text-white'
+                      : 'bg-bg-secondary/80 text-foreground border border-border/50'
+                  }`}
+                >
+                  {msg.role === 'assistant' ? (
+                    <div
+                      className="text-sm leading-relaxed prose-sm [&_li]:text-sm [&_strong]:font-semibold [&_code]:text-xs"
+                      dangerouslySetInnerHTML={{
+                        __html: renderMarkdown(text),
+                      }}
+                    />
+                  ) : (
+                    <p className="text-sm whitespace-pre-wrap">{text}</p>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
 
           {/* Streaming indicator */}
           {isLoading && (
