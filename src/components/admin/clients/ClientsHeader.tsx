@@ -5,10 +5,16 @@ import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
 import { IconPlus } from '@/components/ui/Icons';
 import ClientFormModal from './ClientFormModal';
+import { usePermissions } from '@/components/shared/PermissionsProvider';
 
 export default function ClientsHeader() {
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
+  const { can } = usePermissions();
+
+  if (!can('clients', 'create')) {
+    return null;
+  }
 
   return (
     <>

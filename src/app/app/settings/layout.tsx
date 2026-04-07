@@ -3,10 +3,12 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
+import { usePermissions } from '@/components/shared/PermissionsProvider';
 
 const sections = [
   {
     title: 'Organization',
+    requiresAdmin: true,
     items: [
       { label: 'General', href: '/app/settings' },
       { label: 'Branding', href: '/app/settings/branding' },
@@ -16,6 +18,7 @@ const sections = [
   },
   {
     title: 'People',
+    requiresAdmin: true,
     items: [
       { label: 'Team Members', href: '/app/settings/team' },
       { label: 'Roles & Permissions', href: '/app/settings/security/permissions' },
@@ -25,12 +28,14 @@ const sections = [
   },
   {
     title: 'Display',
+    requiresAdmin: false,
     items: [
       { label: 'Appearance', href: '/app/settings/appearance' },
     ],
   },
   {
     title: 'Billing',
+    requiresAdmin: true,
     items: [
       { label: 'Plans & Billing', href: '/app/settings/billing' },
       { label: 'Payment Terms', href: '/app/settings/payment-terms' },
@@ -41,6 +46,7 @@ const sections = [
   },
   {
     title: 'Security',
+    requiresAdmin: true,
     items: [
       { label: 'Overview', href: '/app/settings/security' },
       { label: 'Audit Log', href: '/app/settings/security/audit-log' },
@@ -48,6 +54,7 @@ const sections = [
   },
   {
     title: 'Developer',
+    requiresAdmin: true,
     items: [
       { label: 'Integrations', href: '/app/settings/integrations' },
       { label: 'Calendar Sync', href: '/app/settings/calendar-sync' },
@@ -57,6 +64,7 @@ const sections = [
   },
   {
     title: 'Content',
+    requiresAdmin: true,
     items: [
       { label: 'Custom Fields', href: '/app/settings/custom-fields' },
       { label: 'Tags & Categories', href: '/app/settings/tags' },
@@ -65,6 +73,7 @@ const sections = [
   },
   {
     title: 'Account',
+    requiresAdmin: false,
     items: [
       { label: 'Profile', href: '/app/settings/profile' },
       { label: 'Data & Privacy', href: '/app/settings/data-privacy' },
@@ -74,6 +83,14 @@ const sections = [
 
 export default function SettingsLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const { can } = usePermissions();
+
+  const visibleSections = sections.filter(s => {
+    if (s.requiresAdmin) {
+      return can('settings', 'view');
+    }
+    return true;
+  });
 
   return (
     <>
@@ -86,7 +103,7 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
       <div className="flex gap-8 items-start">
         <nav className="w-52 shrink-0 hidden md:block sticky top-16">
           <div className="space-y-5 max-h-[calc(100vh-5rem)] overflow-y-auto">
-            {sections.map((section) => (
+            {visibleSections.map((section) => (
               <div key={section.title}>
                 <p className="text-[11px] font-semibold text-text-muted uppercase tracking-wider mb-1.5 px-3">
                   {section.title}
