@@ -111,6 +111,9 @@ export const navSections: NavSection[] = [
       { label: 'Events', labelKey: 'nav.events', href: '/app/events', feature: 'events', icon: <IconNavEvents size={18} /> },
       { label: 'Schedule', labelKey: 'nav.schedule', href: '/app/schedule', feature: 'events', icon: <IconNavSchedule size={18} /> },
       { label: 'Advancing', labelKey: 'nav.advancing', href: '/app/advancing', feature: 'work_orders', icon: <IconNavAdvancing size={18} /> },
+      { label: 'Fabrication', labelKey: 'nav.fabrication', href: '/app/fabrication', feature: 'equipment', icon: <IconNavFabrication size={18} /> },
+      { label: 'Procurement', labelKey: 'nav.procurement', href: '/app/procurement', feature: 'equipment', icon: <IconNavProcurement size={18} /> },
+      { label: 'Rentals', labelKey: 'nav.rentals', href: '/app/rentals', feature: 'equipment', icon: <IconNavRentals size={18} /> },
     ],
   },
 
@@ -129,9 +132,6 @@ export const navSections: NavSection[] = [
       { label: 'Inventory', labelKey: 'nav.inventory', href: '/app/equipment', feature: 'equipment', icon: <IconNavInventory size={18} /> },
       { label: 'Warehouse', labelKey: 'nav.warehouse', href: '/app/warehouse', feature: 'warehouse', icon: <IconNavWarehouse size={18} /> },
       { label: 'Compliance', labelKey: 'nav.compliance', href: '/app/compliance', feature: 'crew', icon: <IconNavCompliance size={18} /> },
-      { label: 'Fabrication', labelKey: 'nav.fabrication', href: '/app/fabrication', feature: 'equipment', icon: <IconNavFabrication size={18} /> },
-      { label: 'Procurement', labelKey: 'nav.procurement', href: '/app/procurement', feature: 'equipment', icon: <IconNavProcurement size={18} /> },
-      { label: 'Rentals', labelKey: 'nav.rentals', href: '/app/rentals', feature: 'equipment', icon: <IconNavRentals size={18} /> },
     ],
   },
 
