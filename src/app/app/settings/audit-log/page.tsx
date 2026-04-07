@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import EmptyState from '@/components/ui/EmptyState';
+import PageHeader from '@/components/shared/PageHeader';
 
 interface AuditEntry {
   id: string;
@@ -70,12 +71,10 @@ export default async function AuditLogPage() {
 
   return (
     <TierGate feature="audit_log">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Audit Log</h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Security and compliance event log for your organization.
-        </p>
-      </div>
+<PageHeader
+        title="Audit Log"
+        subtitle="Security and compliance event log for your organization."
+      />
 
       {entries.length === 0 ? (
         <EmptyState message="No audit logs recorded yet" />

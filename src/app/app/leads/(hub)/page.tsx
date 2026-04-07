@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import LeadsHeader from '@/components/admin/leads/LeadsHeader';
 import LeadsTable from '@/components/admin/leads/LeadsTable';
 import LeadsHubTabs from '../LeadsHubTabs';
+import PageHeader from '@/components/shared/PageHeader';
 
 interface Lead {
   id: string;
@@ -66,20 +67,17 @@ export default async function LeadsPage() {
 
   return (
     <>
-      {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            Inbox
-          </h1>
-          <p className="mt-1 text-sm text-text-secondary">
-            {leads.length} leads in your inbox
-          </p>
-        </div>
-        <div className="flex gap-3">
-          <LeadsHeader />
-        </div>
-      </div>
+      <PageHeader
+
+        title="Inbox"
+
+        subtitle={`${leads.length} leads in your inbox`}
+
+      >
+
+        <LeadsHeader />
+
+      </PageHeader>
 
       <LeadsHubTabs />
 

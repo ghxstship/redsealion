@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Calendar } from 'lucide-react';
+import Card from '@/components/ui/Card';
 
 type Provider = 'google' | 'outlook' | 'ical';
 type SyncDirection = 'one-way' | 'two-way';
@@ -126,7 +127,7 @@ export default function CalendarSyncPage() {
 
       {/* Provider cards */}
       {providers.map((provider) => (
-        <div key={provider.key} className="rounded-xl border border-border bg-white px-6 py-6">
+        <Card key={provider.key}>
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-3">
               {/* Icon placeholder */}
@@ -212,11 +213,11 @@ export default function CalendarSyncPage() {
               </div>
             </div>
           )}
-        </div>
+        </Card>
       ))}
 
       {/* iCal Feed URL */}
-      <div className="rounded-xl border border-border bg-white px-6 py-6">
+      <Card>
         <h3 className="text-sm font-semibold text-foreground mb-2">iCal Feed URL</h3>
         <p className="text-sm text-text-secondary mb-4">
           Use this URL to subscribe to your FlyteDeck calendar from any calendar app.
@@ -235,10 +236,10 @@ export default function CalendarSyncPage() {
             {feedCopied ? 'Copied!' : 'Copy'}
           </button>
         </div>
-      </div>
+      </Card>
 
       {/* Sync Settings */}
-      <div className="rounded-xl border border-border bg-white px-6 py-6">
+      <Card>
         <h3 className="text-sm font-semibold text-foreground mb-5">Sync Settings</h3>
         <div className="space-y-4">
           {[
@@ -253,7 +254,7 @@ export default function CalendarSyncPage() {
             </div>
           ))}
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

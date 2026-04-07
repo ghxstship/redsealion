@@ -6,6 +6,8 @@ import { createClient } from '@/lib/supabase/server';
 import { notFound } from 'next/navigation';
 import EmptyState from '@/components/ui/EmptyState';
 import type { DealStage } from '@/types/database';
+import PageHeader from '@/components/shared/PageHeader';
+import Card from '@/components/ui/Card';
 import DealEmailDraft from '@/components/admin/pipeline/DealEmailDraft';
 import DealRiskAssessment from '@/components/admin/pipeline/DealRiskAssessment';
 import DealNextAction from '@/components/admin/pipeline/DealNextAction';
@@ -202,56 +204,54 @@ export default async function DealDetailPage({
     </div>
   );
 
-  const aiContent = (
-    <div className="space-y-6">
-      <DealRiskAssessment
-        dealValue={deal.deal_value}
-        probability={deal.probability}
-        stage={deal.stage}
-        createdAt={deal.created_at}
-        updatedAt={deal.updated_at}
-        wonDate={deal.won_date}
-        expectedCloseDate={deal.expected_close_date}
-        activityCount={deal.activities.length}
-      />
-      <DealNextAction
-        stage={deal.stage}
-        daysSinceUpdate={Math.floor((Date.now() - new Date(deal.updated_at).getTime()) / (1000 * 60 * 60 * 24))}
-        daysInPipeline={Math.floor((Date.now() - new Date(deal.created_at).getTime()) / (1000 * 60 * 60 * 24))}
-        probability={deal.probability}
-        activityCount={deal.activities.length}
-        hasContacts={true}
-        wonDate={deal.won_date}
-      />
-    </div>
-  );
+  const aiContent = (() => {
+    const nowMs = Date.now();
+    const daysSinceUpdate = Math.floor((nowMs - new Date(deal.updated_at).getTime()) / (1000 * 60 * 60 * 24));
+    const daysInPipeline = Math.floor((nowMs - new Date(deal.created_at).getTime()) / (1000 * 60 * 60 * 24));
+    return (
+      <div className="space-y-6">
+        <DealRiskAssessment
+          dealValue={deal.deal_value}
+          probability={deal.probability}
+          stage={deal.stage}
+          createdAt={deal.created_at}
+          updatedAt={deal.updated_at}
+          wonDate={deal.won_date}
+          expectedCloseDate={deal.expected_close_date}
+          activityCount={deal.activities.length}
+        />
+        <DealNextAction
+          stage={deal.stage}
+          daysSinceUpdate={daysSinceUpdate}
+          daysInPipeline={daysInPipeline}
+          probability={deal.probability}
+          activityCount={deal.activities.length}
+          hasContacts={true}
+          wonDate={deal.won_date}
+        />
+      </div>
+    );
+  })();
 
   return (
     <TierGate feature="pipeline">
       {/* Header */}
-      <div className="mb-8 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <Link
-            href="/app/pipeline"
-            className="text-xs font-medium text-text-muted hover:text-foreground transition-colors"
-          >
-            &larr; Pipeline
-          </Link>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-foreground">
-            {deal.title}
-          </h1>
-          <p className="mt-1 text-sm text-text-secondary">
-            {deal.client_name}
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <span
-            className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${statusColor(deal.stage)}`}
-          >
-            {STAGE_LABELS[deal.stage]}
-          </span>
-        </div>
-      </div>
+      <Link
+        href="/app/pipeline"
+        className="text-xs font-medium text-text-muted hover:text-foreground transition-colors mb-2 inline-block"
+      >
+        &larr; Pipeline
+      </Link>
+      <PageHeader
+        title={deal.title}
+        subtitle={deal.client_name}
+      >
+        <span
+          className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${statusColor(deal.stage)}`}
+        >
+          {STAGE_LABELS[deal.stage]}
+        </span>
+      </PageHeader>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Main column — tabbed */}
@@ -266,7 +266,7 @@ export default async function DealDetailPage({
 
         {/* Sidebar — always visible */}
         <div className="space-y-6">
-          <div className="rounded-xl border border-border bg-white p-6">
+          <Card>
             <h2 className="text-sm font-semibold text-foreground mb-3">
               Quick Info
             </h2>
@@ -335,7 +335,7 @@ export default async function DealDetailPage({
                 </div>
               )}
             </dl>
-          </div>
+          </Card>
         </div>
       </div>
     </TierGate>

@@ -9,6 +9,9 @@ import TeamStep, { type TeamAssignmentData } from '@/components/admin/builder/Te
 import PhaseEditorStep, { type PhaseData } from '@/components/admin/builder/PhaseEditorStep';
 import ReviewStep from '@/components/admin/builder/ReviewStep';
 import { createClient } from '@/lib/supabase/client';
+import PageHeader from '@/components/shared/PageHeader';
+import Card from '@/components/ui/Card';
+import Skeleton from '@/components/ui/Skeleton';
 
 // Default empty state for a new proposal
 function getEmptyState() {
@@ -508,9 +511,7 @@ export default function EditProposalBuilderPage({
           <span>/</span>
           <span>Builder</span>
         </div>
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          Edit Proposal
-        </h1>
+<PageHeader title="Edit Proposal" />
         {saving && (
           <p className="mt-1 text-sm text-blue-600 animate-pulse">
             Saving…
@@ -528,9 +529,9 @@ export default function EditProposalBuilderPage({
       </div>
 
       {/* Step Content */}
-      <div className="rounded-xl border border-border bg-white px-6 py-6 md:px-8 md:py-8">
+      <Card className="md:px-8 md:py-8">
         {renderStep()}
-      </div>
+      </Card>
 
       {/* Navigation */}
       {currentStep !== reviewIndex && (

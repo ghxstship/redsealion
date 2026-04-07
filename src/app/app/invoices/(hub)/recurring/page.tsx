@@ -5,6 +5,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import EmptyState from '@/components/ui/EmptyState';
 import RecurringHeader from '@/components/admin/invoices/RecurringHeader';
 import InvoiceHubTabs from '../../InvoiceHubTabs';
+import PageHeader from '@/components/shared/PageHeader';
 
 interface RecurringScheduleRow {
   id: string;
@@ -93,17 +94,12 @@ export default async function RecurringInvoicesPage() {
 
   return (
     <TierGate feature="recurring_invoices">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            Recurring Invoices
-          </h1>
-          <p className="mt-1 text-sm text-text-secondary">
-            Manage automatic invoice generation schedules.
-          </p>
-        </div>
+<PageHeader
+        title="Recurring Invoices"
+        subtitle="Manage automatic invoice generation schedules."
+      >
         <RecurringHeader />
-      </div>
+      </PageHeader>
 
       <InvoiceHubTabs />
 

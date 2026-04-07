@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import EmptyState from '@/components/ui/EmptyState';
+import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
 
 type EntityType = 'equipment' | 'crew' | 'project' | 'lead' | 'client';
 
@@ -121,17 +123,14 @@ export default function TagsSettingsPage() {
       </div>
 
       {/* Tags card */}
-      <div className="rounded-xl border border-border bg-white px-6 py-6">
+      <Card>
         <div className="flex items-center justify-between mb-5">
           <h3 className="text-sm font-semibold text-foreground">
             {entityTypes.find((e) => e.key === activeType)?.label} Tags
           </h3>
-          <button
-            onClick={() => setShowAdd(!showAdd)}
-            className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:bg-foreground/90 transition-colors"
-          >
+            <Button size="sm" onClick={() => setShowAdd(!showAdd)}>
             Add Tag
-          </button>
+            </Button>
         </div>
 
         {/* Add tag form */}
@@ -168,12 +167,9 @@ export default function TagsSettingsPage() {
               </div>
             </div>
             <div className="flex gap-2 pt-1">
-              <button
-                onClick={handleAdd}
-                className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:bg-foreground/90 transition-colors"
-              >
+                <Button size="sm" onClick={handleAdd}>
                 Add
-              </button>
+                </Button>
               <button
                 onClick={() => setShowAdd(false)}
                 className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-text-secondary hover:bg-gray-50 transition-colors"
@@ -212,7 +208,7 @@ export default function TagsSettingsPage() {
             ))
           )}
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

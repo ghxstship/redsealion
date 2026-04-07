@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PortfolioHeader from '@/components/admin/portfolio/PortfolioHeader';
 import EmptyState from '@/components/ui/EmptyState';
+import PageHeader from '@/components/shared/PageHeader';
 
 const CATEGORIES = ['All', 'Pop-Up', 'Installation', 'Festival', 'Launch', 'Retail'];
 
@@ -42,18 +43,12 @@ export default async function PortfolioPage() {
 
   return (
     <>
-      {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            Portfolio
-          </h1>
-          <p className="mt-1 text-sm text-text-secondary">
-            {portfolioItems.length} project{portfolioItems.length !== 1 ? 's' : ''} in your portfolio library.
-          </p>
-        </div>
+<PageHeader
+        title="Portfolio"
+        subtitle={`{portfolioItems.length} project{portfolioItems.length !== 1 ? 's' : ''} in your portfolio library.`}
+      >
         <PortfolioHeader />
-      </div>
+      </PageHeader>
 
       {/* Category filters */}
       <div className="mb-6 flex flex-wrap gap-2">

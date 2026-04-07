@@ -1,6 +1,6 @@
 'use client';
 
-import { type ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 import { IconX } from '@/components/ui/Icons';
 
@@ -31,6 +31,10 @@ const SIZE_MAP = {
   '3xl': 'max-w-3xl',
 } as const;
 
+const subscribe = () => () => {};
+const getSnapshot = () => true;
+const getServerSnapshot = () => false;
+
 /**
  * Canonical modal shell organism.
  * Provides backdrop, panel, header with title + close button, and animation.
@@ -47,11 +51,7 @@ export default function ModalShell({
   className = '',
   children,
 }: ModalShellProps) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
   if (!open || !mounted) return null;
 

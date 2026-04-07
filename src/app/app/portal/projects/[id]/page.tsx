@@ -1,6 +1,8 @@
 import { createClient } from '@/lib/supabase/server';
 import { Check } from 'lucide-react';
 import { TierGate } from '@/components/shared/TierGate';
+import PageHeader from '@/components/shared/PageHeader';
+import Card from '@/components/ui/Card';
 
 /**
  * Client-facing project dashboard — a read-only view clients see
@@ -113,9 +115,7 @@ export default async function PortalProjectPage({
       <div className="max-w-3xl mx-auto space-y-8">
         {/* Header */}
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            {project.name}
-          </h1>
+<PageHeader title={project.name} />
           <p className="mt-1 text-sm text-text-secondary">Project Dashboard</p>
         </div>
 

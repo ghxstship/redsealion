@@ -9,6 +9,8 @@ import FormLabel from '@/components/ui/FormLabel';
 import FormSelect from '@/components/ui/FormSelect';
 import FormTextarea from '@/components/ui/FormTextarea';
 import Alert from '@/components/ui/Alert';
+import PageHeader from '@/components/shared/PageHeader';
+import Card from '@/components/ui/Card';
 
 const CATEGORIES = [
   'AV / Production',
@@ -117,17 +119,17 @@ export default function NewVendorPage() {
           <ArrowLeft className="h-4 w-4" />
           Back to Vendors
         </Button>
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Add Vendor</h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Add a new supplier or vendor to your organization.
-        </p>
+        <PageHeader
+          title="Add Vendor"
+          subtitle="Add a new supplier or vendor to your organization."
+        />
       </div>
 
       {error && <Alert className="mb-6">{error}</Alert>}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Basic Info */}
-        <div className="rounded-xl border border-border bg-white px-6 py-6">
+        <Card>
           <h2 className="text-sm font-semibold text-foreground mb-5">Basic Information</h2>
           <div className="space-y-4">
             <div>
@@ -162,10 +164,10 @@ export default function NewVendorPage() {
               </FormSelect>
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* Contact */}
-        <div className="rounded-xl border border-border bg-white px-6 py-6">
+        <Card>
           <h2 className="text-sm font-semibold text-foreground mb-5">Contact Information</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
@@ -196,10 +198,10 @@ export default function NewVendorPage() {
               />
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* Address */}
-        <div className="rounded-xl border border-border bg-white px-6 py-6">
+        <Card>
           <h2 className="text-sm font-semibold text-foreground mb-5">Address</h2>
           <div className="space-y-4">
             <div>
@@ -237,10 +239,10 @@ export default function NewVendorPage() {
               </div>
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* Financial */}
-        <div className="rounded-xl border border-border bg-white px-6 py-6">
+        <Card>
           <h2 className="text-sm font-semibold text-foreground mb-5">Financial Details</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
@@ -264,10 +266,10 @@ export default function NewVendorPage() {
               />
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* Notes */}
-        <div className="rounded-xl border border-border bg-white px-6 py-6">
+        <Card>
           <h2 className="text-sm font-semibold text-foreground mb-5">Notes</h2>
           <FormTextarea
             rows={4}
@@ -275,7 +277,7 @@ export default function NewVendorPage() {
             onChange={(e) => updateField('notes', e.target.value)}
             placeholder="Any additional notes about this vendor..."
           />
-        </div>
+        </Card>
 
         {/* Actions */}
         <div className="flex justify-end gap-3">

@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
 
 // Demo sessions mock removed
 
@@ -55,7 +57,7 @@ export default function DataPrivacyPage() {
       </div>
 
       {/* Data Export */}
-      <div className="rounded-xl border border-border bg-white px-6 py-6">
+      <Card>
         <h3 className="text-sm font-semibold text-foreground mb-2">Data Export</h3>
         <p className="text-sm text-text-secondary mb-4">
           Export all of your organization&apos;s data as a JSON file including proposals, invoices, clients, assets, and users.
@@ -63,17 +65,13 @@ export default function DataPrivacyPage() {
         <p className="text-xs text-text-muted mb-4">
           This may take a few minutes for large organizations.
         </p>
-        <button
-          onClick={handleExport}
-          disabled={exporting}
-          className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-white hover:bg-foreground/90 transition-colors disabled:opacity-50"
-        >
+        <Button onClick={handleExport} disabled={exporting}>
           {exporting ? 'Exporting...' : 'Export All Data'}
-        </button>
-      </div>
+        </Button>
+      </Card>
 
       {/* Data Retention */}
-      <div className="rounded-xl border border-border bg-white px-6 py-6">
+      <Card>
         <h3 className="text-sm font-semibold text-foreground mb-5">Data Retention</h3>
         <div className="space-y-5">
           <div>
@@ -106,10 +104,10 @@ export default function DataPrivacyPage() {
             </select>
           </div>
         </div>
-      </div>
+      </Card>
 
       {/* Connected Sessions */}
-      <div className="rounded-xl border border-border bg-white px-6 py-6">
+      <Card>
         <h3 className="text-sm font-semibold text-foreground mb-5">Connected Sessions</h3>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -154,7 +152,7 @@ export default function DataPrivacyPage() {
             </tbody>
           </table>
         </div>
-      </div>
+      </Card>
 
       {/* Danger Zone */}
       <div className="rounded-xl border border-red-200 bg-white px-6 py-6">
@@ -222,13 +220,9 @@ export default function DataPrivacyPage() {
 
       {/* Save */}
       <div className="flex justify-end">
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-white hover:bg-foreground/90 transition-colors disabled:opacity-50"
-        >
+        <Button onClick={handleSave} disabled={saving}>
           {saving ? 'Saving...' : 'Save Changes'}
-        </button>
+        </Button>
       </div>
     </div>
   );

@@ -18,7 +18,7 @@ export default function TermsOfServicePage() {
         <div className="mt-10 max-w-2xl">
           <h2 className="mt-16 text-2xl font-bold tracking-tight text-foreground">1. Acceptance of Terms</h2>
           <p className="mt-6">
-            By accessing and using FlyteDeck ("the Service"), you accept and agree to be bound by the terms and provision of this agreement. 
+            By accessing and using FlyteDeck (&ldquo;the Service&rdquo;), you accept and agree to be bound by the terms and provision of this agreement. 
             If you do not agree to abide by these terms, please do not use our service.
           </p>
 

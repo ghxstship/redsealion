@@ -1,5 +1,7 @@
 import { TierGate } from '@/components/shared/TierGate';
 import Link from 'next/link';
+import PageHeader from '@/components/shared/PageHeader';
+import Card from '@/components/ui/Card';
 
 export default function SecurityPage() {
   const sections = [
@@ -19,14 +21,10 @@ export default function SecurityPage() {
 
   return (
     <TierGate feature="audit_log">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          Security Settings
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Manage security, audit logging, and access controls.
-        </p>
-      </div>
+      <PageHeader
+        title="Security Settings"
+        subtitle="Manage security, audit logging, and access controls."
+      />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {sections.map((section) => (
@@ -43,7 +41,7 @@ export default function SecurityPage() {
         ))}
       </div>
 
-      <div className="mt-8 rounded-xl border border-border bg-white px-6 py-6">
+      <Card className="mt-8">
         <h2 className="text-base font-semibold text-foreground mb-4">SSO Configuration</h2>
         <TierGate feature="sso">
           <div className="space-y-4">
@@ -67,7 +65,7 @@ export default function SecurityPage() {
             </div>
           </div>
         </TierGate>
-      </div>
+      </Card>
     </TierGate>
   );
 }

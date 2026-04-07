@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 
@@ -62,6 +62,10 @@ const sections: ShortcutSection[] = [
    Component
    ───────────────────────────────────────────────────────── */
 
+const subscribe = () => () => {};
+const getSnapshot = () => true;
+const getServerSnapshot = () => false;
+
 interface KeyboardShortcutsModalProps {
   open: boolean;
   onClose: () => void;
@@ -70,11 +74,7 @@ interface KeyboardShortcutsModalProps {
 export default function KeyboardShortcutsModal({ open, onClose }: KeyboardShortcutsModalProps) {
   const panelRef = useRef<HTMLDivElement>(null);
 
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
   // Close on Escape
   useEffect(() => {

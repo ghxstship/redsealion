@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
 
 type DocumentType = 'proposal' | 'invoice' | 'contract' | 'sow' | 'crew_call_sheet';
 type Section = 'terms_and_conditions' | 'disclaimer' | 'notes' | 'scope_header' | 'scope_footer' | 'payment_instructions';
@@ -133,7 +135,7 @@ export default function DocumentDefaultsPage() {
 
       {/* Section textareas */}
       {sections.map((s) => (
-        <div key={s.key} className="rounded-xl border border-border bg-white px-6 py-6">
+        <Card key={s.key}>
           <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-2">
             {s.label}
           </label>
@@ -144,18 +146,14 @@ export default function DocumentDefaultsPage() {
             placeholder={s.placeholder}
             className="w-full rounded-lg border border-border bg-white px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20 resize-y"
           />
-        </div>
+        </Card>
       ))}
 
       {/* Save */}
       <div className="flex justify-end">
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-white hover:bg-foreground/90 transition-colors disabled:opacity-50"
-        >
-          {saving ? 'Saving...' : 'Save Changes'}
-        </button>
+          <Button onClick={handleSave} disabled={saving}>
+            {saving ? 'Saving...' : 'Save Changes'}
+          </Button>
       </div>
     </div>
   );

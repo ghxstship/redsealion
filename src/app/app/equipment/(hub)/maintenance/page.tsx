@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import PageHeader from '@/components/shared/PageHeader';
 import EquipmentHubTabs from '../../EquipmentHubTabs';
+import Card from '@/components/ui/Card';
 
 interface MaintenanceEntry {
   id: string;
@@ -92,16 +94,10 @@ export default async function MaintenancePage() {
   return (
     <>
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            Maintenance
-          </h1>
-          <p className="mt-1 text-sm text-text-secondary">
-            {upcoming.length} upcoming &middot; {completed.length} completed
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        title="Maintenance"
+        subtitle={`${upcoming.length} upcoming · ${completed.length} completed`}
+      />
 
       <EquipmentHubTabs />
 

@@ -3,20 +3,17 @@
 import EmptyState from '@/components/ui/EmptyState';
 import { Calendar } from 'lucide-react';
 import { useTranslation } from '@/lib/i18n/client';
+import PageHeader from '@/components/shared/PageHeader';
 
 export default function MySchedulePage() {
   const { t } = useTranslation();
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          {t('mySchedule.title')}
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          {t('mySchedule.subtitle')}
-        </p>
-      </div>
+<PageHeader
+        title="{t('mySchedule.title')}"
+        subtitle={`{t('mySchedule.subtitle')}`}
+      />
 
       <EmptyState
         icon={<Calendar className="w-8 h-8" />}

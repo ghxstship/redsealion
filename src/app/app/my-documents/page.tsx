@@ -3,20 +3,17 @@
 import EmptyState from '@/components/ui/EmptyState';
 import { FileText } from 'lucide-react';
 import { useTranslation } from '@/lib/i18n/client';
+import PageHeader from '@/components/shared/PageHeader';
 
 export default function MyDocumentsPage() {
   const { t } = useTranslation();
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          {t('myDocuments.title')}
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          {t('myDocuments.subtitle')}
-        </p>
-      </div>
+<PageHeader
+        title="{t('myDocuments.title')}"
+        subtitle={`{t('myDocuments.subtitle')}`}
+      />
 
       <EmptyState
         icon={<FileText className="w-8 h-8" />}

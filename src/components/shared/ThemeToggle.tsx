@@ -24,12 +24,11 @@ export default function ThemeToggle() {
   const prefs = usePreferences();
   const [mode, setMode] = useState<ThemeMode>(prefs.theme);
 
-  // Sync from provider when it finishes loading
-  useEffect(() => {
-    if (prefs.loaded) {
-      setMode(prefs.theme);
-    }
-  }, [prefs.loaded, prefs.theme]);
+  // Sync from provider when the preference value changes
+  const currentTheme = prefs.loaded ? prefs.theme : mode;
+  if (currentTheme !== mode) {
+    setMode(currentTheme);
+  }
 
   // Listen for global theme changes (e.g. from settings page)
   useEffect(() => {

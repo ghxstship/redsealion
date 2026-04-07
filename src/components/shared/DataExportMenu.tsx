@@ -4,7 +4,7 @@ import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { ChevronUp, ChevronDown, Download, FileSpreadsheet, Sheet, FileJson2, FileType2, Printer, ClipboardCopy, Columns3, ChevronLeft, ChevronRight } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { getExportFields } from '@/lib/entity-fields';
-import type { EntityField } from '@/lib/entity-fields';
+import type { EntityField as _EntityField } from '@/lib/entity-fields';
 import { performExport, copyToClipboard } from '@/lib/export-formats';
 import type { ExportFormat } from '@/lib/export-formats';
 import { printTable } from '@/lib/print-table';
@@ -50,14 +50,17 @@ export default function DataExportMenu<T extends object>({
 
   // Build field config from registry
   const allFields = useMemo(() => getExportFields(entityKey), [entityKey]);
+  // Refresh fieldConfig if entityKey changes — use initializer keyed on allFields identity
   const [fieldConfig, setFieldConfig] = useState<FieldConfig[]>(() =>
     allFields.map((f) => ({ key: f.key, label: f.label, visible: f.defaultExportVisible !== false })),
   );
 
-  // Refresh fieldConfig if entityKey changes
-  useEffect(() => {
+  // Sync field config when allFields changes (entityKey swap)
+  const [prevFields, setPrevFields] = useState(allFields);
+  if (prevFields !== allFields) {
+    setPrevFields(allFields);
     setFieldConfig(allFields.map((f) => ({ key: f.key, label: f.label, visible: f.defaultExportVisible !== false })));
-  }, [allFields]);
+  }
 
   const visibleFields = useMemo(() => {
     const visibleKeys = new Set(fieldConfig.filter((fc) => fc.visible).map((fc) => fc.key));

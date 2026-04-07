@@ -1,6 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
+import Skeleton from '@/components/ui/Skeleton';
 
 const fontOptions = ['Inter', 'DM Sans', 'Plus Jakarta Sans', 'Manrope', 'Outfit', 'Space Grotesk'];
 
@@ -130,7 +133,7 @@ export default function BrandingSettingsPage() {
           <h2 className="text-lg font-semibold text-foreground">Branding</h2>
           <p className="mt-1 text-sm text-text-secondary">Customize colors, fonts, and portal appearance.</p>
         </div>
-        <div className="rounded-xl border border-border bg-white px-6 py-6 animate-pulse h-64" />
+        <Skeleton height="h-64" />
       </div>
     );
   }
@@ -142,7 +145,7 @@ export default function BrandingSettingsPage() {
         <p className="mt-1 text-sm text-text-secondary">Customize colors, fonts, and portal appearance.</p>
       </div>
 
-      <div className="rounded-xl border border-border bg-white px-6 py-6">
+      <Card>
         <h3 className="text-sm font-semibold text-foreground mb-5">Colors</h3>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           <ColorField label="Primary Color" value={primary} onChange={setPrimary} />
@@ -150,17 +153,17 @@ export default function BrandingSettingsPage() {
           <ColorField label="Accent Color" value={accent} onChange={setAccent} />
           <ColorField label="Background Color" value={bg} onChange={setBg} />
         </div>
-      </div>
+      </Card>
 
-      <div className="rounded-xl border border-border bg-white px-6 py-6">
+      <Card>
         <h3 className="text-sm font-semibold text-foreground mb-5">Typography</h3>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           <SelectField label="Heading Font" options={fontOptions} value={headingFont} onChange={setHeadingFont} />
           <SelectField label="Body Font" options={fontOptions} value={bodyFont} onChange={setBodyFont} />
         </div>
-      </div>
+      </Card>
 
-      <div className="rounded-xl border border-border bg-white px-6 py-6">
+      <Card>
         <h3 className="text-sm font-semibold text-foreground mb-5">Logo &amp; Favicon</h3>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           <div>
@@ -182,9 +185,9 @@ export default function BrandingSettingsPage() {
             </div>
           </div>
         </div>
-      </div>
+      </Card>
 
-      <div className="rounded-xl border border-border bg-white px-6 py-6">
+      <Card>
         <h3 className="text-sm font-semibold text-foreground mb-5">Portal Copy</h3>
         <div className="space-y-5">
           <InputField label="Portal Title" value={portalTitle} onChange={setPortalTitle} />
@@ -193,16 +196,12 @@ export default function BrandingSettingsPage() {
           <InputField label="Email From Name" value={emailFrom} onChange={setEmailFrom} />
           <InputField label="Email Reply-To" value={emailReplyTo} onChange={setEmailReplyTo} type="email" />
         </div>
-      </div>
+      </Card>
 
       <div className="flex justify-end">
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-foreground/90 disabled:opacity-50"
-        >
+        <Button onClick={handleSave} disabled={saving}>
           {saving ? 'Saving...' : 'Save Changes'}
-        </button>
+        </Button>
       </div>
     </div>
   );

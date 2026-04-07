@@ -8,6 +8,7 @@ import { TriggerSelector } from '@/components/admin/automations/TriggerSelector'
 import { ActionSelector } from '@/components/admin/automations/ActionSelector';
 import { createClient } from '@/lib/supabase/client';
 import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
+import PageHeader from '@/components/shared/PageHeader';
 export default function NewAutomationPage() {
   const router = useRouter();
   const [name, setName] = useState('');
@@ -83,14 +84,16 @@ export default function NewAutomationPage() {
         </Link>
       </div>
 
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          New Automation
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Define a trigger event and an action to automate.
-        </p>
-      </div>
+      <PageHeader
+
+
+        title="New Automation"
+
+
+        subtitle="Define a trigger event and an action to automate."
+
+
+      />
 
       {error && (
         <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">

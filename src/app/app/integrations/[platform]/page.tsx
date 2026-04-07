@@ -6,6 +6,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import { MappingEditor } from '@/components/admin/integrations/MappingEditor';
 import Tabs from '@/components/ui/Tabs';
 import EmptyState from '@/components/ui/EmptyState';
+import PageHeader from '@/components/shared/PageHeader';
 
 const PLATFORM_META: Record<string, { displayName: string; category: string }> = {
   salesforce: { displayName: 'Salesforce', category: 'crm' },

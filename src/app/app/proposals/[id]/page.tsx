@@ -15,6 +15,9 @@ import {
   type PhaseData,
 } from './_detail-types';
 import OverviewTab from './OverviewTab';
+import Card from '@/components/ui/Card';
+import PageHeader from '@/components/shared/PageHeader';
+import Button from '@/components/ui/Button';
 
 export default function ProposalDetailPage({
   params,
@@ -114,53 +117,32 @@ export default function ProposalDetailPage({
   return (
     <>
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-8">
-        <div className="min-w-0">
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-semibold tracking-tight text-foreground truncate">
-              {proposal.name}
-            </h1>
-            <span className={`inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColor(proposal.status)}`}>
-              {formatStatus(proposal.status)}
-            </span>
-          </div>
-          {proposal.subtitle && (
-            <p className="mt-1 text-sm text-text-secondary">{proposal.subtitle}</p>
-          )}
-          <p className="mt-1 text-sm text-text-muted">
-            {proposal.client_name}
-            {proposal.prepared_date &&
-              ` \u00B7 Prepared ${new Date(proposal.prepared_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`}
-            {` \u00B7 v${proposal.version}`}
-          </p>
-        </div>
-        <div className="flex items-center gap-3 shrink-0">
-          <Link
-            href={`/app/proposals/${id}/builder`}
-            className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
-          >
-            Edit in Builder
-          </Link>
-          <button
-            onClick={() => setShowShare(true)}
-            className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
-          >
-            Share
-          </button>
-          <button
-            onClick={() => setShowDelete(true)}
-            className="rounded-lg border border-red-200 bg-white px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
-          >
-            Delete
-          </button>
-          <button
-            onClick={() => setShowShare(true)}
-            className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90"
-          >
-            Send to Client
-          </button>
-        </div>
-      </div>
+      <PageHeader
+        title={<>{proposal.name}<span className={`ml-3 inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColor(proposal.status)}`}>{formatStatus(proposal.status)}</span></>}
+        subtitle={<>{proposal.client_name}{proposal.prepared_date && ` \u00B7 Prepared ${new Date(proposal.prepared_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`}{` \u00B7 v${proposal.version}`}</>}
+      >
+        <Link
+          href={`/app/proposals/${id}/builder`}
+          className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
+        >
+          Edit in Builder
+        </Link>
+        <button
+          onClick={() => setShowShare(true)}
+          className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
+        >
+          Share
+        </button>
+        <button
+          onClick={() => setShowDelete(true)}
+          className="rounded-lg border border-red-200 bg-white px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
+        >
+          Delete
+        </button>
+        <Button onClick={() => setShowShare(true)}>
+          Send to Client
+        </Button>
+      </PageHeader>
 
       {/* Tabs */}
       <Tabs tabs={detailTabs} activeTab={activeTab} onTabChange={setActiveTab} className="mb-8" />

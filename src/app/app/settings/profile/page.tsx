@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { User, Upload } from 'lucide-react';
+import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
+import Skeleton from '@/components/ui/Skeleton';
 
 function InputField({
   label,
@@ -85,7 +88,7 @@ export default function ProfileSettingsPage() {
           <h2 className="text-lg font-semibold text-foreground">Profile</h2>
           <p className="mt-1 text-sm text-text-secondary">Manage your account details.</p>
         </div>
-        <div className="rounded-xl border border-border bg-white px-6 py-6 animate-pulse h-48" />
+        <Skeleton />
       </div>
     );
   }
@@ -98,7 +101,7 @@ export default function ProfileSettingsPage() {
       </div>
 
       {/* Personal Information */}
-      <div className="rounded-xl border border-border bg-white px-6 py-6">
+      <Card>
         <h3 className="text-sm font-semibold text-foreground mb-5">Personal Information</h3>
         <div className="space-y-5">
           <InputField label="Full Name" value={fullName} onChange={setFullName} placeholder="Your full name" />
@@ -106,10 +109,10 @@ export default function ProfileSettingsPage() {
           <InputField label="Phone" value={phone} onChange={setPhone} type="tel" placeholder="+1 (555) 000-0000" />
           <InputField label="Title" value={title} onChange={setTitle} placeholder="e.g. Project Manager" />
         </div>
-      </div>
+      </Card>
 
       {/* Avatar */}
-      <div className="rounded-xl border border-border bg-white px-6 py-6">
+      <Card>
         <h3 className="text-sm font-semibold text-foreground mb-5">Avatar</h3>
         <div className="flex items-center gap-6">
           <div className="h-20 w-20 shrink-0 rounded-full bg-gray-100 border border-border flex items-center justify-center">
@@ -126,27 +129,23 @@ export default function ProfileSettingsPage() {
             </div>
           </div>
         </div>
-      </div>
+      </Card>
 
       {/* Password */}
-      <div className="rounded-xl border border-border bg-white px-6 py-6">
+      <Card>
         <h3 className="text-sm font-semibold text-foreground mb-5">Password</h3>
         <div className="space-y-5">
           <InputField label="Current Password" value={currentPassword} onChange={setCurrentPassword} type="password" placeholder="Enter current password" />
           <InputField label="New Password" value={newPassword} onChange={setNewPassword} type="password" placeholder="Enter new password" />
           <InputField label="Confirm Password" value={confirmPassword} onChange={setConfirmPassword} type="password" placeholder="Confirm new password" />
         </div>
-      </div>
+      </Card>
 
       {/* Save */}
       <div className="flex justify-end">
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-white hover:bg-foreground/90 transition-colors disabled:opacity-50"
-        >
+        <Button onClick={handleSave} disabled={saving}>
           {saving ? 'Saving...' : 'Save Changes'}
-        </button>
+        </Button>
       </div>
     </div>
   );

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import PageHeader from '@/components/shared/PageHeader';
 
 export default function NewCampaignPage() {
   const router = useRouter();
@@ -53,10 +54,10 @@ export default function NewCampaignPage() {
 
   return (
     <div className="max-w-3xl">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">New Campaign</h1>
-        <p className="mt-1 text-sm text-text-secondary">Create an email campaign to reach your clients.</p>
-      </div>
+<PageHeader
+        title="New Campaign"
+        subtitle="Create an email campaign to reach your clients."
+      />
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {error && (

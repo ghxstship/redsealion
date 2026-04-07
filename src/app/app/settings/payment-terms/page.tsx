@@ -1,6 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Card from '@/components/ui/Card';
+import Skeleton from '@/components/ui/Skeleton';
+import Button from '@/components/ui/Button';
 
 function SelectField({
   label,
@@ -118,7 +121,7 @@ export default function PaymentTermsSettingsPage() {
           <h2 className="text-lg font-semibold text-foreground">Payment Terms</h2>
           <p className="mt-1 text-sm text-text-secondary">Default payment structure for new proposals.</p>
         </div>
-        <div className="rounded-xl border border-border bg-white px-6 py-6 animate-pulse h-48" />
+        <Skeleton className="h-48" />
       </div>
     );
   }
@@ -130,7 +133,7 @@ export default function PaymentTermsSettingsPage() {
         <p className="mt-1 text-sm text-text-secondary">Default payment structure for new proposals.</p>
       </div>
 
-      <div className="rounded-xl border border-border bg-white px-6 py-6">
+      <Card>
         <h3 className="text-sm font-semibold text-foreground mb-5">Default Structure</h3>
         <div className="space-y-5">
           <SelectField
@@ -144,17 +147,17 @@ export default function PaymentTermsSettingsPage() {
             <PercentField label="Balance Percentage" value={balance} onChange={setBalance} />
           </div>
         </div>
-      </div>
+      </Card>
 
-      <div className="rounded-xl border border-border bg-white px-6 py-6">
+      <Card>
         <h3 className="text-sm font-semibold text-foreground mb-5">Fees &amp; Surcharges</h3>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           <PercentField label="Late Fee Rate (Monthly)" value={lateFee} onChange={setLateFee} step="0.1" />
           <PercentField label="Credit Card Surcharge" value={ccSurcharge} onChange={setCcSurcharge} step="0.1" />
         </div>
-      </div>
+      </Card>
 
-      <div className="rounded-xl border border-border bg-white px-6 py-6">
+      <Card>
         <h3 className="text-sm font-semibold text-foreground mb-5">Payment Instructions</h3>
         <div>
           <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
@@ -167,16 +170,12 @@ export default function PaymentTermsSettingsPage() {
             className="w-full rounded-lg border border-border bg-white px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20 resize-none"
           />
         </div>
-      </div>
+      </Card>
 
       <div className="flex justify-end">
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-foreground/90 disabled:opacity-50"
-        >
+        <Button onClick={handleSave} disabled={saving}>
           {saving ? 'Saving...' : 'Save Changes'}
-        </button>
+        </Button>
       </div>
     </div>
   );

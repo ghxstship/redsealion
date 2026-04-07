@@ -1,12 +1,12 @@
 import { createClient } from '@/lib/supabase/server';
-import { cookies, headers } from 'next/headers';
+import { headers } from 'next/headers';
 
 type LogAuditActionParams = {
   orgId: string;
   action: string;
   entity?: string;
   entityId?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 };
 
 /**

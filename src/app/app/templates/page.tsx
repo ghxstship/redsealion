@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import TemplatesHeader from '@/components/admin/templates/TemplatesHeader';
+import PageHeader from '@/components/shared/PageHeader';
 
 interface TemplateRow {
   id: string;
@@ -119,18 +120,12 @@ export default async function TemplatesPage() {
 
   return (
     <>
-      {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            Phase Templates
-          </h1>
-          <p className="mt-1 text-sm text-text-secondary">
-            Define reusable phase structures for your proposals.
-          </p>
-        </div>
+<PageHeader
+        title="Phase Templates"
+        subtitle="Define reusable phase structures for your proposals."
+      >
         <TemplatesHeader />
-      </div>
+      </PageHeader>
 
       {/* Templates list */}
       <div className="space-y-4">

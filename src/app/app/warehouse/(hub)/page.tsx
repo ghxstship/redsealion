@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import PageHeader from '@/components/shared/PageHeader';
+import Card from '@/components/ui/Card';
 import WarehouseHubTabs from '../WarehouseHubTabs';
 
 interface WarehouseAsset {
@@ -106,23 +108,17 @@ export default async function WarehousePage() {
   return (
     <>
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            Inventory
-          </h1>
-          <p className="mt-1 text-sm text-text-secondary">
-            {facilities.length} facilities &middot; {assets.length} asset types tracked
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        title="Inventory"
+        subtitle={`${facilities.length} facilities · ${assets.length} asset types tracked`}
+      />
 
       <WarehouseHubTabs />
 
       {/* Facility summary cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-8">
         {facilities.map((facility) => (
-          <div key={facility.name} className="rounded-xl border border-border bg-white p-5">
+          <Card key={facility.name} padding="default" className="p-5">
             <h3 className="text-sm font-medium text-foreground">{facility.name}</h3>
             <p className="mt-2 text-2xl font-semibold tabular-nums text-foreground">
               {facility.total_items}
@@ -132,7 +128,7 @@ export default async function WarehousePage() {
               <span className="text-green-700">{facility.available} available</span>
               <span className="text-blue-700">{facility.deployed} deployed</span>
             </div>
-          </div>
+          </Card>
         ))}
       </div>
 

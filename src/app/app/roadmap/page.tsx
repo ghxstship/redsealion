@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import Link from 'next/link';
+import PageHeader from '@/components/shared/PageHeader';
 
 /**
  * Roadmap view — timeline-based project visualization
@@ -99,14 +100,10 @@ export default async function RoadmapPage() {
 
   return (
     <TierGate feature="tasks">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          Roadmap
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Project timeline across the next two quarters
-        </p>
-      </div>
+<PageHeader
+        title="Roadmap"
+        subtitle="Project timeline across the next two quarters"
+      />
 
       {/* Timeline header */}
       <div className="rounded-xl border border-border bg-white overflow-hidden">

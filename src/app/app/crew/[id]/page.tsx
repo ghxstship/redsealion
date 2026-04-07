@@ -7,6 +7,8 @@ import EmptyState from '@/components/ui/EmptyState';
 import ComplianceDocumentsPanel from '@/components/admin/crew/ComplianceDocumentsPanel';
 import CrewRatingsPanel from '@/components/admin/crew/CrewRatingsPanel';
 import CrewDetailTabs from './CrewDetailTabs';
+import PageHeader from '@/components/shared/PageHeader';
+import Card from '@/components/ui/Card';
 
 interface CrewDetail {
   full_name: string;
@@ -242,46 +244,43 @@ export default async function CrewMemberPage({
   return (
     <>
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-8">
-        <div>
-          <Link
-            href="/app/crew"
-            className="text-xs font-medium text-text-muted hover:text-foreground transition-colors"
+      <Link
+        href="/app/crew"
+        className="text-xs font-medium text-text-muted hover:text-foreground transition-colors mb-2 inline-block"
+      >
+        &larr; Crew Directory
+      </Link>
+      <PageHeader
+        title={member.full_name}
+        subtitle={member.email}
+      >
+        <div className="flex gap-2">
+          <span
+            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+              AVAILABILITY_COLORS[member.availability_status] ?? 'bg-gray-100 text-gray-600'
+            }`}
           >
-            &larr; Crew Directory
-          </Link>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-foreground">
-            {member.full_name}
-          </h1>
-          <p className="mt-1 text-sm text-text-secondary">{member.email}</p>
-          <div className="mt-3 flex gap-2">
-            <span
-              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                AVAILABILITY_COLORS[member.availability_status] ?? 'bg-gray-100 text-gray-600'
-              }`}
-            >
-              {formatLabel(member.availability_status)}
-            </span>
-            <span
-              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                ONBOARDING_COLORS[member.onboarding_status] ?? 'bg-gray-100 text-gray-600'
-              }`}
-            >
-              Onboarding: {formatLabel(member.onboarding_status)}
-            </span>
-          </div>
+            {formatLabel(member.availability_status)}
+          </span>
+          <span
+            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+              ONBOARDING_COLORS[member.onboarding_status] ?? 'bg-gray-100 text-gray-600'
+            }`}
+          >
+            Onboarding: {formatLabel(member.onboarding_status)}
+          </span>
         </div>
         <button className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary">
           Edit Profile
         </button>
-      </div>
+      </PageHeader>
 
       {/* Two-column layout */}
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         {/* Left column - Sidebar (always visible) */}
         <div className="lg:col-span-1 space-y-6">
           {/* Contact Info */}
-          <div className="rounded-xl border border-border bg-white p-6">
+          <Card>
             <h2 className="text-sm font-semibold text-foreground mb-4">Contact Info</h2>
             <div className="space-y-3">
               <div>
@@ -295,10 +294,10 @@ export default async function CrewMemberPage({
                 </div>
               )}
             </div>
-          </div>
+          </Card>
 
           {/* Rates */}
-          <div className="rounded-xl border border-border bg-white p-6">
+          <Card>
             <h2 className="text-sm font-semibold text-foreground mb-4">Rates</h2>
             <div className="space-y-3">
               {member.hourly_rate != null && (
@@ -314,11 +313,11 @@ export default async function CrewMemberPage({
                 </div>
               )}
             </div>
-          </div>
+          </Card>
 
           {/* Emergency Contact */}
           {member.emergency_contact_name && (
-            <div className="rounded-xl border border-border bg-white p-6">
+            <Card>
               <h2 className="text-sm font-semibold text-foreground mb-4">Emergency Contact</h2>
               <div className="space-y-3">
                 <div>
@@ -332,7 +331,7 @@ export default async function CrewMemberPage({
                   </div>
                 )}
               </div>
-            </div>
+            </Card>
           )}
         </div>
 

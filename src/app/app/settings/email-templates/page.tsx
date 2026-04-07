@@ -33,6 +33,8 @@ const variableHints: Record<string, string[]> = {
 };
 
 import { Mail } from 'lucide-react';
+import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
 
 function MailIcon() {
   return <Mail className="h-5 w-5 text-text-secondary" />;
@@ -232,13 +234,9 @@ export default function EmailTemplatesPage() {
                     </div>
                   </div>
                   <div className="flex justify-end">
-                    <button
-                      onClick={handleSaveTemplate}
-                      disabled={saving}
-                      className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-foreground/90 disabled:opacity-50"
-                    >
+                    <Button onClick={handleSaveTemplate} disabled={saving}>
                       {saving ? 'Saving...' : 'Save Template'}
-                    </button>
+                    </Button>
                   </div>
                 </div>
               )}

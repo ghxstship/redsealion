@@ -4,6 +4,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import { createClient } from '@/lib/supabase/server';
 import PaymentRecorder from '@/components/admin/invoices/PaymentRecorder';
 import InvoiceActions from '@/components/admin/invoices/InvoiceActions';
+import PageHeader from '@/components/shared/PageHeader';
 
 interface InvoiceDetail {
   id: string;
@@ -154,17 +155,19 @@ export default async function InvoiceDetailPage({
         <span className="text-foreground font-medium">{invoice.invoice_number}</span>
       </nav>
 
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            {invoice.invoice_number}
-          </h1>
-          <p className="mt-1 text-sm text-text-secondary">
-            {invoice.client_name} &middot; {formatStatus(invoice.type)}
-          </p>
-        </div>
-        <div className="flex items-center gap-3 shrink-0">
-          <span
+      <PageHeader
+
+
+        title="{invoice.invoice_number}"
+
+
+        subtitle={`${invoice.client_name} · ${formatStatus(invoice.type)}`}
+
+
+      >
+
+
+        <span
             className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${statusColor(invoice.status)}`}
           >
             {formatStatus(invoice.status)}
@@ -174,8 +177,9 @@ export default async function InvoiceDetailPage({
             invoiceNumber={invoice.invoice_number}
             status={invoice.status}
           />
-        </div>
-      </div>
+
+
+      </PageHeader>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-6">

@@ -6,6 +6,7 @@ import Button from '@/components/ui/Button';
 import ModalShell from '@/components/ui/ModalShell';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
+import PageHeader from '@/components/shared/PageHeader';
 
 interface EmailTemplate {
   id: string;
@@ -86,14 +87,10 @@ export default function EmailTemplatesPage() {
 
   return (
     <TierGate feature="email_inbox">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          Email Templates
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Reusable email templates with merge fields for quick, personalized outreach.
-        </p>
-      </div>
+<PageHeader
+        title="Email Templates"
+        subtitle="Reusable email templates with merge fields for quick, personalized outreach."
+      />
 
       {/* Category filters */}
       <div className="mb-6 flex flex-wrap items-center gap-2">

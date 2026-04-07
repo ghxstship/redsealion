@@ -2,6 +2,8 @@ import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import { formatCurrency } from '@/lib/utils';
 import BurnChart from '@/components/admin/budgets/BurnChart';
+import PageHeader from '@/components/shared/PageHeader';
+import Card from '@/components/ui/Card';
 
 interface BudgetDetail {
   projectName: string;
@@ -71,35 +73,31 @@ export default async function BudgetDetailPage(props: { params: Promise<{ id: st
 
   return (
     <TierGate feature="budgets">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          {budget.projectName}
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Budget tracking and burn-down analysis.
-        </p>
-      </div>
+<PageHeader
+        title="{budget.projectName}"
+        subtitle="Budget tracking and burn-down analysis."
+      />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-8">
-        <div className="rounded-xl border border-border bg-white px-5 py-5">
+        <Card padding="default" className="px-5 py-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Total Budget</p>
           <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground">
             {formatCurrency(budget.totalBudget)}
           </p>
-        </div>
-        <div className="rounded-xl border border-border bg-white px-5 py-5">
+        </Card>
+        <Card padding="default" className="px-5 py-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Spent</p>
           <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground">
             {formatCurrency(budget.spent)}
           </p>
-        </div>
-        <div className="rounded-xl border border-border bg-white px-5 py-5">
+        </Card>
+        <Card padding="default" className="px-5 py-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Remaining</p>
           <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground">
             {formatCurrency(budget.totalBudget - budget.spent)}
           </p>
           <p className="mt-1 text-xs text-text-secondary">{percentUsed}% consumed</p>
-        </div>
+        </Card>
       </div>
 
       <div className="mb-8">

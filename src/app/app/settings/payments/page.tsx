@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import StripeConnectSetup from '@/components/admin/payments/StripeConnectSetup';
+import PageHeader from '@/components/shared/PageHeader';
+import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
 
 export default function PaymentSettingsPage() {
   const [instructions, setInstructions] = useState('');
@@ -33,21 +36,17 @@ export default function PaymentSettingsPage() {
 
   return (
     <>
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          Payment Settings
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Configure how your organization accepts payments.
-        </p>
-      </div>
+      <PageHeader
+        title="Payment Settings"
+        subtitle="Configure how your organization accepts payments."
+      />
 
       <div className="max-w-2xl space-y-6">
         {/* Stripe Connect */}
         <StripeConnectSetup />
 
         {/* Payment Instructions */}
-        <div className="rounded-xl border border-border bg-white px-6 py-6">
+        <Card>
           <h2 className="text-sm font-semibold text-foreground mb-5">Payment Instructions</h2>
           <p className="text-sm text-text-muted mb-3">
             Custom instructions shown to clients on invoices (e.g. wire transfer details, check mailing address).
@@ -59,10 +58,10 @@ export default function PaymentSettingsPage() {
             placeholder="Enter payment instructions for your clients..."
             className="w-full rounded-lg border border-border bg-white px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20 resize-none"
           />
-        </div>
+        </Card>
 
         {/* Payment Link Configuration */}
-        <div className="rounded-xl border border-border bg-white px-6 py-6">
+        <Card>
           <h2 className="text-sm font-semibold text-foreground mb-5">Payment Link Configuration</h2>
           <p className="text-sm text-text-muted mb-3">
             When Stripe Connect is active, payment links are created on your connected account so
@@ -74,16 +73,12 @@ export default function PaymentSettingsPage() {
               Connect your Stripe account above to enable direct payouts.
             </p>
           </div>
-        </div>
+        </Card>
 
         <div className="flex justify-end">
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-foreground/90 disabled:opacity-50"
-          >
+          <Button onClick={handleSave} disabled={saving}>
             {saving ? 'Saving...' : 'Save Changes'}
-          </button>
+          </Button>
         </div>
       </div>
     </>

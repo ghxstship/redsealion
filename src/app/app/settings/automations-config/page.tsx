@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
 
 interface AutomationRun {
   id: string;
@@ -68,7 +70,7 @@ export default function AutomationsConfigPage() {
       </div>
 
       {/* Execution Limits */}
-      <div className="rounded-xl border border-border bg-white px-6 py-6">
+      <Card>
         <h3 className="text-sm font-semibold text-foreground mb-5">Execution Limits</h3>
         <div className="grid grid-cols-2 gap-5">
           <div>
@@ -116,10 +118,10 @@ export default function AutomationsConfigPage() {
             />
           </div>
         </div>
-      </div>
+      </Card>
 
       {/* Default Actions */}
-      <div className="rounded-xl border border-border bg-white px-6 py-6">
+      <Card>
         <h3 className="text-sm font-semibold text-foreground mb-5">Default Actions</h3>
         <div className="space-y-4">
           <div className="flex items-center justify-between">
@@ -135,10 +137,10 @@ export default function AutomationsConfigPage() {
             <Toggle checked={pauseOnFailures} onChange={setPauseOnFailures} />
           </div>
         </div>
-      </div>
+      </Card>
 
       {/* Recent Runs */}
-      <div className="rounded-xl border border-border bg-white px-6 py-6">
+      <Card>
         <h3 className="text-sm font-semibold text-foreground mb-5">Recent Runs</h3>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -175,7 +177,7 @@ export default function AutomationsConfigPage() {
             </tbody>
           </table>
         </div>
-      </div>
+      </Card>
 
       {/* Save */}
       <div className="flex items-center justify-between">
@@ -185,13 +187,9 @@ export default function AutomationsConfigPage() {
         >
           Manage automation rules &rarr;
         </Link>
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-white hover:bg-foreground/90 transition-colors disabled:opacity-50"
-        >
+        <Button onClick={handleSave} disabled={saving}>
           {saving ? 'Saving...' : 'Save Changes'}
-        </button>
+        </Button>
       </div>
     </div>
   );

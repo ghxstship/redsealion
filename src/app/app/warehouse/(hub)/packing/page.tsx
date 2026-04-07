@@ -2,6 +2,9 @@ import Link from 'next/link';
 import { Check } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import PageHeader from '@/components/shared/PageHeader';
+import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
 import WarehouseHubTabs from '../../WarehouseHubTabs';
 
 interface Proposal {
@@ -76,21 +79,12 @@ export default async function PackingPage() {
   return (
     <>
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            Packing
-          </h1>
-          <p className="mt-1 text-sm text-text-secondary">
-            Manage your equipment load-outs.
-          </p>
-        </div>
-      </div>
+      <PageHeader title="Packing" subtitle="Manage your equipment load-outs." />
 
       <WarehouseHubTabs />
 
       {/* Proposal selector */}
-      <div className="rounded-xl border border-border bg-white p-6 mb-8">
+      <Card className="mb-8">
         <h2 className="text-sm font-semibold text-foreground mb-4">Select a Proposal</h2>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {proposals.map((proposal) => (
@@ -103,7 +97,7 @@ export default async function PackingPage() {
             </button>
           ))}
         </div>
-      </div>
+      </Card>
 
       {/* Packing list */}
       <div className="rounded-xl border border-border bg-white overflow-hidden">
@@ -126,9 +120,9 @@ export default async function PackingPage() {
                 {packedCount}/{totalCount} packed
               </span>
             </div>
-            <button className="rounded-lg bg-foreground px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-foreground/90">
+            <Button size="sm">
               Export PDF
-            </button>
+            </Button>
           </div>
         </div>
         <div className="overflow-x-auto">

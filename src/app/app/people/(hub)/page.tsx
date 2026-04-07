@@ -4,6 +4,8 @@ import PeopleHeader from '@/components/admin/people/PeopleHeader';
 import PeopleGrid from '@/components/admin/people/PeopleGrid';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PeopleHubTabs from '../PeopleHubTabs';
+import PageHeader from '@/components/shared/PageHeader';
+import Card from '@/components/ui/Card';
 
 interface TeamMember {
   id: string;
@@ -47,32 +49,29 @@ export default async function PeoplePage() {
 
   return (
     <TierGate feature="people_hr">
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">People</h1>
-          <p className="mt-1 text-sm text-text-secondary">
-            {members.length} team members &middot; {roleCount} {roleCount === 1 ? 'role' : 'roles'}
-          </p>
-        </div>
+<PageHeader
+        title="People"
+        subtitle={`{members.length} team members · {roleCount} {roleCount === 1 ? 'role' : 'roles'}`}
+      >
         <PeopleHeader />
-      </div>
+      </PageHeader>
 
       <PeopleHubTabs />
 
       {/* Stat cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-8">
-        <div className="rounded-xl border border-border bg-white px-5 py-5">
+        <Card padding="default" className="px-5 py-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Total People</p>
           <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground">{members.length}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-white px-5 py-5">
+        </Card>
+        <Card padding="default" className="px-5 py-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Roles</p>
           <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground">{roleCount}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-white px-5 py-5">
+        </Card>
+        <Card padding="default" className="px-5 py-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">With Rate Cards</p>
           <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground">{members.filter((m) => m.rate_card).length}</p>
-        </div>
+        </Card>
       </div>
 
 

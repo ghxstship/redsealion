@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import Link from 'next/link';
+import PageHeader from '@/components/shared/PageHeader';
 
 /**
  * Goals & OKRs — high-level objectives with key results linked to tasks.
@@ -103,14 +104,10 @@ export default async function GoalsPage() {
 
   return (
     <TierGate feature="tasks">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          Goals & OKRs
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Track high-level objectives and key results across projects.
-        </p>
-      </div>
+<PageHeader
+        title="Goals & OKRs"
+        subtitle="Track high-level objectives and key results across projects."
+      />
 
       <div className="space-y-6">
         {goals.map((goal) => (

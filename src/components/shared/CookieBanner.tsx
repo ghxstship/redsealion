@@ -1,42 +1,37 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { IconLock, IconX } from '@/components/ui/Icons';
 import Button from '@/components/ui/Button';
 
 export function CookieBanner() {
-  const [hasConsented, setHasConsented] = useState<boolean | null>(null);
+  const consentState = useSyncExternalStore(
+    () => () => {},
+    () => localStorage.getItem('fd_cookie_consent'),
+    () => null,
+  );
+  const hasConsented = consentState !== null ? true : false;
+  const [dismissed, setDismissed] = useState(false);
   const [showPreferences, setShowPreferences] = useState(false);
-
-  // Load consent state on mount
-  useEffect(() => {
-    const consentState = localStorage.getItem('fd_cookie_consent');
-    if (consentState) {
-      setHasConsented(true);
-    } else {
-      setHasConsented(false);
-    }
-  }, []);
 
   const handleAcceptAll = () => {
     localStorage.setItem('fd_cookie_consent', 'all');
-    setHasConsented(true);
+    setDismissed(true);
     // Here we would typically initialize analytics scripts
   };
 
   const handleRejectNonEssential = () => {
     localStorage.setItem('fd_cookie_consent', 'essential');
-    setHasConsented(true);
+    setDismissed(true);
   };
 
   const handleSavePreferences = () => {
     localStorage.setItem('fd_cookie_consent', 'custom');
-    setHasConsented(true);
+    setDismissed(true);
     setShowPreferences(false);
   };
 
-  // Do not render anything during SSR or if consent is already given
-  if (hasConsented === null || hasConsented === true) return null;
+  if (hasConsented || dismissed) return null;
 
   return (
     <>
@@ -48,7 +43,7 @@ export function CookieBanner() {
               We value your privacy
             </h3>
             <p className="mt-2 text-sm text-text-secondary leading-relaxed max-w-3xl">
-              We use cookies and similar technologies to help personalize content, tailor and measure ads, and provide a better experience. By clicking "Accept All", you agree to this, as outlined in our{' '}
+              We use cookies and similar technologies to help personalize content, tailor and measure ads, and provide a better experience. By clicking &ldquo;Accept All&rdquo;, you agree to this, as outlined in our{' '}
               <a href="/privacy" className="text-indigo-600 hover:underline">
                 Privacy Policy
               </a>

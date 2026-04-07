@@ -8,6 +8,9 @@ import VenueStep, { type VenueData } from '@/components/admin/builder/VenueStep'
 import TeamStep, { type TeamAssignmentData } from '@/components/admin/builder/TeamStep';
 import PhaseEditorStep, { type PhaseData } from '@/components/admin/builder/PhaseEditorStep';
 import ReviewStep from '@/components/admin/builder/ReviewStep';
+import PageHeader from '@/components/shared/PageHeader';
+import Card from '@/components/ui/Card';
+import Skeleton from '@/components/ui/Skeleton';
 
 function createDefaultPhase(number: number): PhaseData {
   const phaseNames: Record<number, { name: string; subtitle: string }> = {
@@ -161,14 +164,10 @@ export default function NewProposalPage() {
 
   return (
     <>
-      <div className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          New Proposal
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Build your proposal step by step.
-        </p>
-      </div>
+<PageHeader
+        title="New Proposal"
+        subtitle="Build your proposal step by step."
+      />
 
       {/* Step Indicator */}
       <div className="mb-8 rounded-xl border border-border bg-white px-5 py-4">
@@ -180,9 +179,9 @@ export default function NewProposalPage() {
       </div>
 
       {/* Step Content */}
-      <div className="rounded-xl border border-border bg-white px-6 py-6 md:px-8 md:py-8">
+      <Card className="md:px-8 md:py-8">
         {renderStep()}
-      </div>
+      </Card>
 
       {/* Save error */}
       {saveError && (

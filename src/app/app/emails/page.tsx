@@ -2,6 +2,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import EmptyState from '@/components/ui/EmptyState';
+import PageHeader from '@/components/shared/PageHeader';
 
 interface EmailThreadRow {
   id: string;
@@ -119,14 +120,10 @@ export default async function EmailsPage() {
 
   return (
     <TierGate feature="email_inbox">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          Email Inbox
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Email threads linked to your deals and clients.
-        </p>
-      </div>
+<PageHeader
+        title="Email Inbox"
+        subtitle="Email threads linked to your deals and clients."
+      />
 
       <div className="rounded-xl border border-border bg-white divide-y divide-border">
         {threads.map((thread) => (

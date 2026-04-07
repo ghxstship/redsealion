@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
+import Skeleton from '@/components/ui/Skeleton';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
 
@@ -52,7 +54,7 @@ export default function TaxSettingsPage() {
           <h2 className="text-lg font-semibold text-foreground">Tax Settings</h2>
           <p className="mt-1 text-sm text-text-secondary">Configure default tax rates for invoicing.</p>
         </div>
-        <div className="rounded-xl border border-border bg-white px-6 py-6 animate-pulse h-48" />
+        <Skeleton />
       </div>
     );
   }
@@ -66,7 +68,7 @@ export default function TaxSettingsPage() {
         </p>
       </div>
 
-      <div className="rounded-xl border border-border bg-white px-6 py-6">
+      <Card>
         <h3 className="text-sm font-semibold text-foreground mb-5">Default Tax Configuration</h3>
         <div className="space-y-5">
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
@@ -102,7 +104,7 @@ export default function TaxSettingsPage() {
             </div>
           </div>
         </div>
-      </div>
+      </Card>
 
       <div className="rounded-xl border border-border bg-bg-secondary/30 p-4">
         <p className="text-xs text-text-muted">

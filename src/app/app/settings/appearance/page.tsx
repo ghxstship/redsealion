@@ -2,6 +2,7 @@
 
 import { Sun, Moon, Monitor } from 'lucide-react';
 import { usePreferences } from '@/components/shared/PreferencesProvider';
+import Button from '@/components/ui/Button';
 
 type Theme = 'light' | 'dark' | 'system';
 type CalendarView = 'month' | 'week' | 'day';
@@ -126,12 +127,9 @@ export default function AppearanceSettingsPage() {
       </div>
 
       <div className="flex justify-end">
-        <button
-          onClick={handleSave}
-          className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-colors hover:bg-foreground/90 disabled:opacity-50"
-        >
+        <Button onClick={handleSave}>
           Save Changes
-        </button>
+        </Button>
       </div>
     </div>
   );

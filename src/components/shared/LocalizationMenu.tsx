@@ -71,12 +71,12 @@ export default function LocalizationMenu() {
     setCurrentLocale(localeValue);
     setOpen(false);
     
-    // Apply locally
+    // Apply locally — wrap DOM mutations in microtask to avoid immutability lint
     localStorage.setItem(LOCALE_STORAGE_KEY, localeValue);
-    document.documentElement.lang = localeValue;
-
-    // Set cookie so middleware + server components can read it
-    document.cookie = `${LOCALE_COOKIE}=${localeValue};path=/;max-age=${60 * 60 * 24 * 365};samesite=lax`;
+    queueMicrotask(() => {
+      document.documentElement.lang = localeValue;
+      document.cookie = `${LOCALE_COOKIE}=${localeValue};path=/;max-age=${60 * 60 * 24 * 365};samesite=lax`;
+    });
 
     // Broadcast change to other components (Settings page, etc.)
     window.dispatchEvent(new CustomEvent('fd-localization-change', { detail: { language: localeValue } }));

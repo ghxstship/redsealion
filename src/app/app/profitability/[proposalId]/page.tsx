@@ -2,6 +2,8 @@ import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import { formatCurrency } from '@/lib/utils';
 import MarginChart from '@/components/admin/profitability/MarginChart';
+import PageHeader from '@/components/shared/PageHeader';
+import Card from '@/components/ui/Card';
 
 interface ProjectDetail {
   name: string;
@@ -61,30 +63,26 @@ export default async function ProjectProfitabilityPage(props: { params: Promise<
 
   return (
     <TierGate feature="profitability">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          {project.name}
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Detailed profitability breakdown.
-        </p>
-      </div>
+<PageHeader
+        title="{project.name}"
+        subtitle="Detailed profitability breakdown."
+      />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-8">
-        <div className="rounded-xl border border-border bg-white px-5 py-5">
+        <Card padding="default" className="px-5 py-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Revenue</p>
           <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground">{formatCurrency(project.revenue)}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-white px-5 py-5">
+        </Card>
+        <Card padding="default" className="px-5 py-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Total Costs</p>
           <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground">{formatCurrency(totalCosts)}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-white px-5 py-5">
+        </Card>
+        <Card padding="default" className="px-5 py-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Net Margin</p>
           <p className={`mt-2 text-3xl font-semibold tracking-tight ${margin >= 0 ? 'text-green-600' : 'text-red-600'}`}>
             {formatCurrency(margin)} ({marginPercent}%)
           </p>
-        </div>
+        </Card>
       </div>
 
       <MarginChart revenue={project.revenue} costs={totalCosts} categories={project.costsByCategory} />

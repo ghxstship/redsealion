@@ -2,6 +2,8 @@ import { createClient } from '@/lib/supabase/server';
 import { FileText } from 'lucide-react';
 import { TierGate } from '@/components/shared/TierGate';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import PageHeader from '@/components/shared/PageHeader';
+import Card from '@/components/ui/Card';
 
 interface FileStats {
   total: number;
@@ -55,28 +57,24 @@ export default async function FilesPage() {
 
   return (
     <TierGate feature="proposals">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          Files
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          All documents and attachments across your projects.
-        </p>
-      </div>
+<PageHeader
+        title="Files"
+        subtitle="All documents and attachments across your projects."
+      />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-8">
-        <div className="rounded-xl border border-border bg-white px-5 py-5">
+        <Card padding="default" className="px-5 py-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Total Files</p>
           <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground">{stats.total}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-white px-5 py-5">
+        </Card>
+        <Card padding="default" className="px-5 py-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Storage Used</p>
           <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground">{stats.totalSizeMb} MB</p>
-        </div>
-        <div className="rounded-xl border border-border bg-white px-5 py-5">
+        </Card>
+        <Card padding="default" className="px-5 py-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Categories</p>
           <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground">{Object.keys(stats.categories).length}</p>
-        </div>
+        </Card>
       </div>
 
       <div className="rounded-xl border border-border bg-white px-8 py-16 text-center">

@@ -1,11 +1,10 @@
 'use client';
 
-import { useState, useRef, useCallback, useMemo, useEffect } from 'react';
+import { useState, useRef, useMemo, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 import Button from '@/components/ui/Button';
 import { Check, AlertTriangle, Upload, Download, ArrowRight } from 'lucide-react';
 import { getImportFields } from '@/lib/entity-fields';
-import type { EntityField } from '@/lib/entity-fields';
 import {
   parseCSV,
   parseTSV,
@@ -105,10 +104,11 @@ export default function DataImportDialog({
     return eligible.slice(0, 10);
   }, [parsed, validations]);
 
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
 
   // --- Early return AFTER all hooks ---
   if (!open || !mounted) return null;

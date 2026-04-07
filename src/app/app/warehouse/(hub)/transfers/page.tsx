@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import PageHeader from '@/components/shared/PageHeader';
 import TransfersHeader from '@/components/admin/warehouse/TransfersHeader';
 import WarehouseHubTabs from '../../WarehouseHubTabs';
 
@@ -88,19 +89,12 @@ export default async function TransfersPage() {
   return (
     <>
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            Transfers
-          </h1>
-          <p className="mt-1 text-sm text-text-secondary">
-            {pending} pending &middot; {completed} completed
-          </p>
-        </div>
-        <div className="flex gap-3">
-          <TransfersHeader />
-        </div>
-      </div>
+      <PageHeader
+        title="Transfers"
+        subtitle={`${pending} pending · ${completed} completed`}
+      >
+        <TransfersHeader />
+      </PageHeader>
 
       {/* Transfers table */}
       <div className="rounded-xl border border-border bg-white overflow-hidden overflow-x-auto">

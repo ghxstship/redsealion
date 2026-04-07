@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import PageHeader from '@/components/shared/PageHeader';
+import Card from '@/components/ui/Card';
 
 interface TermsSection {
   number: string;
@@ -73,16 +75,10 @@ export default function TermsPage() {
 
   return (
     <>
-      {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            Terms & Conditions
-          </h1>
-          <p className="mt-1 text-sm text-text-secondary">
-            Manage your standard terms document.
-          </p>
-        </div>
+<PageHeader
+        title="Terms & Conditions"
+        subtitle="Manage your standard terms document."
+      >
         <div className="flex items-center gap-3">
           <button className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary">
             Edit
@@ -105,7 +101,7 @@ export default function TermsPage() {
             {creating ? 'Creating...' : 'New Version'}
           </button>
         </div>
-      </div>
+      </PageHeader>
 
       {/* Document header card */}
       <div className="rounded-xl border border-border bg-white px-6 py-5 mb-8">

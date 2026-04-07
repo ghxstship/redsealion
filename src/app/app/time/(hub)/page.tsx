@@ -3,6 +3,8 @@ import { TierGate } from '@/components/shared/TierGate';
 import WeeklyTimesheet from '@/components/admin/time/WeeklyTimesheet';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import TimeHubTabs from '../TimeHubTabs';
+import PageHeader from '@/components/shared/PageHeader';
+import Card from '@/components/ui/Card';
 
 interface TimeStats {
   hoursThisWeek: number;
@@ -82,14 +84,10 @@ export default async function TimePage() {
 
   return (
     <>
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          Time Tracking
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Log hours and manage weekly timesheets.
-        </p>
-      </div>
+<PageHeader
+        title="Time Tracking"
+        subtitle="Log hours and manage weekly timesheets."
+      />
 
       <TimeHubTabs pendingCount={stats.pendingApproval} />
 

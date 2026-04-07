@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import PersonDetailTabs from './PersonDetailTabs';
+import PageHeader from '@/components/shared/PageHeader';
 
 interface PersonDetail {
   full_name: string;
@@ -143,20 +144,16 @@ export default async function PersonDetailPage(props: { params: Promise<{ id: st
 
   return (
     <TierGate feature="people_hr">
-      <div className="mb-8">
-        <Link
-          href="/app/people"
-          className="text-xs font-medium text-text-muted hover:text-foreground transition-colors"
-        >
-          &larr; People
-        </Link>
-        <h1 className="mt-1 text-2xl font-semibold tracking-tight text-foreground">
-          {person.full_name}
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary capitalize">
-          {person.title ?? formatRole(person.role)}
-        </p>
-      </div>
+      <Link
+        href="/app/people"
+        className="text-xs font-medium text-text-muted hover:text-foreground transition-colors mb-2 inline-block"
+      >
+        &larr; People
+      </Link>
+      <PageHeader
+        title={person.full_name}
+        subtitle={person.title ?? formatRole(person.role)}
+      />
 
       <PersonDetailTabs
         profileContent={profileContent}

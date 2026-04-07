@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { TierGate } from '@/components/shared/TierGate';
+import PageHeader from '@/components/shared/PageHeader';
 import InvoiceForm from '@/components/admin/invoices/InvoiceForm';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
@@ -62,9 +63,7 @@ export default async function NewInvoicePage() {
         <span className="text-foreground font-medium">New Invoice</span>
       </nav>
 
-      <h1 className="text-2xl font-semibold tracking-tight text-foreground mb-8">
-        Create Invoice
-      </h1>
+      <PageHeader title="Create Invoice" />
 
       <InvoiceForm clients={clients} proposals={proposals} />
     </TierGate>

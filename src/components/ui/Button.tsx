@@ -55,7 +55,7 @@ export default function Button({
       );
     }
     return (
-      <Link className={commonClasses} {...(rest as any)}>
+      <Link className={commonClasses} {...(rest as Omit<ButtonAsLinkProps, keyof ButtonBaseProps>)}>
         {children}
       </Link>
     );
@@ -65,7 +65,7 @@ export default function Button({
     <button
       disabled={disabled || loading}
       className={commonClasses}
-      {...(rest as any)}
+      {...(rest as Omit<ButtonAsButtonProps, keyof ButtonBaseProps>)}
     >
       {children}
     </button>

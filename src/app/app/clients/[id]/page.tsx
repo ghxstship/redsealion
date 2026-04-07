@@ -6,6 +6,8 @@ import ClientDetailActions from './ClientDetailActions';
 import ClientDetailTabs from './ClientDetailTabs';
 import EmptyState from '@/components/ui/EmptyState';
 import { getClient, formatStatus, formatDate, roleLabel } from './_data';
+import PageHeader from '@/components/shared/PageHeader';
+
 
 
 export default async function ClientDetailPage({
@@ -16,13 +18,15 @@ export default async function ClientDetailPage({
   const { id } = await params;
   const client = await getClient(id);
 
+  const now = Date.now();
+
   /* ── Pre-render each tab panel as RSC content ── */
 
   const overviewContent = (
     <div className="space-y-8">
       <ClientHealthCard
         recentInteractions={client.interactions.filter((i) => {
-          const d = Date.now() - new Date(i.occurred_at).getTime();
+          const d = now - new Date(i.occurred_at).getTime();
           return d < 90 * 24 * 60 * 60 * 1000;
         }).length}
         lastInteractionDate={client.interactions[0]?.occurred_at ?? null}
@@ -209,9 +213,7 @@ export default async function ClientDetailPage({
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            {client.company_name}
-          </h1>
+<PageHeader title={client.company_name} />
           <p className="mt-1 text-sm text-text-secondary">
             {client.industry} &middot; Source: {client.source ?? 'Unknown'}
           </p>

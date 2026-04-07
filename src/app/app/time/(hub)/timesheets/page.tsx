@@ -2,6 +2,8 @@ import { createClient } from '@/lib/supabase/server';
 import TimesheetApprovalCard from '@/components/admin/time/TimesheetApprovalCard';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import TimeHubTabs from '../../TimeHubTabs';
+import PageHeader from '@/components/shared/PageHeader';
+import Card from '@/components/ui/Card';
 
 interface PendingTimesheet {
   id: string;
@@ -57,14 +59,10 @@ export default async function TimesheetsApprovalPage() {
 
   return (
     <>
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          Timesheet Approvals
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Review and approve submitted timesheets.
-        </p>
-      </div>
+<PageHeader
+        title="Timesheet Approvals"
+        subtitle="Review and approve submitted timesheets."
+      />
 
       <TimeHubTabs />
 

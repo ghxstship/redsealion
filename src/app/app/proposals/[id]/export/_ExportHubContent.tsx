@@ -7,6 +7,7 @@ import ExportCard from '@/components/admin/export/ExportCard';
 import ExportPreview from '@/components/admin/export/ExportPreview';
 import Tabs from '@/components/ui/Tabs';
 import type { ProposalExportData } from './_data';
+import PageHeader from '@/components/shared/PageHeader';
 
 type ExportTab = 'document' | 'crm' | 'finance' | 'pm' | 'assets' | 'resources' | 'csv';
 
@@ -156,7 +157,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
     <>
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Export Hub</h1>
+<PageHeader title="Export Hub" />
         <p className="mt-1 text-sm text-text-muted">
           Export proposal data to documents, CRM platforms, finance tools, PM systems, and more.
         </p>

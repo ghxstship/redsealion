@@ -3,6 +3,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import { SUPPORTED_LOCALES, LOCALE_COOKIE, LOCALE_STORAGE_KEY, type SupportedLocale } from '@/lib/i18n/config';
 import { useTranslation } from '@/lib/i18n/client';
+import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
 
 const dateFormatOptions = [
   { value: 'MM/DD/YYYY', label: 'MM/DD/YYYY' },
@@ -133,7 +135,7 @@ export default function LocalizationSettingsPage() {
       </div>
 
       {/* Date & Time */}
-      <div className="rounded-xl border border-border bg-white px-6 py-6">
+      <Card>
         <h3 className="text-sm font-semibold text-foreground mb-5">{t('settings.dateTime')}</h3>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           <div>
@@ -183,10 +185,10 @@ export default function LocalizationSettingsPage() {
           <span className="text-xs font-medium text-text-muted uppercase tracking-wider">{t('settings.preview')}: </span>
           <span className="text-sm text-foreground font-mono">{preview}</span>
         </div>
-      </div>
+      </Card>
 
       {/* Numbers & Currency */}
-      <div className="rounded-xl border border-border bg-white px-6 py-6">
+      <Card>
         <h3 className="text-sm font-semibold text-foreground mb-5">{t('settings.numbersCurrency')}</h3>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           <div>
@@ -216,10 +218,10 @@ export default function LocalizationSettingsPage() {
           <span className="text-xs font-medium text-text-muted uppercase tracking-wider">{t('settings.preview')}: </span>
           <span className="text-sm text-foreground font-mono">{numberPreview}</span>
         </div>
-      </div>
+      </Card>
 
       {/* Language */}
-      <div className="rounded-xl border border-border bg-white px-6 py-6">
+      <Card>
         <h3 className="text-sm font-semibold text-foreground mb-5">{t('settings.language')}</h3>
         <div>
           <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
@@ -238,16 +240,12 @@ export default function LocalizationSettingsPage() {
         <p className="mt-3 text-xs text-text-secondary">
           {t('settings.languageDesc')}
         </p>
-      </div>
+      </Card>
 
       <div className="flex justify-end">
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-foreground/90 disabled:opacity-50"
-        >
+        <Button onClick={handleSave} disabled={saving}>
           {saving ? t('common.saving') : t('common.saveChanges')}
-        </button>
+        </Button>
       </div>
     </div>
   );

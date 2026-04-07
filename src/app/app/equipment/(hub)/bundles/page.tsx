@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import EmptyState from '@/components/ui/EmptyState';
+import PageHeader from '@/components/shared/PageHeader';
+import Card from '@/components/ui/Card';
 import BundlesHeader from '@/components/admin/equipment/BundlesHeader';
 import EquipmentHubTabs from '../../EquipmentHubTabs';
 
@@ -66,28 +68,21 @@ export default async function BundlesPage() {
   return (
     <>
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            Bundles
-          </h1>
-          <p className="mt-1 text-sm text-text-secondary">
-            {bundles.length} bundles configured
-          </p>
-        </div>
-        <div className="flex gap-3">
-          <BundlesHeader />
-        </div>
-      </div>
+      <PageHeader
+        title="Bundles"
+        subtitle={`${bundles.length} bundles configured`}
+      >
+        <BundlesHeader />
+      </PageHeader>
 
       <EquipmentHubTabs />
 
       {/* Bundle cards */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {bundles.map((bundle) => (
-          <div
+          <Card
             key={bundle.id}
-            className="rounded-xl border border-border bg-white px-6 py-5 transition-colors hover:border-foreground/20"
+            className="transition-colors hover:border-foreground/20"
           >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
@@ -112,7 +107,7 @@ export default async function BundlesPage() {
                 Created {formatDate(bundle.created_at)}
               </p>
             </div>
-          </div>
+          </Card>
         ))}
       </div>
 

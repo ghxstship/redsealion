@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
 
 type Channel = 'email' | 'sms' | 'in_app';
 
@@ -137,9 +139,8 @@ export default function NotificationSettingsPage() {
       </div>
 
       {EVENT_CATEGORIES.map((category) => (
-        <div
+        <Card
           key={category.name}
-          className="rounded-xl border border-border bg-white px-6 py-6"
         >
           <h3 className="text-sm font-semibold text-foreground mb-4">
             {category.name}
@@ -181,18 +182,14 @@ export default function NotificationSettingsPage() {
               </div>
             ))}
           </div>
-        </div>
+        </Card>
       ))}
 
       {/* Save */}
       <div className="flex justify-end">
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-white hover:bg-foreground/90 transition-colors disabled:opacity-50"
-        >
+        <Button onClick={handleSave} disabled={saving}>
           {saving ? 'Saving...' : 'Save Preferences'}
-        </button>
+        </Button>
       </div>
     </div>
   );

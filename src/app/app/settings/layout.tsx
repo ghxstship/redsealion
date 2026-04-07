@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { usePermissions } from '@/components/shared/PermissionsProvider';
+import PageHeader from '@/components/shared/PageHeader';
 
 const sections = [
   {
@@ -94,12 +95,10 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Settings</h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Manage your organization and account preferences.
-        </p>
-      </div>
+<PageHeader
+        title="Settings"
+        subtitle="Manage your organization and account preferences."
+      />
       <div className="flex gap-8 items-start">
         <nav className="w-52 shrink-0 hidden md:block sticky top-16">
           <div className="space-y-5 max-h-[calc(100vh-5rem)] overflow-y-auto">

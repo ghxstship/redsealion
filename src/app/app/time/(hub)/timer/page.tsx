@@ -1,17 +1,14 @@
 import TimerWidget from '@/components/admin/time/TimerWidget';
 import TimeHubTabs from '../../TimeHubTabs';
+import PageHeader from '@/components/shared/PageHeader';
 
 export default function TimerPage() {
   return (
     <>
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          Timer
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Start and stop a running timer to track your work.
-        </p>
-      </div>
+<PageHeader
+        title="Timer"
+        subtitle="Start and stop a running timer to track your work."
+      />
 
       <TimeHubTabs />
 

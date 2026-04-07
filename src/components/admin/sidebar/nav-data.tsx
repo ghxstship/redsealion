@@ -1,16 +1,15 @@
-'use client';
-
 /**
  * Navigation data for the AdminSidebar.
  *
- * 6 sections structured by mental model:
+ * 7 sections structured by mental model:
  *
- * 1. Overview        — Dashboard, AI Assistant
- * 2. Sales & Marketing — CRM pipeline + outreach
- * 3. Production      — Project execution lifecycle
- * 4. Operations      — People, crew, logistics, inventory
- * 5. Finance         — Money in, money out, asset valuation
- * 6. Admin           — Configuration, reporting, integrations
+ * 1. Overview        — Dashboard, personal workspace
+ * 2. Projects        — Project management, tasks, files, templates
+ * 3. Sales & Marketing — CRM pipeline + outreach
+ * 4. Productions     — Live event execution, advancing
+ * 5. Operations      — People, crew, logistics, inventory
+ * 6. Finance         — Money in, money out, budgets
+ * 7. Admin           — Configuration, reporting, integrations
  *
  * Settings removed from sidebar nav — accessible via UserMenu only.
  *
@@ -21,18 +20,17 @@
 
 import type { FeatureKey } from '@/lib/subscription';
 import {
-  IconNavOverview, IconNavSales, IconNavProduction, IconNavOperations,
-  IconNavFinance, IconNavAdmin,
+  IconNavOverview, IconNavProjects, IconNavSales, IconNavProduction,
+  IconNavOperations, IconNavFinance, IconNavAdmin,
   IconNavDashboard, IconNavFavorites, IconNavAI, IconNavMySchedule,
   IconNavMyTasks, IconNavMyInbox, IconNavMyDocs,
+  IconNavTasks, IconNavGoals, IconNavRoadmap, IconNavFiles, IconNavTemplates,
   IconNavLeads, IconNavPipeline, IconNavClients, IconNavProposals,
   IconNavCampaigns, IconNavEmails, IconNavPortfolio,
-  IconNavCalendar, IconNavEvents, IconNavActivations, IconNavLocations,
-  IconNavTasks, IconNavAdvancing, IconNavCompliance, IconNavFiles, IconNavTemplates,
+  IconNavEvents, IconNavAdvancing,
   IconNavPeople, IconNavCrew, IconNavWorkloads, IconNavTime, IconNavDispatch,
-  IconNavInventory, IconNavWarehouse,
-  IconNavBudgets, IconNavExpenses, IconNavInvoices, IconNavPO, IconNavVendors,
-  IconNavRevRec, IconNavProfitability, IconNavAssets,
+  IconNavInventory, IconNavWarehouse, IconNavCompliance,
+  IconNavFinance as IconNavFinanceItem, IconNavExpenses,
   IconNavReports, IconNavAutomations, IconNavIntegrations, IconNavTerms,
 } from '@/components/ui/Icons';
 
@@ -70,7 +68,22 @@ export const navSections: NavSection[] = [
     ],
   },
 
-  // ─── 2. SALES & MARKETING ──────────────────────────────────
+  // ─── 2. PROJECTS ────────────────────────────────────────────
+  {
+    id: 'projects',
+    label: 'Projects',
+    labelKey: 'nav.projects',
+    icon: <IconNavProjects size={16} />,
+    items: [
+      { label: 'Tasks', labelKey: 'nav.tasks', href: '/app/tasks', feature: 'tasks', icon: <IconNavTasks size={18} /> },
+      { label: 'Goals', labelKey: 'nav.goals', href: '/app/goals', feature: 'tasks', icon: <IconNavGoals size={18} /> },
+      { label: 'Roadmap', labelKey: 'nav.roadmap', href: '/app/roadmap', feature: 'tasks', icon: <IconNavRoadmap size={18} /> },
+      { label: 'Files', labelKey: 'nav.files', href: '/app/files', feature: 'proposals', icon: <IconNavFiles size={18} /> },
+      { label: 'Templates', labelKey: 'nav.templates', href: '/app/templates', feature: 'templates', icon: <IconNavTemplates size={18} /> },
+    ],
+  },
+
+  // ─── 3. SALES & MARKETING ──────────────────────────────────
   {
     id: 'sales',
     label: 'Sales & Marketing',
@@ -87,26 +100,19 @@ export const navSections: NavSection[] = [
     ],
   },
 
-  // ─── 3. PRODUCTION ─────────────────────────────────────────
+  // ─── 4. PRODUCTIONS ────────────────────────────────────────
   {
-    id: 'production',
-    label: 'Production',
-    labelKey: 'nav.production',
+    id: 'productions',
+    label: 'Productions',
+    labelKey: 'nav.productions',
     icon: <IconNavProduction size={16} />,
     items: [
-      { label: 'Calendar', labelKey: 'nav.calendar', href: '/app/calendar', feature: 'calendar', icon: <IconNavCalendar size={18} /> },
       { label: 'Events', labelKey: 'nav.events', href: '/app/events', feature: 'events', icon: <IconNavEvents size={18} /> },
-      { label: 'Activations', labelKey: 'nav.activations', href: '/app/activations', feature: 'activations', icon: <IconNavActivations size={18} /> },
-      { label: 'Locations', labelKey: 'nav.locations', href: '/app/locations', feature: 'locations', icon: <IconNavLocations size={18} /> },
-      { label: 'Tasks', labelKey: 'nav.tasks', href: '/app/tasks', feature: 'tasks', icon: <IconNavTasks size={18} /> },
       { label: 'Advancing', labelKey: 'nav.advancing', href: '/app/advancing', feature: 'work_orders', icon: <IconNavAdvancing size={18} /> },
-      { label: 'Compliance', labelKey: 'nav.compliance', href: '/app/compliance', feature: 'crew', icon: <IconNavCompliance size={18} /> },
-      { label: 'Files', labelKey: 'nav.files', href: '/app/files', feature: 'proposals', icon: <IconNavFiles size={18} /> },
-      { label: 'Templates', labelKey: 'nav.templates', href: '/app/templates', feature: 'templates', icon: <IconNavTemplates size={18} /> },
     ],
   },
 
-  // ─── 4. OPERATIONS ─────────────────────────────────────────
+  // ─── 5. OPERATIONS ─────────────────────────────────────────
   {
     id: 'operations',
     label: 'Operations',
@@ -120,28 +126,23 @@ export const navSections: NavSection[] = [
       { label: 'Dispatch', labelKey: 'nav.dispatch', href: '/app/dispatch', feature: 'work_orders', icon: <IconNavDispatch size={18} /> },
       { label: 'Inventory', labelKey: 'nav.inventory', href: '/app/equipment', feature: 'equipment', icon: <IconNavInventory size={18} /> },
       { label: 'Warehouse', labelKey: 'nav.warehouse', href: '/app/warehouse', feature: 'warehouse', icon: <IconNavWarehouse size={18} /> },
+      { label: 'Compliance', labelKey: 'nav.compliance', href: '/app/compliance', feature: 'crew', icon: <IconNavCompliance size={18} /> },
     ],
   },
 
-  // ─── 5. FINANCE ────────────────────────────────────────────
+  // ─── 6. FINANCE ────────────────────────────────────────────
   {
     id: 'finance',
     label: 'Finance',
     labelKey: 'nav.finance',
     icon: <IconNavFinance size={16} />,
     items: [
-      { label: 'Budgets', labelKey: 'nav.budgets', href: '/app/budgets', feature: 'budgets', icon: <IconNavBudgets size={18} /> },
+      { label: 'Finance', labelKey: 'nav.financeHub', href: '/app/finance', feature: 'profitability', icon: <IconNavFinanceItem size={18} /> },
       { label: 'Expenses', labelKey: 'nav.expenses', href: '/app/expenses', feature: 'expenses', icon: <IconNavExpenses size={18} /> },
-      { label: 'Invoices', labelKey: 'nav.invoices', href: '/app/invoices', feature: 'invoices', icon: <IconNavInvoices size={18} /> },
-      { label: 'Purchase Orders', labelKey: 'nav.purchaseOrders', href: '/app/finance/purchase-orders', feature: 'expenses', icon: <IconNavPO size={18} /> },
-      { label: 'Vendors', labelKey: 'nav.vendors', href: '/app/finance/vendors', feature: 'profitability', icon: <IconNavVendors size={18} /> },
-      { label: 'Revenue Recognition', labelKey: 'nav.revenueRecognition', href: '/app/finance/revenue-recognition', feature: 'profitability', icon: <IconNavRevRec size={18} /> },
-      { label: 'Profitability', labelKey: 'nav.profitability', href: '/app/profitability', feature: 'profitability', icon: <IconNavProfitability size={18} /> },
-      { label: 'Assets', labelKey: 'nav.assets', href: '/app/assets', feature: 'assets', icon: <IconNavAssets size={18} /> },
     ],
   },
 
-  // ─── 6. ADMIN ──────────────────────────────────────────────
+  // ─── 7. ADMIN ──────────────────────────────────────────────
   {
     id: 'admin',
     label: 'Admin',
@@ -155,3 +156,4 @@ export const navSections: NavSection[] = [
     ],
   },
 ];
+

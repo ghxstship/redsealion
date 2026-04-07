@@ -4,6 +4,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import EmptyState from '@/components/ui/EmptyState';
 import LeadFormsHeader from '@/components/admin/leads/LeadFormsHeader';
 import LeadsHubTabs from '../../LeadsHubTabs';
+import PageHeader from '@/components/shared/PageHeader';
 
 interface LeadForm {
   id: string;
@@ -80,20 +81,17 @@ export default async function LeadFormsPage() {
 
   return (
     <>
-      {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            Forms
-          </h1>
-          <p className="mt-1 text-sm text-text-secondary">
-            {forms.length} forms &middot; Embed on your website to capture leads
-          </p>
-        </div>
-        <div className="flex gap-3">
-          <LeadFormsHeader />
-        </div>
-      </div>
+      <PageHeader
+
+        title="Forms"
+
+        subtitle={`${forms.length} forms · Embed on your website to capture leads`}
+
+      >
+
+        <LeadFormsHeader />
+
+      </PageHeader>
 
       <LeadsHubTabs />
 

@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import CustomFieldRenderer from '@/components/admin/custom-fields/CustomFieldRenderer';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import PageHeader from '@/components/shared/PageHeader';
 
 interface FieldDef {
   id: string;
@@ -40,14 +41,10 @@ export default async function CustomFieldsPage() {
 
   return (
     <TierGate feature="custom_fields">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          Custom Fields
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Define custom data fields for proposals, tasks, and other entities.
-        </p>
-      </div>
+<PageHeader
+        title="Custom Fields"
+        subtitle="Define custom data fields for proposals, tasks, and other entities."
+      />
 
       <CustomFieldRenderer fields={fields} />
     </TierGate>

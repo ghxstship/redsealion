@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import AuditLogTable from '@/components/admin/security/AuditLogTable';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import PageHeader from '@/components/shared/PageHeader';
 
 interface AuditRow {
   id: string;
@@ -52,14 +53,10 @@ export default async function AuditLogPage() {
 
   return (
     <TierGate feature="audit_log">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          Audit Log
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Complete history of actions taken in your organization.
-        </p>
-      </div>
+<PageHeader
+        title="Audit Log"
+        subtitle="Complete history of actions taken in your organization."
+      />
 
       <AuditLogTable entries={entries} />
     </TierGate>

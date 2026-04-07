@@ -9,6 +9,8 @@ import FormLabel from '@/components/ui/FormLabel';
 import FormSelect from '@/components/ui/FormSelect';
 import FormTextarea from '@/components/ui/FormTextarea';
 import Alert from '@/components/ui/Alert';
+import PageHeader from '@/components/shared/PageHeader';
+import Card from '@/components/ui/Card';
 
 interface VendorOption {
   id: string;
@@ -114,19 +116,17 @@ export default function NewPurchaseOrderPage() {
           <ArrowLeft className="h-4 w-4" />
           Back to Purchase Orders
         </Button>
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          New Purchase Order
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Create a new purchase order for vendor procurement.
-        </p>
+        <PageHeader
+          title="New Purchase Order"
+          subtitle="Create a new purchase order for vendor procurement."
+        />
       </div>
 
       {error && <Alert className="mb-6">{error}</Alert>}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Vendor Selection */}
-        <div className="rounded-xl border border-border bg-white px-6 py-6">
+        <Card>
           <h2 className="text-sm font-semibold text-foreground mb-5">Vendor</h2>
           <div className="space-y-4">
             {vendors.length > 0 ? (
@@ -157,10 +157,10 @@ export default function NewPurchaseOrderPage() {
               />
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* PO Details */}
-        <div className="rounded-xl border border-border bg-white px-6 py-6">
+        <Card>
           <h2 className="text-sm font-semibold text-foreground mb-5">Order Details</h2>
           <div className="space-y-4">
             <div>
@@ -195,11 +195,11 @@ export default function NewPurchaseOrderPage() {
               </div>
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* Project Link */}
         {proposals.length > 0 && (
-          <div className="rounded-xl border border-border bg-white px-6 py-6">
+          <Card>
             <h2 className="text-sm font-semibold text-foreground mb-5">Project Link</h2>
             <div>
               <FormLabel>Associate with Project</FormLabel>
@@ -213,7 +213,7 @@ export default function NewPurchaseOrderPage() {
                 ))}
               </FormSelect>
             </div>
-          </div>
+          </Card>
         )}
 
         {/* Actions */}

@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import { formatCurrency } from '@/lib/utils';
 import EmptyState from '@/components/ui/EmptyState';
+import PageHeader from '@/components/shared/PageHeader';
 
 interface Scenario {
   id: string;
@@ -44,14 +45,10 @@ export default async function ScenariosPage(props: { params: Promise<{ id: strin
 
   return (
     <TierGate feature="scenarios">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          Scenarios
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Compare pricing scenarios for {proposalName}.
-        </p>
-      </div>
+<PageHeader
+        title="Scenarios"
+        subtitle={`Compare pricing scenarios for {proposalName}.`}
+      />
 
       {scenarios.length === 0 ? (
         <EmptyState

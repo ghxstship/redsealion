@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { formatRate, DEFAULT_COST_RATES } from '@/lib/cost-rates';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import CostRatesHeader from '@/components/admin/settings/CostRatesHeader';
+import PageHeader from '@/components/shared/PageHeader';
 
 interface RateRow {
   id: string;
@@ -67,15 +68,12 @@ export default async function CostRatesPage() {
 
   return (
     <TierGate feature="profitability">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">Cost Rates</h1>
-          <p className="mt-1 text-sm text-text-secondary">
-            Manage role-based cost and billable rates for profitability tracking.
-          </p>
-        </div>
+<PageHeader
+        title="Cost Rates"
+        subtitle="Manage role-based cost and billable rates for profitability tracking."
+      >
         <CostRatesHeader />
-      </div>
+      </PageHeader>
 
       <div className="rounded-xl border border-border bg-white overflow-hidden">
         <div className="overflow-x-auto">

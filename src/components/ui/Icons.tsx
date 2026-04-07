@@ -92,6 +92,7 @@ export {
 
   /* ─── Navigation: Section Headers ─────────────────────── */
   Compass as IconNavOverview,
+  FolderKanban as IconNavProjects,
   Target as IconNavSales,
   Clapperboard as IconNavProduction,
   Wrench as IconNavOperations,
@@ -126,6 +127,8 @@ export {
   ShieldCheck as IconNavCompliance,
   FolderOpen as IconNavFiles,
   Layers as IconNavTemplates,
+  Goal as IconNavGoals,
+  Route as IconNavRoadmap,
 
   /* ─── Navigation: Operations Items ────────────────────── */
   UserRound as IconNavPeople,

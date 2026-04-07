@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo, startTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronRight, Settings, Plus, Search } from 'lucide-react';
-import type { FeatureKey } from '@/lib/subscription';
+
 
 /* ─────────────────────────────────────────────────────────
    Types

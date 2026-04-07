@@ -5,12 +5,16 @@ import Button from '@/components/ui/Button';
 import { IconPlus } from '@/components/ui/Icons';
 
 interface PageHeaderProps {
-  /** Page title (h1). */
-  title: string;
+  /** Page title (h1). Accepts string or ReactNode for i18n-translated content. */
+  title: ReactNode;
   /** Optional subtitle below the h1. */
-  subtitle?: string;
+  subtitle?: ReactNode;
   /** Label for the primary action button (e.g. "Add Client"). */
   actionLabel?: string;
+  /** Override icon for the action button. Defaults to IconPlus. Pass `null` to hide icon. */
+  actionIcon?: ReactNode | null;
+  /** Direct click handler for the action button (used when no modal is needed). */
+  onAction?: () => void;
   /** Render prop that receives (open, onClose, onComplete) for the modal. */
   renderModal?: (props: {
     open: boolean;
@@ -43,11 +47,23 @@ export default function PageHeader({
   title,
   subtitle,
   actionLabel,
+  actionIcon,
+  onAction,
   renderModal,
   onCreated,
   children,
 }: PageHeaderProps) {
   const [showModal, setShowModal] = useState(false);
+
+  const icon = actionIcon === null ? null : (actionIcon ?? <IconPlus size={16} />);
+
+  function handleActionClick() {
+    if (onAction) {
+      onAction();
+    } else {
+      setShowModal(true);
+    }
+  }
 
   return (
     <>
@@ -61,8 +77,8 @@ export default function PageHeader({
         <div className="flex items-center gap-3">
           {children}
           {actionLabel && (
-            <Button onClick={() => setShowModal(true)}>
-              <IconPlus size={16} />
+            <Button onClick={handleActionClick}>
+              {icon}
               {actionLabel}
             </Button>
           )}

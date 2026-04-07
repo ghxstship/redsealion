@@ -1,6 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
+import ConfirmDialog from '@/components/shared/ConfirmDialog';
 
 interface ApiKeyRow {
   id: string;
@@ -51,6 +54,8 @@ export default function ApiKeysPage() {
   const [deliveries, setDeliveries] = useState<WebhookDelivery[]>([]);
   const [newKeyRevealed, setNewKeyRevealed] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
+  const [revokeConfirm, setRevokeConfirm] = useState<string | null>(null);
+  const [deleteEndpointConfirm, setDeleteEndpointConfirm] = useState<string | null>(null);
 
   useEffect(() => {
     fetch('/api/settings/api-keys')
@@ -87,8 +92,6 @@ export default function ApiKeysPage() {
   }
 
   async function handleRevoke(id: string) {
-    if (!confirm('Are you sure you want to revoke this API key? This action cannot be undone.')) return;
-
     try {
       await fetch('/api/settings/api-keys', {
         method: 'DELETE',
@@ -99,6 +102,7 @@ export default function ApiKeysPage() {
     } catch (error) {
         void error; /* Caught: error boundary handles display */
       }
+    setRevokeConfirm(null);
   }
 
   async function handleAddEndpoint() {
@@ -123,7 +127,6 @@ export default function ApiKeysPage() {
   }
 
   async function handleDeleteEndpoint(id: string) {
-    if (!confirm('Delete this webhook endpoint?')) return;
     try {
       await fetch('/api/settings/api-keys', {
         method: 'DELETE',
@@ -134,6 +137,7 @@ export default function ApiKeysPage() {
     } catch (error) {
       void error;
     }
+    setDeleteEndpointConfirm(null);
   }
 
   async function handleEditEndpoint(ep: WebhookEndpoint) {
@@ -184,18 +188,13 @@ export default function ApiKeysPage() {
       )}
 
       {/* API Keys */}
-      <div className="rounded-xl border border-border bg-white px-6 py-6">
+      <Card padding="default" className="px-6 py-6">
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-2">
             <KeyIcon />
             <h3 className="text-sm font-semibold text-foreground">API Keys</h3>
           </div>
-          <button
-            onClick={handleGenerateKey}
-            className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90"
-          >
-            Generate Key
-          </button>
+          <Button onClick={handleGenerateKey}>Generate Key</Button>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -226,30 +225,22 @@ export default function ApiKeysPage() {
                   <td className="py-3 text-text-secondary">{formatDate(k.created_at)}</td>
                   <td className="py-3 text-text-secondary">{k.last_used_at ? formatDate(k.last_used_at) : 'Never'}</td>
                   <td className="py-3">
-                    <button
-                      onClick={() => handleRevoke(k.id)}
-                      className="text-xs font-medium text-red-600 hover:text-red-800"
-                    >
+                    <Button variant="ghost" size="sm" onClick={() => setRevokeConfirm(k.id)} className="text-red-600 hover:text-red-800">
                       Revoke
-                    </button>
+                    </Button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </div>
+      </Card>
 
       {/* Webhook Endpoints */}
-      <div className="rounded-xl border border-border bg-white px-6 py-6">
+      <Card padding="default" className="px-6 py-6">
         <div className="flex items-center justify-between mb-5">
           <h3 className="text-sm font-semibold text-foreground">Webhook Endpoints</h3>
-          <button
-            onClick={handleAddEndpoint}
-            className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90"
-          >
-            Add Endpoint
-          </button>
+          <Button onClick={handleAddEndpoint}>Add Endpoint</Button>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -283,8 +274,8 @@ export default function ApiKeysPage() {
                   </td>
                   <td className="py-3">
                     <div className="flex items-center gap-2">
-                      <button onClick={() => handleEditEndpoint(ep)} className="text-xs font-medium text-foreground hover:text-foreground/70">Edit</button>
-                      <button onClick={() => handleDeleteEndpoint(ep.id)} className="text-xs font-medium text-red-600 hover:text-red-800">Delete</button>
+                      <Button variant="ghost" size="sm" onClick={() => handleEditEndpoint(ep)}>Edit</Button>
+                      <Button variant="ghost" size="sm" onClick={() => setDeleteEndpointConfirm(ep.id)} className="text-red-600 hover:text-red-800">Delete</Button>
                     </div>
                   </td>
                 </tr>
@@ -292,10 +283,10 @@ export default function ApiKeysPage() {
             </tbody>
           </table>
         </div>
-      </div>
+      </Card>
 
       {/* Webhook Activity */}
-      <div className="rounded-xl border border-border bg-white px-6 py-6">
+      <Card padding="default" className="px-6 py-6">
         <h3 className="text-sm font-semibold text-foreground mb-5">Webhook Activity</h3>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -329,7 +320,31 @@ export default function ApiKeysPage() {
             </tbody>
           </table>
         </div>
-      </div>
+      </Card>
+
+      {revokeConfirm && (
+        <ConfirmDialog
+          open
+          title="Revoke API Key"
+          message="Are you sure you want to revoke this API key? This action cannot be undone."
+          confirmLabel="Revoke"
+          variant="danger"
+          onConfirm={() => handleRevoke(revokeConfirm)}
+          onCancel={() => setRevokeConfirm(null)}
+        />
+      )}
+
+      {deleteEndpointConfirm && (
+        <ConfirmDialog
+          open
+          title="Delete Webhook Endpoint"
+          message="Are you sure you want to delete this webhook endpoint?"
+          confirmLabel="Delete"
+          variant="danger"
+          onConfirm={() => handleDeleteEndpoint(deleteEndpointConfirm)}
+          onCancel={() => setDeleteEndpointConfirm(null)}
+        />
+      )}
     </div>
   );
 }

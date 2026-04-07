@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import PageHeader from '@/components/shared/PageHeader';
+import Card from '@/components/ui/Card';
 import StatusBadge from '@/components/ui/StatusBadge';
 import EmptyState from '@/components/ui/EmptyState';
 import Button from '@/components/ui/Button';
@@ -75,35 +77,31 @@ export default async function InventoryCountsPage() {
 
   return (
     <>
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">Inventory Counts</h1>
-          <p className="mt-1 text-sm text-text-secondary">
-            {active.length} active &middot; {completed.length} completed
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        title="Inventory Counts"
+        subtitle={`${active.length} active · ${completed.length} completed`}
+      />
 
       <WarehouseHubTabs />
 
       {/* Summary cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-8">
-        <div className="rounded-xl border border-border bg-white px-5 py-5">
+        <Card padding="default" className="px-5 py-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Total Counts</p>
           <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground tabular-nums">{counts.length}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-white px-5 py-5">
+        </Card>
+        <Card padding="default" className="px-5 py-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">In Progress</p>
           <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground tabular-nums">
             {counts.filter((c) => c.status === 'in_progress').length}
           </p>
-        </div>
-        <div className="rounded-xl border border-border bg-white px-5 py-5">
+        </Card>
+        <Card padding="default" className="px-5 py-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Total Items Counted</p>
           <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground tabular-nums">
             {counts.reduce((sum, c) => sum + c.line_count, 0)}
           </p>
-        </div>
+        </Card>
       </div>
 
       {counts.length === 0 ? (

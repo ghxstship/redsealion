@@ -2,6 +2,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import { IntegrationCard } from '@/components/admin/integrations/IntegrationCard';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import PageHeader from '@/components/shared/PageHeader';
 
 const PLATFORMS = [
   { platform: 'salesforce', displayName: 'Salesforce', description: 'Sync contacts, opportunities, and accounts with Salesforce CRM.', category: 'crm' },
@@ -57,14 +58,10 @@ export default async function IntegrationsPage() {
 
   return (
     <TierGate feature="integrations">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          Integrations
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Connect your tools to sync data and automate workflows.
-        </p>
-      </div>
+<PageHeader
+        title="Integrations"
+        subtitle="Connect your tools to sync data and automate workflows."
+      />
 
       {categories.map((category) => (
         <div key={category} className="mb-8">

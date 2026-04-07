@@ -10,6 +10,9 @@ import FormSelect from '@/components/ui/FormSelect';
 import FormTextarea from '@/components/ui/FormTextarea';
 import Alert from '@/components/ui/Alert';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
+import PageHeader from '@/components/shared/PageHeader';
+import Card from '@/components/ui/Card';
+import Skeleton from '@/components/ui/Skeleton';
 
 const CATEGORIES = [
   'AV / Production',
@@ -199,8 +202,8 @@ export default function VendorDetailPage() {
   if (loading) {
     return (
       <div className="max-w-2xl space-y-6">
-        <div className="rounded-xl border border-border bg-white px-6 py-6 animate-pulse h-48" />
-        <div className="rounded-xl border border-border bg-white px-6 py-6 animate-pulse h-48" />
+        <Skeleton className="h-48" />
+        <Skeleton className="h-48" />
       </div>
     );
   }
@@ -225,12 +228,10 @@ export default function VendorDetailPage() {
         </Button>
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-              {vendor.display_name || vendor.name}
-            </h1>
-            <p className="mt-1 text-sm text-text-secondary">
-              Edit vendor details and compliance status.
-            </p>
+            <PageHeader
+              title={vendor.display_name || vendor.name}
+              subtitle="Edit vendor details and compliance status."
+            />
           </div>
           <Button
             variant="ghost"
@@ -247,7 +248,7 @@ export default function VendorDetailPage() {
 
       <form onSubmit={handleSave} className="space-y-6">
         {/* Basic Info */}
-        <div className="rounded-xl border border-border bg-white px-6 py-6">
+        <Card>
           <h2 className="text-sm font-semibold text-foreground mb-5">Basic Information</h2>
           <div className="space-y-4">
             <div>
@@ -293,10 +294,10 @@ export default function VendorDetailPage() {
               </div>
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* Contact */}
-        <div className="rounded-xl border border-border bg-white px-6 py-6">
+        <Card>
           <h2 className="text-sm font-semibold text-foreground mb-5">Contact Information</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
@@ -327,10 +328,10 @@ export default function VendorDetailPage() {
               />
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* Address */}
-        <div className="rounded-xl border border-border bg-white px-6 py-6">
+        <Card>
           <h2 className="text-sm font-semibold text-foreground mb-5">Address</h2>
           <div className="space-y-4">
             <div>
@@ -368,10 +369,10 @@ export default function VendorDetailPage() {
               </div>
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* Financial & Compliance */}
-        <div className="rounded-xl border border-border bg-white px-6 py-6">
+        <Card>
           <h2 className="text-sm font-semibold text-foreground mb-5">Financial & Compliance</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
@@ -419,10 +420,10 @@ export default function VendorDetailPage() {
               </div>
             )}
           </div>
-        </div>
+        </Card>
 
         {/* Notes */}
-        <div className="rounded-xl border border-border bg-white px-6 py-6">
+        <Card>
           <h2 className="text-sm font-semibold text-foreground mb-5">Notes</h2>
           <FormTextarea
             rows={4}
@@ -430,7 +431,7 @@ export default function VendorDetailPage() {
             onChange={(e) => updateField('notes', e.target.value)}
             placeholder="Any additional notes about this vendor..."
           />
-        </div>
+        </Card>
 
         {/* Actions */}
         <div className="flex items-center justify-end gap-3">

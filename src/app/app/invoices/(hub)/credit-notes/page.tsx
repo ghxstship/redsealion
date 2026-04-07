@@ -5,6 +5,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import EmptyState from '@/components/ui/EmptyState';
 import CreditNotesHeader from '@/components/admin/invoices/CreditNotesHeader';
 import InvoiceHubTabs from '../../InvoiceHubTabs';
+import PageHeader from '@/components/shared/PageHeader';
 
 interface CreditNoteRow {
   id: string;
@@ -74,17 +75,12 @@ export default async function CreditNotesPage() {
 
   return (
     <TierGate feature="credit_notes">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            Credit Notes
-          </h1>
-          <p className="mt-1 text-sm text-text-secondary">
-            Manage credit notes issued against invoices.
-          </p>
-        </div>
+<PageHeader
+        title="Credit Notes"
+        subtitle="Manage credit notes issued against invoices."
+      >
         <CreditNotesHeader />
-      </div>
+      </PageHeader>
 
       <InvoiceHubTabs />
 

@@ -12,7 +12,7 @@
  * @module components/admin/dashboard/DashboardClient
  */
 
-import { useState, useEffect } from 'react';
+import { useMemo, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import { CirclePlus, RefreshCw, CircleMinus, CircleDot, LayoutDashboard } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
@@ -43,17 +43,19 @@ interface DashboardClientProps {
   cards: StatCard[];
 }
 
+const subscribeNoop = () => () => {};
+const getSnapshotTrue = () => true;
+const getSnapshotFalse = () => false;
+
 /* ─── Component ─────────────────────────────────────────── */
 
 export default function DashboardClient({ stats, cards }: DashboardClientProps) {
-  const [greeting, setGreeting] = useState('Hello');
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(subscribeNoop, getSnapshotTrue, getSnapshotFalse);
   const { t } = useTranslation();
 
-  useEffect(() => {
+  const greeting = useMemo(() => {
     const hour = new Date().getHours();
-    setGreeting(getGreeting(hour, t));
-    setMounted(true);
+    return getGreeting(hour, t);
   }, [t]);
 
   const subtitle = getContextualSubtitle(stats, t);

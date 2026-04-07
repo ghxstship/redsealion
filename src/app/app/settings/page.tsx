@@ -1,6 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
+import Skeleton from '@/components/ui/Skeleton';
 
 function InputField({
   label,
@@ -108,7 +111,7 @@ export default function GeneralSettingsPage() {
           <h2 className="text-lg font-semibold text-foreground">General</h2>
           <p className="mt-1 text-sm text-text-secondary">Core organization settings.</p>
         </div>
-        <div className="rounded-xl border border-border bg-white px-6 py-6 animate-pulse h-64" />
+        <Skeleton height="h-64" />
       </div>
     );
   }
@@ -119,7 +122,7 @@ export default function GeneralSettingsPage() {
         <h2 className="text-lg font-semibold text-foreground">General</h2>
         <p className="mt-1 text-sm text-text-secondary">Core organization settings.</p>
       </div>
-      <div className="rounded-xl border border-border bg-white px-6 py-6">
+      <Card>
         <h3 className="text-sm font-semibold text-foreground mb-5">Organization</h3>
         <div className="space-y-5">
           <InputField label="Organization Name" value={orgName} onChange={setOrgName} />
@@ -139,15 +142,11 @@ export default function GeneralSettingsPage() {
           <InputField label="Invoice Prefix" value={invoicePrefix} onChange={setInvoicePrefix} />
           <InputField label="Proposal Prefix" value={proposalPrefix} onChange={setProposalPrefix} />
         </div>
-      </div>
+      </Card>
       <div className="flex justify-end">
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-foreground/90 disabled:opacity-50"
-        >
+        <Button onClick={handleSave} disabled={saving}>
           {saving ? 'Saving...' : 'Save Changes'}
-        </button>
+        </Button>
       </div>
     </div>
   );

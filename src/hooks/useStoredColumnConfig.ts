@@ -25,13 +25,17 @@ export function useStoredColumnConfig({
   
   const [rowHeight, setRowHeight] = useState<'compact' | 'default' | 'tall'>('default');
 
-  // Sync from active view when it changes
-  useEffect(() => {
+  // Sync from active view when it changes (render-time pattern avoids set-state-in-effect)
+  const [prevView, setPrevView] = useState(activeView);
+  const [prevBase, setPrevBase] = useState(baseColumns);
+  if (activeView !== prevView || baseColumns !== prevBase) {
+    setPrevView(activeView);
+    setPrevBase(baseColumns);
     if (activeView) {
       const config = activeView.config || {};
       const { fieldVisibility, fieldOrder, pinnedColumns, rowHeight: viewRowHeight } = config;
       
-      let newColumns = baseColumns.map(col => ({
+      const newColumns = baseColumns.map(col => ({
         ...col,
         visible: fieldVisibility?.[col.key] ?? true,
         pinned: pinnedColumns?.includes(col.key) ?? false,
@@ -52,7 +56,7 @@ export function useStoredColumnConfig({
       setLocalColumns(newColumns);
       if (viewRowHeight) setRowHeight(viewRowHeight);
     }
-  }, [activeView, baseColumns]);
+  }
 
   const handleColumnsChange = useCallback(
     (newColumns: ColumnDef[]) => {

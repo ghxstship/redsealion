@@ -14,6 +14,8 @@ import TaskActivityFeed from '@/components/admin/tasks/TaskActivityFeed';
 import TaskTimer from '@/components/admin/tasks/TaskTimer';
 import TaskWatchButton from '@/components/admin/tasks/TaskWatchButton';
 import FavoriteButton from '@/components/shared/FavoriteButton';
+import Card from '@/components/ui/Card';
+import PageHeader from '@/components/shared/PageHeader';
 
 interface TaskDetail {
   id: string;
@@ -179,14 +181,12 @@ export default async function TaskDetailPage({
                 {task.priority}
               </span>
             </div>
-            <h1 className="text-2xl font-semibold tracking-tight text-foreground flex items-center gap-2">
-              <FavoriteButton entityType="task" entityId={id} />
-              {task.title}
-            </h1>
-            <div className="flex items-center gap-2 mt-1">
+            <PageHeader
+              title={<><FavoriteButton entityType="task" entityId={id} />{task.title}</>}
+            >
               <TaskDetailActions taskId={id} taskTitle={task.title} />
               <TaskWatchButton taskId={id} />
-            </div>
+            </PageHeader>
             {task.description && (
               <p className="mt-2 text-sm text-text-secondary leading-relaxed">{task.description}</p>
             )}

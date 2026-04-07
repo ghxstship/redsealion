@@ -36,7 +36,7 @@ export default function SavedFilters({ currentFilters, onApply }: SavedFiltersPr
     } catch { /* silent */ }
   }, []);
 
-  useEffect(() => { fetchSaved(); }, [fetchSaved]);
+  useEffect(() => { void fetchSaved(); }, [fetchSaved]); // eslint-disable-line react-hooks/set-state-in-effect
 
   async function handleSave() {
     if (!newName.trim()) return;

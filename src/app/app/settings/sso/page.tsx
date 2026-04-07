@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import PageHeader from '@/components/shared/PageHeader';
 
 interface SsoConfig {
   id: string;
@@ -42,12 +43,10 @@ export default async function SsoSettingsPage() {
 
   return (
     <TierGate feature="sso">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Single Sign-On (SSO)</h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Configure SAML or OIDC single sign-on for your organization.
-        </p>
-      </div>
+<PageHeader
+        title="Single Sign-On (SSO)"
+        subtitle="Configure SAML or OIDC single sign-on for your organization."
+      />
 
       <div className="max-w-2xl space-y-6">
         {/* Status card */}

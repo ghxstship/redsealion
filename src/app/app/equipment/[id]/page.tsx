@@ -3,6 +3,8 @@ import { notFound } from 'next/navigation';
 import StatusBadge, { EQUIPMENT_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import MaintenanceKPIs from '@/components/admin/equipment/MaintenanceKPIs';
 import { formatDate, formatLabel, formatCurrency } from '@/lib/utils';
+import PageHeader from '@/components/shared/PageHeader';
+import Card from '@/components/ui/Card';
 
 const RESERVATION_COLORS: Record<string, string> = {
   confirmed: 'bg-green-50 text-green-700',
@@ -56,7 +58,8 @@ export default async function EquipmentDetailPage({
 
   // Compute utilization
   const acquisitionDate = new Date(item.created_at);
-  const daysSinceAcquisition = Math.max(1, Math.floor((Date.now() - acquisitionDate.getTime()) / (1000 * 60 * 60 * 24)));
+  const nowMs = Date.now();
+  const daysSinceAcquisition = Math.max(1, Math.floor((nowMs - acquisitionDate.getTime()) / (1000 * 60 * 60 * 24)));
   const totalReservedDays = reservations.reduce((sum, r) => {
     const from = new Date(r.reserved_from as string);
     const until = new Date(r.reserved_until as string);
@@ -68,9 +71,9 @@ export default async function EquipmentDetailPage({
   const raw = item as Record<string, unknown>;
   const warrantyEnd = raw.warranty_end_date as string | null;
   const warrantyProvider = raw.warranty_provider as string | null;
-  const warrantyActive = warrantyEnd && new Date(warrantyEnd) > new Date();
+  const warrantyActive = warrantyEnd && new Date(warrantyEnd).getTime() > nowMs;
   const warrantyDaysRemaining = warrantyEnd
-    ? Math.ceil((new Date(warrantyEnd).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+    ? Math.ceil((new Date(warrantyEnd).getTime() - nowMs) / (1000 * 60 * 60 * 24))
     : null;
 
   // Overdue schedules
@@ -87,7 +90,7 @@ export default async function EquipmentDetailPage({
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-8">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-semibold tracking-tight text-foreground">{item.name}</h1>
+<PageHeader title={item.name} />
             <StatusBadge status={item.status} colorMap={EQUIPMENT_STATUS_COLORS} />
           </div>
           <p className="mt-1 text-sm text-text-secondary">
@@ -107,19 +110,19 @@ export default async function EquipmentDetailPage({
 
       {/* KPI row */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">
-        <div className="rounded-xl border border-border bg-white px-5 py-5">
+        <Card padding="default" className="px-5 py-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Utilization</p>
           <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground tabular-nums">{utilizationRate}%</p>
           <p className="mt-0.5 text-xs text-text-muted">{totalReservedDays}d reserved / {daysSinceAcquisition}d owned</p>
-        </div>
-        <div className="rounded-xl border border-border bg-white px-5 py-5">
+        </Card>
+        <Card padding="default" className="px-5 py-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Book Value</p>
           <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground tabular-nums">{formatCurrency(currentValue)}</p>
           {acquisitionCost > 0 && (
             <p className="mt-0.5 text-xs text-text-muted">of {formatCurrency(acquisitionCost)}</p>
           )}
-        </div>
-        <div className="rounded-xl border border-border bg-white px-5 py-5">
+        </Card>
+        <Card padding="default" className="px-5 py-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Warranty</p>
           {warrantyActive ? (
             <>
@@ -137,12 +140,12 @@ export default async function EquipmentDetailPage({
               <p className="mt-0.5 text-xs text-text-muted">Not configured</p>
             </>
           )}
-        </div>
-        <div className="rounded-xl border border-border bg-white px-5 py-5">
+        </Card>
+        <Card padding="default" className="px-5 py-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Deployments</p>
           <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground tabular-nums">{item.deployment_count}</p>
           <p className="mt-0.5 text-xs text-text-muted">{item.max_deployments ? `of ${item.max_deployments} max` : 'Unlimited'}</p>
-        </div>
+        </Card>
       </div>
 
       {/* Maintenance KPIs */}
