@@ -86,54 +86,56 @@ export default function EventCalendar({ events }: EventCalendarProps) {
         </button>
       </div>
 
-      <table className="w-full">
-        <thead>
-          <tr>
-            {dayNames.map((d) => (
-              <th key={d} className="text-xs text-text-muted font-medium py-1 text-center">
-                {d}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {weeks.map((week, wi) => (
-            <tr key={wi}>
-              {week.map((day, di) => (
-                <td
-                  key={di}
-                  className="border border-border p-1 align-top h-20 text-xs"
-                >
-                  {day != null && (
-                    <>
-                      <div className="text-text-secondary font-medium mb-0.5">{day}</div>
-                      <div className="space-y-0.5">
-                        {getEventsForDay(day)
-                          .slice(0, 3)
-                          .map((ev) => (
-                            <div
-                              key={ev.id}
-                              className="truncate rounded px-1 py-0.5 text-white text-[10px] leading-tight"
-                              style={{ backgroundColor: ev.color }}
-                              title={ev.title}
-                            >
-                              {ev.title}
-                            </div>
-                          ))}
-                        {getEventsForDay(day).length > 3 && (
-                          <div className="text-text-muted text-[10px]">
-                            +{getEventsForDay(day).length - 3} more
-                          </div>
-                        )}
-                      </div>
-                    </>
-                  )}
-                </td>
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[500px]">
+          <thead>
+            <tr>
+              {dayNames.map((d) => (
+                <th key={d} className="text-xs text-text-muted font-medium py-1 text-center">
+                  {d}
+                </th>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {weeks.map((week, wi) => (
+              <tr key={wi}>
+                {week.map((day, di) => (
+                  <td
+                    key={di}
+                    className="border border-border p-1 align-top h-20 text-xs min-w-[70px]"
+                  >
+                    {day != null && (
+                      <>
+                        <div className="text-text-secondary font-medium mb-0.5">{day}</div>
+                        <div className="space-y-0.5">
+                          {getEventsForDay(day)
+                            .slice(0, 3)
+                            .map((ev) => (
+                              <div
+                                key={ev.id}
+                                className="truncate rounded px-1 py-0.5 text-white text-[10px] leading-tight"
+                                style={{ backgroundColor: ev.color }}
+                                title={ev.title}
+                              >
+                                {ev.title}
+                              </div>
+                            ))}
+                          {getEventsForDay(day).length > 3 && (
+                            <div className="text-text-muted text-[10px]">
+                              +{getEventsForDay(day).length - 3} more
+                            </div>
+                          )}
+                        </div>
+                      </>
+                    )}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

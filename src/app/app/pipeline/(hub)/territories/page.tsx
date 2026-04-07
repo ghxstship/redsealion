@@ -58,21 +58,23 @@ export default async function TerritoriesPage() {
         {territories.length === 0 ? (
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No deal territories yet. Territories are derived from client address data.</p></div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr><th className="px-4 py-3">Region</th><th className="px-4 py-3">Deals</th><th className="px-4 py-3">Pipeline Value</th><th className="px-4 py-3">% of Total</th></tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {territories.map(([region, data]) => (
-                <tr key={region} className="hover:bg-bg-secondary/50 transition-colors">
-                  <td className="px-4 py-3 font-medium text-foreground">{region}</td>
-                  <td className="px-4 py-3 tabular-nums">{data.count}</td>
-                  <td className="px-4 py-3 tabular-nums">{formatCurrency(data.value)}</td>
-                  <td className="px-4 py-3 tabular-nums">{totalValue > 0 ? `${Math.round((data.value / totalValue) * 100)}%` : '0%'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                <tr><th className="px-4 py-3">Region</th><th className="px-4 py-3">Deals</th><th className="px-4 py-3">Pipeline Value</th><th className="px-4 py-3">% of Total</th></tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {territories.map(([region, data]) => (
+                  <tr key={region} className="hover:bg-bg-secondary/50 transition-colors">
+                    <td className="px-4 py-3 font-medium text-foreground">{region}</td>
+                    <td className="px-4 py-3 tabular-nums">{data.count}</td>
+                    <td className="px-4 py-3 tabular-nums">{formatCurrency(data.value)}</td>
+                    <td className="px-4 py-3 tabular-nums">{totalValue > 0 ? `${Math.round((data.value / totalValue) * 100)}%` : '0%'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </TierGate>

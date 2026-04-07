@@ -60,32 +60,34 @@ export default async function PipelineListPage() {
             <p className="text-sm text-text-secondary">No deals in your pipeline. Add deals to start tracking revenue.</p>
           </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr>
-                <th className="px-4 py-3">Deal</th>
-                <th className="px-4 py-3">Client</th>
-                <th className="px-4 py-3">Stage</th>
-                <th className="px-4 py-3">Value</th>
-                <th className="px-4 py-3">Probability</th>
-                <th className="px-4 py-3">Close Date</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {deals.map((deal) => (
-                <tr key={deal.id} className="hover:bg-bg-secondary/50 transition-colors">
-                  <td className="px-4 py-3">
-                    <Link href={`/app/pipeline/${deal.id}`} className="font-medium text-foreground hover:underline">{deal.title}</Link>
-                  </td>
-                  <td className="px-4 py-3 text-text-secondary">{deal.clients?.name ?? '—'}</td>
-                  <td className="px-4 py-3"><span className="inline-flex rounded-full px-2 py-0.5 text-xs font-medium bg-blue-50 text-blue-700 capitalize">{deal.stage?.replace('_', ' ')}</span></td>
-                  <td className="px-4 py-3 tabular-nums">{formatCurrency(deal.value)}</td>
-                  <td className="px-4 py-3 tabular-nums">{deal.probability}%</td>
-                  <td className="px-4 py-3 text-text-secondary">{deal.expected_close_date ? new Date(deal.expected_close_date).toLocaleDateString() : '—'}</td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                <tr>
+                  <th className="px-4 py-3">Deal</th>
+                  <th className="px-4 py-3">Client</th>
+                  <th className="px-4 py-3">Stage</th>
+                  <th className="px-4 py-3">Value</th>
+                  <th className="px-4 py-3">Probability</th>
+                  <th className="px-4 py-3">Close Date</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {deals.map((deal) => (
+                  <tr key={deal.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <td className="px-4 py-3">
+                      <Link href={`/app/pipeline/${deal.id}`} className="font-medium text-foreground hover:underline">{deal.title}</Link>
+                    </td>
+                    <td className="px-4 py-3 text-text-secondary">{deal.clients?.name ?? '—'}</td>
+                    <td className="px-4 py-3"><span className="inline-flex rounded-full px-2 py-0.5 text-xs font-medium bg-blue-50 text-blue-700 capitalize">{deal.stage?.replace('_', ' ')}</span></td>
+                    <td className="px-4 py-3 tabular-nums">{formatCurrency(deal.value)}</td>
+                    <td className="px-4 py-3 tabular-nums">{deal.probability}%</td>
+                    <td className="px-4 py-3 text-text-secondary">{deal.expected_close_date ? new Date(deal.expected_close_date).toLocaleDateString() : '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </TierGate>

@@ -58,40 +58,42 @@ export default async function AdvancingApprovalsPage() {
             <p className="text-sm text-text-secondary">No advances requiring approval at this time.</p>
           </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr>
-                <th className="px-4 py-3">Number</th>
-                <th className="px-4 py-3">Event</th>
-                <th className="px-4 py-3">Priority</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3">Amount</th>
-                <th className="px-4 py-3">Submitted</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {approvals.map((item) => (
-                <tr key={item.id} className="hover:bg-bg-secondary/50 transition-colors">
-                  <td className="px-4 py-3">
-                    <Link href={`/app/advancing/${item.id}`} className="font-medium text-foreground hover:underline">{item.advance_number}</Link>
-                  </td>
-                  <td className="px-4 py-3 text-text-secondary">{item.event_name ?? '—'}</td>
-                  <td className="px-4 py-3">
-                    <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${item.priority === 'urgent' ? 'bg-red-50 text-red-700' : item.priority === 'high' ? 'bg-orange-50 text-orange-700' : 'bg-gray-50 text-gray-700'}`}>
-                      {item.priority}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${item.status === 'approved' ? 'bg-green-50 text-green-700' : item.status === 'rejected' ? 'bg-red-50 text-red-700' : 'bg-yellow-50 text-yellow-700'}`}>
-                      {item.status.replace('_', ' ')}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 tabular-nums">{formatCurrency(item.total_cents / 100)}</td>
-                  <td className="px-4 py-3 text-text-secondary">{new Date(item.created_at).toLocaleDateString()}</td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                <tr>
+                  <th className="px-4 py-3">Number</th>
+                  <th className="px-4 py-3">Event</th>
+                  <th className="px-4 py-3">Priority</th>
+                  <th className="px-4 py-3">Status</th>
+                  <th className="px-4 py-3">Amount</th>
+                  <th className="px-4 py-3">Submitted</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {approvals.map((item) => (
+                  <tr key={item.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <td className="px-4 py-3">
+                      <Link href={`/app/advancing/${item.id}`} className="font-medium text-foreground hover:underline">{item.advance_number}</Link>
+                    </td>
+                    <td className="px-4 py-3 text-text-secondary">{item.event_name ?? '—'}</td>
+                    <td className="px-4 py-3">
+                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${item.priority === 'urgent' ? 'bg-red-50 text-red-700' : item.priority === 'high' ? 'bg-orange-50 text-orange-700' : 'bg-gray-50 text-gray-700'}`}>
+                        {item.priority}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${item.status === 'approved' ? 'bg-green-50 text-green-700' : item.status === 'rejected' ? 'bg-red-50 text-red-700' : 'bg-yellow-50 text-yellow-700'}`}>
+                        {item.status.replace('_', ' ')}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 tabular-nums">{formatCurrency(item.total_cents / 100)}</td>
+                    <td className="px-4 py-3 text-text-secondary">{new Date(item.created_at).toLocaleDateString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </TierGate>

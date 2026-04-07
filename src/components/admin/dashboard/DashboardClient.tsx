@@ -190,51 +190,53 @@ export default function DashboardClient({ stats, cards }: DashboardClientProps) 
                 {t('dashboard.salesLeaderboard')}
               </h2>
               <div className="surface overflow-hidden">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-border bg-bg-secondary">
-                      <th className="px-5 py-2.5 text-left text-xs font-medium uppercase tracking-wider text-text-muted w-8">
-                        #
-                      </th>
-                      <th className="px-5 py-2.5 text-left text-xs font-medium uppercase tracking-wider text-text-muted">
-                        {t('dashboard.rep')}
-                      </th>
-                      <th className="px-5 py-2.5 text-right text-xs font-medium uppercase tracking-wider text-text-muted">
-                        {t('dashboard.dealsWon')}
-                      </th>
-                      <th className="px-5 py-2.5 text-right text-xs font-medium uppercase tracking-wider text-text-muted">
-                        {t('dashboard.revenue')}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
-                    {stats.leaderboard.map((entry, idx) => (
-                      <tr
-                        key={entry.name}
-                        className="transition-colors duration-fast hover:bg-bg-secondary/50"
-                      >
-                        <td className="px-5 py-3 text-sm tabular-nums text-text-muted">
-                          {idx === 0
-                            ? '🥇'
-                            : idx === 1
-                              ? '🥈'
-                              : idx === 2
-                                ? '🥉'
-                                : `${idx + 1}`}
-                        </td>
-                        <td className="px-5 py-3 text-sm font-medium text-foreground">
-                          {entry.name}
-                        </td>
-                        <td className="px-5 py-3 text-right text-sm tabular-nums text-foreground">
-                          {entry.deals_won}
-                        </td>
-                        <td className="px-5 py-3 text-right text-sm tabular-nums font-medium text-foreground">
-                          {formatCurrency(entry.revenue)}
-                        </td>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-border bg-bg-secondary">
+                        <th className="px-5 py-2.5 text-left text-xs font-medium uppercase tracking-wider text-text-muted w-8">
+                          #
+                        </th>
+                        <th className="px-5 py-2.5 text-left text-xs font-medium uppercase tracking-wider text-text-muted">
+                          {t('dashboard.rep')}
+                        </th>
+                        <th className="px-5 py-2.5 text-right text-xs font-medium uppercase tracking-wider text-text-muted">
+                          {t('dashboard.dealsWon')}
+                        </th>
+                        <th className="px-5 py-2.5 text-right text-xs font-medium uppercase tracking-wider text-text-muted">
+                          {t('dashboard.revenue')}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {stats.leaderboard.map((entry, idx) => (
+                        <tr
+                          key={entry.name}
+                          className="transition-colors duration-fast hover:bg-bg-secondary/50"
+                        >
+                          <td className="px-5 py-3 text-sm tabular-nums text-text-muted">
+                            {idx === 0
+                              ? '🥇'
+                              : idx === 1
+                                ? '🥈'
+                                : idx === 2
+                                  ? '🥉'
+                                  : `${idx + 1}`}
+                          </td>
+                          <td className="px-5 py-3 text-sm font-medium text-foreground">
+                            {entry.name}
+                          </td>
+                          <td className="px-5 py-3 text-right text-sm tabular-nums text-foreground">
+                            {entry.deals_won}
+                          </td>
+                          <td className="px-5 py-3 text-right text-sm tabular-nums font-medium text-foreground">
+                            {formatCurrency(entry.revenue)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           )}

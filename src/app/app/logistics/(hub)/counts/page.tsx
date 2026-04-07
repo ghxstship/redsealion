@@ -116,43 +116,45 @@ export default async function InventoryCountsPage() {
             <div>
               <h2 className="text-sm font-semibold text-foreground mb-4">Active Counts</h2>
               <div className="rounded-xl border border-border bg-white overflow-hidden">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-border bg-bg-secondary">
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Type</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Location</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Items</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Started</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</th>
-                      <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted" />
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
-                    {active.map((count) => (
-                      <tr key={count.id} className="transition-colors hover:bg-bg-secondary/50">
-                        <td className="px-6 py-3.5">
-                          <StatusBadge status={count.count_type} colorMap={COUNT_TYPE_COLORS} />
-                        </td>
-                        <td className="px-6 py-3.5 text-sm text-foreground">{count.location ?? 'All locations'}</td>
-                        <td className="px-6 py-3.5 text-sm text-foreground tabular-nums">{count.line_count}</td>
-                        <td className="px-6 py-3.5 text-sm text-text-secondary">
-                          {count.started_at ? formatDate(count.started_at) : '—'}
-                        </td>
-                        <td className="px-6 py-3.5">
-                          <StatusBadge status={count.status} colorMap={COUNT_STATUS_COLORS} />
-                        </td>
-                        <td className="px-6 py-3.5 text-right">
-                          <Link
-                            href={`/app/logistics/counts/${count.id}`}
-                            className="text-sm font-medium text-foreground hover:underline"
-                          >
-                            Open →
-                          </Link>
-                        </td>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-border bg-bg-secondary">
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Type</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Location</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Items</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Started</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</th>
+                        <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted" />
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {active.map((count) => (
+                        <tr key={count.id} className="transition-colors hover:bg-bg-secondary/50">
+                          <td className="px-6 py-3.5">
+                            <StatusBadge status={count.count_type} colorMap={COUNT_TYPE_COLORS} />
+                          </td>
+                          <td className="px-6 py-3.5 text-sm text-foreground">{count.location ?? 'All locations'}</td>
+                          <td className="px-6 py-3.5 text-sm text-foreground tabular-nums">{count.line_count}</td>
+                          <td className="px-6 py-3.5 text-sm text-text-secondary">
+                            {count.started_at ? formatDate(count.started_at) : '—'}
+                          </td>
+                          <td className="px-6 py-3.5">
+                            <StatusBadge status={count.status} colorMap={COUNT_STATUS_COLORS} />
+                          </td>
+                          <td className="px-6 py-3.5 text-right">
+                            <Link
+                              href={`/app/logistics/counts/${count.id}`}
+                              className="text-sm font-medium text-foreground hover:underline"
+                            >
+                              Open →
+                            </Link>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           )}
@@ -162,30 +164,32 @@ export default async function InventoryCountsPage() {
             <div>
               <h2 className="text-sm font-semibold text-foreground mb-4">Completed</h2>
               <div className="rounded-xl border border-border bg-white overflow-hidden">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-border bg-bg-secondary">
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Type</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Location</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Items</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Completed</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
-                    {completed.map((count) => (
-                      <tr key={count.id} className="transition-colors hover:bg-bg-secondary/50">
-                        <td className="px-6 py-3.5">
-                          <StatusBadge status={count.count_type} colorMap={COUNT_TYPE_COLORS} />
-                        </td>
-                        <td className="px-6 py-3.5 text-sm text-foreground">{count.location ?? 'All'}</td>
-                        <td className="px-6 py-3.5 text-sm text-foreground tabular-nums">{count.line_count}</td>
-                        <td className="px-6 py-3.5 text-sm text-text-secondary">
-                          {count.completed_at ? formatDate(count.completed_at) : '—'}
-                        </td>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-border bg-bg-secondary">
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Type</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Location</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Items</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Completed</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {completed.map((count) => (
+                        <tr key={count.id} className="transition-colors hover:bg-bg-secondary/50">
+                          <td className="px-6 py-3.5">
+                            <StatusBadge status={count.count_type} colorMap={COUNT_TYPE_COLORS} />
+                          </td>
+                          <td className="px-6 py-3.5 text-sm text-foreground">{count.location ?? 'All'}</td>
+                          <td className="px-6 py-3.5 text-sm text-foreground tabular-nums">{count.line_count}</td>
+                          <td className="px-6 py-3.5 text-sm text-text-secondary">
+                            {count.completed_at ? formatDate(count.completed_at) : '—'}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           )}

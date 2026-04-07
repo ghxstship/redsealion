@@ -45,28 +45,30 @@ export default async function DispatchHistoryPage() {
             <p className="text-sm text-text-secondary">No completed dispatches yet. History populates as work orders are completed.</p>
           </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr>
-                <th className="px-4 py-3">Job</th>
-                <th className="px-4 py-3">Location</th>
-                <th className="px-4 py-3">Assigned To</th>
-                <th className="px-4 py-3">Scheduled</th>
-                <th className="px-4 py-3">Completed</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {history.map((item) => (
-                <tr key={item.id} className="hover:bg-bg-secondary/50 transition-colors">
-                  <td className="px-4 py-3 font-medium text-foreground">{item.title}</td>
-                  <td className="px-4 py-3 text-text-secondary">{item.location ?? '—'}</td>
-                  <td className="px-4 py-3 text-text-secondary">{item.assigned_to ?? '—'}</td>
-                  <td className="px-4 py-3 text-text-secondary">{item.scheduled_date ? new Date(item.scheduled_date).toLocaleDateString() : '—'}</td>
-                  <td className="px-4 py-3 text-text-secondary">{item.completed_at ? new Date(item.completed_at).toLocaleDateString() : '—'}</td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                <tr>
+                  <th className="px-4 py-3">Job</th>
+                  <th className="px-4 py-3">Location</th>
+                  <th className="px-4 py-3">Assigned To</th>
+                  <th className="px-4 py-3">Scheduled</th>
+                  <th className="px-4 py-3">Completed</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {history.map((item) => (
+                  <tr key={item.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <td className="px-4 py-3 font-medium text-foreground">{item.title}</td>
+                    <td className="px-4 py-3 text-text-secondary">{item.location ?? '—'}</td>
+                    <td className="px-4 py-3 text-text-secondary">{item.assigned_to ?? '—'}</td>
+                    <td className="px-4 py-3 text-text-secondary">{item.scheduled_date ? new Date(item.scheduled_date).toLocaleDateString() : '—'}</td>
+                    <td className="px-4 py-3 text-text-secondary">{item.completed_at ? new Date(item.completed_at).toLocaleDateString() : '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </TierGate>

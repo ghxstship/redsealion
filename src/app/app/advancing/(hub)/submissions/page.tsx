@@ -58,36 +58,38 @@ export default async function AdvancingSubmissionsPage() {
             <p className="text-sm text-text-secondary">No pending submissions. Create a new advance to get started.</p>
           </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr>
-                <th className="px-4 py-3">Number</th>
-                <th className="px-4 py-3">Event</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3">Amount</th>
-                <th className="px-4 py-3">Deadline</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {submissions.map((item) => (
-                <tr key={item.id} className="hover:bg-bg-secondary/50 transition-colors">
-                  <td className="px-4 py-3">
-                    <Link href={`/app/advancing/${item.id}`} className="font-medium text-foreground hover:underline">
-                      {item.advance_number}
-                    </Link>
-                  </td>
-                  <td className="px-4 py-3 text-text-secondary">{item.event_name ?? '—'}</td>
-                  <td className="px-4 py-3">
-                    <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${item.status === 'draft' ? 'bg-yellow-50 text-yellow-700' : 'bg-blue-50 text-blue-700'}`}>
-                      {item.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 tabular-nums">{formatCurrency(item.total_cents / 100)}</td>
-                  <td className="px-4 py-3 text-text-secondary">{item.submission_deadline ? new Date(item.submission_deadline).toLocaleDateString() : '—'}</td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                <tr>
+                  <th className="px-4 py-3">Number</th>
+                  <th className="px-4 py-3">Event</th>
+                  <th className="px-4 py-3">Status</th>
+                  <th className="px-4 py-3">Amount</th>
+                  <th className="px-4 py-3">Deadline</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {submissions.map((item) => (
+                  <tr key={item.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <td className="px-4 py-3">
+                      <Link href={`/app/advancing/${item.id}`} className="font-medium text-foreground hover:underline">
+                        {item.advance_number}
+                      </Link>
+                    </td>
+                    <td className="px-4 py-3 text-text-secondary">{item.event_name ?? '—'}</td>
+                    <td className="px-4 py-3">
+                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${item.status === 'draft' ? 'bg-yellow-50 text-yellow-700' : 'bg-blue-50 text-blue-700'}`}>
+                        {item.status}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 tabular-nums">{formatCurrency(item.total_cents / 100)}</td>
+                    <td className="px-4 py-3 text-text-secondary">{item.submission_deadline ? new Date(item.submission_deadline).toLocaleDateString() : '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </TierGate>

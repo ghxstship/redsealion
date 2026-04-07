@@ -56,32 +56,34 @@ export default async function BOMPage() {
         {items.length === 0 ? (
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No materials in BOM. Add materials when creating fabrication orders.</p></div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr>
-                <th className="px-4 py-3">Material</th>
-                <th className="px-4 py-3">SKU</th>
-                <th className="px-4 py-3">Order</th>
-                <th className="px-4 py-3">Required</th>
-                <th className="px-4 py-3">On Hand</th>
-                <th className="px-4 py-3">Cost</th>
-                <th className="px-4 py-3">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {items.map((item) => (
-                <tr key={item.id} className={`hover:bg-bg-secondary/50 transition-colors ${item.quantity_on_hand < item.quantity_required ? 'bg-red-50/30' : ''}`}>
-                  <td className="px-4 py-3 font-medium text-foreground">{item.material_name}</td>
-                  <td className="px-4 py-3 text-text-muted font-mono text-xs">{item.sku ?? '—'}</td>
-                  <td className="px-4 py-3 text-text-secondary">{item.order_number ?? '—'}</td>
-                  <td className="px-4 py-3 tabular-nums">{item.quantity_required} {item.unit}</td>
-                  <td className="px-4 py-3 tabular-nums">{item.quantity_on_hand} {item.unit}</td>
-                  <td className="px-4 py-3 tabular-nums">{formatCurrency((item.unit_cost_cents * item.quantity_required) / 100)}</td>
-                  <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[item.status]}`}>{item.status}</span></td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                <tr>
+                  <th className="px-4 py-3">Material</th>
+                  <th className="px-4 py-3">SKU</th>
+                  <th className="px-4 py-3">Order</th>
+                  <th className="px-4 py-3">Required</th>
+                  <th className="px-4 py-3">On Hand</th>
+                  <th className="px-4 py-3">Cost</th>
+                  <th className="px-4 py-3">Status</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {items.map((item) => (
+                  <tr key={item.id} className={`hover:bg-bg-secondary/50 transition-colors ${item.quantity_on_hand < item.quantity_required ? 'bg-red-50/30' : ''}`}>
+                    <td className="px-4 py-3 font-medium text-foreground">{item.material_name}</td>
+                    <td className="px-4 py-3 text-text-muted font-mono text-xs">{item.sku ?? '—'}</td>
+                    <td className="px-4 py-3 text-text-secondary">{item.order_number ?? '—'}</td>
+                    <td className="px-4 py-3 tabular-nums">{item.quantity_required} {item.unit}</td>
+                    <td className="px-4 py-3 tabular-nums">{item.quantity_on_hand} {item.unit}</td>
+                    <td className="px-4 py-3 tabular-nums">{formatCurrency((item.unit_cost_cents * item.quantity_required) / 100)}</td>
+                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[item.status]}`}>{item.status}</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </TierGate>

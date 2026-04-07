@@ -50,21 +50,23 @@ export default async function DailyReportsPage() {
         {reports.length === 0 ? (
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No daily reports filed. Reports capture weather, labor hours, deliveries, and incidents during events.</p></div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr><th className="px-4 py-3">Report</th><th className="px-4 py-3">Event</th><th className="px-4 py-3">Date</th><th className="px-4 py-3">Status</th></tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {reports.map((r) => (
-                <tr key={r.id} className="hover:bg-bg-secondary/50 transition-colors">
-                  <td className="px-4 py-3 font-medium text-foreground">{r.title}</td>
-                  <td className="px-4 py-3 text-text-secondary">{r.event_name ?? '—'}</td>
-                  <td className="px-4 py-3 text-text-secondary">{new Date(r.created_at).toLocaleDateString()}</td>
-                  <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${r.status === 'completed' ? 'bg-green-50 text-green-700' : 'bg-yellow-50 text-yellow-700'}`}>{r.status}</span></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                <tr><th className="px-4 py-3">Report</th><th className="px-4 py-3">Event</th><th className="px-4 py-3">Date</th><th className="px-4 py-3">Status</th></tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {reports.map((r) => (
+                  <tr key={r.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <td className="px-4 py-3 font-medium text-foreground">{r.title}</td>
+                    <td className="px-4 py-3 text-text-secondary">{r.event_name ?? '—'}</td>
+                    <td className="px-4 py-3 text-text-secondary">{new Date(r.created_at).toLocaleDateString()}</td>
+                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${r.status === 'completed' ? 'bg-green-50 text-green-700' : 'bg-yellow-50 text-yellow-700'}`}>{r.status}</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </TierGate>

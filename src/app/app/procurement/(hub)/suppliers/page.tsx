@@ -49,22 +49,24 @@ export default async function SuppliersPage() {
         {suppliers.length === 0 ? (
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No suppliers added. Add vendors from Finance or Procurement to start sourcing.</p></div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr><th className="px-4 py-3">Name</th><th className="px-4 py-3">Contact</th><th className="px-4 py-3">Email</th><th className="px-4 py-3">Category</th><th className="px-4 py-3">Status</th></tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {suppliers.map((s) => (
-                <tr key={s.id} className="hover:bg-bg-secondary/50 transition-colors">
-                  <td className="px-4 py-3 font-medium text-foreground">{s.name}</td>
-                  <td className="px-4 py-3 text-text-secondary">{s.contact_name ?? '—'}</td>
-                  <td className="px-4 py-3 text-text-secondary">{s.email ?? '—'}</td>
-                  <td className="px-4 py-3 text-text-secondary capitalize">{s.category ?? '—'}</td>
-                  <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${s.status === 'active' ? 'bg-green-50 text-green-700' : 'bg-gray-50 text-gray-700'}`}>{s.status}</span></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                <tr><th className="px-4 py-3">Name</th><th className="px-4 py-3">Contact</th><th className="px-4 py-3">Email</th><th className="px-4 py-3">Category</th><th className="px-4 py-3">Status</th></tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {suppliers.map((s) => (
+                  <tr key={s.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <td className="px-4 py-3 font-medium text-foreground">{s.name}</td>
+                    <td className="px-4 py-3 text-text-secondary">{s.contact_name ?? '—'}</td>
+                    <td className="px-4 py-3 text-text-secondary">{s.email ?? '—'}</td>
+                    <td className="px-4 py-3 text-text-secondary capitalize">{s.category ?? '—'}</td>
+                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${s.status === 'active' ? 'bg-green-50 text-green-700' : 'bg-gray-50 text-gray-700'}`}>{s.status}</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </TierGate>

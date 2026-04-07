@@ -58,34 +58,36 @@ export default async function AdvancingAllocationsPage() {
             <p className="text-sm text-text-secondary">No advances with budget allocations yet.</p>
           </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr>
-                <th className="px-4 py-3">Advance</th>
-                <th className="px-4 py-3">Event</th>
-                <th className="px-4 py-3">Items</th>
-                <th className="px-4 py-3">Allocated</th>
-                <th className="px-4 py-3">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {advances.map((item) => (
-                <tr key={item.id} className="hover:bg-bg-secondary/50 transition-colors">
-                  <td className="px-4 py-3">
-                    <Link href={`/app/advancing/${item.id}`} className="font-medium text-foreground hover:underline">{item.advance_number}</Link>
-                  </td>
-                  <td className="px-4 py-3 text-text-secondary">{item.event_name ?? '—'}</td>
-                  <td className="px-4 py-3 tabular-nums">{item.line_item_count}</td>
-                  <td className="px-4 py-3 tabular-nums">{formatCurrency(item.total_cents / 100)}</td>
-                  <td className="px-4 py-3">
-                    <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${item.status === 'fulfilled' ? 'bg-green-50 text-green-700' : 'bg-blue-50 text-blue-700'}`}>
-                      {item.status.replace('_', ' ')}
-                    </span>
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                <tr>
+                  <th className="px-4 py-3">Advance</th>
+                  <th className="px-4 py-3">Event</th>
+                  <th className="px-4 py-3">Items</th>
+                  <th className="px-4 py-3">Allocated</th>
+                  <th className="px-4 py-3">Status</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {advances.map((item) => (
+                  <tr key={item.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <td className="px-4 py-3">
+                      <Link href={`/app/advancing/${item.id}`} className="font-medium text-foreground hover:underline">{item.advance_number}</Link>
+                    </td>
+                    <td className="px-4 py-3 text-text-secondary">{item.event_name ?? '—'}</td>
+                    <td className="px-4 py-3 tabular-nums">{item.line_item_count}</td>
+                    <td className="px-4 py-3 tabular-nums">{formatCurrency(item.total_cents / 100)}</td>
+                    <td className="px-4 py-3">
+                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${item.status === 'fulfilled' ? 'bg-green-50 text-green-700' : 'bg-blue-50 text-blue-700'}`}>
+                        {item.status.replace('_', ' ')}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </TierGate>

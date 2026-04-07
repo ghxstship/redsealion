@@ -50,22 +50,24 @@ export default async function RequisitionsPage() {
         {reqs.length === 0 ? (
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No requisitions submitted. Create a requisition to request materials or services.</p></div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr><th className="px-4 py-3">Req #</th><th className="px-4 py-3">Priority</th><th className="px-4 py-3">Amount</th><th className="px-4 py-3">Needed By</th><th className="px-4 py-3">Status</th></tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {reqs.map((r) => (
-                <tr key={r.id} className="hover:bg-bg-secondary/50 transition-colors">
-                  <td className="px-4 py-3 font-medium text-foreground">{r.requisition_number}</td>
-                  <td className="px-4 py-3 capitalize text-text-secondary">{r.priority}</td>
-                  <td className="px-4 py-3 tabular-nums">{formatCurrency(r.total_cents / 100)}</td>
-                  <td className="px-4 py-3 text-text-secondary">{r.needed_by ? new Date(r.needed_by).toLocaleDateString() : '—'}</td>
-                  <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[r.status]}`}>{r.status}</span></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                <tr><th className="px-4 py-3">Req #</th><th className="px-4 py-3">Priority</th><th className="px-4 py-3">Amount</th><th className="px-4 py-3">Needed By</th><th className="px-4 py-3">Status</th></tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {reqs.map((r) => (
+                  <tr key={r.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <td className="px-4 py-3 font-medium text-foreground">{r.requisition_number}</td>
+                    <td className="px-4 py-3 capitalize text-text-secondary">{r.priority}</td>
+                    <td className="px-4 py-3 tabular-nums">{formatCurrency(r.total_cents / 100)}</td>
+                    <td className="px-4 py-3 text-text-secondary">{r.needed_by ? new Date(r.needed_by).toLocaleDateString() : '—'}</td>
+                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[r.status]}`}>{r.status}</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </TierGate>

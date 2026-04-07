@@ -52,23 +52,25 @@ export default async function ProcurementPOPage() {
         {pos.length === 0 ? (
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No purchase orders. POs are created from approved requisitions or directly from Finance.</p></div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr><th className="px-4 py-3">PO #</th><th className="px-4 py-3">Vendor</th><th className="px-4 py-3">Amount</th><th className="px-4 py-3">Ordered</th><th className="px-4 py-3">Expected</th><th className="px-4 py-3">Status</th></tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {pos.map((po) => (
-                <tr key={po.id} className="hover:bg-bg-secondary/50 transition-colors">
-                  <td className="px-4 py-3"><Link href={`/app/finance/purchase-orders/${po.id}`} className="font-medium text-foreground hover:underline">{po.po_number}</Link></td>
-                  <td className="px-4 py-3 text-text-secondary">{po.vendor_name ?? '—'}</td>
-                  <td className="px-4 py-3 tabular-nums">{formatCurrency(po.total_amount ?? 0)}</td>
-                  <td className="px-4 py-3 text-text-secondary">{po.order_date ? new Date(po.order_date).toLocaleDateString() : '—'}</td>
-                  <td className="px-4 py-3 text-text-secondary">{po.expected_delivery ? new Date(po.expected_delivery).toLocaleDateString() : '—'}</td>
-                  <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[po.status] ?? 'bg-gray-50 text-gray-700'}`}>{po.status?.replace('_', ' ')}</span></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                <tr><th className="px-4 py-3">PO #</th><th className="px-4 py-3">Vendor</th><th className="px-4 py-3">Amount</th><th className="px-4 py-3">Ordered</th><th className="px-4 py-3">Expected</th><th className="px-4 py-3">Status</th></tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {pos.map((po) => (
+                  <tr key={po.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <td className="px-4 py-3"><Link href={`/app/finance/purchase-orders/${po.id}`} className="font-medium text-foreground hover:underline">{po.po_number}</Link></td>
+                    <td className="px-4 py-3 text-text-secondary">{po.vendor_name ?? '—'}</td>
+                    <td className="px-4 py-3 tabular-nums">{formatCurrency(po.total_amount ?? 0)}</td>
+                    <td className="px-4 py-3 text-text-secondary">{po.order_date ? new Date(po.order_date).toLocaleDateString() : '—'}</td>
+                    <td className="px-4 py-3 text-text-secondary">{po.expected_delivery ? new Date(po.expected_delivery).toLocaleDateString() : '—'}</td>
+                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[po.status] ?? 'bg-gray-50 text-gray-700'}`}>{po.status?.replace('_', ' ')}</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </TierGate>

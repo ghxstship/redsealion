@@ -52,22 +52,24 @@ export default async function ReturnsPage() {
         {returns.length === 0 ? (
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No returns processed. Returned rental items will appear here for inspection.</p></div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr><th className="px-4 py-3">Item</th><th className="px-4 py-3">Order</th><th className="px-4 py-3">Qty</th><th className="px-4 py-3">Return Date</th><th className="px-4 py-3">Condition</th></tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {returns.map((r) => (
-                <tr key={r.id} className={`hover:bg-bg-secondary/50 transition-colors ${r.status === 'damaged' || r.status === 'lost' ? 'bg-red-50/30' : ''}`}>
-                  <td className="px-4 py-3 font-medium text-foreground">{r.name}</td>
-                  <td className="px-4 py-3 text-text-secondary">{r.order_number ?? '—'}</td>
-                  <td className="px-4 py-3 tabular-nums">{r.quantity}</td>
-                  <td className="px-4 py-3 text-text-secondary">{r.rental_end ? new Date(r.rental_end).toLocaleDateString() : '—'}</td>
-                  <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${r.status === 'returned' ? 'bg-green-50 text-green-700' : r.status === 'damaged' ? 'bg-orange-50 text-orange-700' : 'bg-red-50 text-red-700'}`}>{r.status}</span></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                <tr><th className="px-4 py-3">Item</th><th className="px-4 py-3">Order</th><th className="px-4 py-3">Qty</th><th className="px-4 py-3">Return Date</th><th className="px-4 py-3">Condition</th></tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {returns.map((r) => (
+                  <tr key={r.id} className={`hover:bg-bg-secondary/50 transition-colors ${r.status === 'damaged' || r.status === 'lost' ? 'bg-red-50/30' : ''}`}>
+                    <td className="px-4 py-3 font-medium text-foreground">{r.name}</td>
+                    <td className="px-4 py-3 text-text-secondary">{r.order_number ?? '—'}</td>
+                    <td className="px-4 py-3 tabular-nums">{r.quantity}</td>
+                    <td className="px-4 py-3 text-text-secondary">{r.rental_end ? new Date(r.rental_end).toLocaleDateString() : '—'}</td>
+                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${r.status === 'returned' ? 'bg-green-50 text-green-700' : r.status === 'damaged' ? 'bg-orange-50 text-orange-700' : 'bg-red-50 text-red-700'}`}>{r.status}</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </TierGate>

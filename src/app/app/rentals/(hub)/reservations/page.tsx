@@ -54,23 +54,25 @@ export default async function ReservationsPage() {
         {reservations.length === 0 ? (
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No active reservations. Reserved rental orders appear here.</p></div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr><th className="px-4 py-3">Order #</th><th className="px-4 py-3">Client</th><th className="px-4 py-3">Start</th><th className="px-4 py-3">End</th><th className="px-4 py-3">Total</th><th className="px-4 py-3">Status</th></tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {reservations.map((r) => (
-                <tr key={r.id} className="hover:bg-bg-secondary/50 transition-colors">
-                  <td className="px-4 py-3"><Link href={`/app/rentals/${r.id}`} className="font-medium text-foreground hover:underline">{r.order_number}</Link></td>
-                  <td className="px-4 py-3 text-text-secondary">{r.client_name ?? '—'}</td>
-                  <td className="px-4 py-3 text-text-secondary">{new Date(r.rental_start).toLocaleDateString()}</td>
-                  <td className="px-4 py-3 text-text-secondary">{new Date(r.rental_end).toLocaleDateString()}</td>
-                  <td className="px-4 py-3 tabular-nums">{formatCurrency(r.total_cents / 100)}</td>
-                  <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${r.status === 'on_site' ? 'bg-green-50 text-green-700' : r.status === 'checked_out' ? 'bg-purple-50 text-purple-700' : 'bg-blue-50 text-blue-700'}`}>{r.status.replace('_', ' ')}</span></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                <tr><th className="px-4 py-3">Order #</th><th className="px-4 py-3">Client</th><th className="px-4 py-3">Start</th><th className="px-4 py-3">End</th><th className="px-4 py-3">Total</th><th className="px-4 py-3">Status</th></tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {reservations.map((r) => (
+                  <tr key={r.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <td className="px-4 py-3"><Link href={`/app/rentals/${r.id}`} className="font-medium text-foreground hover:underline">{r.order_number}</Link></td>
+                    <td className="px-4 py-3 text-text-secondary">{r.client_name ?? '—'}</td>
+                    <td className="px-4 py-3 text-text-secondary">{new Date(r.rental_start).toLocaleDateString()}</td>
+                    <td className="px-4 py-3 text-text-secondary">{new Date(r.rental_end).toLocaleDateString()}</td>
+                    <td className="px-4 py-3 tabular-nums">{formatCurrency(r.total_cents / 100)}</td>
+                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${r.status === 'on_site' ? 'bg-green-50 text-green-700' : r.status === 'checked_out' ? 'bg-purple-50 text-purple-700' : 'bg-blue-50 text-blue-700'}`}>{r.status.replace('_', ' ')}</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </TierGate>

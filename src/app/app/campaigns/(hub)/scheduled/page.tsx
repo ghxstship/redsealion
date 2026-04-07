@@ -34,28 +34,30 @@ export default async function ScheduledPage() {
             <p className="text-sm text-text-secondary">No scheduled campaigns. Schedule a campaign from the drafts view.</p>
           </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr>
-                <th className="px-4 py-3">Campaign</th>
-                <th className="px-4 py-3">Subject</th>
-                <th className="px-4 py-3">Recipients</th>
-                <th className="px-4 py-3">Scheduled For</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {scheduled.map((item) => (
-                <tr key={item.id} className="hover:bg-bg-secondary/50 transition-colors">
-                  <td className="px-4 py-3">
-                    <Link href={`/app/campaigns/${item.id}`} className="font-medium text-foreground hover:underline">{item.name}</Link>
-                  </td>
-                  <td className="px-4 py-3 text-text-secondary">{item.subject ?? '—'}</td>
-                  <td className="px-4 py-3 tabular-nums">{item.recipient_count ?? 0}</td>
-                  <td className="px-4 py-3 text-text-secondary">{item.scheduled_at ? new Date(item.scheduled_at).toLocaleString() : '—'}</td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                <tr>
+                  <th className="px-4 py-3">Campaign</th>
+                  <th className="px-4 py-3">Subject</th>
+                  <th className="px-4 py-3">Recipients</th>
+                  <th className="px-4 py-3">Scheduled For</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {scheduled.map((item) => (
+                  <tr key={item.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <td className="px-4 py-3">
+                      <Link href={`/app/campaigns/${item.id}`} className="font-medium text-foreground hover:underline">{item.name}</Link>
+                    </td>
+                    <td className="px-4 py-3 text-text-secondary">{item.subject ?? '—'}</td>
+                    <td className="px-4 py-3 tabular-nums">{item.recipient_count ?? 0}</td>
+                    <td className="px-4 py-3 text-text-secondary">{item.scheduled_at ? new Date(item.scheduled_at).toLocaleString() : '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </TierGate>

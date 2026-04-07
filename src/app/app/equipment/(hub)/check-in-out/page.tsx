@@ -144,41 +144,43 @@ export default async function CheckInOutPage() {
             <p className="text-sm text-text-secondary">No check-in/out records. Transactions appear when assets are checked out for events, rentals, or productions.</p>
           </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr>
-                <th className="px-4 py-3">Asset</th>
-                <th className="px-4 py-3">For</th>
-                <th className="px-4 py-3">Qty</th>
-                <th className="px-4 py-3">Out</th>
-                <th className="px-4 py-3">In</th>
-                <th className="px-4 py-3">Cond. Out</th>
-                <th className="px-4 py-3">Cond. In</th>
-                <th className="px-4 py-3">By</th>
-                <th className="px-4 py-3">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {checkouts.map((c) => (
-                <tr key={c.id} className={`hover:bg-bg-secondary/50 transition-colors ${c.status === 'lost' || c.status === 'damaged_return' ? 'bg-red-50/30' : ''}`}>
-                  <td className="px-4 py-3">
-                    <p className="font-medium text-foreground">{c.asset_name}</p>
-                    {c.serial_number && <p className="font-mono text-xs text-text-muted">{c.serial_number}</p>}
-                  </td>
-                  <td className="px-4 py-3 text-text-secondary text-xs">
-                    {c.event_name ?? c.rental_order ?? c.destination ?? '—'}
-                  </td>
-                  <td className="px-4 py-3 tabular-nums">{c.quantity}</td>
-                  <td className="px-4 py-3 text-text-secondary text-xs">{new Date(c.checked_out_at).toLocaleDateString()}</td>
-                  <td className="px-4 py-3 text-text-secondary text-xs">{c.checked_in_at ? new Date(c.checked_in_at).toLocaleDateString() : '—'}</td>
-                  <td className="px-4 py-3"><span className={`text-xs font-medium capitalize ${CONDITION_COLORS[c.condition_out]}`}>{c.condition_out}</span></td>
-                  <td className="px-4 py-3">{c.condition_in ? <span className={`text-xs font-medium capitalize ${CONDITION_COLORS[c.condition_in]}`}>{c.condition_in}</span> : '—'}</td>
-                  <td className="px-4 py-3 text-text-muted text-xs">{c.checked_out_by_name ?? '—'}</td>
-                  <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[c.status]}`}>{c.status.replace('_', ' ')}</span></td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                <tr>
+                  <th className="px-4 py-3">Asset</th>
+                  <th className="px-4 py-3">For</th>
+                  <th className="px-4 py-3">Qty</th>
+                  <th className="px-4 py-3">Out</th>
+                  <th className="px-4 py-3">In</th>
+                  <th className="px-4 py-3">Cond. Out</th>
+                  <th className="px-4 py-3">Cond. In</th>
+                  <th className="px-4 py-3">By</th>
+                  <th className="px-4 py-3">Status</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {checkouts.map((c) => (
+                  <tr key={c.id} className={`hover:bg-bg-secondary/50 transition-colors ${c.status === 'lost' || c.status === 'damaged_return' ? 'bg-red-50/30' : ''}`}>
+                    <td className="px-4 py-3">
+                      <p className="font-medium text-foreground">{c.asset_name}</p>
+                      {c.serial_number && <p className="font-mono text-xs text-text-muted">{c.serial_number}</p>}
+                    </td>
+                    <td className="px-4 py-3 text-text-secondary text-xs">
+                      {c.event_name ?? c.rental_order ?? c.destination ?? '—'}
+                    </td>
+                    <td className="px-4 py-3 tabular-nums">{c.quantity}</td>
+                    <td className="px-4 py-3 text-text-secondary text-xs">{new Date(c.checked_out_at).toLocaleDateString()}</td>
+                    <td className="px-4 py-3 text-text-secondary text-xs">{c.checked_in_at ? new Date(c.checked_in_at).toLocaleDateString() : '—'}</td>
+                    <td className="px-4 py-3"><span className={`text-xs font-medium capitalize ${CONDITION_COLORS[c.condition_out]}`}>{c.condition_out}</span></td>
+                    <td className="px-4 py-3">{c.condition_in ? <span className={`text-xs font-medium capitalize ${CONDITION_COLORS[c.condition_in]}`}>{c.condition_in}</span> : '—'}</td>
+                    <td className="px-4 py-3 text-text-muted text-xs">{c.checked_out_by_name ?? '—'}</td>
+                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[c.status]}`}>{c.status.replace('_', ' ')}</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </TierGate>

@@ -57,22 +57,24 @@ export default async function RentalsCatalogPage() {
         {orders.length === 0 ? (
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No rental orders yet. Create a rental order to start tracking equipment rentals.</p></div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr><th className="px-4 py-3">Order #</th><th className="px-4 py-3">Client</th><th className="px-4 py-3">Period</th><th className="px-4 py-3">Total</th><th className="px-4 py-3">Status</th></tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {orders.map((o) => (
-                <tr key={o.id} className="hover:bg-bg-secondary/50 transition-colors">
-                  <td className="px-4 py-3"><Link href={`/app/rentals/${o.id}`} className="font-medium text-foreground hover:underline">{o.order_number}</Link></td>
-                  <td className="px-4 py-3 text-text-secondary">{o.client_name ?? '—'}</td>
-                  <td className="px-4 py-3 text-text-secondary">{new Date(o.rental_start).toLocaleDateString()} – {new Date(o.rental_end).toLocaleDateString()}</td>
-                  <td className="px-4 py-3 tabular-nums">{formatCurrency(o.total_cents / 100)}</td>
-                  <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[o.status]}`}>{o.status.replace('_', ' ')}</span></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                <tr><th className="px-4 py-3">Order #</th><th className="px-4 py-3">Client</th><th className="px-4 py-3">Period</th><th className="px-4 py-3">Total</th><th className="px-4 py-3">Status</th></tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {orders.map((o) => (
+                  <tr key={o.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <td className="px-4 py-3"><Link href={`/app/rentals/${o.id}`} className="font-medium text-foreground hover:underline">{o.order_number}</Link></td>
+                    <td className="px-4 py-3 text-text-secondary">{o.client_name ?? '—'}</td>
+                    <td className="px-4 py-3 text-text-secondary">{new Date(o.rental_start).toLocaleDateString()} – {new Date(o.rental_end).toLocaleDateString()}</td>
+                    <td className="px-4 py-3 tabular-nums">{formatCurrency(o.total_cents / 100)}</td>
+                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[o.status]}`}>{o.status.replace('_', ' ')}</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </TierGate>

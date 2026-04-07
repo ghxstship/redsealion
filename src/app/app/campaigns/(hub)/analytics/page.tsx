@@ -55,28 +55,30 @@ export default async function AnalyticsPage() {
             <p className="text-sm text-text-secondary">No campaigns sent yet. Analytics will appear after your first send.</p>
           </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr>
-                <th className="px-4 py-3">Campaign</th>
-                <th className="px-4 py-3">Sent</th>
-                <th className="px-4 py-3">Recipients</th>
-                <th className="px-4 py-3">Opens</th>
-                <th className="px-4 py-3">Clicks</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {campaigns.map((c) => (
-                <tr key={c.id} className="hover:bg-bg-secondary/50 transition-colors">
-                  <td className="px-4 py-3 font-medium text-foreground">{c.name}</td>
-                  <td className="px-4 py-3 text-text-secondary">{c.sent_at ? new Date(c.sent_at).toLocaleDateString() : '—'}</td>
-                  <td className="px-4 py-3 tabular-nums">{c.recipient_count ?? 0}</td>
-                  <td className="px-4 py-3 tabular-nums">{c.open_count ?? 0}</td>
-                  <td className="px-4 py-3 tabular-nums">{c.click_count ?? 0}</td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                <tr>
+                  <th className="px-4 py-3">Campaign</th>
+                  <th className="px-4 py-3">Sent</th>
+                  <th className="px-4 py-3">Recipients</th>
+                  <th className="px-4 py-3">Opens</th>
+                  <th className="px-4 py-3">Clicks</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {campaigns.map((c) => (
+                  <tr key={c.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <td className="px-4 py-3 font-medium text-foreground">{c.name}</td>
+                    <td className="px-4 py-3 text-text-secondary">{c.sent_at ? new Date(c.sent_at).toLocaleDateString() : '—'}</td>
+                    <td className="px-4 py-3 tabular-nums">{c.recipient_count ?? 0}</td>
+                    <td className="px-4 py-3 tabular-nums">{c.open_count ?? 0}</td>
+                    <td className="px-4 py-3 tabular-nums">{c.click_count ?? 0}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </TierGate>

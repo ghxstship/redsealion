@@ -83,30 +83,32 @@ export default async function RunOfShowPage() {
                 {cues.length === 0 ? (
                   <div className="px-5 py-8 text-center text-xs text-text-muted">No cues added yet</div>
                 ) : (
-                  <table className="w-full text-sm">
-                    <thead className="text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                      <tr>
-                        <th className="px-4 py-2 w-20">Time</th>
-                        <th className="px-4 py-2 w-16">Dur.</th>
-                        <th className="px-4 py-2">Cue</th>
-                        <th className="px-4 py-2">Notes</th>
-                        <th className="px-4 py-2 w-24">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border">
-                      {cues.map((cue) => (
-                        <tr key={cue.id} className="hover:bg-bg-secondary/50 transition-colors">
-                          <td className="px-4 py-2 text-xs font-mono tabular-nums text-text-secondary">{new Date(cue.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
-                          <td className="px-4 py-2 text-xs tabular-nums text-text-muted">{cue.duration_minutes ? `${cue.duration_minutes}m` : '—'}</td>
-                          <td className="px-4 py-2 font-medium text-foreground">{cue.title}</td>
-                          <td className="px-4 py-2 text-text-secondary text-xs line-clamp-1">{cue.notes ?? '—'}</td>
-                          <td className="px-4 py-2">
-                            <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${cue.status === 'completed' ? 'bg-green-50 text-green-700' : cue.status === 'in_progress' ? 'bg-blue-50 text-blue-700' : 'bg-gray-50 text-gray-700'}`}>{cue.status.replace('_', ' ')}</span>
-                          </td>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead className="text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                        <tr>
+                          <th className="px-4 py-2 w-20">Time</th>
+                          <th className="px-4 py-2 w-16">Dur.</th>
+                          <th className="px-4 py-2">Cue</th>
+                          <th className="px-4 py-2">Notes</th>
+                          <th className="px-4 py-2 w-24">Status</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody className="divide-y divide-border">
+                        {cues.map((cue) => (
+                          <tr key={cue.id} className="hover:bg-bg-secondary/50 transition-colors">
+                            <td className="px-4 py-2 text-xs font-mono tabular-nums text-text-secondary">{new Date(cue.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+                            <td className="px-4 py-2 text-xs tabular-nums text-text-muted">{cue.duration_minutes ? `${cue.duration_minutes}m` : '—'}</td>
+                            <td className="px-4 py-2 font-medium text-foreground">{cue.title}</td>
+                            <td className="px-4 py-2 text-text-secondary text-xs line-clamp-1">{cue.notes ?? '—'}</td>
+                            <td className="px-4 py-2">
+                              <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${cue.status === 'completed' ? 'bg-green-50 text-green-700' : cue.status === 'in_progress' ? 'bg-blue-50 text-blue-700' : 'bg-gray-50 text-gray-700'}`}>{cue.status.replace('_', ' ')}</span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 )}
               </div>
             );

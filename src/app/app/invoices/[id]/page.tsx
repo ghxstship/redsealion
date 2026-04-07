@@ -202,34 +202,36 @@ export default async function InvoiceDetailPage({
             {(() => {
               const hasTax = invoice.line_items.some((li) => li.tax_rate > 0);
               return (
-                <table className="w-full mb-4">
-                  <thead>
-                    <tr className="border-b border-border">
-                      <th className="py-2 text-left text-xs font-medium text-text-muted">Description</th>
-                      <th className="py-2 text-right text-xs font-medium text-text-muted">Qty</th>
-                      <th className="py-2 text-right text-xs font-medium text-text-muted">Rate</th>
-                      {hasTax && <th className="py-2 text-right text-xs font-medium text-text-muted">Tax</th>}
-                      <th className="py-2 text-right text-xs font-medium text-text-muted">Amount</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
-                    {invoice.line_items.map((li) => (
-                      <tr key={li.id}>
-                        <td className="py-3 text-sm text-foreground">{li.description}</td>
-                        <td className="py-3 text-right text-sm tabular-nums text-text-secondary">{li.quantity}</td>
-                        <td className="py-3 text-right text-sm tabular-nums text-text-secondary">{formatCurrencyDetailed(li.rate)}</td>
-                        {hasTax && (
-                          <td className="py-3 text-right text-sm tabular-nums text-text-secondary">
-                            {li.tax_rate > 0 ? `${li.tax_rate}%` : '—'}
-                          </td>
-                        )}
-                        <td className="py-3 text-right text-sm font-medium tabular-nums text-foreground">
-                          {formatCurrencyDetailed(li.amount + li.tax_amount)}
-                        </td>
+                <div className="overflow-x-auto mb-4">
+                  <table className="w-full min-w-[500px]">
+                    <thead>
+                      <tr className="border-b border-border">
+                        <th className="py-2 text-left text-xs font-medium text-text-muted">Description</th>
+                        <th className="py-2 text-right text-xs font-medium text-text-muted">Qty</th>
+                        <th className="py-2 text-right text-xs font-medium text-text-muted">Rate</th>
+                        {hasTax && <th className="py-2 text-right text-xs font-medium text-text-muted">Tax</th>}
+                        <th className="py-2 text-right text-xs font-medium text-text-muted">Amount</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {invoice.line_items.map((li) => (
+                        <tr key={li.id}>
+                          <td className="py-3 text-sm text-foreground">{li.description}</td>
+                          <td className="py-3 text-right text-sm tabular-nums text-text-secondary">{li.quantity}</td>
+                          <td className="py-3 text-right text-sm tabular-nums text-text-secondary">{formatCurrencyDetailed(li.rate)}</td>
+                          {hasTax && (
+                            <td className="py-3 text-right text-sm tabular-nums text-text-secondary">
+                              {li.tax_rate > 0 ? `${li.tax_rate}%` : '—'}
+                            </td>
+                          )}
+                          <td className="py-3 text-right text-sm font-medium tabular-nums text-foreground">
+                            {formatCurrencyDetailed(li.amount + li.tax_amount)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               );
             })()}
 

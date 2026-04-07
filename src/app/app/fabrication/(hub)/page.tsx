@@ -56,34 +56,36 @@ export default async function FabricationOrdersPage() {
             <p className="text-sm text-text-secondary">No fabrication orders yet. Create an order to start tracking production.</p>
           </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr>
-                <th className="px-4 py-3">Order #</th>
-                <th className="px-4 py-3">Name</th>
-                <th className="px-4 py-3">Type</th>
-                <th className="px-4 py-3">Priority</th>
-                <th className="px-4 py-3">Qty</th>
-                <th className="px-4 py-3">Cost</th>
-                <th className="px-4 py-3">Due</th>
-                <th className="px-4 py-3">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {orders.map((o) => (
-                <tr key={o.id} className="hover:bg-bg-secondary/50 transition-colors">
-                  <td className="px-4 py-3"><Link href={`/app/fabrication/${o.id}`} className="font-medium text-foreground hover:underline">{o.order_number}</Link></td>
-                  <td className="px-4 py-3 text-text-secondary">{o.name}</td>
-                  <td className="px-4 py-3 capitalize">{o.order_type}</td>
-                  <td className="px-4 py-3"><span className={`font-medium capitalize ${PRIORITY_COLORS[o.priority]}`}>{o.priority}</span></td>
-                  <td className="px-4 py-3 tabular-nums">{o.quantity}</td>
-                  <td className="px-4 py-3 tabular-nums">{formatCurrency(o.total_cost_cents / 100)}</td>
-                  <td className="px-4 py-3 text-text-secondary">{o.due_date ? new Date(o.due_date).toLocaleDateString() : '—'}</td>
-                  <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[o.status]}`}>{o.status.replace('_', ' ')}</span></td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                <tr>
+                  <th className="px-4 py-3">Order #</th>
+                  <th className="px-4 py-3">Name</th>
+                  <th className="px-4 py-3">Type</th>
+                  <th className="px-4 py-3">Priority</th>
+                  <th className="px-4 py-3">Qty</th>
+                  <th className="px-4 py-3">Cost</th>
+                  <th className="px-4 py-3">Due</th>
+                  <th className="px-4 py-3">Status</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {orders.map((o) => (
+                  <tr key={o.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <td className="px-4 py-3"><Link href={`/app/fabrication/${o.id}`} className="font-medium text-foreground hover:underline">{o.order_number}</Link></td>
+                    <td className="px-4 py-3 text-text-secondary">{o.name}</td>
+                    <td className="px-4 py-3 capitalize">{o.order_type}</td>
+                    <td className="px-4 py-3"><span className={`font-medium capitalize ${PRIORITY_COLORS[o.priority]}`}>{o.priority}</span></td>
+                    <td className="px-4 py-3 tabular-nums">{o.quantity}</td>
+                    <td className="px-4 py-3 tabular-nums">{formatCurrency(o.total_cost_cents / 100)}</td>
+                    <td className="px-4 py-3 text-text-secondary">{o.due_date ? new Date(o.due_date).toLocaleDateString() : '—'}</td>
+                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[o.status]}`}>{o.status.replace('_', ' ')}</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </TierGate>

@@ -62,21 +62,23 @@ export default async function CommissionsPage() {
         {repList.length === 0 ? (
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No commissions earned yet. Commissions are calculated from closed-won deals.</p></div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr><th className="px-4 py-3">Sales Rep</th><th className="px-4 py-3">Deals Won</th><th className="px-4 py-3">Revenue</th><th className="px-4 py-3">Commission</th></tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {repList.map(([name, data]) => (
-                <tr key={name} className="hover:bg-bg-secondary/50 transition-colors">
-                  <td className="px-4 py-3 font-medium text-foreground">{name}</td>
-                  <td className="px-4 py-3 tabular-nums">{data.deals}</td>
-                  <td className="px-4 py-3 tabular-nums">{formatCurrency(data.revenue)}</td>
-                  <td className="px-4 py-3 tabular-nums font-medium text-green-600">{formatCurrency(data.revenue * COMMISSION_RATE)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                <tr><th className="px-4 py-3">Sales Rep</th><th className="px-4 py-3">Deals Won</th><th className="px-4 py-3">Revenue</th><th className="px-4 py-3">Commission</th></tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {repList.map(([name, data]) => (
+                  <tr key={name} className="hover:bg-bg-secondary/50 transition-colors">
+                    <td className="px-4 py-3 font-medium text-foreground">{name}</td>
+                    <td className="px-4 py-3 tabular-nums">{data.deals}</td>
+                    <td className="px-4 py-3 tabular-nums">{formatCurrency(data.revenue)}</td>
+                    <td className="px-4 py-3 tabular-nums font-medium text-green-600">{formatCurrency(data.revenue * COMMISSION_RATE)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </TierGate>

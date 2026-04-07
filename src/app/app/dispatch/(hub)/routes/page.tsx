@@ -50,30 +50,32 @@ export default async function DispatchRoutesPage() {
             <p className="text-sm text-text-secondary">No active routes. Dispatched work orders with locations will appear here.</p>
           </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr>
-                <th className="px-4 py-3">Job</th>
-                <th className="px-4 py-3">Location</th>
-                <th className="px-4 py-3">Assigned To</th>
-                <th className="px-4 py-3">Date</th>
-                <th className="px-4 py-3">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {routes.map((r) => (
-                <tr key={r.id} className="hover:bg-bg-secondary/50 transition-colors">
-                  <td className="px-4 py-3 font-medium text-foreground">{r.title}</td>
-                  <td className="px-4 py-3 text-text-secondary">{r.location}</td>
-                  <td className="px-4 py-3 text-text-secondary">{r.assigned_to ?? '—'}</td>
-                  <td className="px-4 py-3 text-text-secondary">{r.scheduled_date ? new Date(r.scheduled_date).toLocaleDateString() : '—'}</td>
-                  <td className="px-4 py-3">
-                    <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${r.status === 'on_site' ? 'bg-green-50 text-green-700' : 'bg-blue-50 text-blue-700'}`}>{r.status.replace('_', ' ')}</span>
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                <tr>
+                  <th className="px-4 py-3">Job</th>
+                  <th className="px-4 py-3">Location</th>
+                  <th className="px-4 py-3">Assigned To</th>
+                  <th className="px-4 py-3">Date</th>
+                  <th className="px-4 py-3">Status</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {routes.map((r) => (
+                  <tr key={r.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <td className="px-4 py-3 font-medium text-foreground">{r.title}</td>
+                    <td className="px-4 py-3 text-text-secondary">{r.location}</td>
+                    <td className="px-4 py-3 text-text-secondary">{r.assigned_to ?? '—'}</td>
+                    <td className="px-4 py-3 text-text-secondary">{r.scheduled_date ? new Date(r.scheduled_date).toLocaleDateString() : '—'}</td>
+                    <td className="px-4 py-3">
+                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${r.status === 'on_site' ? 'bg-green-50 text-green-700' : 'bg-blue-50 text-blue-700'}`}>{r.status.replace('_', ' ')}</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </TierGate>

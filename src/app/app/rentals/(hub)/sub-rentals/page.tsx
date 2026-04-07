@@ -52,22 +52,24 @@ export default async function SubRentalsPage() {
         {subRentals.length === 0 ? (
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No sub-rentals. Sub-rentals are created when your inventory cannot meet a rental order.</p></div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr><th className="px-4 py-3">PO #</th><th className="px-4 py-3">Supplier</th><th className="px-4 py-3">Period</th><th className="px-4 py-3">Cost</th><th className="px-4 py-3">Status</th></tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {subRentals.map((r) => (
-                <tr key={r.id} className="hover:bg-bg-secondary/50 transition-colors">
-                  <td className="px-4 py-3 font-medium text-foreground">{r.po_number ?? '—'}</td>
-                  <td className="px-4 py-3 text-text-secondary">{r.vendor_name ?? '—'}</td>
-                  <td className="px-4 py-3 text-text-secondary">{new Date(r.rental_start).toLocaleDateString()} – {new Date(r.rental_end).toLocaleDateString()}</td>
-                  <td className="px-4 py-3 tabular-nums">{formatCurrency(r.total_cost_cents / 100)}</td>
-                  <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[r.status]}`}>{r.status}</span></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                <tr><th className="px-4 py-3">PO #</th><th className="px-4 py-3">Supplier</th><th className="px-4 py-3">Period</th><th className="px-4 py-3">Cost</th><th className="px-4 py-3">Status</th></tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {subRentals.map((r) => (
+                  <tr key={r.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <td className="px-4 py-3 font-medium text-foreground">{r.po_number ?? '—'}</td>
+                    <td className="px-4 py-3 text-text-secondary">{r.vendor_name ?? '—'}</td>
+                    <td className="px-4 py-3 text-text-secondary">{new Date(r.rental_start).toLocaleDateString()} – {new Date(r.rental_end).toLocaleDateString()}</td>
+                    <td className="px-4 py-3 tabular-nums">{formatCurrency(r.total_cost_cents / 100)}</td>
+                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[r.status]}`}>{r.status}</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </TierGate>

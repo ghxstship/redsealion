@@ -55,30 +55,32 @@ export default async function MilestonesPage() {
             <p className="text-sm text-text-secondary">No milestones defined. Add milestones to production schedules to track critical deadlines.</p>
           </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr>
-                <th className="px-4 py-3">Milestone</th>
-                <th className="px-4 py-3">Schedule</th>
-                <th className="px-4 py-3">Due</th>
-                <th className="px-4 py-3">Completed</th>
-                <th className="px-4 py-3">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {milestones.map((m) => (
-                <tr key={m.id} className="hover:bg-bg-secondary/50 transition-colors">
-                  <td className="px-4 py-3 font-medium text-foreground">{m.title}</td>
-                  <td className="px-4 py-3 text-text-secondary">{m.schedule_name ?? '—'}</td>
-                  <td className="px-4 py-3 text-text-secondary">{new Date(m.due_at).toLocaleDateString()}</td>
-                  <td className="px-4 py-3 text-text-secondary">{m.completed_at ? new Date(m.completed_at).toLocaleDateString() : '—'}</td>
-                  <td className="px-4 py-3">
-                    <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${m.status === 'completed' ? 'bg-green-50 text-green-700' : m.status === 'missed' ? 'bg-red-50 text-red-700' : 'bg-yellow-50 text-yellow-700'}`}>{m.status}</span>
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                <tr>
+                  <th className="px-4 py-3">Milestone</th>
+                  <th className="px-4 py-3">Schedule</th>
+                  <th className="px-4 py-3">Due</th>
+                  <th className="px-4 py-3">Completed</th>
+                  <th className="px-4 py-3">Status</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {milestones.map((m) => (
+                  <tr key={m.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <td className="px-4 py-3 font-medium text-foreground">{m.title}</td>
+                    <td className="px-4 py-3 text-text-secondary">{m.schedule_name ?? '—'}</td>
+                    <td className="px-4 py-3 text-text-secondary">{new Date(m.due_at).toLocaleDateString()}</td>
+                    <td className="px-4 py-3 text-text-secondary">{m.completed_at ? new Date(m.completed_at).toLocaleDateString() : '—'}</td>
+                    <td className="px-4 py-3">
+                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${m.status === 'completed' ? 'bg-green-50 text-green-700' : m.status === 'missed' ? 'bg-red-50 text-red-700' : 'bg-yellow-50 text-yellow-700'}`}>{m.status}</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </TierGate>

@@ -51,22 +51,24 @@ export default async function ReceivingPage() {
         {receipts.length === 0 ? (
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No goods receipts yet. Receipts are logged when PO deliveries arrive.</p></div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr><th className="px-4 py-3">PO #</th><th className="px-4 py-3">Vendor</th><th className="px-4 py-3">Received</th><th className="px-4 py-3">Notes</th><th className="px-4 py-3">Status</th></tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {receipts.map((r) => (
-                <tr key={r.id} className="hover:bg-bg-secondary/50 transition-colors">
-                  <td className="px-4 py-3 font-medium text-foreground">{r.po_number ?? '—'}</td>
-                  <td className="px-4 py-3 text-text-secondary">{r.vendor_name ?? '—'}</td>
-                  <td className="px-4 py-3 text-text-secondary">{new Date(r.received_date).toLocaleDateString()}</td>
-                  <td className="px-4 py-3 text-text-secondary text-xs line-clamp-1">{r.notes ?? '—'}</td>
-                  <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[r.status]}`}>{r.status}</span></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                <tr><th className="px-4 py-3">PO #</th><th className="px-4 py-3">Vendor</th><th className="px-4 py-3">Received</th><th className="px-4 py-3">Notes</th><th className="px-4 py-3">Status</th></tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {receipts.map((r) => (
+                  <tr key={r.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <td className="px-4 py-3 font-medium text-foreground">{r.po_number ?? '—'}</td>
+                    <td className="px-4 py-3 text-text-secondary">{r.vendor_name ?? '—'}</td>
+                    <td className="px-4 py-3 text-text-secondary">{new Date(r.received_date).toLocaleDateString()}</td>
+                    <td className="px-4 py-3 text-text-secondary text-xs line-clamp-1">{r.notes ?? '—'}</td>
+                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[r.status]}`}>{r.status}</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </TierGate>

@@ -49,30 +49,32 @@ export default async function AutomationRunsPage() {
             <p className="text-sm text-text-secondary">No automation runs recorded yet. Create and activate an automation to see execution history.</p>
           </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr>
-                <th className="px-4 py-3">Automation</th>
-                <th className="px-4 py-3">Trigger</th>
-                <th className="px-4 py-3">Runs</th>
-                <th className="px-4 py-3">Last Run</th>
-                <th className="px-4 py-3">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {runs.map((run) => (
-                <tr key={run.id} className="hover:bg-bg-secondary/50 transition-colors">
-                  <td className="px-4 py-3 font-medium text-foreground">{run.name}</td>
-                  <td className="px-4 py-3 text-text-secondary capitalize">{run.trigger_type?.replace('_', ' ') ?? '—'}</td>
-                  <td className="px-4 py-3 tabular-nums">{run.run_count ?? 0}</td>
-                  <td className="px-4 py-3 text-text-secondary">{run.last_run_at ? new Date(run.last_run_at).toLocaleString() : '—'}</td>
-                  <td className="px-4 py-3">
-                    <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${run.status === 'active' ? 'bg-green-50 text-green-700' : 'bg-gray-50 text-gray-700'}`}>{run.status}</span>
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                <tr>
+                  <th className="px-4 py-3">Automation</th>
+                  <th className="px-4 py-3">Trigger</th>
+                  <th className="px-4 py-3">Runs</th>
+                  <th className="px-4 py-3">Last Run</th>
+                  <th className="px-4 py-3">Status</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {runs.map((run) => (
+                  <tr key={run.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <td className="px-4 py-3 font-medium text-foreground">{run.name}</td>
+                    <td className="px-4 py-3 text-text-secondary capitalize">{run.trigger_type?.replace('_', ' ') ?? '—'}</td>
+                    <td className="px-4 py-3 tabular-nums">{run.run_count ?? 0}</td>
+                    <td className="px-4 py-3 text-text-secondary">{run.last_run_at ? new Date(run.last_run_at).toLocaleString() : '—'}</td>
+                    <td className="px-4 py-3">
+                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${run.status === 'active' ? 'bg-green-50 text-green-700' : 'bg-gray-50 text-gray-700'}`}>{run.status}</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </TierGate>

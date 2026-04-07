@@ -107,26 +107,28 @@ export default async function PipelineReportPage() {
         </ChartContainer>
 
         <div className="rounded-xl border border-border bg-white overflow-hidden">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-border bg-bg-secondary">
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Stage</th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Deals</th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Total Value</th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Weighted Value</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {stageData.map((s) => (
-                <tr key={s.stage} className="transition-colors hover:bg-bg-secondary/50">
-                  <td className="px-6 py-3.5 text-sm font-medium text-foreground">{STAGE_LABELS[s.stage]}</td>
-                  <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{s.count}</td>
-                  <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{formatCurrency(s.value)}</td>
-                  <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{formatCurrency(s.weighted)}</td>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-border bg-bg-secondary">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Stage</th>
+                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Deals</th>
+                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Total Value</th>
+                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Weighted Value</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {stageData.map((s) => (
+                  <tr key={s.stage} className="transition-colors hover:bg-bg-secondary/50">
+                    <td className="px-6 py-3.5 text-sm font-medium text-foreground">{STAGE_LABELS[s.stage]}</td>
+                    <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{s.count}</td>
+                    <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{formatCurrency(s.value)}</td>
+                    <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{formatCurrency(s.weighted)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </TierGate>

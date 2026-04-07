@@ -60,30 +60,32 @@ export default async function ScheduleTimelinePage() {
             <p className="text-sm text-text-secondary">No production schedules created yet. Create a schedule from an event to get started.</p>
           </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr>
-                <th className="px-4 py-3">Schedule</th>
-                <th className="px-4 py-3">Event</th>
-                <th className="px-4 py-3">Type</th>
-                <th className="px-4 py-3">Dates</th>
-                <th className="px-4 py-3">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {schedules.map((s) => (
-                <tr key={s.id} className="hover:bg-bg-secondary/50 transition-colors">
-                  <td className="px-4 py-3">
-                    <Link href={`/app/schedule/${s.id}`} className="font-medium text-foreground hover:underline">{s.name}</Link>
-                  </td>
-                  <td className="px-4 py-3 text-text-secondary">{s.event_name ?? '—'}</td>
-                  <td className="px-4 py-3"><span className="inline-flex rounded-full px-2 py-0.5 text-xs font-medium bg-purple-50 text-purple-700">{TYPE_LABELS[s.schedule_type] ?? s.schedule_type}</span></td>
-                  <td className="px-4 py-3 text-text-secondary">{s.start_date ? `${new Date(s.start_date).toLocaleDateString()} – ${s.end_date ? new Date(s.end_date).toLocaleDateString() : ''}` : '—'}</td>
-                  <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[s.status]}`}>{s.status}</span></td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                <tr>
+                  <th className="px-4 py-3">Schedule</th>
+                  <th className="px-4 py-3">Event</th>
+                  <th className="px-4 py-3">Type</th>
+                  <th className="px-4 py-3">Dates</th>
+                  <th className="px-4 py-3">Status</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {schedules.map((s) => (
+                  <tr key={s.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <td className="px-4 py-3">
+                      <Link href={`/app/schedule/${s.id}`} className="font-medium text-foreground hover:underline">{s.name}</Link>
+                    </td>
+                    <td className="px-4 py-3 text-text-secondary">{s.event_name ?? '—'}</td>
+                    <td className="px-4 py-3"><span className="inline-flex rounded-full px-2 py-0.5 text-xs font-medium bg-purple-50 text-purple-700">{TYPE_LABELS[s.schedule_type] ?? s.schedule_type}</span></td>
+                    <td className="px-4 py-3 text-text-secondary">{s.start_date ? `${new Date(s.start_date).toLocaleDateString()} – ${s.end_date ? new Date(s.end_date).toLocaleDateString() : ''}` : '—'}</td>
+                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[s.status]}`}>{s.status}</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </TierGate>
