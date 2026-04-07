@@ -57,12 +57,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const now = new Date().toISOString();
+
     const { data: updated, error: updateError } = await supabase
       .from('equipment_reservations')
       .update({
         status: 'checked_out',
         checked_out_by: perm.userId,
-        checked_out_at: new Date().toISOString(),
+        checked_out_at: now,
         notes: notes || reservation.notes,
       })
       .eq('id', reservation_id)
@@ -77,6 +79,30 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Write to unified asset_checkouts (SSOT custody log)
+    try {
+      const assetId = (reservation as Record<string, unknown>).asset_id as string | undefined;
+      const eventId = (reservation as Record<string, unknown>).event_id as string | undefined;
+      const rentalOrderId = (reservation as Record<string, unknown>).rental_order_id as string | undefined;
+      if (assetId) {
+        await supabase.from('asset_checkouts').insert({
+          organization_id: orgId,
+          asset_id: assetId,
+          event_id: eventId ?? null,
+          rental_order_id: rentalOrderId ?? null,
+          checked_out_by: perm.userId,
+          checked_out_at: now,
+          condition_out: condition || 'good',
+          quantity: ((reservation as Record<string, unknown>).quantity as number) ?? 1,
+          serial_number: (reservation as Record<string, unknown>).serial_number as string ?? null,
+          barcode: (reservation as Record<string, unknown>).barcode as string ?? null,
+          destination: (reservation as Record<string, unknown>).destination as string ?? null,
+          notes_out: notes || null,
+          status: 'checked_out',
+        });
+      }
+    } catch { /* non-critical: reservation update is primary */ }
+
     return NextResponse.json({ success: true, reservation: updated });
   }
 
@@ -88,12 +114,14 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  const now = new Date().toISOString();
+
   const { data: updated, error: updateError } = await supabase
     .from('equipment_reservations')
     .update({
       status: 'returned',
       returned_by: perm.userId,
-      returned_at: new Date().toISOString(),
+      returned_at: now,
       condition_on_return: condition || null,
       notes: notes || reservation.notes,
     })
@@ -108,6 +136,36 @@ export async function POST(request: NextRequest) {
       { status: 500 },
     );
   }
+
+  // Update the asset_checkouts record (close out the custody entry)
+  try {
+    const assetId = (reservation as Record<string, unknown>).asset_id as string | undefined;
+    if (assetId) {
+      // Find the most recent open checkout for this asset
+      const { data: openCheckout } = await supabase
+        .from('asset_checkouts')
+        .select('id')
+        .eq('organization_id', orgId)
+        .eq('asset_id', assetId)
+        .eq('status', 'checked_out')
+        .order('checked_out_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (openCheckout) {
+        await supabase
+          .from('asset_checkouts')
+          .update({
+            checked_in_by: perm.userId,
+            checked_in_at: now,
+            condition_in: condition || 'good',
+            notes_in: notes || null,
+            status: condition === 'damaged' ? 'damaged_return' : 'checked_in',
+          })
+          .eq('id', openCheckout.id);
+      }
+    }
+  } catch { /* non-critical */ }
 
   return NextResponse.json({ success: true, reservation: updated });
 }
