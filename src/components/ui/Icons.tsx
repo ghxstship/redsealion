@@ -129,6 +129,10 @@ export {
   Layers as IconNavTemplates,
   Goal as IconNavGoals,
   Route as IconNavRoadmap,
+  Clock4 as IconNavSchedule,
+  Hammer as IconNavFabrication,
+  ShoppingCart as IconNavProcurement,
+  Package as IconNavRentals,
 
   /* ─── Navigation: Operations Items ────────────────────── */
   UserRound as IconNavPeople,
