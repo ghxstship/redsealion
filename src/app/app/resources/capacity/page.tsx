@@ -1,6 +1,7 @@
 import { TierGate } from '@/components/shared/TierGate';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import ResourceViewSwitcher from '@/components/admin/resources/ResourceViewSwitcher';
 
 interface CapacityRow {
   name: string;
@@ -80,13 +81,16 @@ export default async function CapacityPage() {
 
   return (
     <TierGate feature="resource_scheduling">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          Team Capacity
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          View available hours and set capacity overrides.
-        </p>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+            Team Capacity
+          </h1>
+          <p className="mt-1 text-sm text-text-secondary">
+            View available hours and set capacity overrides.
+          </p>
+        </div>
+        <ResourceViewSwitcher />
       </div>
 
       <div className="rounded-xl border border-border bg-white overflow-hidden">

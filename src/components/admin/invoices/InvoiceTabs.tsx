@@ -11,7 +11,11 @@ import DataExportMenu from '@/components/shared/DataExportMenu';
 import DataImportDialog from '@/components/shared/DataImportDialog';
 import SortableHeader from '@/components/shared/SortableHeader';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
-import FormInput from '@/components/ui/FormInput';
+import RowActionMenu from '@/components/shared/RowActionMenu';
+import SearchInput from '@/components/ui/SearchInput';
+import Button from '@/components/ui/Button';
+import Tabs from '@/components/ui/Tabs';
+import { Upload } from 'lucide-react';
 
 interface InvoiceRow {
   id: string;
@@ -27,17 +31,14 @@ interface InvoiceRow {
 
 type Tab = 'all' | 'draft' | 'sent' | 'paid' | 'overdue';
 
-const tabs: { key: Tab; label: string }[] = [
-  { key: 'all', label: 'All' },
-  { key: 'draft', label: 'Draft' },
-  { key: 'sent', label: 'Sent' },
-  { key: 'paid', label: 'Paid' },
-  { key: 'overdue', label: 'Overdue' },
-];
-
-
-
-
+const TAB_KEYS: Tab[] = ['all', 'draft', 'sent', 'paid', 'overdue'];
+const TAB_LABELS: Record<Tab, string> = {
+  all: 'All',
+  draft: 'Draft',
+  sent: 'Sent',
+  paid: 'Paid',
+  overdue: 'Overdue',
+};
 
 export default function InvoiceTabs({ invoices }: { invoices: InvoiceRow[] }) {
   const router = useRouter();
@@ -45,6 +46,16 @@ export default function InvoiceTabs({ invoices }: { invoices: InvoiceRow[] }) {
   const [search, setSearch] = useState('');
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [showImport, setShowImport] = useState(false);
+
+  const tabItems = useMemo(
+    () =>
+      TAB_KEYS.map((key) => ({
+        key,
+        label: TAB_LABELS[key],
+        count: invoices.filter((i) => key === 'all' || i.status === key).length,
+      })),
+    [invoices],
+  );
 
   const filtered = useMemo(() => {
     let result = invoices;
@@ -77,40 +88,16 @@ export default function InvoiceTabs({ invoices }: { invoices: InvoiceRow[] }) {
 
   return (
     <>
-      {/* Tabs */}
-      <div className="mb-6 border-b border-border">
-        <nav className="-mb-px flex gap-6">
-          {tabs.map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`pb-3 text-sm font-medium transition-colors border-b-2 ${
-                activeTab === tab.key
-                  ? 'border-foreground text-foreground'
-                  : 'border-transparent text-text-muted hover:text-text-secondary hover:border-border'
-              }`}
-            >
-              {tab.label}
-              <span className="ml-1.5 text-xs tabular-nums">
-                ({invoices.filter((i) => tab.key === 'all' || i.status === tab.key).length})
-              </span>
-            </button>
-          ))}
-        </nav>
-      </div>
+      <Tabs tabs={tabItems} activeTab={activeTab} onTabChange={setActiveTab} className="mb-6" />
 
       {/* Search + Export */}
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <FormInput
-          type="text"
-          placeholder="Search invoices..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)} />
+        <SearchInput value={search} onChange={setSearch} placeholder="Search invoices..." />
         <div className="flex items-center gap-3">
-          <button onClick={() => setShowImport(true)} className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M7 2v10M3 8l4 4 4-4" /></svg>
+          <Button variant="secondary" size="sm" onClick={() => setShowImport(true)}>
+            <Upload size={14} />
             Import
-          </button>
+          </Button>
           <DataExportMenu data={filtered} entityKey="invoices" filename="invoices-export" entityType="Invoices" />
         </div>
       </div>
@@ -169,15 +156,10 @@ export default function InvoiceTabs({ invoices }: { invoices: InvoiceRow[] }) {
                   <td className="px-6 py-4 text-right text-sm tabular-nums text-text-secondary">{formatCurrency(inv.amount_paid)}</td>
                   <td className="px-6 py-4 text-right text-sm text-text-muted">{formatDate(inv.due_date)}</td>
                   <td className="px-6 py-4">
-                    <button
-                      onClick={() => setDeleteId(inv.id)}
-                      className="text-text-muted hover:text-red-600 transition-colors"
-                      title="Delete invoice"
-                    >
-                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                        <path d="M2 4h10M5 4V3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1M9 4v7a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4" />
-                      </svg>
-                    </button>
+                    <RowActionMenu actions={[
+                      { label: 'View', onClick: () => router.push(`/app/invoices/${inv.id}`) },
+                      { label: 'Delete', variant: 'danger', onClick: () => setDeleteId(inv.id) },
+                    ]} />
                   </td>
                 </tr>
               ))}

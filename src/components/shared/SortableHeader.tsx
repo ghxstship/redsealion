@@ -1,5 +1,7 @@
 'use client';
 
+import { ArrowUp, ArrowDown, ArrowUpDown } from 'lucide-react';
+
 interface SortableHeaderProps {
   label: string;
   field: string;
@@ -16,6 +18,8 @@ export default function SortableHeader({ label, field, currentSort, onSort, clas
   const isActive = currentSort?.field === field;
   const direction = isActive ? currentSort.direction : null;
 
+  const Icon = direction === 'asc' ? ArrowUp : direction === 'desc' ? ArrowDown : ArrowUpDown;
+
   return (
     <button
       onClick={() => onSort(field)}
@@ -24,9 +28,7 @@ export default function SortableHeader({ label, field, currentSort, onSort, clas
       } ${className}`}
     >
       {label}
-      <span className={`transition-opacity ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-50'}`}>
-        {direction === 'asc' ? '↑' : direction === 'desc' ? '↓' : '↕'}
-      </span>
+      <Icon size={12} className={`transition-opacity ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-50'}`} />
     </button>
   );
 }

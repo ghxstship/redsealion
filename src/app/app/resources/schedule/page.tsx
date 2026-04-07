@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import UtilizationHeatMap from '@/components/admin/resources/UtilizationHeatMap';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import ResourceViewSwitcher from '@/components/admin/resources/ResourceViewSwitcher';
 
 interface ScheduleData {
   teamMembers: Array<{ id: string; name: string; role: string }>;
@@ -36,13 +37,16 @@ export default async function SchedulePage() {
 
   return (
     <TierGate feature="resource_scheduling">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          Resource Schedule
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Visualize team allocation and utilization across projects.
-        </p>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+            Resource Schedule
+          </h1>
+          <p className="mt-1 text-sm text-text-secondary">
+            Visualize team allocation and utilization across projects.
+          </p>
+        </div>
+        <ResourceViewSwitcher />
       </div>
 
       <UtilizationHeatMap

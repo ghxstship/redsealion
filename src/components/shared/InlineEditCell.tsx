@@ -7,8 +7,9 @@ import FormInput from '@/components/ui/FormInput';
 interface InlineEditCellProps {
   value: string;
   onSave: (newValue: string) => Promise<void> | void;
-  type?: 'text' | 'select';
-  options?: { value: string; label: string }[];
+  type?: 'text' | 'select' | 'date';
+  options?: readonly string[] | { value: string; label: string }[];
+  renderValue?: (value: string) => React.ReactNode;
   className?: string;
 }
 
@@ -21,6 +22,7 @@ export default function InlineEditCell({
   onSave,
   type = 'text',
   options,
+  renderValue,
   className = '',
 }: InlineEditCellProps) {
   const [editing, setEditing] = useState(false);
@@ -52,13 +54,14 @@ export default function InlineEditCell({
 
   if (!editing) {
     return (
-      <span
+      <button
+        type="button"
         onDoubleClick={() => { setDraft(value); setEditing(true); }}
-        className={`cursor-default hover:bg-blue-50/50 hover:ring-1 hover:ring-blue-200 rounded px-1 -mx-1 transition-all ${className}`}
+        className={`inline-block text-left w-full cursor-default hover:bg-blue-50/50 hover:ring-1 hover:ring-blue-200 rounded px-1 -mx-1 transition-all ${className}`}
         title="Double-click to edit"
       >
-        {value || '\u2014'}
-      </span>
+        {renderValue ? renderValue(value) : value || '\u2014'}
+      </button>
     );
   }
 
@@ -70,7 +73,12 @@ export default function InlineEditCell({
         onChange={(e) => { setDraft(e.target.value); }}
         onBlur={() => void handleSave()}
       >
-        {options.map((opt) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+        {options.map((opt) => {
+          if (typeof opt === 'string') {
+            return <option key={opt} value={opt}>{opt.replace(/_/g, ' ')}</option>;
+          }
+          return <option key={opt.value} value={opt.value}>{opt.label}</option>;
+        })}
       </FormSelect>
     );
   }
@@ -78,7 +86,7 @@ export default function InlineEditCell({
   return (
     <FormInput
       ref={inputRef as React.RefObject<HTMLInputElement>}
-      type="text"
+      type={type === 'date' ? 'date' : 'text'}
       value={draft}
       onChange={(e) => setDraft(e.target.value)}
       onBlur={() => void handleSave()}

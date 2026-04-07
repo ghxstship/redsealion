@@ -2,7 +2,9 @@
 
 import { useRouter, usePathname } from 'next/navigation';
 import ViewTypeSwitcher from '@/components/shared/ViewTypeSwitcher';
-import { Table, Kanban, GanttChart, Calendar, FolderKanban } from 'lucide-react';
+import { Table, Kanban, GanttChart, Calendar, FolderKanban, BarChart3 } from 'lucide-react';
+
+const PERSIST_KEY = 'flytedeck:view:tasks';
 
 const TASK_VIEWS = [
   { key: 'table', label: 'Table', icon: <Table size={13} /> },
@@ -10,6 +12,7 @@ const TASK_VIEWS = [
   { key: 'gantt', label: 'Gantt', icon: <GanttChart size={13} /> },
   { key: 'calendar', label: 'Calendar', icon: <Calendar size={13} /> },
   { key: 'projects', label: 'Projects', icon: <FolderKanban size={13} /> },
+  { key: 'workload', label: 'Workload', icon: <BarChart3 size={13} /> },
 ];
 
 const VIEW_ROUTES: Record<string, string> = {
@@ -18,6 +21,7 @@ const VIEW_ROUTES: Record<string, string> = {
   gantt: '/app/tasks/gantt',
   calendar: '/app/tasks/calendar',
   projects: '/app/tasks/projects',
+  workload: '/app/tasks/workload',
 };
 
 export default function TaskViewSwitcher() {
@@ -29,6 +33,7 @@ export default function TaskViewSwitcher() {
     if (pathname.endsWith('/gantt')) return 'gantt';
     if (pathname.endsWith('/calendar')) return 'calendar';
     if (pathname.endsWith('/projects')) return 'projects';
+    if (pathname.endsWith('/workload')) return 'workload';
     return 'table';
   }
 
@@ -42,6 +47,7 @@ export default function TaskViewSwitcher() {
       views={TASK_VIEWS}
       activeView={getActiveView()}
       onSwitch={handleSwitch}
+      persistKey={PERSIST_KEY}
     />
   );
 }

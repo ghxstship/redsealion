@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
-import Link from 'next/link';
+import TaskViewSwitcher from '@/components/admin/tasks/TaskViewSwitcher';
 
 /**
  * Workload view — shows task distribution per team member
@@ -106,11 +106,14 @@ export default async function WorkloadPage() {
 
   return (
     <TierGate feature="tasks">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Workload</h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Team task distribution and capacity utilization
-        </p>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">Workload</h1>
+          <p className="mt-1 text-sm text-text-secondary">
+            Team task distribution and capacity utilization
+          </p>
+        </div>
+        <TaskViewSwitcher />
       </div>
 
       {/* Summary */}
@@ -217,11 +220,7 @@ export default async function WorkloadPage() {
         </div>
       )}
 
-      <div className="mt-6 text-center">
-        <Link href="/app/tasks" className="text-sm font-medium text-text-muted hover:text-foreground transition-colors">
-          ← Back to Tasks
-        </Link>
-      </div>
+
     </TierGate>
   );
 }

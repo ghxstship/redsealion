@@ -8,8 +8,11 @@ import DataExportMenu from '@/components/shared/DataExportMenu';
 import DataImportDialog from '@/components/shared/DataImportDialog';
 import PersonEditModal from './PersonEditModal';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
+import RowActionMenu from '@/components/shared/RowActionMenu';
 import { ROLE_BADGE_COLORS } from '@/components/ui/StatusBadge';
-import FormInput from '@/components/ui/FormInput';
+import SearchInput from '@/components/ui/SearchInput';
+import Button from '@/components/ui/Button';
+import { Upload } from 'lucide-react';
 
 interface TeamMember {
   id: string;
@@ -31,10 +34,6 @@ const ROLE_LABELS: Record<string, string> = {
   client_primary: 'Client',
   client_viewer: 'Client Viewer',
 };
-
-
-
-
 
 export default function PeopleGrid({ members }: { members: TeamMember[] }) {
   const [search, setSearch] = useState('');
@@ -68,18 +67,18 @@ export default function PeopleGrid({ members }: { members: TeamMember[] }) {
 
   return (
     <>
-      {/* Search + Export */}
+      {/* Search + Import/Export */}
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <FormInput
-          type="text"
-          placeholder="Search people by name, email, or role..."
+        <SearchInput
           value={search}
-          onChange={(e) => setSearch(e.target.value)} />
+          onChange={setSearch}
+          placeholder="Search people by name, email, or role..."
+        />
         <div className="flex items-center gap-3">
-          <button onClick={() => setShowImport(true)} className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M7 2v10M3 8l4 4 4-4" /></svg>
+          <Button variant="secondary" size="sm" onClick={() => setShowImport(true)}>
+            <Upload size={14} />
             Import
-          </button>
+          </Button>
           <DataExportMenu data={filtered} entityKey="people" filename="people-export" entityType="People" />
         </div>
       </div>
@@ -103,26 +102,13 @@ export default function PeopleGrid({ members }: { members: TeamMember[] }) {
               key={member.id}
               className="group relative rounded-xl border border-border bg-white px-6 py-5 transition-[color,background-color,border-color,opacity,box-shadow,transform] duration-normal hover:shadow-md hover:-translate-y-0.5"
             >
-              {/* Action buttons */}
-              <div className="absolute top-3 right-3 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button
-                  onClick={(e) => { e.preventDefault(); setEditPerson(member); }}
-                  className="p-1.5 rounded-md text-text-muted hover:text-foreground hover:bg-bg-secondary transition-colors"
-                  title="Edit"
-                >
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                    <path d="M10 2l2 2L5 11H3V9l7-7z" />
-                  </svg>
-                </button>
-                <button
-                  onClick={(e) => { e.preventDefault(); setDeletePerson(member); }}
-                  className="p-1.5 rounded-md text-text-muted hover:text-red-600 hover:bg-red-50 transition-colors"
-                  title="Remove"
-                >
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                    <path d="M2 4h10M5 4V3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1M9 4v7a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4" />
-                  </svg>
-                </button>
+              {/* Action menu */}
+              <div className="absolute top-3 right-3">
+                <RowActionMenu actions={[
+                  { label: 'View', onClick: () => router.push(`/app/people/${member.id}`) },
+                  { label: 'Edit', onClick: () => setEditPerson(member) },
+                  { label: 'Remove', variant: 'danger', onClick: () => setDeletePerson(member) },
+                ]} />
               </div>
 
               <Link href={`/app/people/${member.id}`}>

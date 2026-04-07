@@ -10,106 +10,23 @@ import DataExportMenu from '@/components/shared/DataExportMenu';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import SortableHeader from '@/components/shared/SortableHeader';
 import DataImportDialog from '@/components/shared/DataImportDialog';
+import RowActionMenu from '@/components/shared/RowActionMenu';
+import ActiveFilterBadge from '@/components/shared/ActiveFilterBadge';
 import { formatLabel } from '@/lib/utils';
 import StatusBadge, { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS } from '@/components/ui/StatusBadge';
 import FormSelect from '@/components/ui/FormSelect';
 import FormInput from '@/components/ui/FormInput';
+import SearchInput from '@/components/ui/SearchInput';
+import Button from '@/components/ui/Button';
+import { Upload, Settings } from 'lucide-react';
+import Tabs from '@/components/ui/Tabs';
+import { useEntityViews } from '@/hooks/useEntityViews';
+import { useStoredColumnConfig } from '@/hooks/useStoredColumnConfig';
+import ViewBar from '@/components/shared/ViewBar';
+import ColumnConfigPanel from '@/components/shared/ColumnConfigPanel';
+import InlineEditCell from '@/components/shared/InlineEditCell';
 
-/* ──────────────────────────────────────────────────────────────
-   Inline edit components
-   ────────────────────────────────────────────────────────────── */
 
-function InlineSelect({
-  value,
-  options,
-  onSave,
-}: {
-  value: string;
-  options: readonly string[];
-  onSave: (val: string) => void;
-}) {
-  const [editing, setEditing] = useState(false);
-
-  if (!editing) {
-    return (
-      <button
-        onClick={() => setEditing(true)}
-        className="w-full text-left cursor-pointer hover:opacity-70 transition-opacity"
-        title="Click to edit"
-      >
-        <StatusBadge
-          status={value}
-          colorMap={
-            options === statusOptions
-              ? TASK_STATUS_COLORS
-              : TASK_PRIORITY_COLORS
-          }
-        />
-      </button>
-    );
-  }
-
-  return (
-    <FormSelect
-      value={value}
-      autoFocus
-      onChange={(e) => {
-        onSave(e.target.value);
-        setEditing(false);
-      }}
-      onBlur={() => setEditing(false)}
-    >
-      {options
-        .filter((o) => o !== 'all')
-        .map((o) => (
-          <option key={o} value={o}>
-            {formatLabel(o)}
-          </option>
-        ))}
-    </FormSelect>
-  );
-}
-
-function InlineDateEdit({
-  value,
-  onSave,
-}: {
-  value: string | null;
-  onSave: (val: string) => void;
-}) {
-  const [editing, setEditing] = useState(false);
-
-  if (!editing) {
-    const isOverdue =
-      value && new Date(value + 'T23:59:59') < new Date();
-    return (
-      <button
-        onClick={() => setEditing(true)}
-        className={`text-sm cursor-pointer hover:opacity-70 transition-opacity ${
-          isOverdue ? 'text-red-600 font-medium' : 'text-text-secondary'
-        }`}
-        title="Click to edit"
-      >
-        {value ? new Date(value + 'T00:00:00').toLocaleDateString() : '\u2014'}
-      </button>
-    );
-  }
-
-  return (
-    <FormInput
-      type="date"
-      defaultValue={value ?? ''}
-      autoFocus
-      onChange={(e) => {
-        if (e.target.value) {
-          onSave(e.target.value);
-        }
-        setEditing(false);
-      }}
-      onBlur={() => setEditing(false)}
-    />
-  );
-}
 
 interface TaskRow {
   id: string;
@@ -135,6 +52,37 @@ export default function TasksTable({ tasks }: { tasks: TaskRow[] }) {
   const [priorityFilter, setPriorityFilter] = useState('all');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
   const [showImport, setShowImport] = useState(false);
+  const [showColumnConfig, setShowColumnConfig] = useState(false);
+
+  const {
+    views,
+    activeView,
+    activeViewId,
+    setActiveViewId,
+    createView,
+    updateView,
+    deleteView,
+    duplicateView,
+  } = useEntityViews({ entityType: 'tasks' });
+
+  const {
+    columns,
+    isVisible,
+    rowHeight,
+    setColumns,
+    setRowHeight,
+  } = useStoredColumnConfig({
+    baseColumns: [
+      { key: 'title', label: 'Title' },
+      { key: 'status', label: 'Status' },
+      { key: 'priority', label: 'Priority' },
+      { key: 'assigneeName', label: 'Assignee' },
+      { key: 'dueDate', label: 'Due Date' },
+      { key: 'subtaskCount', label: 'Subtasks' },
+    ],
+    activeView,
+    onUpdateView: updateView,
+  });
 
   const filtered = useMemo(() => {
     let result = tasks;
@@ -196,19 +144,30 @@ export default function TasksTable({ tasks }: { tasks: TaskRow[] }) {
 
   return (
     <>
-      {/* Filters row */}
+      <ViewBar
+        views={views}
+        activeViewId={activeViewId}
+        onSelectView={setActiveViewId}
+        onCreateView={(name) => createView({ name })}
+        onDeleteView={deleteView}
+        onDuplicateView={duplicateView}
+      />
+
+      {/* Status tabs */}
+      <Tabs
+        tabs={statusOptions.map((key) => ({
+          key,
+          label: key === 'all' ? 'All' : formatLabel(key),
+          count: key === 'all' ? tasks.length : tasks.filter((t) => t.status === key).length,
+        }))}
+        activeTab={statusFilter}
+        onTabChange={setStatusFilter}
+        className="mb-6"
+      />
+
+      {/* Priority filter + Search + Export */}
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-2 flex-wrap">
-          <FormSelect
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-          >
-            {statusOptions.map((s) => (
-              <option key={s} value={s}>
-                {s === 'all' ? 'All Status' : formatLabel(s)}
-              </option>
-            ))}
-          </FormSelect>
+        <div className="flex items-center gap-2">
           <FormSelect
             value={priorityFilter}
             onChange={(e) => setPriorityFilter(e.target.value)}
@@ -219,25 +178,20 @@ export default function TasksTable({ tasks }: { tasks: TaskRow[] }) {
               </option>
             ))}
           </FormSelect>
-          {(statusFilter !== 'all' || priorityFilter !== 'all' || search) && (
-            <button
-              onClick={() => { setStatusFilter('all'); setPriorityFilter('all'); setSearch(''); }}
-              className="text-xs font-medium text-text-muted hover:text-foreground transition-colors"
-            >
-              Clear filters
-            </button>
-          )}
+          <ActiveFilterBadge
+            count={(statusFilter !== 'all' ? 1 : 0) + (priorityFilter !== 'all' ? 1 : 0)}
+            onClearAll={() => { setStatusFilter('all'); setPriorityFilter('all'); setSearch(''); }}
+          />
         </div>
         <div className="flex items-center gap-3">
-          <FormInput
-            type="text"
-            placeholder="Search tasks..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)} />
-          <button onClick={() => setShowImport(true)} className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M7 2v10M3 8l4 4 4-4" /></svg>
+          <SearchInput value={search} onChange={setSearch} placeholder="Search tasks..." />
+          <Button variant="ghost" size="sm" onClick={() => setShowColumnConfig(true)} title="Column Settings">
+            <Settings size={14} />
+          </Button>
+          <Button variant="secondary" size="sm" onClick={() => setShowImport(true)}>
+            <Upload size={14} />
             Import
-          </button>
+          </Button>
           <DataExportMenu data={sorted} entityKey="tasks" filename="tasks-export" entityType="Tasks" />
         </div>
       </div>
@@ -308,11 +262,11 @@ export default function TasksTable({ tasks }: { tasks: TaskRow[] }) {
                   className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10"
                 />
               </th>
-              <th className="px-6 py-3"><SortableHeader label="Task" field="title" currentSort={sort} onSort={handleSort} /></th>
-              <th className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></th>
-              <th className="px-6 py-3"><SortableHeader label="Priority" field="priority" currentSort={sort} onSort={handleSort} /></th>
-              <th className="px-6 py-3"><SortableHeader label="Assignee" field="assigneeName" currentSort={sort} onSort={handleSort} /></th>
-              <th className="px-6 py-3"><SortableHeader label="Due Date" field="dueDate" currentSort={sort} onSort={handleSort} /></th>
+              {isVisible('title') && <th className="px-6 py-3"><SortableHeader label="Task" field="title" currentSort={sort} onSort={handleSort} /></th>}
+              {isVisible('status') && <th className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></th>}
+              {isVisible('priority') && <th className="px-6 py-3"><SortableHeader label="Priority" field="priority" currentSort={sort} onSort={handleSort} /></th>}
+              {isVisible('assigneeName') && <th className="px-6 py-3"><SortableHeader label="Assignee" field="assigneeName" currentSort={sort} onSort={handleSort} /></th>}
+              {isVisible('dueDate') && <th className="px-6 py-3"><SortableHeader label="Due Date" field="dueDate" currentSort={sort} onSort={handleSort} /></th>}
               <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted w-16">
                 <span className="sr-only">Actions</span>
               </th>
@@ -332,50 +286,66 @@ export default function TasksTable({ tasks }: { tasks: TaskRow[] }) {
                     className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10"
                   />
                 </td>
+                {isVisible('title') && (
+                  <td className="px-6 py-3.5">
+                    <Link
+                      href={`/app/tasks/${task.id}`}
+                      className="text-sm font-medium text-foreground hover:underline"
+                    >
+                      {task.title}
+                    </Link>
+                    {task.subtaskCount > 0 && (
+                      <span className="ml-2 text-xs text-text-muted">
+                        {task.subtaskCount} subtask{task.subtaskCount > 1 ? 's' : ''}
+                      </span>
+                    )}
+                  </td>
+                )}
+                {isVisible('status') && (
+                  <td className="px-6 py-3.5">
+                    <InlineEditCell
+                      type="select"
+                      value={task.status}
+                      options={statusOptions}
+                      onSave={(val) => patchTask(task.id, { status: val })}
+                      renderValue={(v) => <StatusBadge status={v} colorMap={TASK_STATUS_COLORS} />}
+                    />
+                  </td>
+                )}
+                {isVisible('priority') && (
+                  <td className="px-6 py-3.5">
+                    <InlineEditCell
+                      type="select"
+                      value={task.priority}
+                      options={priorityOptions}
+                      onSave={(val) => patchTask(task.id, { priority: val })}
+                      renderValue={(v) => <StatusBadge status={v} colorMap={TASK_PRIORITY_COLORS} />}
+                    />
+                  </td>
+                )}
+                {isVisible('assigneeName') && <td className="px-6 py-3.5 text-sm text-text-secondary">{task.assigneeName ?? '\u2014'}</td>}
+                {isVisible('dueDate') && (
+                  <td className="px-6 py-3.5">
+                    <InlineEditCell
+                      type="date"
+                      value={task.dueDate ?? ''}
+                      onSave={(val) => patchTask(task.id, { due_date: val })}
+                      renderValue={(v) => {
+                        const isOverdue = v && new Date(v + 'T23:59:59') < new Date();
+                        return (
+                          <span className={isOverdue ? 'text-red-600 font-medium text-sm' : 'text-text-secondary text-sm'}>
+                            {v ? new Date(v + 'T00:00:00').toLocaleDateString() : '\u2014'}
+                          </span>
+                        );
+                      }}
+                    />
+                  </td>
+                )}
                 <td className="px-6 py-3.5">
-                  <Link
-                    href={`/app/tasks/${task.id}`}
-                    className="text-sm font-medium text-foreground hover:underline"
-                  >
-                    {task.title}
-                  </Link>
-                  {task.subtaskCount > 0 && (
-                    <span className="ml-2 text-xs text-text-muted">
-                      {task.subtaskCount} subtask{task.subtaskCount > 1 ? 's' : ''}
-                    </span>
-                  )}
-                </td>
-                <td className="px-6 py-3.5">
-                  <InlineSelect
-                    value={task.status}
-                    options={statusOptions}
-                    onSave={(val) => patchTask(task.id, { status: val })}
-                  />
-                </td>
-                <td className="px-6 py-3.5">
-                  <InlineSelect
-                    value={task.priority}
-                    options={priorityOptions}
-                    onSave={(val) => patchTask(task.id, { priority: val })}
-                  />
-                </td>
-                <td className="px-6 py-3.5 text-sm text-text-secondary">{task.assigneeName ?? '\u2014'}</td>
-                <td className="px-6 py-3.5">
-                  <InlineDateEdit
-                    value={task.dueDate}
-                    onSave={(val) => patchTask(task.id, { due_date: val })}
-                  />
-                </td>
-                <td className="px-6 py-3.5">
-                  <button
-                    onClick={() => setShowDeleteConfirm(task.id)}
-                    className="text-text-muted hover:text-red-600 transition-colors"
-                    title="Delete task"
-                  >
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                      <path d="M2 4h10M5 4V3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1M9 4v7a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4" />
-                    </svg>
-                  </button>
+                  <RowActionMenu actions={[
+                    { label: 'View', onClick: () => router.push(`/app/tasks/${task.id}`) },
+                    { label: 'Delete', variant: 'danger', onClick: () => setShowDeleteConfirm(task.id) },
+                  ]} />
                 </td>
               </tr>
             ))}
@@ -403,6 +373,7 @@ export default function TasksTable({ tasks }: { tasks: TaskRow[] }) {
         />
       )}
 
+      {/* Data Import */}
       <DataImportDialog
         open={showImport}
         onClose={() => setShowImport(false)}
@@ -410,6 +381,16 @@ export default function TasksTable({ tasks }: { tasks: TaskRow[] }) {
         entityKey="tasks"
         apiEndpoint="/api/tasks"
         onComplete={() => router.refresh()}
+      />
+      
+      {/* Column Configuration */}
+      <ColumnConfigPanel
+        open={showColumnConfig}
+        onClose={() => setShowColumnConfig(false)}
+        columns={columns}
+        onColumnsChange={setColumns}
+        rowHeight={rowHeight}
+        onRowHeightChange={setRowHeight}
       />
     </>
   );

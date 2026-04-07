@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
-import { ChevronUp, ChevronDown } from 'lucide-react';
+import { ChevronUp, ChevronDown, Download, ChevronDown as ChevronDownLucide } from 'lucide-react';
+import Button from '@/components/ui/Button';
 import { getExportFields } from '@/lib/entity-fields';
 import type { EntityField } from '@/lib/entity-fields';
 import { performExport, copyToClipboard } from '@/lib/export-formats';
@@ -188,17 +189,16 @@ export default function DataExportMenu<T extends object>({
   return (
     <div className="relative" ref={menuRef}>
       {/* Trigger button */}
-      <button
+      <Button
+        variant="secondary"
+        size="sm"
         onClick={() => { setIsOpen(!isOpen); setShowFieldConfig(false); }}
         disabled={data.length === 0}
-        className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary disabled:opacity-50"
       >
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M7 2v8M4 7l3 3 3-3" /><path d="M2 11h10" />
-        </svg>
+        <Download size={14} />
         Export
-        <ChevronDownIcon />
-      </button>
+        <ChevronDownLucide size={12} />
+      </Button>
 
       {/* Dropdown menu */}
       {isOpen && (

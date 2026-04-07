@@ -4,6 +4,7 @@ import { use, useState } from 'react';
 import Link from 'next/link';
 import { TierGate } from '@/components/shared/TierGate';
 import { MappingEditor } from '@/components/admin/integrations/MappingEditor';
+import Tabs from '@/components/ui/Tabs';
 
 const PLATFORM_META: Record<string, { displayName: string; category: string }> = {
   salesforce: { displayName: 'Salesforce', category: 'crm' },
@@ -112,21 +113,7 @@ export default function IntegrationConfigPage({
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 border-b border-border mb-6">
-        {tabs.map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => setActiveTab(tab.key)}
-            className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
-              activeTab === tab.key
-                ? 'border-foreground text-foreground'
-                : 'border-transparent text-text-muted hover:text-text-secondary'
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
+      <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} className="mb-6" />
 
       {/* Tab content */}
       {activeTab === 'settings' && (

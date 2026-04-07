@@ -1,8 +1,8 @@
 import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import WeeklyTimesheet from '@/components/admin/time/WeeklyTimesheet';
-import Link from 'next/link';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import TimeHubTabs from './TimeHubTabs';
 
 interface TimeStats {
   hoursThisWeek: number;
@@ -82,29 +82,13 @@ export default async function TimePage() {
 
   return (
     <TierGate feature="time_tracking">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            Time Tracking
-          </h1>
-          <p className="mt-1 text-sm text-text-secondary">
-            Log hours and manage weekly timesheets.
-          </p>
-        </div>
-        <div className="flex gap-3">
-          <Link
-            href="/app/time/timer"
-            className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90"
-          >
-            Start Timer
-          </Link>
-          <Link
-            href="/app/time/timesheets"
-            className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
-          >
-            Approvals
-          </Link>
-        </div>
+      <div className="mb-8">
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+          Time Tracking
+        </h1>
+        <p className="mt-1 text-sm text-text-secondary">
+          Log hours and manage weekly timesheets.
+        </p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
@@ -124,7 +108,10 @@ export default async function TimePage() {
         ))}
       </div>
 
+      <TimeHubTabs pendingCount={stats.pendingApproval} />
+
       <WeeklyTimesheet />
     </TierGate>
   );
 }
+

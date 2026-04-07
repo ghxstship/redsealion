@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import Link from 'next/link';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import TaskViewSwitcher from '@/components/admin/tasks/TaskViewSwitcher';
 
 interface CalendarTask {
   id: string;
@@ -109,7 +110,7 @@ export default async function TaskCalendarPage({
 
   return (
     <TierGate feature="tasks">
-      <div className="mb-8 flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">
             Task Calendar
@@ -118,26 +119,7 @@ export default async function TaskCalendarPage({
             View tasks by due date on a calendar.
           </p>
         </div>
-        <div className="flex gap-3">
-          <Link
-            href="/app/tasks"
-            className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
-          >
-            List
-          </Link>
-          <Link
-            href="/app/tasks/board"
-            className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
-          >
-            Board
-          </Link>
-          <Link
-            href="/app/tasks/gantt"
-            className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
-          >
-            Gantt
-          </Link>
-        </div>
+        <TaskViewSwitcher />
       </div>
 
       {/* Month navigation */}

@@ -36,7 +36,7 @@ interface UseEntityViewsOptions {
 
 /**
  * Hook for managing saved views for a specific entity type.
- * Provides full CRUD operations and active view tracking.
+ * Currently uses localStorage since backend APIs are not yet wired.
  */
 export function useEntityViews({ entityType }: UseEntityViewsOptions) {
   const [views, setViews] = useState<SavedView[]>([]);
@@ -44,68 +44,111 @@ export function useEntityViews({ entityType }: UseEntityViewsOptions) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch views on mount
+  const storageKey = `redsealion_views_${entityType}`;
+
+  // Fetch views on mount from localStorage
   useEffect(() => {
-    async function fetchViews() {
-      setLoading(true);
-      try {
-        const res = await fetch(`/api/saved-views?entity_type=${entityType}`);
-        if (!res.ok) throw new Error('Failed to fetch views');
-        const data = await res.json();
-        setViews(data);
-        // Auto-select default view
-        const defaultView = data.find((v: SavedView) => v.is_default);
+    try {
+      const stored = window.localStorage.getItem(storageKey);
+      if (stored) {
+        const parsed = JSON.parse(stored) as SavedView[];
+        setViews(parsed);
+        const defaultView = parsed.find((v) => v.is_default) || parsed[0];
         if (defaultView) setActiveViewId(defaultView.id);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Error loading views');
-      } finally {
-        setLoading(false);
+      } else {
+        // Create an initial default 'All' view if none exists
+        const defaultView: SavedView = {
+          id: 'default-all',
+          entity_type: entityType,
+          display_type: 'table',
+          name: 'All',
+          description: null,
+          icon: null,
+          config: {},
+          collaboration_type: 'personal',
+          is_default: true,
+          is_favorite: false,
+          sort_order: 0,
+          section_id: null,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+        setViews([defaultView]);
+        setActiveViewId(defaultView.id);
+        window.localStorage.setItem(storageKey, JSON.stringify([defaultView]));
       }
+    } catch (err) {
+      setError('Error loading views from local storage');
+    } finally {
+      setLoading(false);
     }
-    void fetchViews();
-  }, [entityType]);
+  }, [entityType, storageKey]);
 
   const activeView = views.find((v) => v.id === activeViewId) ?? null;
 
+  const saveToStorage = useCallback((newViews: SavedView[]) => {
+    window.localStorage.setItem(storageKey, JSON.stringify(newViews));
+    setViews(newViews);
+  }, [storageKey]);
+
   const createView = useCallback(
     async (view: Partial<SavedView>) => {
-      const res = await fetch('/api/saved-views', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...view, entity_type: entityType }),
-      });
-      if (!res.ok) throw new Error('Failed to create view');
-      const newView = await res.json();
-      setViews((prev) => [...prev, newView]);
+      const newView: SavedView = {
+        id: crypto.randomUUID(),
+        entity_type: entityType,
+        display_type: view.display_type ?? 'table',
+        name: view.name ?? 'New View',
+        description: view.description ?? null,
+        icon: view.icon ?? null,
+        config: view.config ?? {},
+        collaboration_type: view.collaboration_type ?? 'personal',
+        is_default: view.is_default ?? false,
+        is_favorite: view.is_favorite ?? false,
+        sort_order: view.sort_order ?? views.length,
+        section_id: view.section_id ?? null,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+      
+      const nextViews = [...views, newView];
+      saveToStorage(nextViews);
       setActiveViewId(newView.id);
-      return newView as SavedView;
+      return newView;
     },
-    [entityType],
+    [entityType, views, saveToStorage],
   );
 
   const updateView = useCallback(
     async (id: string, updates: Partial<SavedView>) => {
-      const res = await fetch(`/api/saved-views/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updates),
+      let updatedView: SavedView | null = null;
+      const nextViews = views.map((v) => {
+        if (v.id === id) {
+          updatedView = { ...v, ...updates, updated_at: new Date().toISOString() };
+          return updatedView;
+        }
+        return v;
       });
-      if (!res.ok) throw new Error('Failed to update view');
-      const updated = await res.json();
-      setViews((prev) => prev.map((v) => (v.id === id ? updated : v)));
-      return updated as SavedView;
+      
+      if (!updatedView) throw new Error('View not found');
+      saveToStorage(nextViews);
+      return updatedView as SavedView;
     },
-    [],
+    [views, saveToStorage],
   );
 
   const deleteView = useCallback(
     async (id: string) => {
-      const res = await fetch(`/api/saved-views/${id}`, { method: 'DELETE' });
-      if (!res.ok) throw new Error('Failed to delete view');
-      setViews((prev) => prev.filter((v) => v.id !== id));
-      if (activeViewId === id) setActiveViewId(null);
+      // Don't delete the last view
+      if (views.length <= 1) return;
+      
+      const nextViews = views.filter((v) => v.id !== id);
+      saveToStorage(nextViews);
+      
+      if (activeViewId === id) {
+        setActiveViewId(nextViews.find(v => v.is_default)?.id ?? nextViews[0]?.id ?? null);
+      }
     },
-    [activeViewId],
+    [views, activeViewId, saveToStorage],
   );
 
   const duplicateView = useCallback(
@@ -126,7 +169,7 @@ export function useEntityViews({ entityType }: UseEntityViewsOptions) {
     async (id: string) => {
       const view = views.find((v) => v.id === id);
       if (!view) return;
-      return updateView(id, { is_favorite: !view.is_favorite } as Partial<SavedView>);
+      return updateView(id, { is_favorite: !view.is_favorite });
     },
     [views, updateView],
   );

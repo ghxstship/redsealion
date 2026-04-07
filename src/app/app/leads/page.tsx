@@ -1,7 +1,7 @@
-import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import LeadsHeader from '@/components/admin/leads/LeadsHeader';
 import LeadsTable from '@/components/admin/leads/LeadsTable';
+import LeadsHubTabs from './LeadsHubTabs';
 
 interface Lead {
   id: string;
@@ -77,15 +77,11 @@ export default async function LeadsPage() {
           </p>
         </div>
         <div className="flex gap-3">
-          <Link
-            href="/app/leads/forms"
-            className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
-          >
-            Lead Forms
-          </Link>
           <LeadsHeader />
         </div>
       </div>
+
+      <LeadsHubTabs />
 
       <LeadsTable leads={leads} />
     </>

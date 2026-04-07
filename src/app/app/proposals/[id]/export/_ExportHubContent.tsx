@@ -4,6 +4,7 @@ import { useState, useCallback } from 'react';
 import Link from 'next/link';
 import ExportCard from '@/components/admin/export/ExportCard';
 import ExportPreview from '@/components/admin/export/ExportPreview';
+import Tabs from '@/components/ui/Tabs';
 import type { ProposalExportData } from './_data';
 
 type ExportTab = 'document' | 'crm' | 'finance' | 'pm' | 'assets' | 'resources' | 'csv';
@@ -161,23 +162,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
       </div>
 
       {/* Tabs */}
-      <div className="mb-8 border-b border-border">
-        <nav className="-mb-px flex gap-6 overflow-x-auto">
-          {TABS.map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`whitespace-nowrap pb-3 text-sm font-medium transition-colors border-b-2 ${
-                activeTab === tab.key
-                  ? 'border-foreground text-foreground'
-                  : 'border-transparent text-text-muted hover:text-text-secondary hover:border-border'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </nav>
-      </div>
+      <Tabs tabs={TABS} activeTab={activeTab} onTabChange={setActiveTab} className="mb-8" />
 
       {/* DOCUMENT TAB */}
       {activeTab === 'document' && (

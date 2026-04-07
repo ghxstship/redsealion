@@ -11,7 +11,10 @@ import DataExportMenu from '@/components/shared/DataExportMenu';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import SortableHeader from '@/components/shared/SortableHeader';
 import DataImportDialog from '@/components/shared/DataImportDialog';
-import FormInput from '@/components/ui/FormInput';
+import RowActionMenu from '@/components/shared/RowActionMenu';
+import SearchInput from '@/components/ui/SearchInput';
+import Button from '@/components/ui/Button';
+import { Upload } from 'lucide-react';
 
 interface ClientRow {
   id: string;
@@ -22,10 +25,6 @@ interface ClientRow {
   total_value: number;
   last_activity: string;
 }
-
-
-
-
 
 export default function ClientsSearch({ clients }: { clients: ClientRow[] }) {
   const router = useRouter();
@@ -64,16 +63,12 @@ export default function ClientsSearch({ clients }: { clients: ClientRow[] }) {
     <>
       {/* Search + Export row */}
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <FormInput
-          type="text"
-          placeholder="Search clients..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)} />
+        <SearchInput value={search} onChange={setSearch} placeholder="Search clients..." />
         <div className="flex items-center gap-3">
-          <button onClick={() => setShowImport(true)} className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M7 2v10M3 8l4 4 4-4" /></svg>
+          <Button variant="secondary" size="sm" onClick={() => setShowImport(true)}>
+            <Upload size={14} />
             Import
-          </button>
+          </Button>
           <DataExportMenu data={sorted} entityKey="clients" filename="clients-export" entityType="Clients" />
         </div>
       </div>
@@ -153,15 +148,10 @@ export default function ClientsSearch({ clients }: { clients: ClientRow[] }) {
                   <td className="px-6 py-4 text-right text-sm font-medium tabular-nums text-foreground">{formatCurrency(client.total_value)}</td>
                   <td className="px-6 py-4 text-right text-sm text-text-muted">{formatDate(client.last_activity)}</td>
                   <td className="px-6 py-4">
-                    <button
-                      onClick={() => setShowDeleteConfirm(client.id)}
-                      className="text-text-muted hover:text-red-600 transition-colors"
-                      title="Delete client"
-                    >
-                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                        <path d="M2 4h10M5 4V3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1M9 4v7a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4" />
-                      </svg>
-                    </button>
+                    <RowActionMenu actions={[
+                      { label: 'View', onClick: () => router.push(`/app/clients/${client.id}`) },
+                      { label: 'Delete', variant: 'danger', onClick: () => setShowDeleteConfirm(client.id) },
+                    ]} />
                   </td>
                 </tr>
               ))}

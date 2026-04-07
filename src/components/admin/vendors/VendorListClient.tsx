@@ -1,12 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { Search, Building2, ShieldCheck, ShieldX } from 'lucide-react';
-import FormInput from '@/components/ui/FormInput';
-import Button from '@/components/ui/Button';
+import { useRouter } from 'next/navigation';
+import { ShieldCheck, ShieldX } from 'lucide-react';
+import { useSort } from '@/hooks/useSort';
+import SortableHeader from '@/components/shared/SortableHeader';
+import RowActionMenu from '@/components/shared/RowActionMenu';
+import SearchInput from '@/components/ui/SearchInput';
 import EmptyState from '@/components/ui/EmptyState';
 import StatusBadge from '@/components/ui/StatusBadge';
+import Tabs from '@/components/ui/Tabs';
+import { Building2 } from 'lucide-react';
 
 const VENDOR_STATUS_COLORS: Record<string, string> = {
   active: 'bg-green-50 text-green-700',
@@ -26,49 +31,45 @@ interface VendorRow {
 }
 
 export default function VendorListClient({ vendors }: { vendors: VendorRow[] }) {
+  const router = useRouter();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
 
-  const filtered = vendors.filter((v) => {
-    const matchesSearch =
-      !search ||
-      v.name.toLowerCase().includes(search.toLowerCase()) ||
-      (v.email && v.email.toLowerCase().includes(search.toLowerCase())) ||
-      (v.category && v.category.toLowerCase().includes(search.toLowerCase()));
-    const matchesStatus = statusFilter === 'all' || v.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
+  const filtered = useMemo(() => {
+    return vendors.filter((v) => {
+      const matchesSearch =
+        !search ||
+        v.name.toLowerCase().includes(search.toLowerCase()) ||
+        (v.email && v.email.toLowerCase().includes(search.toLowerCase())) ||
+        (v.category && v.category.toLowerCase().includes(search.toLowerCase()));
+      const matchesStatus = statusFilter === 'all' || v.status === statusFilter;
+      return matchesSearch && matchesStatus;
+    });
+  }, [vendors, search, statusFilter]);
+
+  const { sorted, sort, handleSort } = useSort(filtered);
 
   return (
     <>
-      {/* Filters */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center mb-6">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-muted" />
-          <FormInput
-            type="text"
-            placeholder="Search vendors..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-9"
-          />
-        </div>
-        <div className="flex gap-2">
-          {['all', 'active', 'inactive'].map((s) => (
-            <Button
-              key={s}
-              variant={statusFilter === s ? 'primary' : 'secondary'}
-              size="sm"
-              onClick={() => setStatusFilter(s)}
-            >
-              {s === 'all' ? 'All' : s.charAt(0).toUpperCase() + s.slice(1)}
-            </Button>
-          ))}
-        </div>
+      {/* Status tabs */}
+      <Tabs
+        tabs={['all', 'active', 'inactive'].map((key) => ({
+          key,
+          label: key === 'all' ? 'All' : key.charAt(0).toUpperCase() + key.slice(1),
+          count: key === 'all' ? vendors.length : vendors.filter((v) => v.status === key).length,
+        }))}
+        activeTab={statusFilter}
+        onTabChange={setStatusFilter}
+        className="mb-6"
+      />
+
+      {/* Search */}
+      <div className="mb-4">
+        <SearchInput value={search} onChange={setSearch} placeholder="Search vendors..." />
       </div>
 
       {/* Vendor list */}
-      {filtered.length === 0 ? (
+      {sorted.length === 0 ? (
         <EmptyState
           icon={<Building2 className="h-10 w-10" />}
           message={vendors.length === 0 ? 'No vendors yet' : 'No matching vendors'}
@@ -84,28 +85,17 @@ export default function VendorListClient({ vendors }: { vendors: VendorRow[] }) 
             <table className="w-full">
               <thead>
                 <tr className="border-b border-border bg-bg-secondary">
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">
-                    Vendor
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">
-                    Category
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">
-                    Contact
-                  </th>
-                  <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-text-muted">
-                    W-9
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">
-                    POs
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">
-                    Status
-                  </th>
+                  <th className="px-6 py-3"><SortableHeader label="Vendor" field="name" currentSort={sort} onSort={handleSort} /></th>
+                  <th className="px-6 py-3"><SortableHeader label="Category" field="category" currentSort={sort} onSort={handleSort} /></th>
+                  <th className="px-6 py-3"><SortableHeader label="Contact" field="email" currentSort={sort} onSort={handleSort} /></th>
+                  <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-text-muted">W-9</th>
+                  <th className="px-6 py-3"><SortableHeader label="POs" field="poCount" currentSort={sort} onSort={handleSort} /></th>
+                  <th className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></th>
+                  <th className="px-6 py-3 w-12"><span className="sr-only">Actions</span></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {filtered.map((vendor) => (
+                {sorted.map((vendor) => (
                   <tr key={vendor.id} className="transition-colors hover:bg-bg-secondary/50">
                     <td className="px-6 py-3.5">
                       <Link
@@ -140,6 +130,11 @@ export default function VendorListClient({ vendors }: { vendors: VendorRow[] }) 
                     </td>
                     <td className="px-6 py-3.5">
                       <StatusBadge status={vendor.status} colorMap={VENDOR_STATUS_COLORS} />
+                    </td>
+                    <td className="px-6 py-3.5">
+                      <RowActionMenu actions={[
+                        { label: 'View', onClick: () => router.push(`/app/finance/vendors/${vendor.id}`) },
+                      ]} />
                     </td>
                   </tr>
                 ))}

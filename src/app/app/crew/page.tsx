@@ -6,11 +6,19 @@ import { useRouter } from 'next/navigation';
 import CrewFormModal from '@/components/admin/crew/CrewFormModal';
 import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
 import { useSelection } from '@/hooks/useSelection';
+import { useSort } from '@/hooks/useSort';
 import { formatLabel } from '@/lib/utils';
 import BulkActionBar from '@/components/shared/BulkActionBar';
 import DataExportMenu from '@/components/shared/DataExportMenu';
 import DataImportDialog from '@/components/shared/DataImportDialog';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
+import SortableHeader from '@/components/shared/SortableHeader';
+import RowActionMenu from '@/components/shared/RowActionMenu';
+import PageHeader from '@/components/shared/PageHeader';
+import SearchInput from '@/components/ui/SearchInput';
+import Button from '@/components/ui/Button';
+import Tabs from '@/components/ui/Tabs';
+import { Upload } from 'lucide-react';
 
 interface CrewMember {
   id: string;
@@ -34,15 +42,11 @@ const ONBOARDING_COLORS: Record<string, string> = {
   pending: 'bg-gray-100 text-gray-600',
 };
 
-
-
-
-
 export default function CrewPage() {
   const router = useRouter();
   const [crew, setCrew] = useState<CrewMember[]>([]);
   const [search, setSearch] = useState('');
-  const [showCreate, setShowCreate] = useState(false);
+  const [availabilityFilter, setAvailabilityFilter] = useState('all');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
   const [showImport, setShowImport] = useState(false);
 
@@ -81,17 +85,22 @@ export default function CrewPage() {
   }, []);
 
   const filtered = useMemo(() => {
-    if (!search) return crew;
+    let result = crew;
+    if (availabilityFilter !== 'all') {
+      result = result.filter((c) => c.availability_status === availabilityFilter);
+    }
+    if (!search) return result;
     const q = search.toLowerCase();
-    return crew.filter(
+    return result.filter(
       (c) =>
         c.full_name.toLowerCase().includes(q) ||
         c.email.toLowerCase().includes(q) ||
         c.skills.some((s) => s.toLowerCase().includes(q))
     );
-  }, [crew, search]);
+  }, [crew, search, availabilityFilter]);
 
-  const allIds = useMemo(() => filtered.map((c) => c.id), [filtered]);
+  const { sorted, sort, handleSort } = useSort(filtered);
+  const allIds = useMemo(() => sorted.map((c) => c.id), [sorted]);
   const { selectedIds, isSelected, toggle, toggleAll, isAllSelected, isSomeSelected, deselectAll, count } = useSelection(allIds);
 
   async function handleDelete(id: string) {
@@ -108,38 +117,39 @@ export default function CrewPage() {
   return (
     <>
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">Crew Directory</h1>
-          <p className="mt-1 text-sm text-text-secondary">{crew.length} crew members</p>
-        </div>
-        <button
-          onClick={() => setShowCreate(true)}
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-foreground/90"
-        >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <line x1="8" y1="2" x2="8" y2="14" /><line x1="2" y1="8" x2="14" y2="8" />
-          </svg>
-          Add Crew Member
-        </button>
-        <CrewFormModal open={showCreate} onClose={() => setShowCreate(false)} onCreated={() => router.refresh()} />
-      </div>
+      <PageHeader
+        title="Crew Directory"
+        subtitle={`${crew.length} crew members`}
+        actionLabel="Add Crew Member"
+        renderModal={(props) => <CrewFormModal {...props} />}
+        onCreated={() => router.refresh()}
+      />
 
-      {/* Search + Export */}
+      {/* Availability tabs */}
+      <Tabs
+        tabs={['all', 'available', 'tentative', 'unavailable'].map((key) => ({
+          key,
+          label: key === 'all' ? 'All' : formatLabel(key),
+          count: key === 'all' ? crew.length : crew.filter((c) => c.availability_status === key).length,
+        }))}
+        activeTab={availabilityFilter}
+        onTabChange={setAvailabilityFilter}
+        className="mt-8 mb-6"
+      />
+
+      {/* Search + Import/Export */}
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <input
-          type="text"
-          placeholder="Search by name, email, or skill..."
+        <SearchInput
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full max-w-md rounded-lg border border-border bg-white px-4 py-2.5 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/20"
+          onChange={setSearch}
+          placeholder="Search by name, email, or skill..."
         />
         <div className="flex items-center gap-3">
-          <button onClick={() => setShowImport(true)} className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M7 2v10M3 8l4 4 4-4" /></svg>
+          <Button variant="secondary" size="sm" onClick={() => setShowImport(true)}>
+            <Upload size={14} />
             Import
-          </button>
-          <DataExportMenu data={filtered} entityKey="crew" filename="crew-export" entityType="Crew" />
+          </Button>
+          <DataExportMenu data={sorted} entityKey="crew" filename="crew-export" entityType="Crew" />
         </div>
       </div>
 
@@ -166,17 +176,17 @@ export default function CrewPage() {
               <th className="px-4 py-3 text-left w-10">
                 <input type="checkbox" checked={isAllSelected} ref={(el) => { if (el) el.indeterminate = isSomeSelected; }} onChange={toggleAll} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/20" />
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Name</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Email</th>
+              <th className="px-6 py-3"><SortableHeader label="Name" field="full_name" currentSort={sort} onSort={handleSort} /></th>
+              <th className="px-6 py-3"><SortableHeader label="Email" field="email" currentSort={sort} onSort={handleSort} /></th>
               <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Skills</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Rate</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Availability</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Onboarding</th>
+              <th className="px-6 py-3"><SortableHeader label="Rate" field="hourly_rate" currentSort={sort} onSort={handleSort} /></th>
+              <th className="px-6 py-3"><SortableHeader label="Availability" field="availability_status" currentSort={sort} onSort={handleSort} /></th>
+              <th className="px-6 py-3"><SortableHeader label="Onboarding" field="onboarding_status" currentSort={sort} onSort={handleSort} /></th>
               <th className="px-6 py-3 w-12"><span className="sr-only">Actions</span></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {filtered.map((member) => (
+            {sorted.map((member) => (
               <tr key={member.id} className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(member.id) ? 'bg-blue-50/50' : ''}`}>
                 <td className="px-4 py-3.5">
                   <input type="checkbox" checked={isSelected(member.id)} onChange={() => toggle(member.id)} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/20" />
@@ -200,15 +210,14 @@ export default function CrewPage() {
                   <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${ONBOARDING_COLORS[member.onboarding_status] ?? 'bg-gray-100 text-gray-600'}`}>{formatLabel(member.onboarding_status)}</span>
                 </td>
                 <td className="px-6 py-3.5">
-                  <button onClick={() => setShowDeleteConfirm(member.id)} className="text-text-muted hover:text-red-600 transition-colors" title="Delete">
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                      <path d="M2 4h10M5 4V3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1M9 4v7a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4" />
-                    </svg>
-                  </button>
+                  <RowActionMenu actions={[
+                    { label: 'View', onClick: () => router.push(`/app/crew/${member.id}`) },
+                    { label: 'Delete', variant: 'danger', onClick: () => setShowDeleteConfirm(member.id) },
+                  ]} />
                 </td>
               </tr>
             ))}
-            {filtered.length === 0 && (
+            {sorted.length === 0 && (
               <tr><td colSpan={8} className="px-6 py-12 text-center text-sm text-text-muted">No crew members found.</td></tr>
             )}
           </tbody>

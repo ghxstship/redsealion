@@ -9,12 +9,20 @@ import BulkActionBar from '@/components/shared/BulkActionBar';
 import DataExportMenu from '@/components/shared/DataExportMenu';
 import SortableHeader from '@/components/shared/SortableHeader';
 import DataImportDialog from '@/components/shared/DataImportDialog';
+import RowActionMenu from '@/components/shared/RowActionMenu';
 import { formatLabel, formatCurrency, formatDate } from '@/lib/utils';
 import StatusBadge, { LEAD_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import LeadEditModal from './LeadEditModal';
-import FormInput from '@/components/ui/FormInput';
+import SearchInput from '@/components/ui/SearchInput';
+import Tabs from '@/components/ui/Tabs';
+import Button from '@/components/ui/Button';
 import { computeLeadScore, scoreBarColor, scoreTierClasses } from '@/lib/leads/lead-scoring';
 import Tooltip from '@/components/ui/Tooltip';
+import { Upload, Settings } from 'lucide-react';
+import { useEntityViews } from '@/hooks/useEntityViews';
+import { useStoredColumnConfig } from '@/hooks/useStoredColumnConfig';
+import ViewBar from '@/components/shared/ViewBar';
+import ColumnConfigPanel from '@/components/shared/ColumnConfigPanel';
 
 interface Lead {
   id: string;
@@ -30,20 +38,47 @@ interface Lead {
   created_at: string;
 }
 
-
-
-
-
-const statusTabs = ['all', 'new', 'contacted', 'qualified'] as const;
-
-
+const STATUS_TAB_KEYS = ['all', 'new', 'contacted', 'qualified'] as const;
 
 export default function LeadsTable({ leads }: { leads: Lead[] }) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<string>('all');
   const [search, setSearch] = useState('');
   const [showImport, setShowImport] = useState(false);
+  const [showColumnConfig, setShowColumnConfig] = useState(false);
   const [editingLead, setEditingLead] = useState<Lead | null>(null);
+
+  const {
+    views,
+    activeView,
+    activeViewId,
+    setActiveViewId,
+    createView,
+    updateView,
+    deleteView,
+    duplicateView,
+  } = useEntityViews({ entityType: 'leads' });
+
+  const {
+    columns,
+    isVisible,
+    rowHeight,
+    setColumns,
+    setRowHeight,
+  } = useStoredColumnConfig({
+    baseColumns: [
+      { key: 'name', label: 'Name' },
+      { key: 'company', label: 'Company' },
+      { key: 'contact', label: 'Contact' },
+      { key: 'source', label: 'Source' },
+      { key: 'budget', label: 'Budget' },
+      { key: 'status', label: 'Status' },
+      { key: 'score', label: 'Score' },
+      { key: 'date', label: 'Date' },
+    ],
+    activeView,
+    onUpdateView: updateView,
+  });
 
   const filtered = useMemo(() => {
     let result = leads;
@@ -67,7 +102,6 @@ export default function LeadsTable({ leads }: { leads: Lead[] }) {
   const { selectedIds, isSelected, toggle, toggleAll, isAllSelected, isSomeSelected, deselectAll, count } = useSelection(allIds);
 
   async function handleBulkDelete(ids: string[]) {
-    // TODO: Wire to batch delete API when available
     await Promise.all(ids.map((id) => fetch(`/api/leads/${id}`, { method: 'DELETE' })));
     router.refresh();
   }
@@ -87,33 +121,37 @@ export default function LeadsTable({ leads }: { leads: Lead[] }) {
 
   return (
     <>
-      {/* Status tabs + search + export */}
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex gap-1 rounded-lg border border-border bg-bg-secondary p-1 w-fit">
-          {statusTabs.map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`rounded-md px-4 py-1.5 text-sm font-medium transition-colors cursor-pointer ${
-                activeTab === tab
-                  ? 'bg-white text-foreground shadow-sm'
-                  : 'bg-transparent text-text-muted hover:text-foreground'
-              }`}
-            >
-              {formatLabel(tab)} ({tab === 'all' ? leads.length : leads.filter((l) => l.status === tab).length})
-            </button>
-          ))}
-        </div>
+      <ViewBar
+        views={views}
+        activeViewId={activeViewId}
+        onSelectView={setActiveViewId}
+        onCreateView={(name) => createView({ name })}
+        onDeleteView={deleteView}
+        onDuplicateView={duplicateView}
+      />
+      {/* Status tabs */}
+      <Tabs
+        tabs={STATUS_TAB_KEYS.map((tab) => ({
+          key: tab,
+          label: formatLabel(tab),
+          count: tab === 'all' ? leads.length : leads.filter((l) => l.status === tab).length,
+        }))}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        className="mb-6"
+      />
+
+      {/* Search + export */}
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <SearchInput value={search} onChange={setSearch} placeholder="Search leads..." />
         <div className="flex items-center gap-3">
-          <FormInput
-            type="text"
-            placeholder="Search leads..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)} />
-          <button onClick={() => setShowImport(true)} className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M7 2v10M3 8l4 4 4-4" /></svg>
+          <Button variant="ghost" size="sm" onClick={() => setShowColumnConfig(true)} title="Column Settings">
+            <Settings size={14} />
+          </Button>
+          <Button variant="secondary" size="sm" onClick={() => setShowImport(true)}>
+            <Upload size={14} />
             Import
-          </button>
+          </Button>
           <DataExportMenu data={sorted as unknown as Record<string, unknown>[]} entityKey="leads" filename="leads-export" entityType="Leads" />
         </div>
       </div>
@@ -171,14 +209,15 @@ export default function LeadsTable({ leads }: { leads: Lead[] }) {
                   className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10"
                 />
               </th>
-              <th className="px-6 py-3"><SortableHeader label="Name" field="contact_first_name" currentSort={sort} onSort={handleSort} /></th>
-              <th className="px-6 py-3"><SortableHeader label="Company" field="company_name" currentSort={sort} onSort={handleSort} /></th>
-              <th className="px-6 py-3"><SortableHeader label="Contact" field="contact_email" currentSort={sort} onSort={handleSort} /></th>
-              <th className="px-6 py-3"><SortableHeader label="Source" field="source" currentSort={sort} onSort={handleSort} /></th>
-              <th className="px-6 py-3"><SortableHeader label="Budget" field="estimated_budget" currentSort={sort} onSort={handleSort} /></th>
-              <th className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Score</th>
-              <th className="px-6 py-3"><SortableHeader label="Date" field="created_at" currentSort={sort} onSort={handleSort} /></th>
+              {isVisible('name') && <th className="px-6 py-3"><SortableHeader label="Name" field="contact_first_name" currentSort={sort} onSort={handleSort} /></th>}
+              {isVisible('company') && <th className="px-6 py-3"><SortableHeader label="Company" field="company_name" currentSort={sort} onSort={handleSort} /></th>}
+              {isVisible('contact') && <th className="px-6 py-3"><SortableHeader label="Contact" field="contact_email" currentSort={sort} onSort={handleSort} /></th>}
+              {isVisible('source') && <th className="px-6 py-3"><SortableHeader label="Source" field="source" currentSort={sort} onSort={handleSort} /></th>}
+              {isVisible('budget') && <th className="px-6 py-3"><SortableHeader label="Budget" field="estimated_budget" currentSort={sort} onSort={handleSort} /></th>}
+              {isVisible('status') && <th className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></th>}
+              {isVisible('score') && <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Score</th>}
+              {isVisible('date') && <th className="px-6 py-3"><SortableHeader label="Date" field="created_at" currentSort={sort} onSort={handleSort} /></th>}
+              <th className="px-6 py-3 w-12"><span className="sr-only">Actions</span></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -195,66 +234,83 @@ export default function LeadsTable({ leads }: { leads: Lead[] }) {
                     className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10"
                   />
                 </td>
-                <td className="px-6 py-3.5 text-sm font-medium text-foreground">
-                  {lead.contact_first_name} {lead.contact_last_name}
-                </td>
-                <td className="px-6 py-3.5 text-sm text-text-secondary">
-                  {lead.company_name ?? '\u2014'}
-                </td>
-                <td className="px-6 py-3.5">
-                  <div className="text-sm text-text-secondary">{lead.contact_email ?? '\u2014'}</div>
-                  {lead.contact_phone && (
-                    <div className="text-xs text-text-muted">{lead.contact_phone}</div>
-                  )}
-                </td>
-                <td className="px-6 py-3.5">
-                  <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">
-                    {lead.source}
-                  </span>
-                </td>
-                <td className="px-6 py-3.5 text-sm tabular-nums text-foreground">
-                  {lead.estimated_budget != null
-                    ? formatCurrency(lead.estimated_budget)
-                    : '\u2014'}
-                </td>
-                <td className="px-6 py-3.5">
-                  <StatusBadge status={lead.status} colorMap={LEAD_STATUS_COLORS} />
-                </td>
-                <td className="px-6 py-3.5">
-                  {(() => {
-                    const { score, tier, signals } = computeLeadScore(lead);
-                    return (
-                      <Tooltip label={signals.join(' · ')}>
-                        <div className="flex items-center gap-2">
-                          <div className="w-12 h-1.5 rounded-full bg-bg-secondary overflow-hidden">
-                            <div
-                              className={`h-full rounded-full transition-all ${scoreBarColor(score)}`}
-                              style={{ width: `${score}%` }}
-                            />
+                {isVisible('name') && (
+                  <td className="px-6 py-3.5 text-sm font-medium text-foreground">
+                    {lead.contact_first_name} {lead.contact_last_name}
+                  </td>
+                )}
+                {isVisible('company') && (
+                  <td className="px-6 py-3.5 text-sm text-text-secondary">
+                    {lead.company_name ?? '\u2014'}
+                  </td>
+                )}
+                {isVisible('contact') && (
+                  <td className="px-6 py-3.5">
+                    <div className="text-sm text-text-secondary">{lead.contact_email ?? '\u2014'}</div>
+                    {lead.contact_phone && (
+                      <div className="text-xs text-text-muted">{lead.contact_phone}</div>
+                    )}
+                  </td>
+                )}
+                {isVisible('source') && (
+                  <td className="px-6 py-3.5">
+                    <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">
+                      {lead.source}
+                    </span>
+                  </td>
+                )}
+                {isVisible('budget') && (
+                  <td className="px-6 py-3.5 text-sm tabular-nums text-foreground">
+                    {lead.estimated_budget != null
+                      ? formatCurrency(lead.estimated_budget)
+                      : '\u2014'}
+                  </td>
+                )}
+                {isVisible('status') && (
+                  <td className="px-6 py-3.5">
+                    <StatusBadge status={lead.status} colorMap={LEAD_STATUS_COLORS} />
+                  </td>
+                )}
+                {isVisible('score') && (
+                  <td className="px-6 py-3.5">
+                    {(() => {
+                      const { score, tier, signals } = computeLeadScore(lead);
+                      return (
+                        <Tooltip label={signals.join(' · ')}>
+                          <div className="flex items-center gap-2">
+                            <div className="w-12 h-1.5 rounded-full bg-bg-secondary overflow-hidden">
+                              <div
+                                className={`h-full rounded-full transition-all ${scoreBarColor(score)}`}
+                                style={{ width: `${score}%` }}
+                              />
+                            </div>
+                            <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums ${scoreTierClasses(tier)}`}>
+                              {score}
+                            </span>
                           </div>
-                          <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums ${scoreTierClasses(tier)}`}>
-                            {score}
-                          </span>
-                        </div>
-                      </Tooltip>
-                    );
-                  })()}
-                </td>
-                <td className="px-6 py-3.5 text-sm text-text-muted">
-                  {formatDate(lead.created_at)}
-                </td>
+                        </Tooltip>
+                      );
+                    })()}
+                  </td>
+                )}
+                {isVisible('date') && (
+                  <td className="px-6 py-3.5 text-sm text-text-muted">
+                    {formatDate(lead.created_at)}
+                  </td>
+                )}
                 <td className="px-4 py-3.5">
-                  <button onClick={() => setEditingLead(lead)} title="Edit lead" className="text-text-muted hover:text-foreground transition-colors">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M11.5 1.5l3 3L5 14H2v-3L11.5 1.5z" />
-                    </svg>
-                  </button>
+                  <RowActionMenu actions={[
+                    { label: 'Edit', onClick: () => setEditingLead(lead) },
+                    { label: 'Delete', variant: 'danger', onClick: () => {
+                      void fetch(`/api/leads/${lead.id}`, { method: 'DELETE' }).then(() => router.refresh());
+                    }},
+                  ]} />
                 </td>
               </tr>
             ))}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={9} className="px-6 py-12 text-center text-sm text-text-muted">
+                <td colSpan={10} className="px-6 py-12 text-center text-sm text-text-muted">
                   No leads match your filters.
                 </td>
               </tr>
@@ -272,6 +328,7 @@ export default function LeadsTable({ leads }: { leads: Lead[] }) {
         onComplete={() => router.refresh()}
       />
 
+      {/* Lead edit modal */}
       {editingLead && (
         <LeadEditModal
           open={!!editingLead}
@@ -280,6 +337,16 @@ export default function LeadsTable({ leads }: { leads: Lead[] }) {
           lead={{ ...editingLead, contact_email: editingLead.contact_email ?? '', contact_phone: editingLead.contact_phone ?? null, message: editingLead.message ?? null }}
         />
       )}
+
+      {/* Column config */}
+      <ColumnConfigPanel
+        open={showColumnConfig}
+        onClose={() => setShowColumnConfig(false)}
+        columns={columns}
+        onColumnsChange={setColumns}
+        rowHeight={rowHeight}
+        onRowHeightChange={setRowHeight}
+      />
     </>
   );
 }

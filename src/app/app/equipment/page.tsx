@@ -1,8 +1,8 @@
-import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import EquipmentTable from '@/components/admin/equipment/EquipmentTable';
 import EquipmentHeader from '@/components/admin/equipment/EquipmentHeader';
+import EquipmentHubTabs from './EquipmentHubTabs';
 
 interface EquipmentItem {
   id: string;
@@ -67,8 +67,6 @@ export default async function EquipmentPage() {
           </p>
         </div>
         <div className="flex gap-3">
-          <Link href="/app/equipment/bundles" className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary">Bundles</Link>
-          <Link href="/app/equipment/maintenance" className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary">Maintenance</Link>
           <EquipmentHeader />
         </div>
       </div>
@@ -82,6 +80,8 @@ export default async function EquipmentPage() {
           </div>
         ))}
       </div>
+
+      <EquipmentHubTabs />
 
       <EquipmentTable equipment={equipment} />
     </>

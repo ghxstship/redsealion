@@ -3,17 +3,8 @@ import { TierGate } from '@/components/shared/TierGate';
 import { formatCurrency } from '@/lib/utils';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import Button from '@/components/ui/Button';
-import StatusBadge from '@/components/ui/StatusBadge';
-import EmptyState from '@/components/ui/EmptyState';
-import { Plus, FileText } from 'lucide-react';
-
-const PO_STATUS_COLORS: Record<string, string> = {
-  draft: 'bg-gray-100 text-gray-700',
-  sent: 'bg-blue-50 text-blue-700',
-  acknowledged: 'bg-indigo-50 text-indigo-700',
-  fulfilled: 'bg-green-50 text-green-700',
-  cancelled: 'bg-red-50 text-red-700',
-};
+import { Plus } from 'lucide-react';
+import PurchaseOrdersTableClient from '@/components/admin/finance/PurchaseOrdersTableClient';
 
 interface PoRow {
   id: string;
@@ -97,54 +88,9 @@ export default async function PurchaseOrdersPage() {
         </div>
       </div>
 
-      {orders.length === 0 ? (
-        <EmptyState
-          icon={<FileText className="h-10 w-10" />}
-          message="No purchase orders yet"
-          description="Create a purchase order to start tracking vendor procurement."
-          action={
-            <Button href="/app/finance/purchase-orders/new" size="sm">
-              <Plus className="h-3.5 w-3.5" />
-              Create PO
-            </Button>
-          }
-        />
-      ) : (
-        <div className="rounded-xl border border-border bg-white overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border bg-bg-secondary">
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">PO #</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Vendor</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Project</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Amount</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Due</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {orders.map((po) => (
-                  <tr key={po.id} className="transition-colors hover:bg-bg-secondary/50">
-                    <td className="px-6 py-3.5 text-sm font-medium text-foreground">{po.poNumber}</td>
-                    <td className="px-6 py-3.5 text-sm text-foreground">{po.vendorName}</td>
-                    <td className="px-6 py-3.5 text-sm text-text-secondary">{po.projectName ?? '—'}</td>
-                    <td className="px-6 py-3.5">
-                      <StatusBadge status={po.status} colorMap={PO_STATUS_COLORS} />
-                    </td>
-                    <td className="px-6 py-3.5 text-right text-sm font-medium tabular-nums text-foreground">
-                      {formatCurrency(po.totalAmount)}
-                    </td>
-                    <td className="px-6 py-3.5 text-sm text-text-secondary">
-                      {po.dueDate ? new Date(po.dueDate).toLocaleDateString() : '—'}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
+      <PurchaseOrdersTableClient orders={orders} />
     </TierGate>
   );
 }
+
+

@@ -1,10 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import FormInput from '@/components/ui/FormInput';
+import { useSort } from '@/hooks/useSort';
+import SortableHeader from '@/components/shared/SortableHeader';
+import RowActionMenu from '@/components/shared/RowActionMenu';
+import SearchInput from '@/components/ui/SearchInput';
 import StatusBadge from '@/components/ui/StatusBadge';
 import EmptyState from '@/components/ui/EmptyState';
+import Tabs from '@/components/ui/Tabs';
 import { ADVANCE_STATUS_COLORS, ADVANCE_PRIORITY_COLORS, ADVANCE_MODE_COLORS } from './AdvanceStatusBadge';
 import { ADVANCE_LIST_TABS, ADVANCE_TYPE_CONFIG } from '@/lib/advances/constants';
 import { formatCents, formatAdvanceDate } from '@/lib/advances/utils';
@@ -37,47 +41,35 @@ interface AdvanceListTableProps {
 export default function AdvanceListTable({ advances, activeTab, onTabChange }: AdvanceListTableProps) {
   const [search, setSearch] = useState('');
 
-  const filtered = search
-    ? advances.filter((a) =>
-        a.advance_number.toLowerCase().includes(search.toLowerCase()) ||
-        a.event_name?.toLowerCase().includes(search.toLowerCase()) ||
-        a.venue_name?.toLowerCase().includes(search.toLowerCase())
-      )
-    : advances;
+  const filtered = useMemo(() => {
+    if (!search) return advances;
+    const q = search.toLowerCase();
+    return advances.filter((a) =>
+      a.advance_number.toLowerCase().includes(q) ||
+      a.event_name?.toLowerCase().includes(q) ||
+      a.venue_name?.toLowerCase().includes(q)
+    );
+  }, [advances, search]);
+
+  const { sorted, sort, handleSort } = useSort(filtered);
 
   return (
     <div>
       {/* Tab bar */}
-      <div className="flex items-center gap-1 border-b border-border mb-6 overflow-x-auto">
-        {ADVANCE_LIST_TABS.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => onTabChange(tab.id)}
-            className={`
-              px-4 py-2.5 text-sm font-medium whitespace-nowrap border-b-2 transition-colors
-              ${activeTab === tab.id
-                ? 'border-foreground text-foreground'
-                : 'border-transparent text-text-muted hover:text-text-secondary hover:border-border'
-              }
-            `}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
+      <Tabs
+        tabs={ADVANCE_LIST_TABS.map((tab) => ({ key: tab.id, label: tab.label }))}
+        activeTab={activeTab}
+        onTabChange={onTabChange}
+        className="mb-6"
+      />
 
       {/* Search */}
-      <div className="mb-4 max-w-sm">
-        <FormInput
-          type="text"
-          placeholder="Search advances..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+      <div className="mb-4">
+        <SearchInput value={search} onChange={setSearch} placeholder="Search advances..." />
       </div>
 
       {/* Table or empty state */}
-      {filtered.length === 0 ? (
+      {sorted.length === 0 ? (
         <EmptyState
           message={search ? 'No advances match your search.' : 'No advances yet'}
           description={search ? undefined : 'Create your first production advance to get started.'}
@@ -87,18 +79,19 @@ export default function AdvanceListTable({ advances, activeTab, onTabChange }: A
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border bg-bg-secondary/50">
-                <th className="px-4 py-3 text-left text-xs font-semibold text-text-muted uppercase tracking-wider">Advance</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-text-muted uppercase tracking-wider">Type</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-text-muted uppercase tracking-wider">Status</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-text-muted uppercase tracking-wider">Priority</th>
+                <th className="px-4 py-3"><SortableHeader label="Advance" field="advance_number" currentSort={sort} onSort={handleSort} /></th>
+                <th className="px-4 py-3"><SortableHeader label="Type" field="advance_type" currentSort={sort} onSort={handleSort} /></th>
+                <th className="px-4 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></th>
+                <th className="px-4 py-3"><SortableHeader label="Priority" field="priority" currentSort={sort} onSort={handleSort} /></th>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-text-muted uppercase tracking-wider">Event / Project</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-text-muted uppercase tracking-wider">Dates</th>
-                <th className="px-4 py-3 text-right text-xs font-semibold text-text-muted uppercase tracking-wider">Items</th>
-                <th className="px-4 py-3 text-right text-xs font-semibold text-text-muted uppercase tracking-wider">Total</th>
+                <th className="px-4 py-3"><SortableHeader label="Dates" field="service_start_date" currentSort={sort} onSort={handleSort} /></th>
+                <th className="px-4 py-3"><SortableHeader label="Items" field="line_item_count" currentSort={sort} onSort={handleSort} /></th>
+                <th className="px-4 py-3"><SortableHeader label="Total" field="total_cents" currentSort={sort} onSort={handleSort} /></th>
+                <th className="px-4 py-3 w-12"><span className="sr-only">Actions</span></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {filtered.map((advance) => (
+              {sorted.map((advance) => (
                 <tr key={advance.id} className="transition-colors hover:bg-bg-secondary/30">
                   <td className="px-4 py-3">
                     <Link href={`/app/advancing/${advance.id}`} className="group flex flex-col">
@@ -129,6 +122,11 @@ export default function AdvanceListTable({ advances, activeTab, onTabChange }: A
                   </td>
                   <td className="px-4 py-3 text-right tabular-nums font-medium text-foreground">
                     {advance.total_cents > 0 ? formatCents(advance.total_cents) : '—'}
+                  </td>
+                  <td className="px-4 py-3">
+                    <RowActionMenu actions={[
+                      { label: 'View', onClick: () => { /* navigation handled by link */ } },
+                    ]} />
                   </td>
                 </tr>
               ))}

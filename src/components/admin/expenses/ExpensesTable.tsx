@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { formatCurrency, formatLabel, statusColor } from '@/lib/utils';
 import { useSelection } from '@/hooks/useSelection';
@@ -10,8 +9,12 @@ import BulkActionBar from '@/components/shared/BulkActionBar';
 import DataExportMenu from '@/components/shared/DataExportMenu';
 import DataImportDialog from '@/components/shared/DataImportDialog';
 import SortableHeader from '@/components/shared/SortableHeader';
+import RowActionMenu from '@/components/shared/RowActionMenu';
 import FormSelect from '@/components/ui/FormSelect';
-import FormInput from '@/components/ui/FormInput';
+import SearchInput from '@/components/ui/SearchInput';
+import Button from '@/components/ui/Button';
+import ActiveFilterBadge from '@/components/shared/ActiveFilterBadge';
+import { Upload } from 'lucide-react';
 
 interface ExpenseRow {
   id: string;
@@ -22,11 +25,7 @@ interface ExpenseRow {
   status: string;
 }
 
-
-
 const statusFilters = ['all', 'pending', 'approved', 'rejected'] as const;
-
-
 
 export default function ExpensesTable({ expenses }: { expenses: ExpenseRow[] }) {
   const router = useRouter();
@@ -52,6 +51,8 @@ export default function ExpensesTable({ expenses }: { expenses: ExpenseRow[] }) 
   const allIds = useMemo(() => sorted.map((e) => e.id), [sorted]);
   const { selectedIds, isSelected, toggle, toggleAll, isAllSelected, isSomeSelected, deselectAll, count } = useSelection(allIds);
 
+  const activeFilterCount = (statusFilter !== 'all' ? 1 : 0);
+
   async function handleBulkDelete(ids: string[]) {
     await Promise.all(ids.map((id) => fetch(`/api/expenses/${id}`, { method: 'DELETE' })));
     router.refresh();
@@ -70,17 +71,14 @@ export default function ExpensesTable({ expenses }: { expenses: ExpenseRow[] }) 
               <option key={s} value={s}>{s === 'all' ? 'All Status' : formatLabel(s)}</option>
             ))}
           </FormSelect>
+          <ActiveFilterBadge count={activeFilterCount} onClearAll={() => setStatusFilter('all')} />
         </div>
         <div className="flex items-center gap-3">
-          <FormInput
-            type="text"
-            placeholder="Search expenses..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)} />
-          <button onClick={() => setShowImport(true)} className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M7 2v10M3 8l4 4 4-4" /></svg>
+          <SearchInput value={search} onChange={setSearch} placeholder="Search expenses..." />
+          <Button variant="secondary" size="sm" onClick={() => setShowImport(true)}>
+            <Upload size={14} />
             Import
-          </button>
+          </Button>
           <DataExportMenu data={sorted} entityKey="expenses" filename="expenses-export" entityType="Expenses" />
         </div>
       </div>
@@ -112,6 +110,7 @@ export default function ExpensesTable({ expenses }: { expenses: ExpenseRow[] }) 
                 <th className="px-6 py-3"><SortableHeader label="Description" field="description" currentSort={sort} onSort={handleSort} /></th>
                 <th className="px-6 py-3"><SortableHeader label="Amount" field="amount" currentSort={sort} onSort={handleSort} /></th>
                 <th className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></th>
+                <th className="px-6 py-3 w-12"><span className="sr-only">Actions</span></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -127,10 +126,17 @@ export default function ExpensesTable({ expenses }: { expenses: ExpenseRow[] }) 
                   <td className="px-6 py-3.5">
                     <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColor(exp.status)}`}>{formatLabel(exp.status)}</span>
                   </td>
+                  <td className="px-6 py-3.5">
+                    <RowActionMenu actions={[
+                      { label: 'Delete', variant: 'danger', onClick: () => {
+                        void fetch(`/api/expenses/${exp.id}`, { method: 'DELETE' }).then(() => router.refresh());
+                      }},
+                    ]} />
+                  </td>
                 </tr>
               ))}
               {sorted.length === 0 && (
-                <tr><td colSpan={6} className="px-6 py-12 text-center text-sm text-text-muted">No expenses match your filters.</td></tr>
+                <tr><td colSpan={7} className="px-6 py-12 text-center text-sm text-text-muted">No expenses match your filters.</td></tr>
               )}
             </tbody>
           </table>

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import WarehouseHubTabs from './WarehouseHubTabs';
 
 interface WarehouseAsset {
   id: string;
@@ -122,26 +123,6 @@ export default async function WarehousePage() {
             {facilities.length} facilities &middot; {assets.length} asset types tracked
           </p>
         </div>
-        <div className="flex gap-3">
-          <Link
-            href="/app/warehouse/scan"
-            className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
-          >
-            Scan Equipment
-          </Link>
-          <Link
-            href="/app/warehouse/transfers"
-            className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
-          >
-            Transfers
-          </Link>
-          <Link
-            href="/app/warehouse/packing"
-            className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
-          >
-            Packing Lists
-          </Link>
-        </div>
       </div>
 
       {/* Facility summary cards */}
@@ -160,6 +141,8 @@ export default async function WarehousePage() {
           </div>
         ))}
       </div>
+
+      <WarehouseHubTabs />
 
       {/* Assets grouped by location */}
       <div className="space-y-6">

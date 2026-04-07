@@ -6,6 +6,7 @@ import { formatCurrency, statusColor } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/client';
 import ShareDialog from '@/components/shared/ShareDialog';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
+import Tabs from '@/components/ui/Tabs';
 import {
   detailTabs,
   formatStatus,
@@ -162,23 +163,7 @@ export default function ProposalDetailPage({
       </div>
 
       {/* Tabs */}
-      <div className="mb-8 border-b border-border">
-        <nav className="-mb-px flex gap-6">
-          {detailTabs.map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`pb-3 text-sm font-medium transition-colors border-b-2 ${
-                activeTab === tab.key
-                  ? 'border-foreground text-foreground'
-                  : 'border-transparent text-text-muted hover:text-text-secondary hover:border-border'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </nav>
-      </div>
+      <Tabs tabs={detailTabs} activeTab={activeTab} onTabChange={setActiveTab} className="mb-8" />
 
       {/* Tab content */}
       {activeTab === 'overview' && (

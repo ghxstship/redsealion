@@ -2,6 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
+import ViewTypeSwitcher, { getPersistedView } from '@/components/shared/ViewTypeSwitcher';
+import { CalendarDays, CalendarRange } from 'lucide-react';
+
+const PERSIST_KEY = 'flytedeck:view:calendar';
 interface CalendarEvent {
   id: string;
   title: string;
@@ -40,7 +44,9 @@ function getCalendarDays(year: number, month: number): (number | null)[] {
 
 export default function CalendarPage() {
   const [currentDate, setCurrentDate] = useState(() => new Date());
-  const [view, setView] = useState<'month' | 'week'>('month');
+  const [view, setView] = useState<'month' | 'week'>(() =>
+    getPersistedView(PERSIST_KEY, ['month', 'week'], 'month') as 'month' | 'week',
+  );
   const [events, setEvents] = useState<CalendarEvent[]>([]);
 
   // Fetch events from Supabase
@@ -171,28 +177,15 @@ export default function CalendarPage() {
             Org-wide view of proposals, activations, and crew bookings.
           </p>
         </div>
-        <div className="flex gap-2">
-          <button
-            onClick={() => setView('month')}
-            className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
-              view === 'month'
-                ? 'border-foreground bg-foreground text-white'
-                : 'border-border bg-white text-foreground hover:bg-bg-secondary'
-            }`}
-          >
-            Month
-          </button>
-          <button
-            onClick={() => setView('week')}
-            className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
-              view === 'week'
-                ? 'border-foreground bg-foreground text-white'
-                : 'border-border bg-white text-foreground hover:bg-bg-secondary'
-            }`}
-          >
-            Week
-          </button>
-        </div>
+        <ViewTypeSwitcher
+          views={[
+            { key: 'month', label: 'Month', icon: <CalendarDays size={13} /> },
+            { key: 'week', label: 'Week', icon: <CalendarRange size={13} /> },
+          ]}
+          activeView={view}
+          onSwitch={(key) => setView(key as 'month' | 'week')}
+          persistKey={PERSIST_KEY}
+        />
       </div>
 
       {/* Navigation */}

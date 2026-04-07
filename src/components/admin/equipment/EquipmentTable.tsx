@@ -10,9 +10,16 @@ import DataImportDialog from '@/components/shared/DataImportDialog';
 import SortableHeader from '@/components/shared/SortableHeader';
 import BulkActionBar from '@/components/shared/BulkActionBar';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
+import RowActionMenu from '@/components/shared/RowActionMenu';
 import { formatLabel } from '@/lib/utils';
 import StatusBadge, { EQUIPMENT_STATUS_COLORS } from '@/components/ui/StatusBadge';
-import FormInput from '@/components/ui/FormInput';
+import SearchInput from '@/components/ui/SearchInput';
+import Button from '@/components/ui/Button';
+import { Upload, Settings } from 'lucide-react';
+import { useEntityViews } from '@/hooks/useEntityViews';
+import { useStoredColumnConfig } from '@/hooks/useStoredColumnConfig';
+import ViewBar from '@/components/shared/ViewBar';
+import ColumnConfigPanel from '@/components/shared/ColumnConfigPanel';
 
 interface EquipmentItem {
   id: string;
@@ -24,17 +31,42 @@ interface EquipmentItem {
   reservation_count: number;
 }
 
-
-
-
-
-
-
 export default function EquipmentTable({ equipment }: { equipment: EquipmentItem[] }) {
   const router = useRouter();
   const [search, setSearch] = useState('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
   const [showImport, setShowImport] = useState(false);
+  const [showColumnConfig, setShowColumnConfig] = useState(false);
+
+  const {
+    views,
+    activeView,
+    activeViewId,
+    setActiveViewId,
+    createView,
+    updateView,
+    deleteView,
+    duplicateView,
+  } = useEntityViews({ entityType: 'equipment' });
+
+  const {
+    columns,
+    isVisible,
+    rowHeight,
+    setColumns,
+    setRowHeight,
+  } = useStoredColumnConfig({
+    baseColumns: [
+      { key: 'name', label: 'Name' },
+      { key: 'category', label: 'Category' },
+      { key: 'status', label: 'Status' },
+      { key: 'current_location', label: 'Location' },
+      { key: 'serial_number', label: 'Serial #' },
+      { key: 'reservation_count', label: 'Reservations' },
+    ],
+    activeView,
+    onUpdateView: updateView,
+  });
 
   const filtered = useMemo(() => {
     if (!search) return equipment;
@@ -66,23 +98,25 @@ export default function EquipmentTable({ equipment }: { equipment: EquipmentItem
 
   return (
     <>
+      <ViewBar
+        views={views}
+        activeViewId={activeViewId}
+        onSelectView={setActiveViewId}
+        onCreateView={(name) => createView({ name })}
+        onDeleteView={deleteView}
+        onDuplicateView={duplicateView}
+      />
       {/* Search + Export */}
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-2">
-          {search && (
-            <button onClick={() => setSearch('')} className="text-xs font-medium text-text-muted hover:text-foreground transition-colors">Clear search</button>
-          )}
-        </div>
+        <SearchInput value={search} onChange={setSearch} placeholder="Search equipment..." />
         <div className="flex items-center gap-3">
-          <FormInput
-            type="text"
-            placeholder="Search equipment..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)} />
-          <button onClick={() => setShowImport(true)} className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M7 2v10M3 8l4 4 4-4" /></svg>
+          <Button variant="ghost" size="sm" onClick={() => setShowColumnConfig(true)} title="Column Settings">
+            <Settings size={14} />
+          </Button>
+          <Button variant="secondary" size="sm" onClick={() => setShowImport(true)}>
+            <Upload size={14} />
             Import
-          </button>
+          </Button>
           <DataExportMenu data={sorted} entityKey="equipment" filename="equipment-export" entityType="Equipment" />
         </div>
       </div>
@@ -107,20 +141,14 @@ export default function EquipmentTable({ equipment }: { equipment: EquipmentItem
           <thead>
             <tr className="border-b border-border bg-bg-secondary">
               <th className="px-4 py-3 text-left w-10">
-                <input
-                  type="checkbox"
-                  checked={isAllSelected}
-                  ref={(el) => { if (el) el.indeterminate = isSomeSelected; }}
-                  onChange={toggleAll}
-                  className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10"
-                />
+                <input type="checkbox" checked={isAllSelected} ref={(el) => { if (el) el.indeterminate = isSomeSelected; }} onChange={toggleAll} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
               </th>
-              <th className="px-6 py-3"><SortableHeader label="Name" field="name" currentSort={sort} onSort={handleSort} /></th>
-              <th className="px-6 py-3"><SortableHeader label="Category" field="category" currentSort={sort} onSort={handleSort} /></th>
-              <th className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></th>
-              <th className="px-6 py-3"><SortableHeader label="Location" field="current_location" currentSort={sort} onSort={handleSort} /></th>
-              <th className="px-6 py-3"><SortableHeader label="Serial #" field="serial_number" currentSort={sort} onSort={handleSort} /></th>
-              <th className="px-6 py-3"><SortableHeader label="Reservations" field="reservation_count" currentSort={sort} onSort={handleSort} /></th>
+              {isVisible('name') && <th className="px-6 py-3"><SortableHeader label="Name" field="name" currentSort={sort} onSort={handleSort} /></th>}
+              {isVisible('category') && <th className="px-6 py-3"><SortableHeader label="Category" field="category" currentSort={sort} onSort={handleSort} /></th>}
+              {isVisible('status') && <th className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></th>}
+              {isVisible('current_location') && <th className="px-6 py-3"><SortableHeader label="Location" field="current_location" currentSort={sort} onSort={handleSort} /></th>}
+              {isVisible('serial_number') && <th className="px-6 py-3"><SortableHeader label="Serial #" field="serial_number" currentSort={sort} onSort={handleSort} /></th>}
+              {isVisible('reservation_count') && <th className="px-6 py-3"><SortableHeader label="Reservations" field="reservation_count" currentSort={sort} onSort={handleSort} /></th>}
               <th className="px-6 py-3 w-12"><span className="sr-only">Actions</span></th>
             </tr>
           </thead>
@@ -130,22 +158,29 @@ export default function EquipmentTable({ equipment }: { equipment: EquipmentItem
                 <td className="px-4 py-3.5">
                   <input type="checkbox" checked={isSelected(item.id)} onChange={() => toggle(item.id)} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
                 </td>
+                {isVisible('name') && (
+                  <td className="px-6 py-3.5">
+                    <Link href={`/app/equipment/${item.id}`} className="text-sm font-medium text-foreground hover:underline">{item.name}</Link>
+                  </td>
+                )}
+                {isVisible('category') && (
+                  <td className="px-6 py-3.5">
+                    <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">{item.category}</span>
+                  </td>
+                )}
+                {isVisible('status') && (
+                  <td className="px-6 py-3.5">
+                    <StatusBadge status={item.status} colorMap={EQUIPMENT_STATUS_COLORS} />
+                  </td>
+                )}
+                {isVisible('current_location') && <td className="px-6 py-3.5 text-sm text-text-secondary">{item.current_location}</td>}
+                {isVisible('serial_number') && <td className="px-6 py-3.5 text-sm tabular-nums text-text-muted">{item.serial_number ?? '\u2014'}</td>}
+                {isVisible('reservation_count') && <td className="px-6 py-3.5 text-sm tabular-nums text-foreground">{item.reservation_count}</td>}
                 <td className="px-6 py-3.5">
-                  <Link href={`/app/equipment/${item.id}`} className="text-sm font-medium text-foreground hover:underline">{item.name}</Link>
-                </td>
-                <td className="px-6 py-3.5">
-                  <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">{item.category}</span>
-                </td>
-                <td className="px-6 py-3.5">
-                  <StatusBadge status={item.status} colorMap={EQUIPMENT_STATUS_COLORS} />
-                </td>
-                <td className="px-6 py-3.5 text-sm text-text-secondary">{item.current_location}</td>
-                <td className="px-6 py-3.5 text-sm tabular-nums text-text-muted">{item.serial_number ?? '\u2014'}</td>
-                <td className="px-6 py-3.5 text-sm tabular-nums text-foreground">{item.reservation_count}</td>
-                <td className="px-6 py-3.5">
-                  <button onClick={() => setShowDeleteConfirm(item.id)} className="text-text-muted hover:text-red-600 transition-colors" title="Delete">
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M2 4h10M5 4V3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1M9 4v7a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4" /></svg>
-                  </button>
+                  <RowActionMenu actions={[
+                    { label: 'View', onClick: () => router.push(`/app/equipment/${item.id}`) },
+                    { label: 'Delete', variant: 'danger', onClick: () => setShowDeleteConfirm(item.id) },
+                  ]} />
                 </td>
               </tr>
             ))}
@@ -157,24 +192,18 @@ export default function EquipmentTable({ equipment }: { equipment: EquipmentItem
       </div>
 
       {showDeleteConfirm && (
-        <ConfirmDialog
-          open
-          title="Delete Equipment"
-          message="Are you sure you want to delete this equipment item? This cannot be undone."
-          confirmLabel="Delete"
-          variant="danger"
-          onConfirm={() => handleDelete(showDeleteConfirm)}
-          onCancel={() => setShowDeleteConfirm(null)}
-        />
+        <ConfirmDialog open title="Delete Equipment" message="Are you sure you want to delete this equipment item? This cannot be undone." confirmLabel="Delete" variant="danger" onConfirm={() => handleDelete(showDeleteConfirm)} onCancel={() => setShowDeleteConfirm(null)} />
       )}
 
-      <DataImportDialog
-        open={showImport}
-        onClose={() => setShowImport(false)}
-        entityType="Equipment"
-        entityKey="equipment"
-        apiEndpoint="/api/assets"
-        onComplete={() => router.refresh()}
+      <DataImportDialog open={showImport} onClose={() => setShowImport(false)} entityType="Equipment" entityKey="equipment" apiEndpoint="/api/assets" onComplete={() => router.refresh()} />
+
+      <ColumnConfigPanel
+        open={showColumnConfig}
+        onClose={() => setShowColumnConfig(false)}
+        columns={columns}
+        onColumnsChange={setColumns}
+        rowHeight={rowHeight}
+        onRowHeightChange={setRowHeight}
       />
     </>
   );

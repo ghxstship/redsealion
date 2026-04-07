@@ -5,6 +5,7 @@ import ProposalCard from '@/components/admin/ProposalCard';
 import ProposalFilters, { type FilterValues } from '@/components/admin/ProposalFilters';
 import PageHeader from '@/components/shared/PageHeader';
 import Button from '@/components/ui/Button';
+import Tabs from '@/components/ui/Tabs';
 import { formatCurrency } from '@/lib/utils';
 import type { Proposal, Client, ProposalStatus } from '@/types/database';
 import { IconPlus } from '@/components/ui/Icons';
@@ -18,7 +19,7 @@ const TAB_STATUSES: Record<Tab, ProposalStatus[] | null> = {
   archive: ['complete', 'cancelled'],
 };
 
-const tabs: { key: Tab; label: string }[] = [
+const TAB_ITEMS: { key: Tab; label: string }[] = [
   { key: 'all', label: 'All' },
   { key: 'active', label: 'Active' },
   { key: 'pipeline', label: 'Pipeline' },
@@ -102,23 +103,7 @@ export default function ProposalsClient({
         </Button>
       </PageHeader>
 
-      <div className="mb-6 border-b border-border">
-        <nav className="-mb-px flex gap-6">
-          {tabs.map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`pb-3 text-sm font-medium transition-colors border-b-2 ${
-                activeTab === tab.key
-                  ? 'border-foreground text-foreground'
-                  : 'border-transparent text-text-muted hover:text-text-secondary hover:border-border'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </nav>
-      </div>
+      <Tabs tabs={TAB_ITEMS} activeTab={activeTab} onTabChange={setActiveTab} className="mb-6" />
 
       <div className="mb-6">
         <ProposalFilters onFilterChange={setFilters} />

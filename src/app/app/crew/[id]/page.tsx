@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import ComplianceDocumentsPanel from '@/components/admin/crew/ComplianceDocumentsPanel';
 import CrewRatingsPanel from '@/components/admin/crew/CrewRatingsPanel';
+import CrewDetailTabs from './CrewDetailTabs';
 
 interface CrewDetail {
   full_name: string;
@@ -135,12 +136,119 @@ export default async function CrewMemberPage({
   const { id } = await params;
   const member = await getCrewMember(id);
 
+  /* ── Pre-render tab panels ── */
+
+  const profileContent = (
+    <div className="space-y-6">
+      {/* Bio */}
+      {member.bio && (
+        <div className="rounded-xl border border-border bg-white p-6">
+          <h2 className="text-sm font-semibold text-foreground mb-3">Bio</h2>
+          <p className="text-sm text-text-secondary">{member.bio}</p>
+        </div>
+      )}
+
+      {/* Skills */}
+      <div className="rounded-xl border border-border bg-white p-6">
+        <h2 className="text-sm font-semibold text-foreground mb-4">Skills</h2>
+        <div className="flex flex-wrap gap-2">
+          {member.skills.map((skill) => (
+            <span
+              key={skill}
+              className="inline-flex items-center rounded-full bg-bg-secondary px-3 py-1 text-xs font-medium text-text-secondary"
+            >
+              {skill}
+            </span>
+          ))}
+          {member.skills.length === 0 && (
+            <p className="text-sm text-text-muted">No skills listed.</p>
+          )}
+        </div>
+      </div>
+
+      {/* Certifications */}
+      <div className="rounded-xl border border-border bg-white p-6">
+        <h2 className="text-sm font-semibold text-foreground mb-4">Certifications</h2>
+        <div className="flex flex-wrap gap-2">
+          {member.certifications.map((cert) => (
+            <span
+              key={cert}
+              className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700"
+            >
+              {cert}
+            </span>
+          ))}
+          {member.certifications.length === 0 && (
+            <p className="text-sm text-text-muted">No certifications listed.</p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
+  const bookingsContent = (
+    <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="px-6 py-4 border-b border-border">
+        <h2 className="text-sm font-semibold text-foreground">Recent Bookings</h2>
+      </div>
+      {member.bookings.length > 0 ? (
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-border bg-bg-secondary">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Project</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Venue</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Date</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {member.bookings.map((booking) => (
+                <tr key={booking.id} className="transition-colors hover:bg-bg-secondary/50">
+                  <td className="px-6 py-3.5 text-sm font-medium text-foreground">{booking.project_name}</td>
+                  <td className="px-6 py-3.5 text-sm text-text-secondary">{booking.venue}</td>
+                  <td className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(booking.date)}</td>
+                  <td className="px-6 py-3.5">
+                    <span
+                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                        BOOKING_STATUS_COLORS[booking.status] ?? 'bg-gray-100 text-gray-600'
+                      }`}
+                    >
+                      {formatLabel(booking.status)}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="px-6 py-12 text-center text-sm text-text-muted">
+          No bookings yet.
+        </div>
+      )}
+    </div>
+  );
+
+  const complianceContent = (
+    <div className="space-y-6">
+      <ComplianceDocumentsPanel crewId={id} />
+      <CrewRatingsPanel crewId={id} />
+    </div>
+  );
+
   return (
     <>
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+          <Link
+            href="/app/crew"
+            className="text-xs font-medium text-text-muted hover:text-foreground transition-colors"
+          >
+            &larr; Crew Directory
+          </Link>
+          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-foreground">
             {member.full_name}
           </h1>
           <p className="mt-1 text-sm text-text-secondary">{member.email}</p>
@@ -168,7 +276,7 @@ export default async function CrewMemberPage({
 
       {/* Two-column layout */}
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-        {/* Left column - Details */}
+        {/* Left column - Sidebar (always visible) */}
         <div className="lg:col-span-1 space-y-6">
           {/* Contact Info */}
           <div className="rounded-xl border border-border bg-white p-6">
@@ -226,100 +334,14 @@ export default async function CrewMemberPage({
           )}
         </div>
 
-        {/* Right column - Skills, Certifications, Bookings */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Bio */}
-          {member.bio && (
-            <div className="rounded-xl border border-border bg-white p-6">
-              <h2 className="text-sm font-semibold text-foreground mb-3">Bio</h2>
-              <p className="text-sm text-text-secondary">{member.bio}</p>
-            </div>
-          )}
-
-          {/* Skills */}
-          <div className="rounded-xl border border-border bg-white p-6">
-            <h2 className="text-sm font-semibold text-foreground mb-4">Skills</h2>
-            <div className="flex flex-wrap gap-2">
-              {member.skills.map((skill) => (
-                <span
-                  key={skill}
-                  className="inline-flex items-center rounded-full bg-bg-secondary px-3 py-1 text-xs font-medium text-text-secondary"
-                >
-                  {skill}
-                </span>
-              ))}
-              {member.skills.length === 0 && (
-                <p className="text-sm text-text-muted">No skills listed.</p>
-              )}
-            </div>
-          </div>
-
-          {/* Certifications */}
-          <div className="rounded-xl border border-border bg-white p-6">
-            <h2 className="text-sm font-semibold text-foreground mb-4">Certifications</h2>
-            <div className="flex flex-wrap gap-2">
-              {member.certifications.map((cert) => (
-                <span
-                  key={cert}
-                  className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700"
-                >
-                  {cert}
-                </span>
-              ))}
-              {member.certifications.length === 0 && (
-                <p className="text-sm text-text-muted">No certifications listed.</p>
-              )}
-            </div>
-          </div>
-
-          {/* Recent Bookings */}
-          <div className="rounded-xl border border-border bg-white overflow-hidden">
-            <div className="px-6 py-4 border-b border-border">
-              <h2 className="text-sm font-semibold text-foreground">Recent Bookings</h2>
-            </div>
-            {member.bookings.length > 0 ? (
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-border bg-bg-secondary">
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Project</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Venue</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Date</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
-                    {member.bookings.map((booking) => (
-                      <tr key={booking.id} className="transition-colors hover:bg-bg-secondary/50">
-                        <td className="px-6 py-3.5 text-sm font-medium text-foreground">{booking.project_name}</td>
-                        <td className="px-6 py-3.5 text-sm text-text-secondary">{booking.venue}</td>
-                        <td className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(booking.date)}</td>
-                        <td className="px-6 py-3.5">
-                          <span
-                            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                              BOOKING_STATUS_COLORS[booking.status] ?? 'bg-gray-100 text-gray-600'
-                            }`}
-                          >
-                            {formatLabel(booking.status)}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              <div className="px-6 py-12 text-center text-sm text-text-muted">
-                No bookings yet.
-              </div>
-            )}
-          </div>
-
-          {/* Compliance Documents */}
-          <ComplianceDocumentsPanel crewId={id} />
-
-          {/* Performance Ratings */}
-          <CrewRatingsPanel crewId={id} />
+        {/* Right column — tabbed */}
+        <div className="lg:col-span-2">
+          <CrewDetailTabs
+            bookingCount={member.bookings.length}
+            profileContent={profileContent}
+            bookingsContent={bookingsContent}
+            complianceContent={complianceContent}
+          />
         </div>
       </div>
     </>

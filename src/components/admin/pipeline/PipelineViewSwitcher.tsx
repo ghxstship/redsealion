@@ -3,19 +3,25 @@
 import { useState } from 'react';
 import PipelineBoard from './PipelineBoard';
 import PipelineTable from './PipelineTable';
+import ViewTypeSwitcher, { getPersistedView } from '@/components/shared/ViewTypeSwitcher';
 import type { Deal } from '@/types/database';
+import { Kanban, Table } from 'lucide-react';
 
 type DealWithClient = Deal & { client_name: string; owner_name: string | null };
 
-const views = [
-  { key: 'board', label: 'Board', icon: 'M2 3h20v18H2V3zM8 3v18M15 3v18' },
-  { key: 'table', label: 'Table', icon: 'M3 4h18v16H3V4zM3 8h18M3 12h18M3 16h18M9 4v16' },
+const PERSIST_KEY = 'flytedeck:view:pipeline';
+
+const PIPELINE_VIEWS = [
+  { key: 'board', label: 'Board', icon: <Kanban size={13} /> },
+  { key: 'table', label: 'Table', icon: <Table size={13} /> },
 ] as const;
 
-type ViewType = typeof views[number]['key'];
+type ViewType = typeof PIPELINE_VIEWS[number]['key'];
 
 export default function PipelineViewSwitcher({ deals }: { deals: DealWithClient[] }) {
-  const [view, setView] = useState<ViewType>('board');
+  const [view, setView] = useState<ViewType>(() =>
+    getPersistedView(PERSIST_KEY, ['board', 'table'], 'board') as ViewType,
+  );
 
   const tableDeals = deals.map((d) => ({
     id: d.id,
@@ -31,21 +37,13 @@ export default function PipelineViewSwitcher({ deals }: { deals: DealWithClient[
   return (
     <>
       {/* View toggle */}
-      <div className="mb-6 flex items-center gap-1 rounded-lg border border-border bg-bg-secondary p-1 w-fit">
-        {views.map((v) => (
-          <button
-            key={v.key}
-            onClick={() => setView(v.key)}
-            className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-              view === v.key ? 'bg-white text-foreground shadow-sm' : 'text-text-muted hover:text-foreground'
-            }`}
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d={v.icon} />
-            </svg>
-            {v.label}
-          </button>
-        ))}
+      <div className="mb-6">
+        <ViewTypeSwitcher
+          views={[...PIPELINE_VIEWS]}
+          activeView={view}
+          onSwitch={(key) => setView(key as ViewType)}
+          persistKey={PERSIST_KEY}
+        />
       </div>
 
       {view === 'board' ? (

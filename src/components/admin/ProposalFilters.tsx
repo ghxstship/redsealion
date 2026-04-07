@@ -3,7 +3,8 @@
 import { useState, useCallback } from 'react';
 import type { ProposalStatus } from '@/types/database';
 import FormSelect from '@/components/ui/FormSelect';
-import FormInput from '@/components/ui/FormInput';
+import SearchInput from '@/components/ui/SearchInput';
+import ActiveFilterBadge from '@/components/shared/ActiveFilterBadge';
 
 export interface FilterValues {
   status: ProposalStatus | 'all';
@@ -59,27 +60,11 @@ export default function ProposalFilters({
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
       {/* Search */}
-      <div className="relative flex-1 max-w-xs">
-        <svg
-          className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-text-muted"
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <circle cx="7" cy="7" r="5" />
-          <path d="M14 14l-3.5-3.5" />
-        </svg>
-        <FormInput
-          type="text"
-          placeholder="Search proposals..."
-          value={filters.search}
-          onChange={(e) => update({ search: e.target.value })} />
-      </div>
+      <SearchInput
+        value={filters.search}
+        onChange={(val) => update({ search: val })}
+        placeholder="Search proposals..."
+      />
 
       {/* Status dropdown */}
       <FormSelect
@@ -108,6 +93,12 @@ export default function ProposalFilters({
           </option>
         ))}
       </FormSelect>
+
+      {/* Filter Badge */}
+      <ActiveFilterBadge
+        count={(filters.status !== 'all' ? 1 : 0) + (filters.sort !== 'date' ? 1 : 0)}
+        onClearAll={() => update({ status: 'all', sort: 'date', search: '' })}
+      />
     </div>
   );
 }

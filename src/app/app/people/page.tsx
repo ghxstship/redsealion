@@ -1,8 +1,8 @@
 import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
-import Link from 'next/link';
 import PeopleHeader from '@/components/admin/people/PeopleHeader';
 import PeopleGrid from '@/components/admin/people/PeopleGrid';
+import PeopleHubTabs from './PeopleHubTabs';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 interface TeamMember {
@@ -54,11 +54,7 @@ export default async function PeoplePage() {
             {members.length} team members &middot; {roleCount} {roleCount === 1 ? 'role' : 'roles'}
           </p>
         </div>
-        <div className="flex gap-3">
-          <Link href="/app/people/time-off" className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary">Time Off</Link>
-          <Link href="/app/people/org-chart" className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary">Org Chart</Link>
-          <PeopleHeader />
-        </div>
+        <PeopleHeader />
       </div>
 
       {/* Stat cards */}
@@ -76,6 +72,8 @@ export default async function PeoplePage() {
           <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground">{members.filter((m) => m.rate_card).length}</p>
         </div>
       </div>
+
+      <PeopleHubTabs />
 
       <PeopleGrid members={members} />
     </TierGate>

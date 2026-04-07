@@ -1,9 +1,11 @@
-import Link from 'next/link';
-import { formatCurrency, statusColor } from '@/lib/utils';
+import { formatCurrency } from '@/lib/utils';
 import { TierGate } from '@/components/shared/TierGate';
 import { createClient } from '@/lib/supabase/server';
 import InvoiceTabs from '@/components/admin/invoices/InvoiceTabs';
+import InvoiceHubTabs from './InvoiceHubTabs';
+import Button from '@/components/ui/Button';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import { Plus } from 'lucide-react';
 
 interface InvoiceRow {
   id: string;
@@ -66,25 +68,13 @@ export default async function InvoicesPage() {
             {formatCurrency(invoices.reduce((s, i) => s + i.total, 0))} total
           </p>
         </div>
-        <Link
-          href="/app/invoices/new"
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-foreground/90"
-        >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-          >
-            <line x1="8" y1="2" x2="8" y2="14" />
-            <line x1="2" y1="8" x2="14" y2="8" />
-          </svg>
+        <Button href="/app/invoices/new">
+          <Plus className="h-4 w-4" />
           New Invoice
-        </Link>
+        </Button>
       </div>
+
+      <InvoiceHubTabs />
 
       <TierGate feature="invoices">
         <InvoiceTabs invoices={invoices} />

@@ -11,7 +11,12 @@ import DataImportDialog from '@/components/shared/DataImportDialog';
 import SortableHeader from '@/components/shared/SortableHeader';
 import BulkActionBar from '@/components/shared/BulkActionBar';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
-import FormInput from '@/components/ui/FormInput';
+import RowActionMenu from '@/components/shared/RowActionMenu';
+import ActiveFilterBadge from '@/components/shared/ActiveFilterBadge';
+import SearchInput from '@/components/ui/SearchInput';
+import Button from '@/components/ui/Button';
+import Tabs from '@/components/ui/Tabs';
+import { Upload } from 'lucide-react';
 
 interface AssetRow {
   id: string;
@@ -34,8 +39,6 @@ const conditionColors: Record<string, string> = {
 };
 
 const statusFilters = ['all', 'deployed', 'in_storage', 'in_production', 'in_transit', 'planned'] as const;
-
-
 
 export default function AssetsTable({ assets }: { assets: AssetRow[] }) {
   const router = useRouter();
@@ -70,42 +73,31 @@ export default function AssetsTable({ assets }: { assets: AssetRow[] }) {
     router.refresh();
   }
 
-  const activeFilterCount = (statusFilter !== 'all' ? 1 : 0) + (search ? 1 : 0);
+  const activeFilterCount = statusFilter !== 'all' ? 1 : 0;
 
   return (
     <>
-      {/* Status filters */}
+      <Tabs
+        tabs={statusFilters.map((f) => ({
+          key: f,
+          label: f === 'all' ? 'All' : formatStatus(f),
+          count: f === 'all' ? assets.length : assets.filter((a) => a.status === f).length,
+        }))}
+        activeTab={statusFilter}
+        onTabChange={setStatusFilter}
+        className="mb-6"
+      />
+
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap items-center gap-2">
-          {statusFilters.map((f) => (
-            <button
-              key={f}
-              onClick={() => setStatusFilter(f)}
-              className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors cursor-pointer ${
-                statusFilter === f
-                  ? 'bg-foreground text-white'
-                  : 'bg-bg-secondary text-text-secondary hover:bg-bg-tertiary'
-              }`}
-            >
-              {f === 'all' ? 'All' : formatStatus(f)}
-            </button>
-          ))}
-          {activeFilterCount > 0 && (
-            <button onClick={() => { setStatusFilter('all'); setSearch(''); }} className="text-xs font-medium text-text-muted hover:text-foreground transition-colors">
-              Clear filters
-            </button>
-          )}
+          <ActiveFilterBadge count={activeFilterCount} onClearAll={() => { setStatusFilter('all'); setSearch(''); }} />
         </div>
         <div className="flex items-center gap-3">
-          <FormInput
-            type="text"
-            placeholder="Search assets..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)} />
-          <button onClick={() => setShowImport(true)} className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M7 2v10M3 8l4 4 4-4" /></svg>
+          <SearchInput value={search} onChange={setSearch} placeholder="Search assets..." />
+          <Button variant="secondary" size="sm" onClick={() => setShowImport(true)}>
+            <Upload size={14} />
             Import
-          </button>
+          </Button>
           <DataExportMenu data={sorted} entityKey="assets" filename="assets-export" entityType="Assets" />
         </div>
       </div>
@@ -137,13 +129,7 @@ export default function AssetsTable({ assets }: { assets: AssetRow[] }) {
               <thead>
                 <tr className="border-b border-border bg-bg-secondary">
                   <th className="px-4 py-3 text-left w-10">
-                    <input
-                      type="checkbox"
-                      checked={isAllSelected}
-                      ref={(el) => { if (el) el.indeterminate = isSomeSelected; }}
-                      onChange={toggleAll}
-                      className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10"
-                    />
+                    <input type="checkbox" checked={isAllSelected} ref={(el) => { if (el) el.indeterminate = isSomeSelected; }} onChange={toggleAll} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
                   </th>
                   <th className="px-6 py-3"><SortableHeader label="Name" field="name" currentSort={sort} onSort={handleSort} /></th>
                   <th className="px-6 py-3"><SortableHeader label="Type" field="type" currentSort={sort} onSort={handleSort} /></th>
@@ -173,9 +159,10 @@ export default function AssetsTable({ assets }: { assets: AssetRow[] }) {
                     <td className="px-6 py-3.5 text-sm text-text-secondary">{asset.location_name ?? '\u2014'}</td>
                     <td className="px-6 py-3.5 text-right text-sm font-medium tabular-nums text-foreground">{formatCurrency(asset.current_value ?? 0)}</td>
                     <td className="px-6 py-3.5">
-                      <button onClick={() => setShowDeleteConfirm(asset.id)} className="text-text-muted hover:text-red-600 transition-colors" title="Delete">
-                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M2 4h10M5 4V3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1M9 4v7a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4" /></svg>
-                      </button>
+                      <RowActionMenu actions={[
+                        { label: 'View', onClick: () => router.push(`/app/assets/${asset.id}`) },
+                        { label: 'Delete', variant: 'danger', onClick: () => setShowDeleteConfirm(asset.id) },
+                      ]} />
                     </td>
                   </tr>
                 ))}
@@ -186,25 +173,10 @@ export default function AssetsTable({ assets }: { assets: AssetRow[] }) {
       )}
 
       {showDeleteConfirm && (
-        <ConfirmDialog
-          open
-          title="Delete Asset"
-          message="Are you sure you want to delete this asset? This action cannot be undone."
-          confirmLabel="Delete"
-          variant="danger"
-          onConfirm={() => handleDelete(showDeleteConfirm)}
-          onCancel={() => setShowDeleteConfirm(null)}
-        />
+        <ConfirmDialog open title="Delete Asset" message="Are you sure you want to delete this asset? This action cannot be undone." confirmLabel="Delete" variant="danger" onConfirm={() => handleDelete(showDeleteConfirm)} onCancel={() => setShowDeleteConfirm(null)} />
       )}
 
-      <DataImportDialog
-        open={showImport}
-        onClose={() => setShowImport(false)}
-        entityType="Assets"
-        entityKey="assets"
-        apiEndpoint="/api/assets"
-        onComplete={() => router.refresh()}
-      />
+      <DataImportDialog open={showImport} onClose={() => setShowImport(false)} entityType="Assets" entityKey="assets" apiEndpoint="/api/assets" onComplete={() => router.refresh()} />
     </>
   );
 }
