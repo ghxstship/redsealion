@@ -30,6 +30,15 @@ interface ClientRow {
   last_activity: string;
 }
 
+const BASE_COLUMNS = [
+  { key: 'company_name', label: 'Company' },
+  { key: 'industry', label: 'Industry' },
+  { key: 'tags', label: 'Tags' },
+  { key: 'proposals', label: 'Proposals' },
+  { key: 'total_value', label: 'Total Value' },
+  { key: 'last_activity', label: 'Last Activity' },
+];
+
 export default function ClientsTable({ clients }: { clients: ClientRow[] }) {
   const router = useRouter();
   const [search, setSearch] = useState('');
@@ -55,14 +64,7 @@ export default function ClientsTable({ clients }: { clients: ClientRow[] }) {
     setColumns,
     setRowHeight,
   } = useStoredColumnConfig({
-    baseColumns: [
-      { key: 'company_name', label: 'Company' },
-      { key: 'industry', label: 'Industry' },
-      { key: 'tags', label: 'Tags' },
-      { key: 'proposals', label: 'Proposals' },
-      { key: 'total_value', label: 'Total Value' },
-      { key: 'last_activity', label: 'Last Activity' },
-    ],
+    baseColumns: BASE_COLUMNS,
     activeView,
     onUpdateView: updateView,
   });

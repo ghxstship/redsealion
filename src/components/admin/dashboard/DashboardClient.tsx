@@ -86,7 +86,7 @@ export default function DashboardClient({ stats, cards }: DashboardClientProps) 
             action={
               <Link
                 href="/app/proposals/new"
-                className="inline-flex items-center gap-2 rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors duration-fast hover:bg-foreground/90"
+                className="inline-flex items-center gap-2 rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-background transition-colors duration-fast hover:bg-foreground/90"
               >
                 {t('dashboard.createProposal')}
               </Link>

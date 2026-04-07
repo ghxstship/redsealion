@@ -107,7 +107,7 @@ export default function UserMenu({ fullName, email, role, avatarUrl }: UserMenuP
             className="h-8 w-8 rounded-full object-cover ring-1 ring-border/60"
           />
         ) : (
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-foreground text-[11px] font-semibold text-white ring-1 ring-foreground/20">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-foreground text-[11px] font-semibold text-background ring-1 ring-foreground/20">
             {initials}
           </div>
         )}
@@ -119,7 +119,7 @@ export default function UserMenu({ fullName, email, role, avatarUrl }: UserMenuP
           id="user-menu-dropdown"
           role="menu"
           aria-labelledby="user-menu-trigger"
-          className="absolute right-0 top-full mt-2 w-64 rounded-xl border border-border bg-white shadow-lg animate-scale-in overflow-hidden z-50"
+          className="absolute right-0 top-full mt-2 w-64 rounded-xl border border-border bg-background shadow-lg animate-scale-in overflow-hidden z-50"
         >
           {/* Identity header */}
           <div className="px-4 py-3.5 border-b border-border">
@@ -131,7 +131,7 @@ export default function UserMenu({ fullName, email, role, avatarUrl }: UserMenuP
                   className="h-10 w-10 rounded-full object-cover ring-1 ring-border/60"
                 />
               ) : (
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-foreground text-xs font-semibold text-white">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-foreground text-xs font-semibold text-background">
                   {initials}
                 </div>
               )}
@@ -166,7 +166,7 @@ export default function UserMenu({ fullName, email, role, avatarUrl }: UserMenuP
             <button
               onClick={handleSignOut}
               role="menuitem"
-              className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 transition-colors hover:bg-red-50"
+              className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 transition-colors hover:bg-red-500/10"
               id="sign-out-button"
             >
               <SignOutIcon />

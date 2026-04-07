@@ -98,7 +98,17 @@
     "reports": "Reports",
     "automations": "Automations",
     "integrations": "Integrations",
-    "terms": "Terms"
+    "terms": "Terms",
+    "projects": "Projects",
+    "productions": "Productions",
+    "schedule": "Schedule",
+    "goals": "Goals",
+    "roadmap": "Roadmap",
+    "financeHub": "Finance",
+    "logistics": "Logistics",
+    "fabrication": "Fabrication",
+    "procurement": "Procurement",
+    "rentals": "Rentals"
   },
   "header": {
     "search": "Search…",

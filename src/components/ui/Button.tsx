@@ -18,8 +18,8 @@ type ButtonAsLinkProps = ButtonBaseProps & AnchorHTMLAttributes<HTMLAnchorElemen
 type ButtonProps = ButtonAsButtonProps | ButtonAsLinkProps;
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
-  primary: 'bg-foreground text-white hover:bg-foreground/90',
-  secondary: 'border border-border bg-white text-foreground hover:bg-bg-secondary',
+  primary: 'bg-foreground text-background hover:bg-foreground/90',
+  secondary: 'border border-border bg-background text-foreground hover:bg-bg-secondary',
   danger: 'bg-red-600 text-white hover:bg-red-700',
   ghost: 'text-text-muted hover:text-foreground hover:bg-bg-secondary',
 };

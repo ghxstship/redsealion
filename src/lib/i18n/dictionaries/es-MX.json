@@ -98,7 +98,17 @@
     "reports": "Reportes",
     "automations": "Automatizaciones",
     "integrations": "Integraciones",
-    "terms": "Términos"
+    "terms": "Términos",
+    "projects": "Proyectos",
+    "productions": "Producciones",
+    "schedule": "Horario",
+    "goals": "Objetivos",
+    "roadmap": "Hoja de ruta",
+    "financeHub": "Finanzas",
+    "logistics": "Logística",
+    "fabrication": "Fabricación",
+    "procurement": "Adquisiciones",
+    "rentals": "Alquileres"
   },
   "header": {
     "search": "Buscar…",

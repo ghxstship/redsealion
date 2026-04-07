@@ -27,10 +27,13 @@ export function useStoredColumnConfig({
 
   // Sync from active view when it changes (render-time pattern avoids set-state-in-effect)
   const [prevView, setPrevView] = useState(activeView);
-  const [prevBase, setPrevBase] = useState(baseColumns);
-  if (activeView !== prevView || baseColumns !== prevBase) {
+  const [prevBaseStr, setPrevBaseStr] = useState(JSON.stringify(baseColumns));
+  
+  const currentBaseStr = JSON.stringify(baseColumns);
+  
+  if (activeView !== prevView || currentBaseStr !== prevBaseStr) {
     setPrevView(activeView);
-    setPrevBase(baseColumns);
+    setPrevBaseStr(currentBaseStr);
     if (activeView) {
       const config = activeView.config || {};
       const { fieldVisibility, fieldOrder, pinnedColumns, rowHeight: viewRowHeight } = config;
