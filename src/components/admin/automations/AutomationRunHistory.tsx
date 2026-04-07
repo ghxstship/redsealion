@@ -8,6 +8,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { Activity, CheckCircle2, XCircle, Clock } from 'lucide-react';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface RunEntry {
   id: string;
@@ -80,10 +81,7 @@ export default function AutomationRunHistory({
         {loading ? (
           <div className="px-5 py-6 text-center text-xs text-text-muted">Loading…</div>
         ) : runs.length === 0 ? (
-          <div className="px-5 py-6 text-center">
-            <Activity size={20} className="mx-auto text-text-muted/50 mb-1" />
-            <p className="text-xs text-text-muted">No automation runs yet.</p>
-          </div>
+          <EmptyState message="No automation runs yet" className="border-0 shadow-none px-2 py-8" />
         ) : (
           runs.map((run) => (
             <div key={run.id} className="flex items-center gap-3 px-5 py-3">

@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface AuditEntry {
   id: string;
@@ -77,9 +78,7 @@ export default async function AuditLogPage() {
       </div>
 
       {entries.length === 0 ? (
-        <div className="rounded-xl border border-border bg-white px-8 py-16 text-center">
-          <p className="text-sm text-text-secondary">No audit log entries recorded yet.</p>
-        </div>
+        <EmptyState message="No audit logs recorded yet" />
       ) : (
         <div className="rounded-xl border border-border bg-white overflow-hidden">
           <div className="overflow-x-auto">

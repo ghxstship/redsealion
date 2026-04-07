@@ -3,6 +3,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import PeopleHeader from '@/components/admin/people/PeopleHeader';
 import PeopleGrid from '@/components/admin/people/PeopleGrid';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import PeopleHubTabs from '../PeopleHubTabs';
 
 interface TeamMember {
   id: string;
@@ -55,6 +56,8 @@ export default async function PeoplePage() {
         </div>
         <PeopleHeader />
       </div>
+
+      <PeopleHubTabs />
 
       {/* Stat cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-8">

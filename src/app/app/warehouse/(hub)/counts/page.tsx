@@ -5,6 +5,7 @@ import StatusBadge from '@/components/ui/StatusBadge';
 import EmptyState from '@/components/ui/EmptyState';
 import Button from '@/components/ui/Button';
 import { formatDate } from '@/lib/utils';
+import WarehouseHubTabs from '../../WarehouseHubTabs';
 
 const COUNT_STATUS_COLORS: Record<string, string> = {
   planned: 'bg-gray-100 text-gray-700',
@@ -82,6 +83,8 @@ export default async function InventoryCountsPage() {
           </p>
         </div>
       </div>
+
+      <WarehouseHubTabs />
 
       {/* Summary cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-8">

@@ -81,19 +81,6 @@ const STATUS_COLORS: Record<string, string> = {
 export default async function CrewSchedulePage() {
   const schedule = await getSchedule();
 
-  // Group by date
-  const groupedByDate = new Map<string, ScheduleEntry[]>();
-  for (const entry of schedule) {
-    const arr = groupedByDate.get(entry.date);
-    if (arr) {
-      arr.push(entry);
-    } else {
-      groupedByDate.set(entry.date, [entry]);
-    }
-  }
-
-  const sortedDates = Array.from(groupedByDate.keys()).sort();
-
   return (
     <>
       {/* Header */}
@@ -103,7 +90,7 @@ export default async function CrewSchedulePage() {
             Crew Schedule
           </h1>
           <p className="mt-1 text-sm text-text-secondary">
-            Upcoming bookings grouped by date.
+            {schedule.length} upcoming bookings
           </p>
         </div>
         <div className="flex gap-3">
@@ -122,63 +109,53 @@ export default async function CrewSchedulePage() {
         </div>
       </div>
 
-      {/* Schedule by date */}
-      <div className="space-y-6">
-        {sortedDates.map((date) => {
-          const entries = groupedByDate.get(date)!;
-          return (
-            <div key={date}>
-              <h2 className="text-sm font-semibold text-foreground mb-3">
-                {formatDate(date)}
-              </h2>
-              <div className="rounded-xl border border-border bg-white overflow-hidden overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-border bg-bg-secondary">
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Crew</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Project</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Venue</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Shift</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
-                    {entries.map((entry) => (
-                      <tr key={entry.id} className="transition-colors hover:bg-bg-secondary/50">
-                        <td className="px-6 py-3.5 text-sm font-medium text-foreground">
-                          {entry.crew_name}
-                        </td>
-                        <td className="px-6 py-3.5 text-sm text-text-secondary">
-                          {entry.project_name}
-                        </td>
-                        <td className="px-6 py-3.5 text-sm text-text-secondary">
-                          {entry.venue}
-                        </td>
-                        <td className="px-6 py-3.5 text-sm tabular-nums text-text-secondary">
-                          {entry.start_time} &ndash; {entry.end_time}
-                        </td>
-                        <td className="px-6 py-3.5">
-                          <span
-                            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                              STATUS_COLORS[entry.status] ?? 'bg-gray-100 text-gray-600'
-                            }`}
-                          >
-                            {formatLabel(entry.status)}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          );
-        })}
-        {sortedDates.length === 0 && (
-          <div className="rounded-xl border border-border bg-white px-6 py-12 text-center text-sm text-text-muted">
-            No upcoming bookings.
-          </div>
-        )}
+      {/* Schedule table */}
+      <div className="rounded-xl border border-border bg-white overflow-hidden overflow-x-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-border bg-bg-secondary">
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Date</th>
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Crew</th>
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Project</th>
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Venue</th>
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Shift</th>
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {schedule.map((entry) => (
+              <tr key={entry.id} className="transition-colors hover:bg-bg-secondary/50">
+                <td className="px-6 py-3.5 text-sm text-text-secondary whitespace-nowrap">
+                  {formatDate(entry.date)}
+                </td>
+                <td className="px-6 py-3.5 text-sm font-medium text-foreground">
+                  {entry.crew_name}
+                </td>
+                <td className="px-6 py-3.5 text-sm text-text-secondary">
+                  {entry.project_name}
+                </td>
+                <td className="px-6 py-3.5 text-sm text-text-secondary">
+                  {entry.venue}
+                </td>
+                <td className="px-6 py-3.5 text-sm tabular-nums text-text-secondary">
+                  {entry.start_time} &ndash; {entry.end_time}
+                </td>
+                <td className="px-6 py-3.5">
+                  <span
+                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                      STATUS_COLORS[entry.status] ?? 'bg-gray-100 text-gray-600'
+                    }`}
+                  >
+                    {formatLabel(entry.status)}
+                  </span>
+                </td>
+              </tr>
+            ))}
+            {schedule.length === 0 && (
+              <tr><td colSpan={6} className="px-6 py-12 text-center text-sm text-text-muted">No upcoming bookings.</td></tr>
+            )}
+          </tbody>
+        </table>
       </div>
     </>
   );

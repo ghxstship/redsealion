@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import EquipmentTable from '@/components/admin/equipment/EquipmentTable';
 import EquipmentHeader from '@/components/admin/equipment/EquipmentHeader';
+import EquipmentHubTabs from '../EquipmentHubTabs';
 
 interface EquipmentItem {
   id: string;
@@ -69,6 +70,8 @@ export default async function EquipmentPage() {
           <EquipmentHeader />
         </div>
       </div>
+
+      <EquipmentHubTabs />
 
       {/* Status summary cards */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">

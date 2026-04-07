@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import EmptyState from '@/components/ui/EmptyState';
 import LeadFormsHeader from '@/components/admin/leads/LeadFormsHeader';
+import LeadsHubTabs from '../../LeadsHubTabs';
 
 interface LeadForm {
   id: string;
@@ -93,6 +95,8 @@ export default async function LeadFormsPage() {
         </div>
       </div>
 
+      <LeadsHubTabs />
+
       {/* Form cards */}
       <div className="space-y-4">
         {forms.map((form) => (
@@ -143,11 +147,12 @@ export default async function LeadFormsPage() {
             </div>
           </div>
         ))}
-        {forms.length === 0 && (
-          <div className="rounded-xl border border-border bg-white px-6 py-12 text-center text-sm text-text-muted">
-            No lead forms yet. Create one to start capturing leads from your website.
-          </div>
-        )}
+        {forms.length === 0 ? (
+          <EmptyState
+            message="No active lead forms"
+            description="Create public forms to embed on your website and capture leads."
+          />
+        ) : null}
       </div>
     </>
   );

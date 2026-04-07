@@ -3,6 +3,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import { statusColor } from '@/lib/utils';
 import TimeOffCalendar from '@/components/admin/people/TimeOffCalendar';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import PeopleHubTabs from '../../PeopleHubTabs';
 
 interface TimeOffRow {
   id: string;
@@ -60,6 +61,8 @@ export default async function TimeOffPage() {
         <h1 className="text-2xl font-semibold tracking-tight text-foreground">Time Off</h1>
         <p className="mt-1 text-sm text-text-secondary">Manage time-off requests and team availability.</p>
       </div>
+
+      <PeopleHubTabs />
 
       <div className="mb-8">
         <TimeOffCalendar />

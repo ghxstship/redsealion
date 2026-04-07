@@ -3,6 +3,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import Link from 'next/link';
 import TaskViewSwitcher from '@/components/admin/tasks/TaskViewSwitcher';
+import EmptyState from '@/components/ui/EmptyState';
 
 /**
  * Project-level task overview — groups tasks by their linked proposal (project)
@@ -205,18 +206,18 @@ export default async function TaskProjectsPage() {
 
       {/* Project cards */}
       {projects.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border bg-white px-5 py-12 text-center">
-          <p className="text-sm text-text-muted">
-            No tasks linked to projects yet. Assign tasks to proposals to see
-            project health here.
-          </p>
-          <Link
-            href="/app/tasks"
-            className="mt-3 inline-block text-sm font-medium text-foreground hover:opacity-70"
-          >
-            Go to Tasks →
-          </Link>
-        </div>
+        <EmptyState
+          message="No tasks linked to projects yet"
+          description="Assign tasks to proposals to see project health here."
+          action={
+            <Link
+              href="/app/tasks"
+              className="mt-3 inline-block text-sm font-medium text-foreground hover:opacity-70"
+            >
+              Go to Tasks →
+            </Link>
+          }
+        />
       ) : (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           {projects.map((project) => {

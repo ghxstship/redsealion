@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import EmptyState from '@/components/ui/EmptyState';
 
 type EntityType = 'equipment' | 'crew' | 'project' | 'lead' | 'client';
 
@@ -184,28 +185,32 @@ export default function TagsSettingsPage() {
 
         {/* Tag pills */}
         <div className="flex flex-wrap gap-2">
-          {currentTags.map((tag) => (
-            <span
-              key={tag.id}
-              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm border border-border bg-gray-50"
-            >
+          {currentTags.length === 0 ? (
+            <EmptyState
+              message="No tags created yet"
+              description="Create tags to categorize your projects, tasks, and clients."
+            />
+          ) : (
+            currentTags.map((tag) => (
               <span
-                className="h-2.5 w-2.5 rounded-full shrink-0"
-                style={{ backgroundColor: tag.color }}
-              />
-              {tag.name}
-              <button
-                onClick={() => handleRemove(tag.id)}
-                className="ml-0.5 text-text-muted hover:text-red-500 transition-colors"
+                key={tag.id}
+                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm border border-border bg-gray-50"
               >
-                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </span>
-          ))}
-          {currentTags.length === 0 && (
-            <p className="text-sm text-text-muted py-4">No tags yet. Click &quot;Add Tag&quot; to create one.</p>
+                <span
+                  className="h-2.5 w-2.5 rounded-full shrink-0"
+                  style={{ backgroundColor: tag.color }}
+                />
+                {tag.name}
+                <button
+                  onClick={() => handleRemove(tag.id)}
+                  className="ml-0.5 text-text-muted hover:text-red-500 transition-colors"
+                >
+                  <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </span>
+            ))
           )}
         </div>
       </div>

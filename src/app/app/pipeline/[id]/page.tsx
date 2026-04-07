@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { formatCurrency, statusColor } from '@/lib/utils';
 import { TierGate } from '@/components/shared/TierGate';
 import { createClient } from '@/lib/supabase/server';
+import { notFound } from 'next/navigation';
+import EmptyState from '@/components/ui/EmptyState';
 import type { DealStage } from '@/types/database';
 import DealEmailDraft from '@/components/admin/pipeline/DealEmailDraft';
 import DealRiskAssessment from '@/components/admin/pipeline/DealRiskAssessment';
@@ -179,7 +181,7 @@ export default async function DealDetailPage({
     <div className="rounded-xl border border-border bg-white p-6">
       <h2 className="text-sm font-semibold text-foreground mb-4">Activity</h2>
       {deal.activities.length === 0 ? (
-        <p className="text-sm text-text-muted">No activity recorded yet.</p>
+        <EmptyState message="No activity recorded yet" className="border-0 shadow-none px-2 py-8" />
       ) : (
         <div className="space-y-0">
           {deal.activities.map((activity, index) => (

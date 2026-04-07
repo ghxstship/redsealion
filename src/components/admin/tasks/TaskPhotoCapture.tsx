@@ -6,6 +6,7 @@ import { PHOTO_TYPE_COLORS } from '@/components/ui/StatusBadge';
 import FormSelect from '@/components/ui/FormSelect';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface Photo {
   id: string;
@@ -129,10 +130,11 @@ export default function TaskPhotoCapture({ taskId }: TaskPhotoCaptureProps) {
       {loading ? (
         <div className="px-5 py-8 text-center text-sm text-text-muted">Loading…</div>
       ) : photos.length === 0 ? (
-        <div className="px-5 py-8 text-center">
-          <p className="text-sm text-text-muted">No photos yet.</p>
-          <p className="text-xs text-text-muted mt-1">Capture before, during, and after photos for verification.</p>
-        </div>
+        <EmptyState
+          message="No photos yet"
+          description="Capture before, during, and after photos for verification."
+          className="border-0 shadow-none px-2 py-8"
+        />
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 p-5">
           {photos.map((photo) => (

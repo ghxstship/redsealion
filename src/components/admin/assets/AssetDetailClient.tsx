@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import StatusBadge, { EQUIPMENT_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import Button from '@/components/ui/Button';
 import Alert from '@/components/ui/Alert';
+import EmptyState from '@/components/ui/EmptyState';
 import DisposalModal from '@/components/admin/assets/DisposalModal';
 import RevaluationModal from '@/components/admin/assets/RevaluationModal';
 import { formatCurrency, formatLabel, formatDate } from '@/lib/utils';
@@ -442,9 +443,7 @@ export default function AssetDetailClient({ asset, proposalName, locationHistory
               ))}
             </div>
           ) : (
-            <div className="flex items-center justify-center rounded-lg border border-dashed border-border bg-bg-secondary py-8 text-sm text-text-muted">
-              No photos uploaded yet
-            </div>
+            <EmptyState message="No photos uploaded yet" className="border-bg-secondary/30 hidden shadow-none" />
           )}
         </div>
 

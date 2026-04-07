@@ -11,7 +11,10 @@ import {
   CheckSquare, 
   Package, 
   Receipt, 
-  Clock 
+  Clock,
+  CalendarCheck,
+  Zap,
+  MapPin,
 } from 'lucide-react';
 import { useGlobalModals, type GlobalModalType } from './GlobalModalProvider';
 
@@ -56,6 +59,21 @@ const quickActions: QuickAction[] = [
     label: 'New Equipment',
     modal: 'equipment',
     icon: <Package size={16} className="text-text-muted" />,
+  },
+  {
+    label: 'New Event',
+    modal: 'event',
+    icon: <CalendarCheck size={16} className="text-text-muted" />,
+  },
+  {
+    label: 'New Activation',
+    modal: 'activation',
+    icon: <Zap size={16} className="text-text-muted" />,
+  },
+  {
+    label: 'New Location',
+    modal: 'location',
+    icon: <MapPin size={16} className="text-text-muted" />,
   },
   {
     label: 'New Invoice',

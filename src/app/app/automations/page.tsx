@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { TierGate } from '@/components/shared/TierGate';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface AutomationRow {
   id: string;
@@ -146,17 +147,17 @@ export default async function AutomationsPage() {
       </div>
 
       {automations.length === 0 && (
-        <div className="rounded-xl border border-dashed border-border bg-white px-5 py-12 text-center">
-          <p className="text-sm text-text-muted">
-            No automations configured yet.
-          </p>
-          <Link
-            href="/app/automations/new"
-            className="mt-3 inline-block text-sm font-medium text-foreground hover:opacity-70"
-          >
-            Create your first automation
-          </Link>
-        </div>
+        <EmptyState
+          message="No automations configured yet"
+          action={
+            <Link
+              href="/app/automations/new"
+              className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity"
+            >
+              Create your first automation
+            </Link>
+          }
+        />
       )}
     </TierGate>
   );

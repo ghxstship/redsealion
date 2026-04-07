@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface PageProps {
   params: Promise<{ orgSlug: string; id: string }>;
@@ -162,12 +163,10 @@ export default async function FilesPage({ params }: PageProps) {
       </div>
 
       {Object.keys(grouped).length === 0 && (
-        <div className="rounded-lg border border-border bg-background p-8 text-center">
-          <p className="text-sm text-text-muted">No files shared yet.</p>
-          <p className="text-xs text-text-muted mt-1">
-            Files and deliverables will appear here as your project progresses.
-          </p>
-        </div>
+        <EmptyState
+          message="No files shared yet"
+          description="Files and deliverables will appear here as your project progresses."
+        />
       )}
 
       {Object.entries(grouped).map(([groupLabel, groupFiles]) => (

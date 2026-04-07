@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Button from '@/components/ui/Button';
 import FormTextarea from '@/components/ui/FormTextarea';
 import FormLabel from '@/components/ui/FormLabel';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface Rating {
   id: string;
@@ -151,7 +152,7 @@ export default function CrewRatingsPanel({ crewId }: CrewRatingsPanelProps) {
       {loading ? (
         <div className="px-5 py-8 text-center text-sm text-text-muted">Loading…</div>
       ) : ratings.length === 0 ? (
-        <div className="px-5 py-8 text-center text-sm text-text-muted">No ratings yet.</div>
+        <EmptyState message="No ratings yet" className="border-0 shadow-none px-2 py-8" />
       ) : (
         <div className="divide-y divide-border">
           {ratings.map((r) => (

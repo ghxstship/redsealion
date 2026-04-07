@@ -89,6 +89,37 @@ export const LEAD_SOURCE_COLORS: Record<string, string> = {
   event: 'bg-bg-tertiary text-foreground',
 };
 
+export const EVENT_STATUS_COLORS: Record<string, string> = {
+  draft: 'bg-gray-100 text-gray-700',
+  confirmed: 'bg-blue-50 text-blue-700',
+  in_progress: 'bg-amber-50 text-amber-700',
+  completed: 'bg-green-50 text-green-700',
+  cancelled: 'bg-red-50 text-red-700',
+};
+
+export const ACTIVATION_STATUS_COLORS: Record<string, string> = {
+  draft: 'bg-gray-100 text-gray-700',
+  confirmed: 'bg-blue-50 text-blue-700',
+  in_progress: 'bg-amber-50 text-amber-700',
+  completed: 'bg-green-50 text-green-700',
+  cancelled: 'bg-red-50 text-red-700',
+};
+
+export const LOCATION_TYPE_COLORS: Record<string, string> = {
+  venue: 'bg-indigo-50 text-indigo-700',
+  arena: 'bg-blue-50 text-blue-700',
+  stadium: 'bg-blue-50 text-blue-700',
+  convention_center: 'bg-purple-50 text-purple-700',
+  hotel: 'bg-amber-50 text-amber-700',
+  outdoor: 'bg-green-50 text-green-700',
+  warehouse: 'bg-gray-100 text-gray-700',
+  office: 'bg-gray-100 text-gray-700',
+  studio: 'bg-pink-50 text-pink-700',
+  restaurant: 'bg-orange-50 text-orange-700',
+  virtual: 'bg-cyan-50 text-cyan-700',
+  other: 'bg-gray-100 text-gray-600',
+};
+
 export const ROLE_BADGE_COLORS: Record<string, string> = {
   super_admin: 'bg-red-50 text-red-700',
   org_admin: 'bg-indigo-50 text-indigo-700',

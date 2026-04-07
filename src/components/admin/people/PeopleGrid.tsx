@@ -9,6 +9,11 @@ import DataImportDialog from '@/components/shared/DataImportDialog';
 import PersonEditModal from './PersonEditModal';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import RowActionMenu from '@/components/shared/RowActionMenu';
+import { Edit, Eye, FolderHeart, Mail, Users2, Shield, MoreVertical, Trash2 } from 'lucide-react';
+import type { Database } from '@/types/database';
+import StatusBadge from '@/components/ui/StatusBadge';
+import EmptyState from '@/components/ui/EmptyState';
+import QuickActionMenu, { type ActionItem } from '@/components/shared/QuickActionMenu';
 import { ROLE_BADGE_COLORS } from '@/components/ui/StatusBadge';
 import SearchInput from '@/components/ui/SearchInput';
 import Button from '@/components/ui/Button';
@@ -111,17 +116,10 @@ export default function PeopleGrid({ members }: { members: TeamMember[] }) {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="rounded-xl border border-border bg-white px-8 py-16 text-center">
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-bg-tertiary">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-text-muted">
-              <circle cx="12" cy="8" r="4" /><path d="M4 21v-1a8 8 0 0 1 16 0v1" />
-            </svg>
-          </div>
-          <p className="text-sm font-medium text-foreground">{search ? 'No results found' : 'No team members yet'}</p>
-          <p className="mt-1 text-sm text-text-secondary">
-            {search ? 'Try a different search term.' : 'Invite your first team member to start collaborating.'}
-          </p>
-        </div>
+        <EmptyState
+          message={search ? 'No results found' : 'No team members yet'}
+          description={search ? 'Try a different search term.' : 'Invite your first team member to start collaborating.'}
+        />
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((member) => (

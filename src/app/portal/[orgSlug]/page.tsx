@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { formatCurrency, statusColor } from '@/lib/utils';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface PortalPageProps {
   params: Promise<{ orgSlug: string }>;
@@ -52,12 +53,10 @@ export default async function PortalPage({ params }: PortalPageProps) {
         </h2>
 
         {proposalList.length === 0 ? (
-          <div className="rounded-lg border border-border bg-background p-8 text-center">
-            <p className="text-sm text-text-muted">No proposals available yet.</p>
-            <p className="text-xs text-text-muted mt-1">
-              Proposals will appear here once they have been shared with you.
-            </p>
-          </div>
+          <EmptyState
+            message="No proposals available yet"
+            description="Proposals will appear here once they have been shared with you."
+          />
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {proposalList.map((proposal) => (

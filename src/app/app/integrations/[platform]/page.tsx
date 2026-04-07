@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { TierGate } from '@/components/shared/TierGate';
 import { MappingEditor } from '@/components/admin/integrations/MappingEditor';
 import Tabs from '@/components/ui/Tabs';
+import EmptyState from '@/components/ui/EmptyState';
 
 const PLATFORM_META: Record<string, { displayName: string; category: string }> = {
   salesforce: { displayName: 'Salesforce', category: 'crm' },
@@ -170,11 +171,10 @@ export default function IntegrationConfigPage({
       )}
 
       {activeTab === 'sync_log' && (
-        <div className="rounded-xl border border-border bg-white px-5 py-5">
-          <p className="text-sm text-text-muted text-center py-8">
-            No sync activity yet. Connect the integration and trigger a sync to see logs here.
-          </p>
-        </div>
+        <EmptyState
+          message="No sync activity yet"
+          description="Connect the integration and trigger a sync to see logs here."
+        />
       )}
     </TierGate>
   );

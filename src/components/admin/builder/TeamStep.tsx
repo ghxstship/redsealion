@@ -2,6 +2,7 @@
 
 import FormSelect from '@/components/ui/FormSelect';
 import { IconPlus } from '@/components/ui/Icons';
+import EmptyState from '@/components/ui/EmptyState';
 
 export interface TeamAssignmentData {
   id: string;
@@ -78,9 +79,7 @@ export default function TeamStep({ assignments, onChange }: TeamStepProps) {
       </div>
 
       {assignments.length === 0 && (
-        <div className="rounded-xl border border-dashed border-border py-12 text-center">
-          <p className="text-sm text-text-muted">No team assignments yet.</p>
-        </div>
+        <EmptyState message="No team assignments yet" className="border-0 shadow-none px-2 py-8" />
       )}
 
       {assignments.length > 0 && (

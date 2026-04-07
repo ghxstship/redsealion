@@ -11,6 +11,10 @@ import Button from '@/components/ui/Button';
 import type { TaskCommentWithAuthor } from '@/types/database';
 import { renderMentions } from '@/lib/mentions';
 import FormTextarea from '@/components/ui/FormTextarea';
+import { createClient } from '@/lib/supabase/client';
+import { useAuth } from '@clerk/nextjs';
+import { getInitials } from '@/lib/utils';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface TaskCommentsProps {
   taskId: string;
@@ -85,15 +89,6 @@ export default function TaskComments({ taskId }: TaskCommentsProps) {
     return d.toLocaleDateString();
   }
 
-  function getInitials(name: string): string {
-    return name
-      .split(' ')
-      .map((n) => n[0] ?? '')
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
-  }
-
   return (
     <div className="space-y-4">
       <h3 className="text-sm font-semibold text-foreground">
@@ -102,13 +97,9 @@ export default function TaskComments({ taskId }: TaskCommentsProps) {
 
       {/* Comment list */}
       {loading ? (
-        <div className="rounded-lg border border-border bg-bg-secondary/50 px-4 py-8 text-center">
-          <p className="text-xs text-text-muted">Loading comments…</p>
-        </div>
+        <div className="px-5 py-6 text-center text-xs text-text-muted">Loading…</div>
       ) : comments.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-border bg-bg-secondary/30 px-4 py-6 text-center">
-          <p className="text-xs text-text-muted">No comments yet. Be the first to comment.</p>
-        </div>
+        <EmptyState message="No comments yet" description="Be the first to comment." className="border-0 shadow-none px-2 py-8" />
       ) : (
         <div className="space-y-3">
           {comments.map((comment) => (

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import WarehouseHubTabs from '../WarehouseHubTabs';
 
 interface WarehouseAsset {
   id: string;
@@ -102,14 +103,6 @@ function formatLabel(s: string): string {
 export default async function WarehousePage() {
   const { facilities, assets } = await getWarehouseData();
 
-  // Group assets by location
-  const byLocation = new Map<string, WarehouseAsset[]>();
-  for (const asset of assets) {
-    const arr = byLocation.get(asset.location);
-    if (arr) arr.push(asset);
-    else byLocation.set(asset.location, [asset]);
-  }
-
   return (
     <>
       {/* Header */}
@@ -123,6 +116,8 @@ export default async function WarehousePage() {
           </p>
         </div>
       </div>
+
+      <WarehouseHubTabs />
 
       {/* Facility summary cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-8">
@@ -142,56 +137,56 @@ export default async function WarehousePage() {
       </div>
 
 
-      {/* Assets grouped by location */}
-      <div className="space-y-6">
-        {Array.from(byLocation.entries()).map(([location, locationAssets]) => (
-          <div key={location}>
-            <h2 className="text-sm font-semibold text-foreground mb-3">{location}</h2>
-            <div className="rounded-xl border border-border bg-white overflow-hidden overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-border bg-bg-secondary">
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Asset</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Category</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Qty</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {locationAssets.map((asset) => (
-                    <tr key={asset.id} className="transition-colors hover:bg-bg-secondary/50">
-                      <td className="px-6 py-3.5">
-                        <Link
-                          href={`/app/equipment/${asset.id}`}
-                          className="text-sm font-medium text-foreground hover:underline"
-                        >
-                          {asset.name}
-                        </Link>
-                      </td>
-                      <td className="px-6 py-3.5">
-                        <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">
-                          {asset.category}
-                        </span>
-                      </td>
-                      <td className="px-6 py-3.5 text-sm tabular-nums text-foreground">
-                        {asset.quantity}
-                      </td>
-                      <td className="px-6 py-3.5">
-                        <span
-                          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                            STATUS_COLORS[asset.status] ?? 'bg-gray-100 text-gray-600'
-                          }`}
-                        >
-                          {formatLabel(asset.status)}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        ))}
+      {/* Assets table */}
+      <div className="rounded-xl border border-border bg-white overflow-hidden overflow-x-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-border bg-bg-secondary">
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Asset</th>
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Category</th>
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Location</th>
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Qty</th>
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {assets.map((asset) => (
+              <tr key={asset.id} className="transition-colors hover:bg-bg-secondary/50">
+                <td className="px-6 py-3.5">
+                  <Link
+                    href={`/app/equipment/${asset.id}`}
+                    className="text-sm font-medium text-foreground hover:underline"
+                  >
+                    {asset.name}
+                  </Link>
+                </td>
+                <td className="px-6 py-3.5">
+                  <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">
+                    {asset.category}
+                  </span>
+                </td>
+                <td className="px-6 py-3.5 text-sm text-text-secondary">
+                  {asset.location}
+                </td>
+                <td className="px-6 py-3.5 text-sm tabular-nums text-foreground">
+                  {asset.quantity}
+                </td>
+                <td className="px-6 py-3.5">
+                  <span
+                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                      STATUS_COLORS[asset.status] ?? 'bg-gray-100 text-gray-600'
+                    }`}
+                  >
+                    {formatLabel(asset.status)}
+                  </span>
+                </td>
+              </tr>
+            ))}
+            {assets.length === 0 && (
+              <tr><td colSpan={5} className="px-6 py-12 text-center text-sm text-text-muted">No assets in inventory.</td></tr>
+            )}
+          </tbody>
+        </table>
       </div>
     </>
   );

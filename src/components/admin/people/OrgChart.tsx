@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
+import EmptyState from '@/components/ui/EmptyState';
+
 interface OrgNode {
   id: string;
   name: string;
@@ -118,10 +120,10 @@ export default function OrgChart() {
 
   if (!orgTree) {
     return (
-      <div className="rounded-xl border border-border bg-white px-8 py-8 text-center">
-        <p className="text-sm text-text-muted">No org chart positions configured yet.</p>
-        <p className="text-xs text-text-muted mt-1">Add positions in your organization settings.</p>
-      </div>
+      <EmptyState
+        message="No org chart positions configured yet"
+        description="Add positions in your organization settings."
+      />
     );
   }
 

@@ -2,7 +2,9 @@ import { TierGate } from '@/components/shared/TierGate';
 import { formatCurrency } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import EmptyState from '@/components/ui/EmptyState';
 import RecurringHeader from '@/components/admin/invoices/RecurringHeader';
+import InvoiceHubTabs from '../../InvoiceHubTabs';
 
 interface RecurringScheduleRow {
   id: string;
@@ -103,6 +105,8 @@ export default async function RecurringInvoicesPage() {
         <RecurringHeader />
       </div>
 
+      <InvoiceHubTabs />
+
       <div className="rounded-xl border border-border bg-white divide-y divide-border">
         {schedules.map((schedule) => (
           <div key={schedule.id} className="px-5 py-4 flex items-center justify-between">
@@ -132,9 +136,10 @@ export default async function RecurringInvoicesPage() {
       </div>
 
       {schedules.length === 0 && (
-        <div className="rounded-xl border border-dashed border-border bg-white px-5 py-12 text-center">
-          <p className="text-sm text-text-muted">No recurring invoice schedules yet.</p>
-        </div>
+        <EmptyState
+          message="No recurring invoices configured yet"
+          description="Create a recurring schedule to automatically generate invoices."
+        />
       )}
     </TierGate>
   );

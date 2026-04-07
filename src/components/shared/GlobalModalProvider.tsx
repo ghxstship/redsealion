@@ -8,8 +8,11 @@ import TaskFormModal from '@/components/admin/tasks/TaskFormModal';
 import LeadFormModal from '@/components/admin/leads/LeadFormModal';
 import DealFormModal from '@/components/admin/pipeline/DealFormModal';
 import EquipmentFormModal from '@/components/admin/equipment/EquipmentFormModal';
+import EventFormModal from '@/components/admin/events/EventFormModal';
+import LocationFormModal from '@/components/admin/locations/LocationFormModal';
+import ActivationFormModal from '@/components/admin/activations/ActivationFormModal';
 
-export type GlobalModalType = 'client' | 'task' | 'lead' | 'deal' | 'equipment' | null;
+export type GlobalModalType = 'client' | 'task' | 'lead' | 'deal' | 'equipment' | 'event' | 'location' | 'activation' | null;
 
 interface GlobalModalContextValue {
   openModal: (type: GlobalModalType) => void;
@@ -58,6 +61,21 @@ export function GlobalModalProvider({ children }: { children: ReactNode }) {
       />
       <EquipmentFormModal 
         open={activeModal === 'equipment'} 
+        onClose={closeModal} 
+        onCreated={handleCreated} 
+      />
+      <EventFormModal 
+        open={activeModal === 'event'} 
+        onClose={closeModal} 
+        onCreated={handleCreated} 
+      />
+      <LocationFormModal 
+        open={activeModal === 'location'} 
+        onClose={closeModal} 
+        onCreated={handleCreated} 
+      />
+      <ActivationFormModal 
+        open={activeModal === 'activation'} 
         onClose={closeModal} 
         onCreated={handleCreated} 
       />

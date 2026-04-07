@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { TierGate } from '@/components/shared/TierGate';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import EmptyState from '@/components/ui/EmptyState';
 
 const STATUS_COLORS: Record<string, string> = {
   draft: 'bg-gray-100 text-gray-600',
@@ -53,9 +54,18 @@ export default async function CampaignsPage() {
 
       <div className="rounded-xl border border-border bg-white overflow-hidden">
         {campaigns.length === 0 ? (
-          <div className="px-6 py-12 text-center text-sm text-text-muted">
-            No campaigns yet. Create your first email campaign to reach your clients.
-          </div>
+          <EmptyState
+            message="No campaigns yet"
+            description="Create your first email campaign to reach your clients."
+            action={
+              <Link
+                href="/app/campaigns/new"
+                className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity"
+              >
+                Create Campaign
+              </Link>
+            }
+          />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">

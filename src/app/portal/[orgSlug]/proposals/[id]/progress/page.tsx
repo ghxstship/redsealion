@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import type { PhaseStatus } from '@/types/database';
 import { statusColor } from '@/lib/utils';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface PageProps {
   params: Promise<{ orgSlug: string; id: string }>;
@@ -144,12 +145,10 @@ export default async function ProgressPage({ params }: PageProps) {
       </div>
 
       {phaseData.length === 0 && (
-        <div className="rounded-lg border border-border bg-background p-8 text-center">
-          <p className="text-sm text-text-muted">No phases defined yet.</p>
-          <p className="text-xs text-text-muted mt-1">
-            Project progress will appear here once phases are configured.
-          </p>
-        </div>
+        <EmptyState
+          message="No phases defined yet"
+          description="Project progress will appear here once phases are configured."
+        />
       )}
 
       {phaseData.length > 0 && (

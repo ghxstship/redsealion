@@ -1,5 +1,9 @@
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { formatCurrency } from '@/lib/utils';
+import StatusBadge from '@/components/ui/StatusBadge';
+import EmptyState from '@/components/ui/EmptyState';
 import ComplianceDocumentsPanel from '@/components/admin/crew/ComplianceDocumentsPanel';
 import CrewRatingsPanel from '@/components/admin/crew/CrewRatingsPanel';
 import CrewDetailTabs from './CrewDetailTabs';
@@ -223,9 +227,7 @@ export default async function CrewMemberPage({
           </table>
         </div>
       ) : (
-        <div className="px-6 py-12 text-center text-sm text-text-muted">
-          No bookings yet.
-        </div>
+        <EmptyState message="No bookings yet" />
       )}
     </div>
   );

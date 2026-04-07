@@ -1,4 +1,5 @@
 import TimerWidget from '@/components/admin/time/TimerWidget';
+import TimeHubTabs from '../../TimeHubTabs';
 
 export default function TimerPage() {
   return (
@@ -11,6 +12,8 @@ export default function TimerPage() {
           Start and stop a running timer to track your work.
         </p>
       </div>
+
+      <TimeHubTabs />
 
       <TimerWidget />
     </>

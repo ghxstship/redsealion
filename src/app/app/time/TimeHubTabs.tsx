@@ -23,7 +23,7 @@ function getActiveTab(pathname: string): TimeTab {
   return 'timesheet';
 }
 
-export default function TimeHubTabs({ pendingCount }: { pendingCount: number }) {
+export default function TimeHubTabs({ pendingCount = 0 }: { pendingCount?: number }) {
   const router = useRouter();
   const pathname = usePathname();
   const activeTab = getActiveTab(pathname);

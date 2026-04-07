@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import TransfersHeader from '@/components/admin/warehouse/TransfersHeader';
+import WarehouseHubTabs from '../../WarehouseHubTabs';
 
 interface Transfer {
   id: string;
@@ -81,8 +82,8 @@ function formatLabel(s: string): string {
 export default async function TransfersPage() {
   const transfers = await getTransfers();
 
-  const pending = transfers.filter((t) => t.status !== 'completed' && t.status !== 'cancelled');
-  const completed = transfers.filter((t) => t.status === 'completed');
+  const pending = transfers.filter((t) => t.status !== 'completed' && t.status !== 'cancelled').length;
+  const completed = transfers.filter((t) => t.status === 'completed').length;
 
   return (
     <>
@@ -93,7 +94,7 @@ export default async function TransfersPage() {
             Transfers
           </h1>
           <p className="mt-1 text-sm text-text-secondary">
-            {pending.length} pending &middot; {completed.length} completed
+            {pending} pending &middot; {completed} completed
           </p>
         </div>
         <div className="flex gap-3">
@@ -101,92 +102,52 @@ export default async function TransfersPage() {
         </div>
       </div>
 
-      <div className="space-y-8">
-        {/* Pending / In Transit */}
-        <div>
-          <h2 className="text-sm font-semibold text-foreground mb-4">Pending &amp; In Transit</h2>
-          {pending.length > 0 ? (
-            <div className="rounded-xl border border-border bg-white overflow-hidden overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-border bg-bg-secondary">
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">From</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">To</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Items</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Requested By</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Date</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Notes</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {pending.map((transfer) => (
-                    <tr key={transfer.id} className="transition-colors hover:bg-bg-secondary/50">
-                      <td className="px-6 py-3.5 text-sm font-medium text-foreground">{transfer.from_location}</td>
-                      <td className="px-6 py-3.5 text-sm font-medium text-foreground">{transfer.to_location}</td>
-                      <td className="px-6 py-3.5 text-sm tabular-nums text-foreground">{transfer.items_count}</td>
-                      <td className="px-6 py-3.5">
-                        <span
-                          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                            STATUS_COLORS[transfer.status] ?? 'bg-gray-100 text-gray-600'
-                          }`}
-                        >
-                          {formatLabel(transfer.status)}
-                        </span>
-                      </td>
-                      <td className="px-6 py-3.5 text-sm text-text-secondary">{transfer.requested_by}</td>
-                      <td className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(transfer.requested_date)}</td>
-                      <td className="px-6 py-3.5 text-sm text-text-muted max-w-xs truncate">{transfer.notes ?? '\u2014'}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <div className="rounded-xl border border-border bg-white px-6 py-12 text-center text-sm text-text-muted">
-              No pending transfers.
-            </div>
-          )}
-        </div>
-
-        {/* Completed */}
-        <div>
-          <h2 className="text-sm font-semibold text-foreground mb-4">Completed</h2>
-          {completed.length > 0 ? (
-            <div className="rounded-xl border border-border bg-white overflow-hidden overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-border bg-bg-secondary">
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">From</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">To</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Items</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Requested</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Completed</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Notes</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {completed.map((transfer) => (
-                    <tr key={transfer.id} className="transition-colors hover:bg-bg-secondary/50">
-                      <td className="px-6 py-3.5 text-sm text-text-secondary">{transfer.from_location}</td>
-                      <td className="px-6 py-3.5 text-sm text-text-secondary">{transfer.to_location}</td>
-                      <td className="px-6 py-3.5 text-sm tabular-nums text-foreground">{transfer.items_count}</td>
-                      <td className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(transfer.requested_date)}</td>
-                      <td className="px-6 py-3.5 text-sm text-text-secondary">
-                        {transfer.completed_date ? formatDate(transfer.completed_date) : '\u2014'}
-                      </td>
-                      <td className="px-6 py-3.5 text-sm text-text-muted max-w-xs truncate">{transfer.notes ?? '\u2014'}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <div className="rounded-xl border border-border bg-white px-6 py-12 text-center text-sm text-text-muted">
-              No completed transfers.
-            </div>
-          )}
-        </div>
+      {/* Transfers table */}
+      <div className="rounded-xl border border-border bg-white overflow-hidden overflow-x-auto">
+        {transfers.length === 0 ? (
+          <div className="px-6 py-12 text-center text-sm text-text-muted">
+            No transfers found.
+          </div>
+        ) : (
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-border bg-bg-secondary">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">From</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">To</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Items</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Requested By</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Requested</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Completed</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Notes</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {transfers.map((transfer) => (
+                <tr key={transfer.id} className="transition-colors hover:bg-bg-secondary/50">
+                  <td className="px-6 py-3.5 text-sm font-medium text-foreground">{transfer.from_location}</td>
+                  <td className="px-6 py-3.5 text-sm font-medium text-foreground">{transfer.to_location}</td>
+                  <td className="px-6 py-3.5 text-sm tabular-nums text-foreground">{transfer.items_count}</td>
+                  <td className="px-6 py-3.5">
+                    <span
+                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                        STATUS_COLORS[transfer.status] ?? 'bg-gray-100 text-gray-600'
+                      }`}
+                    >
+                      {formatLabel(transfer.status)}
+                    </span>
+                  </td>
+                  <td className="px-6 py-3.5 text-sm text-text-secondary">{transfer.requested_by}</td>
+                  <td className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(transfer.requested_date)}</td>
+                  <td className="px-6 py-3.5 text-sm text-text-secondary">
+                    {transfer.completed_date ? formatDate(transfer.completed_date) : '\u2014'}
+                  </td>
+                  <td className="px-6 py-3.5 text-sm text-text-muted max-w-xs truncate">{transfer.notes ?? '\u2014'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </>
   );

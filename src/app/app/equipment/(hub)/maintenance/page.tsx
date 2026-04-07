@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import EquipmentHubTabs from '../../EquipmentHubTabs';
 
 interface MaintenanceEntry {
   id: string;
@@ -101,6 +102,8 @@ export default async function MaintenancePage() {
           </p>
         </div>
       </div>
+
+      <EquipmentHubTabs />
 
       <div className="space-y-8">
         {/* Upcoming / In Progress */}

@@ -1,6 +1,10 @@
 'use client';
 
+import { useState } from 'react';
+import FormInput from '@/components/ui/FormInput';
+import FormSelect from '@/components/ui/FormSelect';
 import Button from '@/components/ui/Button';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface FieldDef {
   id: string;
@@ -20,54 +24,46 @@ const ENTITY_TYPES = ['proposal', 'task', 'client', 'invoice'] as const;
 export default function CustomFieldRenderer({ fields }: CustomFieldRendererProps) {
   if (fields.length === 0) {
     return (
-      <div className="rounded-xl border border-border bg-white px-8 py-16 text-center">
-        <p className="text-sm text-text-secondary mb-4">
-          No custom fields defined yet.
-        </p>
-        <Button>
-          Add Custom Field
-        </Button>
-      </div>
+      <EmptyState
+        message="No custom fields defined yet"
+        action={
+          <Button className="mt-4">
+            Add Custom Field
+          </Button>
+        }
+      />
     );
   }
 
-  // Group by entity type
-  const grouped = fields.reduce<Record<string, FieldDef[]>>((acc, field) => {
-    (acc[field.entityType] = acc[field.entityType] ?? []).push(field);
-    return acc;
-  }, {});
-
   return (
     <div className="space-y-6">
-      {Object.entries(grouped).map(([entityType, entityFields]) => (
-        <div key={entityType} className="rounded-xl border border-border bg-white overflow-hidden">
-          <div className="px-6 py-4 border-b border-border bg-bg-secondary">
-            <h2 className="text-sm font-semibold text-foreground capitalize">
-              {entityType} Fields
-            </h2>
-          </div>
-          <div className="divide-y divide-border">
-            {entityFields.map((field) => (
-              <div key={field.id} className="flex items-center justify-between px-6 py-3.5">
+      <div className="rounded-xl border border-border bg-white overflow-hidden">
+        <div className="divide-y divide-border">
+          {fields.map((field) => (
+            <div key={field.id} className="flex items-center justify-between px-6 py-3.5">
+              <div className="flex items-center gap-4">
                 <div>
                   <p className="text-sm font-medium text-foreground">{field.fieldName}</p>
                   <p className="text-xs text-text-secondary capitalize">{field.fieldType}</p>
                 </div>
-                <div className="flex items-center gap-3">
-                  {field.required && (
-                    <span className="inline-flex items-center rounded-full bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700">
-                      Required
-                    </span>
-                  )}
-                  <button className="text-xs text-text-muted hover:text-foreground transition-colors">
-                    Edit
-                  </button>
-                </div>
               </div>
-            ))}
-          </div>
+              <div className="flex items-center gap-3">
+                <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary capitalize">
+                  {field.entityType}
+                </span>
+                {field.required && (
+                  <span className="inline-flex items-center rounded-full bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700">
+                    Required
+                  </span>
+                )}
+                <button className="text-xs text-text-muted hover:text-foreground transition-colors">
+                  Edit
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
+      </div>
 
       {/* Show available types for reference */}
       <div className="rounded-xl border border-border bg-white px-6 py-4">
@@ -91,3 +87,4 @@ export default function CustomFieldRenderer({ fields }: CustomFieldRendererProps
     </div>
   );
 }
+

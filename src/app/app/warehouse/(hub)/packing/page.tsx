@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import WarehouseHubTabs from '../../WarehouseHubTabs';
 
 interface Proposal {
   id: string;
@@ -84,6 +85,8 @@ export default async function PackingPage() {
           </p>
         </div>
       </div>
+
+      <WarehouseHubTabs />
 
       {/* Proposal selector */}
       <div className="rounded-xl border border-border bg-white p-6 mb-8">

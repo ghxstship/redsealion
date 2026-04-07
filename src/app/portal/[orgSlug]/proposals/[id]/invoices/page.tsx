@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import type { InvoiceType, InvoiceStatus } from '@/types/database';
 import { formatCurrencyDetailed, statusColor } from '@/lib/utils';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface PageProps {
   params: Promise<{ orgSlug: string; id: string }>;
@@ -90,12 +91,10 @@ export default async function InvoicesPage({ params }: PageProps) {
       </div>
 
       {invoices.length === 0 && (
-        <div className="rounded-lg border border-border bg-background p-8 text-center">
-          <p className="text-sm text-text-muted">No invoices issued yet.</p>
-          <p className="text-xs text-text-muted mt-1">
-            Invoices will appear here as milestone gates are completed.
-          </p>
-        </div>
+        <EmptyState
+          message="No invoices issued yet"
+          description="Invoices will appear here as milestone gates are completed."
+        />
       )}
 
       {invoices.length > 0 && (

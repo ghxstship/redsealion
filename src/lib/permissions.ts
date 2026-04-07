@@ -29,7 +29,10 @@ export type PermissionResource =
   | 'email_campaigns'
   | 'referral_program'
   | 'work_orders'
-  | 'advances';
+  | 'advances'
+  | 'events'
+  | 'activations'
+  | 'locations';
 
 export type PermissionAction = 'view' | 'create' | 'edit' | 'delete';
 
@@ -59,6 +62,9 @@ export const ALL_RESOURCES: PermissionResource[] = [
   'referral_program',
   'work_orders',
   'advances',
+  'events',
+  'activations',
+  'locations',
 ];
 
 /**

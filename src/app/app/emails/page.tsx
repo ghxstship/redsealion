@@ -1,6 +1,7 @@
 import { TierGate } from '@/components/shared/TierGate';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface EmailThreadRow {
   id: string;
@@ -160,11 +161,10 @@ export default async function EmailsPage() {
       </div>
 
       {threads.length === 0 && (
-        <div className="rounded-xl border border-dashed border-border bg-white px-5 py-12 text-center">
-          <p className="text-sm text-text-muted">
-            No email threads yet. Connect your email or integration to see conversations here.
-          </p>
-        </div>
+        <EmptyState
+          message="No email threads yet"
+          description="Connect your email or integration to see conversations here."
+        />
       )}
     </TierGate>
   );

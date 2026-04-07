@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import EmptyState from '@/components/ui/EmptyState';
 import BundlesHeader from '@/components/admin/equipment/BundlesHeader';
+import EquipmentHubTabs from '../../EquipmentHubTabs';
 
 interface Bundle {
   id: string;
@@ -78,6 +80,8 @@ export default async function BundlesPage() {
         </div>
       </div>
 
+      <EquipmentHubTabs />
+
       {/* Bundle cards */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {bundles.map((bundle) => (
@@ -113,9 +117,10 @@ export default async function BundlesPage() {
       </div>
 
       {bundles.length === 0 && (
-        <div className="rounded-xl border border-border bg-white px-6 py-12 text-center text-sm text-text-muted">
-          No bundles created yet. Create one to group equipment for quick deployment.
-        </div>
+        <EmptyState
+          message="No bundles created yet"
+          description="Create one to group equipment for quick deployment."
+        />
       )}
     </>
   );

@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import EmptyState from '@/components/ui/EmptyState';
 import { getInitials } from '@/lib/utils';
 import CommentForm from '@/components/portal/CommentForm';
 
@@ -68,12 +69,10 @@ export default async function CommentsPage({ params }: PageProps) {
 
       {/* Comment thread */}
       {commentList.length === 0 ? (
-        <div className="rounded-lg border border-border bg-background p-8 text-center">
-          <p className="text-sm text-text-muted">No comments yet.</p>
-          <p className="text-xs text-text-muted mt-1">
-            Start a conversation about this proposal below.
-          </p>
-        </div>
+        <EmptyState
+          message="No comments yet"
+          description="Use the field below to start the conversation."
+        />
       ) : (
         <div className="space-y-4">
           {commentList.map((comment) => {

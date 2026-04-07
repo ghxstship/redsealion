@@ -5,6 +5,7 @@ import InvoiceTabs from '@/components/admin/invoices/InvoiceTabs';
 import Button from '@/components/ui/Button';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { Plus } from 'lucide-react';
+import InvoiceHubTabs from '../InvoiceHubTabs';
 
 interface InvoiceRow {
   id: string;
@@ -73,6 +74,7 @@ export default async function InvoicesPage() {
         </Button>
       </div>
 
+      <InvoiceHubTabs />
 
       <TierGate feature="invoices">
         <InvoiceTabs invoices={invoices} />

@@ -1,4 +1,5 @@
 import ScanPageClient from './ScanPageClient';
+import WarehouseHubTabs from '../../WarehouseHubTabs';
 
 export const metadata = {
   title: 'Scan Equipment',
@@ -15,6 +16,8 @@ export default function ScanPage() {
           Scan a barcode or QR code to look up equipment and manage check in/out.
         </p>
       </div>
+
+      <WarehouseHubTabs />
 
       <ScanPageClient />
     </div>

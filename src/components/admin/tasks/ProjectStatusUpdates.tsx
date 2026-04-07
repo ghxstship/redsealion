@@ -8,6 +8,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import Button from '@/components/ui/Button';
+import EmptyState from '@/components/ui/EmptyState';
 import FormTextarea from '@/components/ui/FormTextarea';
 import FormSelect from '@/components/ui/FormSelect';
 import { MessageSquare, Plus } from 'lucide-react';
@@ -124,9 +125,7 @@ export default function ProjectStatusUpdates({ proposalId }: ProjectStatusUpdate
         {loading ? (
           <div className="px-5 py-6 text-center text-xs text-text-muted">Loading…</div>
         ) : updates.length === 0 ? (
-          <div className="px-5 py-6 text-center">
-            <p className="text-xs text-text-muted">No status updates yet.</p>
-          </div>
+          <EmptyState message="No status updates yet" className="border-0 shadow-none px-2 py-8" />
         ) : (
           updates.map((update) => {
             const opt = STATUS_OPTIONS.find((o) => o.value === update.status);

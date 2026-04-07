@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PortfolioHeader from '@/components/admin/portfolio/PortfolioHeader';
+import EmptyState from '@/components/ui/EmptyState';
 
 const CATEGORIES = ['All', 'Pop-Up', 'Installation', 'Festival', 'Launch', 'Retail'];
 
@@ -72,11 +73,10 @@ export default async function PortfolioPage() {
 
       {/* Grid */}
       {portfolioItems.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border bg-white px-5 py-12 text-center">
-          <p className="text-sm text-text-muted">
-            No portfolio projects yet. Upload completed projects to showcase your work.
-          </p>
-        </div>
+        <EmptyState
+          message="No portfolio projects yet"
+          description="Upload completed projects to showcase your work."
+        />
       ) : (
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {portfolioItems.map((item) => (

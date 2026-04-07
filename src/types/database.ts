@@ -11097,3 +11097,76 @@ export const Constants = {
   },
 } as const
 
+/* ═══════════════════════════════════════════════════════════════════
+   Convenience Type Aliases
+   ─────────────────────────────────────────────────────────────────
+   These are NOT auto-generated. Re-apply after `supabase gen types`.
+   They map PascalCase names used across the codebase to the
+   generated Database["public"]["Enums"] and Tables<> helpers.
+   ═══════════════════════════════════════════════════════════════════ */
+
+// ── Enum Aliases ────────────────────────────────────────────────────
+export type AdvanceMode = Database["public"]["Enums"]["advance_mode"];
+export type AdvancePriority = Database["public"]["Enums"]["advance_priority"];
+export type AdvanceStatus = Database["public"]["Enums"]["advance_status"];
+export type AdvanceType = Database["public"]["Enums"]["advance_type"];
+export type AssetCondition = Database["public"]["Enums"]["asset_condition"];
+export type AssetStatus = Database["public"]["Enums"]["asset_status"];
+export type AvailabilityStatus = Database["public"]["Enums"]["availability_status"];
+export type BookingStatus = Database["public"]["Enums"]["booking_status"];
+export type CollaboratorRole = Database["public"]["Enums"]["collaborator_role"];
+export type DealStage = Database["public"]["Enums"]["deal_stage"];
+export type FulfillmentStatus = Database["public"]["Enums"]["fulfillment_status"];
+export type FulfillmentType = Database["public"]["Enums"]["fulfillment_type"];
+export type InviteStatus = Database["public"]["Enums"]["invite_status"];
+export type InvoiceStatus = Database["public"]["Enums"]["invoice_status"];
+export type InvoiceType = Database["public"]["Enums"]["invoice_type"];
+export type MilestoneStatus = Database["public"]["Enums"]["milestone_status"];
+export type OrganizationRole = Database["public"]["Enums"]["org_role"];
+export type PhaseStatus = Database["public"]["Enums"]["phase_status"];
+export type ProposalStatus = Database["public"]["Enums"]["proposal_status"];
+export type RequirementAssignee = Database["public"]["Enums"]["requirement_assignee"];
+export type SubscriptionTier = Database["public"]["Enums"]["subscription_tier"];
+export type UnitOfMeasure = Database["public"]["Enums"]["unit_of_measure"];
+
+// ── Table Row Aliases ───────────────────────────────────────────────
+export type AdvanceAccessCode = Tables<"advance_access_codes">;
+export type AdvanceCatalogItem = Tables<"advance_catalog_items">;
+export type AdvanceCatalogVariant = Tables<"advance_catalog_variants">;
+export type AdvanceCategory = Tables<"advance_categories">;
+export type AdvanceCategoryGroup = Tables<"advance_category_groups">;
+export type AdvanceCollaborator = Tables<"advance_collaborators">;
+export type AdvanceComment = Tables<"advance_comments">;
+export type AdvanceLineItem = Tables<"advance_line_items">;
+export type AdvanceModifierList = Tables<"advance_modifier_lists">;
+export type AdvanceModifierOption = Tables<"advance_modifier_options">;
+export type AdvanceStatusHistoryEntry = Tables<"advance_status_history">;
+export type AdvanceSubcategory = Tables<"advance_subcategories">;
+export type ApprovalStatus = Tables<"approval_requests">;
+export type Client = Tables<"clients">;
+export type CrewAvailability = Tables<"crew_availability">;
+export type CrewBooking = Tables<"crew_bookings">;
+export type CrewProfile = Tables<"crew_profiles">;
+export type Deal = Tables<"deals">;
+export type Organization = Tables<"organizations">;
+export type PhaseAddon = Tables<"phase_addons">;
+export type ProductionAdvance = Tables<"production_advances">;
+export type Proposal = Tables<"proposals">;
+export type User = Tables<"users">;
+
+// ── Composite / Utility Aliases ─────────────────────────────────────
+export type CrewAvailabilityStatus = AvailabilityStatus;
+export type CrewBookingStatus = BookingStatus;
+export type CrewProfileWithUser = CrewProfile & { user?: User };
+
+// ── JSON-typed Aliases ──────────────────────────────────────────────
+export type Address = Record<string, unknown>;
+export type BrandConfig = Record<string, unknown>;
+export type NarrativeContext = Record<string, unknown>;
+export type PaymentTerms = Record<string, unknown>;
+export type RecurrenceRule = Record<string, unknown>;
+export type TaskCommentWithAuthor = Record<string, unknown>;
+export type VenueActivationDates = Record<string, unknown>;
+export type VenueLoadInStrike = Record<string, unknown>;
+export type Facility = Record<string, unknown>;
+

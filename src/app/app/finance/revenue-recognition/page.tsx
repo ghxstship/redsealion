@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import { formatCurrency } from '@/lib/utils';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface RevRecRow {
   id: string;
@@ -78,9 +79,9 @@ export default async function RevenueRecognitionPage() {
       </div>
 
       {rows.length === 0 ? (
-        <div className="rounded-xl border border-border bg-white px-8 py-16 text-center">
-          <p className="text-sm text-text-secondary">No revenue recognition entries yet.</p>
-        </div>
+        <EmptyState
+          message="No revenue recognition entries yet"
+        />
       ) : (
         <div className="rounded-xl border border-border bg-white overflow-hidden">
           <div className="overflow-x-auto">

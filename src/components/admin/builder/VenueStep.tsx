@@ -6,6 +6,10 @@ import VenueCard from './VenueCard';
 export type { VenueData } from './VenueCard';
 import type { VenueData } from './VenueCard';
 import { IconPlus } from '@/components/ui/Icons';
+import EmptyState from '@/components/ui/EmptyState';
+import { createClient } from '@/lib/supabase/client';
+import Button from '@/components/ui/Button';
+import { MapPin, Plus } from 'lucide-react';
 
 interface VenueStepProps {
   venues: VenueData[];
@@ -52,9 +56,7 @@ export default function VenueStep({ venues, onChange }: VenueStepProps) {
       </div>
 
       {venues.length === 0 && (
-        <div className="rounded-xl border border-dashed border-border py-12 text-center">
-          <p className="text-sm text-text-muted">No venues added yet.</p>
-        </div>
+        <EmptyState message="No venues added yet" className="border-0 shadow-none px-2 py-8" />
       )}
 
       <div className="space-y-4">

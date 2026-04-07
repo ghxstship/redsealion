@@ -1,6 +1,8 @@
 import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import { statusColor } from '@/lib/utils';
+import { notFound } from 'next/navigation';
+import EmptyState from '@/components/ui/EmptyState';
 import Link from 'next/link';
 import TaskComments from '@/components/admin/tasks/TaskComments';
 import TaskDetailActions from '@/components/admin/tasks/TaskDetailActions';
@@ -217,9 +219,7 @@ export default async function TaskDetailPage({
             )}
 
             {subtasks.length === 0 ? (
-              <div className="rounded-lg border border-dashed border-border bg-bg-secondary/30 px-4 py-6 text-center">
-                <p className="text-xs text-text-muted">No subtasks yet.</p>
-              </div>
+              <EmptyState message="No subtasks yet" className="border-bg-secondary/30 hidden shadow-none" />
             ) : (
               <div className="rounded-xl border border-border bg-white divide-y divide-border overflow-hidden">
                 {subtasks.map((sub) => (

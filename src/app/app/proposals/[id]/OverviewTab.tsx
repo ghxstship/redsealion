@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { formatCurrency, statusColor } from '@/lib/utils';
 import { formatStatus, phaseColorMap, type ProposalData, type PhaseData } from './_detail-types';
+import EmptyState from '@/components/ui/EmptyState';
 
 /**
  * Overview tab for the proposal detail page.
@@ -141,10 +142,15 @@ export default function OverviewTab({
                     <p className="text-sm font-medium text-foreground truncate">
                       {phase.name}
                     </p>
-                    {phase.subtitle && (
+                    {phase.subtitle ? (
                       <p className="text-xs text-text-muted truncate">
                         {phase.subtitle}
                       </p>
+                    ) : (
+                      <EmptyState
+                        message="No milestones assigned yet"
+                        className="border-0 shadow-none px-0 py-1 justify-start"
+                      />
                     )}
                   </div>
                 </div>

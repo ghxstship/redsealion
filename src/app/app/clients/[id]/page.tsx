@@ -4,6 +4,7 @@ import ClientInteractions from '@/components/admin/clients/ClientInteractions';
 import ClientHealthCard from '@/components/admin/clients/ClientHealthCard';
 import ClientDetailActions from './ClientDetailActions';
 import ClientDetailTabs from './ClientDetailTabs';
+import EmptyState from '@/components/ui/EmptyState';
 import { getClient, formatStatus, formatDate, roleLabel } from './_data';
 
 
@@ -200,9 +201,7 @@ export default async function ClientDetailPage({
       </div>
     </div>
   ) : (
-    <div className="rounded-xl border border-dashed border-border bg-white px-6 py-12 text-center">
-      <p className="text-sm text-text-muted">No activity recorded yet.</p>
-    </div>
+    <EmptyState message="No activity recorded yet" />
   );
 
   return (

@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import EmptyState from '@/components/ui/EmptyState';
 import type {
   MilestoneStatus,
   RequirementStatus,
@@ -161,12 +162,10 @@ export default async function MilestonesPage({ params }: PageProps) {
       </div>
 
       {phaseMilestones.length === 0 && (
-        <div className="rounded-lg border border-border bg-background p-8 text-center">
-          <p className="text-sm text-text-muted">No milestones defined yet.</p>
-          <p className="text-xs text-text-muted mt-1">
-            Milestone gates will appear here once your project phases are configured.
-          </p>
-        </div>
+        <EmptyState
+          message="No milestones defined yet"
+          description="Milestone gates will appear here once your project phases are configured."
+        />
       )}
 
       {/* Timeline */}

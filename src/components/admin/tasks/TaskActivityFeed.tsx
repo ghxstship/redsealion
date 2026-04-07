@@ -12,6 +12,7 @@ import {
   Clock, User, ArrowRight, Edit3, Plus, Trash2,
   CheckCircle2, AlertCircle,
 } from 'lucide-react';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface ActivityEntry {
   id: string;
@@ -87,9 +88,7 @@ export default function TaskActivityFeed({ taskId }: TaskActivityFeedProps) {
         {loading ? (
           <p className="text-xs text-text-muted py-4 text-center">Loading…</p>
         ) : entries.length === 0 ? (
-          <p className="text-xs text-text-muted py-4 text-center">
-            No activity recorded yet.
-          </p>
+          <EmptyState message="No activity recorded yet" className="border-0 shadow-none px-2 py-8" />
         ) : (
           <div className="relative space-y-0">
             {/* Timeline line */}

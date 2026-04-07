@@ -2,7 +2,9 @@ import { TierGate } from '@/components/shared/TierGate';
 import { formatCurrency } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import EmptyState from '@/components/ui/EmptyState';
 import CreditNotesHeader from '@/components/admin/invoices/CreditNotesHeader';
+import InvoiceHubTabs from '../../InvoiceHubTabs';
 
 interface CreditNoteRow {
   id: string;
@@ -84,6 +86,8 @@ export default async function CreditNotesPage() {
         <CreditNotesHeader />
       </div>
 
+      <InvoiceHubTabs />
+
       <div className="rounded-xl border border-border bg-white divide-y divide-border overflow-x-auto">
         <div className="grid grid-cols-2 gap-4 px-5 py-3 text-xs font-medium uppercase tracking-wider text-text-muted sm:grid-cols-3 lg:grid-cols-6 min-w-[600px] lg:min-w-0">
           <span>Credit #</span>
@@ -106,9 +110,10 @@ export default async function CreditNotesPage() {
       </div>
 
       {creditNotes.length === 0 && (
-        <div className="rounded-xl border border-dashed border-border bg-white px-5 py-12 text-center">
-          <p className="text-sm text-text-muted">No credit notes issued yet.</p>
-        </div>
+        <EmptyState
+          message="No credit notes yet"
+          description="Issue credit notes for refunds or invoice adjustments."
+        />
       )}
     </TierGate>
   );

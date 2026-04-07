@@ -15,6 +15,7 @@ import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
 import FormTextarea from '@/components/ui/FormTextarea';
 import { Layers, Plus, Copy, Trash2 } from 'lucide-react';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface TaskTemplateItem {
   title: string;
@@ -126,12 +127,12 @@ export default function TaskTemplateLibrary({ onApply }: TaskTemplateLibraryProp
       {loading ? (
         <p className="text-xs text-text-muted text-center py-4">Loading…</p>
       ) : templates.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-border bg-bg-secondary/30 px-4 py-6 text-center">
-          <Layers size={20} className="mx-auto text-text-muted/50 mb-1" />
-          <p className="text-xs text-text-muted">
-            No task templates yet. Create one to quickly scaffold projects.
-          </p>
-        </div>
+        <EmptyState
+          message="No task templates yet"
+          description="Create one to quickly scaffold projects."
+          icon={<Layers size={20} />}
+          className="border-bg-secondary/30 hidden shadow-none"
+        />
       ) : (
         <div className="space-y-3">
           {templates.map((tpl) => (

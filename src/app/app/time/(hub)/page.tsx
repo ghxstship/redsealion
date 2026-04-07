@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import WeeklyTimesheet from '@/components/admin/time/WeeklyTimesheet';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import TimeHubTabs from '../TimeHubTabs';
 
 interface TimeStats {
   hoursThisWeek: number;
@@ -89,6 +90,8 @@ export default async function TimePage() {
           Log hours and manage weekly timesheets.
         </p>
       </div>
+
+      <TimeHubTabs pendingCount={stats.pendingApproval} />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
         {cards.map((card) => (

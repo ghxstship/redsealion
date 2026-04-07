@@ -3,6 +3,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface BudgetSummary {
   id: string;
@@ -52,21 +53,36 @@ export default async function BudgetsPage() {
 
   return (
     <TierGate feature="budgets">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          Project Budgets
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Track spending against project budgets.
-        </p>
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+            Project Budgets
+          </h1>
+          <p className="mt-1 text-sm text-text-secondary">
+            Track spending against project budgets.
+          </p>
+        </div>
+        <Link
+          href="/app/proposals"
+          className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity"
+        >
+          New Budget
+        </Link>
       </div>
 
       {budgets.length === 0 ? (
-        <div className="rounded-xl border border-border bg-white px-8 py-16 text-center">
-          <p className="text-sm text-text-secondary">
-            No project budgets created yet. Create a budget from a proposal to start tracking spending.
-          </p>
-        </div>
+        <EmptyState
+          message="No project budgets created yet"
+          description="Create a budget from a proposal to start tracking spending."
+          action={
+            <Link
+              href="/app/proposals"
+              className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity whitespace-nowrap"
+            >
+              Go to Proposals
+            </Link>
+          }
+        />
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {budgets.map((budget) => (

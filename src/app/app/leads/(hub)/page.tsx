@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import LeadsHeader from '@/components/admin/leads/LeadsHeader';
 import LeadsTable from '@/components/admin/leads/LeadsTable';
+import LeadsHubTabs from '../LeadsHubTabs';
 
 interface Lead {
   id: string;
@@ -80,6 +81,7 @@ export default async function LeadsPage() {
         </div>
       </div>
 
+      <LeadsHubTabs />
 
       <LeadsTable leads={leads} />
     </>

@@ -5,6 +5,8 @@ import QRScanner from '@/components/admin/equipment/QRScanner';
 import QRGenerator from '@/components/admin/equipment/QRGenerator';
 import CheckInOut from '@/components/admin/equipment/CheckInOut';
 import Button from '@/components/ui/Button';
+import SearchInput from '@/components/ui/SearchInput';
+import EmptyState from '@/components/ui/EmptyState';
 import Alert from '@/components/ui/Alert';
 import StatusBadge, { EQUIPMENT_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import { formatLabel, formatCurrency } from '@/lib/utils';
@@ -383,10 +385,10 @@ export default function ScanPageClient() {
       {tab === 'recent' && (
         <div>
           {recentScans.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-sm text-text-muted">No scans yet this session.</p>
-              <Button className="mt-3" onClick={() => setTab('scan')}>Start Scanning</Button>
-            </div>
+            <EmptyState
+              message="No scans yet this session"
+              action={<Button className="mt-3" onClick={() => setTab('scan')}>Start Scanning</Button>}
+            />
           ) : (
             <div className="space-y-2">
               {recentScans.map((entry, i) => (

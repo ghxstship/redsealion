@@ -65,7 +65,11 @@ export type FeatureKey =
   | 'review_requests'
   // Production Advancing
   | 'advancing'
-  | 'advancing_collection';
+  | 'advancing_collection'
+  // Events, Activations & Locations
+  | 'events'
+  | 'activations'
+  | 'locations';
 
 // Maps each feature to the minimum subscription tier required
 const featureRegistry: Record<FeatureKey, SubscriptionTier> = {
@@ -138,6 +142,10 @@ const featureRegistry: Record<FeatureKey, SubscriptionTier> = {
   // Production Advancing
   advancing: 'starter',
   advancing_collection: 'professional',
+  // Events, Activations & Locations
+  events: 'professional',
+  activations: 'professional',
+  locations: 'professional',
 };
 
 const tierRank: Record<SubscriptionTier, number> = {

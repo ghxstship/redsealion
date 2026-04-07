@@ -3,6 +3,8 @@ import { TierGate } from '@/components/shared/TierGate';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
+import EmptyState from '@/components/ui/EmptyState';
+
 const STATUS_COLORS: Record<string, string> = {
   draft: 'bg-gray-100 text-gray-600',
   dispatched: 'bg-blue-50 text-blue-700',
@@ -81,9 +83,18 @@ export default async function DispatchPage() {
       {/* Work order list */}
       <div className="rounded-xl border border-border bg-white overflow-hidden">
         {workOrders.length === 0 ? (
-          <div className="px-6 py-12 text-center text-sm text-text-muted">
-            No work orders yet. Create your first to start dispatching crew.
-          </div>
+          <EmptyState
+            message="No work orders yet"
+            description="Create your first to start dispatching crew."
+            action={
+              <Link
+                href="/app/dispatch/new"
+                className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity"
+              >
+                Create Work Order
+              </Link>
+            }
+          />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">

@@ -7,6 +7,7 @@ import FormSelect from '@/components/ui/FormSelect';
 import FormTextarea from '@/components/ui/FormTextarea';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface BundleItem {
   asset_id: string;
@@ -132,7 +133,7 @@ export default function BundleEditor({ bundle, onClose, onSaved }: BundleEditorP
           </div>
 
           {items.length === 0 && (
-            <p className="text-sm text-text-muted">No items added yet.</p>
+            <EmptyState message="No items added yet" className="border-0 shadow-none px-2 py-8" />
           )}
 
           <div className="space-y-2">

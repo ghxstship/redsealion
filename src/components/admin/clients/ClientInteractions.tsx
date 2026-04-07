@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import FormSelect from '@/components/ui/FormSelect';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface Interaction {
   id: string;
@@ -70,9 +71,7 @@ export default function ClientInteractions({
       </div>
       <div className="px-6 py-4">
         {filtered.length === 0 ? (
-          <p className="text-sm text-text-muted py-4 text-center">
-            No interactions yet.
-          </p>
+          <EmptyState message="No interactions recorded yet" className="border-0 shadow-none px-2 py-8" />
         ) : (
           <div className="space-y-0">
             {filtered.map((interaction, index) => (

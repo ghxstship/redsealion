@@ -1,5 +1,6 @@
 import { TierGate } from '@/components/shared/TierGate';
 import OrgChart from '@/components/admin/people/OrgChart';
+import PeopleHubTabs from '../../PeopleHubTabs';
 
 export default function OrgChartPage() {
   return (
@@ -12,6 +13,8 @@ export default function OrgChartPage() {
           Visualize reporting structure and team hierarchy.
         </p>
       </div>
+
+      <PeopleHubTabs />
 
       <OrgChart />
     </TierGate>
