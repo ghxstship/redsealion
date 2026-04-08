@@ -87,7 +87,7 @@ export default async function AutomationsPage() {
                   className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
                     automation.is_active
                       ? 'bg-green-100 text-green-800'
-                      : 'bg-bg-secondary text-gray-600'
+                      : 'bg-bg-secondary text-text-muted'
                   }`}
                 >
                   {automation.is_active ? 'Active' : 'Inactive'}

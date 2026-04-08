@@ -18,7 +18,7 @@ const assigneeBadge: Record<RequirementAssignee, { label: string; className: str
   client: { label: 'Client', className: 'bg-blue-50 text-blue-700' },
   producer: { label: 'Producer', className: 'bg-purple-50 text-purple-700' },
   both: { label: 'Both', className: 'bg-amber-50 text-amber-700' },
-  external_vendor: { label: 'Vendor', className: 'bg-bg-secondary text-gray-600' },
+  external_vendor: { label: 'Vendor', className: 'bg-bg-secondary text-text-muted' },
 };
 
 export default function MilestoneGateComponent({

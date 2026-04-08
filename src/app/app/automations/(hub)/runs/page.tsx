@@ -68,7 +68,7 @@ export default async function AutomationRunsPage() {
                     <td className="px-4 py-3 tabular-nums">{run.run_count ?? 0}</td>
                     <td className="px-4 py-3 text-text-secondary">{run.last_run_at ? new Date(run.last_run_at).toLocaleString() : '—'}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${run.status === 'active' ? 'bg-green-50 text-green-700' : 'bg-bg-secondary text-gray-700'}`}>{run.status}</span>
+                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${run.status === 'active' ? 'bg-green-50 text-green-700' : 'bg-bg-secondary text-text-secondary'}`}>{run.status}</span>
                     </td>
                   </tr>
                 ))}

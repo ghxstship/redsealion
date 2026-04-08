@@ -27,7 +27,7 @@ async function getDispatchBoard() {
 }
 
 const STATUS_LABELS: Record<string, string> = { pending: 'Pending', dispatched: 'Dispatched', on_site: 'On Site', completed: 'Completed' };
-const STATUS_COLORS: Record<string, string> = { pending: 'border-yellow-200 bg-yellow-50', dispatched: 'border-blue-200 bg-blue-50', on_site: 'border-green-200 bg-green-50', completed: 'border-gray-200 bg-bg-secondary' };
+const STATUS_COLORS: Record<string, string> = { pending: 'border-yellow-200 bg-yellow-50', dispatched: 'border-blue-200 bg-blue-50', on_site: 'border-green-200 bg-green-50', completed: 'border-border bg-bg-secondary' };
 
 export default async function DispatchBoardPage() {
   const { columns } = await getDispatchBoard();

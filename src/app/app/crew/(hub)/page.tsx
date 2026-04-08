@@ -41,7 +41,7 @@ const AVAILABILITY_COLORS: Record<string, string> = {
 const ONBOARDING_COLORS: Record<string, string> = {
   complete: 'bg-green-50 text-green-700',
   in_progress: 'bg-blue-50 text-blue-700',
-  pending: 'bg-bg-secondary text-gray-600',
+  pending: 'bg-bg-secondary text-text-muted',
 };
 
 export default function CrewPage() {
@@ -209,10 +209,10 @@ export default function CrewPage() {
                 </td>
                 <td className="px-6 py-3.5 text-sm tabular-nums text-foreground">{member.hourly_rate != null ? `$${member.hourly_rate}/hr` : '\u2014'}</td>
                 <td className="px-6 py-3.5">
-                  <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${AVAILABILITY_COLORS[member.availability_status] ?? 'bg-bg-secondary text-gray-600'}`}>{formatLabel(member.availability_status)}</span>
+                  <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${AVAILABILITY_COLORS[member.availability_status] ?? 'bg-bg-secondary text-text-muted'}`}>{formatLabel(member.availability_status)}</span>
                 </td>
                 <td className="px-6 py-3.5">
-                  <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${ONBOARDING_COLORS[member.onboarding_status] ?? 'bg-bg-secondary text-gray-600'}`}>{formatLabel(member.onboarding_status)}</span>
+                  <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${ONBOARDING_COLORS[member.onboarding_status] ?? 'bg-bg-secondary text-text-muted'}`}>{formatLabel(member.onboarding_status)}</span>
                 </td>
                 <td className="px-6 py-3.5">
                   <RowActionMenu actions={[

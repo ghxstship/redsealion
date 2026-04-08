@@ -59,7 +59,7 @@ export default function CheckInOut({ reservationId, currentStatus, onComplete }:
       ? 'bg-blue-100 text-blue-800'
       : currentStatus === 'checked_out'
         ? 'bg-green-100 text-green-800'
-        : 'bg-bg-secondary text-gray-800';
+        : 'bg-bg-secondary text-foreground';
 
   return (
     <div className="bg-background border border-border rounded-lg shadow-sm p-5">

@@ -28,7 +28,7 @@ async function getRentalCatalog() {
   } catch { return { orders: [], totalRevenue: 0, activeOrders: 0 }; }
 }
 
-const STATUS_COLORS: Record<string, string> = { draft: 'bg-bg-secondary text-gray-700', reserved: 'bg-blue-50 text-blue-700', checked_out: 'bg-purple-50 text-purple-700', on_site: 'bg-green-50 text-green-700', returned: 'bg-bg-secondary text-gray-700', invoiced: 'bg-green-50 text-green-700', cancelled: 'bg-red-50 text-red-700' };
+const STATUS_COLORS: Record<string, string> = { draft: 'bg-bg-secondary text-text-secondary', reserved: 'bg-blue-50 text-blue-700', checked_out: 'bg-purple-50 text-purple-700', on_site: 'bg-green-50 text-green-700', returned: 'bg-bg-secondary text-text-secondary', invoiced: 'bg-green-50 text-green-700', cancelled: 'bg-red-50 text-red-700' };
 
 export default async function RentalsCatalogPage() {
   const { orders, totalRevenue, activeOrders } = await getRentalCatalog();

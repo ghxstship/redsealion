@@ -140,9 +140,9 @@ function priorityColor(priority: string): string {
     urgent: 'bg-red-50 text-red-700',
     high: 'bg-orange-50 text-orange-700',
     medium: 'bg-yellow-50 text-yellow-700',
-    low: 'bg-bg-secondary text-gray-600',
+    low: 'bg-bg-secondary text-text-muted',
   };
-  return map[priority] ?? 'bg-bg-secondary text-gray-600';
+  return map[priority] ?? 'bg-bg-secondary text-text-muted';
 }
 
 export default async function TaskDetailPage({

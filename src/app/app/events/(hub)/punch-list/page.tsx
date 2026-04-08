@@ -24,7 +24,7 @@ async function getPunchList() {
   } catch { return []; }
 }
 
-const PRIORITY_COLORS: Record<string, string> = { low: 'text-gray-500', medium: 'text-yellow-600', high: 'text-orange-600', urgent: 'text-red-600' };
+const PRIORITY_COLORS: Record<string, string> = { low: 'text-text-muted', medium: 'text-yellow-600', high: 'text-orange-600', urgent: 'text-red-600' };
 
 export default async function PunchListPage() {
   const items = await getPunchList();

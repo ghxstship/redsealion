@@ -12,7 +12,7 @@ const RESERVATION_COLORS: Record<string, string> = {
   cancelled: 'bg-red-50 text-red-700',
   reserved: 'bg-blue-50 text-blue-700',
   checked_out: 'bg-purple-50 text-purple-700',
-  returned: 'bg-bg-secondary text-gray-600',
+  returned: 'bg-bg-secondary text-text-muted',
 };
 
 export default async function EquipmentDetailPage({

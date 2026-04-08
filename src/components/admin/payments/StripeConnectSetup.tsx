@@ -101,7 +101,7 @@ export default function StripeConnectSetup() {
       <div className="flex items-center justify-between mb-5">
         <h2 className="text-sm font-semibold text-foreground">Stripe Connect</h2>
         {state === 'not_connected' && (
-          <span className="inline-flex items-center rounded-full bg-bg-secondary px-2 py-0.5 text-xs font-medium text-gray-600">
+          <span className="inline-flex items-center rounded-full bg-bg-secondary px-2 py-0.5 text-xs font-medium text-text-muted">
             Not connected
           </span>
         )}

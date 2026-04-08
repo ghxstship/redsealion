@@ -52,15 +52,15 @@ function DocxOptions({ onExport }: { onExport: (opts: Record<string, boolean>) =
 
         <div className="mt-4 space-y-2.5 pl-[3.375rem]">
           <label className="flex items-center gap-2.5 cursor-pointer">
-            <input type="checkbox" checked={includeTerms} onChange={() => setIncludeTerms(!includeTerms)} className="h-4 w-4 rounded border-gray-300" />
+            <input type="checkbox" checked={includeTerms} onChange={() => setIncludeTerms(!includeTerms)} className="h-4 w-4 rounded border-border" />
             <span className="text-xs text-foreground">Include Terms &amp; Conditions appendix</span>
           </label>
           <label className="flex items-center gap-2.5 cursor-pointer">
-            <input type="checkbox" checked={includePortfolio} onChange={() => setIncludePortfolio(!includePortfolio)} className="h-4 w-4 rounded border-gray-300" />
+            <input type="checkbox" checked={includePortfolio} onChange={() => setIncludePortfolio(!includePortfolio)} className="h-4 w-4 rounded border-border" />
             <span className="text-xs text-foreground">Include portfolio references</span>
           </label>
           <label className="flex items-center gap-2.5 cursor-pointer">
-            <input type="checkbox" checked={includePlaceholders} onChange={() => setIncludePlaceholders(!includePlaceholders)} className="h-4 w-4 rounded border-gray-300" />
+            <input type="checkbox" checked={includePlaceholders} onChange={() => setIncludePlaceholders(!includePlaceholders)} className="h-4 w-4 rounded border-border" />
             <span className="text-xs text-foreground">Include placeholder fields for signatures</span>
           </label>
         </div>
@@ -206,7 +206,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
                       <td className="px-6 py-3 text-text-secondary tabular-nums">{new Date(inv.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
                       <td className="px-6 py-3 text-right font-medium text-foreground tabular-nums">{fmt(inv.amount)}</td>
                       <td className="px-6 py-3">
-                        <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${inv.status === 'Draft' ? 'bg-bg-secondary text-gray-600' : 'bg-green-50 text-green-700'}`}>{inv.status}</span>
+                        <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${inv.status === 'Draft' ? 'bg-bg-secondary text-text-muted' : 'bg-green-50 text-green-700'}`}>{inv.status}</span>
                       </td>
                     </tr>
                   ))}
@@ -294,7 +294,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
                       <td className="px-6 py-3 text-text-secondary">{asset.venue}</td>
                       <td className="px-6 py-3 text-right tabular-nums text-foreground">{asset.qty}</td>
                       <td className="px-6 py-3">
-                        <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${asset.status === 'In Production' ? 'bg-orange-50 text-orange-700' : 'bg-bg-secondary text-gray-600'}`}>{asset.status}</span>
+                        <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${asset.status === 'In Production' ? 'bg-orange-50 text-orange-700' : 'bg-bg-secondary text-text-muted'}`}>{asset.status}</span>
                       </td>
                     </tr>
                   ))}

@@ -25,7 +25,7 @@ async function getShopFloor() {
 }
 
 const ACTION_ICONS: Record<string, string> = { started: '▶️', paused: '⏸️', resumed: '🔄', completed: '✅', quality_pass: '🟢', quality_fail: '🔴', note: '📝' };
-const ACTION_COLORS: Record<string, string> = { started: 'bg-blue-50 text-blue-700', completed: 'bg-green-50 text-green-700', quality_pass: 'bg-green-50 text-green-700', quality_fail: 'bg-red-50 text-red-700', paused: 'bg-yellow-50 text-yellow-700', resumed: 'bg-blue-50 text-blue-700', note: 'bg-bg-secondary text-gray-700' };
+const ACTION_COLORS: Record<string, string> = { started: 'bg-blue-50 text-blue-700', completed: 'bg-green-50 text-green-700', quality_pass: 'bg-green-50 text-green-700', quality_fail: 'bg-red-50 text-red-700', paused: 'bg-yellow-50 text-yellow-700', resumed: 'bg-blue-50 text-blue-700', note: 'bg-bg-secondary text-text-secondary' };
 
 export default async function ShopFloorPage() {
   const logs = await getShopFloor();

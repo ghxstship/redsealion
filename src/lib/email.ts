@@ -21,7 +21,17 @@ export interface EmailProvider {
 
 // Console/log provider for development
 class ConsoleEmailProvider implements EmailProvider {
+  private warned = false;
+
   async send(payload: EmailPayload): Promise<EmailResult> {
+    if (!this.warned && process.env.NODE_ENV === 'production') {
+      // eslint-disable-next-line no-console -- intentional startup warning
+      console.warn(
+        '[EMAIL] ⚠️ Using console email provider in production. ' +
+        'Emails will NOT be delivered. Set EMAIL_PROVIDER=resend and configure RESEND_API_KEY.',
+      );
+      this.warned = true;
+    }
     // Development-only email provider — returns success without sending
     void payload;
     return {

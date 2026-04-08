@@ -155,7 +155,7 @@ export default async function WarehousePage() {
                 <td className="px-6 py-3.5">
                   <span
                     className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                      STATUS_COLORS[asset.status] ?? 'bg-bg-secondary text-gray-600'
+                      STATUS_COLORS[asset.status] ?? 'bg-bg-secondary text-text-muted'
                     }`}
                   >
                     {formatLabel(asset.status)}

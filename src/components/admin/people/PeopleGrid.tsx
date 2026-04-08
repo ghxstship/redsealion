@@ -73,11 +73,14 @@ export default function PeopleGrid({ members }: { members: TeamMember[] }) {
     );
   }, [members, search]);
 
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+
   async function handleDeletePerson(person: TeamMember) {
+    setDeleteError(null);
     const res = await fetch(`/api/settings/team/${person.id}`, { method: 'DELETE' });
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));
-      alert(data.error || 'Failed to remove team member');
+      setDeleteError(data.error || 'Failed to remove team member');
       return;
     }
     setDeletePerson(null);
@@ -87,6 +90,12 @@ export default function PeopleGrid({ members }: { members: TeamMember[] }) {
   return (
     <>
       {/* Toolbar */}
+      {deleteError && (
+        <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 flex items-center justify-between">
+          <span>{deleteError}</span>
+          <button onClick={() => setDeleteError(null)} className="text-red-600 hover:text-red-800 text-lg leading-none">&times;</button>
+        </div>
+      )}
       <div className="mb-6 flex flex-col gap-4">
         {/* Top row: Views & Main Actions */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -151,7 +160,7 @@ export default function PeopleGrid({ members }: { members: TeamMember[] }) {
                 <div className="mt-4 space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-text-muted">Role</span>
-                    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${ROLE_BADGE_COLORS[member.role] ?? 'bg-bg-secondary text-gray-700'}`}>
+                    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${ROLE_BADGE_COLORS[member.role] ?? 'bg-bg-secondary text-text-secondary'}`}>
                       {ROLE_LABELS[member.role] ?? member.role}
                     </span>
                   </div>

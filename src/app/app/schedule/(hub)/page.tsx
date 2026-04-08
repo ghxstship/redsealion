@@ -28,7 +28,7 @@ async function getSchedules() {
 }
 
 const TYPE_LABELS: Record<string, string> = { build_strike: 'Build & Strike', run_of_show: 'Run of Show', rehearsal: 'Rehearsal', general: 'General' };
-const STATUS_COLORS: Record<string, string> = { draft: 'bg-yellow-50 text-yellow-700', published: 'bg-blue-50 text-blue-700', live: 'bg-green-50 text-green-700', completed: 'bg-bg-secondary text-gray-700' };
+const STATUS_COLORS: Record<string, string> = { draft: 'bg-yellow-50 text-yellow-700', published: 'bg-blue-50 text-blue-700', live: 'bg-green-50 text-green-700', completed: 'bg-bg-secondary text-text-secondary' };
 
 export default async function ScheduleTimelinePage() {
   const schedules = await getSchedules();

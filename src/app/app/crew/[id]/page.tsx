@@ -107,7 +107,7 @@ const AVAILABILITY_COLORS: Record<string, string> = {
 const ONBOARDING_COLORS: Record<string, string> = {
   complete: 'bg-green-50 text-green-700',
   in_progress: 'bg-blue-50 text-blue-700',
-  pending: 'bg-bg-secondary text-gray-600',
+  pending: 'bg-bg-secondary text-text-muted',
 };
 
 const BOOKING_STATUS_COLORS: Record<string, string> = {
@@ -199,7 +199,7 @@ export default async function CrewMemberPage({
                   <td className="px-6 py-3.5">
                     <span
                       className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        BOOKING_STATUS_COLORS[booking.status] ?? 'bg-bg-secondary text-gray-600'
+                        BOOKING_STATUS_COLORS[booking.status] ?? 'bg-bg-secondary text-text-muted'
                       }`}
                     >
                       {formatLabel(booking.status)}
@@ -239,14 +239,14 @@ export default async function CrewMemberPage({
         <div className="flex gap-2">
           <span
             className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-              AVAILABILITY_COLORS[member.availability_status] ?? 'bg-bg-secondary text-gray-600'
+              AVAILABILITY_COLORS[member.availability_status] ?? 'bg-bg-secondary text-text-muted'
             }`}
           >
             {formatLabel(member.availability_status)}
           </span>
           <span
             className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-              ONBOARDING_COLORS[member.onboarding_status] ?? 'bg-bg-secondary text-gray-600'
+              ONBOARDING_COLORS[member.onboarding_status] ?? 'bg-bg-secondary text-text-muted'
             }`}
           >
             Onboarding: {formatLabel(member.onboarding_status)}

@@ -19,10 +19,10 @@ const ROLE_BADGE_COLORS: Record<string, string> = {
   controller: 'bg-emerald-50 text-emerald-700 border-emerald-200',
   manager: 'bg-purple-50 text-purple-700 border-purple-200',
   team_member: 'bg-green-50 text-green-700 border-green-200',
-  client: 'bg-bg-secondary text-gray-600 border-gray-200',
+  client: 'bg-bg-secondary text-text-muted border-border',
   contractor: 'bg-amber-50 text-amber-700 border-amber-200',
   crew: 'bg-orange-50 text-orange-700 border-orange-200',
-  viewer: 'bg-bg-secondary text-gray-600 border-gray-200',
+  viewer: 'bg-bg-secondary text-text-muted border-border',
 };
 
 function formatRole(role: string): string {
@@ -133,7 +133,7 @@ export default async function TeamSettingsPage() {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
                       className={`inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-medium ${
-                        ROLE_BADGE_COLORS[member.role] || 'bg-bg-secondary text-gray-600 border-gray-200'
+                        ROLE_BADGE_COLORS[member.role] || 'bg-bg-secondary text-text-muted border-border'
                       }`}
                     >
                       {formatRole(member.role)}

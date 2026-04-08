@@ -149,8 +149,9 @@ export default function AssetDetailClient({ asset, proposalName, locationHistory
                 <div className="absolute right-0 top-full mt-1 w-44 rounded-lg border border-border bg-background shadow-lg py-1 z-10">
                   {asset.status !== 'retired' && asset.status !== 'disposed' && (
                     <button
-                      className="w-full px-4 py-2 text-left text-sm text-foreground hover:bg-bg-secondary transition-colors"
-                      onClick={() => { setActionMenuOpen(false); alert('Asset movement is managed in the upcoming Logistics v2 suite.'); }}
+                      className="w-full px-4 py-2 text-left text-sm text-text-muted cursor-not-allowed"
+                      disabled
+                      title="Asset movement will be available in Logistics v2"
                     >
                       Move Asset
                     </button>

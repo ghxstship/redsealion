@@ -19,7 +19,7 @@ interface OnboardingMember {
 const STATUS_COLORS: Record<string, string> = {
   complete: 'bg-green-50 text-green-700',
   in_progress: 'bg-blue-50 text-blue-700',
-  pending: 'bg-bg-secondary text-gray-600',
+  pending: 'bg-bg-secondary text-text-muted',
 };
 
 async function getOnboarding(): Promise<OnboardingMember[]> {
@@ -96,7 +96,7 @@ export default async function OnboardingPage() {
         </div>
         <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Pending</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-gray-600">{pendingCount}</p>
+          <p className="mt-1 text-2xl font-semibold tabular-nums text-text-muted">{pendingCount}</p>
         </div>
       </div>
 
@@ -133,7 +133,7 @@ export default async function OnboardingPage() {
                   <td className="px-6 py-3.5">
                     <span
                       className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        STATUS_COLORS[member.onboarding_status] ?? 'bg-bg-secondary text-gray-600'
+                        STATUS_COLORS[member.onboarding_status] ?? 'bg-bg-secondary text-text-muted'
                       }`}
                     >
                       {formatLabel(member.onboarding_status)}

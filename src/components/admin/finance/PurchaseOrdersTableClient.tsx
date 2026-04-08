@@ -10,7 +10,7 @@ import Button from '@/components/ui/Button';
 import { Plus, FileText } from 'lucide-react';
 
 const PO_STATUS_COLORS: Record<string, string> = {
-  draft: 'bg-bg-secondary text-gray-700',
+  draft: 'bg-bg-secondary text-text-secondary',
   sent: 'bg-blue-50 text-blue-700',
   acknowledged: 'bg-indigo-50 text-indigo-700',
   fulfilled: 'bg-green-50 text-green-700',

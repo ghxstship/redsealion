@@ -60,7 +60,7 @@ export default async function FavoritesPage() {
                     <Link key={item.id as string} href={`${section.href}/${item.id}`} className="block px-5 py-3 hover:bg-bg-secondary/50 transition-colors">
                       <div className="flex items-center justify-between">
                         <p className="text-sm font-medium text-foreground">{item[section.nameField] as string}</p>
-                        <span className="inline-flex rounded-full px-2 py-0.5 text-xs font-medium bg-bg-secondary text-gray-700 capitalize">{(item.status as string)?.replace('_', ' ')}</span>
+                        <span className="inline-flex rounded-full px-2 py-0.5 text-xs font-medium bg-bg-secondary text-text-secondary capitalize">{(item.status as string)?.replace('_', ' ')}</span>
                       </div>
                     </Link>
                   ))}

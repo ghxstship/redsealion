@@ -32,9 +32,9 @@ function typeColor(type: string): string {
     meeting: 'bg-blue-50 text-blue-700',
     call: 'bg-green-50 text-green-700',
     email: 'bg-indigo-50 text-indigo-700',
-    note: 'bg-bg-secondary text-gray-700',
+    note: 'bg-bg-secondary text-text-secondary',
   };
-  return colors[type] ?? 'bg-bg-secondary text-gray-700';
+  return colors[type] ?? 'bg-bg-secondary text-text-secondary';
 }
 
 export default function ClientInteractions({

@@ -17,7 +17,7 @@ interface OnboardingChecklistProps {
 }
 
 const STATUS_CONFIG: Record<string, { icon: string; color: string; label: string }> = {
-  pending: { icon: '\u25CB', color: 'text-gray-400', label: 'Pending' },
+  pending: { icon: '\u25CB', color: 'text-text-muted', label: 'Pending' },
   uploaded: { icon: '\u25D4', color: 'text-blue-500', label: 'Uploaded' },
   verified: { icon: '\u2713', color: 'text-green-600', label: 'Verified' },
   rejected: { icon: '\u2717', color: 'text-red-600', label: 'Rejected' },

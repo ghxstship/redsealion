@@ -45,7 +45,7 @@ export default async function ClientActivityPage() {
                 <span className="text-lg mt-0.5">{typeIcons[activity.type] ?? '📌'}</span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="inline-flex rounded-full px-2 py-0.5 text-xs font-medium bg-bg-secondary text-gray-700 capitalize">{activity.type}</span>
+                    <span className="inline-flex rounded-full px-2 py-0.5 text-xs font-medium bg-bg-secondary text-text-secondary capitalize">{activity.type}</span>
                     {activity.deals?.clients?.name && (
                       <span className="text-xs text-text-muted">• {activity.deals.clients.name}</span>
                     )}

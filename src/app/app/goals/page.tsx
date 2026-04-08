@@ -36,7 +36,7 @@ function statusBadge(status: string): string {
     off_track: 'bg-red-100 text-red-700',
     completed: 'bg-blue-100 text-blue-700',
   };
-  return map[status] ?? 'bg-bg-secondary text-gray-600';
+  return map[status] ?? 'bg-bg-secondary text-text-muted';
 }
 
 async function getGoals(): Promise<Goal[]> {

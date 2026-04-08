@@ -314,13 +314,10 @@ export default function PhaseSection({
               />
               <button
                 type="button"
-                onClick={() => {
-                  alert('Client commenting will be available in the upcoming Client Portal update.');
-                  setCommentText('');
-                  setShowCommentInput(false);
-                }}
-                className="rounded-lg px-4 py-2 text-xs font-medium text-white transition-colors"
+                disabled
+                className="rounded-lg px-4 py-2 text-xs font-medium text-white opacity-50 cursor-not-allowed"
                 style={{ backgroundColor: 'var(--org-primary)' }}
+                title="Client commenting coming soon"
               >
                 Send
               </button>

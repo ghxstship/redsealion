@@ -15,7 +15,7 @@ import { Building2 } from 'lucide-react';
 
 const VENDOR_STATUS_COLORS: Record<string, string> = {
   active: 'bg-green-50 text-green-700',
-  inactive: 'bg-bg-secondary text-gray-600',
+  inactive: 'bg-bg-secondary text-text-muted',
 };
 
 interface VendorRow {

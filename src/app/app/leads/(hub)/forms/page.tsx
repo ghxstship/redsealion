@@ -21,7 +21,7 @@ interface LeadForm {
 
 const STATUS_COLORS: Record<string, string> = {
   active: 'bg-green-50 text-green-700',
-  draft: 'bg-bg-secondary text-gray-600',
+  draft: 'bg-bg-secondary text-text-muted',
   archived: 'bg-red-50 text-red-700',
 };
 
@@ -104,7 +104,7 @@ export default async function LeadFormsPage() {
                   <h3 className="text-sm font-medium text-foreground">{form.name}</h3>
                   <span
                     className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                      STATUS_COLORS[form.status] ?? 'bg-bg-secondary text-gray-600'
+                      STATUS_COLORS[form.status] ?? 'bg-bg-secondary text-text-muted'
                     }`}
                   >
                     {formatLabel(form.status)}

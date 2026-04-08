@@ -28,7 +28,7 @@ const CODE_TYPE_COLORS: Record<string, string> = {
 
 const ROLE_COLORS: Record<string, string> = {
   contributor: 'bg-sky-50 text-sky-700',
-  viewer: 'bg-bg-secondary text-gray-600',
+  viewer: 'bg-bg-secondary text-text-muted',
   vendor: 'bg-amber-50 text-amber-700',
   manager: 'bg-indigo-50 text-indigo-700',
 };

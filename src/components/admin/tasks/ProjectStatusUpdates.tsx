@@ -132,7 +132,7 @@ export default function ProjectStatusUpdates({ proposalId }: ProjectStatusUpdate
             return (
               <div key={update.id} className="px-5 py-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${opt?.color ?? 'bg-bg-secondary text-gray-600'}`}>
+                  <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${opt?.color ?? 'bg-bg-secondary text-text-muted'}`}>
                     {opt?.label ?? update.status}
                   </span>
                   <span className="text-[11px] text-text-muted">

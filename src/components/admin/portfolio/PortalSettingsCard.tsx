@@ -91,8 +91,8 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
 
   return (
     <div className="bg-background border rounded-lg shadow-sm p-6 lg:col-span-2">
-      <h2 className="text-lg font-semibold mb-4 text-gray-900">Event Portal Configuration</h2>
-      <p className="text-sm text-gray-500 mb-6">
+      <h2 className="text-lg font-semibold mb-4 text-foreground">Event Portal Configuration</h2>
+      <p className="text-sm text-text-muted mb-6">
         Manage the Know Before You Go information served to productionsite.guide for this specific project.
       </p>
       
@@ -100,7 +100,7 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
 
       <div className="space-y-6 pt-4 mt-6">
         {isLoading ? (
-          <div className="text-sm text-gray-500">Loading portal data...</div>
+          <div className="text-sm text-text-muted">Loading portal data...</div>
         ) : (
           <>
             <div className="flex items-center space-x-2">
@@ -116,7 +116,7 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Call Time / Doors Time</label>
+              <label className="block text-sm font-medium text-text-secondary mb-1">Call Time / Doors Time</label>
               <FormInput
                 value={data.call_time || ''}
                 onChange={(e) => setData({ ...data, call_time: e.target.value })}
@@ -126,7 +126,7 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Parking Instructions</label>
+                <label className="block text-sm font-medium text-text-secondary mb-1">Parking Instructions</label>
                 <FormTextarea
                   value={data.parking_instructions || ''}
                   onChange={(e) => setData({ ...data, parking_instructions: e.target.value })}
@@ -135,7 +135,7 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Rideshare Instructions</label>
+                <label className="block text-sm font-medium text-text-secondary mb-1">Rideshare Instructions</label>
                 <FormTextarea
                   value={data.rideshare_instructions || ''}
                   onChange={(e) => setData({ ...data, rideshare_instructions: e.target.value })}
@@ -144,7 +144,7 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Transit Instructions</label>
+                <label className="block text-sm font-medium text-text-secondary mb-1">Transit Instructions</label>
                 <FormTextarea
                   value={data.transit_instructions || ''}
                   onChange={(e) => setData({ ...data, transit_instructions: e.target.value })}
@@ -153,7 +153,7 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Check-In Instructions</label>
+                <label className="block text-sm font-medium text-text-secondary mb-1">Check-In Instructions</label>
                 <FormTextarea
                   value={data.check_in_instructions || ''}
                   onChange={(e) => setData({ ...data, check_in_instructions: e.target.value })}

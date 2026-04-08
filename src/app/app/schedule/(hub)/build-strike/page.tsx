@@ -100,7 +100,7 @@ export default async function BuildStrikePage() {
                           </div>
                           <div className="text-right">
                             <p className="text-xs text-text-secondary">{new Date(block.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} – {new Date(block.end_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
-                            <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium mt-1 ${block.status === 'completed' ? 'bg-green-50 text-green-700' : block.status === 'in_progress' ? 'bg-blue-50 text-blue-700' : 'bg-bg-secondary text-gray-700'}`}>{block.status.replace('_', ' ')}</span>
+                            <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium mt-1 ${block.status === 'completed' ? 'bg-green-50 text-green-700' : block.status === 'in_progress' ? 'bg-blue-50 text-blue-700' : 'bg-bg-secondary text-text-secondary'}`}>{block.status.replace('_', ' ')}</span>
                           </div>
                         </div>
                       </div>

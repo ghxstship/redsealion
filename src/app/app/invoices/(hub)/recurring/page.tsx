@@ -83,7 +83,7 @@ export default async function RecurringInvoicesPage() {
                 <h3 className="text-sm font-semibold text-foreground">{schedule.client_name}</h3>
                 <span
                   className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-                    schedule.is_active ? 'bg-green-100 text-green-800' : 'bg-bg-secondary text-gray-600'
+                    schedule.is_active ? 'bg-green-100 text-green-800' : 'bg-bg-secondary text-text-muted'
                   }`}
                 >
                   {schedule.is_active ? 'Active' : 'Paused'}

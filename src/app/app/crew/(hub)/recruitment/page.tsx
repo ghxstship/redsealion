@@ -18,7 +18,7 @@ const STATUS_COLORS: Record<string, string> = {
   open: 'bg-green-50 text-green-700',
   interviewing: 'bg-blue-50 text-blue-700',
   offered: 'bg-purple-50 text-purple-700',
-  filled: 'bg-bg-secondary text-gray-600',
+  filled: 'bg-bg-secondary text-text-muted',
   closed: 'bg-red-50 text-red-700',
 };
 
@@ -125,7 +125,7 @@ export default async function RecruitmentPage() {
                   <td className="px-6 py-3.5">
                     <span
                       className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        STATUS_COLORS[position.status] ?? 'bg-bg-secondary text-gray-600'
+                        STATUS_COLORS[position.status] ?? 'bg-bg-secondary text-text-muted'
                       }`}
                     >
                       {formatLabel(position.status)}
