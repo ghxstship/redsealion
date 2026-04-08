@@ -7,11 +7,6 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "14.4"
-  }
   graphql_public: {
     Tables: {
       [_ in never]: never
@@ -11205,6 +11200,7 @@ export type Database = {
           created_at: string
           date_format: string
           default_calendar_view: string
+          density: string
           first_day_of_week: number
           id: string
           language: string
@@ -11220,6 +11216,7 @@ export type Database = {
           created_at?: string
           date_format?: string
           default_calendar_view?: string
+          density?: string
           first_day_of_week?: number
           id?: string
           language?: string
@@ -11235,6 +11232,7 @@ export type Database = {
           created_at?: string
           date_format?: string
           default_calendar_view?: string
+          density?: string
           first_day_of_week?: number
           id?: string
           language?: string
@@ -12144,14 +12142,17 @@ export type Database = {
         | "emergency_contact"
         | "other"
       org_role:
-        | "super_admin"
-        | "org_admin"
-        | "project_manager"
-        | "designer"
+        | "developer"
+        | "owner"
+        | "manager"
+        | "team_member"
         | "fabricator"
-        | "installer"
-        | "client_primary"
-        | "client_viewer"
+        | "crew"
+        | "client"
+        | "viewer"
+        | "admin"
+        | "controller"
+        | "contractor"
       payment_link_status: "active" | "paid" | "expired"
       phase_status:
         | "not_started"
@@ -12602,14 +12603,17 @@ export const Constants = {
         "other",
       ],
       org_role: [
-        "super_admin",
-        "org_admin",
-        "project_manager",
-        "designer",
+        "developer",
+        "owner",
+        "manager",
+        "team_member",
         "fabricator",
-        "installer",
-        "client_primary",
-        "client_viewer",
+        "crew",
+        "client",
+        "viewer",
+        "admin",
+        "controller",
+        "contractor",
       ],
       payment_link_status: ["active", "paid", "expired"],
       phase_status: [
@@ -12718,3 +12722,4 @@ export const Constants = {
     },
   },
 } as const
+
