@@ -18,6 +18,8 @@ import OverviewTab from './OverviewTab';
 import Card from '@/components/ui/Card';
 import PageHeader from '@/components/shared/PageHeader';
 import Button from '@/components/ui/Button';
+import ProposalAnalytics from '@/components/admin/proposals/ProposalAnalytics';
+import VersionComparison from '@/components/admin/proposals/VersionComparison';
 
 export default function ProposalDetailPage({
   params,
@@ -183,6 +185,20 @@ export default function ProposalDetailPage({
             Open Export Options
           </Link>
         </div>
+      )}
+
+      {activeTab === 'analytics' && (
+        <ProposalAnalytics
+          proposalId={id}
+          proposalName={proposal.name}
+        />
+      )}
+
+      {activeTab === 'versions' && (
+        <VersionComparison
+          proposalId={id}
+          currency={proposal.currency}
+        />
       )}
 
       {activeTab === 'activity' && (

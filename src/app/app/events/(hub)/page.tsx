@@ -3,6 +3,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import EventsTable, { type EventItem } from '@/components/admin/events/EventsTable';
 import EventsHeader from '@/components/admin/events/EventsHeader';
 import PageHeader from '@/components/shared/PageHeader';
+import { TierGate } from '@/components/shared/TierGate';
 import EventsHubTabs from '../EventsHubTabs';
 
 async function getEvents(): Promise<EventItem[]> {
@@ -50,6 +51,7 @@ export default async function EventsPage() {
   );
 
   return (
+    <TierGate feature="events">
     <>
       <PageHeader
 
@@ -77,5 +79,6 @@ export default async function EventsPage() {
 
       <EventsTable events={events} />
     </>
+    </TierGate>
   );
 }

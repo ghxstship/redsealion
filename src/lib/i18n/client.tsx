@@ -17,7 +17,8 @@ import { DEFAULT_LOCALE } from './config';
 // Types
 // ---------------------------------------------------------------------------
 
-export type Dictionary = Record<string, Record<string, string>>;
+export type DictionaryValue = string | Record<string, string | Record<string, string>>;
+export type Dictionary = Record<string, Record<string, DictionaryValue>>;
 
 interface I18nContextValue {
   locale: SupportedLocale;
@@ -51,17 +52,28 @@ export function I18nProvider({ locale, dictionary, children }: I18nProviderProps
   const t = useCallback(
     (key: string, params?: Record<string, string | number>): string => {
       const parts = key.split('.');
-      if (parts.length !== 2) return key;
+      if (parts.length < 2 || parts.length > 3) return key;
 
-      const [namespace, messageKey] = parts;
-      const value = dictionary[namespace]?.[messageKey];
+      const [namespace, messageKey, subKey] = parts;
+      const entry = dictionary[namespace]?.[messageKey];
+
+      let value: string | undefined;
+
+      if (typeof entry === 'string') {
+        // 2-level key: namespace.key
+        value = entry;
+      } else if (entry && typeof entry === 'object' && subKey) {
+        // 3-level key: namespace.group.key
+        const nested = entry[subKey];
+        if (typeof nested === 'string') value = nested;
+      }
 
       if (!value) return key; // Fallback to the key itself — visible in dev
 
       if (!params) return value;
 
       // Simple interpolation: replace {name} tokens
-      return value.replace(/\{(\w+)\}/g, (_, token) =>
+      return value.replace(/\{(\w+)\}/g, (_: string, token: string) =>
         params[token] !== undefined ? String(params[token]) : `{${token}}`
       );
     },

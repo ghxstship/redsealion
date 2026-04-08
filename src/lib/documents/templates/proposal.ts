@@ -51,6 +51,12 @@ import {
   packDocument,
   spacer,
   pageBreak,
+  phaseHeaderBlock,
+  narrativeBlock,
+  styledBox,
+  milestoneGateBox,
+  addOnTable,
+  referenceCards,
   type DocBrand,
   type TableColumn,
 } from '../engine';
@@ -302,8 +308,12 @@ function coverPage(brand: DocBrand, data: ProposalDocumentData): (Paragraph)[] {
   return children;
 }
 
-function introductionSection(brand: DocBrand): Paragraph[] {
-  return [
+function introductionSection(brand: DocBrand, data: ProposalDocumentData): (Paragraph | ReturnType<typeof dataTable>)[] {
+  const narr = data.proposal.narrative_context as Record<string, unknown> | null;
+  const assumptions = (narr?.assumptions as string[] | undefined) ?? [];
+  const children: (Paragraph | ReturnType<typeof dataTable>)[] = [];
+
+  children.push(...[
     heading('Your Activation Journey', 1),
     body(
       'This proposal is organized around a proven phase-milestone model designed for experiential production. ' +
@@ -324,7 +334,20 @@ function introductionSection(brand: DocBrand): Paragraph[] {
         'and customize this proposal to fit your vision.',
       { italic: true, color: brand.secondaryColor }
     ),
-  ];
+  ]);
+
+  // Assumptions section
+  if (assumptions.length > 0) {
+    children.push(spacer(200));
+    children.push(...styledBox(
+      'Key Assumptions',
+      assumptions.map((a, i) => `${i + 1}. ${a}`),
+      'info',
+      brand,
+    ));
+  }
+
+  return children;
 }
 
 function creativeRefLabel(type: string): string {
@@ -356,45 +379,44 @@ function phaseSection(
 ): (Paragraph | ReturnType<typeof dataTable>)[] {
   const children: (Paragraph | ReturnType<typeof dataTable>)[] = [];
 
-  // Phase heading
-  children.push(
-    new Paragraph({
-      spacing: { before: 360, after: 80 },
-      children: [
-        new TextRun({
-          text: `PHASE ${phase.phase_number}`,
-          bold: true,
-          font: brand.fontHeading,
-          size: 20,
-          color: brand.accentColor,
-        }),
-      ],
-    })
-  );
-  children.push(heading(phase.name, 1));
+  // Phase heading — styled block with number label + title + rule + subtitle
+  children.push(...phaseHeaderBlock(phase.phase_number, phase.name, phase.subtitle, brand));
 
-  if (phase.subtitle) {
+  // Narrative — styled left-border block
+  if (phase.narrative) {
+    children.push(narrativeBlock(phase.narrative, brand));
+  }
+
+  // Creative references — 2-column reference cards
+  if (data.creativeRefs.length > 0) {
+    children.push(spacer(200));
     children.push(
-      body(phase.subtitle, { italic: true, color: brand.secondaryColor, size: 24 })
+      ...referenceCards(
+        data.creativeRefs.map((ref) => ({
+          label: ref.label,
+          description: ref.description ?? '',
+          type: creativeRefLabel(ref.type),
+        })),
+        'Creative Direction & Reference Imagery',
+        brand,
+      ),
     );
   }
 
-  // Narrative
-  if (phase.narrative) {
-    children.push(spacer(100));
-    children.push(body(phase.narrative));
-  }
-
-  // Creative references
-  if (data.creativeRefs.length > 0) {
+  // Portfolio / precedent work — 2-column reference cards
+  if (data.portfolioLinks.length > 0) {
     children.push(spacer(200));
-    children.push(heading('Creative Reference Imagery', 3));
-    for (const ref of data.creativeRefs) {
-      const typeLabel = creativeRefLabel(ref.type);
-      children.push(
-        bullet(`${typeLabel}: ${ref.label}${ref.description ? ' \u2014 ' + ref.description : ''}`)
-      );
-    }
+    children.push(
+      ...referenceCards(
+        data.portfolioLinks.map((link) => ({
+          label: (link as unknown as Record<string, string>).project_name ?? `Portfolio #${link.portfolio_item_id.slice(0, 8)}`,
+          description: link.context_description ?? '',
+        })),
+        'Portfolio & Precedent Work',
+        brand,
+        'D97706', // amber
+      ),
+    );
   }
 
   // Core deliverables table
@@ -425,19 +447,22 @@ function phaseSection(
     children.push(dataTable(cols, rows, brand));
   }
 
-  // Add-ons
+  // Add-ons — styled amber table with checkboxes
   if (data.addons.length > 0) {
     children.push(spacer(200));
     children.push(heading('Options & Add-Ons', 2));
-
-    for (const addon of data.addons.sort((a, b) => a.sort_order - b.sort_order)) {
-      children.push(
-        checkbox(
-          `${addon.name}${addon.description ? ' \u2014 ' + addon.description : ''} \u2014 ${formatCurrency(addon.total_cost ?? 0, currency)}`,
-          addon.is_selected ?? false
-        )
-      );
-    }
+    children.push(
+      addOnTable(
+        data.addons.sort((a, b) => a.sort_order - b.sort_order).map((addon) => ({
+          name: addon.name,
+          description: addon.description ?? '',
+          cost: formatCurrency(addon.total_cost ?? 0, currency),
+          selected: addon.is_selected ?? false,
+          termsRef: (addon as unknown as Record<string, string>).terms_ref ?? undefined,
+        })),
+        brand,
+      ),
+    );
   }
 
   // Phase investment subtotal
@@ -465,33 +490,37 @@ function phaseSection(
     })
   );
 
-  // Contractual framework callout
+  // Contractual framework — styled purple box
   const termsSections = castJson<string[]>(phase.terms_sections as unknown as import('@/types/database').Json, []);
   if (termsSections.length > 0) {
     const refs = termsSections.map((s) => `\u00A7${s}`).join(', ');
+    children.push(spacer(120));
     children.push(
-      calloutBox(`Contractual Framework: ${refs}`, brand, '\u00A7')
+      ...styledBox(
+        'Contractual Framework',
+        [`Governing sections: ${refs}`],
+        'terms',
+        brand,
+      ),
     );
   }
 
-  // Milestone gate
+  // Milestone gate — styled green box with checkbox requirements
   if (data.milestone) {
     children.push(spacer(200));
-    children.push(heading(`Milestone Gate: ${data.milestone.name}`, 3));
-
-    if (data.requirements.length > 0) {
-      for (const req of data.requirements.sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))) {
-        const assigneeLabel = req.assignee === 'client' ? ' [Client]' : req.assignee === 'producer' ? ' [Producer]' : req.assignee === 'both' ? ' [Both]' : ' [Vendor]';
-        children.push(checkbox(`${req.text}${assigneeLabel}`, req.status === 'complete'));
-      }
-    }
-
-    if (data.milestone.unlocks_description) {
-      children.push(spacer(80));
-      children.push(
-        calloutBox(`Unlocks: ${data.milestone.unlocks_description}`, brand, '\u2192')
-      );
-    }
+    children.push(
+      ...milestoneGateBox(
+        data.milestone.name,
+        data.requirements
+          .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
+          .map((req) => ({
+            text: req.text,
+            assignee: req.assignee,
+          })),
+        data.milestone.unlocks_description ?? null,
+        brand,
+      ),
+    );
   }
 
   return children;
@@ -656,7 +685,7 @@ export async function generateProposalDocument(
 
   // --- Section 2: Introduction ---
   const introChildren: (Paragraph | ReturnType<typeof dataTable>)[] = [
-    ...introductionSection(brand),
+    ...introductionSection(brand, data),
   ];
 
   const introSection = buildSection({

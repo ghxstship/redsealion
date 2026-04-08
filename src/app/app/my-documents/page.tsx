@@ -11,8 +11,8 @@ export default function MyDocumentsPage() {
   return (
     <div>
 <PageHeader
-        title="{t('myDocuments.title')}"
-        subtitle={`{t('myDocuments.subtitle')}`}
+        title={t('myDocuments.title')}
+        subtitle={t('myDocuments.subtitle')}
       />
 
       <EmptyState

@@ -8,6 +8,8 @@ import FormSelect from '@/components/ui/FormSelect';
 import FormTextarea from '@/components/ui/FormTextarea';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
+import { IconPlus } from '@/components/ui/Icons';
+import { X } from 'lucide-react';
 export interface ProjectSetupData {
   clientId: string;
   clientSearch: string;
@@ -19,6 +21,7 @@ export interface ProjectSetupData {
   depositPercent: number;
   balancePercent: number;
   phaseTemplateId: string;
+  assumptions: string[];
 }
 
 interface ProjectSetupStepProps {
@@ -249,6 +252,48 @@ export default function ProjectSetupStep({
         {data.depositPercent + data.balancePercent !== 100 && (
           <p className="text-xs text-warning">Deposit + Balance should equal 100%</p>
         )}
+      </fieldset>
+
+      {/* Assumptions & Conditions */}
+      <fieldset className="space-y-4">
+        <legend className="text-sm font-medium text-foreground">Assumptions & Conditions</legend>
+        <p className="text-xs text-text-muted">
+          Key assumptions underlying this proposal. These appear prominently in the client-facing document.
+        </p>
+
+        {(data.assumptions ?? []).map((assumption, index) => (
+          <div key={index} className="flex items-center gap-2">
+            <span className="text-text-muted text-xs shrink-0">•</span>
+            <FormInput
+              type="text"
+              value={assumption}
+              onChange={(e) => {
+                const updated = [...(data.assumptions ?? [])];
+                updated[index] = e.target.value;
+                update({ assumptions: updated });
+              }}
+              placeholder="e.g., All pricing assumes standard working hours (Monday–Friday, 8AM–6PM)" />
+            <button
+              type="button"
+              onClick={() => {
+                const updated = (data.assumptions ?? []).filter((_, i) => i !== index);
+                update({ assumptions: updated });
+              }}
+              className="p-0.5 text-text-muted hover:text-error shrink-0"
+            >
+              <X size={14} />
+            </button>
+          </div>
+        ))}
+
+        <button
+          type="button"
+          onClick={() => update({ assumptions: [...(data.assumptions ?? []), ''] })}
+          className="inline-flex items-center gap-1.5 text-xs font-medium text-text-secondary hover:text-org-primary transition-colors"
+        >
+          <IconPlus size={14} />
+          Add Assumption
+        </button>
       </fieldset>
 
       {/* Phase Template */}

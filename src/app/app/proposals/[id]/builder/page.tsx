@@ -26,6 +26,7 @@ function getEmptyState() {
     depositPercent: 50,
     balancePercent: 50,
     phaseTemplateId: '',
+    assumptions: [],
   };
 
   const venues: VenueData[] = [];
@@ -39,7 +40,10 @@ function getEmptyState() {
       narrative: '',
       deliverables: [],
       addons: [],
-      milestone: { name: '', requirements: [] },
+      milestone: { name: '', unlocks: '', requirements: [] },
+      creativeRefs: [],
+      portfolioLinks: [],
+      termsSections: [],
     },
   ];
 
@@ -106,6 +110,7 @@ export default function EditProposalBuilderPage({
             depositPercent: terms?.depositPercent ?? 50,
             balancePercent: terms?.balancePercent ?? 50,
             phaseTemplateId: proposal.phase_template_id ?? '',
+            assumptions: (narr?.assumptions as unknown as string[]) ?? [],
           });
         }
 
@@ -183,7 +188,22 @@ export default function EditProposalBuilderPage({
               .order('created_at')
               .limit(1);
 
+            // Creative references
+            const { data: crRows } = await supabase
+              .from('creative_references')
+              .select()
+              .eq('phase_id', p.id)
+              .order('sort_order');
+
+            // Portfolio links
+            const { data: plRows } = await supabase
+              .from('phase_portfolio_links')
+              .select()
+              .eq('phase_id', p.id)
+              .order('sort_order');
+
             const milestone = milestoneRows?.[0];
+            const termsSections = (p.terms_sections as string[]) ?? [];
 
             loadedPhases.push({
               id: p.id,
@@ -195,6 +215,7 @@ export default function EditProposalBuilderPage({
                 id: d.id as string,
                 name: d.name as string,
                 description: (d.description as string) ?? '',
+                details: (d.details as string[]) ?? [],
                 category: (d.category as string) ?? '',
                 unit: (d.unit as string) ?? 'unit',
                 qty: Number(d.qty) || 1,
@@ -205,6 +226,7 @@ export default function EditProposalBuilderPage({
                 id: a.id as string,
                 name: a.name as string,
                 description: (a.description as string) ?? '',
+                details: (a.details as string[]) ?? [],
                 category: (a.category as string) ?? '',
                 unit: (a.unit as string) ?? 'unit',
                 qty: Number(a.qty) || 1,
@@ -212,9 +234,11 @@ export default function EditProposalBuilderPage({
                 totalCost: Number(a.total_cost) || 0,
                 selected: (a.selected as boolean) ?? false,
                 mutuallyExclusiveGroup: (a.mutually_exclusive_group as string) ?? '',
+                termsRef: (a.terms_ref as string) ?? '',
               })),
               milestone: {
                 name: (milestone?.name as string) ?? '',
+                unlocks: (milestone?.unlocks_description as string) ?? '',
                 requirements: (
                   (milestone?.milestone_requirements as Array<Record<string, unknown>>) ?? []
                 ).map((r) => ({
@@ -223,6 +247,19 @@ export default function EditProposalBuilderPage({
                   assignee: (r.assignee as string ?? 'producer') as import('@/types/database').RequirementAssignee,
                 })),
               },
+              creativeRefs: (crRows ?? []).map((cr: Record<string, unknown>) => ({
+                id: cr.id as string,
+                type: ((cr.type as string) ?? 'reference') as import('@/components/admin/builder/types').CreativeRefType,
+                label: (cr.label as string) ?? '',
+                description: (cr.description as string) ?? '',
+              })),
+              portfolioLinks: (plRows ?? []).map((pl: Record<string, unknown>) => ({
+                id: pl.id as string,
+                label: (pl.label as string) ?? '',
+                description: (pl.description as string) ?? '',
+                portfolioItemId: (pl.portfolio_item_id as string) ?? '',
+              })),
+              termsSections,
             });
           }
 
@@ -297,6 +334,7 @@ export default function EditProposalBuilderPage({
               brandVoice: projectSetup.brandVoice,
               audienceProfile: projectSetup.audienceProfile,
               experienceGoal: projectSetup.experienceGoal,
+              assumptions: projectSetup.assumptions,
             },
             payment_terms: {
               structure: `${projectSetup.depositPercent}/${projectSetup.balancePercent}`,
@@ -364,6 +402,7 @@ export default function EditProposalBuilderPage({
               narrative: phase.narrative || null,
               phase_investment: phaseInvestment,
               sort_order: i,
+              terms_sections: phase.termsSections.length > 0 ? phase.termsSections : null,
             })
             .select('id')
             .single();
@@ -378,6 +417,7 @@ export default function EditProposalBuilderPage({
                 phase_id: phaseId,
                 name: d.name,
                 description: d.description || null,
+                details: d.details.length > 0 ? d.details : null,
                 category: d.category || 'service',
                 unit: d.unit,
                 qty: d.qty,
@@ -395,6 +435,7 @@ export default function EditProposalBuilderPage({
                 phase_id: phaseId,
                 name: a.name,
                 description: a.description || null,
+                details: a.details.length > 0 ? a.details : null,
                 category: a.category || 'service',
                 unit: a.unit,
                 qty: a.qty,
@@ -402,7 +443,34 @@ export default function EditProposalBuilderPage({
                 total_cost: a.totalCost,
                 selected: a.selected,
                 mutually_exclusive_group: a.mutuallyExclusiveGroup || null,
+                terms_ref: a.termsRef || null,
                 sort_order: aIdx,
+              })),
+            );
+          }
+
+          // Insert creative references
+          if (phase.creativeRefs.length > 0) {
+            await supabase.from('creative_references').insert(
+              phase.creativeRefs.map((cr, crIdx) => ({
+                phase_id: phaseId,
+                type: cr.type,
+                label: cr.label,
+                description: cr.description || null,
+                sort_order: crIdx,
+              })),
+            );
+          }
+
+          // Insert portfolio links
+          if (phase.portfolioLinks.length > 0) {
+            await supabase.from('phase_portfolio_links').insert(
+              phase.portfolioLinks.map((pl, plIdx) => ({
+                phase_id: phaseId,
+                label: pl.label,
+                description: pl.description || null,
+                portfolio_item_id: pl.portfolioItemId || null,
+                sort_order: plIdx,
               })),
             );
           }
@@ -414,6 +482,7 @@ export default function EditProposalBuilderPage({
               .insert({
                 phase_id: phaseId,
                 name: phase.milestone.name,
+                unlocks_description: phase.milestone.unlocks || null,
               })
               .select('id')
               .single();

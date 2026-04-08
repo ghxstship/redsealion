@@ -75,7 +75,9 @@ export type FeatureKey =
   // Events, Activations & Locations
   | 'events'
   | 'activations'
-  | 'locations';
+  | 'locations'
+  // Compliance
+  | 'compliance';
 
 // Maps each feature to the minimum subscription tier required
 const featureRegistry: Record<FeatureKey, AppTier> = {
@@ -152,6 +154,8 @@ const featureRegistry: Record<FeatureKey, AppTier> = {
   events: 'professional',
   activations: 'professional',
   locations: 'professional',
+  // Compliance
+  compliance: 'professional',
 };
 
 const tierRank: Record<AppTier, number> = {

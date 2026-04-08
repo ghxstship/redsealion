@@ -11,8 +11,8 @@ export default function MySchedulePage() {
   return (
     <div>
 <PageHeader
-        title="{t('mySchedule.title')}"
-        subtitle={`{t('mySchedule.subtitle')}`}
+        title={t('mySchedule.title')}
+        subtitle={t('mySchedule.subtitle')}
       />
 
       <EmptyState

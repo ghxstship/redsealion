@@ -410,6 +410,409 @@ export function calloutBox(text: string, brand: DocBrand, icon?: string): Paragr
 }
 
 // ---------------------------------------------------------------------------
+// Phase header block — styled "PHASE 01" label + title + rule + subtitle
+// ---------------------------------------------------------------------------
+
+export function phaseHeaderBlock(
+  phaseNumber: string,
+  title: string,
+  subtitle: string | null,
+  brand: DocBrand,
+): Paragraph[] {
+  const elements: Paragraph[] = [
+    // Phase number label
+    new Paragraph({
+      spacing: { before: 480, after: 80 },
+      children: [
+        new TextRun({
+          text: `PHASE ${phaseNumber.toString().padStart(2, '0')}`,
+          font: brand.fontHeading,
+          size: 18,
+          bold: true,
+          color: brand.accentColor,
+          characterSpacing: 120,
+        }),
+      ],
+    }),
+    // Phase title
+    new Paragraph({
+      spacing: { after: 60 },
+      children: [
+        new TextRun({
+          text: title,
+          font: brand.fontHeading,
+          size: 36,
+          bold: true,
+          color: brand.primaryColor,
+        }),
+      ],
+    }),
+    // Horizontal rule
+    new Paragraph({
+      spacing: { after: 80 },
+      border: {
+        bottom: { style: BorderStyle.SINGLE, size: 4, color: brand.primaryColor },
+      },
+    }),
+  ];
+
+  // Subtitle
+  if (subtitle) {
+    elements.push(
+      new Paragraph({
+        spacing: { after: 200 },
+        children: [
+          new TextRun({
+            text: subtitle,
+            font: brand.fontBody,
+            size: 22,
+            italics: true,
+            color: brand.secondaryColor,
+          }),
+        ],
+      }),
+    );
+  }
+
+  return elements;
+}
+
+// ---------------------------------------------------------------------------
+// Narrative block — left-border indented storytelling paragraph
+// ---------------------------------------------------------------------------
+
+export function narrativeBlock(text: string, brand: DocBrand): Paragraph {
+  return new Paragraph({
+    spacing: { before: 120, after: 200 },
+    border: {
+      left: { style: BorderStyle.SINGLE, size: 8, color: brand.accentColor, space: 12 },
+    },
+    indent: { left: 200 },
+    children: [
+      new TextRun({
+        text,
+        size: 22,
+        color: '3F3F46',
+        font: brand.fontBody,
+      }),
+    ],
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Styled box — colored bordered container for callouts
+// ---------------------------------------------------------------------------
+
+export type BoxStyle = 'milestone' | 'terms' | 'addon' | 'info';
+
+const BOX_COLORS: Record<BoxStyle, { border: string; bg: string; icon: string }> = {
+  milestone: { border: '16A34A', bg: 'F0FDF4', icon: '🏁' },
+  terms: { border: '7C3AED', bg: 'F5F3FF', icon: '⚖️' },
+  addon: { border: 'D97706', bg: 'FFFBEB', icon: '⊕' },
+  info: { border: '2563EB', bg: 'EFF6FF', icon: 'ℹ️' },
+};
+
+export function styledBox(
+  title: string,
+  bodyLines: string[],
+  style: BoxStyle,
+  brand: DocBrand,
+): (Paragraph | Table)[] {
+  const colors = BOX_COLORS[style];
+  const elements: (Paragraph | Table)[] = [];
+
+  // Wrapper using a single-cell table for the background + border effect
+  const innerParagraphs: Paragraph[] = [
+    new Paragraph({
+      spacing: { after: 80 },
+      children: [
+        new TextRun({
+          text: `${colors.icon}  ${title}`,
+          font: brand.fontHeading,
+          size: 24,
+          bold: true,
+          color: colors.border,
+        }),
+      ],
+    }),
+    ...bodyLines.map(
+      (line) =>
+        new Paragraph({
+          spacing: { after: 40 },
+          children: [
+            new TextRun({
+              text: line,
+              size: 20,
+              color: '3F3F46',
+            }),
+          ],
+        }),
+    ),
+  ];
+
+  elements.push(
+    new Table({
+      width: { size: CONTENT_WIDTH, type: WidthType.DXA },
+      columnWidths: [CONTENT_WIDTH],
+      rows: [
+        new TableRow({
+          children: [
+            new TableCell({
+              width: { size: CONTENT_WIDTH, type: WidthType.DXA },
+              borders: {
+                top: { style: BorderStyle.SINGLE, size: 6, color: colors.border },
+                bottom: { style: BorderStyle.SINGLE, size: 6, color: colors.border },
+                left: { style: BorderStyle.SINGLE, size: 18, color: colors.border },
+                right: { style: BorderStyle.SINGLE, size: 6, color: colors.border },
+              },
+              shading: { fill: colors.bg, type: ShadingType.CLEAR },
+              margins: { top: 120, bottom: 120, left: 200, right: 200 },
+              children: innerParagraphs,
+            }),
+          ],
+        }),
+      ],
+    }),
+  );
+
+  return elements;
+}
+
+// ---------------------------------------------------------------------------
+// Milestone gate box — green bordered with checkbox requirements + unlocks
+// ---------------------------------------------------------------------------
+
+export function milestoneGateBox(
+  name: string,
+  requirements: { text: string; assignee: string }[],
+  unlocks: string | null,
+  brand: DocBrand,
+): (Paragraph | Table)[] {
+  const lines: string[] = [];
+  for (const req of requirements) {
+    const assigneeLabel = req.assignee === 'client' ? ' [Client]' :
+      req.assignee === 'both' ? ' [Both]' :
+      req.assignee === 'external_vendor' ? ' [Vendor]' : '';
+    lines.push(`☐  ${req.text}${assigneeLabel}`);
+  }
+
+  if (unlocks) {
+    lines.push('');
+    lines.push(`→ Unlocks: ${unlocks}`);
+  }
+
+  return styledBox(`MILESTONE GATE: ${name}`, lines, 'milestone', brand);
+}
+
+// ---------------------------------------------------------------------------
+// Add-on table — amber styled rows with checkbox + description + cost
+// ---------------------------------------------------------------------------
+
+export function addOnTable(
+  addons: Array<{ name: string; description: string; cost: string; selected: boolean; termsRef?: string }>,
+  brand: DocBrand,
+): Table {
+  const checkWidth = 600;
+  const nameWidth = 3000;
+  const descWidth = CONTENT_WIDTH - checkWidth - nameWidth - 1800;
+  const costWidth = 1200;
+  const refWidth = 600;
+
+  const amberBorder = { style: BorderStyle.SINGLE, size: 1, color: 'FDE68A' } as const;
+  const amberBorders = { top: amberBorder, bottom: amberBorder, left: amberBorder, right: amberBorder };
+
+  const headerRow = new TableRow({
+    children: [
+      new TableCell({
+        width: { size: checkWidth, type: WidthType.DXA },
+        borders: amberBorders,
+        shading: { fill: 'FEF9C3', type: ShadingType.CLEAR },
+        margins: { top: 60, bottom: 60, left: 80, right: 80 },
+        children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: '✓', bold: true, size: 18, color: 'B45309' })] })],
+      }),
+      new TableCell({
+        width: { size: nameWidth, type: WidthType.DXA },
+        borders: amberBorders,
+        shading: { fill: 'FEF9C3', type: ShadingType.CLEAR },
+        margins: { top: 60, bottom: 60, left: 100, right: 100 },
+        children: [new Paragraph({ children: [new TextRun({ text: 'ADD-ON', bold: true, size: 18, color: 'B45309', font: brand.fontHeading })] })],
+      }),
+      new TableCell({
+        width: { size: descWidth, type: WidthType.DXA },
+        borders: amberBorders,
+        shading: { fill: 'FEF9C3', type: ShadingType.CLEAR },
+        margins: { top: 60, bottom: 60, left: 100, right: 100 },
+        children: [new Paragraph({ children: [new TextRun({ text: 'DESCRIPTION', bold: true, size: 18, color: 'B45309', font: brand.fontHeading })] })],
+      }),
+      new TableCell({
+        width: { size: costWidth, type: WidthType.DXA },
+        borders: amberBorders,
+        shading: { fill: 'FEF9C3', type: ShadingType.CLEAR },
+        margins: { top: 60, bottom: 60, left: 100, right: 100 },
+        children: [new Paragraph({ alignment: AlignmentType.RIGHT, children: [new TextRun({ text: 'COST', bold: true, size: 18, color: 'B45309', font: brand.fontHeading })] })],
+      }),
+      new TableCell({
+        width: { size: refWidth, type: WidthType.DXA },
+        borders: amberBorders,
+        shading: { fill: 'FEF9C3', type: ShadingType.CLEAR },
+        margins: { top: 60, bottom: 60, left: 80, right: 80 },
+        children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: '§', bold: true, size: 18, color: 'B45309', font: brand.fontHeading })] })],
+      }),
+    ],
+  });
+
+  const dataRows = addons.map(
+    (addon) =>
+      new TableRow({
+        children: [
+          new TableCell({
+            width: { size: checkWidth, type: WidthType.DXA },
+            borders: amberBorders,
+            shading: addon.selected ? { fill: 'FEF3C7', type: ShadingType.CLEAR } : undefined,
+            margins: { top: 40, bottom: 40, left: 80, right: 80 },
+            children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: addon.selected ? '☑' : '☐', size: 22 })] })],
+          }),
+          new TableCell({
+            width: { size: nameWidth, type: WidthType.DXA },
+            borders: amberBorders,
+            shading: addon.selected ? { fill: 'FEF3C7', type: ShadingType.CLEAR } : undefined,
+            margins: { top: 40, bottom: 40, left: 100, right: 100 },
+            children: [new Paragraph({ children: [new TextRun({ text: addon.name, bold: true, size: 20 })] })],
+          }),
+          new TableCell({
+            width: { size: descWidth, type: WidthType.DXA },
+            borders: amberBorders,
+            shading: addon.selected ? { fill: 'FEF3C7', type: ShadingType.CLEAR } : undefined,
+            margins: { top: 40, bottom: 40, left: 100, right: 100 },
+            children: [new Paragraph({ children: [new TextRun({ text: addon.description, size: 20, color: '52525B' })] })],
+          }),
+          new TableCell({
+            width: { size: costWidth, type: WidthType.DXA },
+            borders: amberBorders,
+            shading: addon.selected ? { fill: 'FEF3C7', type: ShadingType.CLEAR } : undefined,
+            margins: { top: 40, bottom: 40, left: 100, right: 100 },
+            children: [new Paragraph({ alignment: AlignmentType.RIGHT, children: [new TextRun({ text: addon.cost, bold: true, size: 20 })] })],
+          }),
+          new TableCell({
+            width: { size: refWidth, type: WidthType.DXA },
+            borders: amberBorders,
+            shading: addon.selected ? { fill: 'FEF3C7', type: ShadingType.CLEAR } : undefined,
+            margins: { top: 40, bottom: 40, left: 80, right: 80 },
+            children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: addon.termsRef ?? '', size: 18, color: '7C3AED' })] })],
+          }),
+        ],
+      }),
+  );
+
+  return new Table({
+    width: { size: CONTENT_WIDTH, type: WidthType.DXA },
+    columnWidths: [checkWidth, nameWidth, descWidth, costWidth, refWidth],
+    rows: [headerRow, ...dataRows],
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Reference cards — 2-column layout for creative refs / portfolio
+// ---------------------------------------------------------------------------
+
+export function referenceCards(
+  items: Array<{ label: string; description: string; type?: string }>,
+  sectionTitle: string,
+  brand: DocBrand,
+  accentColor?: string,
+): (Paragraph | Table)[] {
+  const accent = accentColor ?? brand.accentColor;
+  const elements: (Paragraph | Table)[] = [
+    new Paragraph({
+      spacing: { before: 240, after: 120 },
+      children: [
+        new TextRun({
+          text: sectionTitle,
+          font: brand.fontHeading,
+          size: 24,
+          bold: true,
+          color: accent,
+        }),
+      ],
+    }),
+  ];
+
+  // Create pairs for 2-column layout
+  const colWidth = Math.floor(CONTENT_WIDTH / 2);
+  for (let i = 0; i < items.length; i += 2) {
+    const left = items[i];
+    const right = items[i + 1];
+
+    const cardBorder = { style: BorderStyle.SINGLE, size: 4, color: accent } as const;
+    const cardBorders = { top: cardBorder, bottom: cardBorder, left: cardBorder, right: cardBorder };
+
+    const makeCell = (item: typeof left | undefined) => {
+      if (!item) {
+        return new TableCell({
+          width: { size: colWidth, type: WidthType.DXA },
+          borders: BORDERS_NONE,
+          children: [new Paragraph({})],
+        });
+      }
+      return new TableCell({
+        width: { size: colWidth, type: WidthType.DXA },
+        borders: cardBorders,
+        margins: { top: 100, bottom: 100, left: 140, right: 140 },
+        children: [
+          ...(item.type
+            ? [
+                new Paragraph({
+                  spacing: { after: 40 },
+                  children: [
+                    new TextRun({
+                      text: item.type.toUpperCase(),
+                      font: brand.fontHeading,
+                      size: 14,
+                      bold: true,
+                      color: accent,
+                      characterSpacing: 60,
+                    }),
+                  ],
+                }),
+              ]
+            : []),
+          new Paragraph({
+            spacing: { after: 40 },
+            children: [
+              new TextRun({ text: item.label, bold: true, size: 20, color: brand.primaryColor }),
+            ],
+          }),
+          new Paragraph({
+            children: [
+              new TextRun({ text: item.description, size: 18, color: '52525B' }),
+            ],
+          }),
+        ],
+      });
+    };
+
+    elements.push(
+      new Table({
+        width: { size: CONTENT_WIDTH, type: WidthType.DXA },
+        columnWidths: [colWidth, colWidth],
+        rows: [
+          new TableRow({
+            children: [makeCell(left), makeCell(right)],
+          }),
+        ],
+      }),
+    );
+
+    // Small spacer between card rows
+    if (i + 2 < items.length) {
+      elements.push(spacer(80));
+    }
+  }
+
+  return elements;
+}
+
+// ---------------------------------------------------------------------------
 // Table builders
 // ---------------------------------------------------------------------------
 

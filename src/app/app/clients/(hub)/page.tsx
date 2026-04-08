@@ -53,7 +53,7 @@ export default async function ClientsPage() {
     <>
 <PageHeader
         title="Clients"
-        subtitle={`{clients.length} clients · {formatCurrency(totalValue)} total pipeline`}
+        subtitle={`${clients.length} clients · ${formatCurrency(totalValue)} total pipeline`}
       >
         <ClientsHeader />
       </PageHeader>

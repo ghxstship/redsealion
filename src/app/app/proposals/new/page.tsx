@@ -39,8 +39,12 @@ function createDefaultPhase(number: number): PhaseData {
     addons: [],
     milestone: {
       name: '',
+      unlocks: '',
       requirements: [],
     },
+    creativeRefs: [],
+    portfolioLinks: [],
+    termsSections: [],
   };
 }
 
@@ -58,6 +62,7 @@ function initialProjectSetup(): ProjectSetupData {
     depositPercent: 50,
     balancePercent: 50,
     phaseTemplateId: '',
+    assumptions: [],
   };
 }
 

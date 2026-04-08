@@ -15,6 +15,7 @@ export interface DeliverableData {
   id: string;
   name: string;
   description: string;
+  details: string[];
   category: string;
   unit: string;
   qty: number;
@@ -25,6 +26,31 @@ export interface DeliverableData {
 export interface AddonData extends DeliverableData {
   selected: boolean;
   mutuallyExclusiveGroup: string;
+  termsRef: string;
+}
+
+export interface CreativeReferenceData {
+  id: string;
+  type: CreativeRefType;
+  label: string;
+  description: string;
+}
+
+export type CreativeRefType =
+  | 'campaign'
+  | 'mood'
+  | 'palette'
+  | 'experience'
+  | 'reference'
+  | 'material'
+  | 'competitor'
+  | 'inspiration';
+
+export interface PortfolioLinkData {
+  id: string;
+  label: string;
+  description: string;
+  portfolioItemId: string;
 }
 
 export interface MilestoneRequirementData {
@@ -35,6 +61,7 @@ export interface MilestoneRequirementData {
 
 export interface MilestoneData {
   name: string;
+  unlocks: string;
   requirements: MilestoneRequirementData[];
 }
 
@@ -47,6 +74,9 @@ export interface PhaseData {
   deliverables: DeliverableData[];
   addons: AddonData[];
   milestone: MilestoneData;
+  creativeRefs: CreativeReferenceData[];
+  portfolioLinks: PortfolioLinkData[];
+  termsSections: string[];
 }
 
 /* ─── Constants ─────────────────────────────────────────────────────── */
@@ -72,6 +102,17 @@ export const ASSIGNEE_OPTIONS: { value: RequirementAssignee; label: string }[] =
   { value: 'external_vendor', label: 'External Vendor' },
 ];
 
+export const CREATIVE_REF_TYPES: { value: CreativeRefType; label: string }[] = [
+  { value: 'campaign', label: 'Campaign Anchor' },
+  { value: 'mood', label: 'Environmental Mood' },
+  { value: 'palette', label: 'Color & Material Palette' },
+  { value: 'experience', label: 'Guest Experience' },
+  { value: 'reference', label: 'General Reference' },
+  { value: 'material', label: 'Material Reference' },
+  { value: 'competitor', label: 'Competitor Reference' },
+  { value: 'inspiration', label: 'Inspiration' },
+];
+
 /* ─── Factory Functions ─────────────────────────────────────────────── */
 
 export function createEmptyDeliverable(): DeliverableData {
@@ -79,6 +120,7 @@ export function createEmptyDeliverable(): DeliverableData {
     id: crypto.randomUUID(),
     name: '',
     description: '',
+    details: [],
     category: '',
     unit: 'unit',
     qty: 1,
@@ -92,6 +134,7 @@ export function createEmptyAddon(): AddonData {
     id: crypto.randomUUID(),
     name: '',
     description: '',
+    details: [],
     category: '',
     unit: 'unit',
     qty: 1,
@@ -99,6 +142,7 @@ export function createEmptyAddon(): AddonData {
     totalCost: 0,
     selected: false,
     mutuallyExclusiveGroup: '',
+    termsRef: '',
   };
 }
 
@@ -107,6 +151,24 @@ export function createEmptyRequirement(): MilestoneRequirementData {
     id: crypto.randomUUID(),
     text: '',
     assignee: 'producer',
+  };
+}
+
+export function createEmptyCreativeRef(): CreativeReferenceData {
+  return {
+    id: crypto.randomUUID(),
+    type: 'reference',
+    label: '',
+    description: '',
+  };
+}
+
+export function createEmptyPortfolioLink(): PortfolioLinkData {
+  return {
+    id: crypto.randomUUID(),
+    label: '',
+    description: '',
+    portfolioItemId: '',
   };
 }
 

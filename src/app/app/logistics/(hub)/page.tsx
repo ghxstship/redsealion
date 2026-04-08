@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
+import { TierGate } from '@/components/shared/TierGate';
 import LogisticsHubTabs from '../LogisticsHubTabs';
 
 interface WarehouseAsset {
@@ -106,6 +107,7 @@ export default async function WarehousePage() {
   const { facilities, assets } = await getWarehouseData();
 
   return (
+    <TierGate feature="warehouse">
     <>
       {/* Header */}
       <PageHeader
@@ -185,5 +187,6 @@ export default async function WarehousePage() {
         </table>
       </div>
     </>
+    </TierGate>
   );
 }

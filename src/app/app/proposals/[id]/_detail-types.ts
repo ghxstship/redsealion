@@ -6,13 +6,15 @@
 
 /* ─── Types ─────────────────────────────────────────────── */
 
-export type DetailTab = 'overview' | 'builder' | 'preview' | 'export' | 'activity';
+export type DetailTab = 'overview' | 'builder' | 'preview' | 'export' | 'analytics' | 'versions' | 'activity';
 
 export const detailTabs: { key: DetailTab; label: string }[] = [
   { key: 'overview', label: 'Overview' },
   { key: 'builder', label: 'Builder' },
   { key: 'preview', label: 'Preview' },
   { key: 'export', label: 'Export' },
+  { key: 'analytics', label: 'Analytics' },
+  { key: 'versions', label: 'Versions' },
   { key: 'activity', label: 'Activity' },
 ];
 

@@ -1,17 +1,19 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { motion, useSpring, useTransform } from 'framer-motion';
+import { motion, useSpring, useTransform, AnimatePresence } from 'framer-motion';
 import { fmTransition } from '@/lib/motion';
 import { formatCurrency } from '@/lib/utils';
 import type { PaymentTerms } from '@/types/database';
+import { ChevronDown, AlertCircle, PenLine } from 'lucide-react';
 
 interface InvestmentSummaryBarProps {
   coreTotal: number;
   addonTotal: number;
   paymentTerms: PaymentTerms | null;
+  assumptions?: string[];
   currency?: string;
-  onAccept: () => void;
+  onAccept: (signature: string) => void;
   canApprove?: boolean;
 }
 
@@ -43,6 +45,7 @@ export default function InvestmentSummaryBar({
   coreTotal,
   addonTotal,
   paymentTerms,
+  assumptions = [],
   currency = 'USD',
   onAccept,
   canApprove = true,
@@ -51,6 +54,106 @@ export default function InvestmentSummaryBar({
   const depositPercent = paymentTerms?.depositPercent ?? 50;
   const deposit = Math.round(total * (depositPercent / 100));
   const balance = total - deposit;
+
+  const [showAssumptions, setShowAssumptions] = useState(false);
+  const [showSignatureFlow, setShowSignatureFlow] = useState(false);
+  const [typedSignature, setTypedSignature] = useState('');
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
+
+  const canSign = typedSignature.trim().length > 2 && agreeToTerms;
+
+  const handleAccept = () => {
+    if (!showSignatureFlow) {
+      setShowSignatureFlow(true);
+      return;
+    }
+    if (canSign) {
+      onAccept(typedSignature.trim());
+    }
+  };
+
+  const signatureContent = (
+    <AnimatePresence>
+      {showSignatureFlow && (
+        <motion.div
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: 'auto', opacity: 1 }}
+          exit={{ height: 0, opacity: 0 }}
+          transition={fmTransition.enter}
+          className="overflow-hidden"
+        >
+          <div className="pt-4 pb-2">
+            <div className="flex items-center gap-2 mb-3">
+              <PenLine size={14} className="text-text-muted" />
+              <span className="text-xs font-medium text-text-secondary">Type your legal name to sign</span>
+            </div>
+            <input
+              type="text"
+              value={typedSignature}
+              onChange={(e) => setTypedSignature(e.target.value)}
+              placeholder="Full legal name"
+              className="w-full rounded-lg border border-border bg-bg-secondary/30 px-3 py-2.5 text-sm font-medium text-foreground placeholder:text-text-muted focus:outline-none focus:ring-1 focus:ring-org-primary/30"
+              style={{ fontFamily: 'cursive, serif' }}
+              autoFocus
+            />
+            {typedSignature.trim().length > 2 && (
+              <p
+                className="mt-2 text-xl text-center py-2 border-b border-border"
+                style={{ fontFamily: 'cursive, serif', color: 'var(--org-primary)' }}
+              >
+                {typedSignature}
+              </p>
+            )}
+            <label className="flex items-start gap-2 mt-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={agreeToTerms}
+                onChange={(e) => setAgreeToTerms(e.target.checked)}
+                className="mt-0.5 rounded border-border"
+              />
+              <span className="text-[10px] text-text-muted leading-snug">
+                I agree to the terms, scope, and investment outlined in this proposal.
+              </span>
+            </label>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+
+  const assumptionsContent = assumptions.length > 0 && (
+    <div className="mt-4">
+      <button
+        type="button"
+        onClick={() => setShowAssumptions(!showAssumptions)}
+        className="flex items-center gap-1.5 text-[10px] font-medium text-text-muted hover:text-text-secondary transition-colors"
+      >
+        <AlertCircle size={11} />
+        Key Assumptions ({assumptions.length})
+        <ChevronDown
+          size={11}
+          className={`transition-transform ${showAssumptions ? 'rotate-180' : ''}`}
+        />
+      </button>
+      <AnimatePresence>
+        {showAssumptions && (
+          <motion.ul
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={fmTransition.enter}
+            className="mt-2 space-y-1 overflow-hidden"
+          >
+            {assumptions.map((a, i) => (
+              <li key={i} className="text-[10px] text-text-muted pl-3 border-l border-border">
+                {a}
+              </li>
+            ))}
+          </motion.ul>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 
   return (
     <>
@@ -106,14 +209,21 @@ export default function InvestmentSummaryBar({
               </div>
             </div>
 
+            {assumptionsContent}
+
+            {signatureContent}
+
             {canApprove && (
               <button
                 type="button"
-                onClick={onAccept}
-                className="w-full py-3.5 rounded-xl text-sm font-semibold tracking-wide text-white transition-[opacity,transform] duration-slow hover:opacity-90 active:scale-[0.98]"
+                onClick={handleAccept}
+                disabled={showSignatureFlow && !canSign}
+                className={`w-full mt-4 py-3.5 rounded-xl text-sm font-semibold tracking-wide text-white transition-[opacity,transform] duration-slow hover:opacity-90 active:scale-[0.98] ${
+                  showSignatureFlow && !canSign ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
                 style={{ backgroundColor: 'var(--org-primary)' }}
               >
-                Accept &amp; Proceed
+                {showSignatureFlow ? 'Sign & Accept' : 'Accept & Proceed'}
               </button>
             )}
           </motion.div>
@@ -145,14 +255,20 @@ export default function InvestmentSummaryBar({
               </p>
             </div>
           </div>
+
+          {signatureContent}
+
           {canApprove && (
             <button
               type="button"
-              onClick={onAccept}
-              className="w-full py-3 rounded-xl text-sm font-semibold tracking-wide text-white transition-[opacity,transform] duration-slow hover:opacity-90 active:scale-[0.98]"
+              onClick={handleAccept}
+              disabled={showSignatureFlow && !canSign}
+              className={`w-full py-3 rounded-xl text-sm font-semibold tracking-wide text-white transition-[opacity,transform] duration-slow hover:opacity-90 active:scale-[0.98] ${
+                showSignatureFlow && !canSign ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
               style={{ backgroundColor: 'var(--org-primary)' }}
             >
-              Accept &amp; Proceed
+              {showSignatureFlow ? 'Sign & Accept' : 'Accept & Proceed'}
             </button>
           )}
         </div>

@@ -55,7 +55,7 @@ export default async function CompliancePage() {
   ];
 
   return (
-    <TierGate feature="crew">
+    <TierGate feature="compliance">
       <PageHeader
         title="Compliance"
         subtitle="Track COIs, W-9s, licenses, and certifications across your crew."

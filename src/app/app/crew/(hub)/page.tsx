@@ -19,6 +19,7 @@ import SearchInput from '@/components/ui/SearchInput';
 import Button from '@/components/ui/Button';
 import Tabs from '@/components/ui/Tabs';
 import { Upload } from 'lucide-react';
+import { TierGate } from '@/components/shared/TierGate';
 import CrewHubTabs from '../CrewHubTabs';
 
 interface CrewMember {
@@ -116,6 +117,7 @@ export default function CrewPage() {
   }
 
   return (
+    <TierGate feature="crew">
     <>
       {/* Header */}
       <PageHeader
@@ -240,5 +242,6 @@ export default function CrewPage() {
         onComplete={() => router.refresh()}
       />
     </>
+    </TierGate>
   );
 }

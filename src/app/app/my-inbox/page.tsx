@@ -11,8 +11,8 @@ export default function MyInboxPage() {
   return (
     <div>
 <PageHeader
-        title="{t('myInbox.title')}"
-        subtitle={`{t('myInbox.subtitle')}`}
+        title={t('myInbox.title')}
+        subtitle={t('myInbox.subtitle')}
       />
 
       <EmptyState
