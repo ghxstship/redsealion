@@ -39,6 +39,7 @@ import {
   castDocAddress,
   castDocContact,
   castActivationDates,
+  castLoadInStrikeEntry,
   type DocVenueLoadInStrike,
 } from '../doc-types';
 
@@ -126,7 +127,7 @@ export async function generateLoadInStrike(data: LoadInStrikeData): Promise<Buff
 
     // Load-In Schedule
     children.push(heading('Load-In Schedule', 3));
-    const loadIn = venue.load_in ? (venue.load_in as unknown as DocVenueLoadInStrike) : null;
+    const loadIn = castLoadInStrikeEntry(venue.load_in);
     if (loadIn) {
       children.push(labelValue('Date', formatDate(loadIn.date ?? ''), brand));
       children.push(labelValue('Start Time', loadIn.startTime ?? '', brand));
@@ -147,7 +148,7 @@ export async function generateLoadInStrike(data: LoadInStrikeData): Promise<Buff
 
     // Strike Schedule
     children.push(heading('Strike Schedule', 3));
-    const strikeS = venue.strike ? (venue.strike as unknown as DocVenueLoadInStrike) : null;
+    const strikeS = castLoadInStrikeEntry(venue.strike);
     if (strikeS) {
       children.push(labelValue('Date', formatDate(strikeS.date ?? ''), brand));
       children.push(labelValue('Start Time', strikeS.startTime ?? '', brand));

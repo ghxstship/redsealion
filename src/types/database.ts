@@ -12920,7 +12920,7 @@ export interface Address { street?: string; city?: string; state?: string; zip?:
 export interface VenueActivationDates { start: string; end: string; }
 export interface VenueLoadInStrike { date: string; startTime: string; endTime: string; }
 export interface VenueContact { name: string; phone: string; email: string; }
-export interface NarrativeContext { brandVoice?: string; audienceProfile?: string; experienceGoal?: string; }
+export interface NarrativeContext { brandVoice?: string; audienceProfile?: string; experienceGoal?: string; assumptions?: string[]; }
 export interface CrmExternalIds { salesforce?: string; hubspot?: string; pipedrive?: string; custom?: string; }
 export interface PmMetadata { taskType?: string; estimatedHours?: number; assigneeRole?: string; dependencies?: string[]; }
 export interface AssetMetadata { generates?: string; trackable?: boolean; reusable?: boolean; dimensions?: string; weight?: string; material?: string; storageRequirements?: string; }

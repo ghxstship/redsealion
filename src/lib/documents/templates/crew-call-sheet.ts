@@ -35,7 +35,7 @@ import {
 import {
   castDocAddress,
   castDocContact,
-  castLoadInStrike,
+  castLoadInStrikeEntry,
   castActivationDates,
   type DocVenueLoadInStrike,
   type DocVenueActivationDates,
@@ -116,7 +116,7 @@ export async function generateCrewCallSheet(data: CrewCallSheetData): Promise<Bu
   // ------------------------------------------------------------------
   children.push(heading('Schedule Times', 2));
 
-  const loadIn = venue.load_in ? (venue.load_in as unknown as DocVenueLoadInStrike) : null;
+  const loadIn = castLoadInStrikeEntry(venue.load_in);
   if (loadIn) {
     children.push(
       labelValue(
@@ -127,7 +127,7 @@ export async function generateCrewCallSheet(data: CrewCallSheetData): Promise<Bu
     );
   }
 
-  const strike = venue.strike ? (venue.strike as unknown as DocVenueLoadInStrike) : null;
+  const strike = castLoadInStrikeEntry(venue.strike);
   if (strike) {
     children.push(
       labelValue(

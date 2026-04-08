@@ -32,6 +32,7 @@ import type {
 import {
   castPaymentTerms,
   castJson,
+  castNarrativeContext,
 } from '../json-casts';
 
 import {
@@ -60,6 +61,12 @@ import {
   type DocBrand,
   type TableColumn,
 } from '../engine';
+
+import {
+  castDocAddress,
+  castActivationDates,
+  castLoadInStrikeEntry,
+} from '../doc-types';
 
 // ---------------------------------------------------------------------------
 // Public data interface
@@ -309,7 +316,7 @@ function coverPage(brand: DocBrand, data: ProposalDocumentData): (Paragraph)[] {
 }
 
 function introductionSection(brand: DocBrand, data: ProposalDocumentData): (Paragraph | ReturnType<typeof dataTable>)[] {
-  const narr = data.proposal.narrative_context as Record<string, unknown> | null;
+  const narr = castNarrativeContext(data.proposal.narrative_context);
   const assumptions = (narr?.assumptions as string[] | undefined) ?? [];
   const children: (Paragraph | ReturnType<typeof dataTable>)[] = [];
 
@@ -491,7 +498,7 @@ function phaseSection(
   );
 
   // Contractual framework — styled purple box
-  const termsSections = castJson<string[]>(phase.terms_sections as unknown as import('@/types/database').Json, []);
+  const termsSections = castJson<string[]>(phase.terms_sections as import('@/types/database').Json, []);
   if (termsSections.length > 0) {
     const refs = termsSections.map((s) => `\u00A7${s}`).join(', ');
     children.push(spacer(120));
@@ -576,7 +583,7 @@ function paymentTermsSection(
   proposal: Proposal
 ): Paragraph[] {
   const children: Paragraph[] = [];
-  const pt = castPaymentTerms(proposal.payment_terms as unknown as import('@/types/database').Json);
+  const pt = castPaymentTerms(proposal.payment_terms as import('@/types/database').Json);
 
   children.push(heading('Payment Terms', 1));
 
@@ -640,20 +647,20 @@ function venueScheduleSection(
   const rows = venues
     .sort((a, b) => (a.sequence ?? 0) - (b.sequence ?? 0))
     .map((v) => {
-      const addr = (v.address ?? {}) as unknown as import('@/types/database').Address;
-      const addrStr = [addr.street, addr.city, addr.state, addr.zip].filter(Boolean).join(', ');
+      const addr = castDocAddress(v.address);
+      const addrStr = addr ? [addr.street, addr.city, addr.state, addr.zip].filter(Boolean).join(', ') : '';
 
-      const ad = (v.activation_dates ?? null) as unknown as import('@/types/database').VenueActivationDates | null;
+      const ad = castActivationDates(v.activation_dates);
       const activationStr = ad
         ? `${formatDate(ad.start)} \u2013 ${formatDate(ad.end)}`
         : '\u2014';
 
-      const li = (v.load_in ?? null) as unknown as import('@/types/database').VenueLoadInStrike | null;
+      const li = castLoadInStrikeEntry(v.load_in);
       const loadInStr = li
         ? `${formatDate(li.date)} ${li.startTime}\u2013${li.endTime}`
         : '\u2014';
 
-      const st = (v.strike ?? null) as unknown as import('@/types/database').VenueLoadInStrike | null;
+      const st = castLoadInStrikeEntry(v.strike);
       const strikeStr = st
         ? `${formatDate(st.date)} ${st.startTime}\u2013${st.endTime}`
         : '\u2014';
@@ -729,7 +736,8 @@ export async function generateProposalDocument(
   ];
 
   // --- Assumptions section ---
-  const rawAssumptions = (data.proposal as unknown as Record<string, unknown>).assumptions;
+  const proposalNarr = castNarrativeContext(data.proposal.narrative_context);
+  const rawAssumptions = proposalNarr?.assumptions;
   const assumptionParas = assumptionsSection(brand, Array.isArray(rawAssumptions) ? rawAssumptions as string[] : []);
   if (assumptionParas.length > 0) {
     paymentChildren.push(pageBreak(), ...assumptionParas);

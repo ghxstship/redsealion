@@ -36,8 +36,9 @@ import {
 } from '../engine';
 
 import { castDeliverableMeta } from '../doc-types';
+import { castResourceMetadata } from '../json-casts';
 
-type MetaWithProcurement = { triggersProcurement?: boolean };
+
 
 
 // ---------------------------------------------------------------------------
@@ -104,8 +105,8 @@ export async function generateBOM(data: BOMData): Promise<Buffer> {
 
   // Procurement items
   const procurementItems = [
-    ...deliverables.filter((d) => (d.resource_metadata as unknown as MetaWithProcurement)?.triggersProcurement),
-    ...selectedAddons.filter((a) => (a.resource_metadata as unknown as MetaWithProcurement)?.triggersProcurement),
+    ...deliverables.filter((d) => castResourceMetadata(d.resource_metadata)?.triggersProcurement),
+    ...selectedAddons.filter((a) => castResourceMetadata(a.resource_metadata)?.triggersProcurement),
   ];
 
   const children: (import('docx').Paragraph | import('docx').Table)[] = [];

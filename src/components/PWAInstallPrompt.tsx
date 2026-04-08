@@ -70,7 +70,9 @@ export default function PWAInstallPrompt() {
     deferredPromptRef.current = null;
     try {
       localStorage.setItem(DISMISS_KEY, String(Date.now()));
-    } catch {}
+    } catch {
+      // localStorage unavailable in private browsing — dismiss is non-critical
+    }
   };
 
   if (!visible) return null;

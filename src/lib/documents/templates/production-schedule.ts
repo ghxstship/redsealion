@@ -39,6 +39,7 @@ import {
 import {
   castDocAddress,
   castActivationDates,
+  castLoadInStrikeEntry,
   type DocVenueLoadInStrike,
   type DocVenueActivationDates,
 } from '../doc-types';
@@ -234,11 +235,11 @@ export async function generateProductionSchedule(data: ProductionScheduleData): 
         const activationStr = act
           ? `${formatDate(act.start ?? '')} \u2013 ${formatDate(act.end ?? '')}`
           : '\u2014';
-        const li = v.load_in ? (v.load_in as unknown as DocVenueLoadInStrike) : null;
+        const li = castLoadInStrikeEntry(v.load_in);
         const loadInStr = li
           ? `${formatDate(li.date ?? '')} ${li.startTime ?? ''}\u2013${li.endTime ?? ''}`
           : '\u2014';
-        const st = v.strike ? (v.strike as unknown as DocVenueLoadInStrike) : null;
+        const st = castLoadInStrikeEntry(v.strike);
         const strikeStr = st
           ? `${formatDate(st.date ?? '')} ${st.startTime ?? ''}\u2013${st.endTime ?? ''}`
           : '\u2014';
@@ -269,11 +270,11 @@ export async function generateProductionSchedule(data: ProductionScheduleData): 
     if (vAct) {
       children.push(bullet(`${v.name} Activation: ${formatDate(vAct.start ?? '')} \u2013 ${formatDate(vAct.end ?? '')}`));
     }
-    const vLi = v.load_in ? (v.load_in as unknown as DocVenueLoadInStrike) : null;
+    const vLi = castLoadInStrikeEntry(v.load_in);
     if (vLi) {
       children.push(bullet(`${v.name} Load-In: ${formatDate(vLi.date ?? '')}`));
     }
-    const vSt = v.strike ? (v.strike as unknown as DocVenueLoadInStrike) : null;
+    const vSt = castLoadInStrikeEntry(v.strike);
     if (vSt) {
       children.push(bullet(`${v.name} Strike: ${formatDate(vSt.date ?? '')}`));
     }

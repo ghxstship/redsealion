@@ -110,7 +110,7 @@ export default function EditProposalBuilderPage({
             depositPercent: terms?.depositPercent ?? 50,
             balancePercent: terms?.balancePercent ?? 50,
             phaseTemplateId: proposal.phase_template_id ?? '',
-            assumptions: (narr?.assumptions as unknown as string[]) ?? [],
+            assumptions: Array.isArray(narr?.assumptions) ? narr.assumptions as string[] : [],
           });
         }
 

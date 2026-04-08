@@ -25,13 +25,23 @@ import type {
   AdvanceMode,
   AdvanceStatus,
 } from '@/types/database';
+import { castRelation } from '@/lib/supabase/cast-relation';
+
+type AdvanceCommentWithUser = AdvanceComment & {
+  users?: { full_name: string; avatar_url: string | null } | null;
+};
+
+type AdvanceCollaboratorWithJoins = AdvanceCollaborator & {
+  users?: { full_name: string; email: string } | null;
+  organizations?: { name: string } | null;
+};
 
 interface AdvanceDetailData {
-  advance: Record<string, unknown>;
-  lineItems: Record<string, unknown>[];
-  statusHistory: Record<string, unknown>[];
-  comments: Record<string, unknown>[];
-  collaborators: Record<string, unknown>[] | null;
+  advance: ProductionAdvance;
+  lineItems: AdvanceLineItem[];
+  statusHistory: AdvanceStatusHistoryEntry[];
+  comments: AdvanceCommentWithUser[];
+  collaborators: AdvanceCollaboratorWithJoins[] | null;
   isOrgMember: boolean;
 }
 
@@ -41,16 +51,11 @@ interface AdvanceDetailClientProps {
 
 export default function AdvanceDetailClient({ data }: AdvanceDetailClientProps) {
   const router = useRouter();
-  const { advance, lineItems, statusHistory, comments, collaborators, isOrgMember } = data;
-
-  const a = advance as unknown as ProductionAdvance;
-  const items = lineItems as unknown as AdvanceLineItem[];
-  const history = statusHistory as unknown as AdvanceStatusHistoryEntry[];
-  const cmts = comments as unknown as Array<AdvanceComment & { users?: { full_name: string; avatar_url: string | null } | null }>;
+  const { advance: a, lineItems: items, statusHistory: history, comments: cmts, collaborators, isOrgMember } = data;
 
   const typeConfig = ADVANCE_TYPE_CONFIG[a.advance_type];
   const validTransitions = getValidTransitions(a.advance_mode, a.status);
-  const projectName = ((advance as Record<string, unknown>).projects as Record<string, string> | null)?.name ?? null;
+  const projectName = castRelation<{ name: string }>((a as Record<string, unknown>).projects)?.name ?? null;
 
   async function performAction(action: string) {
     const res = await fetch(`/api/advances/${a.id}/${action}`, { method: 'POST' });
@@ -238,7 +243,7 @@ export default function AdvanceDetailClient({ data }: AdvanceDetailClientProps) 
           {a.advance_mode === 'collection' && collaborators && (
             <CollaboratorManager
               advanceId={a.id}
-              collaborators={collaborators as unknown as Array<AdvanceCollaborator & { users?: { full_name: string; email: string } | null; organizations?: { name: string } | null }>}
+              collaborators={collaborators}
               onRefresh={() => router.refresh()}
             />
           )}

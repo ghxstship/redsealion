@@ -141,3 +141,23 @@ export function castChangeOrders(val: unknown[]): DocChangeOrder[] {
   // Supabase returns ChangeOrder rows as unknown[] from JSONB — narrow to doc shape.
   return val as DocChangeOrder[];
 }
+
+/**
+ * Cast a single load_in or strike JSONB column to DocVenueLoadInStrike.
+ * Unlike castLoadInStrike (which wraps arrays), this handles the scalar case
+ * used by crew-call-sheet, load-in-strike, production-schedule, and proposal templates.
+ */
+export function castLoadInStrikeEntry(val: Json | null | undefined): DocVenueLoadInStrike | null {
+  return castJson<DocVenueLoadInStrike | null>(val ?? null, null);
+}
+
+/** Location JSONB column (assets / location history) */
+export interface DocAssetLocation {
+  facilityId?: string;
+  type?: string;
+  venueId?: string;
+}
+
+export function castAssetLocationDoc(val: Json | null | undefined): DocAssetLocation | null {
+  return castJson<DocAssetLocation | null>(val ?? null, null);
+}

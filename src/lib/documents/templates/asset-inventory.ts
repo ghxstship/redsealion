@@ -37,6 +37,8 @@ import {
   CONTENT_WIDTH,
 } from '../engine';
 
+import { castAssetLocationDoc } from '../doc-types';
+
 
 // ---------------------------------------------------------------------------
 // Public interface
@@ -188,7 +190,7 @@ export async function generateAssetInventory(data: AssetInventoryData): Promise<
       children.push(kvTable(pairs, brand));
 
       // Location info
-      children.push(labelValue('Current Location', formatLocation(asset.current_location as unknown as { facilityId?: string; type?: string; venueId?: string } | null), brand));
+      children.push(labelValue('Current Location', formatLocation(castAssetLocationDoc(asset.current_location)), brand));
       children.push(spacer(120));
     }
   }
@@ -212,7 +214,7 @@ export async function generateAssetInventory(data: AssetInventoryData): Promise<
       .sort((a, b) => new Date(b.moved_at).getTime() - new Date(a.moved_at).getTime())
       .map((h) => [
         h.asset_name,
-        formatLocation(h.location as unknown as { facilityId?: string; type?: string; venueId?: string } | null),
+        formatLocation(castAssetLocationDoc(h.location)),
         formatDate(h.moved_at),
         h.condition_at_move ?? '\u2014',
         h.notes ?? '',
