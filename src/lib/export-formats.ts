@@ -4,6 +4,7 @@
  */
 
 import type { EntityField } from './entity-fields';
+import type { SheetData } from 'write-excel-file/browser';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -101,8 +102,7 @@ export async function generateXLSX(
     }),
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  await writeXlsxFile([headerRow, ...dataRows] as any, {
+  await writeXlsxFile([headerRow, ...dataRows] as SheetData, {
     fileName: `${filename}.xlsx`,
   });
 }

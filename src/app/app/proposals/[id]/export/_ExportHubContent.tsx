@@ -6,7 +6,7 @@ import Link from 'next/link';
 import ExportCard from '@/components/admin/export/ExportCard';
 import ExportPreview from '@/components/admin/export/ExportPreview';
 import Tabs from '@/components/ui/Tabs';
-import type { ProposalExportData } from './_data';
+import type { ProposalExportData, ExportHubData } from './_data';
 import PageHeader from '@/components/shared/PageHeader';
 
 type ExportTab = 'document' | 'crm' | 'finance' | 'pm' | 'assets' | 'resources' | 'csv';
@@ -21,32 +21,10 @@ const TABS: { key: ExportTab; label: string }[] = [
   { key: 'csv', label: 'CSV Pack' },
 ];
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 interface ExportHubContentProps {
   id: string;
-  data: {
-    proposal: ProposalExportData;
-    salesforcePreview: any;
-    hubspotPreview: any;
-    pipedrivePreview: any;
-    quickbooksPreview: any;
-    xeroPreview: any;
-    freshbooksPreview: any;
-    clickupPreview: any;
-    asanaPreview: any;
-    mondayPreview: any;
-    invoiceSchedule: any[];
-    assetInventory: any[];
-    venueMatrix: any[];
-    personnelTable: any[];
-    equipmentList: any[];
-    csvFiles: any[];
-    salesforceMappings: any[];
-    hubspotMappings: any[];
-    pipedriveMappings: any[];
-  };
+  data: ExportHubData;
 }
-/* eslint-enable @typescript-eslint/no-explicit-any */
 
 // ---------------------------------------------------------------------------
 // Sub-components

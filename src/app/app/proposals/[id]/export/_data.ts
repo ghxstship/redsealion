@@ -34,6 +34,7 @@ interface InvoiceExportRow {
 }
 
 interface AssetExportRow {
+  [key: string]: unknown;
   name: string;
   type: string;
   category: string;
@@ -309,6 +310,9 @@ export async function getExportData(proposalId: string) {
     pipedriveMappings,
   };
 }
+
+/** The full data payload shape returned by `getExportData`. */
+export type ExportHubData = Awaited<ReturnType<typeof getExportData>>;
 
 // ---------------------------------------------------------------------------
 // Static field mapping constants (these don't change per proposal)
