@@ -55,7 +55,7 @@ export default function ReportBuilderPage() {
       });
 
       if (insertError) {
-        void 0; /* error handled silently in UI layer */
+        // Error surfaced via insertError.message below
         setError(insertError.message || 'Failed to save the report.');
         setSaving(false);
         return;
@@ -67,7 +67,7 @@ export default function ReportBuilderPage() {
         router.push('/app/reports');
       }, 1500);
     } catch (err) {
-      void 0; /* error handled silently in UI layer */
+      // Unexpected error — surfaced via setError below
       setError('An unexpected error occurred. Please try again.');
       setSaving(false);
     }

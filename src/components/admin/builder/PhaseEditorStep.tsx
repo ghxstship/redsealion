@@ -518,7 +518,6 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
                   <th className="px-3 py-2 text-right text-xs font-medium uppercase tracking-wider text-addon w-16">Qty</th>
                   <th className="px-3 py-2 text-right text-xs font-medium uppercase tracking-wider text-addon w-24">Unit Cost</th>
                   <th className="px-3 py-2 text-right text-xs font-medium uppercase tracking-wider text-addon w-24">Total</th>
-                  <th className="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider text-addon w-20">§ Ref</th>
                   <th className="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider text-addon w-24">Excl. Group</th>
                   <th className="px-3 py-2 w-10" />
                 </tr>
@@ -576,13 +575,6 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
                     </td>
                     <td className="px-3 py-2 text-right text-sm font-medium text-foreground">
                       {formatCurrency(a.totalCost)}
-                    </td>
-                    <td className="px-3 py-2">
-                      <FormInput
-                        type="text"
-                        value={a.termsRef}
-                        onChange={(e) => updateAddon(index, { termsRef: e.target.value })}
-                        placeholder="§4" />
                     </td>
                     <td className="px-3 py-2">
                       <FormInput

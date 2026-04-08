@@ -234,7 +234,7 @@ export default function EditProposalBuilderPage({
                 totalCost: Number(a.total_cost) || 0,
                 selected: (a.selected as boolean) ?? false,
                 mutuallyExclusiveGroup: (a.mutually_exclusive_group as string) ?? '',
-                termsRef: (a.terms_ref as string) ?? '',
+
               })),
               milestone: {
                 name: (milestone?.name as string) ?? '',
@@ -443,7 +443,7 @@ export default function EditProposalBuilderPage({
                 total_cost: a.totalCost,
                 selected: a.selected,
                 mutually_exclusive_group: a.mutuallyExclusiveGroup || null,
-                terms_ref: a.termsRef || null,
+
                 sort_order: aIdx,
               })),
             );
@@ -505,7 +505,7 @@ export default function EditProposalBuilderPage({
 
         return true;
       } catch (err) {
-        void 0; /* error handled silently in UI layer */
+        // Persist failure — UI stays on current state
         return false;
       } finally {
         setSaving(false);

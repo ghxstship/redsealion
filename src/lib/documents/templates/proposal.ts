@@ -416,7 +416,7 @@ function phaseSection(
     children.push(
       ...referenceCards(
         data.portfolioLinks.map((link) => ({
-          label: (link as unknown as Record<string, string>).project_name ?? `Portfolio #${link.portfolio_item_id.slice(0, 8)}`,
+          label: link.context_description ?? `Portfolio #${link.portfolio_item_id.slice(0, 8)}`,
           description: link.context_description ?? '',
         })),
         'Portfolio & Precedent Work',
@@ -445,7 +445,7 @@ function phaseSection(
       .map((d) => [
         d.name,
         d.description ?? '',
-        castJson<string[]>(d.details as unknown as import('@/types/database').Json, []).join('; '),
+        castJson<string[]>(d.details as import('@/types/database').Json, []).join('; '),
         String(d.qty),
         formatCurrency(d.unit_cost ?? 0, currency),
         formatCurrency(d.total_cost ?? 0, currency),
@@ -465,7 +465,7 @@ function phaseSection(
           description: addon.description ?? '',
           cost: formatCurrency(addon.total_cost ?? 0, currency),
           selected: addon.is_selected ?? false,
-          termsRef: (addon as unknown as Record<string, string>).terms_ref ?? undefined,
+          // terms_ref is resolved from terms_sections if applicable
         })),
         brand,
       ),

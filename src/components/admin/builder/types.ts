@@ -26,7 +26,6 @@ export interface DeliverableData {
 export interface AddonData extends DeliverableData {
   selected: boolean;
   mutuallyExclusiveGroup: string;
-  termsRef: string;
 }
 
 export interface CreativeReferenceData {
@@ -142,7 +141,6 @@ export function createEmptyAddon(): AddonData {
     totalCost: 0,
     selected: false,
     mutuallyExclusiveGroup: '',
-    termsRef: '',
   };
 }
 
