@@ -1,10 +1,11 @@
 'use client';
 
 import { createContext, useContext, ReactNode } from 'react';
+import type { OrganizationRole } from '@/types/database';
 import type { PermissionResource, PermissionAction } from '@/lib/permissions';
 
 interface PermissionsContextType {
-  role: string;
+  role: OrganizationRole;
   permissions: Record<string, boolean>;
   can: (resource: PermissionResource, action: PermissionAction) => boolean;
 }
@@ -16,7 +17,7 @@ export function PermissionsProvider({
   permissions,
   children,
 }: {
-  role: string;
+  role: OrganizationRole;
   permissions: Record<string, boolean>;
   children: ReactNode;
 }) {

@@ -105,15 +105,15 @@ export default function TaskComments({ taskId }: TaskCommentsProps) {
           {comments.map((comment) => (
             <div key={comment.id} className="flex gap-3">
               {/* Avatar */}
-              {comment.author?.avatar_url ? (
+              {comment.users?.avatar_url ? (
                 <img
-                  src={comment.author.avatar_url}
-                  alt={comment.author.full_name}
+                  src={comment.users.avatar_url}
+                  alt={comment.users.full_name}
                   className="h-8 w-8 rounded-full object-cover flex-shrink-0"
                 />
               ) : (
                 <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-bg-secondary text-xs font-medium text-text-muted">
-                  {getInitials(comment.author?.full_name ?? '??')}
+                  {getInitials(comment.users?.full_name ?? '??')}
                 </div>
               )}
 
@@ -121,7 +121,7 @@ export default function TaskComments({ taskId }: TaskCommentsProps) {
               <div className="flex-1 min-w-0">
                 <div className="flex items-baseline gap-2">
                   <span className="text-sm font-medium text-foreground truncate">
-                    {comment.author?.full_name ?? 'Unknown'}
+                    {comment.users?.full_name ?? 'Unknown'}
                   </span>
                   <span className="text-xs text-text-muted flex-shrink-0">
                     {formatTimestamp(comment.created_at)}

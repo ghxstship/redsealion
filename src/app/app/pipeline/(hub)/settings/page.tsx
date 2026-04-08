@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { TierGate } from '@/components/shared/TierGate';
+import { RoleGate } from '@/components/shared/RoleGate';
 import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
 import PageHeader from '@/components/shared/PageHeader';
 import PipelineHubTabs from '../../PipelineHubTabs';
@@ -153,16 +154,19 @@ export default function PipelineSettingsPage() {
 
   if (!loaded) {
     return (
+      <RoleGate allowedRoles={['developer', 'owner', 'admin']}>
       <TierGate feature="multi_pipeline">
 <PageHeader
         title="Pipeline Settings"
         subtitle="Loading..."
       />
       </TierGate>
+      </RoleGate>
     );
   }
 
   return (
+    <RoleGate allowedRoles={['developer', 'owner', 'admin']}>
     <TierGate feature="multi_pipeline">
 <PageHeader
         title="Pipeline Settings"
@@ -259,5 +263,6 @@ export default function PipelineSettingsPage() {
         ))}
       </div>
     </TierGate>
+    </RoleGate>
   );
 }

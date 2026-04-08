@@ -5,7 +5,7 @@ import { getPortalPermission, mapDBRoleToEnum } from '@/lib/permissions';
 
 /**
  * Guard a portal-facing API route. Verifies the user is a client role
- * (client_primary or client_viewer) and checks the portal permission.
+ * (client or viewer) and checks the portal permission.
  *
  * Permission keys follow the pattern: "resource.action"
  * e.g., "proposals.approve", "invoices.pay", "files.upload"
@@ -39,16 +39,16 @@ export async function requirePortalPermission(
   }
 
   const roleData = membership.roles as unknown as { name: string } | null;
-  const rawRole = roleData?.name ?? 'org_admin';
+  const rawRole = roleData?.name ?? 'viewer';
   const role = mapDBRoleToEnum(rawRole) as OrganizationRole;
 
   // Admin roles always have access (they can view the portal too)
-  if (role === 'super_admin' || role === 'org_admin' || role === 'project_manager') {
+  if (role === 'developer' || role === 'owner' || role === 'admin' || role === 'manager') {
     return null;
   }
 
   // Must be a client role
-  if (role !== 'client_primary' && role !== 'client_viewer') {
+  if (role !== 'client' && role !== 'viewer') {
     return NextResponse.json(
       { error: 'Forbidden', message: 'This endpoint is for client portal users.' },
       { status: 403 },
@@ -61,7 +61,7 @@ export async function requirePortalPermission(
     return NextResponse.json(
       {
         error: 'Forbidden',
-        message: `Your role (${role === 'client_primary' ? 'Primary Contact' : 'Viewer'}) does not have permission for this action.`,
+        message: `Your role (${role === 'client' ? 'Client' : 'Viewer'}) does not have permission for this action.`,
       },
       { status: 403 },
     );

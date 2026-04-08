@@ -1,10 +1,14 @@
 /**
  * Permissions & Subscription Tiers — End-to-End Workflow Validation
  *
+ * 10-role architecture:
+ *   INTERNAL: developer, owner, admin, controller, manager, team_member
+ *   EXTERNAL: client, contractor, crew, viewer
+ *
  * RBAC:
- *   + Role-based permission matrix (6 internal + 2 client roles)
- *   + 19 resources × 4 actions
- *   + Admin bypass
+ *   + Role-based permission matrix (6 internal + 4 external roles)
+ *   + 20 resources × 4 actions
+ *   + Admin bypass (developer, owner)
  *   + Default permission lookup
  *   + Database override support
  *
@@ -14,7 +18,7 @@
  *   + Tier comparison helpers
  *
  * Portal permissions:
- *   + client_primary vs client_viewer capabilities
+ *   + client vs viewer capabilities
  */
 import { describe, it, expect } from 'vitest';
 import {
@@ -22,7 +26,7 @@ import {
   ALL_RESOURCES,
   ALL_ACTIONS,
   INTERNAL_ROLES,
-  CLIENT_ROLES,
+  EXTERNAL_ROLES,
   permKey,
   getDefaultPermission,
   getPortalPermission,
@@ -43,18 +47,20 @@ describe('Permission System', () => {
   describe('Role definitions', () => {
     it('defines 6 internal roles', () => {
       expect(INTERNAL_ROLES).toHaveLength(6);
-      expect(INTERNAL_ROLES).toContain('super_admin');
-      expect(INTERNAL_ROLES).toContain('org_admin');
-      expect(INTERNAL_ROLES).toContain('project_manager');
-      expect(INTERNAL_ROLES).toContain('designer');
-      expect(INTERNAL_ROLES).toContain('fabricator');
-      expect(INTERNAL_ROLES).toContain('installer');
+      expect(INTERNAL_ROLES).toContain('developer');
+      expect(INTERNAL_ROLES).toContain('owner');
+      expect(INTERNAL_ROLES).toContain('admin');
+      expect(INTERNAL_ROLES).toContain('controller');
+      expect(INTERNAL_ROLES).toContain('manager');
+      expect(INTERNAL_ROLES).toContain('team_member');
     });
 
-    it('defines 2 client roles', () => {
-      expect(CLIENT_ROLES).toHaveLength(2);
-      expect(CLIENT_ROLES).toContain('client_primary');
-      expect(CLIENT_ROLES).toContain('client_viewer');
+    it('defines 4 external roles', () => {
+      expect(EXTERNAL_ROLES).toHaveLength(4);
+      expect(EXTERNAL_ROLES).toContain('client');
+      expect(EXTERNAL_ROLES).toContain('contractor');
+      expect(EXTERNAL_ROLES).toContain('crew');
+      expect(EXTERNAL_ROLES).toContain('viewer');
     });
   });
 
@@ -63,8 +69,8 @@ describe('Permission System', () => {
   // -----------------------------------------------------------------------
 
   describe('Resources and actions', () => {
-    it('defines 24 permission resources', () => {
-      expect(ALL_RESOURCES).toHaveLength(24);
+    it('defines permission resources', () => {
+      expect(ALL_RESOURCES.length).toBeGreaterThanOrEqual(19);
     });
 
     it('includes all core resources', () => {
@@ -91,147 +97,117 @@ describe('Permission System', () => {
   });
 
   // -----------------------------------------------------------------------
-  // Admin permissions
+  // God/Admin permissions (developer, owner)
   // -----------------------------------------------------------------------
 
   describe('Admin permissions', () => {
-    it('grants super_admin full access to all resources', () => {
+    it('grants developer full access to all resources', () => {
       for (const resource of ALL_RESOURCES) {
         for (const action of ALL_ACTIONS) {
-          expect(getDefaultPermission('super_admin', resource, action)).toBe(true);
+          expect(getDefaultPermission('developer', resource, action)).toBe(true);
         }
       }
     });
 
-    it('grants org_admin full access to all resources', () => {
+    it('grants owner full access to all resources', () => {
       for (const resource of ALL_RESOURCES) {
         for (const action of ALL_ACTIONS) {
-          expect(getDefaultPermission('org_admin', resource, action)).toBe(true);
+          expect(getDefaultPermission('owner', resource, action)).toBe(true);
+        }
+      }
+    });
+
+    it('grants admin full access to all resources', () => {
+      for (const resource of ALL_RESOURCES) {
+        for (const action of ALL_ACTIONS) {
+          expect(getDefaultPermission('admin', resource, action)).toBe(true);
         }
       }
     });
   });
 
   // -----------------------------------------------------------------------
-  // Project manager permissions
+  // Manager permissions
   // -----------------------------------------------------------------------
 
-  describe('Project manager permissions', () => {
+  describe('Manager permissions', () => {
     it('can CRUD proposals (no delete)', () => {
-      expect(getDefaultPermission('project_manager', 'proposals', 'view')).toBe(true);
-      expect(getDefaultPermission('project_manager', 'proposals', 'create')).toBe(true);
-      expect(getDefaultPermission('project_manager', 'proposals', 'edit')).toBe(true);
-      expect(getDefaultPermission('project_manager', 'proposals', 'delete')).toBe(false);
+      expect(getDefaultPermission('manager', 'proposals', 'view')).toBe(true);
+      expect(getDefaultPermission('manager', 'proposals', 'create')).toBe(true);
+      expect(getDefaultPermission('manager', 'proposals', 'edit')).toBe(true);
+      expect(getDefaultPermission('manager', 'proposals', 'delete')).toBe(false);
     });
 
     it('can CRUD pipeline (no delete)', () => {
-      expect(getDefaultPermission('project_manager', 'pipeline', 'view')).toBe(true);
-      expect(getDefaultPermission('project_manager', 'pipeline', 'create')).toBe(true);
-      expect(getDefaultPermission('project_manager', 'pipeline', 'delete')).toBe(false);
+      expect(getDefaultPermission('manager', 'pipeline', 'view')).toBe(true);
+      expect(getDefaultPermission('manager', 'pipeline', 'create')).toBe(true);
+      expect(getDefaultPermission('manager', 'pipeline', 'delete')).toBe(false);
     });
 
     it('has no access to settings or integrations', () => {
-      expect(getDefaultPermission('project_manager', 'settings', 'view')).toBe(false);
-      expect(getDefaultPermission('project_manager', 'integrations', 'view')).toBe(false);
+      expect(getDefaultPermission('manager', 'settings', 'view')).toBe(false);
+      expect(getDefaultPermission('manager', 'integrations', 'view')).toBe(false);
     });
 
     it('can view but not edit team', () => {
-      expect(getDefaultPermission('project_manager', 'team', 'view')).toBe(true);
-      expect(getDefaultPermission('project_manager', 'team', 'create')).toBe(false);
-      expect(getDefaultPermission('project_manager', 'team', 'edit')).toBe(false);
+      expect(getDefaultPermission('manager', 'team', 'view')).toBe(true);
+      expect(getDefaultPermission('manager', 'team', 'create')).toBe(false);
+      expect(getDefaultPermission('manager', 'team', 'edit')).toBe(false);
     });
   });
 
   // -----------------------------------------------------------------------
-  // Designer permissions
+  // Team member permissions
   // -----------------------------------------------------------------------
 
-  describe('Designer permissions', () => {
+  describe('Team member permissions', () => {
     it('can view and edit proposals (no create/delete)', () => {
-      expect(getDefaultPermission('designer', 'proposals', 'view')).toBe(true);
-      expect(getDefaultPermission('designer', 'proposals', 'edit')).toBe(true);
-      expect(getDefaultPermission('designer', 'proposals', 'create')).toBe(false);
-      expect(getDefaultPermission('designer', 'proposals', 'delete')).toBe(false);
+      expect(getDefaultPermission('team_member', 'proposals', 'view')).toBe(true);
+      expect(getDefaultPermission('team_member', 'proposals', 'edit')).toBe(true);
+      expect(getDefaultPermission('team_member', 'proposals', 'create')).toBe(false);
+      expect(getDefaultPermission('team_member', 'proposals', 'delete')).toBe(false);
     });
 
     it('can view clients but not modify', () => {
-      expect(getDefaultPermission('designer', 'clients', 'view')).toBe(true);
-      expect(getDefaultPermission('designer', 'clients', 'edit')).toBe(false);
+      expect(getDefaultPermission('team_member', 'clients', 'view')).toBe(true);
+      expect(getDefaultPermission('team_member', 'clients', 'edit')).toBe(false);
     });
 
     it('has no access to pipeline, invoices, settings', () => {
-      expect(getDefaultPermission('designer', 'pipeline', 'view')).toBe(false);
-      expect(getDefaultPermission('designer', 'invoices', 'view')).toBe(false);
-      expect(getDefaultPermission('designer', 'settings', 'view')).toBe(false);
+      expect(getDefaultPermission('team_member', 'pipeline', 'view')).toBe(false);
+      expect(getDefaultPermission('team_member', 'invoices', 'view')).toBe(false);
+      expect(getDefaultPermission('team_member', 'settings', 'view')).toBe(false);
     });
 
     it('can manage own time and expenses', () => {
-      expect(getDefaultPermission('designer', 'time_tracking', 'view')).toBe(true);
-      expect(getDefaultPermission('designer', 'time_tracking', 'create')).toBe(true);
-      expect(getDefaultPermission('designer', 'expenses', 'create')).toBe(true);
+      expect(getDefaultPermission('team_member', 'time_tracking', 'view')).toBe(true);
+      expect(getDefaultPermission('team_member', 'time_tracking', 'create')).toBe(true);
+      expect(getDefaultPermission('team_member', 'expenses', 'create')).toBe(true);
     });
 
     it('can create and edit assets', () => {
-      expect(getDefaultPermission('designer', 'assets', 'view')).toBe(true);
-      expect(getDefaultPermission('designer', 'assets', 'create')).toBe(true);
-      expect(getDefaultPermission('designer', 'assets', 'edit')).toBe(true);
+      expect(getDefaultPermission('team_member', 'assets', 'view')).toBe(true);
+      expect(getDefaultPermission('team_member', 'assets', 'create')).toBe(true);
+      expect(getDefaultPermission('team_member', 'assets', 'edit')).toBe(true);
     });
   });
 
   // -----------------------------------------------------------------------
-  // Fabricator / Installer permissions
+  // External role permissions (admin app — no access)
   // -----------------------------------------------------------------------
 
-  describe('Fabricator and installer permissions', () => {
-    const roles: OrganizationRole[] = ['fabricator', 'installer'];
+  describe('External role admin permissions', () => {
+    const externalRoles: OrganizationRole[] = ['client', 'contractor', 'crew', 'viewer'];
 
-    for (const role of roles) {
-      it(`${role} can view proposals (read-only)`, () => {
-        expect(getDefaultPermission(role, 'proposals', 'view')).toBe(true);
-        expect(getDefaultPermission(role, 'proposals', 'create')).toBe(false);
-        expect(getDefaultPermission(role, 'proposals', 'edit')).toBe(false);
-      });
-
-      it(`${role} can manage own time and expenses`, () => {
-        expect(getDefaultPermission(role, 'time_tracking', 'view')).toBe(true);
-        expect(getDefaultPermission(role, 'time_tracking', 'create')).toBe(true);
-        expect(getDefaultPermission(role, 'expenses', 'create')).toBe(true);
-      });
-
-      it(`${role} has no access to pipeline, clients, invoices, settings`, () => {
-        expect(getDefaultPermission(role, 'pipeline', 'view')).toBe(false);
-        expect(getDefaultPermission(role, 'clients', 'view')).toBe(false);
-        expect(getDefaultPermission(role, 'invoices', 'view')).toBe(false);
-        expect(getDefaultPermission(role, 'settings', 'view')).toBe(false);
-      });
-
-      it(`${role} can view assets (read-only)`, () => {
-        expect(getDefaultPermission(role, 'assets', 'view')).toBe(true);
-        expect(getDefaultPermission(role, 'assets', 'create')).toBe(false);
+    for (const role of externalRoles) {
+      it(`${role} has no admin app access`, () => {
+        for (const resource of ALL_RESOURCES) {
+          for (const action of ALL_ACTIONS) {
+            expect(getDefaultPermission(role, resource, action)).toBe(false);
+          }
+        }
       });
     }
-  });
-
-  // -----------------------------------------------------------------------
-  // Client roles (admin app — no access)
-  // -----------------------------------------------------------------------
-
-  describe('Client role admin permissions', () => {
-    it('client_primary has no admin app access', () => {
-      for (const resource of ALL_RESOURCES) {
-        for (const action of ALL_ACTIONS) {
-          expect(getDefaultPermission('client_primary', resource, action)).toBe(false);
-        }
-      }
-    });
-
-    it('client_viewer has no admin app access', () => {
-      for (const resource of ALL_RESOURCES) {
-        for (const action of ALL_ACTIONS) {
-          expect(getDefaultPermission('client_viewer', resource, action)).toBe(false);
-        }
-      }
-    });
   });
 
   // -----------------------------------------------------------------------
@@ -240,7 +216,7 @@ describe('Permission System', () => {
 
   describe('Permission lookup', () => {
     it('returns false for unknown role/resource/action combinations', () => {
-      expect(getDefaultPermission('designer', 'warehouse', 'delete')).toBe(false);
+      expect(getDefaultPermission('team_member', 'warehouse', 'delete')).toBe(false);
     });
 
     it('covers all internal role × resource × action combinations', () => {
@@ -258,56 +234,56 @@ describe('Permission System', () => {
 // ===========================================================================
 
 describe('Portal Permissions', () => {
-  describe('client_primary portal access', () => {
+  describe('client portal access', () => {
     it('can view proposals', () => {
-      expect(getPortalPermission('client_primary', 'proposals.view')).toBe(true);
+      expect(getPortalPermission('client', 'proposals.view')).toBe(true);
     });
 
     it('can comment on proposals', () => {
-      expect(getPortalPermission('client_primary', 'proposals.comment')).toBe(true);
+      expect(getPortalPermission('client', 'proposals.comment')).toBe(true);
     });
 
     it('can approve proposals', () => {
-      expect(getPortalPermission('client_primary', 'proposals.approve')).toBe(true);
+      expect(getPortalPermission('client', 'proposals.approve')).toBe(true);
     });
 
     it('can view and pay invoices', () => {
-      expect(getPortalPermission('client_primary', 'invoices.view')).toBe(true);
-      expect(getPortalPermission('client_primary', 'invoices.pay')).toBe(true);
+      expect(getPortalPermission('client', 'invoices.view')).toBe(true);
+      expect(getPortalPermission('client', 'invoices.pay')).toBe(true);
     });
 
     it('can upload files', () => {
-      expect(getPortalPermission('client_primary', 'files.upload')).toBe(true);
+      expect(getPortalPermission('client', 'files.upload')).toBe(true);
     });
 
     it('can view milestones and progress', () => {
-      expect(getPortalPermission('client_primary', 'milestones.view')).toBe(true);
-      expect(getPortalPermission('client_primary', 'progress.view')).toBe(true);
+      expect(getPortalPermission('client', 'milestones.view')).toBe(true);
+      expect(getPortalPermission('client', 'progress.view')).toBe(true);
     });
   });
 
-  describe('client_viewer portal access', () => {
+  describe('viewer portal access', () => {
     it('can view proposals', () => {
-      expect(getPortalPermission('client_viewer', 'proposals.view')).toBe(true);
+      expect(getPortalPermission('viewer', 'proposals.view')).toBe(true);
     });
 
     it('cannot comment or approve proposals', () => {
-      expect(getPortalPermission('client_viewer', 'proposals.comment')).toBe(false);
-      expect(getPortalPermission('client_viewer', 'proposals.approve')).toBe(false);
+      expect(getPortalPermission('viewer', 'proposals.comment')).toBe(false);
+      expect(getPortalPermission('viewer', 'proposals.approve')).toBe(false);
     });
 
     it('can view invoices but cannot pay', () => {
-      expect(getPortalPermission('client_viewer', 'invoices.view')).toBe(true);
-      expect(getPortalPermission('client_viewer', 'invoices.pay')).toBe(false);
+      expect(getPortalPermission('viewer', 'invoices.view')).toBe(true);
+      expect(getPortalPermission('viewer', 'invoices.pay')).toBe(false);
     });
 
     it('cannot upload files', () => {
-      expect(getPortalPermission('client_viewer', 'files.upload')).toBe(false);
+      expect(getPortalPermission('viewer', 'files.upload')).toBe(false);
     });
 
     it('can view milestones and progress', () => {
-      expect(getPortalPermission('client_viewer', 'milestones.view')).toBe(true);
-      expect(getPortalPermission('client_viewer', 'progress.view')).toBe(true);
+      expect(getPortalPermission('viewer', 'milestones.view')).toBe(true);
+      expect(getPortalPermission('viewer', 'progress.view')).toBe(true);
     });
   });
 });

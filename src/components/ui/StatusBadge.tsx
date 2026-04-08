@@ -121,12 +121,16 @@ export const LOCATION_TYPE_COLORS: Record<string, string> = {
 };
 
 export const ROLE_BADGE_COLORS: Record<string, string> = {
-  super_admin: 'bg-red-50 text-red-700',
-  org_admin: 'bg-indigo-50 text-indigo-700',
-  project_manager: 'bg-blue-50 text-blue-700',
-  designer: 'bg-purple-50 text-purple-700',
-  fabricator: 'bg-orange-50 text-orange-700',
-  installer: 'bg-green-50 text-green-700',
+  developer: 'bg-red-50 text-red-700',
+  owner: 'bg-indigo-50 text-indigo-700',
+  admin: 'bg-indigo-50 text-indigo-700',
+  controller: 'bg-emerald-50 text-emerald-700',
+  manager: 'bg-blue-50 text-blue-700',
+  team_member: 'bg-purple-50 text-purple-700',
+  client: 'bg-gray-100 text-gray-700',
+  contractor: 'bg-amber-50 text-amber-700',
+  crew: 'bg-orange-50 text-orange-700',
+  viewer: 'bg-gray-100 text-gray-600',
 };
 
 /* ────────────────────────────────────────────

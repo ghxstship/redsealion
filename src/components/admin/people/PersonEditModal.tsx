@@ -23,11 +23,12 @@ interface PersonEditModalProps {
 }
 
 const ROLES = [
-  { value: 'org_admin', label: 'Admin' },
-  { value: 'project_manager', label: 'Project Manager' },
-  { value: 'designer', label: 'Designer' },
-  { value: 'fabricator', label: 'Fabricator' },
-  { value: 'installer', label: 'Installer' },
+  { value: 'admin', label: 'Admin' },
+  { value: 'controller', label: 'Controller' },
+  { value: 'manager', label: 'Manager' },
+  { value: 'team_member', label: 'Team Member' },
+  { value: 'contractor', label: 'Contractor' },
+  { value: 'crew', label: 'Crew' },
 ] as const;
 
 export default function PersonEditModal({ open, onClose, onSaved, person }: PersonEditModalProps) {

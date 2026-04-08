@@ -106,8 +106,8 @@ export async function checkPermission(
     }
   }
 
-  // Super admins and org admins always have full access
-  if (role === 'super_admin' || role === 'org_admin') {
+  // Developer, owner, and admin always have full access
+  if (role === 'developer' || role === 'owner' || role === 'admin') {
     return { allowed: true, role, userId: user.id, organizationId };
   }
 

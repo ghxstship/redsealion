@@ -32,14 +32,16 @@ interface TeamMember {
 }
 
 const ROLE_LABELS: Record<string, string> = {
-  super_admin: 'Super Admin',
-  org_admin: 'Admin',
-  project_manager: 'Project Manager',
-  designer: 'Designer',
-  fabricator: 'Fabricator',
-  installer: 'Installer',
-  client_primary: 'Client',
-  client_viewer: 'Client Viewer',
+  developer: 'Developer',
+  owner: 'Owner',
+  admin: 'Admin',
+  controller: 'Controller',
+  manager: 'Manager',
+  team_member: 'Team Member',
+  client: 'Client',
+  contractor: 'Contractor',
+  crew: 'Crew',
+  viewer: 'Viewer',
 };
 
 export default function PeopleGrid({ members }: { members: TeamMember[] }) {

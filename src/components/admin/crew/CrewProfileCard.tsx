@@ -8,8 +8,8 @@ interface CrewProfileCardProps {
 }
 
 export default function CrewProfileCard({ profile }: CrewProfileCardProps) {
-  const initials = profile.user?.full_name
-    ? profile.user.full_name
+  const initials = profile.users?.full_name
+    ? profile.users.full_name
         .split(' ')
         .map((n) => n[0])
         .join('')
@@ -32,10 +32,10 @@ export default function CrewProfileCard({ profile }: CrewProfileCardProps) {
         </div>
         <div className="min-w-0 flex-1">
           <h3 className="text-sm font-semibold text-foreground truncate">
-            {profile.user?.full_name ?? 'Unknown'}
+            {profile.users?.full_name ?? 'Unknown'}
           </h3>
-          {profile.user?.title && (
-            <p className="text-xs text-text-secondary truncate">{profile.user.title}</p>
+          {profile.users?.email && (
+            <p className="text-xs text-text-secondary truncate">{profile.users.email}</p>
           )}
         </div>
       </div>

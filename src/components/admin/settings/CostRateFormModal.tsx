@@ -10,7 +10,7 @@ import Alert from '@/components/ui/Alert';
 
 interface CostRateFormModalProps { open: boolean; onClose: () => void; onCreated: () => void; }
 
-const ROLES = ['project_manager', 'designer', 'fabricator', 'installer', 'technician', 'coordinator'] as const;
+const ROLES = ['manager', 'team_member', 'contractor', 'crew'] as const;
 
 export default function CostRateFormModal({ open, onClose, onCreated }: CostRateFormModalProps) {
   const [role, setRole] = useState('');

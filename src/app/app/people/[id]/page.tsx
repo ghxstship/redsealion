@@ -123,7 +123,7 @@ export default async function PersonDetailPage(props: { params: Promise<{ id: st
                 <span className="inline-flex items-center rounded-full bg-green-50 px-3 py-1 text-xs font-medium text-green-700">Team Management</span>
                 <span className="inline-flex items-center rounded-full bg-green-50 px-3 py-1 text-xs font-medium text-green-700">Billing</span>
               </>
-            ) : person.role === 'project_manager' ? (
+            ) : person.role === 'manager' ? (
               <>
                 <span className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700">Projects</span>
                 <span className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700">Tasks</span>

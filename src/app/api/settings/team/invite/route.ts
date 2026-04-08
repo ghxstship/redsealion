@@ -10,23 +10,27 @@ import type { OrganizationRole } from '@/types/database';
  */
 
 const ROLE_MAP: Record<string, string> = {
-  org_admin: SYSTEM_ROLE_IDS.ADMIN,
-  project_manager: SYSTEM_ROLE_IDS.MANAGER,
-  designer: SYSTEM_ROLE_IDS.MEMBER,
-  fabricator: SYSTEM_ROLE_IDS.MEMBER,
-  installer: SYSTEM_ROLE_IDS.MEMBER,
-  client_primary: SYSTEM_ROLE_IDS.GUEST,
-  client_viewer: SYSTEM_ROLE_IDS.GUEST,
+  owner: SYSTEM_ROLE_IDS.ADMIN,
+  admin: SYSTEM_ROLE_IDS.ADMIN,
+  controller: SYSTEM_ROLE_IDS.ADMIN,
+  manager: SYSTEM_ROLE_IDS.MANAGER,
+  team_member: SYSTEM_ROLE_IDS.MEMBER,
+  client: SYSTEM_ROLE_IDS.GUEST,
+  contractor: SYSTEM_ROLE_IDS.GUEST,
+  crew: SYSTEM_ROLE_IDS.GUEST,
+  viewer: SYSTEM_ROLE_IDS.GUEST,
 };
 
 const VALID_ROLES: OrganizationRole[] = [
-  'org_admin',
-  'project_manager',
-  'designer',
-  'fabricator',
-  'installer',
-  'client_primary',
-  'client_viewer',
+  'owner',
+  'admin',
+  'controller',
+  'manager',
+  'team_member',
+  'client',
+  'contractor',
+  'crew',
+  'viewer',
 ];
 
 export async function POST(request: NextRequest) {
@@ -102,7 +106,7 @@ export async function POST(request: NextRequest) {
       scope_id: orgId,
       invited_email: normalizedEmail,
       role_id: roleId,
-      seat_type: role === 'client_primary' || role === 'client_viewer' ? 'external' : 'internal',
+      seat_type: ['client', 'contractor', 'crew', 'viewer'].includes(role) ? 'external' : 'internal',
       invited_by: perm.userId,
       status: 'pending',
       token,

@@ -29,7 +29,7 @@ async function getUtilizationData(): Promise<UtilizationRow[]> {
       .from('users')
       .select('id, full_name, role')
       .eq('organization_id', orgId)
-      .not('role', 'in', '("client_primary","client_viewer")');
+      .not('role', 'in', '("client","contractor","crew","viewer")');
 
     if (!users || users.length === 0) return [];
 

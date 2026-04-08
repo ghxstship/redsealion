@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { usePermissions } from '@/components/shared/PermissionsProvider';
+import { RoleGate } from '@/components/shared/RoleGate';
 import PageHeader from '@/components/shared/PageHeader';
 
 const sections = [
@@ -94,6 +95,7 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
   });
 
   return (
+    <RoleGate allowedRoles={['developer', 'owner', 'admin', 'controller', 'manager', 'team_member']}>
     <>
 <PageHeader
         title="Settings"
@@ -133,5 +135,5 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
         <div className="flex-1 min-w-0">{children}</div>
       </div>
     </>
-  );
+    </RoleGate>  );
 }

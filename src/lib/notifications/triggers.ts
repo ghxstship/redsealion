@@ -37,21 +37,38 @@ function formatDate(dateStr: string): string {
 
 /**
  * Fetch the first org admin's user id and email for internal notifications.
+ * Resolves via organization_memberships → roles (SSOT).
  */
 async function getOrgAdmin(
   supabase: Awaited<ReturnType<typeof createServiceClient>>,
   orgId: string,
 ): Promise<{ userId: string; email: string } | null> {
   const { data } = await supabase
+    .from('organization_memberships')
+    .select('user_id, roles(name)')
+    .eq('organization_id', orgId)
+    .eq('status', 'active')
+    .order('created_at', { ascending: true })
+    .limit(10);
+
+  if (!data || data.length === 0) return null;
+
+  // Find the first admin-level membership
+  const adminEntry = data.find((m) => {
+    const roleName = (m.roles as unknown as { name: string } | null)?.name;
+    return roleName === 'developer' || roleName === 'owner' || roleName === 'admin';
+  });
+
+  if (!adminEntry) return null;
+
+  const { data: userRow } = await supabase
     .from('users')
     .select('id, email')
-    .eq('organization_id', orgId)
-    .in('role', ['org_admin', 'super_admin'])
-    .limit(1)
+    .eq('id', adminEntry.user_id)
     .single();
 
-  if (!data) return null;
-  return { userId: data.id as string, email: data.email as string };
+  if (!userRow) return null;
+  return { userId: userRow.id as string, email: userRow.email as string };
 }
 
 // ---------------------------------------------------------------------------

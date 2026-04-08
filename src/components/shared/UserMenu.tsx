@@ -19,14 +19,16 @@ interface UserMenuProps {
 }
 
 const ROLE_LABELS: Record<string, string> = {
-  super_admin: 'Super Admin',
-  org_admin: 'Admin',
-  project_manager: 'Project Manager',
-  designer: 'Designer',
-  fabricator: 'Fabricator',
-  installer: 'Installer',
-  client_primary: 'Client',
-  client_viewer: 'Client Viewer',
+  developer: 'Developer',
+  owner: 'Owner',
+  admin: 'Admin',
+  controller: 'Controller',
+  manager: 'Manager',
+  team_member: 'Team Member',
+  client: 'Client',
+  contractor: 'Contractor',
+  crew: 'Crew',
+  viewer: 'Viewer',
 };
 
 function getInitials(name: string): string {
@@ -71,14 +73,16 @@ export default function UserMenu({ fullName, email, role, avatarUrl }: UserMenuP
 
   const initials = getInitials(fullName);
   const ROLE_KEY_MAP: Record<string, string> = {
-    super_admin: 'user.superAdmin',
-    org_admin: 'user.admin',
-    project_manager: 'user.projectManager',
-    designer: 'user.designer',
-    fabricator: 'user.fabricator',
-    installer: 'user.installer',
-    client_primary: 'user.clientPrimary',
-    client_viewer: 'user.clientViewer',
+    developer: 'user.developer',
+    owner: 'user.owner',
+    admin: 'user.admin',
+    controller: 'user.controller',
+    manager: 'user.manager',
+    team_member: 'user.teamMember',
+    client: 'user.client',
+    contractor: 'user.contractor',
+    crew: 'user.crew',
+    viewer: 'user.viewer',
   };
   const roleLabel = ROLE_KEY_MAP[role] ? t(ROLE_KEY_MAP[role]) : (ROLE_LABELS[role] ?? role);
 

@@ -23,14 +23,16 @@ interface AdminSidebarProps {
 }
 
 const ROLE_LABELS: Record<string, string> = {
-  super_admin: 'Super Admin',
-  org_admin: 'Admin',
-  project_manager: 'PM',
-  designer: 'Designer',
-  fabricator: 'Fabricator',
-  installer: 'Installer',
-  client_primary: 'Client',
-  client_viewer: 'Viewer',
+  developer: 'Developer',
+  owner: 'Owner',
+  admin: 'Admin',
+  controller: 'Controller',
+  manager: 'Manager',
+  team_member: 'Team Member',
+  client: 'Client',
+  contractor: 'Contractor',
+  crew: 'Crew',
+  viewer: 'Viewer',
 };
 
 function getInitials(name: string): string {

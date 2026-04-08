@@ -376,7 +376,7 @@ export function makeCrewProfile(overrides: RowData = {}) {
     organization_id: TEST_ORG_ID,
     user_id: 'user_crew_001',
     full_name: 'Alex Installer',
-    role: 'installer',
+    role: 'crew',
     phone: '555-0100',
     email: 'alex@test.com',
     hourly_rate: 45,
@@ -399,7 +399,7 @@ export function makeCrewBooking(overrides: RowData = {}) {
     crew_profile_id: 'crew_test_001',
     proposal_id: 'prop_test_001',
     venue_id: null,
-    role: 'installer',
+    role: 'crew',
     shift_start: '2026-04-10T08:00:00Z',
     shift_end: '2026-04-10T18:00:00Z',
     call_time: null,
@@ -540,7 +540,7 @@ export function makeChangeOrder(overrides: RowData = {}) {
 export function makePermResult(overrides: RowData = {}) {
   return {
     allowed: true,
-    role: 'org_admin',
+    role: 'owner',
     userId: TEST_USER_ID,
     organizationId: TEST_ORG_ID,
     ...overrides,

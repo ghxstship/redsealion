@@ -45,24 +45,25 @@ const RESOURCE_LABELS: Record<PermissionResource, string> = {
   equipment: 'Equipment',
   leads: 'Leads',
   warehouse: 'Warehouse',
+  advances: 'Advances',
+  activations: 'Activations',
+  events: 'Events',
+  locations: 'Locations',
+  work_orders: 'Work Orders',
   resources: 'Resources',
+  resource_scheduling: 'Resource Scheduling',
   ai_drafting: 'AI Drafting',
   email_campaigns: 'Email Campaigns',
   referral_program: 'Referral Program',
-  work_orders: 'Work Orders',
-  advances: 'Advances',
-  events: 'Events',
-  activations: 'Activations',
-  locations: 'Locations',
 };
 
 const ROLE_LABELS: Record<string, string> = {
-  super_admin: 'Super Admin',
-  org_admin: 'Org Admin',
-  project_manager: 'Project Manager',
-  designer: 'Designer',
-  fabricator: 'Fabricator',
-  installer: 'Installer',
+  developer: 'Developer',
+  owner: 'Owner',
+  admin: 'Admin',
+  controller: 'Controller',
+  manager: 'Manager',
+  team_member: 'Team Member',
 };
 
 export default function PermissionMatrix({ organizationId, overrides }: PermissionMatrixProps) {
@@ -91,8 +92,8 @@ export default function PermissionMatrix({ organizationId, overrides }: Permissi
   const togglePermission = useCallback(
     async (role: OrganizationRole, resource: PermissionResource, action: PermissionAction) => {
       if (!isEnterprise) return;
-      // super_admin and org_admin are always full access — not editable
-      if (role === 'super_admin' || role === 'org_admin') return;
+      // developer and owner are always full access — not editable
+      if (role === 'developer' || role === 'owner') return;
 
       const key = permKey(resource, action);
       const current = permissions[role]?.[key] ?? false;
@@ -188,7 +189,7 @@ export default function PermissionMatrix({ organizationId, overrides }: Permissi
       )}
 
       {INTERNAL_ROLES.map((role) => {
-        const isAdmin = role === 'super_admin' || role === 'org_admin';
+        const isAdmin = role === 'developer' || role === 'owner';
 
         return (
           <div key={role} className="rounded-xl border border-border bg-white overflow-hidden">

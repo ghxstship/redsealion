@@ -3,7 +3,7 @@
  *
  * Portal access:
  *   + Token-based authentication
- *   + client_primary vs client_viewer capabilities
+ *   + client vs viewer capabilities
  *   + Proposal viewing and approval
  *   + Invoice viewing and payment
  *   + Activity tracking (first view, view history)
@@ -91,7 +91,7 @@ describe('Client Portal Workflow', () => {
   });
 
   // -----------------------------------------------------------------------
-  // Proposal approval (client_primary only)
+  // Proposal approval (client only)
   // -----------------------------------------------------------------------
 
   describe('Proposal approval via portal', () => {
@@ -205,13 +205,13 @@ describe('Client Portal Workflow', () => {
       expect(attachment.visibility).toBe('internal');
     });
 
-    it('client_primary can upload files', () => {
-      const canUpload = true; // PORTAL_PERMISSIONS.client_primary['files.upload'] === true
+    it('client can upload files', () => {
+      const canUpload = true; // PORTAL_PERMISSIONS.client['files.upload'] === true
       expect(canUpload).toBe(true);
     });
 
-    it('client_viewer cannot upload files', () => {
-      const canUpload = false; // PORTAL_PERMISSIONS.client_viewer['files.upload'] === false
+    it('viewer cannot upload files', () => {
+      const canUpload = false; // PORTAL_PERMISSIONS.viewer['files.upload'] === false
       expect(canUpload).toBe(false);
     });
   });

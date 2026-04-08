@@ -69,15 +69,15 @@ export default async function ProposalJourneyPage({ params }: PageProps) {
       .single();
 
     if (membership) {
-      const rawRole = (membership.roles as unknown as { name: string } | null)?.name ?? 'org_admin';
+      const rawRole = (membership.roles as unknown as { name: string } | null)?.name ?? 'viewer';
       const { mapDBRoleToEnum } = await import('@/lib/permissions');
       const role = mapDBRoleToEnum(rawRole);
 
-      if (role === 'super_admin' || role === 'org_admin' || role === 'project_manager') {
+      if (role === 'developer' || role === 'owner' || role === 'admin' || role === 'manager') {
         canApprove = true;
-      } else {
+      } else if (role === 'client') {
         const { getPortalPermission } = await import('@/lib/permissions');
-        canApprove = getPortalPermission(role as any, 'proposals.approve');
+        canApprove = getPortalPermission('client', 'proposals.approve');
       }
     }
   }

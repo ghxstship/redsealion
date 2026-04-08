@@ -13,14 +13,16 @@ interface TeamMember {
 }
 
 const ROLE_BADGE_COLORS: Record<string, string> = {
-  super_admin: 'bg-blue-50 text-blue-700 border-blue-200',
-  org_admin: 'bg-blue-50 text-blue-700 border-blue-200',
-  project_manager: 'bg-purple-50 text-purple-700 border-purple-200',
-  designer: 'bg-green-50 text-green-700 border-green-200',
-  fabricator: 'bg-yellow-50 text-yellow-700 border-yellow-200',
-  installer: 'bg-orange-50 text-orange-700 border-orange-200',
-  client_primary: 'bg-gray-50 text-gray-600 border-gray-200',
-  client_viewer: 'bg-gray-50 text-gray-600 border-gray-200',
+  developer: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+  owner: 'bg-blue-50 text-blue-700 border-blue-200',
+  admin: 'bg-blue-50 text-blue-700 border-blue-200',
+  controller: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+  manager: 'bg-purple-50 text-purple-700 border-purple-200',
+  team_member: 'bg-green-50 text-green-700 border-green-200',
+  client: 'bg-gray-50 text-gray-600 border-gray-200',
+  contractor: 'bg-amber-50 text-amber-700 border-amber-200',
+  crew: 'bg-orange-50 text-orange-700 border-orange-200',
+  viewer: 'bg-gray-50 text-gray-600 border-gray-200',
 };
 
 function formatRole(role: string): string {
@@ -39,11 +41,11 @@ function formatDate(dateStr: string): string {
 }
 
 const FALLBACK_MEMBERS: TeamMember[] = [
-  { id: '1', full_name: 'Sarah Chen', email: 'sarah@example.com', role: 'org_admin', created_at: '2024-01-15T00:00:00Z', avatar_url: null },
-  { id: '2', full_name: 'Marcus Rivera', email: 'marcus@example.com', role: 'project_manager', created_at: '2024-02-20T00:00:00Z', avatar_url: null },
-  { id: '3', full_name: 'Emily Park', email: 'emily@example.com', role: 'designer', created_at: '2024-03-10T00:00:00Z', avatar_url: null },
-  { id: '4', full_name: 'James Okafor', email: 'james@example.com', role: 'fabricator', created_at: '2024-04-05T00:00:00Z', avatar_url: null },
-  { id: '5', full_name: 'Ana Gutierrez', email: 'ana@example.com', role: 'installer', created_at: '2024-05-18T00:00:00Z', avatar_url: null },
+  { id: '1', full_name: 'Sarah Chen', email: 'sarah@example.com', role: 'owner', created_at: '2024-01-15T00:00:00Z', avatar_url: null },
+  { id: '2', full_name: 'Marcus Rivera', email: 'marcus@example.com', role: 'manager', created_at: '2024-02-20T00:00:00Z', avatar_url: null },
+  { id: '3', full_name: 'Emily Park', email: 'emily@example.com', role: 'team_member', created_at: '2024-03-10T00:00:00Z', avatar_url: null },
+  { id: '4', full_name: 'James Okafor', email: 'james@example.com', role: 'team_member', created_at: '2024-04-05T00:00:00Z', avatar_url: null },
+  { id: '5', full_name: 'Ana Gutierrez', email: 'ana@example.com', role: 'crew', created_at: '2024-05-18T00:00:00Z', avatar_url: null },
 ];
 
 export default async function TeamSettingsPage() {

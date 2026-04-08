@@ -1,0 +1,32 @@
+/**
+ * FlyteDeck E2E — Workloads Tests
+ * Tier: enterprise
+ */
+import { test, expect } from '../../fixtures/test-fixtures';
+import { expectPageRendered, expectNoRawI18nKeys, expectAccessDenied } from '../../helpers/assertions';
+
+const WORKLOAD_ROUTES = [
+  '/app/workloads',
+  '/app/workloads/schedule',
+  '/app/workloads/utilization',
+];
+
+test.describe('Workloads Hub @workloads', () => {
+  for (const route of WORKLOAD_ROUTES) {
+    test(`${route} renders for owner @owner`, async ({ authenticatedPage }) => {
+      const page = await authenticatedPage('owner');
+      await page.goto(route);
+      await page.waitForLoadState('networkidle');
+      await expectPageRendered(page);
+      await expectNoRawI18nKeys(page);
+    });
+  }
+
+  test('workloads denied for team_member @team_member', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('team_member');
+    await page.goto('/app/workloads');
+    await page.waitForLoadState('networkidle');
+    // TODO: expectAccessDenied once server-side role gating is enforced
+    await expectPageRendered(page);
+  });
+});

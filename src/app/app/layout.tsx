@@ -33,7 +33,7 @@ interface SessionContext {
 
 const DEFAULT_CONTEXT: SessionContext = {
   tier: 'free',
-  user: { fullName: 'User', email: '', role: 'org_admin', avatarUrl: null },
+  user: { fullName: 'User', email: '', role: 'team_member', avatarUrl: null },
   orgName: 'FlyteDeck',
   locale: DEFAULT_LOCALE,
 };
@@ -67,7 +67,7 @@ async function getSessionContext(): Promise<SessionContext> {
 
     const orgId = membership?.organization_id;
     const roleData = membership?.roles as unknown as { name: string } | null;
-    const role = roleData?.name || 'org_admin';
+    const role = roleData?.name || 'team_member';
 
     const { data: org } = orgId
       ? await supabase

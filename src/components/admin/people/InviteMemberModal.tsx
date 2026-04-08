@@ -16,24 +16,25 @@ interface InviteMemberModalProps {
 }
 
 const ROLES = [
-  { value: 'org_admin', label: 'Admin' },
-  { value: 'project_manager', label: 'Project Manager' },
-  { value: 'designer', label: 'Designer' },
-  { value: 'fabricator', label: 'Fabricator' },
-  { value: 'installer', label: 'Installer' },
-  { value: 'client_primary', label: 'Client (Primary)' },
-  { value: 'client_viewer', label: 'Client (Viewer)' },
+  { value: 'admin', label: 'Admin' },
+  { value: 'controller', label: 'Controller' },
+  { value: 'manager', label: 'Manager' },
+  { value: 'team_member', label: 'Team Member' },
+  { value: 'client', label: 'Client' },
+  { value: 'contractor', label: 'Contractor' },
+  { value: 'crew', label: 'Crew' },
+  { value: 'viewer', label: 'Viewer' },
 ] as const;
 
 export default function InviteMemberModal({ open, onClose, onCreated }: InviteMemberModalProps) {
   const [email, setEmail] = useState('');
-  const [role, setRole] = useState('project_manager');
+  const [role, setRole] = useState('team_member');
   const [personalMessage, setPersonalMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   function resetForm() {
-    setEmail(''); setRole('project_manager'); setPersonalMessage(''); setError(null);
+    setEmail(''); setRole('team_member'); setPersonalMessage(''); setError(null);
   }
 
   async function handleSubmit(e: FormEvent) {
