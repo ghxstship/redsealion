@@ -23,6 +23,7 @@ import { useEntityViews } from '@/hooks/useEntityViews';
 import { useStoredColumnConfig } from '@/hooks/useStoredColumnConfig';
 import ViewBar from '@/components/shared/ViewBar';
 import ColumnConfigPanel from '@/components/shared/ColumnConfigPanel';
+import BulkReassignModal from '@/components/shared/BulkReassignModal';
 
 interface Lead {
   id: string;
@@ -46,6 +47,7 @@ export default function LeadsTable({ leads }: { leads: Lead[] }) {
   const [search, setSearch] = useState('');
   const [showImport, setShowImport] = useState(false);
   const [showColumnConfig, setShowColumnConfig] = useState(false);
+  const [showReassign, setShowReassign] = useState(false);
   const [editingLead, setEditingLead] = useState<Lead | null>(null);
 
   const {
@@ -180,16 +182,7 @@ export default function LeadsTable({ leads }: { leads: Lead[] }) {
           },
           {
             label: 'Reassign',
-            onClick: async (ids) => {
-              const assignee = window.prompt('Assign to (enter team member name):');
-              if (!assignee) return;
-              await Promise.all(ids.map((id) => fetch(`/api/leads/${id}`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ assigned_to: assignee }),
-              })));
-              router.refresh();
-            },
+            onClick: () => setShowReassign(true),
           },
           {
             label: 'Delete',
@@ -354,6 +347,27 @@ export default function LeadsTable({ leads }: { leads: Lead[] }) {
         onColumnsChange={setColumns}
         rowHeight={rowHeight}
         onRowHeightChange={setRowHeight}
+      />
+
+      {/* Bulk Reassign Modal */}
+      <BulkReassignModal
+        open={showReassign}
+        onClose={() => setShowReassign(false)}
+        selectedIds={Array.from(selectedIds)}
+        entityLabel="lead"
+        onConfirm={async (userId) => {
+          await Promise.all(
+            Array.from(selectedIds).map((id) =>
+              fetch(`/api/leads/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ assigned_to: userId }),
+              }),
+            ),
+          );
+          deselectAll();
+          router.refresh();
+        }}
       />
     </>
   );

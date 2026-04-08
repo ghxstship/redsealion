@@ -145,7 +145,7 @@ export default async function OnboardingPage() {
                         <div className="h-2 w-full rounded-full bg-bg-secondary">
                           <div
                             className={`h-2 rounded-full transition-[width,opacity] ${
-                              pct === 100 ? 'bg-green-500' : pct > 0 ? 'bg-blue-500' : 'bg-gray-300'
+                              pct === 100 ? 'bg-green-500' : pct > 0 ? 'bg-blue-500' : 'bg-text-muted'
                             }`}
                             style={{ width: `${pct}%` }}
                           />

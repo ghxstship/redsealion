@@ -42,7 +42,7 @@ export default function IntegrationsSettingsPage() {
                   </div>
                   <button
                     className={`relative ml-4 inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors ${
-                      integration.enabled ? 'bg-green-500' : 'bg-gray-200'
+                      integration.enabled ? 'bg-green-500' : 'bg-border'
                     }`}
                   >
                     <span

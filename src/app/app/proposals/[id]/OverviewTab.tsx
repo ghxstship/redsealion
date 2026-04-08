@@ -99,7 +99,7 @@ export default function OverviewTab({
             {phases.map((phase) => (
               <div key={phase.id} className="flex-1 group relative">
                 <div
-                  className={`h-2.5 rounded-full ${phaseColorMap[phase.status] ?? 'bg-gray-200'}`}
+                  className={`h-2.5 rounded-full ${phaseColorMap[phase.status] ?? 'bg-border'}`}
                 />
                 <div className="mt-2 hidden sm:block">
                   <p className="text-xs font-medium text-foreground truncate">

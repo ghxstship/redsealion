@@ -48,7 +48,7 @@ export default function AutomationsConfigPage() {
         type="button"
         onClick={() => onChange(!checked)}
         className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors ${
-          checked ? 'bg-foreground' : 'bg-gray-200'
+          checked ? 'bg-foreground' : 'bg-border'
         }`}
       >
         <span

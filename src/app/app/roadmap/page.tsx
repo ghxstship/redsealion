@@ -79,7 +79,7 @@ function statusColor(status: string): string {
     approved: 'bg-green-500',
     sent: 'bg-blue-500',
     active: 'bg-blue-500',
-    completed: 'bg-gray-400',
+    completed: 'bg-text-muted',
     cancelled: 'bg-red-400',
   };
   return map[status] ?? 'bg-purple-500';

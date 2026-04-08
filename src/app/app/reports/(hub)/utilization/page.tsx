@@ -108,7 +108,7 @@ function barColor(percent: number): string {
   if (percent >= 90) return 'bg-red-500';
   if (percent >= 70) return 'bg-green-500';
   if (percent >= 50) return 'bg-yellow-500';
-  return 'bg-gray-400';
+  return 'bg-text-muted';
 }
 
 export default async function UtilizationReportPage() {

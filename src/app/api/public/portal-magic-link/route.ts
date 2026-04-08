@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Determine the redirect URL for after magic link click
-    const origin = request.headers.get('origin') || request.headers.get('x-forwarded-host') || 'http://localhost:3001';
+    const origin = request.headers.get('origin') || request.headers.get('x-forwarded-host') || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3001';
     const redirectTo = `${origin}/portal/${orgSlug}`;
 
     // Send magic link via Supabase Auth OTP

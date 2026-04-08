@@ -25,6 +25,8 @@ import { useStoredColumnConfig } from '@/hooks/useStoredColumnConfig';
 import ViewBar from '@/components/shared/ViewBar';
 import ColumnConfigPanel from '@/components/shared/ColumnConfigPanel';
 import InlineEditCell from '@/components/shared/InlineEditCell';
+import BulkReassignModal from '@/components/shared/BulkReassignModal';
+import BulkTagModal from '@/components/shared/BulkTagModal';
 
 
 
@@ -53,6 +55,8 @@ export default function TasksTable({ tasks }: { tasks: TaskRow[] }) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
   const [showImport, setShowImport] = useState(false);
   const [showColumnConfig, setShowColumnConfig] = useState(false);
+  const [showReassign, setShowReassign] = useState(false);
+  const [showTagModal, setShowTagModal] = useState(false);
 
   const {
     views,
@@ -222,29 +226,11 @@ export default function TasksTable({ tasks }: { tasks: TaskRow[] }) {
           },
           {
             label: 'Reassign',
-            onClick: async (ids) => {
-              const assignee = window.prompt('Assign to (enter team member name):');
-              if (!assignee) return;
-              await Promise.all(ids.map((id) => fetch(`/api/tasks/${id}`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ assigned_to_name: assignee }),
-              })));
-              router.refresh();
-            },
+            onClick: () => setShowReassign(true),
           },
           {
             label: 'Tag',
-            onClick: async (ids) => {
-              const tag = window.prompt('Enter tag to apply:');
-              if (!tag) return;
-              await Promise.all(ids.map((id) => fetch(`/api/tasks/${id}`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ tags: [tag] }),
-              })));
-              router.refresh();
-            },
+            onClick: () => setShowTagModal(true),
           },
           {
             label: 'Delete',
@@ -401,6 +387,48 @@ export default function TasksTable({ tasks }: { tasks: TaskRow[] }) {
         onColumnsChange={setColumns}
         rowHeight={rowHeight}
         onRowHeightChange={setRowHeight}
+      />
+
+      {/* Bulk Reassign Modal */}
+      <BulkReassignModal
+        open={showReassign}
+        onClose={() => setShowReassign(false)}
+        selectedIds={Array.from(selectedIds)}
+        entityLabel="task"
+        onConfirm={async (userId) => {
+          await Promise.all(
+            Array.from(selectedIds).map((id) =>
+              fetch(`/api/tasks/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ assignee_id: userId }),
+              }),
+            ),
+          );
+          deselectAll();
+          router.refresh();
+        }}
+      />
+
+      {/* Bulk Tag Modal */}
+      <BulkTagModal
+        open={showTagModal}
+        onClose={() => setShowTagModal(false)}
+        selectedIds={Array.from(selectedIds)}
+        entityLabel="task"
+        onConfirm={async (tag) => {
+          await Promise.all(
+            Array.from(selectedIds).map((id) =>
+              fetch(`/api/tasks/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tags: [tag] }),
+              }),
+            ),
+          );
+          deselectAll();
+          router.refresh();
+        }}
       />
     </>
   );

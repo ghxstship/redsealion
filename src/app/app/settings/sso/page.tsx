@@ -53,7 +53,7 @@ export default async function SsoSettingsPage() {
         <div className="rounded-xl border border-border bg-background p-6">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className={`h-3 w-3 rounded-full ${config?.enabled ? 'bg-green-500' : 'bg-gray-300'}`} />
+              <div className={`h-3 w-3 rounded-full ${config?.enabled ? 'bg-green-500' : 'bg-text-muted'}`} />
               <span className="text-sm font-medium text-foreground">
                 {config?.enabled ? 'SSO Enabled' : 'SSO Not Configured'}
               </span>

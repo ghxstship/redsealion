@@ -174,7 +174,7 @@ export default function EmailTemplatesPage() {
                     aria-checked={tpl.enabled}
                     onClick={() => handleToggle(meta.event_type)}
                     className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-normal ${
-                      tpl.enabled ? 'bg-foreground' : 'bg-gray-200'
+                      tpl.enabled ? 'bg-foreground' : 'bg-border'
                     }`}
                   >
                     <span

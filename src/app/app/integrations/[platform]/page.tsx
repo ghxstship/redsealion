@@ -99,7 +99,7 @@ export default function IntegrationConfigPage({
       {/* Status banner */}
       <div className="mb-6 rounded-xl border border-border bg-background px-5 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="h-2.5 w-2.5 rounded-full bg-gray-400" />
+          <div className="h-2.5 w-2.5 rounded-full bg-text-muted" />
           <span className="text-sm font-medium text-foreground">Not connected</span>
         </div>
         <button
