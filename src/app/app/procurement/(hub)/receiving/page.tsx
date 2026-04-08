@@ -14,12 +14,11 @@ async function getReceipts() {
       .select('id, status, received_date, notes, purchase_orders(po_number, vendor_name)')
       .eq('organization_id', ctx.organizationId)
       .order('received_date', { ascending: false });
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    return (data ?? []).map((r: any) => ({
+    return (data ?? []).map((r: Record<string, unknown>) => ({
       id: r.id as string, status: r.status as string, received_date: r.received_date as string,
       notes: r.notes as string | null,
-      po_number: Array.isArray(r.purchase_orders) ? r.purchase_orders[0]?.po_number : r.purchase_orders?.po_number ?? null,
-      vendor_name: Array.isArray(r.purchase_orders) ? r.purchase_orders[0]?.vendor_name : r.purchase_orders?.vendor_name ?? null,
+      po_number: Array.isArray(r.purchase_orders) ? (r.purchase_orders as Record<string, unknown>[])[0]?.po_number as string : (r.purchase_orders as Record<string, unknown> | null)?.po_number as string ?? null,
+      vendor_name: Array.isArray(r.purchase_orders) ? (r.purchase_orders as Record<string, unknown>[])[0]?.vendor_name as string : (r.purchase_orders as Record<string, unknown> | null)?.vendor_name as string ?? null,
     }));
   } catch { return []; }
 }

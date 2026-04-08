@@ -17,15 +17,14 @@ async function getOutboundShipments() {
       .eq('organization_id', ctx.organizationId)
       .eq('direction', 'outbound')
       .order('ship_date', { ascending: false });
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    return (data ?? []).map((s: any) => ({
+    return (data ?? []).map((s: Record<string, unknown>) => ({
       id: s.id as string, shipment_number: s.shipment_number as string, status: s.status as string,
       carrier: s.carrier as string | null, tracking_number: s.tracking_number as string | null,
       destination: s.destination_address as string | null,
       ship_date: s.ship_date as string | null, estimated_arrival: s.estimated_arrival as string | null,
       num_pieces: s.num_pieces as number, shipping_cost_cents: s.shipping_cost_cents as number,
-      event_name: Array.isArray(s.events) ? s.events[0]?.name : s.events?.name ?? null,
-      client_name: Array.isArray(s.clients) ? s.clients[0]?.name : s.clients?.name ?? null,
+      event_name: Array.isArray(s.events) ? (s.events as Record<string, unknown>[])[0]?.name as string : (s.events as Record<string, unknown> | null)?.name as string ?? null,
+      client_name: Array.isArray(s.clients) ? (s.clients as Record<string, unknown>[])[0]?.name as string : (s.clients as Record<string, unknown> | null)?.name as string ?? null,
     }));
   } catch { return []; }
 }

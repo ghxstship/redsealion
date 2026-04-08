@@ -9,17 +9,21 @@ import type { SupportedLocale } from './config';
  * @module lib/i18n/dictionaries
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export type Dictionary = Record<string, Record<string, string>>;
 
+/** Bounded type assertion for JSON dictionary imports. */
+function asDictionary(mod: { default: unknown }): Dictionary {
+  return mod.default as Dictionary;
+}
+
 const dictionaries: Record<SupportedLocale, () => Promise<Dictionary>> = {
-  'en-US': () => import('./dictionaries/en-US.json').then((m) => m.default as any),
-  'en-GB': () => import('./dictionaries/en-GB.json').then((m) => m.default as any),
-  'en-AU': () => import('./dictionaries/en-AU.json').then((m) => m.default as any),
-  'es-ES': () => import('./dictionaries/es-ES.json').then((m) => m.default as any),
-  'es-MX': () => import('./dictionaries/es-MX.json').then((m) => m.default as any),
-  'fr-FR': () => import('./dictionaries/fr-FR.json').then((m) => m.default as any),
-  'de-DE': () => import('./dictionaries/de-DE.json').then((m) => m.default as any),
+  'en-US': () => import('./dictionaries/en-US.json').then(asDictionary),
+  'en-GB': () => import('./dictionaries/en-GB.json').then(asDictionary),
+  'en-AU': () => import('./dictionaries/en-AU.json').then(asDictionary),
+  'es-ES': () => import('./dictionaries/es-ES.json').then(asDictionary),
+  'es-MX': () => import('./dictionaries/es-MX.json').then(asDictionary),
+  'fr-FR': () => import('./dictionaries/fr-FR.json').then(asDictionary),
+  'de-DE': () => import('./dictionaries/de-DE.json').then(asDictionary),
 };
 
 /**

@@ -8,6 +8,9 @@
  */
 
 import { createClient } from '@/lib/supabase/server';
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('automations');
 
 // ---------------------------------------------------------------------------
 // Action executor
@@ -50,7 +53,7 @@ export async function executeAction(
 ): Promise<void> {
   const executor = actionRegistry[actionType];
   if (!executor) {
-    console.warn(`[Automations] Unknown action type: ${actionType} (automation: ${automationId})`);
+    log.warn(`Unknown action type: ${actionType}`, { automationId });
     return;
   }
 
@@ -178,10 +181,32 @@ async function executeAddTag(
   config: Record<string, unknown>,
   payload: Record<string, unknown>,
 ): Promise<void> {
-  void config;
-  void payload;
-  // Tag addition requires knowing the entity type and current tags
-  // to be implemented when tag management is enriched
+  const supabase = await createClient();
+  const tag = config.tag as string;
+  const entityType = (config.entity_type as string) ?? 'proposals';
+  const entityId = (config.entity_id as string) ?? (payload.entity_id as string);
+
+  if (!tag || !entityId) return;
+
+  // Only support tables that have a `tags` JSONB column
+  if (entityType !== 'proposals' && entityType !== 'tasks') return;
+
+  // Read current tags
+  const { data: existing } = await supabase
+    .from(entityType)
+    .select('tags')
+    .eq('id', entityId)
+    .single();
+
+  const currentTags: string[] = Array.isArray(existing?.tags) ? (existing.tags as string[]) : [];
+
+  // Append only if not already present
+  if (currentTags.includes(tag)) return;
+
+  await supabase
+    .from(entityType)
+    .update({ tags: [...currentTags, tag] })
+    .eq('id', entityId);
 }
 
 async function executeWebhook(

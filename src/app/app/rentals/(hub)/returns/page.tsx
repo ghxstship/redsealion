@@ -15,11 +15,10 @@ async function getReturns() {
       .in('status', ['returned', 'damaged', 'lost'])
       .order('created_at', { ascending: false })
       .limit(50);
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    return (data ?? []).map((r: any) => ({
+    return (data ?? []).map((r: Record<string, unknown>) => ({
       id: r.id as string, name: r.name as string, quantity: r.quantity as number, status: r.status as string,
-      order_number: Array.isArray(r.rental_orders) ? r.rental_orders[0]?.order_number : r.rental_orders?.order_number ?? null,
-      rental_end: Array.isArray(r.rental_orders) ? r.rental_orders[0]?.rental_end : r.rental_orders?.rental_end ?? null,
+      order_number: Array.isArray(r.rental_orders) ? (r.rental_orders as Record<string, unknown>[])[0]?.order_number as string : (r.rental_orders as Record<string, unknown> | null)?.order_number as string ?? null,
+      rental_end: Array.isArray(r.rental_orders) ? (r.rental_orders as Record<string, unknown>[])[0]?.rental_end as string : (r.rental_orders as Record<string, unknown> | null)?.rental_end as string ?? null,
     }));
   } catch { return []; }
 }

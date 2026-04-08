@@ -31,22 +31,21 @@ export abstract class BaseIntegrationAdapter implements IntegrationAdapter {
   abstract readonly category: IntegrationAdapter['category'];
 
   async connect(_config: Record<string, unknown>): Promise<{ authUrl: string }> {
-    // Placeholder: in production, build OAuth URL for the platform
-    return { authUrl: `/api/integrations/${this.platform}/connect` };
+    throw new Error(`${this.platform}: connect() not implemented. Override in your adapter subclass.`);
   }
 
   async disconnect(_integrationId: string): Promise<void> {
-    // Placeholder: revoke tokens and update status
+    throw new Error(`${this.platform}: disconnect() not implemented. Override in your adapter subclass.`);
   }
 
   async sync(
     _integrationId: string,
     _direction: 'inbound' | 'outbound',
   ): Promise<SyncResult> {
-    return { entityType: 'unknown', entityCount: 0, errors: [] };
+    throw new Error(`${this.platform}: sync() not implemented. Override in your adapter subclass.`);
   }
 
   async getStatus(_integrationId: string): Promise<IntegrationStatus> {
-    return { connected: false, lastSyncAt: null, error: null };
+    throw new Error(`${this.platform}: getStatus() not implemented. Override in your adapter subclass.`);
   }
 }

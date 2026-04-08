@@ -15,11 +15,10 @@ async function getSubRentals() {
       .select('id, po_number, status, rental_start, rental_end, total_cost_cents, vendors(name)')
       .eq('organization_id', ctx.organizationId)
       .order('rental_start', { ascending: false });
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    return (data ?? []).map((r: any) => ({
+    return (data ?? []).map((r: Record<string, unknown>) => ({
       id: r.id as string, po_number: r.po_number as string | null, status: r.status as string,
       rental_start: r.rental_start as string, rental_end: r.rental_end as string, total_cost_cents: r.total_cost_cents as number,
-      vendor_name: Array.isArray(r.vendors) ? r.vendors[0]?.name : r.vendors?.name ?? null,
+      vendor_name: Array.isArray(r.vendors) ? (r.vendors as Record<string, unknown>[])[0]?.name as string : (r.vendors as Record<string, unknown> | null)?.name as string ?? null,
     }));
   } catch { return []; }
 }

@@ -52,7 +52,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
     }
 
-    const provider = getESignProvider('built-in', {
+    const provider = await getESignProvider('built-in', {
       orgId: organizationId,
       orgSlug: org.slug as string,
     });

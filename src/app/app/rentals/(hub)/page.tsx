@@ -16,12 +16,11 @@ async function getRentalCatalog() {
       .select('id, order_number, status, rental_start, rental_end, total_cents, clients(name)')
       .eq('organization_id', ctx.organizationId)
       .order('rental_start', { ascending: false });
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    const orders = (data ?? []).map((r: any) => ({
+    const orders = (data ?? []).map((r: Record<string, unknown>) => ({
       id: r.id as string, order_number: r.order_number as string, status: r.status as string,
       rental_start: r.rental_start as string, rental_end: r.rental_end as string,
       total_cents: r.total_cents as number,
-      client_name: Array.isArray(r.clients) ? r.clients[0]?.name : r.clients?.name ?? null,
+      client_name: Array.isArray(r.clients) ? (r.clients as Record<string, unknown>[])[0]?.name as string : (r.clients as Record<string, unknown> | null)?.name as string ?? null,
     }));
     const totalRevenue = orders.reduce((s: number, o: { total_cents: number }) => s + o.total_cents, 0);
     const activeOrders = orders.filter((o: { status: string }) => ['reserved', 'checked_out', 'on_site'].includes(o.status)).length;

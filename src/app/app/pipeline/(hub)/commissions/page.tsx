@@ -16,10 +16,9 @@ async function getCommissions() {
       .eq('organization_id', ctx.organizationId)
       .in('stage', ['won', 'closed_won', 'completed'])
       .order('value', { ascending: false });
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    return (data ?? []).map((d: any) => ({
+    return (data ?? []).map((d: Record<string, unknown>) => ({
       id: d.id as string, title: d.title as string, stage: d.stage as string, value: (d.value ?? 0) as number,
-      owner_name: Array.isArray(d.users) ? d.users[0]?.full_name : d.users?.full_name ?? 'Unassigned',
+      owner_name: Array.isArray(d.users) ? (d.users as Record<string, unknown>[])[0]?.full_name as string : (d.users as Record<string, unknown> | null)?.full_name as string ?? 'Unassigned',
     }));
   } catch { return []; }
 }

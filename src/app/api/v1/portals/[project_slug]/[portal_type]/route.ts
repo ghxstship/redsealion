@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase/server';
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('portals-api');
 
 export async function GET(
   request: NextRequest,
@@ -76,7 +79,7 @@ export async function GET(
 
     return NextResponse.json(payload);
   } catch (error) {
-    console.error('Error fetching portal:', error);
+    log.error('Error fetching portal', { project_slug: (await context.params).project_slug }, error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

@@ -15,8 +15,7 @@ async function getCheckouts() {
       .eq('organization_id', ctx.organizationId)
       .order('checked_out_at', { ascending: false })
       .limit(100);
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    return (data ?? []).map((r: any) => ({
+    return (data ?? []).map((r: Record<string, unknown>) => ({
       id: r.id as string,
       status: r.status as string,
       quantity: r.quantity as number,
@@ -29,12 +28,12 @@ async function getCheckouts() {
       checked_in_at: r.checked_in_at as string | null,
       notes_out: r.notes_out as string | null,
       notes_in: r.notes_in as string | null,
-      asset_name: Array.isArray(r.assets) ? r.assets[0]?.name : r.assets?.name ?? 'Unknown',
-      asset_category: Array.isArray(r.assets) ? r.assets[0]?.category : r.assets?.category ?? null,
-      event_name: Array.isArray(r.events) ? r.events[0]?.name : r.events?.name ?? null,
-      rental_order: Array.isArray(r.rental_orders) ? r.rental_orders[0]?.order_number : r.rental_orders?.order_number ?? null,
-      checked_out_by_name: Array.isArray(r.checked_out_user) ? r.checked_out_user[0]?.full_name : r.checked_out_user?.full_name ?? null,
-      checked_in_by_name: Array.isArray(r.checked_in_user) ? r.checked_in_user[0]?.full_name : r.checked_in_user?.full_name ?? null,
+      asset_name: Array.isArray(r.assets) ? (r.assets as Record<string, unknown>[])[0]?.name as string : (r.assets as Record<string, unknown> | null)?.name as string ?? 'Unknown',
+      asset_category: Array.isArray(r.assets) ? (r.assets as Record<string, unknown>[])[0]?.category as string : (r.assets as Record<string, unknown> | null)?.category as string ?? null,
+      event_name: Array.isArray(r.events) ? (r.events as Record<string, unknown>[])[0]?.name as string : (r.events as Record<string, unknown> | null)?.name as string ?? null,
+      rental_order: Array.isArray(r.rental_orders) ? (r.rental_orders as Record<string, unknown>[])[0]?.order_number as string : (r.rental_orders as Record<string, unknown> | null)?.order_number as string ?? null,
+      checked_out_by_name: Array.isArray(r.checked_out_user) ? (r.checked_out_user as Record<string, unknown>[])[0]?.full_name as string : (r.checked_out_user as Record<string, unknown> | null)?.full_name as string ?? null,
+      checked_in_by_name: Array.isArray(r.checked_in_user) ? (r.checked_in_user as Record<string, unknown>[])[0]?.full_name as string : (r.checked_in_user as Record<string, unknown> | null)?.full_name as string ?? null,
     }));
   } catch { return []; }
 }

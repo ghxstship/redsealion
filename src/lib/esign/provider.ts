@@ -28,13 +28,12 @@ export interface ESignProvider {
 }
 
 // Re-export the built-in implementation lazily to avoid circular deps
-export function getESignProvider(
+export async function getESignProvider(
   type: 'built-in',
   opts: { orgId: string; orgSlug: string },
-): ESignProvider {
+): Promise<ESignProvider> {
   // Only built-in is supported for now; the parameter is here so we can
   // add DocuSign / HelloSign etc. later without changing call-sites.
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { BuiltInESignProvider } = require('./built-in') as typeof import('./built-in');
+  const { BuiltInESignProvider } = await import('./built-in');
   return new BuiltInESignProvider(opts.orgId, opts.orgSlug);
 }

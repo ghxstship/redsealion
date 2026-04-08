@@ -14,12 +14,11 @@ async function getMilestones() {
       .select('id, title, due_at, completed_at, status, production_schedules(name)')
       .eq('production_schedules.organization_id', ctx.organizationId)
       .order('due_at', { ascending: true });
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    return (data ?? []).map((m: any) => ({
+    return (data ?? []).map((m: Record<string, unknown>) => ({
       id: m.id as string, title: m.title as string,
       due_at: m.due_at as string, completed_at: m.completed_at as string | null,
       status: m.status as string,
-      schedule_name: Array.isArray(m.production_schedules) ? m.production_schedules[0]?.name : m.production_schedules?.name ?? null,
+      schedule_name: Array.isArray(m.production_schedules) ? (m.production_schedules as Record<string, unknown>[])[0]?.name as string : (m.production_schedules as Record<string, unknown> | null)?.name as string ?? null,
     }));
   } catch { return []; }
 }

@@ -28,12 +28,11 @@ async function getBuildStrikeSchedules() {
       blocks = (blockData ?? []) as typeof blocks;
     }
 
-    /* eslint-disable @typescript-eslint/no-explicit-any */
     return {
-      schedules: (schedules ?? []).map((s: any) => ({
+      schedules: (schedules ?? []).map((s: Record<string, unknown>) => ({
         id: s.id as string, name: s.name as string, status: s.status as string,
         start_date: s.start_date as string | null, end_date: s.end_date as string | null,
-        event_name: Array.isArray(s.events) ? s.events[0]?.name : s.events?.name ?? null,
+        event_name: Array.isArray(s.events) ? (s.events as Record<string, unknown>[])[0]?.name as string : (s.events as Record<string, unknown> | null)?.name as string ?? null,
       })),
       blocks,
     };

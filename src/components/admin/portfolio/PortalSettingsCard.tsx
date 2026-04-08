@@ -1,13 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createBrowserClient } from '@supabase/ssr';
+import { createClient } from '@/lib/supabase/client';
 import Button from '@/components/ui/Button';
 import FormInput from '@/components/ui/FormInput';
 import FormTextarea from '@/components/ui/FormTextarea';
 import Tabs from '@/components/ui/Tabs';
 import Alert from '@/components/ui/Alert';
-import { Database } from '@/types/database';
+import type { Database } from '@/types/database';
 
 type PortalType = Database['public']['Enums']['portal_type'];
 
@@ -27,10 +27,7 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
   const [data, setData] = useState<Partial<Database['public']['Tables']['project_portals']['Row']>>({});
   const [message, setMessage] = useState('');
 
-  const supabase = createBrowserClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
+  const supabase = createClient();
 
   useEffect(() => {
     async function loadPortal() {
@@ -66,7 +63,7 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
     try {
       const payload = {
         ...data,
-      } as any; // Using any to sidestep complex typings for new table fields inserted later
+      } as Database['public']['Tables']['project_portals']['Insert'];
 
       if (data.id) {
         // Update existing

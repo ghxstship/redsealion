@@ -16,11 +16,10 @@ async function getPunchList() {
       .eq('organization_id', ctx.organizationId)
       .order('due_date', { ascending: true })
       .limit(50);
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    return (data ?? []).map((r: any) => ({
+    return (data ?? []).map((r: Record<string, unknown>) => ({
       id: r.id as string, title: r.title as string, status: r.status as string,
       priority: r.priority as string | null, due_date: r.due_date as string | null,
-      event_name: Array.isArray(r.events) ? r.events[0]?.name : r.events?.name ?? null,
+      event_name: Array.isArray(r.events) ? (r.events as Record<string, unknown>[])[0]?.name as string : (r.events as Record<string, unknown> | null)?.name as string ?? null,
     }));
   } catch { return []; }
 }

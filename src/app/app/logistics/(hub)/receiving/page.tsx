@@ -16,15 +16,14 @@ async function getInboundShipments() {
       .eq('organization_id', ctx.organizationId)
       .eq('direction', 'inbound')
       .order('estimated_arrival', { ascending: true });
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    return (data ?? []).map((s: any) => ({
+    return (data ?? []).map((s: Record<string, unknown>) => ({
       id: s.id as string, shipment_number: s.shipment_number as string, status: s.status as string,
       carrier: s.carrier as string | null, tracking_number: s.tracking_number as string | null,
       origin: s.origin_address as string | null,
       estimated_arrival: s.estimated_arrival as string | null, actual_arrival: s.actual_arrival as string | null,
       num_pieces: s.num_pieces as number,
-      vendor_name: Array.isArray(s.vendors) ? s.vendors[0]?.name : s.vendors?.name ?? null,
-      po_number: Array.isArray(s.purchase_orders) ? s.purchase_orders[0]?.po_number : s.purchase_orders?.po_number ?? null,
+      vendor_name: Array.isArray(s.vendors) ? (s.vendors as Record<string, unknown>[])[0]?.name as string : (s.vendors as Record<string, unknown> | null)?.name as string ?? null,
+      po_number: Array.isArray(s.purchase_orders) ? (s.purchase_orders as Record<string, unknown>[])[0]?.po_number as string : (s.purchase_orders as Record<string, unknown> | null)?.po_number as string ?? null,
     }));
   } catch { return []; }
 }

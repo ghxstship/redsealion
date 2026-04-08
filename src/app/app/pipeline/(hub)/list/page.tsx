@@ -16,15 +16,14 @@ async function getDeals() {
       .select('id, title, stage, value, probability, expected_close_date, clients(name)')
       .eq('organization_id', ctx.organizationId)
       .order('value', { ascending: false });
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    return (data ?? []).map((d: any) => ({
+    return (data ?? []).map((d: Record<string, unknown>) => ({
       id: d.id as string,
       title: d.title as string,
       stage: d.stage as string,
       value: (d.value as number) ?? 0,
       probability: (d.probability as number) ?? 0,
       expected_close_date: d.expected_close_date as string | null,
-      clients: d.clients ? { name: (Array.isArray(d.clients) ? d.clients[0]?.name : d.clients.name) ?? '' } : null,
+      clients: d.clients ? { name: (Array.isArray(d.clients) ? (d.clients as Record<string, unknown>[])[0]?.name as string : (d.clients as Record<string, unknown>).name as string) ?? '' } : null,
     }));
   } catch { return []; }
 }

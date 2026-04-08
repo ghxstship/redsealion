@@ -17,11 +17,10 @@ async function getReservations() {
       .eq('organization_id', ctx.organizationId)
       .in('status', ['reserved', 'checked_out', 'on_site'])
       .order('rental_start', { ascending: true });
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    return (data ?? []).map((r: any) => ({
+    return (data ?? []).map((r: Record<string, unknown>) => ({
       id: r.id as string, order_number: r.order_number as string, status: r.status as string,
       rental_start: r.rental_start as string, rental_end: r.rental_end as string, total_cents: r.total_cents as number,
-      client_name: Array.isArray(r.clients) ? r.clients[0]?.name : r.clients?.name ?? null,
+      client_name: Array.isArray(r.clients) ? (r.clients as Record<string, unknown>[])[0]?.name as string : (r.clients as Record<string, unknown> | null)?.name as string ?? null,
     }));
   } catch { return []; }
 }

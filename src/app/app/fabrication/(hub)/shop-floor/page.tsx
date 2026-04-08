@@ -14,13 +14,12 @@ async function getShopFloor() {
       .select('id, action, notes, created_at, fabrication_orders(order_number, name), users(full_name)')
       .order('created_at', { ascending: false })
       .limit(50);
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    return (data ?? []).map((r: any) => ({
+    return (data ?? []).map((r: Record<string, unknown>) => ({
       id: r.id as string, action: r.action as string, notes: r.notes as string | null,
       created_at: r.created_at as string,
-      order_number: Array.isArray(r.fabrication_orders) ? r.fabrication_orders[0]?.order_number : r.fabrication_orders?.order_number ?? null,
-      order_name: Array.isArray(r.fabrication_orders) ? r.fabrication_orders[0]?.name : r.fabrication_orders?.name ?? null,
-      worker_name: Array.isArray(r.users) ? r.users[0]?.full_name : r.users?.full_name ?? null,
+      order_number: Array.isArray(r.fabrication_orders) ? (r.fabrication_orders as Record<string, unknown>[])[0]?.order_number as string : (r.fabrication_orders as Record<string, unknown> | null)?.order_number as string ?? null,
+      order_name: Array.isArray(r.fabrication_orders) ? (r.fabrication_orders as Record<string, unknown>[])[0]?.name as string : (r.fabrication_orders as Record<string, unknown> | null)?.name as string ?? null,
+      worker_name: Array.isArray(r.users) ? (r.users as Record<string, unknown>[])[0]?.full_name as string : (r.users as Record<string, unknown> | null)?.full_name as string ?? null,
     }));
   } catch { return []; }
 }

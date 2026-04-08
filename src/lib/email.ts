@@ -31,16 +31,13 @@ class ConsoleEmailProvider implements EmailProvider {
   }
 }
 
-// SMTP provider placeholder
+// SMTP provider — not yet implemented
 class SmtpEmailProvider implements EmailProvider {
-  async send(payload: EmailPayload): Promise<EmailResult> {
-    // SMTP provider not yet implemented — configure EMAIL_PROVIDER=resend and
-    // use the Resend SDK in lib/notifications/email.ts instead.
-    void payload;
-    return {
-      success: true,
-      messageId: `smtp_placeholder_${Date.now()}`,
-    };
+  async send(_payload: EmailPayload): Promise<EmailResult> {
+    throw new Error(
+      'SMTP email provider is not implemented. ' +
+      'Set EMAIL_PROVIDER=resend and configure the Resend SDK in lib/notifications/email.ts.',
+    );
   }
 }
 

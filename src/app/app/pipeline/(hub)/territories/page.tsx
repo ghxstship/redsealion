@@ -14,11 +14,10 @@ async function getTerritoryData() {
       .from('deals')
       .select('id, title, stage, value, owner_id, clients(state, country)')
       .eq('organization_id', ctx.organizationId);
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    const parsed = (deals ?? []).map((d: any) => ({
+    const parsed = (deals ?? []).map((d: Record<string, unknown>) => ({
       id: d.id as string, title: d.title as string, stage: d.stage as string, value: (d.value ?? 0) as number,
       owner_id: d.owner_id as string | null,
-      region: Array.isArray(d.clients) ? d.clients[0]?.state ?? d.clients[0]?.country : d.clients?.state ?? d.clients?.country ?? 'Unassigned',
+      region: Array.isArray(d.clients) ? (d.clients as Record<string, unknown>[])[0]?.state as string ?? (d.clients as Record<string, unknown>[])[0]?.country as string : (d.clients as Record<string, unknown> | null)?.state as string ?? (d.clients as Record<string, unknown> | null)?.country as string ?? 'Unassigned',
     }));
     const territories = parsed.reduce((acc: Record<string, { count: number; value: number }>, d) => {
       const region = d.region ?? 'Unassigned';

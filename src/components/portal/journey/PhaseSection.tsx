@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { fmTransition } from '@/lib/motion';
-import { useReducedMotion } from '@/lib/useReducedMotion';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { formatCurrency } from '@/lib/utils';
 import type {
   Phase,

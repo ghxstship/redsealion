@@ -15,15 +15,14 @@ async function getSchedules() {
       .select('id, name, schedule_type, status, start_date, end_date, events(name)')
       .eq('organization_id', ctx.organizationId)
       .order('start_date', { ascending: true });
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    return (data ?? []).map((r: any) => ({
+    return (data ?? []).map((r: Record<string, unknown>) => ({
       id: r.id as string,
       name: r.name as string,
       schedule_type: r.schedule_type as string,
       status: r.status as string,
       start_date: r.start_date as string | null,
       end_date: r.end_date as string | null,
-      event_name: Array.isArray(r.events) ? r.events[0]?.name : r.events?.name ?? null,
+      event_name: Array.isArray(r.events) ? (r.events as Record<string, unknown>[])[0]?.name as string : (r.events as Record<string, unknown> | null)?.name as string ?? null,
     }));
   } catch { return []; }
 }

@@ -21,13 +21,12 @@ async function getQualityData() {
       .in('action', ['quality_pass', 'quality_fail'])
       .order('created_at', { ascending: false })
       .limit(30);
-    /* eslint-disable @typescript-eslint/no-explicit-any */
     return {
       orders: (orders ?? []) as Array<{ id: string; order_number: string; name: string; status: string }>,
-      logs: (logs ?? []).map((l: any) => ({
+      logs: (logs ?? []).map((l: Record<string, unknown>) => ({
         id: l.id as string, action: l.action as string, notes: l.notes as string | null,
         created_at: l.created_at as string,
-        order_number: Array.isArray(l.fabrication_orders) ? l.fabrication_orders[0]?.order_number : l.fabrication_orders?.order_number ?? null,
+        order_number: Array.isArray(l.fabrication_orders) ? (l.fabrication_orders as Record<string, unknown>[])[0]?.order_number as string : (l.fabrication_orders as Record<string, unknown> | null)?.order_number as string ?? null,
       })),
     };
   } catch { return { orders: [], logs: [] }; }

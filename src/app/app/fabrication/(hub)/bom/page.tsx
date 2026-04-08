@@ -15,13 +15,12 @@ async function getBOM() {
       .select('id, material_name, sku, quantity_required, quantity_on_hand, unit, unit_cost_cents, supplier, status, fabrication_orders(order_number, name)')
       .order('created_at', { ascending: false })
       .limit(100);
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    return (data ?? []).map((r: any) => ({
+    return (data ?? []).map((r: Record<string, unknown>) => ({
       id: r.id as string, material_name: r.material_name as string, sku: r.sku as string | null,
       quantity_required: Number(r.quantity_required), quantity_on_hand: Number(r.quantity_on_hand),
       unit: r.unit as string, unit_cost_cents: r.unit_cost_cents as number,
       supplier: r.supplier as string | null, status: r.status as string,
-      order_number: Array.isArray(r.fabrication_orders) ? r.fabrication_orders[0]?.order_number : r.fabrication_orders?.order_number ?? null,
+      order_number: Array.isArray(r.fabrication_orders) ? (r.fabrication_orders as Record<string, unknown>[])[0]?.order_number as string : (r.fabrication_orders as Record<string, unknown> | null)?.order_number as string ?? null,
     }));
   } catch { return []; }
 }

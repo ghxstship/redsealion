@@ -16,11 +16,10 @@ async function getDailyReports() {
       .eq('organization_id', ctx.organizationId)
       .order('created_at', { ascending: false })
       .limit(50);
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    return (data ?? []).map((r: any) => ({
+    return (data ?? []).map((r: Record<string, unknown>) => ({
       id: r.id as string, title: r.title as string, status: r.status as string,
       due_date: r.due_date as string | null, created_at: r.created_at as string,
-      event_name: Array.isArray(r.events) ? r.events[0]?.name : r.events?.name ?? null,
+      event_name: Array.isArray(r.events) ? (r.events as Record<string, unknown>[])[0]?.name as string : (r.events as Record<string, unknown> | null)?.name as string ?? null,
     }));
   } catch { return []; }
 }

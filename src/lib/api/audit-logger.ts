@@ -1,5 +1,8 @@
 import { createClient } from '@/lib/supabase/server';
 import { headers } from 'next/headers';
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('audit');
 
 type LogAuditActionParams = {
   orgId: string;
@@ -42,13 +45,13 @@ export async function logAuditAction({
     });
 
     if (error) {
-      console.error('Failed to write audit log:', error.message);
+      log.error('Failed to write audit log', { action, entity, entityId }, error);
       return false;
     }
 
     return true;
   } catch (err) {
-    console.error('Audit logger threw exception:', err);
+    log.error('Audit logger threw exception', { action, entity, entityId }, err);
     return false;
   }
 }
