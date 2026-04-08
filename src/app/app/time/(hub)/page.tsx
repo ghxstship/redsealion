@@ -95,7 +95,7 @@ export default async function TimePage() {
         {cards.map((card) => (
           <div
             key={card.label}
-            className="rounded-xl border border-border bg-white px-5 py-5"
+            className="rounded-xl border border-border bg-background px-5 py-5"
           >
             <p className="text-xs font-medium uppercase tracking-wider text-text-muted">
               {card.label}

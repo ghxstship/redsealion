@@ -115,7 +115,7 @@ export default async function InventoryCountsPage() {
           {active.length > 0 && (
             <div>
               <h2 className="text-sm font-semibold text-foreground mb-4">Active Counts</h2>
-              <div className="rounded-xl border border-border bg-white overflow-hidden">
+              <div className="rounded-xl border border-border bg-background overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead>
@@ -163,7 +163,7 @@ export default async function InventoryCountsPage() {
           {completed.length > 0 && (
             <div>
               <h2 className="text-sm font-semibold text-foreground mb-4">Completed</h2>
-              <div className="rounded-xl border border-border bg-white overflow-hidden">
+              <div className="rounded-xl border border-border bg-background overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead>

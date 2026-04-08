@@ -142,7 +142,7 @@ export default function DataExportMenu<T extends object>({
 
       {/* Dropdown menu */}
       {isOpen && (
-        <div className="absolute right-0 top-full mt-1.5 z-50 w-64 rounded-xl border border-border bg-white shadow-xl animate-modal-content overflow-hidden">
+        <div className="absolute right-0 top-full mt-1.5 z-50 w-64 rounded-xl border border-border bg-background shadow-xl animate-modal-content overflow-hidden">
 
           {!showFieldConfig ? (
             <>

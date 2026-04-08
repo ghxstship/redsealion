@@ -25,7 +25,7 @@ export default function CrewProfileCard({ profile }: CrewProfileCardProps) {
         : 'bg-yellow-100 text-yellow-800';
 
   return (
-    <div className="bg-white border border-border rounded-lg shadow-sm p-4">
+    <div className="bg-background border border-border rounded-lg shadow-sm p-4">
       <div className="flex items-center gap-3 mb-3">
         <div className="w-10 h-10 rounded-full bg-bg-tertiary flex items-center justify-center text-sm font-semibold text-foreground">
           {initials}

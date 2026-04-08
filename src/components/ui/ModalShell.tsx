@@ -67,7 +67,7 @@ export default function ModalShell({
         role="dialog" 
         aria-modal="true" 
         aria-labelledby="modal-title" 
-        className={`relative w-full ${SIZE_MAP[size]} rounded-xl border border-border bg-white ${panelPadding} shadow-xl animate-modal-content my-auto ${className}`}
+        className={`relative w-full ${SIZE_MAP[size]} rounded-xl border border-border bg-background ${panelPadding} shadow-xl animate-modal-content my-auto ${className}`}
       >
         <div className={headerClass}>
           <div>

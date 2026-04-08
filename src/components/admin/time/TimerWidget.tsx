@@ -152,7 +152,7 @@ export default function TimerWidget() {
 
   return (
     <div className="mx-auto max-w-xl">
-      <div className="rounded-xl border border-border bg-white px-8 py-10 text-center">
+      <div className="rounded-xl border border-border bg-background px-8 py-10 text-center">
         {/* Timer display */}
         <p className="text-6xl font-semibold tracking-tight text-foreground tabular-nums">
           {formatTime(elapsed)}
@@ -181,7 +181,7 @@ export default function TimerWidget() {
           <button
             onClick={handleReset}
             disabled={saving}
-            className="rounded-lg border border-border bg-white px-6 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary disabled:opacity-50"
+            className="rounded-lg border border-border bg-background px-6 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary disabled:opacity-50"
           >
             Reset
           </button>
@@ -223,7 +223,7 @@ export default function TimerWidget() {
             }`}
           >
             <span
-              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+              className={`inline-block h-4 w-4 transform rounded-full bg-background transition-transform ${
                 billable ? 'translate-x-6' : 'translate-x-1'
               }`}
             />

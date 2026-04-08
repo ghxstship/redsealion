@@ -132,7 +132,7 @@ export default async function TemplatesPage() {
         {templates.map((template) => (
           <div
             key={template.id}
-            className={`rounded-xl border bg-white px-6 py-5 transition-colors hover:border-foreground/20 ${
+            className={`rounded-xl border bg-background px-6 py-5 transition-colors hover:border-foreground/20 ${
               template.is_default ? 'border-foreground/30' : 'border-border'
             }`}
           >

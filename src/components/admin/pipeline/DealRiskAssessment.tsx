@@ -150,7 +150,7 @@ export default function DealRiskAssessment(props: DealRiskAssessmentProps) {
           <span>Risk Score</span>
           <span className="tabular-nums font-medium">{risk.score}/100</span>
         </div>
-        <div className="h-1.5 rounded-full bg-white overflow-hidden">
+        <div className="h-1.5 rounded-full bg-background overflow-hidden">
           <div
             className={`h-full rounded-full transition-all ${
               risk.level === 'high' ? 'bg-red-500' : risk.level === 'medium' ? 'bg-amber-500' : 'bg-green-500'

@@ -49,7 +49,7 @@ export default async function QualityPage() {
           { label: 'Recent Fails', value: fails, color: 'text-red-600' },
           { label: 'Pass Rate', value: passes + fails > 0 ? `${Math.round((passes / (passes + fails)) * 100)}%` : '—' },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-white p-4">
+          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
             <p className="text-xs text-text-muted">{stat.label}</p>
             <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
           </div>
@@ -59,7 +59,7 @@ export default async function QualityPage() {
       {orders.length > 0 && (
         <>
           <h3 className="text-sm font-semibold text-foreground mb-3">Awaiting Inspection</h3>
-          <div className="rounded-xl border border-border bg-white mb-6 divide-y divide-border">
+          <div className="rounded-xl border border-border bg-background mb-6 divide-y divide-border">
             {orders.map((o) => (
               <div key={o.id} className="px-5 py-3 flex items-center justify-between">
                 <div><p className="text-sm font-medium text-foreground">{o.order_number}</p><p className="text-xs text-text-secondary">{o.name}</p></div>
@@ -71,7 +71,7 @@ export default async function QualityPage() {
       )}
 
       <h3 className="text-sm font-semibold text-foreground mb-3">Recent Inspections</h3>
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         {logs.length === 0 ? (
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No inspection history. QC logs appear as operators pass or fail checks.</p></div>
         ) : (

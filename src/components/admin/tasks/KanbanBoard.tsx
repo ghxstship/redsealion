@@ -135,7 +135,7 @@ function DraggableTaskCard({ task }: { task: KanbanTask }) {
       style={style}
       {...listeners}
       {...attributes}
-      className={`rounded-lg border border-border bg-white px-4 py-3 shadow-sm cursor-grab active:cursor-grabbing transition-shadow hover:shadow-md ${
+      className={`rounded-lg border border-border bg-background px-4 py-3 shadow-sm cursor-grab active:cursor-grabbing transition-shadow hover:shadow-md ${
         isDragging ? 'opacity-30' : ''
       }`}
     >
@@ -322,7 +322,7 @@ export default function KanbanBoard() {
               {Array.from({ length: col === 'todo' ? 3 : 2 }).map((_, i) => (
                 <div
                   key={i}
-                  className="h-20 rounded-lg border border-border bg-white"
+                  className="h-20 rounded-lg border border-border bg-background"
                 />
               ))}
             </div>
@@ -381,7 +381,7 @@ export default function KanbanBoard() {
 
         <DragOverlay>
           {activeDragTask ? (
-            <div className="w-72 rounded-lg border border-foreground/20 bg-white px-4 py-3 shadow-lg opacity-90">
+            <div className="w-72 rounded-lg border border-foreground/20 bg-background px-4 py-3 shadow-lg opacity-90">
               <TaskCardContent task={activeDragTask} />
             </div>
           ) : null}

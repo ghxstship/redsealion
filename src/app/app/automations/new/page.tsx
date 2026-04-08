@@ -103,7 +103,7 @@ export default function NewAutomationPage() {
 
       <div className="space-y-6">
         {/* Name + Description */}
-        <div className="rounded-xl border border-border bg-white px-5 py-5 space-y-4">
+        <div className="rounded-xl border border-border bg-background px-5 py-5 space-y-4">
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">Name</label>
             <input
@@ -111,7 +111,7 @@ export default function NewAutomationPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g., Notify team on proposal approval"
-              className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
+              className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
             />
           </div>
           <div>
@@ -121,13 +121,13 @@ export default function NewAutomationPage() {
               onChange={(e) => setDescription(e.target.value)}
               rows={2}
               placeholder="What does this automation do?"
-              className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
+              className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
             />
           </div>
         </div>
 
         {/* Trigger */}
-        <div className="rounded-xl border border-border bg-white px-5 py-5">
+        <div className="rounded-xl border border-border bg-background px-5 py-5">
           <h2 className="text-base font-semibold text-foreground mb-4">When this happens...</h2>
           <TriggerSelector
             value={triggerType}
@@ -140,7 +140,7 @@ export default function NewAutomationPage() {
         </div>
 
         {/* Action */}
-        <div className="rounded-xl border border-border bg-white px-5 py-5">
+        <div className="rounded-xl border border-border bg-background px-5 py-5">
           <h2 className="text-base font-semibold text-foreground mb-4">Do this...</h2>
           <ActionSelector
             value={actionType}

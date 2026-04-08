@@ -109,7 +109,7 @@ export default function CatalogBrowse({ groups, categories, subcategories, items
   return (
     <div className="flex gap-6 h-full">
       {/* Sidebar — Category Tree */}
-      <nav className="w-56 shrink-0 rounded-xl border border-border bg-white overflow-y-auto max-h-[70vh]">
+      <nav className="w-56 shrink-0 rounded-xl border border-border bg-background overflow-y-auto max-h-[70vh]">
         <div className="px-3 py-2.5 border-b border-border">
           <p className="text-xs font-semibold text-text-muted uppercase tracking-wider">Categories</p>
         </div>
@@ -185,7 +185,7 @@ export default function CatalogBrowse({ groups, categories, subcategories, items
               <button
                 key={item.id}
                 onClick={() => onSelectItem(item)}
-                className="group text-left rounded-xl border border-border bg-white p-4 transition-all hover:border-brand-300 hover:shadow-md hover:shadow-brand-50/50 focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
+                className="group text-left rounded-xl border border-border bg-background p-4 transition-all hover:border-brand-300 hover:shadow-md hover:shadow-brand-50/50 focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
               >
                 <div className="flex items-start justify-between gap-2 mb-2">
                   <h3 className="text-sm font-semibold text-foreground group-hover:text-brand-700 transition-colors line-clamp-2">

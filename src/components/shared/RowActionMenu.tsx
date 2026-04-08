@@ -66,7 +66,7 @@ export default function RowActionMenu({ actions }: RowActionMenuProps) {
       {open && (
         <>
           <div className="fixed inset-0 z-30" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 top-full mt-1 z-40 w-40 rounded-lg border border-border bg-white shadow-xl py-1 animate-modal-content">
+          <div className="absolute right-0 top-full mt-1 z-40 w-40 rounded-lg border border-border bg-background shadow-xl py-1 animate-modal-content">
             {actions.map((action) => {
               const icon = action.icon ?? DEFAULT_ICONS[action.label] ?? null;
               const isDanger = action.variant === 'danger';

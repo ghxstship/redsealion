@@ -113,7 +113,7 @@ export default async function GoalsPage() {
         {goals.map((goal) => (
           <div
             key={goal.id}
-            className="rounded-xl border border-border bg-white p-6"
+            className="rounded-xl border border-border bg-background p-6"
           >
             {/* Goal header */}
             <div className="flex items-start justify-between gap-4 mb-4">

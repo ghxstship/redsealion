@@ -83,7 +83,7 @@ export default async function CheckInOutPage() {
           { label: 'Returned', value: returned.length },
           { label: 'Issues', value: issues.length, color: issues.length > 0 ? 'text-red-600' : 'text-foreground' },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-white p-4">
+          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
             <p className="text-xs text-text-muted">{stat.label}</p>
             <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
           </div>
@@ -97,7 +97,7 @@ export default async function CheckInOutPage() {
             <span className="inline-flex h-2 w-2 rounded-full bg-blue-500 animate-pulse" />
             Currently Checked Out ({currentlyOut.length})
           </h3>
-          <div className="rounded-xl border border-border bg-white mb-8 divide-y divide-border">
+          <div className="rounded-xl border border-border bg-background mb-8 divide-y divide-border">
             {currentlyOut.map((c) => (
               <div key={c.id} className="px-5 py-4 flex items-start justify-between gap-4">
                 <div className="flex items-start gap-3 min-w-0">
@@ -137,7 +137,7 @@ export default async function CheckInOutPage() {
 
       {/* Full history table */}
       <h3 className="text-sm font-semibold text-foreground mb-3">All Transactions</h3>
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         {checkouts.length === 0 ? (
           <div className="px-8 py-16 text-center">
             <p className="text-sm text-text-secondary">No check-in/out records. Transactions appear when assets are checked out for events, rentals, or productions.</p>

@@ -39,7 +39,7 @@ export default function AvailabilityTimeline({ reservations, from, to }: Availab
   };
 
   return (
-    <div className="bg-white border border-border rounded-lg shadow-sm p-4">
+    <div className="bg-background border border-border rounded-lg shadow-sm p-4">
       <div className="relative">
         {/* Day tick labels */}
         <div className="flex justify-between text-xs text-text-muted mb-2">

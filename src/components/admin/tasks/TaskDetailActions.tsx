@@ -27,13 +27,13 @@ export default function TaskDetailActions({ taskId, taskTitle }: TaskDetailActio
       <div className="flex items-center gap-2">
         <button
           onClick={() => setShowShare(true)}
-          className="rounded-lg border border-border bg-white px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
+          className="rounded-lg border border-border bg-background px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
         >
           Share
         </button>
         <button
           onClick={() => setShowDelete(true)}
-          className="rounded-lg border border-red-200 bg-white px-3 py-1.5 text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
+          className="rounded-lg border border-red-200 bg-background px-3 py-1.5 text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
         >
           Delete
         </button>

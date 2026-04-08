@@ -155,7 +155,7 @@ export default async function TaskDetailPage({
 
   if (!task) {
     return (
-      <div className="rounded-xl border border-border bg-white px-8 py-16 text-center">
+      <div className="rounded-xl border border-border bg-background px-8 py-16 text-center">
         <p className="text-sm text-text-secondary">Task not found.</p>
         <Link href="/app/tasks" className="mt-4 inline-block text-sm font-medium text-foreground hover:opacity-70">
           ← Back to Tasks
@@ -222,7 +222,7 @@ export default async function TaskDetailPage({
             {subtasks.length === 0 ? (
               <EmptyState message="No subtasks yet" className="border-bg-secondary/30 hidden shadow-none" />
             ) : (
-              <div className="rounded-xl border border-border bg-white divide-y divide-border overflow-hidden">
+              <div className="rounded-xl border border-border bg-background divide-y divide-border overflow-hidden">
                 {subtasks.map((sub) => (
                   <Link
                     key={sub.id}
@@ -261,7 +261,7 @@ export default async function TaskDetailPage({
 
         {/* Sidebar */}
         <div className="space-y-6">
-          <div className="rounded-xl border border-border bg-white p-5 space-y-4">
+          <div className="rounded-xl border border-border bg-background p-5 space-y-4">
             <h3 className="text-xs font-medium uppercase tracking-wider text-text-muted">Details</h3>
 
             <div className="space-y-3">
@@ -327,7 +327,7 @@ export default async function TaskDetailPage({
           </div>
 
           {/* Dependencies */}
-          <div className="rounded-xl border border-border bg-white p-5">
+          <div className="rounded-xl border border-border bg-background p-5">
             <TaskDependencies taskId={id} />
           </div>
 

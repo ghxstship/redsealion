@@ -135,7 +135,7 @@ export default function AdvanceListTable({ advances, activeTab, onTabChange }: A
           description={search ? undefined : 'Create your first production advance to get started.'}
         />
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-border bg-white">
+        <div className="overflow-x-auto rounded-xl border border-border bg-background">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border bg-bg-secondary/50">

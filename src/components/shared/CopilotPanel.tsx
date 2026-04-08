@@ -181,7 +181,7 @@ export default function CopilotPanel() {
 
       {/* Panel */}
       <aside
-        className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-[480px] flex flex-col bg-white/95 backdrop-blur-xl border-l border-border shadow-2xl animate-slide-in-right"
+        className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-[480px] flex flex-col bg-background/95 backdrop-blur-xl border-l border-border shadow-2xl animate-slide-in-right"
         role="complementary"
         aria-label="AI Copilot"
         id="copilot-panel"
@@ -312,7 +312,7 @@ export default function CopilotPanel() {
               placeholder="Ask about your data…"
               disabled={isLoading}
               rows={1}
-              className="flex-1 resize-none rounded-lg border border-border bg-white px-3 py-2.5 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/20 disabled:opacity-50 transition-colors max-h-32"
+              className="flex-1 resize-none rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/20 disabled:opacity-50 transition-colors max-h-32"
               style={{ fieldSizing: 'content' } as React.CSSProperties}
             />
             <button

@@ -32,7 +32,7 @@ export default function WarehouseDashboard({ facilities }: WarehouseDashboardPro
           return (
             <div
               key={facility.id}
-              className="bg-white border border-border rounded-lg shadow-sm p-4"
+              className="bg-background border border-border rounded-lg shadow-sm p-4"
             >
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-semibold text-foreground truncate">
@@ -61,7 +61,7 @@ export default function WarehouseDashboard({ facilities }: WarehouseDashboardPro
       </div>
 
       {facilities.length === 0 && (
-        <div className="bg-white border border-border rounded-lg shadow-sm p-6 text-center">
+        <div className="bg-background border border-border rounded-lg shadow-sm p-6 text-center">
           <p className="text-sm text-text-muted">No facilities found.</p>
         </div>
       )}

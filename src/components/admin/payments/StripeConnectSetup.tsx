@@ -87,7 +87,7 @@ export default function StripeConnectSetup() {
 
   if (state === 'loading') {
     return (
-      <div className="rounded-xl border border-border bg-white px-6 py-6">
+      <div className="rounded-xl border border-border bg-background px-6 py-6">
         <div className="flex items-center gap-3">
           <div className="h-5 w-5 animate-spin rounded-full border-2 border-border border-t-foreground" />
           <p className="text-sm text-text-muted">Loading Stripe Connect status...</p>
@@ -97,7 +97,7 @@ export default function StripeConnectSetup() {
   }
 
   return (
-    <div className="rounded-xl border border-border bg-white px-6 py-6">
+    <div className="rounded-xl border border-border bg-background px-6 py-6">
       <div className="flex items-center justify-between mb-5">
         <h2 className="text-sm font-semibold text-foreground">Stripe Connect</h2>
         {state === 'not_connected' && (

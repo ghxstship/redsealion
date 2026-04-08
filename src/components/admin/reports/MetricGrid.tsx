@@ -17,7 +17,7 @@ export default function MetricGrid({ metrics }: MetricGridProps) {
       {metrics.map((metric) => (
         <div
           key={metric.label}
-          className="rounded-xl border border-border bg-white p-5"
+          className="rounded-xl border border-border bg-background p-5"
         >
           <p className="text-xs text-text-muted">{metric.label}</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">

@@ -228,7 +228,7 @@ export default function ScanPageClient() {
 
               {actionSuccess && <Alert variant="success">{actionSuccess}</Alert>}
 
-              <div className="bg-white border border-border rounded-xl shadow-sm p-5">
+              <div className="bg-background border border-border rounded-xl shadow-sm p-5">
                 <div className="flex items-start justify-between mb-3">
                   <div>
                     <h3 className="text-base font-semibold text-foreground">{currentAsset.name}</h3>
@@ -313,7 +313,7 @@ export default function ScanPageClient() {
                           key={c}
                           disabled={actionLoading}
                           onClick={() => handleQuickAction('condition', { condition: c })}
-                          className="px-3 py-1.5 text-xs rounded-lg border border-border bg-white text-foreground hover:bg-bg-secondary transition-colors disabled:opacity-50"
+                          className="px-3 py-1.5 text-xs rounded-lg border border-border bg-background text-foreground hover:bg-bg-secondary transition-colors disabled:opacity-50"
                         >
                           {formatLabel(c)}
                         </button>
@@ -331,7 +331,7 @@ export default function ScanPageClient() {
                           key={loc}
                           disabled={actionLoading}
                           onClick={() => handleQuickAction('location', { location: loc })}
-                          className="px-3 py-1.5 text-xs rounded-lg border border-border bg-white text-foreground hover:bg-bg-secondary transition-colors disabled:opacity-50"
+                          className="px-3 py-1.5 text-xs rounded-lg border border-border bg-background text-foreground hover:bg-bg-secondary transition-colors disabled:opacity-50"
                         >
                           {loc}
                         </button>
@@ -349,7 +349,7 @@ export default function ScanPageClient() {
                           key={t}
                           disabled={actionLoading}
                           onClick={() => handleQuickAction('maintenance', { type: t, description: `${formatLabel(t)} logged via QR scan` })}
-                          className="px-3 py-1.5 text-xs rounded-lg border border-border bg-white text-foreground hover:bg-bg-secondary transition-colors disabled:opacity-50"
+                          className="px-3 py-1.5 text-xs rounded-lg border border-border bg-background text-foreground hover:bg-bg-secondary transition-colors disabled:opacity-50"
                         >
                           {formatLabel(t)}
                         </button>
@@ -394,7 +394,7 @@ export default function ScanPageClient() {
               {recentScans.map((entry, i) => (
                 <div
                   key={`${entry.value}-${i}`}
-                  className="bg-white border border-border rounded-lg p-3 flex items-center justify-between"
+                  className="bg-background border border-border rounded-lg p-3 flex items-center justify-between"
                 >
                   <div className="min-w-0 flex-1">
                     {entry.asset ? (

@@ -106,7 +106,7 @@ export default async function MaintenancePage() {
         <div>
           <h2 className="text-sm font-semibold text-foreground mb-4">Upcoming &amp; In Progress</h2>
           {upcoming.length > 0 ? (
-            <div className="rounded-xl border border-border bg-white overflow-hidden overflow-x-auto">
+            <div className="rounded-xl border border-border bg-background overflow-hidden overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-border bg-bg-secondary">
@@ -147,7 +147,7 @@ export default async function MaintenancePage() {
               </table>
             </div>
           ) : (
-            <div className="rounded-xl border border-border bg-white px-6 py-12 text-center text-sm text-text-muted">
+            <div className="rounded-xl border border-border bg-background px-6 py-12 text-center text-sm text-text-muted">
               No upcoming maintenance scheduled.
             </div>
           )}
@@ -157,7 +157,7 @@ export default async function MaintenancePage() {
         <div>
           <h2 className="text-sm font-semibold text-foreground mb-4">Recently Completed</h2>
           {completed.length > 0 ? (
-            <div className="rounded-xl border border-border bg-white overflow-hidden overflow-x-auto">
+            <div className="rounded-xl border border-border bg-background overflow-hidden overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-border bg-bg-secondary">
@@ -192,7 +192,7 @@ export default async function MaintenancePage() {
               </table>
             </div>
           ) : (
-            <div className="rounded-xl border border-border bg-white px-6 py-12 text-center text-sm text-text-muted">
+            <div className="rounded-xl border border-border bg-background px-6 py-12 text-center text-sm text-text-muted">
               No completed maintenance records.
             </div>
           )}

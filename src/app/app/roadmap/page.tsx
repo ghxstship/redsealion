@@ -107,7 +107,7 @@ export default async function RoadmapPage() {
       />
 
       {/* Timeline header */}
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         <div className="grid grid-cols-[200px_1fr] border-b border-border">
           <div className="px-4 py-3 border-r border-border">
             <span className="text-xs font-medium uppercase tracking-wider text-text-muted">

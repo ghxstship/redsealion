@@ -102,7 +102,7 @@ export default function KeyboardShortcutsModal({ open, onClose }: KeyboardShortc
       {/* Panel */}
       <div
         ref={panelRef}
-        className="relative w-full max-w-xl mx-4 rounded-xl border border-border bg-white shadow-2xl animate-modal-content overflow-hidden"
+        className="relative w-full max-w-xl mx-4 rounded-xl border border-border bg-background shadow-2xl animate-modal-content overflow-hidden"
         role="dialog"
         aria-label="Keyboard Shortcuts"
       >

@@ -48,7 +48,7 @@ export default async function PersonDetailPage(props: { params: Promise<{ id: st
 
   if (!person) {
     return (
-      <div className="rounded-xl border border-dashed border-border bg-white px-8 py-16 text-center">
+      <div className="rounded-xl border border-dashed border-border bg-background px-8 py-16 text-center">
         <p className="text-sm text-text-secondary">Person not found.</p>
         <Link
           href="/app/people"
@@ -64,7 +64,7 @@ export default async function PersonDetailPage(props: { params: Promise<{ id: st
 
   const profileContent = (
     <div className="space-y-6">
-      <div className="rounded-xl border border-border bg-white divide-y divide-border">
+      <div className="rounded-xl border border-border bg-background divide-y divide-border">
         {[
           { label: 'Full Name', value: person.full_name },
           { label: 'Email', value: person.email },
@@ -83,19 +83,19 @@ export default async function PersonDetailPage(props: { params: Promise<{ id: st
   );
 
   const activityContent = (
-    <div className="rounded-xl border border-border bg-white p-6">
+    <div className="rounded-xl border border-border bg-background p-6">
       <h2 className="text-sm font-semibold text-foreground mb-4">Recent Activity</h2>
       <div className="space-y-4">
         <div className="relative flex gap-4 pb-4">
           <div className="absolute left-[7px] top-5 bottom-0 w-px bg-border" />
-          <div className="relative mt-1.5 h-3.5 w-3.5 shrink-0 rounded-full border-2 border-border bg-white" />
+          <div className="relative mt-1.5 h-3.5 w-3.5 shrink-0 rounded-full border-2 border-border bg-background" />
           <div>
             <p className="text-sm font-medium text-foreground">Account created</p>
             <p className="text-xs text-text-muted mt-0.5">{formatDate(person.created_at)}</p>
           </div>
         </div>
         <div className="relative flex gap-4">
-          <div className="relative mt-1.5 h-3.5 w-3.5 shrink-0 rounded-full border-2 border-border bg-white" />
+          <div className="relative mt-1.5 h-3.5 w-3.5 shrink-0 rounded-full border-2 border-border bg-background" />
           <div>
             <p className="text-sm font-medium text-foreground">Assigned role: {formatRole(person.role)}</p>
             <p className="text-xs text-text-muted mt-0.5">{formatDate(person.created_at)}</p>
@@ -106,7 +106,7 @@ export default async function PersonDetailPage(props: { params: Promise<{ id: st
   );
 
   const permissionsContent = (
-    <div className="rounded-xl border border-border bg-white p-6">
+    <div className="rounded-xl border border-border bg-background p-6">
       <h2 className="text-sm font-semibold text-foreground mb-4">Role & Permissions</h2>
       <div className="space-y-4">
         <div>

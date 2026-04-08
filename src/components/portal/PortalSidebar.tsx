@@ -99,7 +99,7 @@ export default function PortalSidebar() {
       {/* Mobile hamburger button */}
       <button
         onClick={() => setMobileOpen(!mobileOpen)}
-        className="fixed top-[calc(2.5rem+6px)] left-4 z-50 md:hidden rounded-lg border border-border bg-white p-2 shadow-sm"
+        className="fixed top-[calc(2.5rem+6px)] left-4 z-50 md:hidden rounded-lg border border-border bg-background p-2 shadow-sm"
         aria-label="Toggle navigation"
       >
           {mobileOpen ? (
@@ -121,7 +121,7 @@ export default function PortalSidebar() {
       <aside
         className={`
           fixed top-0 left-0 z-40 h-screen w-64
-          bg-white/80 backdrop-blur-xl backdrop-saturate-150
+          bg-background/80 backdrop-blur-xl backdrop-saturate-150
           border-r border-border/60
           flex flex-col
           transition-transform duration-normal ease-in-out

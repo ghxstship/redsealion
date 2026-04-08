@@ -63,7 +63,7 @@ export default function MaintenanceKPIs({ records }: MaintenanceKPIsProps) {
   return (
     <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
       {cards.map((card) => (
-        <div key={card.label} className="rounded-xl border border-border bg-white px-5 py-5">
+        <div key={card.label} className="rounded-xl border border-border bg-background px-5 py-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">{card.label}</p>
           <p className="mt-2 text-2xl font-semibold tracking-tight text-foreground tabular-nums">{card.value}</p>
           <p className="mt-0.5 text-xs text-text-muted">{card.sublabel}</p>

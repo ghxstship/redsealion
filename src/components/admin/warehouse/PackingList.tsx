@@ -49,7 +49,7 @@ export default function PackingList({ items, venueName, proposalName }: PackingL
   const allChecked = checked.size === items.length && items.length > 0;
 
   return (
-    <div className="bg-white border border-border rounded-lg shadow-sm p-5">
+    <div className="bg-background border border-border rounded-lg shadow-sm p-5">
       <div className="mb-4">
         <h2 className="text-base font-semibold text-foreground">Packing List</h2>
         <p className="text-xs text-text-secondary mt-0.5">

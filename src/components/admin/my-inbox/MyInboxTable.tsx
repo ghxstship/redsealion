@@ -205,7 +205,7 @@ export default function MyInboxTable({ notifications }: { notifications: Notific
           description="You're all caught up. Notifications from comments, mentions, and system events will appear here."
         />
       ) : (
-        <div className="rounded-xl border border-border bg-white overflow-hidden overflow-x-auto">
+        <div className="rounded-xl border border-border bg-background overflow-hidden overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-border bg-bg-secondary">

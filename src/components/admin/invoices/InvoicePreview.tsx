@@ -27,7 +27,7 @@ export default function InvoicePreview({
   dueDate,
 }: InvoicePreviewProps) {
   return (
-    <div className="sticky top-8 rounded-xl border border-border bg-white p-8 shadow-sm">
+    <div className="sticky top-8 rounded-xl border border-border bg-background p-8 shadow-sm">
       <div className="text-center mb-6">
         <p className="text-xs uppercase tracking-wider text-text-muted">Invoice Preview</p>
       </div>

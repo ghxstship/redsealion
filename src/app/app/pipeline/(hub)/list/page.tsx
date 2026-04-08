@@ -39,21 +39,21 @@ export default async function PipelineListPage() {
       <PipelineHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Total Deals</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{deals.length}</p>
         </div>
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Pipeline Value</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{formatCurrency(totalValue)}</p>
         </div>
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Weighted Value</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-green-600">{formatCurrency(weightedValue)}</p>
         </div>
       </div>
 
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         {deals.length === 0 ? (
           <div className="px-8 py-16 text-center">
             <p className="text-sm text-text-secondary">No deals in your pipeline. Add deals to start tracking revenue.</p>

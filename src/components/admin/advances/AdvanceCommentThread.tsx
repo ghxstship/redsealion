@@ -46,7 +46,7 @@ export default function AdvanceCommentThread({ advanceId, comments, onRefresh, i
   }
 
   return (
-    <div className="rounded-xl border border-border bg-white">
+    <div className="rounded-xl border border-border bg-background">
       <div className="px-4 py-3 border-b border-border">
         <h3 className="text-sm font-semibold text-foreground">Comments</h3>
       </div>

@@ -177,7 +177,7 @@ export default async function FunnelReportPage() {
         </ChartContainer>
 
         {/* Stage-by-stage table */}
-        <div className="rounded-xl border border-border bg-white overflow-hidden">
+        <div className="rounded-xl border border-border bg-background overflow-hidden">
           <div className="px-6 py-4 border-b border-border">
             <h3 className="text-sm font-semibold text-foreground">Stage-by-Stage Breakdown</h3>
           </div>

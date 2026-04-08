@@ -122,7 +122,7 @@ export default async function TaskCalendarPage({
       <div className="mb-6 flex items-center justify-between">
         <Link
           href={`/app/tasks/calendar?year=${prevYear}&month=${prevMonth}`}
-          className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
+          className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
         >
           &larr; Previous
         </Link>
@@ -131,14 +131,14 @@ export default async function TaskCalendarPage({
         </h2>
         <Link
           href={`/app/tasks/calendar?year=${nextYear}&month=${nextMonth}`}
-          className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
+          className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
         >
           Next &rarr;
         </Link>
       </div>
 
       {/* Calendar grid */}
-      <div className="rounded-xl border border-border bg-white overflow-hidden overflow-x-auto">
+      <div className="rounded-xl border border-border bg-background overflow-hidden overflow-x-auto">
         {/* Weekday headers */}
         <div className="grid grid-cols-7 border-b border-border bg-bg-secondary min-w-[600px]">
           {weekdays.map((wd) => (

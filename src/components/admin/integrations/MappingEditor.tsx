@@ -71,7 +71,7 @@ export function MappingEditor({
         {mappings.map((mapping) => (
           <div
             key={mapping.id}
-            className="flex items-center gap-3 rounded-lg border border-border bg-white px-4 py-3"
+            className="flex items-center gap-3 rounded-lg border border-border bg-background px-4 py-3"
           >
             <FormSelect
               value={mapping.sourceField}

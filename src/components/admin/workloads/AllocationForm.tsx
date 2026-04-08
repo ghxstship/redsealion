@@ -65,7 +65,7 @@ export default function AllocationForm({ teamMembers, onCreated }: AllocationFor
     return (
       <button
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors"
+        className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors"
       >
         <Plus size={16} />
         Add Allocation
@@ -74,7 +74,7 @@ export default function AllocationForm({ teamMembers, onCreated }: AllocationFor
   }
 
   return (
-    <div className="rounded-lg border border-border bg-white p-4 space-y-3">
+    <div className="rounded-lg border border-border bg-background p-4 space-y-3">
       <h4 className="text-sm font-medium text-foreground">New Allocation</h4>
 
       {error && (

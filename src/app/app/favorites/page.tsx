@@ -44,7 +44,7 @@ export default async function FavoritesPage() {
         {SECTIONS.map((section) => {
           const items = data[section.key];
           return (
-            <div key={section.key} className="rounded-xl border border-border bg-white overflow-hidden">
+            <div key={section.key} className="rounded-xl border border-border bg-background overflow-hidden">
               <div className="px-5 py-3 bg-bg-secondary border-b border-border flex items-center justify-between">
                 <h3 className="text-xs font-semibold text-text-muted uppercase tracking-wider">{section.label}</h3>
                 <Link href={section.href} className="text-xs font-medium text-blue-600 hover:underline">View all</Link>

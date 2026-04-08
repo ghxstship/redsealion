@@ -107,7 +107,7 @@ export default function PlanSelector() {
           return (
             <div
               key={plan.tier}
-              className={`rounded-xl border bg-white px-6 py-6 ${
+              className={`rounded-xl border bg-background px-6 py-6 ${
                 plan.highlighted
                   ? 'border-foreground shadow-md'
                   : 'border-border'
@@ -136,7 +136,7 @@ export default function PlanSelector() {
                     ? 'border border-border bg-bg-secondary text-text-secondary cursor-default'
                     : plan.highlighted
                       ? 'bg-foreground text-white hover:bg-foreground/90'
-                      : 'border border-border bg-white text-foreground hover:bg-bg-secondary'
+                      : 'border border-border bg-background text-foreground hover:bg-bg-secondary'
                 }`}
                 disabled={isCurrent || isLoading}
                 onClick={() => !isCurrent && handleUpgrade(plan.tier)}

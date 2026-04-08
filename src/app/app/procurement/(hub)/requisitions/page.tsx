@@ -39,14 +39,14 @@ export default async function RequisitionsPage() {
           { label: 'Approved', value: reqs.filter((r) => r.status === 'approved').length, color: 'text-green-600' },
           { label: 'Total Value', value: formatCurrency(reqs.reduce((s, r) => s + r.total_cents, 0) / 100) },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-white p-4">
+          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
             <p className="text-xs text-text-muted">{stat.label}</p>
             <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
           </div>
         ))}
       </div>
 
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         {reqs.length === 0 ? (
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No requisitions submitted. Create a requisition to request materials or services.</p></div>
         ) : (

@@ -51,7 +51,7 @@ export default async function ProjectProfitabilityPage(props: { params: Promise<
 
   if (!project) {
     return (
-      <div className="rounded-xl border border-border bg-white px-8 py-16 text-center">
+      <div className="rounded-xl border border-border bg-background px-8 py-16 text-center">
         <p className="text-sm text-text-secondary">Project not found.</p>
       </div>
     );
@@ -88,7 +88,7 @@ export default async function ProjectProfitabilityPage(props: { params: Promise<
       <MarginChart revenue={project.revenue} costs={totalCosts} categories={project.costsByCategory} />
 
       {project.costsByCategory.length > 0 && (
-        <div className="mt-8 rounded-xl border border-border bg-white overflow-hidden">
+        <div className="mt-8 rounded-xl border border-border bg-background overflow-hidden">
           <div className="px-6 py-4 border-b border-border">
             <h2 className="text-base font-semibold text-foreground">Cost Breakdown</h2>
           </div>

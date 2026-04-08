@@ -36,7 +36,7 @@ export default function TimeOffCalendar() {
     day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
 
   return (
-    <div className="rounded-xl border border-border bg-white overflow-hidden overflow-x-auto">
+    <div className="rounded-xl border border-border bg-background overflow-hidden overflow-x-auto">
       <div className="flex items-center justify-between px-6 py-4 border-b border-border min-w-[600px]">
         <button onClick={prevMonth} className="text-sm text-text-secondary hover:text-foreground transition-colors">
           &larr; Prev

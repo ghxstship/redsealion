@@ -106,7 +106,7 @@ export default async function AutomationsPage() {
 
       <AutomationsHubTabs />
 
-      <div className="rounded-xl border border-border bg-white divide-y divide-border">
+      <div className="rounded-xl border border-border bg-background divide-y divide-border">
         {automations.map((automation) => (
           <div key={automation.id} className="px-5 py-4 flex items-center justify-between">
             <div className="flex-1 min-w-0">

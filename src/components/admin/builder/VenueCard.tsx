@@ -60,7 +60,7 @@ export default function VenueCard({
   );
 
   return (
-    <div className="rounded-xl border border-border bg-white">
+    <div className="rounded-xl border border-border bg-background">
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-3 border-b border-border">
         <button
@@ -113,7 +113,7 @@ export default function VenueCard({
                 onFocus={() => setShowTypeSuggestions(true)}
                 onBlur={() => setTimeout(() => setShowTypeSuggestions(false), 150)} />
               {showTypeSuggestions && venue.type && filteredSuggestions.length > 0 && (
-                <ul className="absolute z-10 mt-1 w-full rounded-lg border border-border bg-white shadow-sm max-h-32 overflow-y-auto">
+                <ul className="absolute z-10 mt-1 w-full rounded-lg border border-border bg-background shadow-sm max-h-32 overflow-y-auto">
                   {filteredSuggestions.map((s) => (
                     <li key={s}>
                       <button

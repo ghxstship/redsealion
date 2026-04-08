@@ -83,7 +83,7 @@ function Toggle({
       }`}
     >
       <span
-        className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow-sm transition-transform ${
+        className={`inline-block h-3.5 w-3.5 transform rounded-full bg-background shadow-sm transition-transform ${
           enabled ? 'translate-x-4.5' : 'translate-x-0.5'
         }`}
       />

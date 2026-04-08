@@ -89,7 +89,7 @@ export default async function UtilizationPage() {
 
       <WorkloadsHubTabs />
 
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -129,7 +129,7 @@ export default async function UtilizationPage() {
       </div>
 
       {capacity.length === 0 && (
-        <div className="rounded-xl border border-dashed border-border bg-white px-5 py-12 text-center">
+        <div className="rounded-xl border border-dashed border-border bg-background px-5 py-12 text-center">
           <p className="text-sm text-text-muted">No team members found.</p>
         </div>
       )}

@@ -148,14 +148,14 @@ export default async function CrewMemberPage({
     <div className="space-y-6">
       {/* Bio */}
       {member.bio && (
-        <div className="rounded-xl border border-border bg-white p-6">
+        <div className="rounded-xl border border-border bg-background p-6">
           <h2 className="text-sm font-semibold text-foreground mb-3">Bio</h2>
           <p className="text-sm text-text-secondary">{member.bio}</p>
         </div>
       )}
 
       {/* Skills */}
-      <div className="rounded-xl border border-border bg-white p-6">
+      <div className="rounded-xl border border-border bg-background p-6">
         <h2 className="text-sm font-semibold text-foreground mb-4">Skills</h2>
         <div className="flex flex-wrap gap-2">
           {member.skills.map((skill) => (
@@ -173,7 +173,7 @@ export default async function CrewMemberPage({
       </div>
 
       {/* Certifications */}
-      <div className="rounded-xl border border-border bg-white p-6">
+      <div className="rounded-xl border border-border bg-background p-6">
         <h2 className="text-sm font-semibold text-foreground mb-4">Certifications</h2>
         <div className="flex flex-wrap gap-2">
           {member.certifications.map((cert) => (
@@ -193,7 +193,7 @@ export default async function CrewMemberPage({
   );
 
   const bookingsContent = (
-    <div className="rounded-xl border border-border bg-white overflow-hidden">
+    <div className="rounded-xl border border-border bg-background overflow-hidden">
       <div className="px-6 py-4 border-b border-border">
         <h2 className="text-sm font-semibold text-foreground">Recent Bookings</h2>
       </div>
@@ -270,7 +270,7 @@ export default async function CrewMemberPage({
             Onboarding: {formatLabel(member.onboarding_status)}
           </span>
         </div>
-        <button className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary">
+        <button className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary">
           Edit Profile
         </button>
       </PageHeader>

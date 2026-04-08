@@ -67,7 +67,7 @@ export default async function TimesheetsApprovalPage() {
       <TimeHubTabs />
 
       {timesheets.length === 0 ? (
-        <div className="rounded-xl border border-border bg-white px-8 py-16 text-center">
+        <div className="rounded-xl border border-border bg-background px-8 py-16 text-center">
           <p className="text-sm text-text-secondary">
             No timesheets pending approval.
           </p>

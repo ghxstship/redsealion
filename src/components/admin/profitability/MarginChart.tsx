@@ -17,7 +17,7 @@ export default function MarginChart({ revenue, costs, categories }: MarginChartP
   const costsWidth = maxVal > 0 ? (costs / maxVal) * 100 : 0;
 
   return (
-    <div className="rounded-xl border border-border bg-white overflow-hidden">
+    <div className="rounded-xl border border-border bg-background overflow-hidden">
       <div className="px-6 py-4 border-b border-border">
         <h2 className="text-base font-semibold text-foreground">Margin Analysis</h2>
       </div>

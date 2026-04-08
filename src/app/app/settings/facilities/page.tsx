@@ -25,7 +25,7 @@ export default function FacilitiesSettingsPage() {
         <FacilityFormModal open={showCreate} onClose={() => setShowCreate(false)} onCreated={() => router.refresh()} />
       </div>
 
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         <div className="divide-y divide-border">
           {facilities.map((facility) => (
             <div key={facility.id} className="flex items-center justify-between px-6 py-4">
@@ -43,10 +43,10 @@ export default function FacilitiesSettingsPage() {
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <button className="rounded-lg border border-border bg-white px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary">
+                <button className="rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary">
                   Edit
                 </button>
-                <button className="rounded-lg border border-border bg-white px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-50">
+                <button className="rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-50">
                   Remove
                 </button>
               </div>

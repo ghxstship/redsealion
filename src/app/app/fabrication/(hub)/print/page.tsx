@@ -33,21 +33,21 @@ export default async function PrintPage() {
       <FabricationHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Print Jobs</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{jobs.length}</p>
         </div>
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">In Production</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-blue-600">{jobs.filter((j) => j.status === 'in_production').length}</p>
         </div>
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Total Cost</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{formatCurrency(jobs.reduce((s, j) => s + j.total_cost_cents, 0) / 100)}</p>
         </div>
       </div>
 
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         {jobs.length === 0 ? (
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No print jobs. Create a fabrication order with type &quot;print&quot; to start tracking.</p></div>
         ) : (

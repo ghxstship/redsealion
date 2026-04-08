@@ -74,7 +74,7 @@ export default async function LocationsPage() {
       {topTypes.length > 0 && (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">
           {topTypes.map(([type, count]) => (
-            <div key={type} className="rounded-xl border border-border bg-white p-4">
+            <div key={type} className="rounded-xl border border-border bg-background p-4">
               <p className="text-xs text-text-muted">{formatLabel(type)}</p>
               <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{count}</p>
             </div>

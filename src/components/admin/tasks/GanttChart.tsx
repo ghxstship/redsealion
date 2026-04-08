@@ -131,7 +131,7 @@ export default function GanttChart({ tasks, dependencies }: GanttChartProps) {
   }, [displayTasks, columns.length, colWidth, timelineStart, zoom]);
 
   return (
-    <div className="rounded-xl border border-border bg-white overflow-hidden">
+    <div className="rounded-xl border border-border bg-background overflow-hidden">
       {/* Toolbar */}
       <div className="flex items-center justify-between border-b border-border px-4 py-2 bg-bg-secondary">
         <span className="text-xs font-medium text-text-muted uppercase tracking-wider">Timeline</span>
@@ -143,7 +143,7 @@ export default function GanttChart({ tasks, dependencies }: GanttChartProps) {
               className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
                 zoom === z
                   ? 'bg-foreground text-white'
-                  : 'text-text-muted hover:bg-white'
+                  : 'text-text-muted hover:bg-background'
               }`}
             >
               {z.charAt(0).toUpperCase() + z.slice(1)}

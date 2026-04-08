@@ -46,14 +46,14 @@ export default async function TerritoriesPage() {
           { label: 'Total Deals', value: deals.length },
           { label: 'Pipeline Value', value: formatCurrency(totalValue), color: 'text-green-600' },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-white p-4">
+          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
             <p className="text-xs text-text-muted">{stat.label}</p>
             <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
           </div>
         ))}
       </div>
 
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         {territories.length === 0 ? (
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No deal territories yet. Territories are derived from client address data.</p></div>
         ) : (

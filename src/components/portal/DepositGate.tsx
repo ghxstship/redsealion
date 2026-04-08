@@ -46,7 +46,7 @@ export default function DepositGate({
         </div>
       </div>
 
-      <div className="rounded-lg border border-amber-200 bg-white p-4">
+      <div className="rounded-lg border border-amber-200 bg-background p-4">
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs text-text-muted">Proposal Total</span>
           <span className="text-sm font-medium text-foreground">${totalValue.toLocaleString()}</span>

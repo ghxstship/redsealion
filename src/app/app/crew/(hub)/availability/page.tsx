@@ -73,7 +73,7 @@ export default function CrewAvailabilityPage() {
       <div className="mb-6 flex items-center justify-between">
         <button
           onClick={goToPrevMonth}
-          className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
+          className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
         >
           &larr; Previous
         </button>
@@ -82,14 +82,14 @@ export default function CrewAvailabilityPage() {
         </h2>
         <button
           onClick={goToNextMonth}
-          className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
+          className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
         >
           Next &rarr;
         </button>
       </div>
 
       {/* Calendar grid */}
-      <div className="rounded-xl border border-border bg-white overflow-hidden overflow-x-auto">
+      <div className="rounded-xl border border-border bg-background overflow-hidden overflow-x-auto">
         <table className="w-full min-w-[800px]">
           <thead>
             <tr className="border-b border-border bg-bg-secondary">
@@ -109,7 +109,7 @@ export default function CrewAvailabilityPage() {
           <tbody className="divide-y divide-border">
             {crew.map((member) => (
               <tr key={member.id} className="transition-colors hover:bg-bg-secondary/30">
-                <td className="sticky left-0 bg-white px-4 py-2 text-sm font-medium text-foreground border-r border-border">
+                <td className="sticky left-0 bg-background px-4 py-2 text-sm font-medium text-foreground border-r border-border">
                   <Link href={`/app/crew/${member.id}`} className="hover:underline">
                     {member.full_name}
                   </Link>

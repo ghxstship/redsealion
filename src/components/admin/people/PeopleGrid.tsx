@@ -127,7 +127,7 @@ export default function PeopleGrid({ members }: { members: TeamMember[] }) {
           {filtered.map((member) => (
             <div
               key={member.id}
-              className="group relative rounded-xl border border-border bg-white px-6 py-5 transition-[color,background-color,border-color,opacity,box-shadow,transform] duration-normal hover:shadow-md hover:-translate-y-0.5"
+              className="group relative rounded-xl border border-border bg-background px-6 py-5 transition-[color,background-color,border-color,opacity,box-shadow,transform] duration-normal hover:shadow-md hover:-translate-y-0.5"
             >
               {/* Action menu */}
               <div className="absolute top-3 right-3">

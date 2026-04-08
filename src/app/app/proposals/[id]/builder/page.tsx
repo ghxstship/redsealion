@@ -589,7 +589,7 @@ export default function EditProposalBuilderPage({
       </div>
 
       {/* Step Indicator */}
-      <div className="mb-8 rounded-xl border border-border bg-white px-5 py-4">
+      <div className="mb-8 rounded-xl border border-border bg-background px-5 py-4">
         <BuilderStepIndicator
           steps={steps}
           currentStep={currentStep}

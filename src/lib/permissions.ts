@@ -177,6 +177,18 @@ export const DEFAULT_PERMISSIONS: Record<OrganizationRole, Record<string, boolea
     [permKey('advances', 'create')]: false,
     [permKey('advances', 'edit')]: true,
     [permKey('advances', 'delete')]: false,
+    // activations, events, locations — view (revenue context)
+    ...viewOnly(['activations', 'events', 'locations']),
+    // work orders — view (dispatch oversight)
+    ...viewOnly(['work_orders']),
+    // resources / scheduling — view
+    ...viewOnly(['resources', 'resource_scheduling']),
+    // ai drafting — none
+    ...noPerm(['ai_drafting']),
+    // email campaigns — none (marketing-scoped)
+    ...noPerm(['email_campaigns']),
+    // referral program — none
+    ...noPerm(['referral_program']),
   },
 
   // ── manager — project management (no billing, no org settings) ──
@@ -202,6 +214,21 @@ export const DEFAULT_PERMISSIONS: Record<OrganizationRole, Record<string, boolea
     ...viewCreate(['warehouse']),
     // advances — manage (no delete)
     ...viewCreate(['advances']),
+    // activations, events, locations — manage (no delete)
+    ...viewCreate(['activations', 'events', 'locations']),
+    // work orders — manage (no delete)
+    ...viewCreate(['work_orders']),
+    // resources / scheduling — manage (no delete)
+    ...viewCreate(['resources', 'resource_scheduling']),
+    // ai drafting — use
+    [permKey('ai_drafting', 'view')]: true,
+    [permKey('ai_drafting', 'create')]: true,
+    [permKey('ai_drafting', 'edit')]: false,
+    [permKey('ai_drafting', 'delete')]: false,
+    // email campaigns — manage (no delete)
+    ...viewCreate(['email_campaigns']),
+    // referral program — view only
+    ...viewOnly(['referral_program']),
   },
 
   // ── team_member — standard internal (design, fabrication, general) ──
@@ -255,6 +282,20 @@ export const DEFAULT_PERMISSIONS: Record<OrganizationRole, Record<string, boolea
     [permKey('advances', 'create')]: true,
     [permKey('advances', 'edit')]: true,
     [permKey('advances', 'delete')]: false,
+    // activations, events — view
+    ...viewOnly(['activations', 'events']),
+    // locations — view
+    ...viewOnly(['locations']),
+    // work orders — view (field visibility)
+    ...viewOnly(['work_orders']),
+    // resources / scheduling — view own
+    ...viewOnly(['resources', 'resource_scheduling']),
+    // ai drafting — none
+    ...noPerm(['ai_drafting']),
+    // email campaigns — none
+    ...noPerm(['email_campaigns']),
+    // referral program — none
+    ...noPerm(['referral_program']),
   },
 
   // ── client — external, portal access for proposals/invoices/approvals ──

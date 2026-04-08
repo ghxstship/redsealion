@@ -138,7 +138,7 @@ export default function TaskTemplateLibrary({ onApply }: TaskTemplateLibraryProp
           {templates.map((tpl) => (
             <div
               key={tpl.id}
-              className="rounded-xl border border-border bg-white p-4 group hover:border-foreground/20 transition-colors"
+              className="rounded-xl border border-border bg-background p-4 group hover:border-foreground/20 transition-colors"
             >
               <div className="flex items-start justify-between gap-2">
                 <div>

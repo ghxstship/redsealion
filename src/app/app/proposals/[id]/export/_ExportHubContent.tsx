@@ -36,7 +36,7 @@ function DocxOptions({ onExport }: { onExport: (opts: Record<string, boolean>) =
   const [includePlaceholders, setIncludePlaceholders] = useState(false);
 
   return (
-    <div className="rounded-xl border border-border bg-white overflow-hidden">
+    <div className="rounded-xl border border-border bg-background overflow-hidden">
       <div className="px-5 py-5">
         <div className="flex items-start gap-3.5">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-white text-sm font-bold">
@@ -148,7 +148,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
       {activeTab === 'document' && (
         <div className="space-y-5">
           <DocxOptions onExport={handleDocxExport} />
-          <ExportCard platformName="PDF Document" platformLetter="P" platformColor="#dc2626" description="High-fidelity PDF with branded cover, phase narratives, investment tables, and terms appendix." status="connected" onExport={handleDocxExport} actions={[{ label: 'Download PDF', onClick: handleDocxExport }]} />
+          <ExportCard platformName="Print Preview" platformLetter="P" platformColor="#dc2626" description="Print-ready HTML with branded cover, phase breakdown, investment tables, and terms. Use your browser's Print → Save as PDF." status="connected" onExport={() => window.open(`/api/proposals/${id}/export/pdf`, '_blank')} actions={[{ label: 'Open Print Preview', onClick: () => window.open(`/api/proposals/${id}/export/pdf`, '_blank') }]} />
         </div>
       )}
 
@@ -180,7 +180,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
           </div>
 
           {/* Invoice Schedule */}
-          <div className="rounded-xl border border-border bg-white overflow-hidden">
+          <div className="rounded-xl border border-border bg-background overflow-hidden">
             <div className="px-6 py-4 border-b border-border">
               <h2 className="text-sm font-semibold text-foreground">Invoice Schedule Preview</h2>
               <p className="mt-0.5 text-xs text-text-muted">Based on payment terms and milestone triggers</p>
@@ -234,7 +234,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
           </div>
 
           {/* Task Structure Preview */}
-          <div className="rounded-xl border border-border bg-white overflow-hidden">
+          <div className="rounded-xl border border-border bg-background overflow-hidden">
             <div className="px-6 py-4 border-b border-border">
               <h2 className="text-sm font-semibold text-foreground">Task Structure Preview</h2>
               <p className="mt-0.5 text-xs text-text-muted">Phases, tasks, and subtasks as they will appear in your PM tool</p>
@@ -265,13 +265,13 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
       {/* ASSETS TAB */}
       {activeTab === 'assets' && (
         <div className="space-y-6">
-          <div className="rounded-xl border border-border bg-white overflow-hidden">
+          <div className="rounded-xl border border-border bg-background overflow-hidden">
             <div className="flex items-center justify-between px-6 py-4 border-b border-border">
               <div>
                 <h2 className="text-sm font-semibold text-foreground">Asset Inventory</h2>
                 <p className="mt-0.5 text-xs text-text-muted">{assetInventory.length} assets</p>
               </div>
-              <button onClick={() => downloadCsv(assetInventory, 'asset-inventory')} className="rounded-lg border border-border bg-white px-3.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary">Download CSV</button>
+              <button onClick={() => downloadCsv(assetInventory, 'asset-inventory')} className="rounded-lg border border-border bg-background px-3.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary">Download CSV</button>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -304,7 +304,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
           </div>
 
           {/* Venue Matrix */}
-          <div className="rounded-xl border border-border bg-white overflow-hidden">
+          <div className="rounded-xl border border-border bg-background overflow-hidden">
             <div className="px-6 py-4 border-b border-border">
               <h2 className="text-sm font-semibold text-foreground">Venue Assignment Matrix</h2>
             </div>
@@ -337,13 +337,13 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
       {/* RESOURCES TAB */}
       {activeTab === 'resources' && (
         <div className="space-y-6">
-          <div className="rounded-xl border border-border bg-white overflow-hidden">
+          <div className="rounded-xl border border-border bg-background overflow-hidden">
             <div className="flex items-center justify-between px-6 py-4 border-b border-border">
               <div>
                 <h2 className="text-sm font-semibold text-foreground">Personnel Allocation</h2>
                 <p className="mt-0.5 text-xs text-text-muted">Headcount by role across project phases</p>
               </div>
-              <button onClick={() => downloadCsv(personnelTable, 'personnel-allocation')} className="rounded-lg border border-border bg-white px-3.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary">Download CSV</button>
+              <button onClick={() => downloadCsv(personnelTable, 'personnel-allocation')} className="rounded-lg border border-border bg-background px-3.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary">Download CSV</button>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -373,12 +373,12 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
             </div>
           </div>
 
-          <div className="rounded-xl border border-border bg-white overflow-hidden">
+          <div className="rounded-xl border border-border bg-background overflow-hidden">
             <div className="flex items-center justify-between px-6 py-4 border-b border-border">
               <div>
                 <h2 className="text-sm font-semibold text-foreground">Equipment &amp; Vehicle Requirements</h2>
               </div>
-              <button onClick={() => downloadCsv(equipmentList, 'equipment-requirements')} className="rounded-lg border border-border bg-white px-3.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary">Download CSV</button>
+              <button onClick={() => downloadCsv(equipmentList, 'equipment-requirements')} className="rounded-lg border border-border bg-background px-3.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary">Download CSV</button>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -409,7 +409,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
       {/* CSV PACK TAB */}
       {activeTab === 'csv' && (
         <div className="space-y-6">
-          <div className="rounded-xl border border-border bg-white px-6 py-5 flex items-center justify-between">
+          <div className="rounded-xl border border-border bg-background px-6 py-5 flex items-center justify-between">
             <div>
               <h2 className="text-sm font-semibold text-foreground">Complete CSV Pack</h2>
               <p className="mt-0.5 text-xs text-text-muted">Download all {csvFiles.length} CSV files as a single ZIP archive.</p>
@@ -417,7 +417,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
             <button onClick={() => csvFiles.forEach((f) => downloadCsv([], f.name))} className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90">Download All as ZIP</button>
           </div>
 
-          <div className="rounded-xl border border-border bg-white overflow-hidden">
+          <div className="rounded-xl border border-border bg-background overflow-hidden">
             <div className="px-6 py-4 border-b border-border">
               <h2 className="text-sm font-semibold text-foreground">Individual Files</h2>
             </div>
@@ -433,7 +433,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
                       <p className="text-xs text-text-muted">{file.description} — {file.rows} rows</p>
                     </div>
                   </div>
-                  <button onClick={() => downloadCsv([], file.name)} className="rounded-lg border border-border bg-white px-3.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary shrink-0">Download</button>
+                  <button onClick={() => downloadCsv([], file.name)} className="rounded-lg border border-border bg-background px-3.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary shrink-0">Download</button>
                 </div>
               ))}
             </div>

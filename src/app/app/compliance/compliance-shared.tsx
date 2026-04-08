@@ -32,13 +32,13 @@ function StatusBadge({ status }: { status: string }) {
 function ComplianceTable({ docs, emptyMsg }: { docs: Awaited<ReturnType<typeof getDocsByType>>; emptyMsg: string }) {
   if (docs.length === 0) {
     return (
-      <div className="rounded-xl border border-border bg-white px-8 py-16 text-center">
+      <div className="rounded-xl border border-border bg-background px-8 py-16 text-center">
         <p className="text-sm text-text-secondary">{emptyMsg}</p>
       </div>
     );
   }
   return (
-    <div className="rounded-xl border border-border bg-white overflow-hidden">
+    <div className="rounded-xl border border-border bg-background overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">

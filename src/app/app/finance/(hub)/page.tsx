@@ -76,7 +76,7 @@ export default async function FinancePage() {
         </Card>
       </div>
 
-      <div className="rounded-xl border border-border bg-white px-8 py-16 text-center">
+      <div className="rounded-xl border border-border bg-background px-8 py-16 text-center">
         <p className="text-sm text-text-secondary">
           Select a tab above to manage purchase orders, track revenue recognition, or view vendors.
         </p>

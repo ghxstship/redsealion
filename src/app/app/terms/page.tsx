@@ -80,7 +80,7 @@ export default function TermsPage() {
         subtitle="Manage your standard terms document."
       >
         <div className="flex items-center gap-3">
-          <button className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary">
+          <button className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary">
             Edit
           </button>
           <button
@@ -104,7 +104,7 @@ export default function TermsPage() {
       </PageHeader>
 
       {/* Document header card */}
-      <div className="rounded-xl border border-border bg-white px-6 py-5 mb-8">
+      <div className="rounded-xl border border-border bg-background px-6 py-5 mb-8">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-sm font-semibold text-foreground">{termsDocument.title}</h2>
@@ -125,7 +125,7 @@ export default function TermsPage() {
           return (
             <div
               key={section.number}
-              className="rounded-xl border border-border bg-white overflow-hidden"
+              className="rounded-xl border border-border bg-background overflow-hidden"
             >
               <button
                 onClick={() => toggleSection(section.number)}

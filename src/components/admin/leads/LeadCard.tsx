@@ -33,7 +33,7 @@ export default function LeadCard({ lead }: LeadCardProps) {
     new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
   return (
-    <div className="bg-white border border-border rounded-lg shadow-sm p-4">
+    <div className="bg-background border border-border rounded-lg shadow-sm p-4">
       <div className="flex items-start justify-between mb-2">
         <div className="min-w-0 flex-1">
           <h3 className="text-sm font-semibold text-foreground truncate">{lead.contact_first_name} {lead.contact_last_name}</h3>

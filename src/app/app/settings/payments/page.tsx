@@ -56,7 +56,7 @@ export default function PaymentSettingsPage() {
             value={loaded ? instructions : ''}
             onChange={(e) => setInstructions(e.target.value)}
             placeholder="Enter payment instructions for your clients..."
-            className="w-full rounded-lg border border-border bg-white px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20 resize-none"
+            className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20 resize-none"
           />
         </Card>
 

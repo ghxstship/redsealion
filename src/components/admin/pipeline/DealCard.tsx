@@ -81,7 +81,7 @@ export default function DealCard({
   }
 
   const card = (
-    <div className={`group relative rounded-lg border bg-white p-3 shadow-sm transition-colors hover:border-foreground/20 ${rottingBorder}`}>
+    <div className={`group relative rounded-lg border bg-background p-3 shadow-sm transition-colors hover:border-foreground/20 ${rottingBorder}`}>
       <Link href={`/app/pipeline/${id}`} className="block">
         <div className="flex items-start justify-between gap-1">
           <p className="text-sm font-medium text-foreground truncate pr-6">{title}</p>

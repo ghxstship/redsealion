@@ -19,7 +19,7 @@ function ColorField({ label, value, onChange }: { label: string; value: string; 
           type="text"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="flex-1 rounded-lg border border-border bg-white px-3.5 py-2 text-sm font-mono text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
+          className="flex-1 rounded-lg border border-border bg-background px-3.5 py-2 text-sm font-mono text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
         />
       </div>
     </div>
@@ -36,7 +36,7 @@ function InputField({ label, value, onChange, type = 'text' }: { label: string; 
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-lg border border-border bg-white px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
+        className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
       />
     </div>
   );
@@ -51,7 +51,7 @@ function SelectField({ label, options, value, onChange }: { label: string; optio
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-lg border border-border bg-white px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
+        className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
       >
         {options.map((opt) => (
           <option key={opt} value={opt}>{opt}</option>

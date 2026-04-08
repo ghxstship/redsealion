@@ -47,7 +47,7 @@ export function ActionSelector({ value, config, onChange }: ActionSelectorProps)
             className={`rounded-lg border px-4 py-3 text-left transition-colors ${
               selectedType === action.value
                 ? 'border-foreground bg-bg-secondary'
-                : 'border-border bg-white hover:bg-bg-secondary'
+                : 'border-border bg-background hover:bg-bg-secondary'
             }`}
           >
             <p className="text-sm font-medium text-foreground">{action.label}</p>

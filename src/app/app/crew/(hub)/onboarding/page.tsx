@@ -92,22 +92,22 @@ export default async function OnboardingPage() {
 
       {/* Summary cards */}
       <div className="grid grid-cols-3 gap-4 mb-8">
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Complete</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-green-700">{completeCount}</p>
         </div>
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">In Progress</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-blue-700">{inProgressCount}</p>
         </div>
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Pending</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-gray-600">{pendingCount}</p>
         </div>
       </div>
 
       {/* Table */}
-      <div className="rounded-xl border border-border bg-white overflow-hidden overflow-x-auto">
+      <div className="rounded-xl border border-border bg-background overflow-hidden overflow-x-auto">
         <table className="w-full">
           <thead>
             <tr className="border-b border-border bg-bg-secondary">

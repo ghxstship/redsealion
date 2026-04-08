@@ -61,7 +61,7 @@ export default async function BudgetDetailPage(props: { params: Promise<{ id: st
 
   if (!budget) {
     return (
-      <div className="rounded-xl border border-border bg-white px-8 py-16 text-center">
+      <div className="rounded-xl border border-border bg-background px-8 py-16 text-center">
         <p className="text-sm text-text-secondary">Budget not found.</p>
       </div>
     );
@@ -105,7 +105,7 @@ export default async function BudgetDetailPage(props: { params: Promise<{ id: st
       </div>
 
       {budget.lineItems.length > 0 && (
-        <div className="rounded-xl border border-border bg-white overflow-hidden">
+        <div className="rounded-xl border border-border bg-background overflow-hidden">
           <div className="px-6 py-4 border-b border-border">
             <h2 className="text-base font-semibold text-foreground">Line Items</h2>
           </div>

@@ -29,17 +29,17 @@ export default async function DispatchHistoryPage() {
       <DispatchHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 mb-8">
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Completed Dispatches</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{history.length}</p>
         </div>
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Unique Locations Served</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{new Set(history.map((h) => h.location).filter(Boolean)).size}</p>
         </div>
       </div>
 
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         {history.length === 0 ? (
           <div className="px-8 py-16 text-center">
             <p className="text-sm text-text-secondary">No completed dispatches yet. History populates as work orders are completed.</p>

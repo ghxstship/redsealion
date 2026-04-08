@@ -124,7 +124,7 @@ export default function DocumentDefaultsPage() {
             onClick={() => setActiveType(dt.key)}
             className={`flex-1 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
               activeType === dt.key
-                ? 'bg-white text-foreground shadow-sm'
+                ? 'bg-background text-foreground shadow-sm'
                 : 'text-text-secondary hover:text-foreground'
             }`}
           >
@@ -144,7 +144,7 @@ export default function DocumentDefaultsPage() {
             value={values[`${activeType}:${s.key}`] || ''}
             onChange={(e) => handleChange(s.key, e.target.value)}
             placeholder={s.placeholder}
-            className="w-full rounded-lg border border-border bg-white px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20 resize-y"
+            className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20 resize-y"
           />
         </Card>
       ))}

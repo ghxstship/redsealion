@@ -49,7 +49,7 @@ export default async function DispatchBoardPage() {
               </div>
               <div className="space-y-2">
                 {items.length === 0 ? (
-                  <div className="rounded-lg border border-dashed border-border bg-white px-3 py-6 text-center">
+                  <div className="rounded-lg border border-dashed border-border bg-background px-3 py-6 text-center">
                     <p className="text-xs text-text-muted">No items</p>
                   </div>
                 ) : items.map((item) => (

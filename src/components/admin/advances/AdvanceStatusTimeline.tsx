@@ -21,7 +21,7 @@ export default function AdvanceStatusTimeline({ history }: AdvanceStatusTimeline
             <div className="absolute left-[7px] top-4 bottom-0 w-px bg-border" />
           )}
           {/* Dot */}
-          <div className="relative z-10 mt-1 w-[15px] h-[15px] rounded-full border-2 border-border bg-white flex-shrink-0" />
+          <div className="relative z-10 mt-1 w-[15px] h-[15px] rounded-full border-2 border-border bg-background flex-shrink-0" />
           {/* Content */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">

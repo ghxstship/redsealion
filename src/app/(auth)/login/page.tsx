@@ -233,7 +233,7 @@ export default function LoginPage() {
         </button>
       </form>
 
-      <div className="mt-4 text-center">
+      <div className="mt-4 flex items-center justify-center gap-4">
         <button
           onClick={() => {
             setMode(mode === 'password' ? 'magic-link' : 'password');
@@ -245,6 +245,13 @@ export default function LoginPage() {
             ? 'Sign in with magic link'
             : 'Sign in with password'}
         </button>
+        <span className="text-zinc-300">·</span>
+        <Link
+          href="/forgot-password"
+          className="text-sm text-zinc-500 transition-colors hover:text-zinc-900"
+        >
+          Forgot password?
+        </Link>
       </div>
 
       <div className="mt-6 text-center text-xs text-zinc-500">

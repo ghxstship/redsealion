@@ -66,7 +66,7 @@ export default function AvailabilityCalendar({
   };
 
   return (
-    <div className="bg-white border border-border rounded-lg shadow-sm p-4 overflow-x-auto">
+    <div className="bg-background border border-border rounded-lg shadow-sm p-4 overflow-x-auto">
       <div className="flex items-center justify-between mb-4">
         <button
           onClick={handlePrev}
@@ -88,7 +88,7 @@ export default function AvailabilityCalendar({
       <table className="w-full text-xs">
         <thead>
           <tr>
-            <th className="text-left py-1 px-2 text-text-secondary font-medium sticky left-0 bg-white">
+            <th className="text-left py-1 px-2 text-text-secondary font-medium sticky left-0 bg-background">
               Crew
             </th>
             {days.map((d) => (
@@ -101,7 +101,7 @@ export default function AvailabilityCalendar({
         <tbody>
           {entries.map((entry) => (
             <tr key={entry.userId} className="border-t border-border">
-              <td className="py-1 px-2 text-foreground font-medium whitespace-nowrap sticky left-0 bg-white">
+              <td className="py-1 px-2 text-foreground font-medium whitespace-nowrap sticky left-0 bg-background">
                 {entry.userName}
               </td>
               {days.map((d) => {

@@ -123,7 +123,7 @@ export default function QuickActionMenu() {
 
       {/* Dropdown */}
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-52 rounded-xl border border-border bg-white shadow-lg animate-scale-in overflow-hidden z-50">
+        <div className="absolute right-0 top-full mt-2 w-52 rounded-xl border border-border bg-background shadow-lg animate-scale-in overflow-hidden z-50">
           <p className="px-4 pt-3 pb-1.5 text-[10px] font-semibold uppercase tracking-wider text-text-muted">
             Create
           </p>

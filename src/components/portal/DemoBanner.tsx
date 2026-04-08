@@ -21,7 +21,7 @@ export default function DemoBanner() {
       <span className="hidden sm:inline text-white/60">—</span>
       <Link
         href={`/portal/${orgSlug}/pricing`}
-        className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3.5 py-1 text-xs font-semibold text-white backdrop-blur transition-colors hover:bg-white/25"
+        className="inline-flex items-center gap-1.5 rounded-full bg-background/15 px-3.5 py-1 text-xs font-semibold text-white backdrop-blur transition-colors hover:bg-background/25"
       >
         Start your 14-day free trial
         <IconChevronRight size={12} strokeWidth={1.5} />

@@ -28,7 +28,7 @@ export default function TimesheetApprovalCard({
 
   if (status !== 'pending') {
     return (
-      <div className="rounded-xl border border-border bg-white px-6 py-5 opacity-60">
+      <div className="rounded-xl border border-border bg-background px-6 py-5 opacity-60">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-foreground">{userName}</p>
@@ -51,7 +51,7 @@ export default function TimesheetApprovalCard({
   }
 
   return (
-    <div className="rounded-xl border border-border bg-white px-6 py-5">
+    <div className="rounded-xl border border-border bg-background px-6 py-5">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-medium text-foreground">{userName}</p>

@@ -36,21 +36,21 @@ export default async function ShopFloorPage() {
       <FabricationHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Recent Logs</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{logs.length}</p>
         </div>
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Completions</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-green-600">{logs.filter((l) => l.action === 'completed').length}</p>
         </div>
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">QC Failures</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-red-600">{logs.filter((l) => l.action === 'quality_fail').length}</p>
         </div>
       </div>
 
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         {logs.length === 0 ? (
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No shop floor activity yet. Logs appear as operators update work on fabrication orders.</p></div>
         ) : (

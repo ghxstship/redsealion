@@ -100,7 +100,7 @@ export default async function InvoicesPage() {
           }
         />
       ) : (
-        <div className="rounded-xl border border-border bg-white overflow-hidden">
+        <div className="rounded-xl border border-border bg-background overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">

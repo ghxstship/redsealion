@@ -97,7 +97,7 @@ export default function IntegrationConfigPage({
       </div>
 
       {/* Status banner */}
-      <div className="mb-6 rounded-xl border border-border bg-white px-5 py-4 flex items-center justify-between">
+      <div className="mb-6 rounded-xl border border-border bg-background px-5 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="h-2.5 w-2.5 rounded-full bg-gray-400" />
           <span className="text-sm font-medium text-foreground">Not connected</span>
@@ -119,7 +119,7 @@ export default function IntegrationConfigPage({
 
       {/* Tab content */}
       {activeTab === 'settings' && (
-        <div className="rounded-xl border border-border bg-white px-5 py-5 space-y-4">
+        <div className="rounded-xl border border-border bg-background px-5 py-5 space-y-4">
           <h3 className="text-sm font-semibold text-foreground">Sync Settings</h3>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
@@ -127,7 +127,7 @@ export default function IntegrationConfigPage({
               <select
                 value={syncDirection}
                 onChange={(e) => setSyncDirection(e.target.value)}
-                className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
+                className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
               >
                 <option value="bidirectional">Bidirectional</option>
                 <option value="inbound">Inbound Only</option>
@@ -139,7 +139,7 @@ export default function IntegrationConfigPage({
               <select
                 value={syncFrequency}
                 onChange={(e) => setSyncFrequency(e.target.value)}
-                className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
+                className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
               >
                 <option value="realtime">Real-time</option>
                 <option value="hourly">Every hour</option>
@@ -161,7 +161,7 @@ export default function IntegrationConfigPage({
       )}
 
       {activeTab === 'mappings' && (
-        <div className="rounded-xl border border-border bg-white px-5 py-5">
+        <div className="rounded-xl border border-border bg-background px-5 py-5">
           <MappingEditor
             platform={platform}
             sourceFields={CRM_SOURCE_FIELDS}

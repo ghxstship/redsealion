@@ -44,14 +44,14 @@ export default async function BOMPage() {
           { label: 'Shortages', value: String(shortages.length), color: 'text-red-600' },
           { label: 'Suppliers', value: String(new Set(items.map((i) => i.supplier).filter(Boolean)).size) },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-white p-4">
+          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
             <p className="text-xs text-text-muted">{stat.label}</p>
             <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
           </div>
         ))}
       </div>
 
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         {items.length === 0 ? (
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No materials in BOM. Add materials when creating fabrication orders.</p></div>
         ) : (

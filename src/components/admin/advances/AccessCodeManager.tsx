@@ -102,7 +102,7 @@ export default function AccessCodeManager({ advanceId, codes, onRefresh }: Acces
   const revokedCodes = codes.filter((c) => (c as Record<string, unknown>).revoked_at);
 
   return (
-    <div className="rounded-xl border border-border bg-white">
+    <div className="rounded-xl border border-border bg-background">
       <div className="px-4 py-3 border-b border-border flex items-center justify-between">
         <h3 className="text-sm font-semibold text-foreground">Access Codes</h3>
         <Button size="sm" onClick={handleOpenModal}>Generate Code</Button>

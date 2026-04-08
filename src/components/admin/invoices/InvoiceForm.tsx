@@ -125,7 +125,7 @@ export default function InvoiceForm({
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
       <div className="space-y-6">
-        <div className="rounded-xl border border-border bg-white p-6 space-y-4">
+        <div className="rounded-xl border border-border bg-background p-6 space-y-4">
           <h2 className="text-sm font-semibold text-foreground">Invoice Details</h2>
 
           <div>
@@ -188,7 +188,7 @@ export default function InvoiceForm({
         </div>
 
         {/* Line Items */}
-        <div className="rounded-xl border border-border bg-white p-6 space-y-4">
+        <div className="rounded-xl border border-border bg-background p-6 space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-semibold text-foreground">Line Items</h2>
             <Button

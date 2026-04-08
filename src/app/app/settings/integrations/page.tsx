@@ -34,7 +34,7 @@ export default function IntegrationsSettingsPage() {
               {items.map((integration) => (
                 <div
                   key={integration.id}
-                  className="flex items-center justify-between rounded-xl border border-border bg-white px-6 py-4"
+                  className="flex items-center justify-between rounded-xl border border-border bg-background px-6 py-4"
                 >
                   <div className="min-w-0">
                     <p className="text-sm font-medium text-foreground">{integration.platform}</p>
@@ -46,7 +46,7 @@ export default function IntegrationsSettingsPage() {
                     }`}
                   >
                     <span
-                      className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform ${
+                      className={`inline-block h-4 w-4 transform rounded-full bg-background shadow-sm transition-transform ${
                         integration.enabled ? 'translate-x-6' : 'translate-x-1'
                       }`}
                     />

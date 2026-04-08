@@ -124,7 +124,7 @@ export default function VersionComparison({
             <select
               value={selectedFromVersion ?? ''}
               onChange={(e) => setSelectedFromVersion(e.target.value ? Number(e.target.value) : null)}
-              className="rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground"
+              className="rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground"
               disabled={versions.length < 2}
             >
               <option value="">Select version…</option>
@@ -145,7 +145,7 @@ export default function VersionComparison({
             <select
               value={selectedToVersion ?? ''}
               onChange={(e) => setSelectedToVersion(e.target.value ? Number(e.target.value) : null)}
-              className="rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground"
+              className="rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground"
               disabled={versions.length < 2}
             >
               {versions.map((v) => (

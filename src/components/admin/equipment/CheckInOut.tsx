@@ -62,7 +62,7 @@ export default function CheckInOut({ reservationId, currentStatus, onComplete }:
         : 'bg-gray-100 text-gray-800';
 
   return (
-    <div className="bg-white border border-border rounded-lg shadow-sm p-5">
+    <div className="bg-background border border-border rounded-lg shadow-sm p-5">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-semibold text-foreground">Equipment Status</h3>
         <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${statusColor}`}>

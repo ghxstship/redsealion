@@ -48,7 +48,7 @@ export default function PipelineTable({ deals }: { deals: Deal[] }) {
         <SearchInput value={search} onChange={setSearch} placeholder="Search deals..." />
       </div>
 
-      <div className="rounded-xl border border-border bg-white overflow-hidden overflow-x-auto">
+      <div className="rounded-xl border border-border bg-background overflow-hidden overflow-x-auto">
         <table className="w-full">
           <thead>
             <tr className="border-b border-border bg-bg-secondary">

@@ -34,21 +34,21 @@ export default async function ProcurementPOPage() {
       <ProcurementHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Total POs</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{pos.length}</p>
         </div>
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Pending Delivery</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-yellow-600">{pos.filter((p) => p.status === 'sent' || p.status === 'acknowledged').length}</p>
         </div>
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Total Spend</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{formatCurrency(pos.reduce((s, p) => s + (p.total_amount ?? 0), 0))}</p>
         </div>
       </div>
 
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         {pos.length === 0 ? (
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No purchase orders. POs are created from approved requisitions or directly from Finance.</p></div>
         ) : (

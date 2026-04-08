@@ -77,14 +77,14 @@ export default function NotificationPreferences() {
 
   if (loading) {
     return (
-      <div className="bg-white border border-border rounded-lg shadow-sm p-6">
+      <div className="bg-background border border-border rounded-lg shadow-sm p-6">
         <p className="text-sm text-text-muted">Loading preferences...</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white border border-border rounded-lg shadow-sm p-6">
+    <div className="bg-background border border-border rounded-lg shadow-sm p-6">
       <h2 className="text-base font-semibold text-foreground mb-4">Notification Preferences</h2>
 
       {error && (
@@ -123,7 +123,7 @@ export default function NotificationPreferences() {
                       }`}
                     >
                       <span
-                        className={`inline-block h-3.5 w-3.5 rounded-full bg-white transition-transform ${
+                        className={`inline-block h-3.5 w-3.5 rounded-full bg-background transition-transform ${
                           pref[ch] ? 'translate-x-4.5' : 'translate-x-0.5'
                         }`}
                       />

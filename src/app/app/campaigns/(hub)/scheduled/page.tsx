@@ -28,7 +28,7 @@ export default async function ScheduledPage() {
       <PageHeader title="Scheduled" subtitle="Upcoming campaigns scheduled for delivery." />
       <CampaignsHubTabs />
 
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         {scheduled.length === 0 ? (
           <div className="px-8 py-16 text-center">
             <p className="text-sm text-text-secondary">No scheduled campaigns. Schedule a campaign from the drafts view.</p>

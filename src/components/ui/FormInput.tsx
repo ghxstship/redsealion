@@ -19,7 +19,7 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
     return (
       <input
         ref={ref}
-        className={`w-full rounded-lg border border-border bg-white text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 ${SIZE_CLASSES[inputSize]} ${className}`}
+        className={`w-full rounded-lg border border-border bg-background text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 ${SIZE_CLASSES[inputSize]} ${className}`}
         {...rest}
       />
     );

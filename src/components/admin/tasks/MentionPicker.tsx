@@ -154,7 +154,7 @@ export default function MentionPicker({ inputRef, onSelect }: MentionPickerProps
   return (
     <div
       ref={pickerRef}
-      className="absolute left-0 right-0 bottom-full mb-1 rounded-lg border border-border bg-white shadow-lg z-50 max-h-48 overflow-y-auto"
+      className="absolute left-0 right-0 bottom-full mb-1 rounded-lg border border-border bg-background shadow-lg z-50 max-h-48 overflow-y-auto"
     >
       {filtered.map((member, idx) => (
         <button

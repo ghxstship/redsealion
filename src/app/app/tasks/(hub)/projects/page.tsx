@@ -165,7 +165,7 @@ export default async function TaskProjectsPage() {
 
       {/* Summary cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-        <div className="rounded-xl border border-border bg-white p-5">
+        <div className="rounded-xl border border-border bg-background p-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">
             Active Projects
           </p>
@@ -173,7 +173,7 @@ export default async function TaskProjectsPage() {
             {totalProjects}
           </p>
         </div>
-        <div className="rounded-xl border border-border bg-white p-5">
+        <div className="rounded-xl border border-border bg-background p-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">
             Overdue Tasks
           </p>
@@ -185,7 +185,7 @@ export default async function TaskProjectsPage() {
             {totalOverdue}
           </p>
         </div>
-        <div className="rounded-xl border border-border bg-white p-5">
+        <div className="rounded-xl border border-border bg-background p-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">
             At Risk
           </p>
@@ -227,7 +227,7 @@ export default async function TaskProjectsPage() {
               <Link
                 key={project.proposalId}
                 href={`/app/tasks?project=${project.proposalId}`}
-                className="group rounded-xl border border-border bg-white p-5 transition-[border-color,box-shadow] hover:border-text-muted hover:shadow-sm"
+                className="group rounded-xl border border-border bg-background p-5 transition-[border-color,box-shadow] hover:border-text-muted hover:shadow-sm"
               >
                 {/* Header */}
                 <div className="flex items-start justify-between gap-4">

@@ -66,7 +66,7 @@ export default function OnboardingChecklist({ userId, documents }: OnboardingChe
   const total = documents.length;
 
   return (
-    <div className="bg-white border border-border rounded-lg shadow-sm p-5">
+    <div className="bg-background border border-border rounded-lg shadow-sm p-5">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-base font-semibold text-foreground">Onboarding Checklist</h2>
         <span className="text-xs text-text-muted">

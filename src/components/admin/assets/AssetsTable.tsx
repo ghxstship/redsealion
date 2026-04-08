@@ -172,11 +172,11 @@ export default function AssetsTable({ assets }: { assets: AssetRow[] }) {
 
       {/* Table */}
       {sorted.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border bg-white px-5 py-12 text-center">
+        <div className="rounded-xl border border-dashed border-border bg-background px-5 py-12 text-center">
           <p className="text-sm text-text-muted">No assets match your filters.</p>
         </div>
       ) : (
-        <div className="rounded-xl border border-border bg-white overflow-hidden">
+        <div className="rounded-xl border border-border bg-background overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>

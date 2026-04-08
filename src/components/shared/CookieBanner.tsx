@@ -36,7 +36,7 @@ export function CookieBanner() {
   return (
     <>
       <div className="fixed bottom-0 left-0 right-0 z-50 p-4 pointer-events-none">
-        <div className="mx-auto max-w-5xl rounded-xl border border-border bg-white p-6 shadow-2xl pointer-events-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="mx-auto max-w-5xl rounded-xl border border-border bg-background p-6 shadow-2xl pointer-events-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="flex-1">
             <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
               <IconLock className="h-5 w-5 text-indigo-600" />
@@ -66,7 +66,7 @@ export function CookieBanner() {
 
       {showPreferences && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-lg rounded-xl border border-border bg-white shadow-2xl">
+          <div className="w-full max-w-lg rounded-xl border border-border bg-background shadow-2xl">
             <div className="p-6 border-b border-border flex justify-between items-center">
               <h3 className="text-xl font-semibold text-foreground">Cookie Preferences</h3>
               <button onClick={() => setShowPreferences(false)} className="text-text-muted hover:text-foreground">
@@ -87,7 +87,7 @@ export function CookieBanner() {
                   <span className="font-medium text-foreground">Analytics Cookies</span>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" className="sr-only peer" defaultChecked />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-background after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
                   </label>
                 </div>
                 <p className="text-sm text-text-secondary">Help us understand how users interact with our platform by collecting and reporting information anonymously.</p>
@@ -98,7 +98,7 @@ export function CookieBanner() {
                   <span className="font-medium text-foreground">Marketing & Tracking Cookies</span>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" className="sr-only peer" />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-background after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
                   </label>
                 </div>
                 <p className="text-sm text-text-secondary">Used by our advertising partners to build a profile of your interests and show you relevant adverts on other sites.</p>

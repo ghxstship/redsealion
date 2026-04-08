@@ -116,7 +116,7 @@ export default function ProjectSetupStep({
             value={data.clientSearch}
             onChange={(e) => update({ clientSearch: e.target.value })} />
           {data.clientSearch && !data.clientId && (
-            <ul className="mt-1 rounded-lg border border-border bg-white shadow-sm max-h-40 overflow-y-auto">
+            <ul className="mt-1 rounded-lg border border-border bg-background shadow-sm max-h-40 overflow-y-auto">
               {filteredClients.map((client) => (
                 <li key={client.id}>
                   <button

@@ -111,7 +111,7 @@ export function ReportBuilder({ onSave }: ReportBuilderProps) {
               className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
                 dataSource === ds.value
                   ? 'border-foreground bg-bg-secondary text-foreground'
-                  : 'border-border bg-white text-text-secondary hover:bg-bg-secondary'
+                  : 'border-border bg-background text-text-secondary hover:bg-bg-secondary'
               }`}
             >
               {ds.label}
@@ -132,7 +132,7 @@ export function ReportBuilder({ onSave }: ReportBuilderProps) {
               className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
                 visualization === vt.value
                   ? 'border-foreground bg-bg-secondary text-foreground'
-                  : 'border-border bg-white text-text-secondary hover:bg-bg-secondary'
+                  : 'border-border bg-background text-text-secondary hover:bg-bg-secondary'
               }`}
             >
               {vt.label}
@@ -160,7 +160,7 @@ export function ReportBuilder({ onSave }: ReportBuilderProps) {
         )}
         <div className="space-y-2">
           {columns.map((col) => (
-            <div key={col.id} className="flex items-center gap-2 rounded-lg border border-border bg-white px-3 py-2">
+            <div key={col.id} className="flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-2">
               <FormSelect
                 value={col.field}
                 onChange={(e) => updateColumn(col.id, { field: e.target.value, label: e.target.value })}
@@ -212,7 +212,7 @@ export function ReportBuilder({ onSave }: ReportBuilderProps) {
         )}
         <div className="space-y-2">
           {filters.map((f) => (
-            <div key={f.id} className="flex items-center gap-2 rounded-lg border border-border bg-white px-3 py-2">
+            <div key={f.id} className="flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-2">
               <FormSelect
                 value={f.field}
                 onChange={(e) => updateFilter(f.id, { field: e.target.value })}

@@ -229,7 +229,7 @@ export default function QRScanner({ onScan }: QRScannerProps) {
               <div className="flex gap-2">
                 <button
                   onClick={switchCamera}
-                  className="flex-1 px-4 py-2 text-sm rounded-lg border border-border bg-white text-foreground hover:bg-bg-secondary transition-colors"
+                  className="flex-1 px-4 py-2 text-sm rounded-lg border border-border bg-background text-foreground hover:bg-bg-secondary transition-colors"
                 >
                   Switch Camera
                 </button>
@@ -238,7 +238,7 @@ export default function QRScanner({ onScan }: QRScannerProps) {
                     setLastScanned(null);
                     startCamera();
                   }}
-                  className="flex-1 px-4 py-2 text-sm rounded-lg border border-border bg-white text-foreground hover:bg-bg-secondary transition-colors"
+                  className="flex-1 px-4 py-2 text-sm rounded-lg border border-border bg-background text-foreground hover:bg-bg-secondary transition-colors"
                 >
                   Reset Scanner
                 </button>

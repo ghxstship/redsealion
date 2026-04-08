@@ -106,7 +106,7 @@ export default function TaskAttachments({ taskId }: TaskAttachmentsProps) {
   }
 
   return (
-    <div className="rounded-xl border border-border bg-white">
+    <div className="rounded-xl border border-border bg-background">
       <div className="flex items-center justify-between border-b border-border px-5 py-4">
         <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
           <Paperclip size={14} className="text-text-muted" />

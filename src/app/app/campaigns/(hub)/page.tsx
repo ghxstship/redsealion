@@ -49,7 +49,7 @@ export default async function CampaignsPage() {
 
       <CampaignsHubTabs />
 
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         {campaigns.length === 0 ? (
           <EmptyState
             message="No campaigns yet"

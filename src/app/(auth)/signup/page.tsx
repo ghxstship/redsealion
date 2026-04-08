@@ -95,6 +95,22 @@ export default function SignupPage() {
         return;
       }
 
+      // Provision organization + membership
+      const onboardRes = await fetch('/api/auth/onboard', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          company_name: companyName,
+          company_slug: slug,
+        }),
+      });
+
+      if (!onboardRes.ok) {
+        const body = await onboardRes.json().catch(() => ({ error: 'Setup failed.' }));
+        setError(body.error ?? 'Failed to set up your organization.');
+        return;
+      }
+
       router.push('/app');
     } catch {
       setError('An unexpected error occurred.');

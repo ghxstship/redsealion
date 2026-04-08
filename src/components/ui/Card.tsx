@@ -19,7 +19,7 @@ const PADDING_MAP: Record<CardPadding, string> = {
 
 /**
  * Canonical card atom.
- * Replaces 240+ ad-hoc `rounded-xl border border-border bg-white p{x,}-{N}` patterns.
+ * Replaces 240+ ad-hoc `rounded-xl border border-border bg-background p{x,}-{N}` patterns.
  */
 export default function Card({
   children,
@@ -27,7 +27,7 @@ export default function Card({
   className = '',
 }: CardProps) {
   return (
-    <div className={`rounded-xl border border-border bg-white ${PADDING_MAP[padding]} ${className}`}>
+    <div className={`rounded-xl border border-border bg-background ${PADDING_MAP[padding]} ${className}`}>
       {children}
     </div>
   );

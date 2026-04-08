@@ -25,7 +25,7 @@ export default function OverviewTab({
     <div className="space-y-8">
       {/* Summary cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-xl border border-border bg-white px-5 py-5">
+        <div className="rounded-xl border border-border bg-background px-5 py-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">
             Total Value
           </p>
@@ -39,7 +39,7 @@ export default function OverviewTab({
             </p>
           )}
         </div>
-        <div className="rounded-xl border border-border bg-white px-5 py-5">
+        <div className="rounded-xl border border-border bg-background px-5 py-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">
             Probability
           </p>
@@ -54,7 +54,7 @@ export default function OverviewTab({
             )}
           </p>
         </div>
-        <div className="rounded-xl border border-border bg-white px-5 py-5">
+        <div className="rounded-xl border border-border bg-background px-5 py-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">
             Phases
           </p>
@@ -69,7 +69,7 @@ export default function OverviewTab({
                 : 'completed'}
           </p>
         </div>
-        <div className="rounded-xl border border-border bg-white px-5 py-5">
+        <div className="rounded-xl border border-border bg-background px-5 py-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">
             Valid Until
           </p>
@@ -91,7 +91,7 @@ export default function OverviewTab({
 
       {/* Phase progress timeline */}
       {phases.length > 0 && (
-        <div className="rounded-xl border border-border bg-white px-6 py-6">
+        <div className="rounded-xl border border-border bg-background px-6 py-6">
           <h2 className="text-sm font-semibold text-foreground mb-4">
             Phase Progress
           </h2>
@@ -122,7 +122,7 @@ export default function OverviewTab({
 
       {/* Phases investment table */}
       {phases.length > 0 ? (
-        <div className="rounded-xl border border-border bg-white">
+        <div className="rounded-xl border border-border bg-background">
           <div className="px-6 py-4 border-b border-border">
             <h2 className="text-sm font-semibold text-foreground">
               Investment Summary
@@ -175,7 +175,7 @@ export default function OverviewTab({
           </div>
         </div>
       ) : (
-        <div className="rounded-xl border border-dashed border-border bg-white px-8 py-12 text-center">
+        <div className="rounded-xl border border-dashed border-border bg-background px-8 py-12 text-center">
           <p className="text-sm text-text-secondary">
             No phases have been added to this proposal yet.
           </p>

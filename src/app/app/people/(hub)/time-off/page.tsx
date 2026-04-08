@@ -71,11 +71,11 @@ export default async function TimeOffPage() {
       </div>
 
       {requests.length === 0 ? (
-        <div className="rounded-xl border border-border bg-white px-8 py-16 text-center">
+        <div className="rounded-xl border border-border bg-background px-8 py-16 text-center">
           <p className="text-sm text-text-secondary">No time-off requests.</p>
         </div>
       ) : (
-        <div className="rounded-xl border border-border bg-white overflow-hidden">
+        <div className="rounded-xl border border-border bg-background overflow-hidden">
           <div className="px-6 py-4 border-b border-border">
             <h2 className="text-base font-semibold text-foreground">Recent Requests</h2>
           </div>

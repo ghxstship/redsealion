@@ -92,7 +92,7 @@ export default async function TeamSettingsPage() {
         <TeamHeader />
       </div>
 
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -158,10 +158,10 @@ export default async function TeamSettingsPage() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
                     <div className="flex items-center justify-end gap-2">
-                      <button className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground hover:bg-gray-50 transition-colors">
+                      <button className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-gray-50 transition-colors">
                         Edit
                       </button>
-                      <button className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 hover:border-red-200 transition-colors">
+                      <button className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 hover:border-red-200 transition-colors">
                         Remove
                       </button>
                     </div>

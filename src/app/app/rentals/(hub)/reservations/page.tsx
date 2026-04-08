@@ -42,14 +42,14 @@ export default async function ReservationsPage() {
           { label: 'Current', value: current.length, color: 'text-green-600' },
           { label: 'Upcoming', value: upcoming.length, color: 'text-blue-600' },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-white p-4">
+          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
             <p className="text-xs text-text-muted">{stat.label}</p>
             <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
           </div>
         ))}
       </div>
 
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         {reservations.length === 0 ? (
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No active reservations. Reserved rental orders appear here.</p></div>
         ) : (

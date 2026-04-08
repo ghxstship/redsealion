@@ -74,7 +74,7 @@ export default function SavedFilters({ currentFilters, onApply }: SavedFiltersPr
         <div key={filter.id} className="group relative">
           <button
             onClick={() => onApply(filter.filters)}
-            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-white px-3 py-1 text-xs font-medium text-text-secondary hover:bg-bg-secondary transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1 text-xs font-medium text-text-secondary hover:bg-bg-secondary transition-colors"
           >
             <Bookmark size={11} />
             {filter.name}

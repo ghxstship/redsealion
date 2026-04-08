@@ -35,7 +35,7 @@ export default async function ProcurementOverviewPage() {
           { label: 'Suppliers', value: String(stats.vendorCount) },
           { label: 'Total Spend', value: formatCurrency(stats.totalSpend) },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-white p-4">
+          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
             <p className="text-xs text-text-muted">{stat.label}</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{stat.value}</p>
           </div>
@@ -49,7 +49,7 @@ export default async function ProcurementOverviewPage() {
           { title: 'Receive Goods', desc: 'Log incoming deliveries and inspect items.', href: '/app/procurement/receiving' },
           { title: 'Manage Suppliers', desc: 'Add and rate vendors for procurement.', href: '/app/procurement/suppliers' },
         ].map((card) => (
-          <a key={card.title} href={card.href} className="rounded-xl border border-border bg-white px-5 py-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
+          <a key={card.title} href={card.href} className="rounded-xl border border-border bg-background px-5 py-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
             <h3 className="text-sm font-semibold text-foreground">{card.title}</h3>
             <p className="text-xs text-text-secondary mt-1">{card.desc}</p>
           </a>

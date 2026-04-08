@@ -15,7 +15,7 @@ export default function Skeleton({
 }: SkeletonProps) {
   return (
     <div
-      className={`rounded-xl border border-border bg-white animate-pulse ${height} ${className}`}
+      className={`rounded-xl border border-border bg-background animate-pulse ${height} ${className}`}
       aria-hidden="true"
     />
   );

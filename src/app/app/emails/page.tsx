@@ -111,7 +111,7 @@ async function getEmailThreads(): Promise<EmailThreadRow[]> {
       deal_title: (t.deal_title as string) ?? null,
     }));
   } catch {
-    return FALLBACK_THREADS;
+    return [];
   }
 }
 
@@ -125,7 +125,7 @@ export default async function EmailsPage() {
         subtitle="Email threads linked to your deals and clients."
       />
 
-      <div className="rounded-xl border border-border bg-white divide-y divide-border">
+      <div className="rounded-xl border border-border bg-background divide-y divide-border">
         {threads.map((thread) => (
           <div
             key={thread.id}

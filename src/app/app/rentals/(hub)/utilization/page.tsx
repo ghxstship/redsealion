@@ -41,14 +41,14 @@ export default async function UtilizationPage() {
           { label: 'Rental Revenue', value: formatCurrency(stats.revenue / 100), color: 'text-green-600' },
           { label: 'Avg Rental Duration', value: `${stats.avgDays}d` },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-white p-4">
+          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
             <p className="text-xs text-text-muted">{stat.label}</p>
             <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
           </div>
         ))}
       </div>
 
-      <div className="rounded-xl border border-border bg-white px-5 py-5">
+      <div className="rounded-xl border border-border bg-background px-5 py-5">
         <h3 className="text-sm font-semibold text-foreground mb-4">Utilization Breakdown</h3>
         <div className="w-full h-6 rounded-full bg-bg-secondary overflow-hidden">
           <div className="h-full rounded-full bg-gradient-to-r from-blue-500 to-green-500 transition-all" style={{ width: `${utilizationRate}%` }} />

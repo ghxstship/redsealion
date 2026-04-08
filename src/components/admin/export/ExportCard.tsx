@@ -27,7 +27,7 @@ export default function ExportCard({
   const [showPreview, setShowPreview] = useState(false);
 
   return (
-    <div className="rounded-xl border border-border bg-white overflow-hidden">
+    <div className="rounded-xl border border-border bg-background overflow-hidden">
       <div className="px-5 py-5">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-3.5 min-w-0">
@@ -67,7 +67,7 @@ export default function ExportCard({
             <button
               key={action.label}
               onClick={action.onClick}
-              className="rounded-lg border border-border bg-white px-3.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary"
+              className="rounded-lg border border-border bg-background px-3.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary"
             >
               {action.label}
             </button>
@@ -75,7 +75,7 @@ export default function ExportCard({
           {previewData && (
             <button
               onClick={() => setShowPreview(!showPreview)}
-              className="ml-auto rounded-lg border border-border bg-white px-3.5 py-1.5 text-xs font-medium text-text-secondary transition-colors hover:bg-bg-secondary"
+              className="ml-auto rounded-lg border border-border bg-background px-3.5 py-1.5 text-xs font-medium text-text-secondary transition-colors hover:bg-bg-secondary"
             >
               {showPreview ? 'Hide Preview' : 'Preview Data'}
             </button>

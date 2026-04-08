@@ -42,21 +42,21 @@ export default async function PipelineForecastPage() {
       <PipelineHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Pipeline Value</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{formatCurrency(totalPipeline)}</p>
         </div>
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Weighted Forecast</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-green-600">{formatCurrency(totalWeighted)}</p>
         </div>
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Active Stages</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{stages.length}</p>
         </div>
       </div>
 
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         {stages.length === 0 ? (
           <div className="px-8 py-16 text-center">
             <p className="text-sm text-text-secondary">No deals with values in your pipeline. Add deal values and probabilities to see forecasts.</p>

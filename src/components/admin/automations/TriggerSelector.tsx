@@ -47,7 +47,7 @@ export function TriggerSelector({ value, config, onChange }: TriggerSelectorProp
             className={`rounded-lg border px-4 py-3 text-left transition-colors ${
               selectedType === trigger.value
                 ? 'border-foreground bg-bg-secondary'
-                : 'border-border bg-white hover:bg-bg-secondary'
+                : 'border-border bg-background hover:bg-bg-secondary'
             }`}
           >
             <p className="text-sm font-medium text-foreground">{trigger.label}</p>
@@ -90,7 +90,7 @@ export function TriggerSelector({ value, config, onChange }: TriggerSelectorProp
                   className={`rounded-md border px-3 py-1.5 text-xs font-medium transition-colors ${
                     (config.delayDays as number) === days
                       ? 'border-foreground bg-foreground text-white'
-                      : 'border-border bg-white text-foreground hover:bg-bg-secondary'
+                      : 'border-border bg-background text-foreground hover:bg-bg-secondary'
                   }`}
                 >
                   {days} {days === 1 ? 'day' : 'days'}

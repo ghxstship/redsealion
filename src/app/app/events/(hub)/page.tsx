@@ -70,7 +70,7 @@ export default async function EventsPage() {
       {/* Status summary cards */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-5 mb-8">
         {(['draft', 'confirmed', 'in_progress', 'completed', 'cancelled'] as const).map((status) => (
-          <div key={status} className="rounded-xl border border-border bg-white p-4">
+          <div key={status} className="rounded-xl border border-border bg-background p-4">
             <p className="text-xs text-text-muted">{formatLabel(status)}</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{statusCounts[status] ?? 0}</p>
           </div>

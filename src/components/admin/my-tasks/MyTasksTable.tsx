@@ -205,7 +205,7 @@ export default function MyTasksTable({ tasks }: { tasks: MyTaskRow[] }) {
           description={t('myTasks.emptyState.description')}
         />
       ) : (
-        <div className="rounded-xl border border-border bg-white overflow-hidden overflow-x-auto">
+        <div className="rounded-xl border border-border bg-background overflow-hidden overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-border bg-bg-secondary">

@@ -64,23 +64,23 @@ export default function NewCampaignPage() {
           <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
         )}
 
-        <div className="rounded-xl border border-border bg-white p-6 space-y-4">
+        <div className="rounded-xl border border-border bg-background p-6 space-y-4">
           <h2 className="text-sm font-semibold text-foreground">Campaign Details</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label htmlFor="c-name" className="block text-xs font-medium text-text-secondary mb-1">Name</label>
               <input id="c-name" name="name" required value={form.name} onChange={handleChange}
-                className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground" placeholder="Q2 Product Announcement" />
+                className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground" placeholder="Q2 Product Announcement" />
             </div>
             <div>
               <label htmlFor="c-subject" className="block text-xs font-medium text-text-secondary mb-1">Subject Line</label>
               <input id="c-subject" name="subject" required value={form.subject} onChange={handleChange}
-                className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground" placeholder="Exciting updates from our team" />
+                className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground" placeholder="Exciting updates from our team" />
             </div>
           </div>
         </div>
 
-        <div className="rounded-xl border border-border bg-white p-6 space-y-4">
+        <div className="rounded-xl border border-border bg-background p-6 space-y-4">
           <h2 className="text-sm font-semibold text-foreground">Email Body</h2>
           <textarea
             name="body_html"
@@ -88,11 +88,11 @@ export default function NewCampaignPage() {
             onChange={handleChange}
             rows={10}
             placeholder="Compose your email body (HTML supported)…"
-            className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground font-mono"
+            className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground font-mono"
           />
         </div>
 
-        <div className="rounded-xl border border-border bg-white p-6 space-y-4">
+        <div className="rounded-xl border border-border bg-background p-6 space-y-4">
           <h2 className="text-sm font-semibold text-foreground">Targeting</h2>
           <label className="flex items-center gap-2">
             <input
@@ -107,7 +107,7 @@ export default function NewCampaignPage() {
             <div>
               <label htmlFor="c-tags" className="block text-xs font-medium text-text-secondary mb-1">Filter by Tags (comma-separated)</label>
               <input id="c-tags" name="target_tags" value={form.target_tags} onChange={handleChange}
-                className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground" placeholder="vip, returning, enterprise" />
+                className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground" placeholder="vip, returning, enterprise" />
             </div>
           )}
         </div>

@@ -145,7 +145,7 @@ export default function LocalizationSettingsPage() {
             <select
               value={dateFormat}
               onChange={(e) => setDateFormat(e.target.value)}
-              className="w-full rounded-lg border border-border bg-white px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
+              className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
             >
               {dateFormatOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -159,7 +159,7 @@ export default function LocalizationSettingsPage() {
             <select
               value={timeFormat}
               onChange={(e) => setTimeFormat(e.target.value)}
-              className="w-full rounded-lg border border-border bg-white px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
+              className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
             >
               {timeFormatOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -173,7 +173,7 @@ export default function LocalizationSettingsPage() {
             <select
               value={firstDayOfWeek}
               onChange={(e) => setFirstDayOfWeek(Number(e.target.value))}
-              className="w-full rounded-lg border border-border bg-white px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
+              className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
             >
               {firstDayOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -198,7 +198,7 @@ export default function LocalizationSettingsPage() {
             <select
               value={numberFormat}
               onChange={(e) => setNumberFormat(e.target.value)}
-              className="w-full rounded-lg border border-border bg-white px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
+              className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
             >
               {numberFormatOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -230,7 +230,7 @@ export default function LocalizationSettingsPage() {
           <select
             value={language}
             onChange={(e) => setLanguage(e.target.value as SupportedLocale)}
-            className="w-full rounded-lg border border-border bg-white px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
+            className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
           >
             {SUPPORTED_LOCALES.map((opt) => (
               <option key={opt.value} value={opt.value}>{opt.label}</option>

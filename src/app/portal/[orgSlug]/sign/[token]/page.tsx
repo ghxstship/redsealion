@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { XCircle } from 'lucide-react';
+import SignPageClient from './SignPageClient';
 
 interface EsignRequest {
   id: string;
@@ -89,7 +90,7 @@ export default async function EsignPage({
   if (error || !request) {
     return (
       <div className="min-h-screen bg-bg-secondary flex items-center justify-center p-6">
-        <div className="w-full max-w-md rounded-xl border border-border bg-white p-8 text-center">
+        <div className="w-full max-w-md rounded-xl border border-border bg-card p-8 text-center">
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-50">
             <XCircle className="text-red-500" size={24} strokeWidth={2} />
           </div>
@@ -103,64 +104,12 @@ export default async function EsignPage({
   }
 
   return (
-    <div className="min-h-screen bg-bg-secondary flex flex-col items-center p-6">
-      {/* Header */}
-      <div className="w-full max-w-2xl mb-8">
-        <p className="text-sm text-text-muted text-center">{request.org_name}</p>
-        <h1 className="mt-2 text-2xl font-semibold tracking-tight text-foreground text-center">
-          {request.document_title}
-        </h1>
-      </div>
-
-      {/* Document info */}
-      <div className="w-full max-w-2xl rounded-xl border border-border bg-white p-6 mb-6">
-        <h2 className="text-sm font-semibold text-foreground mb-4">Signer Information</h2>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <p className="text-xs text-text-muted">Name</p>
-            <p className="text-sm font-medium text-foreground">{request.signer_name}</p>
-          </div>
-          <div>
-            <p className="text-xs text-text-muted">Email</p>
-            <p className="text-sm text-foreground">{request.signer_email}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Signature canvas placeholder */}
-      <div className="w-full max-w-2xl rounded-xl border border-border bg-white p-6 mb-6">
-        <h2 className="text-sm font-semibold text-foreground mb-4">Your Signature</h2>
-        <div className="rounded-lg border-2 border-dashed border-border bg-bg-secondary/50 h-40 flex items-center justify-center">
-          <p className="text-sm text-text-muted">
-            Draw your signature here
-          </p>
-        </div>
-        <div className="mt-3 flex items-center justify-between">
-          <button className="text-xs font-medium text-text-muted hover:text-foreground transition-colors">
-            Clear
-          </button>
-          <p className="text-xs text-text-muted">
-            By signing, you agree to the terms of this document.
-          </p>
-        </div>
-      </div>
-
-      {/* Submit */}
-      <div className="w-full max-w-2xl">
-        <form action={`/api/esign/complete`} method="POST">
-          <input type="hidden" name="token" value={token} />
-          <input type="hidden" name="orgSlug" value={orgSlug} />
-          <button
-            type="submit"
-            className="w-full rounded-lg bg-foreground px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-foreground/90"
-          >
-            Sign Document
-          </button>
-        </form>
-        <p className="mt-4 text-center text-xs text-text-muted">
-          Powered by FlyteDeck &middot; Secure electronic signature
-        </p>
-      </div>
-    </div>
+    <SignPageClient
+      token={token}
+      documentTitle={request.document_title}
+      signerName={request.signer_name}
+      signerEmail={request.signer_email}
+      orgName={request.org_name}
+    />
   );
 }

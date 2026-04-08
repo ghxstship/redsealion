@@ -39,7 +39,7 @@ export default function AdvanceModeSwitcher({ value, onChange, disabled }: Advan
               rounded-xl border-2 p-5 text-left transition-all
               ${isActive
                 ? 'border-foreground bg-bg-tertiary shadow-sm'
-                : 'border-border bg-white hover:border-text-muted hover:bg-bg-secondary'
+                : 'border-border bg-background hover:border-text-muted hover:bg-bg-secondary'
               }
               ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
             `}

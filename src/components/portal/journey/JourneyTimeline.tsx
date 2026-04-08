@@ -78,7 +78,7 @@ export default function JourneyTimeline({
                   className={[
                     'h-5 w-5 rounded-full flex items-center justify-center text-[10px] font-semibold shrink-0',
                     active
-                      ? 'bg-white/20 text-white'
+                      ? 'bg-background/20 text-white'
                       : complete
                         ? 'bg-milestone text-white'
                         : 'bg-bg-tertiary text-text-muted',

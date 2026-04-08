@@ -90,7 +90,7 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
   const activeLabel = PORTAL_TYPES.find(t => t.key === activeTab)?.label || 'Portal';
 
   return (
-    <div className="bg-white border rounded-lg shadow-sm p-6 lg:col-span-2">
+    <div className="bg-background border rounded-lg shadow-sm p-6 lg:col-span-2">
       <h2 className="text-lg font-semibold mb-4 text-gray-900">Event Portal Configuration</h2>
       <p className="text-sm text-gray-500 mb-6">
         Manage the Know Before You Go information served to productionsite.guide for this specific project.

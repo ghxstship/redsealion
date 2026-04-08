@@ -88,7 +88,7 @@ export default async function BudgetsPage() {
             <Link
               key={budget.id}
               href={`/app/budgets/${budget.id}`}
-              className="group rounded-xl border border-border bg-white px-5 py-5 transition-[color,background-color,border-color,opacity,box-shadow,transform] duration-normal hover:shadow-md hover:-translate-y-0.5"
+              className="group rounded-xl border border-border bg-background px-5 py-5 transition-[color,background-color,border-color,opacity,box-shadow,transform] duration-normal hover:shadow-md hover:-translate-y-0.5"
             >
               <p className="text-sm font-medium text-foreground group-hover:underline">
                 {budget.projectName}

@@ -192,7 +192,7 @@ export default function PermissionMatrix({ organizationId, overrides }: Permissi
         const isAdmin = role === 'developer' || role === 'owner';
 
         return (
-          <div key={role} className="rounded-xl border border-border bg-white overflow-hidden">
+          <div key={role} className="rounded-xl border border-border bg-background overflow-hidden">
             <div className="px-6 py-4 border-b border-border bg-bg-secondary flex items-center justify-between">
               <h3 className="text-sm font-semibold text-foreground">
                 {ROLE_LABELS[role] ?? role}

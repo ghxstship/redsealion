@@ -30,12 +30,12 @@ export default async function ClientSegmentsPage() {
       <ClientsHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Total Clients</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{clients.length}</p>
         </div>
         {Object.entries(statuses).slice(0, 3).map(([status, count]) => (
-          <div key={status} className="rounded-xl border border-border bg-white p-4">
+          <div key={status} className="rounded-xl border border-border bg-background p-4">
             <p className="text-xs text-text-muted capitalize">{status}</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{count}</p>
           </div>
@@ -43,7 +43,7 @@ export default async function ClientSegmentsPage() {
       </div>
 
       <h3 className="text-sm font-semibold text-foreground mb-3">By Industry</h3>
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         {sortedIndustries.length === 0 ? (
           <div className="px-8 py-16 text-center">
             <p className="text-sm text-text-secondary">No clients with industry data. Update client profiles to enable segmentation.</p>

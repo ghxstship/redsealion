@@ -125,7 +125,7 @@ export default function GuestCollaborators({ taskId }: GuestCollaboratorsProps) 
           </p>
         </div>
       ) : (
-        <div className="rounded-lg border border-border bg-white divide-y divide-border overflow-hidden">
+        <div className="rounded-lg border border-border bg-background divide-y divide-border overflow-hidden">
           {guests.map((guest) => (
             <div key={guest.id} className="flex items-center gap-2 px-3 py-2.5 group">
               <Mail size={14} className="text-text-muted flex-shrink-0" />

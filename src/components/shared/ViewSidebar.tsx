@@ -118,7 +118,7 @@ export default function ViewSidebar({
         {contextId === view.id && (
           <>
             <div className="fixed inset-0 z-30" onClick={() => setContextId(null)} />
-            <div className="absolute top-full right-0 mt-1 z-40 w-44 rounded-lg border border-border bg-white shadow-xl py-1">
+            <div className="absolute top-full right-0 mt-1 z-40 w-44 rounded-lg border border-border bg-background shadow-xl py-1">
               <button onClick={() => { onDuplicateView(view.id); setContextId(null); }} className="w-full px-3 py-1.5 text-left text-xs text-foreground hover:bg-bg-secondary transition-colors">Duplicate</button>
               {onToggleFavorite && (
                 <button onClick={() => { onToggleFavorite(view.id); setContextId(null); }} className="w-full px-3 py-1.5 text-left text-xs text-foreground hover:bg-bg-secondary transition-colors flex items-center gap-1.5">
@@ -152,7 +152,7 @@ export default function ViewSidebar({
 
   if (loading) {
     return (
-      <div className="w-56 shrink-0 border-r border-border bg-white p-4">
+      <div className="w-56 shrink-0 border-r border-border bg-background p-4">
         <div className="animate-pulse space-y-3">
           <div className="h-4 bg-bg-secondary rounded w-24" />
           <div className="h-8 bg-bg-secondary rounded" />
@@ -167,7 +167,7 @@ export default function ViewSidebar({
   const nonFavorites = filteredViews.filter((v) => !v.is_favorite);
 
   return (
-    <div className="w-56 shrink-0 border-r border-border bg-white p-4 space-y-1">
+    <div className="w-56 shrink-0 border-r border-border bg-background p-4 space-y-1">
       <p className="text-xs font-medium uppercase tracking-wider text-text-muted px-2 mb-2">Views</p>
 
       {/* View search */}

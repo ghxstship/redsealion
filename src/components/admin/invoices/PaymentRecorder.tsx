@@ -62,7 +62,7 @@ export default function PaymentRecorder({
   }
 
   return (
-    <div className="rounded-xl border border-border bg-white p-6">
+    <div className="rounded-xl border border-border bg-background p-6">
       <h2 className="text-sm font-semibold text-foreground mb-3">Record Payment</h2>
       <p className="text-xs text-text-muted mb-4">
         Balance due: <span className="font-semibold text-red-700">{formatCurrencyDetailed(balanceDue)}</span>

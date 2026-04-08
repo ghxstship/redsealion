@@ -117,7 +117,7 @@ export default function DealNextAction(props: DealNextActionProps) {
   if (actions.length === 0) return null;
 
   return (
-    <div className="rounded-xl border border-border bg-white p-5">
+    <div className="rounded-xl border border-border bg-background p-5">
       <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
         <TrendingUp size={14} />
         Next Best Actions

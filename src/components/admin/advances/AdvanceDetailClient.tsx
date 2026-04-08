@@ -104,7 +104,7 @@ export default function AdvanceDetailClient({ data }: AdvanceDetailClientProps) 
         {/* Main content — 2/3 */}
         <div className="lg:col-span-2 space-y-6">
           {/* Context card */}
-          <div className="rounded-xl border border-border bg-white p-5">
+          <div className="rounded-xl border border-border bg-background p-5">
             <h2 className="text-sm font-semibold text-foreground mb-3">Details</h2>
             <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
               {a.event_name && (
@@ -153,7 +153,7 @@ export default function AdvanceDetailClient({ data }: AdvanceDetailClientProps) 
           </div>
 
           {/* Line items */}
-          <div className="rounded-xl border border-border bg-white">
+          <div className="rounded-xl border border-border bg-background">
             <div className="px-4 py-3 border-b border-border flex items-center justify-between">
               <h2 className="text-sm font-semibold text-foreground">
                 Line Items <span className="text-text-muted font-normal">({items.length})</span>
@@ -207,7 +207,7 @@ export default function AdvanceDetailClient({ data }: AdvanceDetailClientProps) 
         {/* Sidebar — 1/3 */}
         <div className="space-y-6">
           {/* Financials */}
-          <div className="rounded-xl border border-border bg-white p-4">
+          <div className="rounded-xl border border-border bg-background p-4">
             <h3 className="text-sm font-semibold text-foreground mb-3">Financial Summary</h3>
             <dl className="space-y-2 text-sm">
               <div className="flex justify-between">
@@ -234,7 +234,7 @@ export default function AdvanceDetailClient({ data }: AdvanceDetailClientProps) 
           </div>
 
           {/* Status Timeline */}
-          <div className="rounded-xl border border-border bg-white p-4">
+          <div className="rounded-xl border border-border bg-background p-4">
             <h3 className="text-sm font-semibold text-foreground mb-3">History</h3>
             <AdvanceStatusTimeline history={history} />
           </div>

@@ -88,7 +88,7 @@ export default function CatalogItemDetail({ item, onAddToCart, onClose }: Catalo
   }, [item, selectedVariant, quantity, notes, cartModifiers, unitPrice, modifierTotal, lineTotal, onAddToCart]);
 
   return (
-    <div className="rounded-xl border border-border bg-white overflow-hidden">
+    <div className="rounded-xl border border-border bg-background overflow-hidden">
       {/* Header */}
       <div className="px-5 py-4 border-b border-border bg-bg-secondary/50">
         <div className="flex items-start justify-between gap-4">

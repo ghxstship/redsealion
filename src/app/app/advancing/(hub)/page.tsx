@@ -63,7 +63,7 @@ export default async function AdvancingPage() {
           { label: 'In Review', value: (statusCounts.submitted ?? 0) + (statusCounts.under_review ?? 0) },
           { label: 'Approved', value: statusCounts.approved ?? 0 },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-white p-4">
+          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
             <p className="text-xs text-text-muted">{stat.label}</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{stat.value}</p>
           </div>

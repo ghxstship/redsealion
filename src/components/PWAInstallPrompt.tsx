@@ -81,7 +81,7 @@ export default function PWAInstallPrompt() {
     <div className="fixed bottom-0 left-0 right-0 z-50 rounded-t-xl bg-foreground px-4 py-4 text-white shadow-lg sm:px-6 animate-slide-up-toast">
       <div className="mx-auto flex max-w-lg items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/10">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-background/10">
             <span className="text-sm font-bold">FD</span>
           </div>
           <p className="text-sm">
@@ -97,7 +97,7 @@ export default function PWAInstallPrompt() {
           </button>
           <button
             onClick={handleInstall}
-            className="rounded-lg bg-white px-4 py-1.5 text-sm font-medium text-foreground hover:bg-white/90 transition-colors"
+            className="rounded-lg bg-background px-4 py-1.5 text-sm font-medium text-foreground hover:bg-background/90 transition-colors"
           >
             Install
           </button>

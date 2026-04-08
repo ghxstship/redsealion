@@ -39,7 +39,7 @@ export default function ExportPreview({
   }
 
   return (
-    <div className="rounded-xl border border-border bg-white overflow-hidden">
+    <div className="rounded-xl border border-border bg-background overflow-hidden">
       <div className="px-5 py-4 border-b border-border bg-bg-secondary">
         <h3 className="text-xs font-semibold uppercase tracking-wider text-text-muted">
           Field Mapping — {platformName}

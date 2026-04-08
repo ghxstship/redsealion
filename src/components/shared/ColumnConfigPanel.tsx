@@ -167,7 +167,7 @@ export default function ColumnConfigPanel({
                 onClick={() => onRowHeightChange(opt.key)}
                 title={opt.label}
                 className={`flex-1 flex items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                  rowHeight === opt.key ? 'bg-white text-foreground shadow-sm' : 'text-text-muted hover:text-foreground'
+                  rowHeight === opt.key ? 'bg-background text-foreground shadow-sm' : 'text-text-muted hover:text-foreground'
                 }`}
               >
                 {opt.icon} {opt.label}

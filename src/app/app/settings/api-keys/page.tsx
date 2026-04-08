@@ -175,7 +175,7 @@ export default function ApiKeysPage() {
           <p className="text-xs text-green-700 mb-2">
             Copy this key now. You will not be able to see it again.
           </p>
-          <code className="block rounded-lg bg-white border border-green-200 px-3.5 py-2 text-sm font-mono text-green-900 break-all">
+          <code className="block rounded-lg bg-background border border-green-200 px-3.5 py-2 text-sm font-mono text-green-900 break-all">
             {newKeyRevealed}
           </code>
           <button

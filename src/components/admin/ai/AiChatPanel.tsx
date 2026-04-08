@@ -68,7 +68,7 @@ export default function AiChatPanel() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         {/* Messages */}
         <div className="h-[500px] overflow-y-auto px-6 py-6 space-y-4">
           {messages.map((msg) => (

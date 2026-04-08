@@ -77,7 +77,7 @@ export default async function PortfolioPage() {
           {portfolioItems.map((item) => (
             <div
               key={item.id}
-              className="group rounded-xl border border-border bg-white overflow-hidden transition-colors hover:border-foreground/20"
+              className="group rounded-xl border border-border bg-background overflow-hidden transition-colors hover:border-foreground/20"
             >
               {/* Image */}
               <div className="relative aspect-[4/3] bg-bg-tertiary flex items-center justify-center overflow-hidden">

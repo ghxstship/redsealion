@@ -166,7 +166,7 @@ export default async function EquipmentDetailPage({
       <div className="space-y-8">
         {/* Scheduled Maintenance */}
         {schedules.length > 0 && (
-          <div className="rounded-xl border border-border bg-white overflow-hidden">
+          <div className="rounded-xl border border-border bg-background overflow-hidden">
             <div className="px-6 py-4 border-b border-border">
               <h2 className="text-sm font-semibold text-foreground">Preventive Schedules</h2>
             </div>
@@ -211,7 +211,7 @@ export default async function EquipmentDetailPage({
         )}
 
         {/* Reservations */}
-        <div className="rounded-xl border border-border bg-white overflow-hidden">
+        <div className="rounded-xl border border-border bg-background overflow-hidden">
           <div className="px-6 py-4 border-b border-border">
             <h2 className="text-sm font-semibold text-foreground">Reservations</h2>
           </div>
@@ -246,7 +246,7 @@ export default async function EquipmentDetailPage({
         </div>
 
         {/* Maintenance History */}
-        <div className="rounded-xl border border-border bg-white overflow-hidden">
+        <div className="rounded-xl border border-border bg-background overflow-hidden">
           <div className="px-6 py-4 border-b border-border">
             <h2 className="text-sm font-semibold text-foreground">Maintenance History</h2>
           </div>

@@ -148,11 +148,11 @@ export default async function UtilizationReportPage() {
       </div>
 
       {rows.length === 0 ? (
-        <div className="rounded-xl border border-border bg-white px-8 py-16 text-center">
+        <div className="rounded-xl border border-border bg-background px-8 py-16 text-center">
           <p className="text-sm text-text-secondary">No utilization data for this period.</p>
         </div>
       ) : (
-        <div className="rounded-xl border border-border bg-white overflow-hidden">
+        <div className="rounded-xl border border-border bg-background overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>

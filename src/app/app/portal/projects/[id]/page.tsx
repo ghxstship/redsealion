@@ -100,7 +100,7 @@ export default async function PortalProjectPage({
 
   if (!project) {
     return (
-      <div className="rounded-xl border border-border bg-white px-8 py-16 text-center">
+      <div className="rounded-xl border border-border bg-background px-8 py-16 text-center">
         <p className="text-sm text-text-secondary">Project not found.</p>
       </div>
     );
@@ -120,7 +120,7 @@ export default async function PortalProjectPage({
         </div>
 
         {/* Progress card */}
-        <div className="rounded-xl border border-border bg-white p-6">
+        <div className="rounded-xl border border-border bg-background p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-semibold text-foreground">Progress</h2>
             <span className="text-2xl font-semibold tabular-nums text-foreground">
@@ -140,7 +140,7 @@ export default async function PortalProjectPage({
 
         {/* Milestones */}
         {project.milestones.length > 0 && (
-          <div className="rounded-xl border border-border bg-white p-6">
+          <div className="rounded-xl border border-border bg-background p-6">
             <h2 className="text-sm font-semibold text-foreground mb-4">Milestones</h2>
             <div className="space-y-3">
               {project.milestones.map((ms, idx) => (
@@ -179,7 +179,7 @@ export default async function PortalProjectPage({
 
         {/* Recent Updates */}
         {project.recentUpdates.length > 0 && (
-          <div className="rounded-xl border border-border bg-white p-6">
+          <div className="rounded-xl border border-border bg-background p-6">
             <h2 className="text-sm font-semibold text-foreground mb-4">Recent Updates</h2>
             <div className="space-y-4">
               {project.recentUpdates.map((update, idx) => (

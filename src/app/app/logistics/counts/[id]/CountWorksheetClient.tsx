@@ -148,19 +148,19 @@ export default function CountWorksheetClient({ count, lines: initialLines }: Cou
 
       {/* Summary cards */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">
-        <div className="rounded-xl border border-border bg-white px-5 py-5">
+        <div className="rounded-xl border border-border bg-background px-5 py-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Total Items</p>
           <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground tabular-nums">{lines.length}</p>
         </div>
-        <div className="rounded-xl border border-border bg-white px-5 py-5">
+        <div className="rounded-xl border border-border bg-background px-5 py-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Counted</p>
           <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground tabular-nums">{countedCount}</p>
         </div>
-        <div className="rounded-xl border border-border bg-white px-5 py-5">
+        <div className="rounded-xl border border-border bg-background px-5 py-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Remaining</p>
           <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground tabular-nums">{lines.length - countedCount}</p>
         </div>
-        <div className="rounded-xl border border-border bg-white px-5 py-5">
+        <div className="rounded-xl border border-border bg-background px-5 py-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Variance</p>
           <p className={`mt-2 text-3xl font-semibold tracking-tight tabular-nums ${totalVariance > 0 ? 'text-red-700' : 'text-green-700'}`}>
             {totalVariance}
@@ -169,7 +169,7 @@ export default function CountWorksheetClient({ count, lines: initialLines }: Cou
       </div>
 
       {/* Worksheet table */}
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="sticky top-0">

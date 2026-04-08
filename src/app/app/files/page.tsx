@@ -77,7 +77,7 @@ export default async function FilesPage() {
         </Card>
       </div>
 
-      <div className="rounded-xl border border-border bg-white px-8 py-16 text-center">
+      <div className="rounded-xl border border-border bg-background px-8 py-16 text-center">
         <div className="mx-auto max-w-md">
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-bg-secondary">
             <FileText size={24} className="text-text-muted" />

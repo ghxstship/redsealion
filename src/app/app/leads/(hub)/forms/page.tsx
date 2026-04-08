@@ -100,7 +100,7 @@ export default async function LeadFormsPage() {
         {forms.map((form) => (
           <div
             key={form.id}
-            className="rounded-xl border border-border bg-white p-6 transition-colors hover:border-foreground/20"
+            className="rounded-xl border border-border bg-background p-6 transition-colors hover:border-foreground/20"
           >
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div className="min-w-0">

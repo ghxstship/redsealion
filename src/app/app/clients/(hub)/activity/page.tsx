@@ -33,7 +33,7 @@ export default async function ClientActivityPage() {
       <PageHeader title="Client Activity" subtitle="Recent interactions and touchpoints across all clients." />
       <ClientsHubTabs />
 
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         {activities.length === 0 ? (
           <div className="px-8 py-16 text-center">
             <p className="text-sm text-text-secondary">No recent client activity. Interactions logged from deals and emails will appear here.</p>

@@ -29,7 +29,7 @@ export default function ClientHealthCard(props: ClientHealthCardProps) {
   const style = HEALTH_TIER_STYLES[health.tier];
 
   return (
-    <div className="rounded-xl border border-border bg-white p-5">
+    <div className="rounded-xl border border-border bg-background p-5">
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
           <Heart size={14} />

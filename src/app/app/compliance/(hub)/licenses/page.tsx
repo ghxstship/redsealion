@@ -12,15 +12,15 @@ export default async function LicensesPage() {
       <PageHeader title="Licenses" subtitle="Business and professional licenses across your organization." />
       <ComplianceHubTabs />
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Total Licenses</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{docs.length}</p>
         </div>
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Active</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-green-600">{docs.length - expired}</p>
         </div>
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Expired</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-red-600">{expired}</p>
         </div>

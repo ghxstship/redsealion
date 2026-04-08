@@ -40,7 +40,7 @@ export default async function ClientDetailPage({
         activeProposals={client.proposals.filter((p) => ['approved', 'in_production', 'active'].includes(p.status)).length}
       />
       {(client.website || client.annual_revenue || client.employee_count) && (
-        <div className="rounded-xl border border-border bg-white p-6">
+        <div className="rounded-xl border border-border bg-background p-6">
           <h2 className="text-sm font-semibold text-foreground mb-4">Company Info</h2>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
             {client.website && (
@@ -80,7 +80,7 @@ export default async function ClientDetailPage({
   );
 
   const contactsContent = (
-    <div className="rounded-xl border border-border bg-white overflow-hidden">
+    <div className="rounded-xl border border-border bg-background overflow-hidden">
       <div className="px-6 py-4 border-b border-border flex items-center justify-between">
         <h2 className="text-sm font-semibold text-foreground">Contacts</h2>
         <button className="text-xs font-medium text-text-muted hover:text-foreground transition-colors">
@@ -136,7 +136,7 @@ export default async function ClientDetailPage({
             <Link
               key={proposal.id}
               href={`/app/proposals/${proposal.id}`}
-              className="block rounded-xl border border-border bg-white px-6 py-5 transition-colors hover:border-foreground/20"
+              className="block rounded-xl border border-border bg-background px-6 py-5 transition-colors hover:border-foreground/20"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
@@ -151,7 +151,7 @@ export default async function ClientDetailPage({
             </Link>
           ))}
           {client.proposals.length === 0 && (
-            <div className="rounded-xl border border-dashed border-border bg-white px-6 py-12 text-center col-span-2">
+            <div className="rounded-xl border border-dashed border-border bg-background px-6 py-12 text-center col-span-2">
               <p className="text-sm text-text-muted">No proposals yet.</p>
             </div>
           )}
@@ -166,7 +166,7 @@ export default async function ClientDetailPage({
               <Link
                 key={deal.id}
                 href={`/app/pipeline/${deal.id}`}
-                className="block rounded-xl border border-border bg-white px-6 py-5 transition-colors hover:border-foreground/20"
+                className="block rounded-xl border border-border bg-background px-6 py-5 transition-colors hover:border-foreground/20"
               >
                 <div className="flex items-start justify-between gap-3">
                   <p className="text-sm font-medium text-foreground truncate">{deal.title}</p>
@@ -186,7 +186,7 @@ export default async function ClientDetailPage({
   const interactionsContent = <ClientInteractions interactions={client.interactions} />;
 
   const activityContent = client.activity.length > 0 ? (
-    <div className="rounded-xl border border-border bg-white px-6 py-5">
+    <div className="rounded-xl border border-border bg-background px-6 py-5">
       <h2 className="text-sm font-semibold text-foreground mb-4">Activity</h2>
       <div className="space-y-0">
         {client.activity.map((event, index) => (
@@ -194,7 +194,7 @@ export default async function ClientDetailPage({
             {index < client.activity.length - 1 && (
               <div className="absolute left-[7px] top-5 bottom-0 w-px bg-border" />
             )}
-            <div className="relative mt-1.5 h-3.5 w-3.5 shrink-0 rounded-full border-2 border-border bg-white" />
+            <div className="relative mt-1.5 h-3.5 w-3.5 shrink-0 rounded-full border-2 border-border bg-background" />
             <div className="min-w-0">
               <p className="text-sm font-medium text-foreground">{event.action}</p>
               <p className="text-xs text-text-muted mt-0.5">{event.detail}</p>

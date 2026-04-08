@@ -52,7 +52,7 @@ export default function TaskWatchButton({ taskId }: TaskWatchButtonProps) {
       className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
         watching
           ? 'border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100'
-          : 'border-border bg-white text-text-secondary hover:bg-bg-secondary'
+          : 'border-border bg-background text-text-secondary hover:bg-bg-secondary'
       }`}
       title={watching ? 'Stop watching' : 'Watch for updates'}
     >

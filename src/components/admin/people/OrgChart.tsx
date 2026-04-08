@@ -15,7 +15,7 @@ interface OrgNode {
 function OrgNodeCard({ node, isRoot = false }: { node: OrgNode; isRoot?: boolean }) {
   return (
     <div className="flex flex-col items-center">
-      <div className={`rounded-xl border border-border bg-white px-5 py-3 text-center ${isRoot ? 'shadow-md' : ''}`}>
+      <div className={`rounded-xl border border-border bg-background px-5 py-3 text-center ${isRoot ? 'shadow-md' : ''}`}>
         <p className="text-sm font-medium text-foreground">{node.name}</p>
         <p className="text-xs text-text-secondary">{node.title}</p>
       </div>
@@ -113,7 +113,7 @@ export default function OrgChart() {
 
   if (loading) {
     return (
-      <div className="rounded-xl border border-border bg-white px-8 py-8 text-center">
+      <div className="rounded-xl border border-border bg-background px-8 py-8 text-center">
         <p className="text-sm text-text-muted">Loading organization chart...</p>
       </div>
     );
@@ -129,7 +129,7 @@ export default function OrgChart() {
   }
 
   return (
-    <div className="rounded-xl border border-border bg-white px-8 py-8 overflow-x-auto">
+    <div className="rounded-xl border border-border bg-background px-8 py-8 overflow-x-auto">
       <div className="min-w-[600px] flex justify-center">
         <OrgNodeCard node={orgTree} isRoot />
       </div>

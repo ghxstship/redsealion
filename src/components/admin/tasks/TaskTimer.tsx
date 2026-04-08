@@ -74,7 +74,7 @@ export default function TaskTimer({ taskId, taskTitle }: TaskTimerProps) {
   }, [elapsed, taskId, taskTitle]);
 
   return (
-    <div className="rounded-xl border border-border bg-white p-4">
+    <div className="rounded-xl border border-border bg-background p-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Clock size={14} className="text-text-muted" />

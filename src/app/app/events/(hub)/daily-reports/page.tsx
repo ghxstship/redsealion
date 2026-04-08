@@ -38,14 +38,14 @@ export default async function DailyReportsPage() {
           { label: 'Today', value: reports.filter((r) => r.created_at?.startsWith(new Date().toISOString().split('T')[0])).length, color: 'text-blue-600' },
           { label: 'Events Covered', value: new Set(reports.map((r) => r.event_name).filter(Boolean)).size },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-white p-4">
+          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
             <p className="text-xs text-text-muted">{stat.label}</p>
             <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
           </div>
         ))}
       </div>
 
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         {reports.length === 0 ? (
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No daily reports filed. Reports capture weather, labor hours, deliveries, and incidents during events.</p></div>
         ) : (

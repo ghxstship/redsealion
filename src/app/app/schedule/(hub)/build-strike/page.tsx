@@ -56,22 +56,22 @@ export default async function BuildStrikePage() {
       <ScheduleHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Build & Strike Schedules</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{schedules.length}</p>
         </div>
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Total Blocks</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{blocks.length}</p>
         </div>
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">In Progress</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-blue-600">{blocks.filter((b) => b.status === 'in_progress').length}</p>
         </div>
       </div>
 
       {schedules.length === 0 ? (
-        <div className="rounded-xl border border-border bg-white px-8 py-16 text-center">
+        <div className="rounded-xl border border-border bg-background px-8 py-16 text-center">
           <p className="text-sm text-text-secondary">No Build & Strike schedules. Create one from an event to define load-in, build, and strike phases.</p>
         </div>
       ) : (
@@ -79,7 +79,7 @@ export default async function BuildStrikePage() {
           {schedules.map((schedule) => {
             const scheduleBlocks = blocks.filter((b) => b.schedule_id === schedule.id);
             return (
-              <div key={schedule.id} className="rounded-xl border border-border bg-white overflow-hidden">
+              <div key={schedule.id} className="rounded-xl border border-border bg-background overflow-hidden">
                 <div className="px-5 py-3 bg-bg-secondary border-b border-border flex items-center justify-between">
                   <div>
                     <Link href={`/app/schedule/${schedule.id}`} className="text-sm font-semibold text-foreground hover:underline">{schedule.name}</Link>

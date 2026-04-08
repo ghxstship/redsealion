@@ -12,7 +12,7 @@ export default function ChartContainer({
   height = 300,
 }: ChartContainerProps) {
   return (
-    <div className="rounded-xl border border-border bg-white p-6">
+    <div className="rounded-xl border border-border bg-background p-6">
       <h3 className="text-sm font-semibold text-foreground mb-4">{title}</h3>
       <div style={{ height }} className="relative">
         {children}

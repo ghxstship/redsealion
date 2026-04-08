@@ -56,7 +56,7 @@ export default function ExpenseForm() {
 
   if (submitted) {
     return (
-      <div className="mx-auto max-w-lg rounded-xl border border-border bg-white px-8 py-16 text-center">
+      <div className="mx-auto max-w-lg rounded-xl border border-border bg-background px-8 py-16 text-center">
         <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-50">
           <Check size={24} className="text-green-600" />
         </div>
@@ -87,7 +87,7 @@ export default function ExpenseForm() {
 
   return (
     <form onSubmit={handleSubmit} className="mx-auto max-w-lg space-y-6">
-      <div className="rounded-xl border border-border bg-white px-6 py-6 space-y-5">
+      <div className="rounded-xl border border-border bg-background px-6 py-6 space-y-5">
         <div>
           <FormLabel>
             Category
@@ -152,7 +152,7 @@ export default function ExpenseForm() {
         <button
           type="button"
           onClick={() => router.push('/app/expenses')}
-          className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
+          className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
         >
           Cancel
         </button>

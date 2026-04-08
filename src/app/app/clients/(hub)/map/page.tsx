@@ -30,22 +30,22 @@ export default async function ClientMapPage() {
       <ClientsHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Clients with Location</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{clients.length}</p>
         </div>
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">States/Provinces</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{sortedStates.length}</p>
         </div>
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Top Region</p>
           <p className="mt-1 text-lg font-semibold text-foreground">{sortedStates[0]?.[0] ?? '—'}</p>
         </div>
       </div>
 
       <h3 className="text-sm font-semibold text-foreground mb-3">By Region</h3>
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         {sortedStates.length === 0 ? (
           <div className="px-8 py-16 text-center">
             <p className="text-sm text-text-secondary">No location data available. Add addresses to client records to see geographic distribution.</p>

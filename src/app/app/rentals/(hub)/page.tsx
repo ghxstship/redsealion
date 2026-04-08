@@ -45,14 +45,14 @@ export default async function RentalsCatalogPage() {
           { label: 'Revenue', value: formatCurrency(totalRevenue / 100), color: 'text-green-600' },
           { label: 'Returned', value: String(orders.filter((o) => o.status === 'returned').length) },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-white p-4">
+          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
             <p className="text-xs text-text-muted">{stat.label}</p>
             <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
           </div>
         ))}
       </div>
 
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         {orders.length === 0 ? (
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No rental orders yet. Create a rental order to start tracking equipment rentals.</p></div>
         ) : (

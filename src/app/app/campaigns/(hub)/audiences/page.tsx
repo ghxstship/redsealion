@@ -34,7 +34,7 @@ export default async function AudiencesPage() {
           { label: 'Leads', value: counts.leads, color: 'text-purple-600' },
           { label: 'Crew', value: counts.crew, color: 'text-green-600' },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-white p-4">
+          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
             <p className="text-xs text-text-muted">{stat.label}</p>
             <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
           </div>
@@ -47,7 +47,7 @@ export default async function AudiencesPage() {
           { name: 'Active Leads', count: counts.leads, desc: 'Leads in your pipeline' },
           { name: 'Crew Members', count: counts.crew, desc: 'All crew profiles' },
         ].map((audience) => (
-          <div key={audience.name} className="rounded-xl border border-border bg-white px-5 py-4 flex items-center justify-between">
+          <div key={audience.name} className="rounded-xl border border-border bg-background px-5 py-4 flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-foreground">{audience.name}</p>
               <p className="text-xs text-text-secondary mt-0.5">{audience.desc}</p>

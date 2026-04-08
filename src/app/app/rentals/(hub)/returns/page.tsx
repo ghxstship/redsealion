@@ -40,14 +40,14 @@ export default async function ReturnsPage() {
           { label: 'Damaged', value: damaged, color: 'text-orange-600' },
           { label: 'Lost', value: lost, color: 'text-red-600' },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-white p-4">
+          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
             <p className="text-xs text-text-muted">{stat.label}</p>
             <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
           </div>
         ))}
       </div>
 
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         {returns.length === 0 ? (
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No returns processed. Returned rental items will appear here for inspection.</p></div>
         ) : (

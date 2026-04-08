@@ -84,7 +84,7 @@ export default async function CreditNotesPage() {
 
       <InvoiceHubTabs />
 
-      <div className="rounded-xl border border-border bg-white divide-y divide-border overflow-x-auto">
+      <div className="rounded-xl border border-border bg-background divide-y divide-border overflow-x-auto">
         <div className="grid grid-cols-2 gap-4 px-5 py-3 text-xs font-medium uppercase tracking-wider text-text-muted sm:grid-cols-3 lg:grid-cols-6 min-w-[600px] lg:min-w-0">
           <span>Credit #</span>
           <span className="hidden sm:block">Invoice</span>

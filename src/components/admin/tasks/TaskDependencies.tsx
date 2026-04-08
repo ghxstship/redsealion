@@ -185,7 +185,7 @@ export default function TaskDependencies({ taskId }: TaskDependenciesProps) {
             <p className="text-xs text-text-muted px-1">Searching…</p>
           )}
           {searchResults.length > 0 && (
-            <div className="rounded-lg border border-border bg-white divide-y divide-border max-h-48 overflow-y-auto">
+            <div className="rounded-lg border border-border bg-background divide-y divide-border max-h-48 overflow-y-auto">
               {searchResults.map((task) => (
                 <button
                   key={task.id}
@@ -225,7 +225,7 @@ export default function TaskDependencies({ taskId }: TaskDependenciesProps) {
           </p>
         </div>
       ) : (
-        <div className="rounded-lg border border-border bg-white divide-y divide-border overflow-hidden">
+        <div className="rounded-lg border border-border bg-background divide-y divide-border overflow-hidden">
           {blockedBy.map((dep) => (
             <div
               key={dep.id}

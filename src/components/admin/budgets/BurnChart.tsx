@@ -88,7 +88,7 @@ export default function BurnChart({ totalBudget, spent, proposalId }: BurnChartP
   const maxSpend = Math.max(...monthlySpend.map((m) => m.amount), totalBudget, 1);
 
   return (
-    <div className="rounded-xl border border-border bg-white overflow-hidden">
+    <div className="rounded-xl border border-border bg-background overflow-hidden">
       <div className="px-6 py-4 border-b border-border">
         <h2 className="text-base font-semibold text-foreground">Budget Burn-Down</h2>
         <p className="text-xs text-text-secondary mt-1">

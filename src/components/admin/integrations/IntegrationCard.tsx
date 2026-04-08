@@ -53,7 +53,7 @@ export function IntegrationCard({
   }
 
   return (
-    <div className="rounded-xl border border-border bg-white px-5 py-5 flex flex-col gap-3">
+    <div className="rounded-xl border border-border bg-background px-5 py-5 flex flex-col gap-3">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-bg-secondary text-sm font-semibold text-text-secondary">

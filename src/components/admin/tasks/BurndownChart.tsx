@@ -81,7 +81,7 @@ export default function BurndownChart({
   const totalTasks = tasks.length;
 
   return (
-    <div className="rounded-xl border border-border bg-white p-5">
+    <div className="rounded-xl border border-border bg-background p-5">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-semibold text-foreground">
           {mode === 'burndown' ? 'Burndown' : 'Burnup'} Chart

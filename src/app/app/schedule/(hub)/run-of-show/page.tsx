@@ -48,22 +48,22 @@ export default async function RunOfShowPage() {
       <ScheduleHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Run of Show Documents</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{schedules.length}</p>
         </div>
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Total Cues</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{blocks.length}</p>
         </div>
-        <div className="rounded-xl border border-border bg-white p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Live Now</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-green-600">{schedules.filter((s) => s.status === 'live').length}</p>
         </div>
       </div>
 
       {schedules.length === 0 ? (
-        <div className="rounded-xl border border-border bg-white px-8 py-16 text-center">
+        <div className="rounded-xl border border-border bg-background px-8 py-16 text-center">
           <p className="text-sm text-text-secondary">No Run of Show documents. Create one from an event to build your show rundown.</p>
         </div>
       ) : (
@@ -71,7 +71,7 @@ export default async function RunOfShowPage() {
           {schedules.map((schedule) => {
             const cues = blocks.filter((b) => b.schedule_id === schedule.id);
             return (
-              <div key={schedule.id} className="rounded-xl border border-border bg-white overflow-hidden">
+              <div key={schedule.id} className="rounded-xl border border-border bg-background overflow-hidden">
                 <div className="px-5 py-3 bg-bg-secondary border-b border-border flex items-center justify-between">
                   <div>
                     <Link href={`/app/schedule/${schedule.id}`} className="text-sm font-semibold text-foreground hover:underline">{schedule.name}</Link>

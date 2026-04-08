@@ -90,7 +90,7 @@ export default async function PackingPage() {
           {proposals.map((proposal) => (
             <button
               key={proposal.id}
-              className="rounded-lg border border-border bg-white px-4 py-3 text-left transition-colors hover:border-foreground/20 hover:bg-bg-secondary/50 first:border-foreground first:bg-bg-secondary"
+              className="rounded-lg border border-border bg-background px-4 py-3 text-left transition-colors hover:border-foreground/20 hover:bg-bg-secondary/50 first:border-foreground first:bg-bg-secondary"
             >
               <p className="text-sm font-medium text-foreground truncate">{proposal.name}</p>
               <p className="text-xs text-text-muted mt-0.5">{proposal.client_name}</p>
@@ -100,7 +100,7 @@ export default async function PackingPage() {
       </Card>
 
       {/* Packing list */}
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         <div className="px-6 py-4 border-b border-border flex items-center justify-between">
           <div>
             <h2 className="text-sm font-semibold text-foreground">
@@ -150,7 +150,7 @@ export default async function PackingPage() {
                       className={`h-4 w-4 rounded border ${
                         item.packed
                           ? 'border-green-500 bg-green-500'
-                          : 'border-border bg-white'
+                          : 'border-border bg-background'
                       } flex items-center justify-center`}
                     >
                       {item.packed && (

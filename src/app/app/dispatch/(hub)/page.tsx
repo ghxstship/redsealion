@@ -74,7 +74,7 @@ export default async function DispatchPage() {
       {/* Status summary */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
         {Object.entries(statCounts).map(([status, count]) => (
-          <div key={status} className="rounded-xl border border-border bg-white p-4">
+          <div key={status} className="rounded-xl border border-border bg-background p-4">
             <p className="text-xs text-text-muted">{formatLabel(status)}</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{count}</p>
           </div>
@@ -82,7 +82,7 @@ export default async function DispatchPage() {
       </div>
 
       {/* Work order list */}
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         {workOrders.length === 0 ? (
           <EmptyState
             message="No work orders yet"

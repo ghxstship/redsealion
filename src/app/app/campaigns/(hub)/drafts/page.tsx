@@ -28,7 +28,7 @@ export default async function DraftsPage() {
       <PageHeader title="Drafts" subtitle="Saved campaign drafts pending review and scheduling." />
       <CampaignsHubTabs />
 
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         {drafts.length === 0 ? (
           <div className="px-8 py-16 text-center">
             <p className="text-sm text-text-secondary">No draft campaigns. Create a new campaign to get started.</p>

@@ -104,7 +104,7 @@ export default function ViewBar({
             {menuOpenId === view.id && (
               <>
                 <div className="fixed inset-0 z-30" onClick={() => setMenuOpenId(null)} />
-                <div className="absolute top-full left-0 mt-1 z-40 w-36 rounded-lg border border-border bg-white shadow-xl py-1">
+                <div className="absolute top-full left-0 mt-1 z-40 w-36 rounded-lg border border-border bg-background shadow-xl py-1">
                   <button
                     onClick={() => { onDuplicateView(view.id); setMenuOpenId(null); }}
                     className="w-full px-3 py-1.5 text-left text-xs text-foreground hover:bg-bg-secondary transition-colors"
@@ -138,7 +138,7 @@ export default function ViewBar({
         {showNew && (
           <>
             <div className="fixed inset-0 z-30" onClick={() => setShowNew(false)} />
-            <div className="absolute top-full right-0 sm:left-0 mt-1 z-40 w-[280px] rounded-lg border border-border bg-white shadow-xl p-3 flex flex-col gap-3">
+            <div className="absolute top-full right-0 sm:left-0 mt-1 z-40 w-[280px] rounded-lg border border-border bg-background shadow-xl p-3 flex flex-col gap-3">
               <div className="flex items-center justify-between">
                 <h4 className="text-sm font-semibold text-foreground">Create New View</h4>
                 <button

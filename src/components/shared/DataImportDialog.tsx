@@ -277,7 +277,7 @@ export default function DataImportDialog({
   const modalContent = (
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4">
       <div className="fixed inset-0 bg-black/40 animate-modal-backdrop" onClick={onClose} />
-      <div className="relative w-full max-w-3xl rounded-xl border border-border bg-white shadow-xl animate-modal-content my-auto">
+      <div className="relative w-full max-w-3xl rounded-xl border border-border bg-background shadow-xl animate-modal-content my-auto">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border">
           <div>
@@ -343,7 +343,7 @@ export default function DataImportDialog({
                 </div>
                 <button
                   onClick={handleDownloadTemplate}
-                  className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-1.5 text-xs font-medium text-foreground hover:bg-white/80 transition-colors"
+                  className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground hover:bg-background/80 transition-colors"
                 >
                   <Download size={12} />
                   Template
@@ -387,7 +387,7 @@ export default function DataImportDialog({
                       className={`flex-1 rounded-lg border px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 ${
                         m.targetField && duplicateTargets.has(m.targetField.key)
                           ? 'border-red-300 bg-red-50'
-                          : 'border-border bg-white'
+                          : 'border-border bg-background'
                       }`}
                     >
                       <option value="">Skip column</option>
@@ -602,7 +602,7 @@ export default function DataImportDialog({
                   {result.errorRows.length > 0 && (
                     <button
                       onClick={handleDownloadErrorReport}
-                      className="mt-4 inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-1.5 text-xs font-medium text-foreground hover:bg-bg-secondary transition-colors"
+                      className="mt-4 inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground hover:bg-bg-secondary transition-colors"
                     >
                       <Download size={12} />
                       Download Error Report
@@ -618,24 +618,24 @@ export default function DataImportDialog({
         <div className="flex items-center justify-between px-6 py-4 border-t border-border">
           <button
             onClick={step === 'done' && !importing ? handleReset : onClose}
-            className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors"
+            className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors"
           >
             {step === 'done' && !importing ? 'Import More' : 'Cancel'}
           </button>
           <div className="flex gap-2">
             {/* Back button */}
             {step === 'map' && (
-              <button onClick={() => { setStep('upload'); setParsed(null); setFile(null); }} className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
+              <button onClick={() => { setStep('upload'); setParsed(null); setFile(null); }} className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
                 Back
               </button>
             )}
             {step === 'validate' && (
-              <button onClick={() => setStep('map')} className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
+              <button onClick={() => setStep('map')} className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
                 Back
               </button>
             )}
             {step === 'preview' && (
-              <button onClick={() => setStep('validate')} className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
+              <button onClick={() => setStep('validate')} className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
                 Back
               </button>
             )}

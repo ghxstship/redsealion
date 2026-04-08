@@ -85,7 +85,7 @@ export default function SignatureCapture({ onSign }: SignatureCaptureProps) {
   };
 
   return (
-    <div className="bg-white border border-border rounded-lg shadow-sm p-4">
+    <div className="bg-background border border-border rounded-lg shadow-sm p-4">
       <p className="text-sm text-text-secondary mb-2">Draw your signature below</p>
       <canvas
         ref={canvasRef}

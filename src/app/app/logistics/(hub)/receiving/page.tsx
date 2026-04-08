@@ -50,14 +50,14 @@ export default async function ReceivingPage() {
           { label: 'Expected', value: expected.length, color: 'text-blue-600' },
           { label: 'Received', value: received.length, color: 'text-green-600' },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-white p-4">
+          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
             <p className="text-xs text-text-muted">{stat.label}</p>
             <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
           </div>
         ))}
       </div>
 
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         {shipments.length === 0 ? (
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No inbound shipments. Receiving records are created from purchase orders and sub-rental confirmations.</p></div>
         ) : (

@@ -138,7 +138,7 @@ export default function TaskComments({ taskId }: TaskCommentsProps) {
       )}
 
       {/* Comment input */}
-      <div className="rounded-lg border border-border bg-white focus-within:border-foreground/30 transition-colors">
+      <div className="rounded-lg border border-border bg-background focus-within:border-foreground/30 transition-colors">
         <FormTextarea
           ref={inputRef}
           value={body}

@@ -67,7 +67,7 @@ export default function CollaboratorManager({ advanceId, collaborators, onRefres
   }
 
   return (
-    <div className="rounded-xl border border-border bg-white">
+    <div className="rounded-xl border border-border bg-background">
       <div className="px-4 py-3 border-b border-border flex items-center justify-between">
         <h3 className="text-sm font-semibold text-foreground">Collaborators</h3>
         <Button variant="ghost" size="sm" onClick={() => setShowInvite(!showInvite)}>

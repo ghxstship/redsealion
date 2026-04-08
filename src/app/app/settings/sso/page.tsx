@@ -50,7 +50,7 @@ export default async function SsoSettingsPage() {
 
       <div className="max-w-2xl space-y-6">
         {/* Status card */}
-        <div className="rounded-xl border border-border bg-white p-6">
+        <div className="rounded-xl border border-border bg-background p-6">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <div className={`h-3 w-3 rounded-full ${config?.enabled ? 'bg-green-500' : 'bg-gray-300'}`} />
@@ -115,11 +115,11 @@ export default async function SsoSettingsPage() {
           <div className="space-y-2">
             <div>
               <span className="text-xs text-text-muted">ACS URL</span>
-              <p className="text-sm font-mono text-foreground">https://your-app.supabase.co/auth/v1/sso/saml/acs</p>
+              <p className="text-sm font-mono text-foreground">{`${process.env.NEXT_PUBLIC_SUPABASE_URL ?? 'https://your-project.supabase.co'}/auth/v1/sso/saml/acs`}</p>
             </div>
             <div>
               <span className="text-xs text-text-muted">Entity ID</span>
-              <p className="text-sm font-mono text-foreground">https://your-app.supabase.co/auth/v1/sso/saml/metadata</p>
+              <p className="text-sm font-mono text-foreground">{`${process.env.NEXT_PUBLIC_SUPABASE_URL ?? 'https://your-project.supabase.co'}/auth/v1/sso/saml/metadata`}</p>
             </div>
           </div>
         </div>

@@ -117,21 +117,21 @@ export default async function WorkloadPage() {
 
       {/* Summary */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8">
-        <div className="rounded-xl border border-border bg-white p-5">
+        <div className="rounded-xl border border-border bg-background p-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Team Members</p>
           <p className="mt-2 text-3xl font-semibold tabular-nums text-foreground">{workload.length}</p>
         </div>
-        <div className="rounded-xl border border-border bg-white p-5">
+        <div className="rounded-xl border border-border bg-background p-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Active Tasks</p>
           <p className="mt-2 text-3xl font-semibold tabular-nums text-foreground">{totalTasks}</p>
         </div>
-        <div className="rounded-xl border border-border bg-white p-5">
+        <div className="rounded-xl border border-border bg-background p-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Overdue</p>
           <p className={`mt-2 text-3xl font-semibold tabular-nums ${totalOverdue > 0 ? 'text-amber-600' : 'text-foreground'}`}>
             {totalOverdue}
           </p>
         </div>
-        <div className="rounded-xl border border-border bg-white p-5">
+        <div className="rounded-xl border border-border bg-background p-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Overloaded</p>
           <p className={`mt-2 text-3xl font-semibold tabular-nums ${overloaded > 0 ? 'text-red-600' : 'text-foreground'}`}>
             {overloaded}
@@ -141,7 +141,7 @@ export default async function WorkloadPage() {
 
       {/* Member cards */}
       {workload.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border bg-white px-5 py-12 text-center">
+        <div className="rounded-xl border border-dashed border-border bg-background px-5 py-12 text-center">
           <p className="text-sm text-text-muted">No assigned tasks found. Assign tasks to team members to see workload distribution.</p>
         </div>
       ) : (
@@ -153,7 +153,7 @@ export default async function WorkloadPage() {
               : 0;
 
             return (
-              <div key={member.userId} className="rounded-xl border border-border bg-white p-5">
+              <div key={member.userId} className="rounded-xl border border-border bg-background p-5">
                 {/* Header */}
                 <div className="flex items-center gap-3 mb-4">
                   {member.avatar ? (

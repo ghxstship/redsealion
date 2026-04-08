@@ -117,7 +117,7 @@ export default async function WinRateReportPage() {
         </ChartContainer>
 
         {clientStats.length > 0 && (
-          <div className="rounded-xl border border-border bg-white overflow-hidden">
+          <div className="rounded-xl border border-border bg-background overflow-hidden">
             <div className="px-6 py-4 border-b border-border">
               <h3 className="text-sm font-semibold text-foreground">Win Rate by Client</h3>
             </div>

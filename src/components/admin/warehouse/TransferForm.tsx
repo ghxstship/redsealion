@@ -111,7 +111,7 @@ export default function TransferForm({ facilities, onCreated, onClose }: Transfe
   };
 
   return (
-    <div className="bg-white border border-border rounded-lg shadow-sm p-5">
+    <div className="bg-background border border-border rounded-lg shadow-sm p-5">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-base font-semibold text-foreground">Create Transfer</h2>
         <button onClick={onClose} className="text-text-muted hover:text-foreground text-lg leading-none">
@@ -176,7 +176,7 @@ export default function TransferForm({ facilities, onCreated, onClose }: Transfe
                     placeholder="Search asset..."
                     required={!item.assetId} />
                   {searchResults[index] && searchResults[index].length > 0 && (
-                    <ul className="absolute z-10 w-full mt-1 bg-white border border-border rounded-lg shadow-sm max-h-32 overflow-y-auto">
+                    <ul className="absolute z-10 w-full mt-1 bg-background border border-border rounded-lg shadow-sm max-h-32 overflow-y-auto">
                       {searchResults[index].map((asset) => (
                         <li key={asset.id}>
                           <button

@@ -50,7 +50,7 @@ export default function ClientInteractions({
       : interactions.filter((i) => i.type === filter);
 
   return (
-    <div className="rounded-xl border border-border bg-white overflow-hidden">
+    <div className="rounded-xl border border-border bg-background overflow-hidden">
       <div className="px-6 py-4 border-b border-border flex items-center justify-between">
         <h2 className="text-sm font-semibold text-foreground">Interactions</h2>
         <div className="flex items-center gap-2">
@@ -82,7 +82,7 @@ export default function ClientInteractions({
                 {index < filtered.length - 1 && (
                   <div className="absolute left-[7px] top-5 bottom-0 w-px bg-border" />
                 )}
-                <div className="relative mt-1.5 h-3.5 w-3.5 shrink-0 rounded-full border-2 border-border bg-white" />
+                <div className="relative mt-1.5 h-3.5 w-3.5 shrink-0 rounded-full border-2 border-border bg-background" />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <span

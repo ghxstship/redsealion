@@ -37,7 +37,7 @@ export default function CustomFieldRenderer({ fields }: CustomFieldRendererProps
 
   return (
     <div className="space-y-6">
-      <div className="rounded-xl border border-border bg-white overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         <div className="divide-y divide-border">
           {fields.map((field) => (
             <div key={field.id} className="flex items-center justify-between px-6 py-3.5">
@@ -66,7 +66,7 @@ export default function CustomFieldRenderer({ fields }: CustomFieldRendererProps
       </div>
 
       {/* Show available types for reference */}
-      <div className="rounded-xl border border-border bg-white px-6 py-4">
+      <div className="rounded-xl border border-border bg-background px-6 py-4">
         <p className="text-xs text-text-muted mb-2">Available field types:</p>
         <div className="flex flex-wrap gap-2">
           {FIELD_TYPES.map((type) => (

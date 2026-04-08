@@ -29,7 +29,7 @@ export default function AutomationTemplatesPage() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {TEMPLATES.map((template) => (
-          <div key={template.name} className="rounded-xl border border-border bg-white px-5 py-5 flex flex-col justify-between hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer">
+          <div key={template.name} className="rounded-xl border border-border bg-background px-5 py-5 flex flex-col justify-between hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer">
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${CATEGORY_COLORS[template.category] ?? 'bg-gray-50 text-gray-700'}`}>{template.category}</span>

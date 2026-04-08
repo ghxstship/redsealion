@@ -97,7 +97,7 @@ export default async function TransfersPage() {
       </PageHeader>
 
       {/* Transfers table */}
-      <div className="rounded-xl border border-border bg-white overflow-hidden overflow-x-auto">
+      <div className="rounded-xl border border-border bg-background overflow-hidden overflow-x-auto">
         {transfers.length === 0 ? (
           <div className="px-6 py-12 text-center text-sm text-text-muted">
             No transfers found.

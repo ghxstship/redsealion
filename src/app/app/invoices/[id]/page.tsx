@@ -184,7 +184,7 @@ export default async function InvoiceDetailPage({
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-6">
           {/* Invoice preview */}
-          <div className="rounded-xl border border-border bg-white p-6">
+          <div className="rounded-xl border border-border bg-background p-6">
             <div className="flex items-start justify-between mb-6">
               <div>
                 <p className="text-xs text-text-muted">Bill To</p>
@@ -273,7 +273,7 @@ export default async function InvoiceDetailPage({
 
           {/* Payment history */}
           {invoice.payments.length > 0 && (
-            <div className="rounded-xl border border-border bg-white p-6">
+            <div className="rounded-xl border border-border bg-background p-6">
               <h2 className="text-sm font-semibold text-foreground mb-4">Payment History</h2>
               <div className="space-y-3">
                 {invoice.payments.map((payment) => (
@@ -297,7 +297,7 @@ export default async function InvoiceDetailPage({
 
         {/* Sidebar */}
         <div className="space-y-6">
-          <div className="rounded-xl border border-border bg-white p-6">
+          <div className="rounded-xl border border-border bg-background p-6">
             <h2 className="text-sm font-semibold text-foreground mb-3">Details</h2>
             <dl className="space-y-3 text-sm">
               <div>

@@ -79,7 +79,7 @@ export default async function AuditLogPage() {
       {entries.length === 0 ? (
         <EmptyState message="No audit logs recorded yet" />
       ) : (
-        <div className="rounded-xl border border-border bg-white overflow-hidden">
+        <div className="rounded-xl border border-border bg-background overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>

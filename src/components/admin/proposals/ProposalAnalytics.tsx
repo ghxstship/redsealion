@@ -102,7 +102,7 @@ export default function ProposalAnalytics({
               className={`px-3 py-1.5 text-xs font-medium transition-colors ${
                 timeRange === range
                   ? 'bg-foreground text-white'
-                  : 'bg-white text-text-secondary hover:bg-bg-secondary'
+                  : 'bg-background text-text-secondary hover:bg-bg-secondary'
               }`}
             >
               {range === '7d' ? '7 Days' : range === '30d' ? '30 Days' : 'All Time'}

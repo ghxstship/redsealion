@@ -210,7 +210,7 @@ export default function CommandPalette() {
       />
 
       {/* Panel */}
-      <div className="relative w-full max-w-lg mx-4 rounded-xl border border-border bg-white shadow-2xl animate-modal-content overflow-hidden">
+      <div className="relative w-full max-w-lg mx-4 rounded-xl border border-border bg-background shadow-2xl animate-modal-content overflow-hidden">
         {/* Search input */}
         <div className="flex items-center gap-3 px-4 border-b border-border">
           <Search size={18} className="shrink-0 text-text-muted" />

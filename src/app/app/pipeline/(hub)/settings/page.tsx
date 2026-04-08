@@ -184,7 +184,7 @@ export default function PipelineSettingsPage() {
 
       <div className="space-y-4">
         {pipelines.map((pipeline) => (
-          <div key={pipeline.id} className="rounded-xl border border-border bg-white px-5 py-5">
+          <div key={pipeline.id} className="rounded-xl border border-border bg-background px-5 py-5">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 {editingId === pipeline.id ? (
@@ -192,7 +192,7 @@ export default function PipelineSettingsPage() {
                     type="text"
                     value={pipeline.name}
                     onChange={(e) => updatePipeline(pipeline.id, { name: e.target.value })}
-                    className="rounded-md border border-border bg-white px-2 py-1 text-sm font-semibold text-foreground"
+                    className="rounded-md border border-border bg-background px-2 py-1 text-sm font-semibold text-foreground"
                   />
                 ) : (
                   <h3 className="text-sm font-semibold text-foreground">{pipeline.name}</h3>
@@ -233,7 +233,7 @@ export default function PipelineSettingsPage() {
                         type="text"
                         value={stage}
                         onChange={(e) => updateStage(pipeline.id, index, e.target.value)}
-                        className="w-28 rounded-md border border-border bg-white px-2 py-0.5 text-xs text-foreground"
+                        className="w-28 rounded-md border border-border bg-background px-2 py-0.5 text-xs text-foreground"
                       />
                       <button
                         onClick={() => removeStage(pipeline.id, index)}

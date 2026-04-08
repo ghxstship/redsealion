@@ -125,19 +125,19 @@ export default function ProposalDetailPage({
       >
         <Link
           href={`/app/proposals/${id}/builder`}
-          className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
+          className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
         >
           Edit in Builder
         </Link>
         <button
           onClick={() => setShowShare(true)}
-          className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
+          className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
         >
           Share
         </button>
         <button
           onClick={() => setShowDelete(true)}
-          className="rounded-lg border border-red-200 bg-white px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
+          className="rounded-lg border border-red-200 bg-background px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
         >
           Delete
         </button>
@@ -202,7 +202,7 @@ export default function ProposalDetailPage({
       )}
 
       {activeTab === 'activity' && (
-        <div className="rounded-xl border border-border bg-white px-8 py-12 text-center">
+        <div className="rounded-xl border border-border bg-background px-8 py-12 text-center">
           <p className="text-sm text-text-secondary">
             Proposal activity will appear here as your team and clients interact with this proposal.
           </p>

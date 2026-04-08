@@ -119,7 +119,7 @@ export default function QRGenerator({ assetId, barcode, name }: QRGeneratorProps
   };
 
   return (
-    <div className="bg-white border border-border rounded-lg shadow-sm p-4 inline-block">
+    <div className="bg-background border border-border rounded-lg shadow-sm p-4 inline-block">
       <div ref={labelRef} className="text-center">
         <p className="text-xs font-semibold text-foreground mb-2 truncate max-w-[200px]">
           {name}

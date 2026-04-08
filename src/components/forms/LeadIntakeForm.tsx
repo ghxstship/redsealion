@@ -58,7 +58,7 @@ export function LeadIntakeForm({ organizationId }: { organizationId: string }) {
 
   if (isSuccess) {
     return (
-      <div className="w-full max-w-lg mx-auto relative overflow-hidden rounded-2xl border border-white/20 bg-white/10 p-8 text-center shadow-2xl backdrop-blur-xl">
+      <div className="w-full max-w-lg mx-auto relative overflow-hidden rounded-2xl border border-white/20 bg-background/10 p-8 text-center shadow-2xl backdrop-blur-xl">
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-500/20 text-green-400">
           <IconCheck className="h-8 w-8 text-green-400" strokeWidth={2} />
         </div>
@@ -71,7 +71,7 @@ export function LeadIntakeForm({ organizationId }: { organizationId: string }) {
   }
 
   return (
-    <div className="w-full max-w-xl mx-auto relative overflow-hidden rounded-2xl border border-white/20 bg-white/10 p-8 shadow-2xl backdrop-blur-xl">
+    <div className="w-full max-w-xl mx-auto relative overflow-hidden rounded-2xl border border-white/20 bg-background/10 p-8 shadow-2xl backdrop-blur-xl">
       {/* Subtle glowing orb backgrounds */}
       <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-blue-500/30 blur-3xl" />
       <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-purple-500/30 blur-3xl" />
@@ -183,7 +183,7 @@ export function LeadIntakeForm({ organizationId }: { organizationId: string }) {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-white px-6 py-3.5 text-base font-semibold text-zinc-900 transition-all hover:bg-white/90 hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
+              className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-background px-6 py-3.5 text-base font-semibold text-zinc-900 transition-all hover:bg-background/90 hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
             >
               {isSubmitting ? (
                 <>

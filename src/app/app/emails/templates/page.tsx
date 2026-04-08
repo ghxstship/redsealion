@@ -114,7 +114,7 @@ export default function EmailTemplatesPage() {
         {filtered.map((template) => (
           <div
             key={template.id}
-            className="group rounded-xl border border-border bg-white p-5 transition-colors hover:border-foreground/20 cursor-pointer"
+            className="group rounded-xl border border-border bg-background p-5 transition-colors hover:border-foreground/20 cursor-pointer"
             onClick={() => setPreviewTemplate(template)}
           >
             <div className="flex items-center justify-between mb-2">

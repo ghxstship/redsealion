@@ -54,7 +54,7 @@ export default function SearchInput({
         value={local}
         onChange={(e) => handleChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full rounded-lg border border-border bg-white pl-9 pr-8 py-2.5 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/20 transition-shadow"
+        className="w-full rounded-lg border border-border bg-background pl-9 pr-8 py-2.5 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/20 transition-shadow"
       />
       {local && (
         <button

@@ -102,7 +102,7 @@ export default function ReportBuilderPage() {
               ref={nameRef}
               type="text"
               placeholder="e.g., Monthly revenue by client"
-              className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
+              className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
             />
           </div>
           <div>
@@ -113,7 +113,7 @@ export default function ReportBuilderPage() {
               ref={descriptionRef}
               type="text"
               placeholder="Brief description of this report"
-              className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-foreground"
+              className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
             />
           </div>
         </div>
