@@ -21,11 +21,16 @@ export default function TaskTimer({ taskId, taskTitle }: TaskTimerProps) {
   const [saving, setSaving] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const startTimeRef = useRef<number | null>(null);
+  const elapsedRef = useRef(elapsed);
+  
+  useEffect(() => {
+    elapsedRef.current = elapsed;
+  }, [elapsed]);
 
   // Tick
   useEffect(() => {
     if (running) {
-      startTimeRef.current = Date.now() - elapsed * 1000;
+      startTimeRef.current = Date.now() - elapsedRef.current * 1000;
       intervalRef.current = setInterval(() => {
         setElapsed(
           Math.floor((Date.now() - (startTimeRef.current ?? Date.now())) / 1000),
@@ -37,7 +42,6 @@ export default function TaskTimer({ taskId, taskTitle }: TaskTimerProps) {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [running]);
 
   function formatTime(totalSecs: number): string {

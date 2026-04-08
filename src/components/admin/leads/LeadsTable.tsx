@@ -146,7 +146,7 @@ export default function LeadsTable({ leads }: { leads: Lead[] }) {
               <Upload size={14} />
               Import
             </Button>
-            <DataExportMenu data={sorted as unknown as Record<string, unknown>[]} entityKey="leads" filename="leads-export" entityType="Leads" />
+            <DataExportMenu data={sorted} entityKey="leads" filename="leads-export" entityType="Leads" />
           </div>
         </div>
 

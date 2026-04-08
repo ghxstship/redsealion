@@ -96,9 +96,7 @@ export default function PhaseNarrativeEditor({
     if (editor && value !== editor.getText() && value !== editor.getHTML()) {
       editor.commands.setContent(value || '');
     }
-    // Only sync when value prop changes, not on every render
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value]);
+  }, [editor, value]);
 
   const toggle = useCallback(
     (command: string) => {

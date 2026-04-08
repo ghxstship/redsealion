@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { requirePermission } from '@/lib/api/permission-guard';
+import { castRelation } from '@/lib/supabase/cast-relation';
+import { castPaymentTerms } from '@/lib/documents/json-casts';
+import type { Json } from '@/types/database';
 
 export async function GET(
   _request: Request,
@@ -44,14 +47,14 @@ export async function GET(
 
     proposalName = proposal.name;
     clientName =
-      (proposal.clients as Record<string, string>)?.company_name ?? 'Client';
+      castRelation<Record<string, string>>(proposal.clients)?.company_name ?? 'Client';
     subtitle = proposal.subtitle ?? '';
     totalValue = proposal.total_value;
     status = proposal.status;
     preparedDate = proposal.prepared_date ?? '';
     validUntil = proposal.valid_until ?? '';
     paymentTerms =
-      (proposal.payment_terms as unknown as Record<string, string>)?.structure ?? '50/50';
+      castPaymentTerms(proposal.payment_terms as Json)?.structure ?? '50/50';
 
     const { data: phaseData } = await supabase
       .from('phases')

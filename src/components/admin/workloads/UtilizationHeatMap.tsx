@@ -133,7 +133,7 @@ export default function UtilizationHeatMap({ teamMembers }: UtilizationHeatMapPr
 
   useEffect(() => {
     loadAllocations();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [loadAllocations]);
 
   // Build data from real allocations (or show empty state)
   const data = teamMembers.map((m) => ({

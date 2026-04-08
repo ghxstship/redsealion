@@ -11,6 +11,7 @@ import type {
   CreativeReference,
   PaymentTerms,
 } from '@/types/database';
+import { castRelation } from '@/lib/supabase/cast-relation';
 
 interface PageProps {
   params: Promise<{ orgSlug: string; id: string }>;
@@ -69,7 +70,7 @@ export default async function ProposalJourneyPage({ params }: PageProps) {
       .single();
 
     if (membership) {
-      const rawRole = (membership.roles as unknown as { name: string } | null)?.name ?? 'viewer';
+      const rawRole = castRelation<{ name: string }>(membership.roles)?.name ?? 'viewer';
       const { mapDBRoleToEnum } = await import('@/lib/permissions');
       const role = mapDBRoleToEnum(rawRole);
 

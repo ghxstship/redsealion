@@ -4,14 +4,14 @@
 
 import type { EntityField } from './entity-fields';
 
-interface PrintOptions {
+interface PrintOptions<T extends object> {
   title: string;
-  data: Record<string, unknown>[];
+  data: T[];
   fields: EntityField[];
   subtitle?: string;
 }
 
-export function printTable({ title, data, fields, subtitle }: PrintOptions): void {
+export function printTable<T extends object>({ title, data, fields, subtitle }: PrintOptions<T>): void {
   // Build HTML table
   const headerCells = fields.map((f) => `<th>${esc(f.label)}</th>`).join('');
 
@@ -19,7 +19,7 @@ export function printTable({ title, data, fields, subtitle }: PrintOptions): voi
     .map((row) => {
       const cells = fields
         .map((f) => {
-          const val = row[f.key];
+          const val = (row as Record<string, unknown>)[f.key];
           if (val == null) return '<td>—</td>';
           if (Array.isArray(val)) return `<td>${esc(val.join(', '))}</td>`;
           if (f.type === 'currency' && typeof val === 'number') {

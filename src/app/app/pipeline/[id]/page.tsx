@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/server';
 import { notFound } from 'next/navigation';
 import EmptyState from '@/components/ui/EmptyState';
 import type { DealStage } from '@/types/database';
+import { castRelation } from '@/lib/supabase/cast-relation';
 import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
 import DealEmailDraft from '@/components/admin/pipeline/DealEmailDraft';
@@ -83,12 +84,12 @@ async function getDeal(id: string): Promise<DealDetail | null> {
       .order('created_at', { ascending: false })
       .limit(20);
 
-    const clientData = deal.client as unknown as { company_name: string } | null;
-    const ownerData = deal.owner as unknown as { full_name: string } | null;
-    const proposalData = deal.proposal as unknown as {
+    const clientData = castRelation<{ company_name: string }>(deal.client);
+    const ownerData = castRelation<{ full_name: string }>(deal.owner);
+    const proposalData = castRelation<{
       id: string;
       name: string;
-    } | null;
+    }>(deal.proposal);
 
     return {
       id: deal.id,

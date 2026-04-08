@@ -315,7 +315,7 @@ export default function PhaseSection({
               <button
                 type="button"
                 onClick={() => {
-                  // TODO: Persist to proposal_comments table
+                  alert('Client commenting will be available in the upcoming Client Portal update.');
                   setCommentText('');
                   setShowCommentInput(false);
                 }}

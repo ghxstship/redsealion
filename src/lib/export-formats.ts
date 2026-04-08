@@ -21,8 +21,8 @@ interface ExportColumn {
 // Core field-value extraction
 // ---------------------------------------------------------------------------
 
-function extractValue(row: Record<string, unknown>, key: string): string {
-  const val = row[key];
+function extractValue<T extends object>(row: T, key: string): string {
+  const val = (row as Record<string, unknown>)[key];
   if (val == null) return '';
   if (Array.isArray(val)) return val.join(', ');
   return String(val);
@@ -32,7 +32,7 @@ function extractValue(row: Record<string, unknown>, key: string): string {
 // CSV Generation (RFC 4180)
 // ---------------------------------------------------------------------------
 
-export function generateCSV(data: Record<string, unknown>[], columns: ExportColumn[]): string {
+export function generateCSV<T extends object>(data: T[], columns: ExportColumn[]): string {
   const header = columns.map((c) => escapeCSV(c.label)).join(',');
   const rows = data.map((row) =>
     columns.map((c) => escapeCSV(extractValue(row, c.key))).join(','),
@@ -51,7 +51,7 @@ function escapeCSV(value: string): string {
 // TSV Generation
 // ---------------------------------------------------------------------------
 
-export function generateTSV(data: Record<string, unknown>[], columns: ExportColumn[]): string {
+export function generateTSV<T extends object>(data: T[], columns: ExportColumn[]): string {
   const header = columns.map((c) => c.label).join('\t');
   const rows = data.map((row) =>
     columns.map((c) => extractValue(row, c.key).replace(/\t/g, ' ')).join('\t'),
@@ -63,11 +63,11 @@ export function generateTSV(data: Record<string, unknown>[], columns: ExportColu
 // JSON Generation
 // ---------------------------------------------------------------------------
 
-export function generateJSON(data: Record<string, unknown>[], columns: ExportColumn[]): string {
+export function generateJSON<T extends object>(data: T[], columns: ExportColumn[]): string {
   const filtered = data.map((row) => {
     const obj: Record<string, unknown> = {};
     for (const c of columns) {
-      obj[c.key] = row[c.key] ?? null;
+      obj[c.key] = (row as Record<string, unknown>)[c.key] ?? null;
     }
     return obj;
   });
@@ -78,8 +78,8 @@ export function generateJSON(data: Record<string, unknown>[], columns: ExportCol
 // XLSX Generation (via write-excel-file)
 // ---------------------------------------------------------------------------
 
-export async function generateXLSX(
-  data: Record<string, unknown>[],
+export async function generateXLSX<T extends object>(
+  data: T[],
   columns: ExportColumn[],
   filename: string,
 ): Promise<void> {
@@ -94,7 +94,7 @@ export async function generateXLSX(
   // Data rows
   const dataRows = data.map((row) =>
     columns.map((c) => {
-      const raw = row[c.key];
+      const raw = (row as Record<string, unknown>)[c.key];
       if (raw == null) return { value: null };
       if (typeof raw === 'number') return { value: raw };
       if (Array.isArray(raw)) return { value: raw.join(', ') };
@@ -111,8 +111,8 @@ export async function generateXLSX(
 // Clipboard (tab-separated for paste into spreadsheets)
 // ---------------------------------------------------------------------------
 
-export async function copyToClipboard(
-  data: Record<string, unknown>[],
+export async function copyToClipboard<T extends object>(
+  data: T[],
   columns: ExportColumn[],
 ): Promise<void> {
   const tsv = generateTSV(data, columns);
@@ -134,9 +134,9 @@ export function downloadBlob(content: string, filename: string, mimeType: string
 }
 
 /** Perform an export in the given format */
-export function performExport(
+export function performExport<T extends object>(
   format: ExportFormat,
-  data: Record<string, unknown>[],
+  data: T[],
   fields: EntityField[],
   filename: string,
 ): void {

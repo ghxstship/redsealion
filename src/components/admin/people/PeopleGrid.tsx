@@ -112,7 +112,7 @@ export default function PeopleGrid({ members }: { members: TeamMember[] }) {
               <Upload size={14} />
               Import
             </Button>
-            <DataExportMenu data={filtered as unknown as Record<string, unknown>[]} entityKey="people" filename="people-export" entityType="People" />
+            <DataExportMenu data={filtered} entityKey="people" filename="people-export" entityType="People" />
           </div>
         </div>
       </div>

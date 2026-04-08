@@ -120,7 +120,7 @@ export default function ExpensesTable({ expenses }: { expenses: ExpenseRow[] }) 
               <Upload size={14} />
               Import
             </Button>
-            <DataExportMenu data={sorted as unknown as Record<string, unknown>[]} entityKey="expenses" filename="expenses-export" entityType="Expenses" />
+            <DataExportMenu data={sorted} entityKey="expenses" filename="expenses-export" entityType="Expenses" />
           </div>
         </div>
 

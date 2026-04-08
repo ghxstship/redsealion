@@ -101,31 +101,7 @@ export default function MentionPicker({ inputRef, onSelect }: MentionPickerProps
     };
   }, [inputRef, handleInput]);
 
-  // Keyboard navigation
-  useEffect(() => {
-    if (!visible) return;
-
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        setSelected((s) => Math.min(s + 1, filtered.length - 1));
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        setSelected((s) => Math.max(s - 1, 0));
-      } else if (e.key === 'Enter' && filtered[selected]) {
-        e.preventDefault();
-        selectMember(filtered[selected]);
-      } else if (e.key === 'Escape') {
-        setVisible(false);
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visible, selected, filtered]);
-
-  function selectMember(member: Member) {
+  const selectMember = useCallback((member: Member) => {
     const el = inputRef.current;
     if (!el) return;
 
@@ -148,7 +124,30 @@ export default function MentionPicker({ inputRef, onSelect }: MentionPickerProps
       const newPos = atIdx + member.full_name.length + 2;
       el.setSelectionRange(newPos, newPos);
     }, 0);
-  }
+  }, [inputRef, onSelect]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    if (!visible) return;
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        setSelected((s) => Math.min(s + 1, filtered.length - 1));
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setSelected((s) => Math.max(s - 1, 0));
+      } else if (e.key === 'Enter' && filtered[selected]) {
+        e.preventDefault();
+        selectMember(filtered[selected]);
+      } else if (e.key === 'Escape') {
+        setVisible(false);
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [visible, selected, filtered, selectMember]);
 
   if (!visible || filtered.length === 0) return null;
 

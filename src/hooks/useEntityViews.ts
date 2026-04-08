@@ -1,6 +1,9 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('entity-views');
 
 export interface SavedView {
   id: string;
@@ -112,7 +115,7 @@ export function useEntityViews({ entityType }: UseEntityViewsOptions) {
         setActiveViewId(newView.id);
         return newView;
       } catch (err) {
-        console.error(err);
+        log.error('Failed to create view', {}, err);
         return null;
       }
     },
@@ -139,8 +142,7 @@ export function useEntityViews({ entityType }: UseEntityViewsOptions) {
         setViews(prev => prev.map(v => v.id === id ? updatedView : v));
         return updatedView;
       } catch (err) {
-        console.error(err);
-        // We could revert optimistic update here, but for simplicity skipping
+        log.error('Failed to update view', {}, err);
         return null;
       }
     },
@@ -166,8 +168,7 @@ export function useEntityViews({ entityType }: UseEntityViewsOptions) {
           if (!res.ok) throw new Error('Failed to delete view');
         }
       } catch (err) {
-        console.error(err);
-        // On error, we'd ideally revert.
+        log.error('Failed to delete view', {}, err);
       }
     },
     [views, activeViewId],

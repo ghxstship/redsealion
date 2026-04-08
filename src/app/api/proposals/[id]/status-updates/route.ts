@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { requireFeature } from '@/lib/api/tier-guard';
+import { castRelation } from '@/lib/supabase/cast-relation';
 
 /**
  * Project status updates API.
@@ -29,7 +30,7 @@ export async function GET(
     .limit(20);
 
   const updates = (data ?? []).map((row) => {
-    const user = row.users as unknown as { full_name: string } | null;
+    const user = castRelation<{ full_name: string }>(row.users);
     return {
       id: row.id,
       status: row.status,

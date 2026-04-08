@@ -13,6 +13,7 @@ import type { SupportedLocale } from '@/lib/i18n/config';
 import { createClient } from '@/lib/supabase/server';
 import type { SubscriptionTier } from '@/types/database';
 import { DEFAULT_PERMISSIONS, mapDBRoleToEnum } from '@/lib/permissions';
+import { castRelation } from '@/lib/supabase/cast-relation';
 import { cookies } from 'next/headers';
 
 /* ─────────────────────────────────────────────────────────
@@ -66,7 +67,7 @@ async function getSessionContext(): Promise<SessionContext> {
       .single();
 
     const orgId = membership?.organization_id;
-    const roleData = membership?.roles as unknown as { name: string } | null;
+    const roleData = castRelation<{ name: string }>(membership?.roles);
     const role = roleData?.name || 'team_member';
 
     const { data: org } = orgId

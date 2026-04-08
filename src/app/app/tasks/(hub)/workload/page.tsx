@@ -3,6 +3,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import TasksHubTabs from '../../TasksHubTabs';
 import PageHeader from '@/components/shared/PageHeader';
+import { castRelation } from '@/lib/supabase/cast-relation';
 
 /**
  * Workload view — shows task distribution per team member
@@ -40,7 +41,7 @@ async function getWorkload(): Promise<TeamMemberWorkload[]> {
     const byUser = new Map<string, { name: string; avatar: string | null; tasks: typeof tasks }>();
 
     for (const task of tasks) {
-      const user = task.users as unknown as { id: string; full_name: string; avatar_url: string | null } | null;
+      const user = castRelation<{ id: string; full_name: string; avatar_url: string | null }>(task.users);
       if (!user?.id) continue;
 
       if (!byUser.has(user.id)) {

@@ -149,7 +149,7 @@ export default function ProposalsTable({
             <Button variant="ghost" size="sm" onClick={() => setShowColumnConfig(true)} title="Column Settings">
               <SlidersHorizontal size={14} />
             </Button>
-            <DataExportMenu data={sorted as unknown as Record<string, unknown>[]} entityKey="proposals" filename="proposals-export" entityType="Proposals" />
+            <DataExportMenu data={sorted} entityKey="proposals" filename="proposals-export" entityType="Proposals" />
           </div>
         </div>
 

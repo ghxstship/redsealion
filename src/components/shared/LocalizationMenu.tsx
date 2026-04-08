@@ -34,9 +34,7 @@ export default function LocalizationMenu() {
             document.documentElement.lang = data.language;
           }
         }
-      } catch (err) {
-        console.error('Failed to parse localization settings:', err);
-      }
+      } catch { /* non-critical: locale init */ }
     }
     initLocale();
   }, []);
@@ -88,9 +86,7 @@ export default function LocalizationMenu() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ language: localeValue }),
       });
-    } catch (err) {
-      console.error('Failed to save localization:', err);
-    }
+    } catch { /* non-critical: locale persist */ }
 
     // Reload to apply server-side dictionary change
     window.location.reload();

@@ -3,6 +3,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import Link from 'next/link';
 import PageHeader from '@/components/shared/PageHeader';
+import { castRelation } from '@/lib/supabase/cast-relation';
 
 /**
  * Roadmap view — timeline-based project visualization
@@ -52,7 +53,7 @@ async function getRoadmapItems(): Promise<RoadmapItem[]> {
     }
 
     return proposals.map((p) => {
-      const client = p.clients as unknown as { company_name: string } | null;
+      const client = castRelation<{ company_name: string }>(p.clients);
       const taskData = tasksByProposal.get(p.id);
       const progress = taskData && taskData.total > 0
         ? Math.round((taskData.done / taskData.total) * 100)

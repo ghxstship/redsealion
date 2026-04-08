@@ -11,6 +11,7 @@ import { createClient } from '@/lib/supabase/server';
 import { canAccessFeature } from '@/lib/subscription';
 import type { SubscriptionTier } from '@/types/database';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import { castRelation } from '@/lib/supabase/cast-relation';
 
 /* ─── Types ─────────────────────────────────────────────── */
 
@@ -239,7 +240,7 @@ export async function getDashboardData(): Promise<{
         const ownerMap = new Map<string, { name: string; deals: number; revenue: number }>();
         for (const d of wonDeals) {
           const ownerId = d.owner_id ?? 'unassigned';
-          const ownerName = (d.users as unknown as Record<string, string>)?.full_name ?? 'Unassigned';
+          const ownerName = castRelation<Record<string, string>>(d.users)?.full_name ?? 'Unassigned';
           const entry = ownerMap.get(ownerId) ?? { name: ownerName, deals: 0, revenue: 0 };
           entry.deals++;
           entry.revenue += d.deal_value ?? 0;

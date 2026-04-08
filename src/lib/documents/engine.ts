@@ -31,7 +31,8 @@ import {
   TabStopPosition,
 } from 'docx';
 
-import type { Organization, BrandConfig, Facility } from '@/types/database';
+import type { Organization } from '@/types/database';
+import { castBrandConfig, castFacilities } from './json-casts';
 
 // ---------------------------------------------------------------------------
 // Constants — US Letter, 1‑inch margins
@@ -80,8 +81,8 @@ export interface DocBrand {
 
 /** Extract DocBrand from Organization record */
 export function brandFromOrg(org: Organization, logoBuffer?: Buffer): DocBrand {
-  const bc = (org.brand_config ?? {}) as unknown as BrandConfig;
-  const facs = (org.facilities ?? []) as unknown as Facility[];
+  const bc = castBrandConfig(org.brand_config ?? null);
+  const facs = castFacilities(org.facilities ?? null);
   return {
     orgName: org.name,
     primaryColor: (bc.primaryColor ?? '#18181B').replace('#', ''),
@@ -1031,6 +1032,8 @@ export function formatDate(dateStr: string | null | undefined): string {
 // ---------------------------------------------------------------------------
 
 export async function packDocument(doc: Document): Promise<Buffer> {
+  // Library boundary cast: docx Packer.toBuffer() returns Uint8Array in v9.6+
+  // but our API routes expect Node Buffer for Response construction.
   return (await Packer.toBuffer(doc)) as unknown as Buffer;
 }
 

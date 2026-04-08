@@ -5,6 +5,7 @@ import Link from 'next/link';
 import TasksHubTabs from '../../TasksHubTabs';
 import EmptyState from '@/components/ui/EmptyState';
 import PageHeader from '@/components/shared/PageHeader';
+import { castRelation } from '@/lib/supabase/cast-relation';
 
 /**
  * Project-level task overview — groups tasks by their linked proposal (project)
@@ -58,7 +59,7 @@ async function getProjectHealth(): Promise<ProjectHealth[]> {
         {
           name: p.name,
           clientName:
-            (p.clients as unknown as { company_name: string } | null)
+            castRelation<{ company_name: string }>(p.clients)
               ?.company_name ?? null,
         },
       ]),

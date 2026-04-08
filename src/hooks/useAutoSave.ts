@@ -123,8 +123,7 @@ export function useAutoSave<T>({
       historyRef.current = [structuredClone(data)];
       historyIndexRef.current = 0;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [data]);
 
   const saveNow = useCallback(() => {
     if (timerRef.current) clearTimeout(timerRef.current);

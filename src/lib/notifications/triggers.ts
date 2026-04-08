@@ -11,6 +11,7 @@ import { sendNotification } from './dispatcher';
 import * as templates from './templates';
 
 import { createLogger } from '@/lib/logger';
+import { castRelation } from '@/lib/supabase/cast-relation';
 
 const log = createLogger('notification-triggers');
 
@@ -55,7 +56,7 @@ async function getOrgAdmin(
 
   // Find the first admin-level membership
   const adminEntry = data.find((m) => {
-    const roleName = (m.roles as unknown as { name: string } | null)?.name;
+    const roleName = castRelation<{ name: string }>(m.roles)?.name;
     return roleName === 'developer' || roleName === 'owner' || roleName === 'admin';
   });
 

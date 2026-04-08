@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
+import { castRelation } from '@/lib/supabase/cast-relation';
 
 export async function GET(request: NextRequest) {
   const perm = await checkPermission('warehouse', 'view');
@@ -52,12 +53,12 @@ export async function GET(request: NextRequest) {
   > = {};
 
   for (const r of reservations ?? []) {
-    const asset = r.asset as unknown as {
+    const asset = castRelation<{
       id: string;
       name: string;
       category: string;
       serial_number: string | null;
-    } | null;
+    }>(r.asset);
 
     const category = asset?.category ?? 'Uncategorized';
 

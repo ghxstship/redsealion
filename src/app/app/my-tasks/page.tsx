@@ -1,6 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
 import MyTasksTable, { type MyTaskRow } from '@/components/admin/my-tasks/MyTasksTable';
-import { useGlobalModals } from '@/components/shared/GlobalModalProvider';
 import MyTasksHeader from '@/components/admin/my-tasks/MyTasksHeader';
 
 async function getMyTasks(): Promise<MyTaskRow[]> {
@@ -37,7 +36,7 @@ async function getMyTasks(): Promise<MyTaskRow[]> {
       status: t.status,
       priority: t.priority,
       dueDate: t.due_date ?? null,
-      projectName: null, // TODO: join with projects table when available
+      projectName: null,
       subtaskCount: countMap.get(t.id) ?? 0,
     }));
   } catch {

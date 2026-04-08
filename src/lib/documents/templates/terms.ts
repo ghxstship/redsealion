@@ -31,6 +31,8 @@ import {
   type DocBrand,
 } from '../engine';
 
+import { castJson } from '../json-casts';
+
 interface TermsSection {
   number: string;
   title: string;
@@ -185,7 +187,7 @@ function tableOfContents(brand: DocBrand, data: TermsDocumentData): Paragraph[] 
   children.push(heading('Table of Contents', 1));
   children.push(spacer(100));
 
-  const sections = (data.termsDocument.sections ?? []) as unknown as TermsSection[];
+  const sections = castJson<TermsSection[]>(data.termsDocument.sections, []);
   for (const section of sections) {
     children.push(
       new Paragraph({
@@ -226,7 +228,7 @@ function tableOfContents(brand: DocBrand, data: TermsDocumentData): Paragraph[] 
 function sectionContent(brand: DocBrand, data: TermsDocumentData): Paragraph[] {
   const children: Paragraph[] = [];
 
-  const sections2 = (data.termsDocument.sections ?? []) as unknown as TermsSection[];
+  const sections2 = castJson<TermsSection[]>(data.termsDocument.sections, []);
   for (const section of sections2) {
     // Section heading
     children.push(heading(`${section.number}. ${section.title}`, 2));

@@ -58,7 +58,7 @@ export async function gatherContext(
     if (!membership) return fallback;
 
     const orgId = membership.organization_id as string;
-    const roleData = membership.roles as unknown as { name: string } | null;
+    const roleData = membership.roles as { name?: string | null } | null | undefined;
     const userRole = roleData?.name || 'member';
 
     const [orgRes, userRes, proposalCountRes, teamRes, activeRes, recentRes] =

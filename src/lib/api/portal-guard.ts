@@ -38,7 +38,7 @@ export async function requirePortalPermission(
     return NextResponse.json({ error: 'User not found' }, { status: 404 });
   }
 
-  const roleData = membership.roles as unknown as { name: string } | null;
+  const roleData = membership.roles as { name?: string | null } | null | undefined;
   const rawRole = roleData?.name ?? 'viewer';
   const role = mapDBRoleToEnum(rawRole) as OrganizationRole;
 

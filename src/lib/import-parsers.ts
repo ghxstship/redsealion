@@ -62,10 +62,11 @@ export function parseTSV(text: string): ParsedFile {
 export async function parseXLSX(file: File): Promise<ParsedFile> {
   const readXlsxFile = (await import('read-excel-file/browser')).default;
   const result = await readXlsxFile(file);
-  // result is ReadFileResult = { sheet: string; data: Row[] }[]
-  const data = Array.isArray(result) && result.length > 0 && 'data' in result[0]
-    ? (result as { sheet: string; data: (string | number | boolean | null)[][] }[])[0].data
-    : result as unknown as (string | number | boolean | null)[][];
+  // result may be Row[][] or ReadFileResult depending on version — normalise via unknown
+  const raw = result as unknown;
+  const data = Array.isArray(raw) && (raw as unknown[]).length > 0 && typeof (raw as Record<string, unknown>[])[0] === 'object' && 'data' in (raw as Record<string, unknown>[])[0]
+    ? (raw as { sheet: string; data: (string | number | boolean | null)[][] }[])[0].data
+    : (raw as (string | number | boolean | null)[][]);
   if (data.length < 2) return { headers: (data[0] ?? []).map(String), rows: [], rowCount: 0 };
   return {
     headers: data[0].map(String),

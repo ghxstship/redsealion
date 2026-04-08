@@ -24,6 +24,7 @@ import {
 import { useDroppable, useDraggable } from '@dnd-kit/core';
 import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
 import StatusBadge, { TASK_PRIORITY_COLORS } from '@/components/ui/StatusBadge';
+import { castRelation } from '@/lib/supabase/cast-relation';
 
 /* ──────────────────────────────────────────────────────────────
    Types
@@ -222,9 +223,9 @@ export default function KanbanBoard() {
         const grouped = emptyBoard();
         for (const row of taskRows) {
           const col = STATUS_MAP[row.status as string] ?? 'todo';
-          const assigneeUser = row.users as unknown as {
+          const assigneeUser = castRelation<{
             full_name: string;
-          } | null;
+          }>(row.users);
           grouped[col].push({
             id: row.id,
             title: row.title,

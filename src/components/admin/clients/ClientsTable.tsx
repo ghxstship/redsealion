@@ -121,7 +121,7 @@ export default function ClientsTable({ clients }: { clients: ClientRow[] }) {
               <Upload size={14} />
               Import
             </Button>
-            <DataExportMenu data={sorted as unknown as Record<string, unknown>[]} entityKey="clients" filename="clients-export" entityType="Clients" />
+            <DataExportMenu data={sorted} entityKey="clients" filename="clients-export" entityType="Clients" />
           </div>
         </div>
       </div>

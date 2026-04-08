@@ -399,7 +399,7 @@ export function buildCopilotTools(
             total_members: count ?? (data ?? []).length,
             members: (data ?? []).map((m) => ({
               status: m.status,
-              role: (m.roles as unknown as { name: string })?.name ?? 'member',
+              role: (m.roles as { name?: string | null })?.name ?? 'member',
             })),
           };
         } catch (error) {

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
 import { generatePayrollCSV } from '@/lib/payroll/export';
+import { castRelation } from '@/lib/supabase/cast-relation';
 
 export async function GET(request: NextRequest) {
   const perm = await checkPermission('crew', 'view');
@@ -56,8 +57,8 @@ export async function GET(request: NextRequest) {
   }
 
   const entries = (timeEntries ?? []).map((te) => {
-    const user = te.user as unknown as { name: string; email: string } | null;
-    const proposal = te.proposal as unknown as { name: string } | null;
+    const user = castRelation<{ name: string; email: string }>(te.user);
+    const proposal = castRelation<{ name: string }>(te.proposal);
     const rates = rateMap.get(te.user_id as string);
     const hours = (te.duration_minutes as number | null)
       ? (te.duration_minutes as number) / 60

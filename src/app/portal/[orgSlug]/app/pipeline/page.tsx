@@ -4,6 +4,7 @@ import { resolveOrgFromSlug } from '@/lib/auth/resolve-org-from-slug';
 import { TierGate } from '@/components/shared/TierGate';
 import PipelineBoard from '@/components/admin/pipeline/PipelineBoard';
 import type { Deal } from '@/types/database';
+import { castRelation } from '@/lib/supabase/cast-relation';
 
 interface PortalPipelinePageProps {
   params: Promise<{ orgSlug: string }>;
@@ -27,9 +28,9 @@ async function getDeals(orgId: string): Promise<DealWithClient[]> {
       const { clients: _clients, users: _users, ...rest } = d;
       return {
         ...rest,
-        client_name: (_clients as Record<string, string>)?.company_name ?? 'Unknown',
-        owner_name: (_users as Record<string, string>)?.full_name ?? null,
-      } as unknown as DealWithClient;
+        client_name: castRelation<Record<string, string>>(_clients)?.company_name ?? 'Unknown',
+        owner_name: castRelation<Record<string, string>>(_users)?.full_name ?? null,
+      } as DealWithClient;
     });
   } catch {
     return [];

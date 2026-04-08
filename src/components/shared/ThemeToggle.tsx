@@ -51,7 +51,7 @@ export default function ThemeToggle() {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ theme: next }),
-      }).catch(console.error);
+      }).catch(() => { /* non-critical: theme persist */ });
       return next;
     });
   }, [prefs]);

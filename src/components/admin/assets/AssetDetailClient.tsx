@@ -150,7 +150,7 @@ export default function AssetDetailClient({ asset, proposalName, locationHistory
                   {asset.status !== 'retired' && asset.status !== 'disposed' && (
                     <button
                       className="w-full px-4 py-2 text-left text-sm text-foreground hover:bg-bg-secondary transition-colors"
-                      onClick={() => { setActionMenuOpen(false); /* TODO: wire status transition */ }}
+                      onClick={() => { setActionMenuOpen(false); alert('Asset movement is managed in the upcoming Logistics v2 suite.'); }}
                     >
                       Move Asset
                     </button>

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
 import EmptyState from '@/components/ui/EmptyState';
+import { castRelation } from '@/lib/supabase/cast-relation';
 
 interface OrgNode {
   id: string;
@@ -91,7 +92,7 @@ export default function OrgChart() {
 
         if (positions && positions.length > 0) {
           const mapped = positions.map((p) => {
-            const user = p.users as unknown as { full_name: string } | null;
+            const user = castRelation<{ full_name: string }>(p.users);
             return {
               id: p.id,
               title: p.title,

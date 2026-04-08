@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { requireFeature } from '@/lib/api/tier-guard';
+import { castRelation } from '@/lib/supabase/cast-relation';
 
 /**
  * Task attachments API — list and add file attachments.
@@ -32,7 +33,7 @@ export async function GET(
   }
 
   const attachments = (data ?? []).map((row) => {
-    const user = row.users as unknown as { full_name: string | null } | null;
+    const user = castRelation<{ full_name: string | null }>(row.users);
     return {
       id: row.id,
       file_name: row.file_name,

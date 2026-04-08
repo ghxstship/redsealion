@@ -80,8 +80,7 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
         }
       }
       setMessage('Portal settings saved successfully.');
-    } catch (err) {
-      console.error(err);
+    } catch {
       setMessage('Failed to save portal settings.');
     } finally {
       setIsSaving(false);

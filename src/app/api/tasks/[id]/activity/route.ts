@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { requireFeature } from '@/lib/api/tier-guard';
+import { castRelation } from '@/lib/supabase/cast-relation';
 
 /**
  * Task activity feed API — surfaces audit_log entries for a specific task.
@@ -34,7 +35,7 @@ export async function GET(
   }
 
   const entries = (data ?? []).map((row) => {
-    const user = row.users as unknown as { full_name: string | null } | null;
+    const user = castRelation<{ full_name: string | null }>(row.users);
     return {
       id: row.id,
       action: row.action,

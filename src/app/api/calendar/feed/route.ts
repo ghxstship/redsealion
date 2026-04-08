@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { generateICalFeed } from '@/lib/calendar/ical';
 import { requireAuth } from '@/lib/api/auth-guard';
+import { castRelation } from '@/lib/supabase/cast-relation';
 
 export async function GET() {
   const { ctx, denied } = await requireAuth();
@@ -78,7 +79,7 @@ export async function GET() {
   for (const b of bookings ?? []) {
     if (b.start_date && b.end_date) {
       const proposalName =
-        (b.proposals as unknown as { name: string } | null)?.name ?? 'Project';
+        castRelation<{ name: string }>(b.proposals)?.name ?? 'Project';
       events.push({
         uid: `booking-${b.id}@flytedeck`,
         summary: `${b.role ?? 'Crew'} - ${proposalName}`,

@@ -27,7 +27,8 @@ export default function PWAInstallPrompt() {
   const isStandalone = useCallback(() => {
     return (
       window.matchMedia('(display-mode: standalone)').matches ||
-      (navigator as unknown as { standalone?: boolean }).standalone === true
+      // iOS Safari exposes `navigator.standalone` which is not in standard DOM typings
+      'standalone' in navigator && (navigator as { standalone?: boolean }).standalone === true
     );
   }, []);
 

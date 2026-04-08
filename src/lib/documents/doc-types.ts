@@ -107,34 +107,37 @@ export interface DocDeliverableMeta {
    Cast Helpers
    ───────────────────────────────────────────────────────── */
 
+import { castJson } from './json-casts';
+
 export function castDocAddress(val: Json | null | undefined): DocAddress | null {
-  return val ? (val as unknown as DocAddress) : null;
+  return castJson<DocAddress | null>(val ?? null, null);
 }
 
 export function castDocContact(val: Json | null | undefined): DocContact | null {
-  return val ? (val as unknown as DocContact) : null;
+  return castJson<DocContact | null>(val ?? null, null);
 }
 
 export function castActivationDates(val: Json | null | undefined): DocVenueActivationDates | null {
-  return val ? (val as unknown as DocVenueActivationDates) : null;
+  return castJson<DocVenueActivationDates | null>(val ?? null, null);
 }
 
 export function castLoadInStrike(val: Json | null | undefined): DocVenueLoadInStrike[] {
-  return (val ?? []) as unknown as DocVenueLoadInStrike[];
+  return castJson<DocVenueLoadInStrike[]>(val ?? null, []);
 }
 
 export function castVenueContact(val: Json | null | undefined): DocVenueContact | null {
-  return val ? (val as unknown as DocVenueContact) : null;
+  return castJson<DocVenueContact | null>(val ?? null, null);
 }
 
 export function castTermsSections(val: Json | null | undefined): DocTermsSection[] {
-  return (val ?? []) as unknown as DocTermsSection[];
+  return castJson<DocTermsSection[]>(val ?? null, []);
 }
 
 export function castDeliverableMeta(val: Json | null | undefined): DocDeliverableMeta {
-  return (val ?? {}) as unknown as DocDeliverableMeta;
+  return castJson<DocDeliverableMeta>(val ?? null, {});
 }
 
 export function castChangeOrders(val: unknown[]): DocChangeOrder[] {
-  return val as unknown as DocChangeOrder[];
+  // Supabase returns ChangeOrder rows as unknown[] from JSONB — narrow to doc shape.
+  return val as DocChangeOrder[];
 }

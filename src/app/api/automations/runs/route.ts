@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { requireFeature } from '@/lib/api/tier-guard';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import { castRelation } from '@/lib/supabase/cast-relation';
 
 /**
  * Automation runs API — surfaces execution history.
@@ -42,7 +43,7 @@ export async function GET(request: NextRequest) {
   }
 
   const runs = (data ?? []).map((row) => {
-    const automation = row.automations as unknown as { name: string } | null;
+    const automation = castRelation<{ name: string }>(row.automations);
     return {
       id: row.id,
       automation_name: automation?.name ?? null,

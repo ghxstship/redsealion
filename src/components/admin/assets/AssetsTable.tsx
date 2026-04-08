@@ -137,7 +137,7 @@ export default function AssetsTable({ assets }: { assets: AssetRow[] }) {
               <Upload size={14} />
               Import
             </Button>
-            <DataExportMenu data={sorted as unknown as Record<string, unknown>[]} entityKey="assets" filename="assets-export" entityType="Assets" />
+            <DataExportMenu data={sorted} entityKey="assets" filename="assets-export" entityType="Assets" />
           </div>
         </div>
 

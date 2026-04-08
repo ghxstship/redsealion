@@ -15,6 +15,7 @@ async function getActivity() {
       .eq('organization_id', ctx.organizationId)
       .order('created_at', { ascending: false })
       .limit(50);
+    // Supabase deeply-nested join return type differs from actual runtime shape; cast at boundary
     return (data ?? []) as unknown as Array<{
       id: string; type: string; notes: string | null; created_at: string;
       deals: { title: string; clients: { name: string } | null } | null;

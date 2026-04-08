@@ -83,7 +83,7 @@ export default function DataExportMenu<T extends object>({
 
   const handleExport = useCallback(
     (format: ExportFormat) => {
-      performExport(format, data as unknown as Record<string, unknown>[], visibleFields, filename);
+      performExport(format, data, visibleFields, filename);
       setIsOpen(false);
     },
     [data, visibleFields, filename],
@@ -91,7 +91,7 @@ export default function DataExportMenu<T extends object>({
 
   const handleCopy = useCallback(async () => {
     const columns = visibleFields.map((f) => ({ key: f.key, label: f.label }));
-    await copyToClipboard(data as unknown as Record<string, unknown>[], columns);
+    await copyToClipboard(data, columns);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }, [data, visibleFields]);
@@ -99,7 +99,7 @@ export default function DataExportMenu<T extends object>({
   const handlePrint = useCallback(() => {
     printTable({
       title: entityType ?? filename,
-      data: data as unknown as Record<string, unknown>[],
+      data,
       fields: visibleFields,
       subtitle: `${data.length} records`,
     });
