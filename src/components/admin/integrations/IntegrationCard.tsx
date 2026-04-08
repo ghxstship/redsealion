@@ -24,7 +24,7 @@ export function IntegrationCard({
 
   const statusColors: Record<string, string> = {
     connected: 'bg-green-100 text-green-800',
-    disconnected: 'bg-gray-100 text-gray-600',
+    disconnected: 'bg-bg-secondary text-gray-600',
     error: 'bg-red-100 text-red-800',
   };
 

@@ -104,7 +104,7 @@ export function CookieBanner() {
                 <p className="text-sm text-text-secondary">Used by our advertising partners to build a profile of your interests and show you relevant adverts on other sites.</p>
               </div>
             </div>
-            <div className="p-6 border-t border-border bg-gray-50 rounded-b-xl flex justify-end gap-3">
+            <div className="p-6 border-t border-border bg-bg-secondary rounded-b-xl flex justify-end gap-3">
               <Button variant="secondary" onClick={() => setShowPreferences(false)}>
                 Cancel
               </Button>

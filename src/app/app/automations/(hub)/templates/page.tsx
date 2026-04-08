@@ -32,7 +32,7 @@ export default function AutomationTemplatesPage() {
           <div key={template.name} className="rounded-xl border border-border bg-background px-5 py-5 flex flex-col justify-between hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer">
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${CATEGORY_COLORS[template.category] ?? 'bg-gray-50 text-gray-700'}`}>{template.category}</span>
+                <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${CATEGORY_COLORS[template.category] ?? 'bg-bg-secondary text-gray-700'}`}>{template.category}</span>
               </div>
               <h3 className="text-sm font-semibold text-foreground">{template.name}</h3>
               <p className="text-xs text-text-secondary mt-1">{template.description}</p>

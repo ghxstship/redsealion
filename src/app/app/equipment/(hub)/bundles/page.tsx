@@ -16,13 +16,7 @@ interface Bundle {
   created_at: string;
 }
 
-const fallbackBundles: Bundle[] = [
-  { id: 'bnd_001', name: 'Stage Lighting Kit A', description: 'Standard concert lighting package with movers and washes', item_count: 24, category: 'Lighting', created_at: '2026-01-10' },
-  { id: 'bnd_002', name: 'Corporate AV Package', description: 'Projector, screen, audio, and podium mic setup', item_count: 12, category: 'AV', created_at: '2026-02-05' },
-  { id: 'bnd_003', name: 'Festival Sound System', description: 'Main PA with subs, monitors, and mixing desk', item_count: 36, category: 'Audio', created_at: '2025-11-20' },
-  { id: 'bnd_004', name: 'LED Wall 20x10', description: '20ft by 10ft LED wall with processors and cabling', item_count: 48, category: 'LED', created_at: '2026-03-01' },
-  { id: 'bnd_005', name: 'Rigging Kit - Medium Venue', description: 'Chain hoists, truss, and hardware for mid-size venues', item_count: 18, category: 'Rigging', created_at: '2025-09-15' },
-];
+
 
 async function getBundles(): Promise<Bundle[]> {
   try {
@@ -39,7 +33,7 @@ const { data: bundles } = await supabase
       .eq('organization_id', ctx.organizationId)
       .order('name');
 
-    if (!bundles || bundles.length === 0) throw new Error('No bundles');
+    if (!bundles) throw new Error('No bundles');
 
     return bundles.map((b: Record<string, unknown>) => ({
       id: b.id as string,
@@ -50,7 +44,7 @@ const { data: bundles } = await supabase
       created_at: b.created_at as string,
     }));
   } catch {
-    return fallbackBundles;
+    return [];
   }
 }
 

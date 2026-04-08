@@ -17,13 +17,7 @@ interface Transfer {
   notes: string | null;
 }
 
-const fallbackTransfers: Transfer[] = [
-  { id: 'xfr_001', from_location: 'Warehouse A', to_location: 'Convention Center Hall A', items_count: 32, status: 'in_transit', requested_by: 'Morgan Chen', requested_date: '2026-04-10', completed_date: null, notes: 'Nike SNKRS Fest load-in equipment' },
-  { id: 'xfr_002', from_location: 'Warehouse B', to_location: 'Warehouse A', items_count: 8, status: 'pending', requested_by: 'Alex Rivera', requested_date: '2026-04-12', completed_date: null, notes: 'Consolidating rigging gear before Samsung event' },
-  { id: 'xfr_003', from_location: 'Barclays Center', to_location: 'Warehouse A', items_count: 48, status: 'completed', requested_by: 'Sam Patel', requested_date: '2026-03-25', completed_date: '2026-03-27', notes: 'LED wall return from previous event' },
-  { id: 'xfr_004', from_location: 'Warehouse A', to_location: 'Remote Storage C', items_count: 15, status: 'completed', requested_by: 'Taylor Brooks', requested_date: '2026-03-18', completed_date: '2026-03-19', notes: 'Seasonal storage of winter event decor' },
-  { id: 'xfr_005', from_location: 'Remote Storage C', to_location: 'Warehouse B', items_count: 6, status: 'pending', requested_by: 'Jordan Lee', requested_date: '2026-04-14', completed_date: null, notes: 'Retrieving festival sound gear' },
-];
+
 
 const STATUS_COLORS: Record<string, string> = {
   pending: 'bg-yellow-50 text-yellow-700',
@@ -47,7 +41,7 @@ const { data: transfers } = await supabase
       .eq('organization_id', ctx.organizationId)
       .order('requested_date', { ascending: false });
 
-    if (!transfers || transfers.length === 0) throw new Error('No transfers');
+    if (!transfers) throw new Error('No transfers');
 
     return transfers.map((t: Record<string, unknown>) => ({
       id: t.id as string,
@@ -61,7 +55,7 @@ const { data: transfers } = await supabase
       notes: (t.notes as string) ?? null,
     }));
   } catch {
-    return fallbackTransfers;
+    return [];
   }
 }
 
@@ -125,7 +119,7 @@ export default async function TransfersPage() {
                   <td className="px-6 py-3.5">
                     <span
                       className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        STATUS_COLORS[transfer.status] ?? 'bg-gray-100 text-gray-600'
+                        STATUS_COLORS[transfer.status] ?? 'bg-bg-secondary text-gray-600'
                       }`}
                     >
                       {formatLabel(transfer.status)}

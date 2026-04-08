@@ -131,7 +131,7 @@ export default function CalendarSyncPage() {
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-3">
               {/* Icon placeholder */}
-              <div className="h-10 w-10 rounded-lg bg-gray-100 border border-border flex items-center justify-center">
+              <div className="h-10 w-10 rounded-lg bg-bg-secondary border border-border flex items-center justify-center">
                 <Calendar className="h-5 w-5 text-text-muted" />
               </div>
               <div>
@@ -182,7 +182,7 @@ export default function CalendarSyncPage() {
                     className={`rounded-lg border px-3.5 py-2 text-sm font-medium transition-colors ${
                       provider.syncDirection === 'one-way'
                         ? 'border-foreground bg-foreground/5 text-foreground'
-                        : 'border-border bg-background text-text-secondary hover:bg-gray-50'
+                        : 'border-border bg-background text-text-secondary hover:bg-bg-secondary'
                     }`}
                   >
                     One-way: FlyteDeck to Calendar
@@ -192,7 +192,7 @@ export default function CalendarSyncPage() {
                     className={`rounded-lg border px-3.5 py-2 text-sm font-medium transition-colors ${
                       provider.syncDirection === 'two-way'
                         ? 'border-foreground bg-foreground/5 text-foreground'
-                        : 'border-border bg-background text-text-secondary hover:bg-gray-50'
+                        : 'border-border bg-background text-text-secondary hover:bg-bg-secondary'
                     }`}
                   >
                     Two-way
@@ -227,11 +227,11 @@ export default function CalendarSyncPage() {
             type="text"
             value={feedUrl}
             readOnly
-            className="flex-1 rounded-lg border border-border bg-gray-50 px-3.5 py-2 text-sm text-text-secondary cursor-not-allowed"
+            className="flex-1 rounded-lg border border-border bg-bg-secondary px-3.5 py-2 text-sm text-text-secondary cursor-not-allowed"
           />
           <button
             onClick={handleCopyFeed}
-            className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-gray-50 transition-colors"
+            className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors"
           >
             {feedCopied ? 'Copied!' : 'Copy'}
           </button>

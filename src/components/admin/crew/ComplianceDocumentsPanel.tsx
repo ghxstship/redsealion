@@ -43,7 +43,7 @@ const STATUS_STYLES: Record<string, string> = {
   uploaded: 'bg-blue-50 text-blue-700',
   verified: 'bg-green-50 text-green-700',
   expired: 'bg-red-50 text-red-700',
-  rejected: 'bg-gray-100 text-gray-600',
+  rejected: 'bg-bg-secondary text-gray-600',
 };
 
 

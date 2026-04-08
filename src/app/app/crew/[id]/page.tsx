@@ -32,25 +32,7 @@ interface CrewDetail {
   }>;
 }
 
-const fallbackProfile: CrewDetail = {
-  full_name: 'Alex Rivera',
-  email: 'alex.rivera@example.com',
-  phone: '+1 310 555 0199',
-  skills: ['Lighting', 'Rigging', 'Stage Design'],
-  certifications: ['ETCP Rigging', 'OSHA 30', 'First Aid/CPR'],
-  hourly_rate: 75,
-  day_rate: 600,
-  availability_status: 'available',
-  onboarding_status: 'complete',
-  emergency_contact_name: 'Maria Rivera',
-  emergency_contact_phone: '+1 310 555 0200',
-  bio: 'Experienced lighting designer and rigger with 8+ years in live events and experiential production.',
-  bookings: [
-    { id: 'bk_001', project_name: 'Nike SNKRS Fest 2026', venue: 'Convention Center Hall A', date: '2026-04-15', status: 'confirmed' },
-    { id: 'bk_002', project_name: 'Samsung Galaxy Unpacked', venue: 'Barclays Center', date: '2026-04-22', status: 'tentative' },
-    { id: 'bk_003', project_name: 'Spotify Wrapped Live', venue: 'Pier 17', date: '2026-05-10', status: 'confirmed' },
-  ],
-};
+
 
 async function getCrewMember(id: string): Promise<CrewDetail> {
   try {
@@ -97,7 +79,7 @@ async function getCrewMember(id: string): Promise<CrewDetail> {
       })),
     };
   } catch {
-    return fallbackProfile;
+    notFound();
   }
 }
 
@@ -125,7 +107,7 @@ const AVAILABILITY_COLORS: Record<string, string> = {
 const ONBOARDING_COLORS: Record<string, string> = {
   complete: 'bg-green-50 text-green-700',
   in_progress: 'bg-blue-50 text-blue-700',
-  pending: 'bg-gray-100 text-gray-600',
+  pending: 'bg-bg-secondary text-gray-600',
 };
 
 const BOOKING_STATUS_COLORS: Record<string, string> = {
@@ -217,7 +199,7 @@ export default async function CrewMemberPage({
                   <td className="px-6 py-3.5">
                     <span
                       className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        BOOKING_STATUS_COLORS[booking.status] ?? 'bg-gray-100 text-gray-600'
+                        BOOKING_STATUS_COLORS[booking.status] ?? 'bg-bg-secondary text-gray-600'
                       }`}
                     >
                       {formatLabel(booking.status)}
@@ -257,14 +239,14 @@ export default async function CrewMemberPage({
         <div className="flex gap-2">
           <span
             className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-              AVAILABILITY_COLORS[member.availability_status] ?? 'bg-gray-100 text-gray-600'
+              AVAILABILITY_COLORS[member.availability_status] ?? 'bg-bg-secondary text-gray-600'
             }`}
           >
             {formatLabel(member.availability_status)}
           </span>
           <span
             className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-              ONBOARDING_COLORS[member.onboarding_status] ?? 'bg-gray-100 text-gray-600'
+              ONBOARDING_COLORS[member.onboarding_status] ?? 'bg-bg-secondary text-gray-600'
             }`}
           >
             Onboarding: {formatLabel(member.onboarding_status)}

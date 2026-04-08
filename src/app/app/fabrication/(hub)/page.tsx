@@ -23,7 +23,7 @@ async function getOrders() {
   } catch { return []; }
 }
 
-const STATUS_COLORS: Record<string, string> = { draft: 'bg-gray-50 text-gray-700', pending: 'bg-yellow-50 text-yellow-700', in_production: 'bg-blue-50 text-blue-700', quality_check: 'bg-purple-50 text-purple-700', completed: 'bg-green-50 text-green-700', cancelled: 'bg-red-50 text-red-700' };
+const STATUS_COLORS: Record<string, string> = { draft: 'bg-bg-secondary text-gray-700', pending: 'bg-yellow-50 text-yellow-700', in_production: 'bg-blue-50 text-blue-700', quality_check: 'bg-purple-50 text-purple-700', completed: 'bg-green-50 text-green-700', cancelled: 'bg-red-50 text-red-700' };
 const PRIORITY_COLORS: Record<string, string> = { low: 'text-gray-500', medium: 'text-yellow-600', high: 'text-orange-600', urgent: 'text-red-600' };
 
 export default async function FabricationOrdersPage() {

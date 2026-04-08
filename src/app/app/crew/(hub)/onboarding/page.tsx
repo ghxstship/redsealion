@@ -14,18 +14,12 @@ interface OnboardingMember {
   started_at: string | null;
 }
 
-const fallbackOnboarding: OnboardingMember[] = [
-  { id: 'crew_001', full_name: 'Alex Rivera', email: 'alex.rivera@example.com', onboarding_status: 'complete', documents_total: 6, documents_completed: 6, started_at: '2025-08-01' },
-  { id: 'crew_002', full_name: 'Jordan Lee', email: 'jordan.lee@example.com', onboarding_status: 'complete', documents_total: 6, documents_completed: 6, started_at: '2025-09-15' },
-  { id: 'crew_003', full_name: 'Sam Patel', email: 'sam.patel@example.com', onboarding_status: 'in_progress', documents_total: 6, documents_completed: 4, started_at: '2026-03-10' },
-  { id: 'crew_004', full_name: 'Morgan Chen', email: 'morgan.chen@example.com', onboarding_status: 'complete', documents_total: 6, documents_completed: 6, started_at: '2025-06-20' },
-  { id: 'crew_005', full_name: 'Taylor Brooks', email: 'taylor.brooks@example.com', onboarding_status: 'pending', documents_total: 6, documents_completed: 0, started_at: null },
-];
+
 
 const STATUS_COLORS: Record<string, string> = {
   complete: 'bg-green-50 text-green-700',
   in_progress: 'bg-blue-50 text-blue-700',
-  pending: 'bg-gray-100 text-gray-600',
+  pending: 'bg-bg-secondary text-gray-600',
 };
 
 async function getOnboarding(): Promise<OnboardingMember[]> {
@@ -55,7 +49,7 @@ const { data: profiles } = await supabase
       started_at: (p.onboarding_started_at as string) ?? null,
     }));
   } catch {
-    return fallbackOnboarding;
+    return [];
   }
 }
 
@@ -139,7 +133,7 @@ export default async function OnboardingPage() {
                   <td className="px-6 py-3.5">
                     <span
                       className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        STATUS_COLORS[member.onboarding_status] ?? 'bg-gray-100 text-gray-600'
+                        STATUS_COLORS[member.onboarding_status] ?? 'bg-bg-secondary text-gray-600'
                       }`}
                     >
                       {formatLabel(member.onboarding_status)}

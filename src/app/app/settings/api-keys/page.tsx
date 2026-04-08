@@ -216,7 +216,7 @@ export default function ApiKeysPage() {
                   <td className="py-3">
                     <div className="flex flex-wrap gap-1">
                       {k.scopes.map((s) => (
-                        <span key={s} className="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600">
+                        <span key={s} className="inline-flex items-center rounded-full bg-bg-secondary px-2 py-0.5 text-xs font-medium text-gray-600">
                           {s}
                         </span>
                       ))}
@@ -259,7 +259,7 @@ export default function ApiKeysPage() {
                   <td className="py-3">
                     <div className="flex flex-wrap gap-1">
                       {ep.events.map((ev) => (
-                        <span key={ev} className="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600">
+                        <span key={ev} className="inline-flex items-center rounded-full bg-bg-secondary px-2 py-0.5 text-xs font-medium text-gray-600">
                           {ev}
                         </span>
                       ))}
@@ -267,7 +267,7 @@ export default function ApiKeysPage() {
                   </td>
                   <td className="py-3">
                     <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-                      ep.active ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-600'
+                      ep.active ? 'bg-green-50 text-green-700' : 'bg-bg-secondary text-gray-600'
                     }`}>
                       {ep.active ? 'Active' : 'Inactive'}
                     </span>

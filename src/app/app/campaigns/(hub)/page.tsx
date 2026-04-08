@@ -8,7 +8,7 @@ import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
 
 const STATUS_COLORS: Record<string, string> = {
-  draft: 'bg-gray-100 text-gray-600',
+  draft: 'bg-bg-secondary text-gray-600',
   scheduled: 'bg-blue-50 text-blue-700',
   sending: 'bg-amber-50 text-amber-700',
   sent: 'bg-green-50 text-green-700',

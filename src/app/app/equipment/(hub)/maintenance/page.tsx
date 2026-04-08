@@ -16,14 +16,7 @@ interface MaintenanceEntry {
   performed_by: string | null;
 }
 
-const fallbackMaintenance: MaintenanceEntry[] = [
-  { id: 'mnt_001', equipment_name: 'Disguise GX 2c', type: 'Repair', status: 'in_progress', description: 'GPU fan replacement and thermal paste refresh', scheduled_date: '2026-04-01', completed_date: null, performed_by: 'Tech Services Inc.' },
-  { id: 'mnt_002', equipment_name: 'Martin MAC Aura XB (x8)', type: 'Preventive', status: 'scheduled', description: 'Quarterly lamp check and lens cleaning', scheduled_date: '2026-04-10', completed_date: null, performed_by: null },
-  { id: 'mnt_003', equipment_name: 'L-Acoustics K2 Array', type: 'Inspection', status: 'scheduled', description: 'Annual safety inspection and driver test', scheduled_date: '2026-04-15', completed_date: null, performed_by: null },
-  { id: 'mnt_004', equipment_name: 'Tyler GT Truss 12x12', type: 'Inspection', status: 'completed', description: 'Weld point inspection and load certification', scheduled_date: '2026-03-20', completed_date: '2026-03-22', performed_by: 'Rigging Safety Co.' },
-  { id: 'mnt_005', equipment_name: 'GrandMA3 Full-Size', type: 'Preventive', status: 'completed', description: 'Firmware update and fader calibration', scheduled_date: '2026-03-15', completed_date: '2026-03-15', performed_by: 'In-house' },
-  { id: 'mnt_006', equipment_name: 'ROE Visual CB5 Panel (x20)', type: 'Repair', status: 'completed', description: 'Replaced 3 dead modules and recalibrated', scheduled_date: '2026-03-01', completed_date: '2026-03-05', performed_by: 'ROE Service Center' },
-];
+
 
 const STATUS_COLORS: Record<string, string> = {
   scheduled: 'bg-blue-50 text-blue-700',
@@ -53,7 +46,7 @@ const { data: records } = await supabase
       .eq('organization_id', ctx.organizationId)
       .order('scheduled_date', { ascending: false });
 
-    if (!records || records.length === 0) throw new Error('No records');
+    if (!records) throw new Error('No records');
 
     return records.map((r: Record<string, unknown>) => ({
       id: r.id as string,
@@ -66,7 +59,7 @@ const { data: records } = await supabase
       performed_by: (r.performed_by as string) ?? null,
     }));
   } catch {
-    return fallbackMaintenance;
+    return [];
   }
 }
 
@@ -124,7 +117,7 @@ export default async function MaintenancePage() {
                       <td className="px-6 py-3.5">
                         <span
                           className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                            TYPE_COLORS[entry.type] ?? 'bg-gray-100 text-gray-600'
+                            TYPE_COLORS[entry.type] ?? 'bg-bg-secondary text-gray-600'
                           }`}
                         >
                           {entry.type}
@@ -135,7 +128,7 @@ export default async function MaintenancePage() {
                       <td className="px-6 py-3.5">
                         <span
                           className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                            STATUS_COLORS[entry.status] ?? 'bg-gray-100 text-gray-600'
+                            STATUS_COLORS[entry.status] ?? 'bg-bg-secondary text-gray-600'
                           }`}
                         >
                           {formatLabel(entry.status)}
@@ -175,7 +168,7 @@ export default async function MaintenancePage() {
                       <td className="px-6 py-3.5">
                         <span
                           className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                            TYPE_COLORS[entry.type] ?? 'bg-gray-100 text-gray-600'
+                            TYPE_COLORS[entry.type] ?? 'bg-bg-secondary text-gray-600'
                           }`}
                         >
                           {entry.type}

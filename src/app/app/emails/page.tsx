@@ -14,35 +14,8 @@ interface EmailThreadRow {
   deal_title: string | null;
 }
 
-const FALLBACK_THREADS: EmailThreadRow[] = [
-  {
-    id: '1',
-    subject: 'Re: Booth design specs for CES 2026',
-    from_name: 'Sarah Chen',
-    from_email: 'sarah@acmecorp.com',
-    last_message_at: '2026-03-31T16:45:00Z',
-    message_count: 5,
-    deal_title: 'ACME CES Booth',
-  },
-  {
-    id: '2',
-    subject: 'Invoice #INV-2024-042 payment confirmation',
-    from_name: 'Mike Johnson',
-    from_email: 'mike@globalevents.com',
-    last_message_at: '2026-03-30T09:20:00Z',
-    message_count: 3,
-    deal_title: 'Global Events Pop-up',
-  },
-  {
-    id: '3',
-    subject: 'Material samples - please review',
-    from_name: 'Lisa Park',
-    from_email: 'lisa@techstart.io',
-    last_message_at: '2026-03-28T14:10:00Z',
-    message_count: 8,
-    deal_title: 'TechStart Launch Event',
-  },
-];
+
+
 
 async function getEmailThreads(): Promise<EmailThreadRow[]> {
   try {

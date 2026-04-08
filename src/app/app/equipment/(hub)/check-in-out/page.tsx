@@ -42,7 +42,7 @@ const STATUS_COLORS: Record<string, string> = {
   checked_out: 'bg-blue-50 text-blue-700',
   in_transit: 'bg-purple-50 text-purple-700',
   on_site: 'bg-green-50 text-green-700',
-  checked_in: 'bg-gray-50 text-gray-700',
+  checked_in: 'bg-bg-secondary text-gray-700',
   lost: 'bg-red-50 text-red-700',
   damaged_return: 'bg-orange-50 text-orange-700',
 };

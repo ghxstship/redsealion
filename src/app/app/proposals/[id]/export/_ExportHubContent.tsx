@@ -206,7 +206,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
                       <td className="px-6 py-3 text-text-secondary tabular-nums">{new Date(inv.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
                       <td className="px-6 py-3 text-right font-medium text-foreground tabular-nums">{fmt(inv.amount)}</td>
                       <td className="px-6 py-3">
-                        <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${inv.status === 'Draft' ? 'bg-gray-100 text-gray-600' : 'bg-green-50 text-green-700'}`}>{inv.status}</span>
+                        <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${inv.status === 'Draft' ? 'bg-bg-secondary text-gray-600' : 'bg-green-50 text-green-700'}`}>{inv.status}</span>
                       </td>
                     </tr>
                   ))}
@@ -294,7 +294,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
                       <td className="px-6 py-3 text-text-secondary">{asset.venue}</td>
                       <td className="px-6 py-3 text-right tabular-nums text-foreground">{asset.qty}</td>
                       <td className="px-6 py-3">
-                        <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${asset.status === 'In Production' ? 'bg-orange-50 text-orange-700' : 'bg-gray-100 text-gray-600'}`}>{asset.status}</span>
+                        <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${asset.status === 'In Production' ? 'bg-orange-50 text-orange-700' : 'bg-bg-secondary text-gray-600'}`}>{asset.status}</span>
                       </td>
                     </tr>
                   ))}

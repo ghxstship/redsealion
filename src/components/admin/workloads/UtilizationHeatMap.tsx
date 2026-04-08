@@ -79,7 +79,7 @@ function getUtilPercent(
 }
 
 function getUtilColor(percent: number): string {
-  if (percent === 0) return 'bg-gray-100';
+  if (percent === 0) return 'bg-bg-secondary';
   if (percent <= 25) return 'bg-green-100';
   if (percent <= 50) return 'bg-green-200';
   if (percent <= 75) return 'bg-green-400';
@@ -212,7 +212,7 @@ export default function UtilizationHeatMap({ teamMembers }: UtilizationHeatMapPr
         <div className="border-t border-border px-6 py-3 flex items-center gap-4">
           <span className="text-xs text-text-muted">Utilization:</span>
           {[
-            { label: '0%', color: 'bg-gray-100' },
+            { label: '0%', color: 'bg-bg-secondary' },
             { label: '25%', color: 'bg-green-100' },
             { label: '50%', color: 'bg-green-200' },
             { label: '75%', color: 'bg-green-400' },

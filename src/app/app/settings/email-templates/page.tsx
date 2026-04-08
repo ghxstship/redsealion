@@ -185,7 +185,7 @@ export default function EmailTemplatesPage() {
                   </button>
                   <button
                     onClick={() => handleExpand(meta.event_type)}
-                    className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-gray-50 transition-colors"
+                    className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-bg-secondary transition-colors"
                   >
                     {isExpanded ? 'Cancel' : 'Edit'}
                   </button>
@@ -218,7 +218,7 @@ export default function EmailTemplatesPage() {
                       className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20 resize-y"
                     />
                   </div>
-                  <div className="rounded-lg bg-gray-50 px-4 py-3">
+                  <div className="rounded-lg bg-bg-secondary px-4 py-3">
                     <p className="text-xs font-medium text-text-muted uppercase tracking-wider mb-1">
                       Available Variables
                     </p>

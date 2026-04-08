@@ -29,7 +29,7 @@ async function getInboundShipments() {
 }
 
 const STATUS_COLORS: Record<string, string> = {
-  pending: 'bg-gray-50 text-gray-700', shipped: 'bg-purple-50 text-purple-700',
+  pending: 'bg-bg-secondary text-gray-700', shipped: 'bg-purple-50 text-purple-700',
   in_transit: 'bg-indigo-50 text-indigo-700', received: 'bg-green-50 text-green-700',
   cancelled: 'bg-red-50 text-red-700',
 };

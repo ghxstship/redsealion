@@ -5,18 +5,18 @@ import { formatLabel } from '@/lib/utils';
  * ──────────────────────────────────────────── */
 
 export const EQUIPMENT_STATUS_COLORS: Record<string, string> = {
-  planned: 'bg-gray-100 text-gray-700',
+  planned: 'bg-bg-secondary text-gray-700',
   in_production: 'bg-amber-50 text-amber-700',
   in_transit: 'bg-blue-50 text-blue-700',
   deployed: 'bg-green-50 text-green-700',
   in_storage: 'bg-purple-50 text-purple-700',
   retired: 'bg-red-50 text-red-700',
-  disposed: 'bg-gray-100 text-gray-500',
+  disposed: 'bg-bg-secondary text-gray-500',
 };
 
 export const TASK_STATUS_COLORS: Record<string, string> = {
-  not_started: 'bg-gray-100 text-gray-700',
-  todo: 'bg-gray-100 text-gray-700',
+  not_started: 'bg-bg-secondary text-gray-700',
+  todo: 'bg-bg-secondary text-gray-700',
   in_progress: 'bg-blue-50 text-blue-700',
   in_review: 'bg-purple-50 text-purple-700',
   review: 'bg-purple-50 text-purple-700',
@@ -28,7 +28,7 @@ export const TASK_PRIORITY_COLORS: Record<string, string> = {
   urgent: 'bg-red-50 text-red-700',
   high: 'bg-orange-50 text-orange-700',
   medium: 'bg-yellow-50 text-yellow-700',
-  low: 'bg-gray-100 text-gray-600',
+  low: 'bg-bg-secondary text-gray-600',
 };
 
 export const LEAD_STATUS_COLORS: Record<string, string> = {
@@ -38,7 +38,7 @@ export const LEAD_STATUS_COLORS: Record<string, string> = {
   proposal_sent: 'bg-purple-50 text-purple-700',
   won: 'bg-green-100 text-green-800',
   lost: 'bg-red-50 text-red-700',
-  archived: 'bg-gray-100 text-gray-600',
+  archived: 'bg-bg-secondary text-gray-600',
   disqualified: 'bg-red-50 text-red-700',
 };
 
@@ -50,7 +50,7 @@ export const LEAD_STATUS_COLORS_DENSE: Record<string, string> = {
   proposal_sent: 'bg-purple-100 text-purple-800',
   won: 'bg-green-200 text-green-900',
   lost: 'bg-red-100 text-red-800',
-  archived: 'bg-gray-100 text-gray-800',
+  archived: 'bg-bg-secondary text-gray-800',
 };
 
 export const RESERVATION_STATUS_COLORS: Record<string, string> = {
@@ -75,7 +75,7 @@ export const PIPELINE_STAGE_COLORS: Record<string, string> = {
 };
 
 export const PHOTO_TYPE_COLORS: Record<string, string> = {
-  before: 'bg-gray-100 text-gray-600',
+  before: 'bg-bg-secondary text-gray-600',
   progress: 'bg-blue-50 text-blue-700',
   completion: 'bg-green-50 text-green-700',
   issue: 'bg-red-50 text-red-700',
@@ -90,7 +90,7 @@ export const LEAD_SOURCE_COLORS: Record<string, string> = {
 };
 
 export const EVENT_STATUS_COLORS: Record<string, string> = {
-  draft: 'bg-gray-100 text-gray-700',
+  draft: 'bg-bg-secondary text-gray-700',
   confirmed: 'bg-blue-50 text-blue-700',
   in_progress: 'bg-amber-50 text-amber-700',
   completed: 'bg-green-50 text-green-700',
@@ -98,7 +98,7 @@ export const EVENT_STATUS_COLORS: Record<string, string> = {
 };
 
 export const ACTIVATION_STATUS_COLORS: Record<string, string> = {
-  draft: 'bg-gray-100 text-gray-700',
+  draft: 'bg-bg-secondary text-gray-700',
   confirmed: 'bg-blue-50 text-blue-700',
   in_progress: 'bg-amber-50 text-amber-700',
   completed: 'bg-green-50 text-green-700',
@@ -112,12 +112,12 @@ export const LOCATION_TYPE_COLORS: Record<string, string> = {
   convention_center: 'bg-purple-50 text-purple-700',
   hotel: 'bg-amber-50 text-amber-700',
   outdoor: 'bg-green-50 text-green-700',
-  warehouse: 'bg-gray-100 text-gray-700',
-  office: 'bg-gray-100 text-gray-700',
+  warehouse: 'bg-bg-secondary text-gray-700',
+  office: 'bg-bg-secondary text-gray-700',
   studio: 'bg-pink-50 text-pink-700',
   restaurant: 'bg-orange-50 text-orange-700',
   virtual: 'bg-cyan-50 text-cyan-700',
-  other: 'bg-gray-100 text-gray-600',
+  other: 'bg-bg-secondary text-gray-600',
 };
 
 export const ROLE_BADGE_COLORS: Record<string, string> = {
@@ -127,10 +127,10 @@ export const ROLE_BADGE_COLORS: Record<string, string> = {
   controller: 'bg-emerald-50 text-emerald-700',
   manager: 'bg-blue-50 text-blue-700',
   team_member: 'bg-purple-50 text-purple-700',
-  client: 'bg-gray-100 text-gray-700',
+  client: 'bg-bg-secondary text-gray-700',
   contractor: 'bg-amber-50 text-amber-700',
   crew: 'bg-orange-50 text-orange-700',
-  viewer: 'bg-gray-100 text-gray-600',
+  viewer: 'bg-bg-secondary text-gray-600',
 };
 
 /* ────────────────────────────────────────────
@@ -155,7 +155,7 @@ interface StatusBadgeProps {
 export default function StatusBadge({
   status,
   colorMap,
-  fallback = 'bg-gray-100 text-gray-700',
+  fallback = 'bg-bg-secondary text-gray-700',
   className = '',
 }: StatusBadgeProps) {
   const colorClass = colorMap[status] ?? fallback;

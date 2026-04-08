@@ -33,7 +33,7 @@ function InputField({
         placeholder={placeholder}
         readOnly={readOnly}
         className={`w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20 ${
-          readOnly ? 'bg-gray-50 text-text-secondary cursor-not-allowed' : ''
+          readOnly ? 'bg-bg-secondary text-text-secondary cursor-not-allowed' : ''
         }`}
       />
     </div>
@@ -115,11 +115,11 @@ export default function ProfileSettingsPage() {
       <Card>
         <h3 className="text-sm font-semibold text-foreground mb-5">Avatar</h3>
         <div className="flex items-center gap-6">
-          <div className="h-20 w-20 shrink-0 rounded-full bg-gray-100 border border-border flex items-center justify-center">
+          <div className="h-20 w-20 shrink-0 rounded-full bg-bg-secondary border border-border flex items-center justify-center">
             <User className="h-8 w-8 text-text-muted" />
           </div>
           <div className="flex-1">
-            <div className="rounded-lg border-2 border-dashed border-border bg-gray-50 px-6 py-8 text-center">
+            <div className="rounded-lg border-2 border-dashed border-border bg-bg-secondary px-6 py-8 text-center">
               <Upload className="mx-auto h-8 w-8 text-text-muted mb-2" />
               <p className="text-sm text-text-secondary">
                 Drop an image here or{' '}

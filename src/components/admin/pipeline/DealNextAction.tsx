@@ -108,7 +108,7 @@ function computeNextActions(props: DealNextActionProps): NextAction[] {
 const PRIORITY_STYLES: Record<string, string> = {
   high: 'border-l-amber-500 bg-amber-50/50',
   medium: 'border-l-blue-400 bg-blue-50/30',
-  low: 'border-l-gray-300 bg-gray-50/30',
+  low: 'border-l-gray-300 bg-bg-secondary/30',
 };
 
 export default function DealNextAction(props: DealNextActionProps) {

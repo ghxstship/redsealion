@@ -54,7 +54,7 @@ export default function MiniTimer() {
 
   return (
     <Link
-      href="/app/time/timer"
+      href="/app/time"
       className="flex items-center gap-1.5 rounded-full border border-green-200 bg-green-50 px-2.5 py-1 text-xs font-medium text-green-700 transition-colors hover:bg-green-100 hover:border-green-300"
       title="Timer running — click to view"
       id="mini-timer-indicator"

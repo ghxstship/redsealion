@@ -17,26 +17,7 @@ interface CreditNoteRow {
   client_name: string;
 }
 
-const FALLBACK_CREDIT_NOTES: CreditNoteRow[] = [
-  {
-    id: '1',
-    credit_number: 'CN-2026-001',
-    invoice_number: 'INV-2026-015',
-    amount: 2500,
-    reason: 'Scope reduction - removed two display panels',
-    issued_date: '2026-03-20',
-    client_name: 'ACME Corp',
-  },
-  {
-    id: '2',
-    credit_number: 'CN-2026-002',
-    invoice_number: 'INV-2026-022',
-    amount: 800,
-    reason: 'Early payment discount applied',
-    issued_date: '2026-03-25',
-    client_name: 'Global Events Inc',
-  },
-];
+
 
 async function getCreditNotes(): Promise<CreditNoteRow[]> {
   try {
@@ -66,7 +47,7 @@ const { data: creditNotes } = await supabase
       client_name: (cn.clients as Record<string, string>)?.company_name ?? 'Unknown',
     }));
   } catch {
-    return FALLBACK_CREDIT_NOTES;
+    return [];
   }
 }
 

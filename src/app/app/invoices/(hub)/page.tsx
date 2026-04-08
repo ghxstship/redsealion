@@ -19,7 +19,7 @@ interface InvoiceRow {
 }
 
 const STATUS_COLORS: Record<string, string> = {
-  draft: 'bg-gray-50 text-gray-700',
+  draft: 'bg-bg-secondary text-gray-700',
   sent: 'bg-blue-50 text-blue-700',
   viewed: 'bg-indigo-50 text-indigo-700',
   paid: 'bg-green-50 text-green-700',
@@ -130,7 +130,7 @@ export default async function InvoicesPage() {
                     <td className="px-4 py-3 text-right tabular-nums">{formatCurrency(inv.total)}</td>
                     <td className="px-4 py-3 text-right tabular-nums">{formatCurrency(inv.amount_paid)}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[inv.status] ?? 'bg-gray-50 text-gray-700'}`}>
+                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[inv.status] ?? 'bg-bg-secondary text-gray-700'}`}>
                         {inv.status}
                       </span>
                     </td>

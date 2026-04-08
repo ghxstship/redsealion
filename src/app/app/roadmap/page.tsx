@@ -173,7 +173,7 @@ export default async function RoadmapPage() {
 
       <div className="mt-6 text-center">
         <Link
-          href="/app/tasks/projects"
+          href="/app/tasks"
           className="text-sm font-medium text-text-muted hover:text-foreground transition-colors"
         >
           ← Back to Projects

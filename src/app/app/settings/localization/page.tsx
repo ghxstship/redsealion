@@ -181,7 +181,7 @@ export default function LocalizationSettingsPage() {
             </select>
           </div>
         </div>
-        <div className="mt-4 rounded-lg bg-gray-50 px-4 py-3">
+        <div className="mt-4 rounded-lg bg-bg-secondary px-4 py-3">
           <span className="text-xs font-medium text-text-muted uppercase tracking-wider">{t('settings.preview')}: </span>
           <span className="text-sm text-foreground font-mono">{preview}</span>
         </div>
@@ -209,12 +209,12 @@ export default function LocalizationSettingsPage() {
             <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
               {t('settings.currency')}
             </label>
-            <div className="flex items-center rounded-lg border border-border bg-gray-50 px-3.5 py-2 text-sm text-text-secondary">
+            <div className="flex items-center rounded-lg border border-border bg-bg-secondary px-3.5 py-2 text-sm text-text-secondary">
               {t('settings.currencySetInGeneral')}
             </div>
           </div>
         </div>
-        <div className="mt-4 rounded-lg bg-gray-50 px-4 py-3">
+        <div className="mt-4 rounded-lg bg-bg-secondary px-4 py-3">
           <span className="text-xs font-medium text-text-muted uppercase tracking-wider">{t('settings.preview')}: </span>
           <span className="text-sm text-foreground font-mono">{numberPreview}</span>
         </div>

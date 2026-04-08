@@ -101,7 +101,7 @@ export default async function RunOfShowPage() {
                             <td className="px-4 py-2 font-medium text-foreground">{cue.title}</td>
                             <td className="px-4 py-2 text-text-secondary text-xs line-clamp-1">{cue.notes ?? '—'}</td>
                             <td className="px-4 py-2">
-                              <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${cue.status === 'completed' ? 'bg-green-50 text-green-700' : cue.status === 'in_progress' ? 'bg-blue-50 text-blue-700' : 'bg-gray-50 text-gray-700'}`}>{cue.status.replace('_', ' ')}</span>
+                              <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${cue.status === 'completed' ? 'bg-green-50 text-green-700' : cue.status === 'in_progress' ? 'bg-blue-50 text-blue-700' : 'bg-bg-secondary text-gray-700'}`}>{cue.status.replace('_', ' ')}</span>
                             </td>
                           </tr>
                         ))}

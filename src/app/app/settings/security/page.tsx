@@ -50,7 +50,7 @@ export default function SecurityPage() {
                 <p className="text-sm font-medium text-foreground">Single Sign-On</p>
                 <p className="text-xs text-text-secondary">Enforce SSO for all team members</p>
               </div>
-              <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600">
+              <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-muted">
                 Not configured
               </span>
             </div>
@@ -59,7 +59,7 @@ export default function SecurityPage() {
                 <p className="text-sm font-medium text-foreground">Multi-Factor Authentication</p>
                 <p className="text-xs text-text-secondary">Require MFA for all users</p>
               </div>
-              <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600">
+              <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-muted">
                 Optional
               </span>
             </div>

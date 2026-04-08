@@ -61,9 +61,9 @@ function actionColor(action: string): string {
     login: 'bg-indigo-50 text-indigo-700',
     export: 'bg-purple-50 text-purple-700',
     invite: 'bg-cyan-50 text-cyan-700',
-    configure: 'bg-gray-100 text-gray-700',
+    configure: 'bg-bg-secondary text-gray-700',
   };
-  return map[action] ?? 'bg-gray-100 text-gray-600';
+  return map[action] ?? 'bg-bg-secondary text-gray-600';
 }
 
 export default async function AuditLogPage() {

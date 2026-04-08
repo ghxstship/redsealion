@@ -10,7 +10,7 @@ import { formatDate } from '@/lib/utils';
 import LogisticsHubTabs from "../../LogisticsHubTabs";
 
 const COUNT_STATUS_COLORS: Record<string, string> = {
-  planned: 'bg-gray-100 text-gray-700',
+  planned: 'bg-bg-secondary text-gray-700',
   in_progress: 'bg-blue-50 text-blue-700',
   completed: 'bg-green-50 text-green-700',
   cancelled: 'bg-red-50 text-red-700',

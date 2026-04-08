@@ -151,7 +151,7 @@ export default function PeopleGrid({ members }: { members: TeamMember[] }) {
                 <div className="mt-4 space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-text-muted">Role</span>
-                    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${ROLE_BADGE_COLORS[member.role] ?? 'bg-gray-100 text-gray-700'}`}>
+                    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${ROLE_BADGE_COLORS[member.role] ?? 'bg-bg-secondary text-gray-700'}`}>
                       {ROLE_LABELS[member.role] ?? member.role}
                     </span>
                   </div>

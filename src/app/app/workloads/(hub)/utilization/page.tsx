@@ -12,13 +12,7 @@ interface CapacityRow {
   utilization: number;
 }
 
-const FALLBACK_CAPACITY: CapacityRow[] = [
-  { name: 'Sarah Chen', role: 'Designer', available: 6, allocated: 8, utilization: 133 },
-  { name: 'Mike Johnson', role: 'Fabricator', available: 8, allocated: 6, utilization: 75 },
-  { name: 'Emily Davis', role: 'PM', available: 8, allocated: 7, utilization: 88 },
-  { name: 'Alex Kim', role: 'Installer', available: 8, allocated: 4, utilization: 50 },
-  { name: 'Jordan Lee', role: 'Designer', available: 8, allocated: 8, utilization: 100 },
-];
+
 
 async function getCapacity(): Promise<CapacityRow[]> {
   try {
@@ -73,7 +67,7 @@ const { data: members } = await supabase
       };
     });
   } catch {
-    return FALLBACK_CAPACITY;
+    return [];
   }
 }
 

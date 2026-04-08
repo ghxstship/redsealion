@@ -41,7 +41,7 @@ const NOTIFICATION_TYPE_COLORS: Record<string, string> = {
   mention: 'bg-purple-50 text-purple-700',
   tag: 'bg-indigo-50 text-indigo-700',
   approval: 'bg-amber-50 text-amber-700',
-  system: 'bg-gray-100 text-gray-700',
+  system: 'bg-bg-secondary text-gray-700',
 };
 
 const typeOptions = ['all', 'comment', 'mention', 'tag', 'approval', 'system'] as const;

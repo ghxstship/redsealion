@@ -42,8 +42,8 @@ async function getBuildStrikeSchedules() {
 const BLOCK_COLORS: Record<string, string> = {
   load_in: 'border-l-blue-500 bg-blue-50', build: 'border-l-orange-500 bg-orange-50',
   rehearsal: 'border-l-purple-500 bg-purple-50', show: 'border-l-green-500 bg-green-50',
-  strike: 'border-l-red-500 bg-red-50', load_out: 'border-l-gray-500 bg-gray-50',
-  transition: 'border-l-yellow-500 bg-yellow-50', break: 'border-l-gray-300 bg-gray-50',
+  strike: 'border-l-red-500 bg-red-50', load_out: 'border-l-gray-500 bg-bg-secondary',
+  transition: 'border-l-yellow-500 bg-yellow-50', break: 'border-l-gray-300 bg-bg-secondary',
   custom: 'border-l-indigo-500 bg-indigo-50',
 };
 
@@ -100,7 +100,7 @@ export default async function BuildStrikePage() {
                           </div>
                           <div className="text-right">
                             <p className="text-xs text-text-secondary">{new Date(block.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} – {new Date(block.end_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
-                            <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium mt-1 ${block.status === 'completed' ? 'bg-green-50 text-green-700' : block.status === 'in_progress' ? 'bg-blue-50 text-blue-700' : 'bg-gray-50 text-gray-700'}`}>{block.status.replace('_', ' ')}</span>
+                            <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium mt-1 ${block.status === 'completed' ? 'bg-green-50 text-green-700' : block.status === 'in_progress' ? 'bg-blue-50 text-blue-700' : 'bg-bg-secondary text-gray-700'}`}>{block.status.replace('_', ' ')}</span>
                           </div>
                         </div>
                       </div>

@@ -8,7 +8,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import DispatchHubTabs from '../DispatchHubTabs';
 
 const STATUS_COLORS: Record<string, string> = {
-  draft: 'bg-gray-100 text-gray-600',
+  draft: 'bg-bg-secondary text-gray-600',
   dispatched: 'bg-blue-50 text-blue-700',
   accepted: 'bg-indigo-50 text-indigo-700',
   in_progress: 'bg-amber-50 text-amber-700',
@@ -17,7 +17,7 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 const PRIORITY_COLORS: Record<string, string> = {
-  low: 'bg-gray-100 text-gray-600',
+  low: 'bg-bg-secondary text-gray-600',
   medium: 'bg-blue-50 text-blue-700',
   high: 'bg-orange-50 text-orange-700',
   urgent: 'bg-red-50 text-red-700',

@@ -15,15 +15,15 @@ const INVITE_STATUS_COLORS: Record<string, string> = {
   pending: 'bg-amber-50 text-amber-700',
   accepted: 'bg-green-50 text-green-700',
   declined: 'bg-red-50 text-red-700',
-  expired: 'bg-gray-100 text-gray-500',
-  revoked: 'bg-gray-100 text-gray-500',
+  expired: 'bg-bg-secondary text-gray-500',
+  revoked: 'bg-bg-secondary text-gray-500',
 };
 
 const COLLAB_ROLE_COLORS: Record<string, string> = {
   owner: 'bg-indigo-50 text-indigo-700',
   manager: 'bg-blue-50 text-blue-700',
   contributor: 'bg-green-50 text-green-700',
-  viewer: 'bg-gray-100 text-gray-700',
+  viewer: 'bg-bg-secondary text-gray-700',
   vendor: 'bg-orange-50 text-orange-700',
 };
 

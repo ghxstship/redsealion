@@ -135,7 +135,7 @@ export default function TagsSettingsPage() {
 
         {/* Add tag form */}
         {showAdd && (
-          <div className="mb-5 rounded-lg border border-border bg-gray-50 p-4 space-y-3">
+          <div className="mb-5 rounded-lg border border-border bg-bg-secondary p-4 space-y-3">
             <div>
               <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
                 Tag Name
@@ -172,7 +172,7 @@ export default function TagsSettingsPage() {
                 </Button>
               <button
                 onClick={() => setShowAdd(false)}
-                className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-text-secondary hover:bg-gray-50 transition-colors"
+                className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-text-secondary hover:bg-bg-secondary transition-colors"
               >
                 Cancel
               </button>
@@ -191,7 +191,7 @@ export default function TagsSettingsPage() {
             currentTags.map((tag) => (
               <span
                 key={tag.id}
-                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm border border-border bg-gray-50"
+                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm border border-border bg-bg-secondary"
               >
                 <span
                   className="h-2.5 w-2.5 rounded-full shrink-0"

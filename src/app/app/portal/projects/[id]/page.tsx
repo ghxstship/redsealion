@@ -187,7 +187,7 @@ export default async function PortalProjectPage({
                   <div className="flex items-center gap-2 mb-1">
                     <span
                       className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-                        statusColors[update.status] ?? 'bg-gray-100 text-gray-600'
+                        statusColors[update.status] ?? 'bg-bg-secondary text-gray-600'
                       }`}
                     >
                       {update.status.replace(/_/g, ' ')}

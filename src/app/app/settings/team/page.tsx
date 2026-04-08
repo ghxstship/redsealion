@@ -19,10 +19,10 @@ const ROLE_BADGE_COLORS: Record<string, string> = {
   controller: 'bg-emerald-50 text-emerald-700 border-emerald-200',
   manager: 'bg-purple-50 text-purple-700 border-purple-200',
   team_member: 'bg-green-50 text-green-700 border-green-200',
-  client: 'bg-gray-50 text-gray-600 border-gray-200',
+  client: 'bg-bg-secondary text-gray-600 border-gray-200',
   contractor: 'bg-amber-50 text-amber-700 border-amber-200',
   crew: 'bg-orange-50 text-orange-700 border-orange-200',
-  viewer: 'bg-gray-50 text-gray-600 border-gray-200',
+  viewer: 'bg-bg-secondary text-gray-600 border-gray-200',
 };
 
 function formatRole(role: string): string {
@@ -40,16 +40,8 @@ function formatDate(dateStr: string): string {
   });
 }
 
-const FALLBACK_MEMBERS: TeamMember[] = [
-  { id: '1', full_name: 'Sarah Chen', email: 'sarah@example.com', role: 'owner', created_at: '2024-01-15T00:00:00Z', avatar_url: null },
-  { id: '2', full_name: 'Marcus Rivera', email: 'marcus@example.com', role: 'manager', created_at: '2024-02-20T00:00:00Z', avatar_url: null },
-  { id: '3', full_name: 'Emily Park', email: 'emily@example.com', role: 'team_member', created_at: '2024-03-10T00:00:00Z', avatar_url: null },
-  { id: '4', full_name: 'James Okafor', email: 'james@example.com', role: 'team_member', created_at: '2024-04-05T00:00:00Z', avatar_url: null },
-  { id: '5', full_name: 'Ana Gutierrez', email: 'ana@example.com', role: 'crew', created_at: '2024-05-18T00:00:00Z', avatar_url: null },
-];
-
 export default async function TeamSettingsPage() {
-  let members: TeamMember[] = FALLBACK_MEMBERS;
+  let members: TeamMember[] = [];
 
   try {
     const supabase = await createClient();
@@ -96,7 +88,7 @@ export default async function TeamSettingsPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border bg-gray-50/50">
+              <tr className="border-b border-border bg-bg-secondary/50">
                 <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
                   Name
                 </th>
@@ -119,10 +111,10 @@ export default async function TeamSettingsPage() {
             </thead>
             <tbody className="divide-y divide-border">
               {members.map((member) => (
-                <tr key={member.id} className="hover:bg-gray-50/50 transition-colors">
+                <tr key={member.id} className="hover:bg-bg-secondary/50 transition-colors">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-3">
-                      <div className="h-8 w-8 shrink-0 rounded-full bg-gray-100 border border-border flex items-center justify-center text-xs font-medium text-text-muted">
+                      <div className="h-8 w-8 shrink-0 rounded-full bg-bg-secondary border border-border flex items-center justify-center text-xs font-medium text-text-muted">
                         {(member.full_name || member.email)
                           .split(' ')
                           .map((n) => n[0])
@@ -141,7 +133,7 @@ export default async function TeamSettingsPage() {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
                       className={`inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-medium ${
-                        ROLE_BADGE_COLORS[member.role] || 'bg-gray-50 text-gray-600 border-gray-200'
+                        ROLE_BADGE_COLORS[member.role] || 'bg-bg-secondary text-gray-600 border-gray-200'
                       }`}
                     >
                       {formatRole(member.role)}
@@ -158,7 +150,7 @@ export default async function TeamSettingsPage() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
                     <div className="flex items-center justify-end gap-2">
-                      <button className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-gray-50 transition-colors">
+                      <button className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
                         Edit
                       </button>
                       <button className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 hover:border-red-200 transition-colors">

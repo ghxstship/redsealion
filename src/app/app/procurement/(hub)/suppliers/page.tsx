@@ -61,7 +61,7 @@ export default async function SuppliersPage() {
                     <td className="px-4 py-3 text-text-secondary">{s.contact_name ?? '—'}</td>
                     <td className="px-4 py-3 text-text-secondary">{s.email ?? '—'}</td>
                     <td className="px-4 py-3 text-text-secondary capitalize">{s.category ?? '—'}</td>
-                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${s.status === 'active' ? 'bg-green-50 text-green-700' : 'bg-gray-50 text-gray-700'}`}>{s.status}</span></td>
+                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${s.status === 'active' ? 'bg-green-50 text-green-700' : 'bg-bg-secondary text-gray-700'}`}>{s.status}</span></td>
                   </tr>
                 ))}
               </tbody>

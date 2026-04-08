@@ -23,7 +23,7 @@ async function getPOs() {
   } catch { return []; }
 }
 
-const STATUS_COLORS: Record<string, string> = { draft: 'bg-gray-50 text-gray-700', sent: 'bg-blue-50 text-blue-700', acknowledged: 'bg-purple-50 text-purple-700', partially_received: 'bg-yellow-50 text-yellow-700', received: 'bg-green-50 text-green-700', cancelled: 'bg-red-50 text-red-700' };
+const STATUS_COLORS: Record<string, string> = { draft: 'bg-bg-secondary text-gray-700', sent: 'bg-blue-50 text-blue-700', acknowledged: 'bg-purple-50 text-purple-700', partially_received: 'bg-yellow-50 text-yellow-700', received: 'bg-green-50 text-green-700', cancelled: 'bg-red-50 text-red-700' };
 
 export default async function ProcurementPOPage() {
   const pos = await getPOs();
@@ -65,7 +65,7 @@ export default async function ProcurementPOPage() {
                     <td className="px-4 py-3 tabular-nums">{formatCurrency(po.total_amount ?? 0)}</td>
                     <td className="px-4 py-3 text-text-secondary">{po.order_date ? new Date(po.order_date).toLocaleDateString() : '—'}</td>
                     <td className="px-4 py-3 text-text-secondary">{po.expected_delivery ? new Date(po.expected_delivery).toLocaleDateString() : '—'}</td>
-                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[po.status] ?? 'bg-gray-50 text-gray-700'}`}>{po.status?.replace('_', ' ')}</span></td>
+                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[po.status] ?? 'bg-bg-secondary text-gray-700'}`}>{po.status?.replace('_', ' ')}</span></td>
                   </tr>
                 ))}
               </tbody>

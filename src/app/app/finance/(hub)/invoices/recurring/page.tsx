@@ -17,35 +17,7 @@ interface RecurringScheduleRow {
   description: string;
 }
 
-const FALLBACK_SCHEDULES: RecurringScheduleRow[] = [
-  {
-    id: '1',
-    client_name: 'ACME Corp',
-    frequency: 'monthly',
-    next_issue_date: '2026-04-01',
-    amount: 5000,
-    is_active: true,
-    description: 'Retainer - ongoing design services',
-  },
-  {
-    id: '2',
-    client_name: 'TechStart Inc',
-    frequency: 'quarterly',
-    next_issue_date: '2026-07-01',
-    amount: 15000,
-    is_active: true,
-    description: 'Quarterly maintenance and storage',
-  },
-  {
-    id: '3',
-    client_name: 'Metro Events',
-    frequency: 'monthly',
-    next_issue_date: '2026-04-15',
-    amount: 2500,
-    is_active: false,
-    description: 'Monthly equipment rental',
-  },
-];
+
 
 function formatFrequency(freq: string): string {
   const labels: Record<string, string> = {
@@ -85,7 +57,7 @@ const { data: schedules } = await supabase
       description: (s.description as string) ?? '',
     }));
   } catch {
-    return FALLBACK_SCHEDULES;
+    return [];
   }
 }
 
@@ -111,7 +83,7 @@ export default async function RecurringInvoicesPage() {
                 <h3 className="text-sm font-semibold text-foreground">{schedule.client_name}</h3>
                 <span
                   className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-                    schedule.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
+                    schedule.is_active ? 'bg-green-100 text-green-800' : 'bg-bg-secondary text-gray-600'
                   }`}
                 >
                   {schedule.is_active ? 'Active' : 'Paused'}

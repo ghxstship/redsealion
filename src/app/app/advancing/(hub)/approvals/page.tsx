@@ -78,7 +78,7 @@ export default async function AdvancingApprovalsPage() {
                     </td>
                     <td className="px-4 py-3 text-text-secondary">{item.event_name ?? '—'}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${item.priority === 'urgent' ? 'bg-red-50 text-red-700' : item.priority === 'high' ? 'bg-orange-50 text-orange-700' : 'bg-gray-50 text-gray-700'}`}>
+                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${item.priority === 'urgent' ? 'bg-red-50 text-red-700' : item.priority === 'high' ? 'bg-orange-50 text-orange-700' : 'bg-bg-secondary text-gray-700'}`}>
                         {item.priority}
                       </span>
                     </td>

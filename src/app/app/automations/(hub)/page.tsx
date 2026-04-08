@@ -18,38 +18,7 @@ interface AutomationRow {
   last_run_at: string | null;
 }
 
-const FALLBACK_AUTOMATIONS: AutomationRow[] = [
-  {
-    id: '1',
-    name: 'Notify on proposal approval',
-    description: 'Send a Slack message when a proposal is approved.',
-    trigger_type: 'proposal_approved',
-    action_type: 'send_slack',
-    is_active: true,
-    run_count: 12,
-    last_run_at: '2026-03-28T14:30:00Z',
-  },
-  {
-    id: '2',
-    name: 'Create invoice on milestone',
-    description: 'Auto-generate a deposit invoice when a milestone is completed.',
-    trigger_type: 'milestone_completed',
-    action_type: 'create_invoice',
-    is_active: true,
-    run_count: 5,
-    last_run_at: '2026-03-25T10:00:00Z',
-  },
-  {
-    id: '3',
-    name: 'Overdue invoice reminder',
-    description: 'Send email reminder when an invoice becomes overdue.',
-    trigger_type: 'invoice_overdue',
-    action_type: 'send_email',
-    is_active: false,
-    run_count: 0,
-    last_run_at: null,
-  },
-];
+
 
 function formatTrigger(type: string): string {
   return type.split('_').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
@@ -88,7 +57,7 @@ const { data: automations } = await supabase
       last_run_at: (a.last_run_at as string) ?? null,
     }));
   } catch {
-    return FALLBACK_AUTOMATIONS;
+    return [];
   }
 }
 
@@ -118,7 +87,7 @@ export default async function AutomationsPage() {
                   className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
                     automation.is_active
                       ? 'bg-green-100 text-green-800'
-                      : 'bg-gray-100 text-gray-600'
+                      : 'bg-bg-secondary text-gray-600'
                   }`}
                 >
                   {automation.is_active ? 'Active' : 'Inactive'}

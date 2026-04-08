@@ -15,15 +15,7 @@ interface ScheduleEntry {
   status: string;
 }
 
-const fallbackSchedule: ScheduleEntry[] = [
-  { id: 'sch_001', crew_name: 'Alex Rivera', project_name: 'Nike SNKRS Fest 2026', venue: 'Convention Center Hall A', date: '2026-04-15', start_time: '08:00', end_time: '18:00', status: 'confirmed' },
-  { id: 'sch_002', crew_name: 'Jordan Lee', project_name: 'Nike SNKRS Fest 2026', venue: 'Convention Center Hall A', date: '2026-04-15', start_time: '10:00', end_time: '20:00', status: 'confirmed' },
-  { id: 'sch_003', crew_name: 'Sam Patel', project_name: 'Samsung Galaxy Unpacked', venue: 'Barclays Center', date: '2026-04-22', start_time: '06:00', end_time: '16:00', status: 'tentative' },
-  { id: 'sch_004', crew_name: 'Morgan Chen', project_name: 'Samsung Galaxy Unpacked', venue: 'Barclays Center', date: '2026-04-22', start_time: '07:00', end_time: '17:00', status: 'confirmed' },
-  { id: 'sch_005', crew_name: 'Alex Rivera', project_name: 'Samsung Galaxy Unpacked', venue: 'Barclays Center', date: '2026-04-22', start_time: '08:00', end_time: '18:00', status: 'confirmed' },
-  { id: 'sch_006', crew_name: 'Taylor Brooks', project_name: 'Spotify Wrapped Live', venue: 'Pier 17', date: '2026-05-10', start_time: '09:00', end_time: '19:00', status: 'tentative' },
-  { id: 'sch_007', crew_name: 'Jordan Lee', project_name: 'Spotify Wrapped Live', venue: 'Pier 17', date: '2026-05-10', start_time: '10:00', end_time: '22:00', status: 'confirmed' },
-];
+
 
 async function getSchedule(): Promise<ScheduleEntry[]> {
   try {
@@ -54,7 +46,7 @@ async function getSchedule(): Promise<ScheduleEntry[]> {
       status: b.status as string,
     }));
   } catch {
-    return fallbackSchedule;
+    return [];
   }
 }
 
@@ -126,7 +118,7 @@ export default async function CrewSchedulePage() {
                 <td className="px-6 py-3.5">
                   <span
                     className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                      STATUS_COLORS[entry.status] ?? 'bg-gray-100 text-gray-600'
+                      STATUS_COLORS[entry.status] ?? 'bg-bg-secondary text-gray-600'
                     }`}
                   >
                     {formatLabel(entry.status)}

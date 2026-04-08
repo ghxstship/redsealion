@@ -22,24 +22,7 @@ interface FacilitySummary {
   deployed: number;
 }
 
-const fallbackFacilities: FacilitySummary[] = [
-  { name: 'Warehouse A', total_items: 156, available: 98, deployed: 42 },
-  { name: 'Warehouse B', total_items: 84, available: 62, deployed: 18 },
-  { name: 'Remote Storage C', total_items: 32, available: 28, deployed: 4 },
-];
 
-const fallbackAssets: WarehouseAsset[] = [
-  { id: 'wa_001', name: 'Martin MAC Aura XB', category: 'Lighting', quantity: 16, location: 'Warehouse A', status: 'available' },
-  { id: 'wa_002', name: 'L-Acoustics K2 Array', category: 'Audio', quantity: 8, location: 'Warehouse A', status: 'available' },
-  { id: 'wa_003', name: 'Barco UDX-4K32', category: 'Video', quantity: 4, location: 'Warehouse A', status: 'available' },
-  { id: 'wa_004', name: 'ROE Visual CB5 Panel', category: 'LED', quantity: 48, location: 'Warehouse A', status: 'deployed' },
-  { id: 'wa_005', name: 'Tyler GT Truss 12x12', category: 'Rigging', quantity: 12, location: 'Warehouse B', status: 'available' },
-  { id: 'wa_006', name: 'GrandMA3 Full-Size', category: 'Lighting Control', quantity: 2, location: 'Warehouse A', status: 'available' },
-  { id: 'wa_007', name: 'Shure Axient Digital', category: 'Audio', quantity: 24, location: 'Warehouse B', status: 'available' },
-  { id: 'wa_008', name: 'Chain Hoist 1-Ton', category: 'Rigging', quantity: 20, location: 'Warehouse B', status: 'available' },
-  { id: 'wa_009', name: 'Pelican 1650 Case', category: 'Cases', quantity: 40, location: 'Remote Storage C', status: 'available' },
-  { id: 'wa_010', name: 'Disguise GX 2c', category: 'Media Server', quantity: 2, location: 'Warehouse A', status: 'maintenance' },
-];
 
 const STATUS_COLORS: Record<string, string> = {
   available: 'bg-green-50 text-green-700',
@@ -66,7 +49,7 @@ const { data: assets } = await supabase
       .order('current_location')
       .order('name');
 
-    if (!assets || assets.length === 0) throw new Error('No assets');
+    if (!assets) throw new Error('No assets');
 
     const mappedAssets: WarehouseAsset[] = assets.map((a: Record<string, unknown>) => ({
       id: a.id as string,
@@ -92,7 +75,7 @@ const { data: assets } = await supabase
 
     return { facilities: Array.from(facilityMap.values()), assets: mappedAssets };
   } catch {
-    return { facilities: fallbackFacilities, assets: fallbackAssets };
+    return { facilities: [], assets: [] };
   }
 }
 
@@ -172,7 +155,7 @@ export default async function WarehousePage() {
                 <td className="px-6 py-3.5">
                   <span
                     className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                      STATUS_COLORS[asset.status] ?? 'bg-gray-100 text-gray-600'
+                      STATUS_COLORS[asset.status] ?? 'bg-bg-secondary text-gray-600'
                     }`}
                   >
                     {formatLabel(asset.status)}

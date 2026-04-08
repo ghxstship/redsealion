@@ -17,7 +17,7 @@ const PRIORITY_COLORS: Record<string, string> = {
   urgent: 'bg-red-100 text-red-800 border-red-200',
   high: 'bg-orange-100 text-orange-800 border-orange-200',
   medium: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-  low: 'bg-gray-100 text-gray-600 border-gray-200',
+  low: 'bg-bg-secondary text-gray-600 border-gray-200',
 };
 
 const STATUS_COLORS: Record<string, string> = {
@@ -26,7 +26,7 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 function priorityColor(priority: string): string {
-  return PRIORITY_COLORS[priority] ?? 'bg-gray-100 text-gray-600 border-gray-200';
+  return PRIORITY_COLORS[priority] ?? 'bg-bg-secondary text-gray-600 border-gray-200';
 }
 
 async function getTasksForMonth(year: number, month: number): Promise<CalendarTask[]> {
@@ -213,7 +213,7 @@ export default async function TaskCalendarPage({
           Medium
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="inline-block h-3 w-3 rounded border border-gray-200 bg-gray-100" />
+          <span className="inline-block h-3 w-3 rounded border border-gray-200 bg-bg-secondary" />
           Low
         </div>
       </div>

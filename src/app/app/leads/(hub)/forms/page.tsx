@@ -17,15 +17,11 @@ interface LeadForm {
   last_submission_at: string | null;
 }
 
-const fallbackForms: LeadForm[] = [
-  { id: 'form_001', name: 'General Inquiry', description: 'Default intake form for new event inquiries', status: 'active', embed_url: 'https://forms.flytedeck.io/f/general-inquiry', submissions_count: 42, created_at: '2025-10-01', last_submission_at: '2026-04-01' },
-  { id: 'form_002', name: 'Corporate Events', description: 'Tailored for corporate brand activation leads', status: 'active', embed_url: 'https://forms.flytedeck.io/f/corporate-events', submissions_count: 18, created_at: '2026-01-15', last_submission_at: '2026-03-28' },
-  { id: 'form_003', name: 'Festival & Concert', description: 'For large-scale festival and music event inquiries', status: 'draft', embed_url: null, submissions_count: 0, created_at: '2026-03-20', last_submission_at: null },
-];
+
 
 const STATUS_COLORS: Record<string, string> = {
   active: 'bg-green-50 text-green-700',
-  draft: 'bg-gray-100 text-gray-600',
+  draft: 'bg-bg-secondary text-gray-600',
   archived: 'bg-red-50 text-red-700',
 };
 
@@ -44,7 +40,7 @@ const { data: forms } = await supabase
       .eq('organization_id', ctx.organizationId)
       .order('created_at', { ascending: false });
 
-    if (!forms || forms.length === 0) throw new Error('No forms');
+    if (!forms) throw new Error('No forms');
 
     return forms.map((f: Record<string, unknown>) => ({
       id: f.id as string,
@@ -57,7 +53,7 @@ const { data: forms } = await supabase
       last_submission_at: (f.last_submission_at as string) ?? null,
     }));
   } catch {
-    return fallbackForms;
+    return [];
   }
 }
 
@@ -108,7 +104,7 @@ export default async function LeadFormsPage() {
                   <h3 className="text-sm font-medium text-foreground">{form.name}</h3>
                   <span
                     className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                      STATUS_COLORS[form.status] ?? 'bg-gray-100 text-gray-600'
+                      STATUS_COLORS[form.status] ?? 'bg-bg-secondary text-gray-600'
                     }`}
                   >
                     {formatLabel(form.status)}

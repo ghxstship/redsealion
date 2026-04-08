@@ -3,6 +3,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import Link from 'next/link';
 import PageHeader from '@/components/shared/PageHeader';
+import EmptyState from '@/components/ui/EmptyState';
 
 /**
  * Goals & OKRs — high-level objectives with key results linked to tasks.
@@ -26,34 +27,7 @@ interface KeyResult {
   unit: string;
 }
 
-const DEMO_GOALS: Goal[] = [
-  {
-    id: 'goal_1',
-    title: 'Increase Client Retention to 95%',
-    description: 'Reduce churn by improving delivery velocity and project communication.',
-    status: 'on_track',
-    progress: 72,
-    due_date: '2026-06-30',
-    key_results: [
-      { id: 'kr_1', title: 'On-time delivery rate', target: 95, current: 88, unit: '%' },
-      { id: 'kr_2', title: 'Client NPS score', target: 9, current: 7.5, unit: '' },
-      { id: 'kr_3', title: 'Weekly status updates posted', target: 100, current: 72, unit: '%' },
-    ],
-  },
-  {
-    id: 'goal_2',
-    title: 'Scale Production Capacity by 40%',
-    description: 'Expand team and streamline workflows to handle more concurrent projects.',
-    status: 'at_risk',
-    progress: 45,
-    due_date: '2026-09-30',
-    key_results: [
-      { id: 'kr_4', title: 'Active concurrent projects', target: 12, current: 8, unit: '' },
-      { id: 'kr_5', title: 'Average task turnaround', target: 2, current: 3.5, unit: ' days' },
-      { id: 'kr_6', title: 'Team utilization rate', target: 85, current: 68, unit: '%' },
-    ],
-  },
-];
+
 
 function statusBadge(status: string): string {
   const map: Record<string, string> = {
@@ -62,14 +36,14 @@ function statusBadge(status: string): string {
     off_track: 'bg-red-100 text-red-700',
     completed: 'bg-blue-100 text-blue-700',
   };
-  return map[status] ?? 'bg-gray-100 text-gray-600';
+  return map[status] ?? 'bg-bg-secondary text-gray-600';
 }
 
 async function getGoals(): Promise<Goal[]> {
   try {
     const supabase = await createClient();
     const ctx = await resolveCurrentOrg();
-    if (!ctx) return DEMO_GOALS;
+    if (!ctx) return [];
 
     const { data } = await supabase
       .from('goals')
@@ -77,7 +51,7 @@ async function getGoals(): Promise<Goal[]> {
       .eq('organization_id', ctx.organizationId)
       .order('created_at', { ascending: false });
 
-    if (!data || data.length === 0) return DEMO_GOALS;
+    if (!data || data.length === 0) return [];
 
     return data.map((g) => ({
       id: g.id,
@@ -95,7 +69,7 @@ async function getGoals(): Promise<Goal[]> {
       })),
     }));
   } catch {
-    return DEMO_GOALS;
+    return [];
   }
 }
 
@@ -198,6 +172,13 @@ export default async function GoalsPage() {
           </div>
         ))}
       </div>
+
+      {goals.length === 0 && (
+        <EmptyState
+          message="No goals created yet"
+          description="Create goals and key results to track your team's progress."
+        />
+      )}
 
       <div className="mt-6 text-center">
         <Link

@@ -59,7 +59,7 @@ export default async function SsoSettingsPage() {
               </span>
             </div>
             {config && (
-              <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${config.enabled ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
+              <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${config.enabled ? 'bg-green-50 text-green-700' : 'bg-bg-secondary text-gray-600'}`}>
                 {config.enabled ? 'Active' : 'Inactive'}
               </span>
             )}
