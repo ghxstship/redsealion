@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { checkPermission } from '@/lib/api/permission-guard';
+import { createClient } from '@/lib/supabase/server';
 
 type ExportType = 'crm' | 'finance' | 'pm' | 'assets';
 
@@ -22,66 +23,110 @@ export async function GET(
     );
   }
 
-  // Placeholder payloads — will be populated from Supabase data
-  const payloads: Record<ExportType, Record<string, unknown>> = {
-    crm: {
-      proposal_id: id,
+  const supabase = await createClient();
+
+  // Basic Proposal fetch (used in all exports)
+  const { data: proposal, error: propError } = await supabase
+    .from('proposals')
+    .select('*, clients(*)')
+    .eq('id', id)
+    .single();
+
+  if (propError || !proposal) {
+    return NextResponse.json({ error: 'Proposal not found' }, { status: 404 });
+  }
+
+  const client = (proposal.clients as Record<string, unknown>) ?? {};
+
+  let outputData: Record<string, unknown> = {};
+
+  if (type === 'crm') {
+    const { data: deals } = await supabase
+      .from('deals')
+      .select('*')
+      .eq('proposal_id', id)
+      .limit(1);
+    
+    const deal = deals?.[0] || null;
+
+    outputData = {
+      proposal_id: proposal.id,
       export_type: 'crm',
       client: {
-        company_name: 'Nike, Inc.',
-        contact_name: 'Sarah Mitchell',
-        email: 'sarah.mitchell@nike.com',
+        id: client.id,
+        company_name: client.company_name,
+        industry: client.industry,
       },
-      deal: {
-        name: 'Nike Air Max Day Experience',
-        value: 510000,
-        status: 'in_production',
-        probability: 100,
-      },
-    },
-    finance: {
-      proposal_id: id,
+      deal: deal ? {
+        id: deal.id,
+        title: deal.title,
+        value: deal.deal_value || proposal.total_value,
+        status: deal.stage,
+      } : null,
+      proposal_status: proposal.status,
+    };
+  } else if (type === 'finance') {
+    const { data: invoices } = await supabase
+      .from('invoices')
+      .select('id, number, amount, status')
+      .eq('proposal_id', id);
+
+    outputData = {
+      proposal_id: proposal.id,
       export_type: 'finance',
-      total_value: 510000,
+      total_value: proposal.total_value,
       currency: 'USD',
-      invoices: [
-        { number: 'INV-2026-001', amount: 127500, status: 'paid' },
-        { number: 'INV-2026-002', amount: 127500, status: 'sent' },
-        { number: 'INV-2026-003', amount: 255000, status: 'draft' },
-      ],
-      payment_terms: { structure: '50/50', deposit_percent: 50, balance_percent: 50 },
-    },
-    pm: {
-      proposal_id: id,
+      client_company: client.company_name,
+      client_billing_address: client.billing_address,
+      invoices: invoices ?? [],
+    };
+  } else if (type === 'pm') {
+    const { data: phases } = await supabase
+      .from('phases')
+      .select('*, phase_deliverables(id)')
+      .eq('proposal_id', id)
+      .order('sort_order', { ascending: true });
+
+    outputData = {
+      proposal_id: proposal.id,
       export_type: 'pm',
-      project_name: 'Nike Air Max Day Experience',
-      phases: [
-        { number: '1', name: 'Discovery', status: 'complete', tasks: 3 },
-        { number: '2', name: 'Design', status: 'complete', tasks: 3 },
-        { number: '3', name: 'Engineering', status: 'in_progress', tasks: 3 },
-        { number: '4', name: 'Fabrication', status: 'not_started', tasks: 4 },
-        { number: '5', name: 'Technology', status: 'not_started', tasks: 3 },
-        { number: '6', name: 'Logistics', status: 'not_started', tasks: 3 },
-        { number: '7', name: 'Installation & Activation', status: 'not_started', tasks: 3 },
-        { number: '8', name: 'Strike & Close', status: 'not_started', tasks: 2 },
-      ],
-    },
-    assets: {
-      proposal_id: id,
+      project_name: proposal.name,
+      start_date: proposal.event_dates,
+      phases: (phases ?? []).map((ph) => ({
+        id: ph.id,
+        number: ph.number,
+        name: ph.name,
+        description: ph.narrative,
+        duration_days: ph.duration_days,
+        tasks_count: ph.phase_deliverables?.length ?? 0
+      }))
+    };
+  } else if (type === 'assets') {
+    const { data: phases } = await supabase
+      .from('phases')
+      .select('phase_deliverables(*)')
+      .eq('proposal_id', id);
+
+    const deliverables = (phases ?? [])
+      .map((p) => p.phase_deliverables ?? [])
+      .flat() as Record<string, unknown>[];
+
+    outputData = {
+      proposal_id: proposal.id,
       export_type: 'assets',
-      assets: [
-        { name: 'Air Max Sole Centerpiece', type: 'structure', category: 'fabrication', reusable: true },
-        { name: 'Interactive Pod A', type: 'fixture', category: 'fabrication', reusable: true },
-        { name: 'Interactive Pod B', type: 'fixture', category: 'fabrication', reusable: true },
-        { name: 'LED Strip Assembly Set', type: 'lighting', category: 'fabrication', reusable: true },
-        { name: 'Tension Fabric Graphics', type: 'graphic', category: 'fabrication', reusable: false },
-      ],
-    },
-  };
+      assets: deliverables.map((d) => ({
+        id: d.id,
+        name: d.name,
+        category: d.category,
+        description: d.description,
+        is_reusable: false, // Defaulting as phase deliverables are typically bespoke
+      }))
+    };
+  }
 
   return NextResponse.json({
     success: true,
     exported_at: new Date().toISOString(),
-    data: payloads[type as ExportType],
+    data: outputData,
   });
 }

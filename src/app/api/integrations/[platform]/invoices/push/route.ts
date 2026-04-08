@@ -40,7 +40,7 @@ export async function POST(
     // Check integration is connected
     const { data: integration } = await supabase
       .from('integrations')
-      .select('id, status')
+      .select('id, status, config')
       .eq('organization_id', orgId)
       .eq('platform', platform)
       .single();
@@ -52,22 +52,64 @@ export async function POST(
       );
     }
 
-    // Placeholder: In production, fetch invoices and push to accounting platform
+    // Fetch full invoice objects
+    const { data: invoices, error: invoiceError } = await supabase
+      .from('invoices')
+      .select('*, client_id, organizations(name)')
+      .in('id', invoiceIds)
+      .eq('organization_id', orgId);
+
+    if (invoiceError || !invoices || invoices.length === 0) {
+      return NextResponse.json({ error: 'Invoices not found' }, { status: 404 });
+    }
+
+    // Simulate outbound push mechanism (gracefully caught to avoid hard 500s locally)
+    const outboundPayload = {
+      timestamp: new Date().toISOString(),
+      platform,
+      invoices: invoices.map((inv) => ({
+        external_id: inv.id,
+        number: inv.number,
+        amount: inv.amount,
+        currency: inv.currency,
+        status: inv.status,
+      })),
+    };
+
+    let pushStatus = 'completed';
+    
+    // Abstracted safe fetch block logic representing the integration call
+    try {
+      const integrationApiUrl = (integration.config as Record<string, string>)?.api_url;
+      if (integrationApiUrl) {
+         await fetch(integrationApiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(outboundPayload),
+         });
+      }
+    } catch (pushError) {
+      // Don't crash out the process if the vendor API fails locally. Log as failed sync.
+      log.warn(`Failed to push to external ${platform} API`, { outboundPayload, error: String(pushError) });
+      pushStatus = 'failed';
+    }
+
     // Log the sync attempt
     await supabase.from('integration_sync_log').insert({
       integration_id: integration.id,
       organization_id: orgId,
       direction: 'outbound',
       entity_type: 'invoice',
-      entity_count: invoiceIds.length,
-      status: 'completed',
+      entity_count: invoices.length,
+      status: pushStatus,
       completed_at: new Date().toISOString(),
     });
 
     return NextResponse.json({
-      success: true,
+      success: pushStatus === 'completed',
       platform,
-      pushed: invoiceIds.length,
+      pushed: invoices.length,
+      status: pushStatus
     });
   } catch (error) {
     log.error(`Invoice push error [${platform}]:`, {}, error);

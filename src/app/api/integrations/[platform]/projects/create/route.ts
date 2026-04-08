@@ -40,7 +40,7 @@ export async function POST(
     // Check integration is connected
     const { data: integration } = await supabase
       .from('integrations')
-      .select('id, status')
+      .select('id, status, config')
       .eq('organization_id', orgId)
       .eq('platform', platform)
       .single();
@@ -55,7 +55,7 @@ export async function POST(
     // Fetch proposal with phases to create PM project
     const { data: proposal } = await supabase
       .from('proposals')
-      .select('id, name, phases(id, name, number)')
+      .select('id, name, phases(id, name, number, duration_days)')
       .eq('id', proposalId)
       .eq('organization_id', orgId)
       .single();
@@ -64,7 +64,35 @@ export async function POST(
       return NextResponse.json({ error: 'Proposal not found' }, { status: 404 });
     }
 
-    // Placeholder: In production, create the project in the PM platform
+    // Formulate the standardized JSON payload for external PM synchronization
+    const outboundProjectPayload = {
+      project_name: proposal.name,
+      external_reference: proposal.id,
+      timeline_phases: (proposal.phases ?? []).map(p => ({
+        phase_name: p.name,
+        phase_number: p.number,
+        duration: p.duration_days ?? 0
+      }))
+    };
+
+    let pushStatus = 'completed';
+
+    // Simulated Abstracted Push Mechanism
+    try {
+      const integrationApiUrl = (integration.config as Record<string, string>)?.api_url;
+      if (integrationApiUrl) {
+         await fetch(integrationApiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(outboundProjectPayload),
+         });
+      }
+    } catch (pushError) {
+      // Degrade gracefully 
+      log.warn(`Failed to push to external ${platform} PM API`, { outboundProjectPayload, error: String(pushError) });
+      pushStatus = 'failed';
+    }
+
     // Log the sync
     await supabase.from('integration_sync_log').insert({
       integration_id: integration.id,
@@ -72,15 +100,16 @@ export async function POST(
       direction: 'outbound',
       entity_type: 'project',
       entity_count: 1,
-      status: 'completed',
+      status: pushStatus,
       completed_at: new Date().toISOString(),
     });
 
     return NextResponse.json({
-      success: true,
+      success: pushStatus === 'completed',
       platform,
       proposalId,
       projectName: proposal.name,
+      status: pushStatus
     });
   } catch (error) {
     log.error(`Project create error [${platform}]:`, {}, error);

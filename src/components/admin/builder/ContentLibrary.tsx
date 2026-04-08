@@ -116,12 +116,40 @@ export default function ContentLibrary({
   const [search, setSearch] = useState('');
   const [narratives] = useState<NarrativeSnippet[]>(DEFAULT_NARRATIVES);
   const [deliverableTemplates, setDeliverableTemplates] = useState<DeliverableTemplate[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  // Load org-specific templates (if any exist in the future)
+  // Load org-specific templates dynamically
   useEffect(() => {
     if (!open) return;
-    // Placeholder — in production, this would query a `content_library` table
-    setDeliverableTemplates([]);
+    
+    let isMounted = true;
+    async function loadTemplates() {
+      setLoading(true);
+      try {
+        const res = await fetch('/api/tasks/templates');
+        if (res.ok) {
+          const json = await res.json();
+          if (isMounted) {
+            setDeliverableTemplates((json.templates ?? []).map((t: Record<string, unknown>) => ({
+              id: String(t.id),
+              name: String(t.name),
+              description: String(t.description ?? ''),
+              category: 'Task Template',
+              unitCost: 0,
+              unit: 'ea'
+            })));
+          }
+        }
+      } catch (err) {
+        // Fallback or ignore in case of fetch failure
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    }
+    
+    void loadTemplates();
+    
+    return () => { isMounted = false; };
   }, [open]);
 
   const matchesSearch = useCallback(
