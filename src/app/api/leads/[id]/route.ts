@@ -18,6 +18,7 @@ export async function GET(
     .select()
     .eq('id', id)
     .eq('organization_id', perm.organizationId)
+    .is('deleted_at', null)
     .single();
 
   if (error || !lead) return NextResponse.json({ error: 'Lead not found' }, { status: 404 });

@@ -23,6 +23,7 @@ export async function GET(
     `)
     .eq('id', id)
     .eq('organization_id', perm.organizationId)
+    .is('deleted_at', null)
     .single();
 
   if (error || !proposal) {

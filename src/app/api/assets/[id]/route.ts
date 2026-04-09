@@ -20,6 +20,7 @@ export async function GET(
     .select('*, asset_location_history(*)')
     .eq('id', id)
     .eq('organization_id', perm.organizationId)
+    .is('deleted_at', null)
     .single();
 
   if (error || !asset) return NextResponse.json({ error: 'Asset not found' }, { status: 404 });

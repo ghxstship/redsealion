@@ -18,6 +18,7 @@ export async function GET(
     .select()
     .eq('id', id)
     .eq('organization_id', perm.organizationId)
+    .is('deleted_at', null)
     .single();
 
   if (error || !location) return NextResponse.json({ error: 'Location not found' }, { status: 404 });

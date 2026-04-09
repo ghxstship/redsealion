@@ -18,6 +18,7 @@ export async function GET(
     .select('*, activations(*), locations(*)')
     .eq('id', id)
     .eq('organization_id', perm.organizationId)
+    .is('deleted_at', null)
     .single();
 
   if (error || !event) return NextResponse.json({ error: 'Event not found' }, { status: 404 });

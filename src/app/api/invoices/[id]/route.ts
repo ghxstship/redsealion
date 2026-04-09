@@ -18,6 +18,7 @@ export async function GET(
     .select('*, invoice_line_items(*), invoice_payments(*), clients(company_name, billing_address)')
     .eq('id', id)
     .eq('organization_id', perm.organizationId)
+    .is('deleted_at', null)
     .single();
 
   if (error || !invoice) return NextResponse.json({ error: 'Invoice not found' }, { status: 404 });

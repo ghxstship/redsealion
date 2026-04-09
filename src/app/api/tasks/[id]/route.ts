@@ -23,6 +23,7 @@ export async function GET(
     .select('*, task_checklist_items(*), task_watchers(*), task_attachments(*), task_comments(*)')
     .eq('id', id)
     .eq('organization_id', perm.organizationId)
+    .is('deleted_at', null)
     .single();
 
   if (error || !task) return NextResponse.json({ error: 'Task not found' }, { status: 404 });
