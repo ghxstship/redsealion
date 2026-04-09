@@ -2,6 +2,29 @@ import { NextResponse } from 'next/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
 
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const perm = await checkPermission('pipeline', 'view');
+  if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+
+  const { id } = await params;
+  const supabase = await createClient();
+
+  const { data: deal, error } = await supabase
+    .from('deals')
+    .select('*, clients(id, company_name), deal_activities(*)')
+    .eq('id', id)
+    .eq('organization_id', perm.organizationId)
+    .single();
+
+  if (error || !deal) return NextResponse.json({ error: 'Deal not found' }, { status: 404 });
+
+  return NextResponse.json({ deal });
+}
+
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> },

@@ -21,6 +21,7 @@ export async function GET(request: NextRequest) {
     .from('leads')
     .select()
     .eq('organization_id', orgId)
+    .is('deleted_at', null)
     .order('created_at', { ascending: false });
 
   if (status) {

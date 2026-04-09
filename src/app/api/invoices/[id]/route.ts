@@ -89,7 +89,7 @@ export async function DELETE(
 
   const { error: deleteError } = await supabase
     .from('invoices')
-    .delete()
+    .update({ deleted_at: new Date().toISOString() })
     .eq('id', id)
     .eq('organization_id', perm.organizationId);
 

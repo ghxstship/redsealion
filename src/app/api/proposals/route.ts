@@ -18,6 +18,7 @@ export async function GET(request: NextRequest) {
     .from('proposals')
     .select('*, clients(company_name)')
     .eq('organization_id', perm.organizationId)
+    .is('deleted_at', null)
     .order('updated_at', { ascending: false });
 
   if (status) query = query.eq('status', status);

@@ -15,6 +15,7 @@ export async function GET(request: NextRequest) {
     .from('clients')
     .select('*, client_contacts(*)')
     .eq('organization_id', perm.organizationId)
+    .is('deleted_at', null)
     .order('company_name', { ascending: true });
 
   if (search) query = query.ilike('company_name', `%${search}%`);

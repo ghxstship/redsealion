@@ -17,6 +17,7 @@ export async function GET(request: NextRequest) {
     .from('invoices')
     .select('*, clients(company_name), invoice_line_items(*)')
     .eq('organization_id', perm.organizationId)
+    .is('deleted_at', null)
     .order('issue_date', { ascending: false });
 
   if (status) query = query.eq('status', status);

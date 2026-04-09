@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
     .from('locations')
     .select()
     .eq('organization_id', perm.organizationId)
+    .is('deleted_at', null)
     .order('name');
 
   if (status) query = query.eq('status', status);

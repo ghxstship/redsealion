@@ -13,6 +13,7 @@ export async function GET() {
     .from('expenses')
     .select()
     .eq('organization_id', perm.organizationId)
+    .is('deleted_at', null)
     .order('expense_date', { ascending: false });
 
   if (error) return NextResponse.json({ error: 'Failed to fetch expenses' }, { status: 500 });

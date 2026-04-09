@@ -164,7 +164,7 @@ export async function DELETE(
   const { id } = await params;
   const supabase = await createClient();
 
-  const { error } = await supabase.from('assets').delete().eq('id', id).eq('organization_id', perm.organizationId);
+  const { error } = await supabase.from('assets').update({ deleted_at: new Date().toISOString() }).eq('id', id).eq('organization_id', perm.organizationId);
   if (error) return NextResponse.json({ error: 'Failed to delete asset', details: error.message }, { status: 500 });
 
   return NextResponse.json({ success: true });

@@ -24,6 +24,7 @@ export async function GET(request: NextRequest) {
     .from('tasks')
     .select('*, assignee:users!tasks_assignee_id_fkey(id, full_name, avatar_url)')
     .eq('organization_id', orgId)
+    .is('deleted_at', null)
     .order('sort_order', { ascending: true });
 
   const status = searchParams.get('status');
