@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
+import { dispatchWebhookEvent } from '@/lib/webhooks/outbound';
 
 export async function GET(
   _request: NextRequest,
@@ -74,6 +75,11 @@ export async function PATCH(
       { error: 'Failed to update lead.', details: error?.message },
       { status: 500 },
     );
+  }
+
+  // Dispatch webhook if lead was just converted
+  if (updates.converted_to_deal_id) {
+    dispatchWebhookEvent(orgId, 'lead.converted', { lead_id: id, deal_id: updates.converted_to_deal_id }).catch(() => {});
   }
 
   return NextResponse.json({ success: true, lead });

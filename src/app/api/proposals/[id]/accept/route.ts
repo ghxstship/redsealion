@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { requirePortalPermission } from '@/lib/api/portal-guard';
+import { dispatchWebhookEvent } from '@/lib/webhooks/outbound';
 
 export async function POST(
   request: Request,
@@ -31,7 +32,7 @@ export async function POST(
     // Verify proposal exists and is in a sendable state
     const { data: proposal, error: fetchError } = await supabase
       .from('proposals')
-      .select('id, status')
+      .select('id, status, organization_id')
       .eq('id', id)
       .single();
 
@@ -64,6 +65,9 @@ export async function POST(
         { status: 500 },
       );
     }
+
+    // Dispatch webhook for approved proposal
+    dispatchWebhookEvent(proposal.organization_id, 'proposal.approved', { proposal_id: id }).catch(() => {});
 
     return NextResponse.json({
       success: true,

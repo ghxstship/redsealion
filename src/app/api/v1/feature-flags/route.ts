@@ -9,7 +9,10 @@ export async function GET(request: NextRequest) {
   const url = new URL(request.url);
   const orgId = url.searchParams.get('organization_id') ?? ctx.organizationId;
 
-  const flags = await evaluateAllFlags(orgId, ctx.userId);
-
-  return NextResponse.json({ flags });
+  try {
+    const flags = await evaluateAllFlags(orgId, ctx.userId);
+    return NextResponse.json({ flags });
+  } catch {
+    return NextResponse.json({ error: 'Failed to evaluate feature flags' }, { status: 500 });
+  }
 }

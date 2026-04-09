@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
+import { dispatchWebhookEvent } from '@/lib/webhooks/outbound';
 
 export async function GET(
   _request: Request,
@@ -121,7 +122,7 @@ export async function PATCH(
     );
   }
 
-  // Log stage change activity
+  // Log stage change activity and dispatch webhooks
   if (stage && stage !== existingDeal.stage) {
     await supabase.from('deal_activities').insert({
       deal_id: id,
@@ -134,6 +135,15 @@ export async function PATCH(
         new_stage: stage,
       },
     });
+
+    // Dispatch stage-specific webhooks
+    dispatchWebhookEvent(orgId, 'deal.stage_changed', { deal_id: id, old_stage: existingDeal.stage, new_stage: stage }).catch(() => {});
+    if (stage === 'contract_signed') {
+      dispatchWebhookEvent(orgId, 'deal.won', { deal }).catch(() => {});
+    }
+    if (stage === 'lost') {
+      dispatchWebhookEvent(orgId, 'deal.lost', { deal, lost_reason: lost_reason ?? null }).catch(() => {});
+    }
   }
 
   return NextResponse.json({ success: true, deal });

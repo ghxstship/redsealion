@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase/server';
 import { notifyPaymentReminder } from '@/lib/notifications/triggers';
+import { dispatchWebhookEvent } from '@/lib/webhooks/outbound';
 import { requireCronAuth } from '@/lib/api/cron-guard';
 
 /**
@@ -26,7 +27,7 @@ export async function GET(request: Request) {
 
     const { data: overdueInvoices, error } = await supabase
       .from('invoices')
-      .select('id, invoice_number, due_date')
+      .select('id, invoice_number, due_date, organization_id')
       .lt('due_date', today)
       .in('status', ['sent', 'partially_paid'])
       .order('due_date', { ascending: true });
@@ -49,7 +50,11 @@ export async function GET(request: Request) {
 
     // Send reminders in parallel (fire-and-forget per invoice)
     const results = await Promise.allSettled(
-      invoices.map((inv) => notifyPaymentReminder(inv.id)),
+      invoices.map((inv) => {
+        // Dispatch overdue webhook alongside notification
+        dispatchWebhookEvent(inv.organization_id, 'invoice.overdue', { invoice_id: inv.id }).catch(() => {});
+        return notifyPaymentReminder(inv.id);
+      }),
     );
 
     const sent = results.filter((r) => r.status === 'fulfilled').length;
