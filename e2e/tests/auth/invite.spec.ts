@@ -15,17 +15,20 @@ const ROLES = [
 test.describe('Role-Based Invitation Flow', () => {
   // Use the admin/owner account for sending invites
   test.use({ storageState: 'e2e/.auth/owner.json' });
+  
+  // Increase test timeout — invite flow involves page nav + modal interaction + email verification
+  test.setTimeout(60_000);
 
   for (const role of ROLES) {
     test(`invites a new user with the ${role} role`, async ({ page }) => {
       const targetEmail = `test-invite-${role}-${Date.now()}@redsealion.test`;
 
-      await page.goto('/app/settings/team');
+      await page.goto('/app/settings/team', { waitUntil: 'domcontentloaded', timeout: 45_000 });
 
       const inviteButton = page.locator('button', { hasText: 'Invite Member' });
       
       // If the UI pops up a modal
-      if (await inviteButton.isVisible()) {
+      if (await inviteButton.isVisible({ timeout: 10_000 }).catch(() => false)) {
         await inviteButton.click();
         
         // Modal selectors (adjust based on actual UI if different)

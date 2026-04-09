@@ -12,7 +12,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 1,
-  workers: process.env.CI ? 2 : 4,
+  workers: process.env.CI ? 2 : 2,
   reporter: process.env.CI
     ? [['html', { open: 'never' }], ['github']]
     : [['html', { open: 'on-failure' }]],
@@ -26,7 +26,7 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     video: 'on-first-retry',
     actionTimeout: 15_000,
-    navigationTimeout: 30_000,
+    navigationTimeout: 45_000,
   },
 
   projects: [

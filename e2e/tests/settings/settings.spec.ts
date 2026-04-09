@@ -43,7 +43,7 @@ test.describe('Settings @settings', () => {
     test(`${route} renders for owner @owner`, async ({ authenticatedPage }) => {
       const page = await authenticatedPage('owner');
       await page.goto(route);
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
       await expectPageRendered(page);
       await expectNoRawI18nKeys(page);
     });
@@ -53,14 +53,14 @@ test.describe('Settings @settings', () => {
   test('profile accessible for team_member @team_member', async ({ authenticatedPage }) => {
     const page = await authenticatedPage('team_member');
     await page.goto('/app/settings/profile');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     await expectPageRendered(page);
   });
 
   test('appearance accessible for team_member @team_member_alt', async ({ authenticatedPage }) => {
     const page = await authenticatedPage('team_member');
     await page.goto('/app/settings/appearance');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     await expectPageRendered(page);
   });
 
@@ -70,21 +70,21 @@ test.describe('Settings @settings', () => {
   test('billing renders for manager @manager', async ({ authenticatedPage }) => {
     const page = await authenticatedPage('manager');
     await page.goto('/app/settings/billing');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     await expectPageRendered(page);
   });
 
   test('security renders for team_member @team_member_sec', async ({ authenticatedPage }) => {
     const page = await authenticatedPage('team_member');
     await page.goto('/app/settings/security');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     await expectPageRendered(page);
   });
 
   test('sso renders for manager @manager_sso', async ({ authenticatedPage }) => {
     const page = await authenticatedPage('manager');
     await page.goto('/app/settings/sso');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     await expectPageRendered(page);
   });
 });
