@@ -4,7 +4,7 @@
 import { test, expect } from '@playwright/test';
 
 // Use a logged-in standard user context
-test.use({ storageState: 'e2e/.auth/user.json' });
+test.use({ storageState: 'e2e/.auth/team_member.json' });
 
 test.describe('User Onboarding Flow', () => {
   test('redirects to app and allows profile completion', async ({ page }) => {
@@ -27,7 +27,7 @@ test.describe('User Onboarding Flow', () => {
     const saveButton = page.locator('button', { hasText: /Save|Update/i });
     if (await saveButton.isVisible()) {
       await saveButton.click();
-      await expect(page.locator('text=updated').first()).toBeVisible({ timeout: 5000 });
+      await expect(page.locator('text=Profile updated').first()).toBeVisible({ timeout: 5000 });
     }
   });
 });

@@ -51,6 +51,7 @@ export default function ProfileSettingsPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
   // Load profile on mount
@@ -70,12 +71,17 @@ export default function ProfileSettingsPage() {
 
   async function handleSave() {
     setSaving(true);
+    setSaved(false);
     try {
-      await fetch('/api/settings/profile', {
+      const res = await fetch('/api/settings/profile', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ full_name: fullName, phone, title }),
       });
+      if (res.ok) {
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+      }
     } finally {
       setSaving(false);
     }
@@ -142,7 +148,10 @@ export default function ProfileSettingsPage() {
       </Card>
 
       {/* Save */}
-      <div className="flex justify-end">
+      <div className="flex items-center justify-end gap-3">
+        {saved && (
+          <span className="text-sm text-green-600 font-medium">Profile updated</span>
+        )}
         <Button onClick={handleSave} disabled={saving}>
           {saving ? 'Saving...' : 'Save Changes'}
         </Button>

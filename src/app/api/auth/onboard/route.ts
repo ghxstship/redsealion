@@ -84,12 +84,26 @@ export async function POST(request: Request) {
       .maybeSingle();
 
     if (!existingUser) {
-      await service.from('users').insert({
+      const fullName = user.user_metadata?.full_name ?? '';
+      const nameParts = fullName.trim().split(/\s+/);
+      const firstName = nameParts[0] || '';
+      const lastName = nameParts.slice(1).join(' ') || '';
+
+      const { error: userError } = await service.from('users').insert({
         id: user.id,
         email: user.email ?? '',
-        full_name: user.user_metadata?.full_name ?? '',
+        first_name: firstName,
+        last_name: lastName,
+        full_name: fullName,
         status: 'active',
       });
+      if (userError) {
+        log.error('Failed to create user record', { userId: user.id, userError: userError.message });
+        return NextResponse.json(
+          { error: 'Failed to set up user profile.', detail: userError.message },
+          { status: 500 },
+        );
+      }
     }
 
     // 4. Create organization
@@ -100,14 +114,23 @@ export async function POST(request: Request) {
         slug,
         subscription_tier: 'free',
         owner_id: user.id,
+        currency: 'USD',
+        timezone: 'America/New_York',
+        language: 'en',
+        invoice_prefix: 'INV',
+        proposal_prefix: 'PROP',
+        date_format: 'MM/DD/YYYY',
+        time_format: '12h',
+        first_day_of_week: 0,
+        number_format: 'en-US',
       })
       .select('id')
       .single();
 
     if (orgError || !org) {
-      log.error('Failed to create organization', { slug }, orgError);
+      log.error('Failed to create organization', { slug, orgError: orgError?.message, orgCode: orgError?.code, orgDetails: orgError?.details });
       return NextResponse.json(
-        { error: 'Failed to create organization.' },
+        { error: 'Failed to create organization.', detail: orgError?.message },
         { status: 500 },
       );
     }
