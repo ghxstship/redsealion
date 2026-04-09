@@ -1,9 +1,11 @@
 import type { MetadataRoute } from 'next';
+import { createServiceClient } from '@/lib/supabase/server';
 
 const BASE_URL = 'https://flytedeck.io';
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  return [
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  // Static pages
+  const staticPages: MetadataRoute.Sitemap = [
     {
       url: BASE_URL,
       changeFrequency: 'weekly',
@@ -115,4 +117,43 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.5,
     },
   ];
+
+  // Dynamic: Published portal pages
+  let portalPages: MetadataRoute.Sitemap = [];
+  try {
+    const supabase = await createServiceClient();
+    const { data: portals } = await supabase
+      .from('project_portals')
+      .select(`
+        portal_type,
+        updated_at,
+        projects!inner(slug),
+        organizations!inner(slug)
+      `)
+      .eq('is_published', true)
+      .limit(500);
+
+    if (portals) {
+      portalPages = portals
+        .filter((p) => {
+          const org = (p.organizations as unknown) as { slug: string } | null;
+          const proj = (p.projects as unknown) as { slug: string } | null;
+          return org?.slug && proj?.slug;
+        })
+        .map((portal) => {
+          const org = (portal.organizations as unknown) as { slug: string };
+          const proj = (portal.projects as unknown) as { slug: string };
+          return {
+            url: `${BASE_URL}/portal/${org.slug}/projects/${proj.slug}`,
+            lastModified: portal.updated_at ? new Date(portal.updated_at) : undefined,
+            changeFrequency: 'weekly' as const,
+            priority: 0.6,
+          };
+        });
+    }
+  } catch {
+    // Silently fall back to static-only sitemap if DB is unavailable
+  }
+
+  return [...staticPages, ...portalPages];
 }

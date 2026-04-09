@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase/server';
 import { createLogger } from '@/lib/logger';
+import { serveRateLimit } from '@/lib/api/rate-limit';
 
 const log = createLogger('api-public-portal-magic-link');
 
@@ -11,6 +12,15 @@ const log = createLogger('api-public-portal-magic-link');
  */
 export async function POST(request: NextRequest) {
   try {
+    // Rate limit: 5 magic link requests per minute per IP (auth-sensitive)
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
+    const { success: withinLimit } = await serveRateLimit(`magic_${ip}`, 5, 60000);
+    if (!withinLimit) {
+      return NextResponse.json(
+        { error: 'Too many requests. Please wait before requesting another link.' },
+        { status: 429, headers: { 'Retry-After': '60' } },
+      );
+    }
     const body = await request.json().catch(() => ({}));
     const { email, orgSlug } = body;
 

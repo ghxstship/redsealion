@@ -1,10 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase/server';
+import { serveRateLimit } from '@/lib/api/rate-limit';
 
 interface RouteContext { params: Promise<{ code: string }> }
 
 /** Public endpoint: track a referral link click */
 export async function GET(_request: NextRequest, context: RouteContext) {
+  // Rate limit: 30 clicks per minute per IP
+  const ip = _request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
+  const { success: withinLimit } = await serveRateLimit(`referral_${ip}`, 30, 60000);
+  if (!withinLimit) {
+    return NextResponse.json(
+      { error: 'Too many requests.' },
+      { status: 429, headers: { 'Retry-After': '60' } },
+    );
+  }
+
   const { code } = await context.params;
   const supabase = await createServiceClient();
 

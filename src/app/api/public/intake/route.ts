@@ -2,11 +2,21 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase/server';
 import { convertLeadToProject } from '@/lib/leads/conversion';
 import { createLogger } from '@/lib/logger';
+import { serveRateLimit } from '@/lib/api/rate-limit';
 
 const log = createLogger('api-public-intake');
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limit: 10 submissions per minute per IP
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
+    const { success: withinLimit } = await serveRateLimit(`intake_${ip}`, 10, 60000);
+    if (!withinLimit) {
+      return NextResponse.json(
+        { error: 'Too many submissions. Please try again later.' },
+        { status: 429, headers: { 'Retry-After': '60' } },
+      );
+    }
     const body = await request.json().catch(() => ({}));
     const {
       form_id, // could be form id or org_id

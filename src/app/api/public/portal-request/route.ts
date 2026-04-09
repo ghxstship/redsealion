@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase/server';
 import { createLogger } from '@/lib/logger';
+import { serveRateLimit } from '@/lib/api/rate-limit';
 
 const log = createLogger('api-public-portal-request');
 
@@ -11,6 +12,15 @@ const log = createLogger('api-public-portal-request');
  */
 export async function POST(request: NextRequest) {
   try {
+    // Rate limit: 10 requests per minute per IP
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
+    const { success: withinLimit } = await serveRateLimit(`portal_req_${ip}`, 10, 60000);
+    if (!withinLimit) {
+      return NextResponse.json(
+        { error: 'Too many submissions. Please try again later.' },
+        { status: 429, headers: { 'Retry-After': '60' } },
+      );
+    }
     const body = await request.json().catch(() => ({}));
     const {
       organization_id,

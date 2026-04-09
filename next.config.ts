@@ -56,6 +56,26 @@ const nextConfig: NextConfig = {
         { key: 'Service-Worker-Allowed', value: '/' },
       ],
     },
+    {
+      // CORS for public API routes — allows cross-origin portal/intake embeds
+      source: '/api/public/:path*',
+      headers: [
+        { key: 'Access-Control-Allow-Origin', value: '*' },
+        { key: 'Access-Control-Allow-Methods', value: 'GET, POST, OPTIONS' },
+        { key: 'Access-Control-Allow-Headers', value: 'Content-Type, Authorization' },
+        { key: 'Access-Control-Max-Age', value: '86400' },
+      ],
+    },
+    {
+      // CORS for public portal endpoints
+      source: '/api/v1/portals/:path*',
+      headers: [
+        { key: 'Access-Control-Allow-Origin', value: '*' },
+        { key: 'Access-Control-Allow-Methods', value: 'GET, OPTIONS' },
+        { key: 'Access-Control-Allow-Headers', value: 'Content-Type' },
+        { key: 'Access-Control-Max-Age', value: '86400' },
+      ],
+    },
   ],
 };
 
