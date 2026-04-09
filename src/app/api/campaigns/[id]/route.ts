@@ -51,3 +51,43 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
   if (error || !campaign) return NextResponse.json({ error: 'Failed to update campaign', details: error?.message }, { status: 500 });
   return NextResponse.json({ success: true, campaign });
 }
+
+export async function DELETE(_request: NextRequest, context: RouteContext) {
+  const perm = await checkPermission('email_campaigns', 'delete');
+  if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+
+  const { id } = await context.params;
+  const supabase = await createClient();
+
+  // Only draft/scheduled campaigns can be deleted; sent campaigns should be archived
+  const { data: campaign, error: fetchError } = await supabase
+    .from('campaigns')
+    .select('id, status')
+    .eq('id', id)
+    .eq('organization_id', perm.organizationId)
+    .single();
+
+  if (fetchError || !campaign) {
+    return NextResponse.json({ error: 'Campaign not found' }, { status: 404 });
+  }
+
+  if (campaign.status === 'sent') {
+    return NextResponse.json(
+      { error: 'Sent campaigns cannot be deleted. Archive them instead.' },
+      { status: 409 },
+    );
+  }
+
+  const { error } = await supabase
+    .from('campaigns')
+    .delete()
+    .eq('id', id)
+    .eq('organization_id', perm.organizationId);
+
+  if (error) {
+    return NextResponse.json({ error: 'Failed to delete campaign', details: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ success: true });
+}

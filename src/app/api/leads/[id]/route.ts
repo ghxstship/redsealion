@@ -1,6 +1,29 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
+
+export async function GET(
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const perm = await checkPermission('leads', 'view');
+  if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+
+  const { id } = await params;
+  const supabase = await createClient();
+
+  const { data: lead, error } = await supabase
+    .from('leads')
+    .select()
+    .eq('id', id)
+    .eq('organization_id', perm.organizationId)
+    .single();
+
+  if (error || !lead) return NextResponse.json({ error: 'Lead not found' }, { status: 404 });
+
+  return NextResponse.json({ lead });
+}
 
 export async function PATCH(
   request: Request,
@@ -53,4 +76,21 @@ export async function PATCH(
   }
 
   return NextResponse.json({ success: true, lead });
+}
+
+export async function DELETE(
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const perm = await checkPermission('leads', 'delete');
+  if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+
+  const { id } = await params;
+  const supabase = await createClient();
+
+  const { error } = await supabase.from('leads').delete().eq('id', id).eq('organization_id', perm.organizationId);
+  if (error) return NextResponse.json({ error: 'Failed to delete lead', details: error.message }, { status: 500 });
+
+  return NextResponse.json({ success: true });
 }

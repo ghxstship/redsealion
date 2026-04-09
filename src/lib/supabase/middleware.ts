@@ -58,6 +58,19 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  // H-01: Email verification enforcement
+  // Block unverified users from accessing /app (allow /verify-email and auth setup pages)
+  if (
+    user &&
+    isAppRoute &&
+    !user.email_confirmed_at &&
+    !pathname.startsWith('/app/verify-email')
+  ) {
+    const url = request.nextUrl.clone();
+    url.pathname = '/verify-email';
+    return NextResponse.redirect(url);
+  }
+
   // ---------------------------------------------------------------------------
   // Harbor Master: User status + session enforcement on every authenticated request
   // Performance: check cookie cache first (set for 60s), fall back to DB

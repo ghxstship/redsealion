@@ -6,30 +6,30 @@ export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const perm = await checkPermission('invoices', 'view');
+  const perm = await checkPermission('proposals', 'view');
   if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
   const { id } = await params;
   const supabase = await createClient();
 
-  const { data: invoice, error } = await supabase
-    .from('invoices')
-    .select('*, invoice_line_items(*), invoice_payments(*), clients(company_name, billing_address)')
+  const { data: portal, error } = await supabase
+    .from('project_portals')
+    .select('*, projects(name, slug)')
     .eq('id', id)
     .eq('organization_id', perm.organizationId)
     .single();
 
-  if (error || !invoice) return NextResponse.json({ error: 'Invoice not found' }, { status: 404 });
+  if (error || !portal) return NextResponse.json({ error: 'Portal not found' }, { status: 404 });
 
-  return NextResponse.json({ invoice });
+  return NextResponse.json({ portal });
 }
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const perm = await checkPermission('invoices', 'edit');
+  const perm = await checkPermission('proposals', 'edit');
   if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
@@ -37,65 +37,43 @@ export async function PATCH(
   const body = await request.json().catch(() => ({}));
   const supabase = await createClient();
 
-  const allowedFields = ['status', 'due_date', 'memo', 'type'];
+  const allowedFields = [
+    'is_published', 'call_time', 'pre_arrival_checklist', 'parking_instructions',
+    'rideshare_instructions', 'transit_instructions', 'check_in_instructions',
+    'faqs', 'amenities',
+  ];
   const updates: Record<string, unknown> = {};
   for (const f of allowedFields) {
     if (f in body) updates[f] = body[f];
   }
   if (Object.keys(updates).length === 0) return NextResponse.json({ error: 'No fields to update' }, { status: 400 });
 
-  const { data: invoice, error } = await supabase
-    .from('invoices')
+  const { data: portal, error } = await supabase
+    .from('project_portals')
     .update(updates)
     .eq('id', id)
     .eq('organization_id', perm.organizationId)
     .select()
     .single();
 
-  if (error || !invoice) return NextResponse.json({ error: 'Failed to update invoice', details: error?.message }, { status: 500 });
+  if (error || !portal) return NextResponse.json({ error: 'Failed to update portal', details: error?.message }, { status: 500 });
 
-  return NextResponse.json({ success: true, invoice });
+  return NextResponse.json({ success: true, portal });
 }
 
 export async function DELETE(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const perm = await checkPermission('invoices', 'delete');
+  const perm = await checkPermission('proposals', 'delete');
   if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
   const { id } = await params;
   const supabase = await createClient();
 
-  // Only draft invoices can be hard-deleted; sent/paid must be voided
-  const { data: invoice, error: fetchError } = await supabase
-    .from('invoices')
-    .select('id, status')
-    .eq('id', id)
-    .eq('organization_id', perm.organizationId)
-    .single();
-
-  if (fetchError || !invoice) {
-    return NextResponse.json({ error: 'Invoice not found' }, { status: 404 });
-  }
-
-  if (invoice.status !== 'draft') {
-    return NextResponse.json(
-      { error: 'Only draft invoices can be deleted. Use the void endpoint for sent invoices.' },
-      { status: 409 },
-    );
-  }
-
-  const { error: deleteError } = await supabase
-    .from('invoices')
-    .delete()
-    .eq('id', id)
-    .eq('organization_id', perm.organizationId);
-
-  if (deleteError) {
-    return NextResponse.json({ error: 'Failed to delete invoice', details: deleteError.message }, { status: 500 });
-  }
+  const { error } = await supabase.from('project_portals').delete().eq('id', id).eq('organization_id', perm.organizationId);
+  if (error) return NextResponse.json({ error: 'Failed to delete portal', details: error.message }, { status: 500 });
 
   return NextResponse.json({ success: true });
 }

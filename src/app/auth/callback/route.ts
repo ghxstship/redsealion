@@ -18,6 +18,26 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (!error) {
+      // C-03: Check if this user has an active organization membership.
+      // Google OAuth users skip the signup form's Step 2 (org provisioning),
+      // so first-time OAuth users may land with no org.
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (user) {
+        const { data: membership } = await supabase
+          .from('organization_memberships')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('status', 'active')
+          .limit(1)
+          .maybeSingle();
+
+        if (!membership) {
+          // No org — redirect to organization setup flow
+          return NextResponse.redirect(`${origin}/signup/setup-org`);
+        }
+      }
+
       return NextResponse.redirect(`${origin}${next}`);
     }
 

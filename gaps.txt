@@ -1,0 +1,578 @@
+.github/workflows/ci.yml:54:          NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+.github/workflows/ci.yml:55:          NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-anon-key
+.github/workflows/ci.yml:56:          NEXT_PUBLIC_APP_URL: https://placeholder.app
+.github/workflows/ci.yml:58:          SUPABASE_SERVICE_ROLE_KEY: placeholder-service-role-key
+.github/workflows/ci.yml:59:          STRIPE_SECRET_KEY: placeholder-stripe-key
+.github/workflows/ci.yml:60:          STRIPE_WEBHOOK_SECRET: placeholder-webhook-secret
+docs/adr/003-error-hierarchy.md:20:| AuthenticationError | 401 | AUTHENTICATION_ERROR | Missing/invalid auth |
+docs/adr/005-env-validation.md:10:validation. Missing or misconfigured variables caused silent runtime failures
+e2e/helpers/assertions.ts:50:  const i18nKeyPattern = /\b(nav|module|common|action|label|placeholder|success|confirm)\.[a-z_]{2,}\b/gi;
+e2e/helpers/seed.ts:264:      status: 'todo',
+e2e/tests/finance/budgets.spec.ts:28:    // TODO: expectAccessDenied once server-side role gating is enforced
+e2e/tests/finance/finance.spec.ts:27:    // TODO: expectAccessDenied once server-side role gating is enforced
+e2e/tests/finance/reports.spec.ts:49:    // TODO: expectAccessDenied once server-side role gating is enforced
+e2e/tests/pm/campaigns.spec.ts:35:    // TODO: expectAccessDenied once server-side role gating is enforced
+e2e/tests/pm/dispatch.spec.ts:27:    // TODO: expectAccessDenied once server-side role gating is enforced
+e2e/tests/pm/people.spec.ts:36:    // TODO: expectAccessDenied once server-side role gating is enforced
+e2e/tests/pm/workloads.spec.ts:29:    // TODO: expectAccessDenied once server-side role gating is enforced
+e2e/tests/production/advancing.spec.ts:38:    // TODO: expectAccessDenied once server-side role gating is enforced
+e2e/tests/production/fabrication.spec.ts:35:    // TODO: expectAccessDenied once server-side role gating is enforced
+e2e/tests/production/procurement.spec.ts:37:    // TODO: expectAccessDenied once server-side role gating is enforced
+e2e/tests/production/rentals.spec.ts:37:    // TODO: expectAccessDenied once server-side role gating is enforced
+e2e/tests/sales/clients.spec.ts:44:    // TODO: expectAccessDenied once server-side role gating is enforced
+e2e/tests/sales/invoices.spec.ts:27:    // TODO: expectAccessDenied once server-side role gating is enforced
+e2e/tests/sales/leads.spec.ts:35:    // TODO: expectAccessDenied once server-side role gating is enforced
+e2e/tests/sales/pipeline.spec.ts:56:    // TODO: expectAccessDenied once server-side role gating is enforced
+e2e/tests/sales/pipeline.spec.ts:66:      // TODO: expectAccessDenied once server-side role gating is enforced
+e2e/tests/settings/compliance.spec.ts:20:    // TODO: expectAccessDenied once server-side role gating is enforced
+e2e/tests/settings/compliance.spec.ts:28:    // TODO: expectAccessDenied once server-side role gating is enforced
+e2e/tests/settings/settings.spec.ts:67:  // TODO: Implement server-side access control for admin-only settings routes.
+package-lock.json:22:        "@tiptap/extension-placeholder": "^3.22.0",
+package-lock.json:2829:    "node_modules/@tiptap/extension-placeholder": {
+package-lock.json:2831:      "resolved": "https://registry.npmjs.org/@tiptap/extension-placeholder/-/extension-placeholder-3.22.0.tgz",
+package.json:28:    "@tiptap/extension-placeholder": "^3.22.0",
+scripts/e2e-lifecycle-test.sh:88:T1=$(spost "tasks" '{"organization_id":"'"$ORG"'","title":"Finalize venue contracts","status":"todo","priority":"high","assignee_id":"'"$OWNER"'","proposal_id":"'"$PID"'","due_date":"2026-04-12","estimated_hours":8,"created_by":"'"$OWNER"'","sort_order":0}')
+scripts/e2e-lifecycle-test.sh:90:T2=$(spost "tasks" '{"organization_id":"'"$ORG"'","title":"Design stage layout","status":"todo","priority":"high","assignee_id":"'"$OWNER"'","proposal_id":"'"$PID"'","phase_id":"'"$P2_ID"'","due_date":"2026-04-19","estimated_hours":16,"created_by":"'"$OWNER"'","sort_order":1}')
+scripts/e2e-lifecycle-test.sh:92:T3=$(spost "tasks" '{"organization_id":"'"$ORG"'","title":"Order AV equipment","status":"todo","priority":"medium","proposal_id":"'"$PID"'","phase_id":"'"$P3_ID"'","due_date":"2026-04-15","estimated_hours":4,"created_by":"'"$OWNER"'","sort_order":2}')
+scripts/e2e-lifecycle-test.sh:94:T4=$(spost "tasks" '{"organization_id":"'"$ORG"'","title":"Send speaker media kits","status":"todo","priority":"low","assignee_id":"'"$OWNER"'","proposal_id":"'"$PID"'","due_date":"2026-04-26","estimated_hours":3,"created_by":"'"$OWNER"'","sort_order":3}')
+scripts/e2e-lifecycle-test.sh:96:T5=$(spost "tasks" '{"organization_id":"'"$ORG"'","title":"Technical rehearsal","status":"todo","priority":"high","assignee_id":"'"$OWNER"'","proposal_id":"'"$PID"'","phase_id":"'"$P3_ID"'","due_date":"2026-06-13","estimated_hours":12,"created_by":"'"$OWNER"'","sort_order":4}')
+src/__tests__/helpers.ts:311:    status: 'todo',
+src/__tests__/workflows/automation-system.test.ts:238:      const missingId = { entity_type: 'proposals', status: 'approved' };
+src/__tests__/workflows/automation-system.test.ts:239:      const missingStatus = { entity_type: 'proposals', entity_id: 'prop_001' };
+src/__tests__/workflows/automation-system.test.ts:240:      expect((missingId as Record<string, string>).entity_id).toBeUndefined();
+src/__tests__/workflows/automation-system.test.ts:241:      expect((missingStatus as Record<string, string>).status).toBeUndefined();
+src/__tests__/workflows/client-portal.test.ts:49:    it('returns 401 for missing or invalid token', () => {
+src/__tests__/workflows/harbor-master-invite-codes.test.ts:19:  restrictToDomain: string | null;
+src/__tests__/workflows/harbor-master-invite-codes.test.ts:64:  if (code.restrictToDomain) {
+src/__tests__/workflows/harbor-master-invite-codes.test.ts:66:    if (emailDomain !== code.restrictToDomain) {
+src/__tests__/workflows/harbor-master-invite-codes.test.ts:100:  restrictToDomain: null,
+src/__tests__/workflows/harbor-master-invite-codes.test.ts:200:      code: { ...activeCode, restrictToDomain: 'acme.com' },
+src/__tests__/workflows/harbor-master-invite-codes.test.ts:211:      code: { ...activeCode, restrictToDomain: 'acme.com' },
+src/__tests__/workflows/payment-esign.test.ts:225:      const missingToken = { signature_data: 'data:...' };
+src/__tests__/workflows/payment-esign.test.ts:226:      expect((missingToken as Record<string, string>).token).toBeUndefined();
+src/__tests__/workflows/payment-esign.test.ts:230:      const missingData = { token: 'abc123' };
+src/__tests__/workflows/payment-esign.test.ts:231:      expect((missingData as Record<string, string>).signature_data).toBeUndefined();
+src/__tests__/workflows/task-time-tracking.test.ts:5: *   Task workflow: todo → in_progress → done / cancelled
+src/__tests__/workflows/task-time-tracking.test.ts:20:const TASK_STATUSES = ['todo', 'in_progress', 'done', 'cancelled'];
+src/__tests__/workflows/task-time-tracking.test.ts:24:  todo: ['in_progress', 'cancelled'],
+src/__tests__/workflows/task-time-tracking.test.ts:25:  in_progress: ['done', 'todo', 'cancelled'],
+src/__tests__/workflows/task-time-tracking.test.ts:26:  done: ['todo'],         // can reopen
+src/__tests__/workflows/task-time-tracking.test.ts:27:  cancelled: ['todo'],     // can reopen
+src/__tests__/workflows/task-time-tracking.test.ts:40:    it('allows todo → in_progress → done flow', () => {
+src/__tests__/workflows/task-time-tracking.test.ts:41:      expect(VALID_TASK_TRANSITIONS.todo).toContain('in_progress');
+src/__tests__/workflows/task-time-tracking.test.ts:46:      expect(VALID_TASK_TRANSITIONS.todo).toContain('cancelled');
+src/__tests__/workflows/task-time-tracking.test.ts:51:      expect(VALID_TASK_TRANSITIONS.done).toContain('todo');
+src/__tests__/workflows/task-time-tracking.test.ts:52:      expect(VALID_TASK_TRANSITIONS.cancelled).toContain('todo');
+src/__tests__/workflows/task-time-tracking.test.ts:55:    it('allows reverting in_progress to todo', () => {
+src/__tests__/workflows/task-time-tracking.test.ts:56:      expect(VALID_TASK_TRANSITIONS.in_progress).toContain('todo');
+src/__tests__/workflows/task-time-tracking.test.ts:69:      expect(task.status).toBe('todo');
+src/__tests__/workflows/task-time-tracking.test.ts:72:    it('defaults status to todo', () => {
+src/__tests__/workflows/task-time-tracking.test.ts:74:      expect(task.status).toBe('todo');
+src/__tests__/workflows/task-time-tracking.test.ts:122:        makeTask({ status: 'todo' }),
+src/__tests__/workflows/task-time-tracking.test.ts:126:      const todoTasks = tasks.filter(t => t.status === 'todo');
+src/__tests__/workflows/task-time-tracking.test.ts:127:      expect(todoTasks).toHaveLength(1);
+src/__tests__/workflows/task-time-tracking.test.ts:181:      const oldStatus = 'todo';
+src/app/(auth)/forgot-password/page.tsx:97:            placeholder="you@company.com"
+src/app/(auth)/forgot-password/page.tsx:99:            className="w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500"
+src/app/(auth)/login/page.tsx:197:            placeholder="you@company.com"
+src/app/(auth)/login/page.tsx:199:            className="w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500"
+src/app/(auth)/login/page.tsx:216:              placeholder="Enter your password"
+src/app/(auth)/login/page.tsx:218:              className="w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500"
+src/app/(auth)/reset-password/page.tsx:117:              placeholder="At least 8 characters"
+src/app/(auth)/reset-password/page.tsx:120:              className="w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500"
+src/app/(auth)/reset-password/page.tsx:136:              placeholder="Re-enter your new password"
+src/app/(auth)/reset-password/page.tsx:139:              className="w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500"
+src/app/(auth)/signup/page.tsx:230:                placeholder="Jane Smith"
+src/app/(auth)/signup/page.tsx:232:                className="w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500"
+src/app/(auth)/signup/page.tsx:247:                placeholder="you@company.com"
+src/app/(auth)/signup/page.tsx:249:                className="w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500"
+src/app/(auth)/signup/page.tsx:264:                placeholder="At least 8 characters"
+src/app/(auth)/signup/page.tsx:267:                className="w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500"
+src/app/(auth)/signup/page.tsx:294:              placeholder="Acme Productions"
+src/app/(auth)/signup/page.tsx:296:              className="w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500"
+src/app/(auth)/signup/page.tsx:313:                placeholder="acme-productions"
+src/app/(auth)/signup/page.tsx:315:                className="w-full rounded-r-lg border-none bg-transparent px-1 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none"
+src/app/(marketing)/compare/project-management-tools/page.tsx:69:      {/* What's Missing */}
+src/app/(marketing)/compare/project-management-tools/page.tsx:72:          What is missing from generic PM tools
+src/app/(marketing)/use-cases/concerts-festivals/page.tsx:40:      'Gear moves between warehouses, rehearsal spaces, trucks, and venues constantly. Without centralized asset tracking, equipment goes missing, maintenance windows are missed, and rental costs multiply when you cannot confirm what you already own.',
+src/app/api/assets/[id]/depreciation/route.ts:39:      message: 'Asset is missing depreciation configuration (acquisition_cost, useful_life_months, or depreciation_method).',
+src/app/api/assets/[id]/depreciation/route.ts:104:      { error: 'Asset is missing depreciation configuration.' },
+src/app/api/assets/[id]/route.ts:4:import { isValidTransition, getMissingTransitionFields } from '@/lib/assets/transitions';
+src/app/api/assets/[id]/route.ts:64:    const missing = getMissingTransitionFields(to, body);
+src/app/api/assets/[id]/route.ts:65:    if (missing.length > 0) {
+src/app/api/assets/[id]/route.ts:67:        { error: `Missing required fields for "${to}" transition: ${missing.join(', ')}` },
+src/app/api/automations/run/route.ts:105:          error: 'Missing entity_id or status in config/trigger_data',
+src/app/api/cron/recurring-tasks/route.ts:30:      .in('status', ['todo', 'in_progress', 'done']); // Skip cancelled/blocked
+src/app/api/cron/recurring-tasks/route.ts:62:          status: 'todo',
+src/app/api/esign/complete/route.ts:22:        { error: 'Missing required fields: token, signature_data' },
+src/app/api/esign/request/route.ts:38:        { error: 'Missing required fields: proposal_id, document_type, document_title, signer_name, signer_email' },
+src/app/api/integrations/[platform]/callback/route.ts:51:      new URL('/app/integrations?error=missing_code', request.url),
+src/app/api/notifications/preferences/route.ts:67:        { error: 'Missing required field: preferences (array)' },
+src/app/api/notifications/send/route.ts:36:        { error: 'Missing required fields: recipient_email, subject, body, type' },
+src/app/api/tasks/route.ts:127:      status: status || 'todo',
+src/app/app/automations/new/page.tsx:113:              placeholder="e.g., Notify team on proposal approval"
+src/app/app/automations/new/page.tsx:123:              placeholder="What does this automation do?"
+src/app/app/campaigns/new/page.tsx:73:                className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground" placeholder="Q2 Product Announcement" />
+src/app/app/campaigns/new/page.tsx:78:                className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground" placeholder="Exciting updates from our team" />
+src/app/app/campaigns/new/page.tsx:90:            placeholder="Compose your email body (HTML supported)…"
+src/app/app/campaigns/new/page.tsx:110:                className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground" placeholder="vip, returning, enterprise" />
+src/app/app/crew/(hub)/page.tsx:150:          placeholder="Search by name, email, or skill..."
+src/app/app/dispatch/new/page.tsx:88:                placeholder="e.g. Stage build at Javits Center"
+src/app/app/dispatch/new/page.tsx:89:                className="w-full rounded-lg border border-border bg-card px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
+src/app/app/dispatch/new/page.tsx:102:                placeholder="Describe the work to be done..."
+src/app/app/dispatch/new/page.tsx:103:                className="w-full rounded-lg border border-border bg-card px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20 resize-none"
+src/app/app/dispatch/new/page.tsx:139:                placeholder="e.g. Javits Convention Center"
+src/app/app/dispatch/new/page.tsx:140:                className="w-full rounded-lg border border-border bg-card px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
+src/app/app/dispatch/new/page.tsx:152:                placeholder="429 11th Ave, New York, NY 10001"
+src/app/app/dispatch/new/page.tsx:153:                className="w-full rounded-lg border border-border bg-card px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
+src/app/app/finance/purchase-orders/new/page.tsx:155:                placeholder="e.g. Acme Productions"
+src/app/app/finance/purchase-orders/new/page.tsx:172:                placeholder="What is being ordered..."
+src/app/app/finance/purchase-orders/new/page.tsx:184:                  placeholder="0.00"
+src/app/app/finance/vendors/[id]/page.tsx:269:                placeholder="Optional — if different from company name"
+src/app/app/finance/vendors/[id]/page.tsx:309:                placeholder="vendor@example.com"
+src/app/app/finance/vendors/[id]/page.tsx:318:                placeholder="(555) 123-4567"
+src/app/app/finance/vendors/[id]/page.tsx:327:                placeholder="https://..."
+src/app/app/finance/vendors/[id]/page.tsx:395:                placeholder="XX-XXXXXXX"
+src/app/app/finance/vendors/[id]/page.tsx:432:            placeholder="Any additional notes about this vendor..."
+src/app/app/finance/vendors/new/page.tsx:141:                placeholder="e.g. Acme Productions"
+src/app/app/finance/vendors/new/page.tsx:151:                placeholder="Optional — if different from company name"
+src/app/app/finance/vendors/new/page.tsx:179:                placeholder="vendor@example.com"
+src/app/app/finance/vendors/new/page.tsx:188:                placeholder="(555) 123-4567"
+src/app/app/finance/vendors/new/page.tsx:197:                placeholder="https://..."
+src/app/app/finance/vendors/new/page.tsx:265:                placeholder="XX-XXXXXXX"
+src/app/app/finance/vendors/new/page.tsx:278:            placeholder="Any additional notes about this vendor..."
+src/app/app/proposals/[id]/export/_ExportHubContent.tsx:36:  const [includePlaceholders, setIncludePlaceholders] = useState(false);
+src/app/app/proposals/[id]/export/_ExportHubContent.tsx:63:            <input type="checkbox" checked={includePlaceholders} onChange={() => setIncludePlaceholders(!includePlaceholders)} className="h-4 w-4 rounded border-border" />
+src/app/app/proposals/[id]/export/_ExportHubContent.tsx:64:            <span className="text-xs text-foreground">Include placeholder fields for signatures</span>
+src/app/app/proposals/[id]/export/_ExportHubContent.tsx:69:          <button onClick={() => onExport({ includeTerms, includePortfolio, includePlaceholders })} className="rounded-lg bg-foreground px-3.5 py-1.5 text-xs font-medium text-white transition-colors hover:bg-foreground/90">
+src/app/app/proposals/[id]/export/_data.ts:5: * Falls back to empty/placeholder values when data is unavailable.
+src/app/app/reports/(hub)/builder/page.tsx:104:              placeholder="e.g., Monthly revenue by client"
+src/app/app/reports/(hub)/builder/page.tsx:115:              placeholder="Brief description of this report"
+src/app/app/settings/branding/page.tsx:39:        className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
+src/app/app/settings/calendar-sync/page.tsx:133:              {/* Icon placeholder */}
+src/app/app/settings/calendar-sync/page.tsx:210:                  placeholder="e.g. primary or calendar@group.calendar.google.com"
+src/app/app/settings/calendar-sync/page.tsx:211:                  className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
+src/app/app/settings/data-privacy/page.tsx:176:                  placeholder="Enter your password"
+src/app/app/settings/data-privacy/page.tsx:177:                  className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
+src/app/app/settings/data-privacy/page.tsx:206:                  placeholder="Enter organization name"
+src/app/app/settings/data-privacy/page.tsx:207:                  className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
+src/app/app/settings/document-defaults/page.tsx:18:const sectionsByType: Record<DocumentType, { key: Section; label: string; placeholder: string }[]> = {
+src/app/app/settings/document-defaults/page.tsx:20:    { key: 'terms_and_conditions', label: 'Terms & Conditions', placeholder: 'Enter default terms and conditions for proposals...' },
+src/app/app/settings/document-defaults/page.tsx:21:    { key: 'disclaimer', label: 'Disclaimer', placeholder: 'Enter default disclaimer text for proposals...' },
+src/app/app/settings/document-defaults/page.tsx:22:    { key: 'scope_header', label: 'Scope Header', placeholder: 'Enter default scope header text...' },
+src/app/app/settings/document-defaults/page.tsx:23:    { key: 'scope_footer', label: 'Scope Footer', placeholder: 'Enter default scope footer text...' },
+src/app/app/settings/document-defaults/page.tsx:26:    { key: 'payment_instructions', label: 'Payment Instructions', placeholder: 'Enter default payment instructions...' },
+src/app/app/settings/document-defaults/page.tsx:27:    { key: 'notes', label: 'Notes', placeholder: 'Enter default notes for invoices...' },
+src/app/app/settings/document-defaults/page.tsx:30:    { key: 'terms_and_conditions', label: 'Terms & Conditions', placeholder: 'Enter default terms and conditions for contracts...' },
+src/app/app/settings/document-defaults/page.tsx:31:    { key: 'disclaimer', label: 'Disclaimer', placeholder: 'Enter default disclaimer text for contracts...' },
+src/app/app/settings/document-defaults/page.tsx:34:    { key: 'scope_header', label: 'Scope Header', placeholder: 'Enter default scope header for statements of work...' },
+src/app/app/settings/document-defaults/page.tsx:35:    { key: 'scope_footer', label: 'Scope Footer', placeholder: 'Enter default scope footer for statements of work...' },
+src/app/app/settings/document-defaults/page.tsx:36:    { key: 'notes', label: 'Notes', placeholder: 'Enter default notes for statements of work...' },
+src/app/app/settings/document-defaults/page.tsx:39:    { key: 'notes', label: 'Notes', placeholder: 'Enter default notes for crew call sheets...' },
+src/app/app/settings/document-defaults/page.tsx:146:            placeholder={s.placeholder}
+src/app/app/settings/document-defaults/page.tsx:147:            className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20 resize-y"
+src/app/app/settings/email-templates/page.tsx:205:                      placeholder={`e.g. Your proposal from {{org_name}} is ready`}
+src/app/app/settings/email-templates/page.tsx:206:                      className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
+src/app/app/settings/email-templates/page.tsx:217:                      placeholder="Write your email template body here..."
+src/app/app/settings/email-templates/page.tsx:218:                      className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20 resize-y"
+src/app/app/settings/page.tsx:28:        className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
+src/app/app/settings/payment-terms/page.tsx:170:            className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20 resize-none"
+src/app/app/settings/payments/page.tsx:58:            placeholder="Enter payment instructions for your clients..."
+src/app/app/settings/payments/page.tsx:59:            className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20 resize-none"
+src/app/app/settings/profile/page.tsx:14:  placeholder,
+src/app/app/settings/profile/page.tsx:21:  placeholder?: string;
+src/app/app/settings/profile/page.tsx:33:        placeholder={placeholder}
+src/app/app/settings/profile/page.tsx:35:        className={`w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20 ${
+src/app/app/settings/profile/page.tsx:107:          <InputField label="Full Name" value={fullName} onChange={setFullName} placeholder="Your full name" />
+src/app/app/settings/profile/page.tsx:108:          <InputField label="Email" value={email} readOnly placeholder="Email address (read-only)" />
+src/app/app/settings/profile/page.tsx:109:          <InputField label="Phone" value={phone} onChange={setPhone} type="tel" placeholder="+1 (555) 000-0000" />
+src/app/app/settings/profile/page.tsx:110:          <InputField label="Title" value={title} onChange={setTitle} placeholder="e.g. Project Manager" />
+src/app/app/settings/profile/page.tsx:138:          <InputField label="Current Password" value={currentPassword} onChange={setCurrentPassword} type="password" placeholder="Enter current password" />
+src/app/app/settings/profile/page.tsx:139:          <InputField label="New Password" value={newPassword} onChange={setNewPassword} type="password" placeholder="Enter new password" />
+src/app/app/settings/profile/page.tsx:140:          <InputField label="Confirm Password" value={confirmPassword} onChange={setConfirmPassword} type="password" placeholder="Confirm new password" />
+src/app/app/settings/security/mfa/page.tsx:205:            placeholder="000000"
+src/app/app/settings/security/mfa/page.tsx:206:            className="w-full rounded-lg border border-border bg-card px-4 py-3 text-center text-2xl font-mono tracking-[0.5em] text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
+src/app/app/settings/tags/page.tsx:147:                placeholder="Enter tag name"
+src/app/app/settings/tags/page.tsx:148:                className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
+src/app/app/settings/tax/page.tsx:99:                placeholder="Tax"
+src/app/globals.css:28:  --color-placeholder: #B33C00;
+src/app/globals.css:426:.input-base::placeholder {
+src/app/globals.css:544:   SKELETON / LOADING — placeholder shimmer
+src/components/admin/activations/ActivationFormModal.tsx:129:          <FormInput type="text" required value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. VIP Hospitality Suite" />
+src/components/admin/activations/ActivationFormModal.tsx:177:          <FormTextarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} placeholder="Any additional details..." />
+src/components/admin/activations/ActivationsTable.tsx:111:            <SearchInput value={search} onChange={setSearch} placeholder="Search activations..." />
+src/components/admin/advances/AdvanceCommentThread.tsx:81:          placeholder="Add a comment..."
+src/components/admin/advances/AdvanceListTable.tsx:114:            <SearchInput value={search} onChange={setSearch} placeholder="Search advances..." />
+src/components/admin/advances/CatalogBrowse.tsx:173:            placeholder="Search catalog by name, code, or description..."
+src/components/admin/advances/CatalogItemDetail.tsx:200:            placeholder="Special instructions, preferences..."
+src/components/admin/advances/CollaboratorManager.tsx:83:            <FormInput id="collab-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="collaborator@company.com" required />
+src/components/admin/advances/CollaboratorManager.tsx:96:            <FormTextarea id="collab-instructions" value={instructions} onChange={(e) => setInstructions(e.target.value)} placeholder="Special instructions for this collaborator..." rows={2} />
+src/components/admin/advances/CreateAdvanceModal.tsx:101:            <FormInput id="event-name" value={eventName} onChange={(e) => setEventName(e.target.value)} placeholder="e.g., Summer Music Festival 2026" />
+src/components/admin/advances/CreateAdvanceModal.tsx:105:            <FormInput id="venue-name" value={venueName} onChange={(e) => setVenueName(e.target.value)} placeholder="e.g., Madison Square Garden" />
+src/components/admin/advances/CreateAdvanceModal.tsx:109:            <FormTextarea id="purpose" value={purpose} onChange={(e) => setPurpose(e.target.value)} placeholder="Brief description of what this advance covers..." rows={3} />
+src/components/admin/advances/CreateAdvanceModal.tsx:142:              <FormTextarea id="instructions" value={instructions} onChange={(e) => setInstructions(e.target.value)} placeholder="Instructions for collaborators..." rows={3} />
+src/components/admin/ai/AiChatPanel.tsx:108:            placeholder="Ask a question..."
+src/components/admin/assets/AssetsTable.tsx:132:            <SearchInput value={search} onChange={setSearch} placeholder="Search assets..." />
+src/components/admin/assets/DisposalModal.tsx:94:            placeholder="Explain why this asset is being disposed..."
+src/components/admin/assets/DisposalModal.tsx:107:              placeholder="0.00"
+src/components/admin/assets/RevaluationModal.tsx:83:              placeholder="0.00"
+src/components/admin/assets/RevaluationModal.tsx:107:            placeholder="Market appraisal, condition assessment, etc."
+src/components/admin/automations/ActionSelector.tsx:67:              placeholder="recipient@example.com" />
+src/components/admin/automations/ActionSelector.tsx:75:              placeholder="Notification subject" />
+src/components/admin/automations/ActionSelector.tsx:83:              placeholder="Email body..."
+src/components/admin/automations/ActionSelector.tsx:96:            placeholder="https://example.com/webhook" />
+src/components/admin/automations/ActionSelector.tsx:107:            placeholder="#general" />
+src/components/admin/automations/ActionSelector.tsx:132:                placeholder="Following up on your proposal" />
+src/components/admin/automations/ActionSelector.tsx:151:              placeholder="https://g.page/your-business/review" />
+src/components/admin/automations/AutomationBuilder.tsx:165:              placeholder="e.g. Notify team on task completion"
+src/components/admin/automations/AutomationBuilder.tsx:194:                placeholder="Field (e.g. status)"
+src/components/admin/automations/AutomationBuilder.tsx:210:                placeholder="Value"
+src/components/admin/automations/AutomationBuilder.tsx:257:                    placeholder="e.g. Task Updated: {{title}}"
+src/components/admin/automations/AutomationBuilder.tsx:272:                  placeholder="Use {{variable}} for dynamic values"
+src/components/admin/automations/AutomationBuilder.tsx:285:                placeholder="e.g. Follow up: {{proposal_name}}"
+src/components/admin/automations/AutomationBuilder.tsx:298:                  placeholder="e.g. tasks, proposals"
+src/components/admin/automations/AutomationBuilder.tsx:307:                  placeholder="e.g. done, approved"
+src/components/admin/automations/AutomationBuilder.tsx:320:                placeholder="https://hooks.example.com/webhook"
+src/components/admin/automations/TriggerSelector.tsx:127:            placeholder="0 9 * * 1 (every Monday at 9 AM)" />
+src/components/admin/builder/ContentLibrary.tsx:215:                  placeholder="Search templates…"
+src/components/admin/builder/PhaseEditorStep.tsx:240:              placeholder="Phase Name" />
+src/components/admin/builder/PhaseEditorStep.tsx:245:              placeholder="Phase Subtitle — e.g., Consultation + Brand Immersion + Vision Alignment" />
+src/components/admin/builder/PhaseEditorStep.tsx:259:          placeholder="Tell the story of this phase. What is the purpose? What does the client experience? What is being created and why?"
+src/components/admin/builder/PhaseEditorStep.tsx:291:                  placeholder="Label — e.g., Brand Campaign Anchor" />
+src/components/admin/builder/PhaseEditorStep.tsx:297:                placeholder="Description — e.g., The key visual from the brand's current campaign that sets the tone" />
+src/components/admin/builder/PhaseEditorStep.tsx:329:                placeholder="Project name — e.g., Netflix × Bridgerton Pop-Up" />
+src/components/admin/builder/PhaseEditorStep.tsx:334:                placeholder="Description — e.g., Ornate scenic concept with layered environmental storytelling" />
+src/components/admin/builder/PhaseEditorStep.tsx:387:                          placeholder="Item name" />
+src/components/admin/builder/PhaseEditorStep.tsx:394:                          placeholder="Description" />
+src/components/admin/builder/PhaseEditorStep.tsx:458:                                  placeholder="Detail / specification" />
+src/components/admin/builder/PhaseEditorStep.tsx:541:                        placeholder="Add-on name" />
+src/components/admin/builder/PhaseEditorStep.tsx:548:                        placeholder="Description" />
+src/components/admin/builder/PhaseEditorStep.tsx:584:                        placeholder="Group" />
+src/components/admin/builder/PhaseEditorStep.tsx:630:              placeholder="e.g., 2.1 (Creative Design), 9.3 (Artwork Approval)" />
+src/components/admin/builder/PhaseEditorStep.tsx:657:              placeholder="e.g., CREATIVE BRIEF SIGN-OFF" />
+src/components/admin/builder/PhaseEditorStep.tsx:668:              placeholder="e.g., Phase 02: Concept Design & Visualization" />
+src/components/admin/builder/PhaseEditorStep.tsx:680:                    placeholder="Requirement description" />
+src/components/admin/builder/PhaseNarrativeEditor.tsx:15:import Placeholder from '@tiptap/extension-placeholder';
+src/components/admin/builder/PhaseNarrativeEditor.tsx:29:  placeholder?: string;
+src/components/admin/builder/PhaseNarrativeEditor.tsx:68:  placeholder = 'Tell the story of this phase…',
+src/components/admin/builder/PhaseNarrativeEditor.tsx:79:      Placeholder.configure({ placeholder }),
+src/components/admin/builder/ProjectSetupStep.tsx:115:            placeholder="Type to search..."
+src/components/admin/builder/ProjectSetupStep.tsx:164:            placeholder="e.g., SXSW 2026 Brand Activation"
+src/components/admin/builder/ProjectSetupStep.tsx:176:            placeholder="e.g., Immersive Pop-Up Experience"
+src/components/admin/builder/ProjectSetupStep.tsx:193:            placeholder="Describe the brand voice for this proposal..."
+src/components/admin/builder/ProjectSetupStep.tsx:205:            placeholder="Who is the target audience?"
+src/components/admin/builder/ProjectSetupStep.tsx:217:            placeholder="What is the desired outcome of the experience?"
+src/components/admin/builder/ProjectSetupStep.tsx:275:              placeholder="e.g., All pricing assumes standard working hours (Monday–Friday, 8AM–6PM)" />
+src/components/admin/builder/VenueCard.tsx:97:                placeholder="e.g., Austin Convention Center"
+src/components/admin/builder/VenueCard.tsx:107:                placeholder="e.g., Convention Center"
+src/components/admin/builder/VenueCard.tsx:290:              placeholder="Parking, loading dock info, restrictions..." />
+src/components/admin/clients/ClientFormModal.tsx:75:          <FormInput type="text" required value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="e.g. Acme Corp" />
+src/components/admin/clients/ClientFormModal.tsx:80:          <FormInput type="text" value={industry} onChange={(e) => setIndustry(e.target.value)} placeholder="e.g. Technology, Automotive, Fashion" />
+src/components/admin/clients/ClientFormModal.tsx:85:          <FormInput type="url" value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="https://example.com" />
+src/components/admin/clients/ClientFormModal.tsx:93:              <FormInput type="text" value={contactFirstName} onChange={(e) => setContactFirstName(e.target.value)} placeholder="Jane" />
+src/components/admin/clients/ClientFormModal.tsx:97:              <FormInput type="text" value={contactLastName} onChange={(e) => setContactLastName(e.target.value)} placeholder="Doe" />
+src/components/admin/clients/ClientFormModal.tsx:102:            <FormInput type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} placeholder="jane@example.com" />
+src/components/admin/clients/ClientsTable.tsx:116:            <SearchInput value={search} onChange={setSearch} placeholder="Search clients..." />
+src/components/admin/crew/BookingModal.tsx:126:          <FormInput type="text" value={role} onChange={(e) => setRole(e.target.value)} required placeholder="e.g. Camera Operator" />
+src/components/admin/crew/BookingModal.tsx:155:              onChange={(e) => setRateAmount(e.target.value === '' ? '' : Number(e.target.value))} placeholder="0.00" />
+src/components/admin/crew/ComplianceDocumentsPanel.tsx:173:                placeholder="e.g., General Liability COI" />
+src/components/admin/crew/CrewFormModal.tsx:105:          <FormInput type="text" value={skills} onChange={(e) => setSkills(e.target.value)} placeholder="Lighting, Rigging, Stage Design (comma-separated)" />
+src/components/admin/crew/CrewFormModal.tsx:111:            <FormInput type="number" min={0} step="0.01" value={hourlyRate} onChange={(e) => setHourlyRate(e.target.value)} placeholder="75.00" />
+src/components/admin/crew/CrewFormModal.tsx:115:            <FormInput type="number" min={0} step="0.01" value={dayRate} onChange={(e) => setDayRate(e.target.value)} placeholder="600.00" />
+src/components/admin/crew/CrewRatingsPanel.tsx:139:              placeholder="Optional feedback…"
+src/components/admin/crew/RateCard.tsx:100:                placeholder={formatCurrency(rates[key]) || '0.00'} />
+src/components/admin/equipment/BundleEditor.tsx:112:            placeholder="Bundle name" />
+src/components/admin/equipment/BundleFormModal.tsx:54:          <FormInput type="text" required value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Festival Stage Kit" />
+src/components/admin/equipment/BundleFormModal.tsx:58:          <FormTextarea value={description} onChange={(e) => setDescription(e.target.value)} rows={2} placeholder="Optional description..." />
+src/components/admin/equipment/CheckInOut.tsx:97:              placeholder="Any condition notes..." />
+src/components/admin/equipment/EquipmentFormModal.tsx:147:          <FormInput type="text" required value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. 20ft LED Wall Panel" />
+src/components/admin/equipment/EquipmentFormModal.tsx:169:            <FormInput type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="e.g. Warehouse A" />
+src/components/admin/equipment/EquipmentFormModal.tsx:173:            <FormInput type="text" value={serialNumber} onChange={(e) => setSerialNumber(e.target.value)} placeholder="SN-00001" />
+src/components/admin/equipment/EquipmentFormModal.tsx:180:            placeholder="Any additional details..." />
+src/components/admin/equipment/EquipmentFormModal.tsx:199:                <FormInput type="number" min="0" step="0.01" value={acquisitionCost} onChange={(e) => setAcquisitionCost(e.target.value)} placeholder="0.00" />
+src/components/admin/equipment/EquipmentFormModal.tsx:209:                <FormInput type="number" min="1" value={usefulLife} onChange={(e) => setUsefulLife(e.target.value)} placeholder="60" />
+src/components/admin/equipment/EquipmentFormModal.tsx:217:              <FormInput type="text" value={vendorName} onChange={(e) => setVendorName(e.target.value)} placeholder="e.g. ROE Visual" />
+src/components/admin/equipment/EquipmentFormModal.tsx:233:                <FormInput type="text" value={warrantyProvider} onChange={(e) => setWarrantyProvider(e.target.value)} placeholder="e.g. MFR Warranty" />
+src/components/admin/equipment/EquipmentFormModal.tsx:242:                <FormInput type="text" value={insurancePolicy} onChange={(e) => setInsurancePolicy(e.target.value)} placeholder="POL-2026-A1" />
+src/components/admin/equipment/EquipmentTable.tsx:117:            <SearchInput value={search} onChange={setSearch} placeholder="Search equipment..." />
+src/components/admin/equipment/MaintenanceScheduleModal.tsx:106:              placeholder="90"
+src/components/admin/equipment/MaintenanceScheduleModal.tsx:119:              placeholder="10"
+src/components/admin/equipment/MaintenanceScheduleModal.tsx:131:            placeholder="What should be done during this maintenance..."
+src/components/admin/equipment/MaintenanceScheduleModal.tsx:138:            <FormInput type="number" min="0" step="0.5" value={estimatedHours} onChange={(e) => setEstimatedHours(e.target.value)} placeholder="2.0" />
+src/components/admin/equipment/MaintenanceScheduleModal.tsx:142:            <FormInput type="number" min="0" step="0.01" value={estimatedCost} onChange={(e) => setEstimatedCost(e.target.value)} placeholder="500.00" />
+src/components/admin/equipment/MaintenanceScheduleModal.tsx:148:          <FormInput type="text" value={assignedTo} onChange={(e) => setAssignedTo(e.target.value)} placeholder="e.g. Tech Services Inc." />
+src/components/admin/equipment/QRScanner.tsx:267:              placeholder="Scan or type barcode..."
+src/components/admin/events/EventFormModal.tsx:101:          <FormInput type="text" required value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Opening Ceremony" />
+src/components/admin/events/EventFormModal.tsx:106:          <FormInput type="text" value={subtitle} onChange={(e) => setSubtitle(e.target.value)} placeholder="e.g. Day 1 — Main Arena" />
+src/components/admin/events/EventFormModal.tsx:138:            <FormInput type="text" value={doorsTime} onChange={(e) => setDoorsTime(e.target.value)} placeholder="e.g. 6:00 PM" />
+src/components/admin/events/EventFormModal.tsx:142:            <FormInput type="text" value={dailyHours} onChange={(e) => setDailyHours(e.target.value)} placeholder="e.g. 8:00 AM – 6:00 PM" />
+src/components/admin/events/EventFormModal.tsx:149:            <FormInput type="text" value={eventCode} onChange={(e) => setEventCode(e.target.value)} placeholder="e.g. OC-2026" />
+src/components/admin/events/EventFormModal.tsx:153:            <FormInput type="text" value={presenter} onChange={(e) => setPresenter(e.target.value)} placeholder="e.g. Live Nation" />
+src/components/admin/events/EventFormModal.tsx:159:          <FormInput type="email" value={generalEmail} onChange={(e) => setGeneralEmail(e.target.value)} placeholder="e.g. production@event.com" />
+src/components/admin/events/EventFormModal.tsx:164:          <FormTextarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} placeholder="Any additional details..." />
+src/components/admin/events/EventsTable.tsx:113:            <SearchInput value={search} onChange={setSearch} placeholder="Search events..." />
+src/components/admin/expenses/ExpenseForm.tsx:120:            placeholder="0.00" />
+src/components/admin/expenses/ExpenseForm.tsx:142:            placeholder="Describe the expense..."
+src/components/admin/expenses/ExpensesTable.tsx:115:            <SearchInput value={search} onChange={setSearch} placeholder="Search expenses..." />
+src/components/admin/invoices/CreditNoteFormModal.tsx:44:          <FormInput type="text" required value={invoiceId} onChange={(e) => setInvoiceId(e.target.value)} placeholder="Invoice UUID or number" />
+src/components/admin/invoices/CreditNoteFormModal.tsx:48:          <FormInput type="number" required min={0} step="0.01" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="0.00" />
+src/components/admin/invoices/CreditNoteFormModal.tsx:52:          <FormTextarea value={reason} onChange={(e) => setReason(e.target.value)} rows={2} placeholder="Reason for credit..." />
+src/components/admin/invoices/InvoiceTabs.tsx:95:        <SearchInput value={search} onChange={setSearch} placeholder="Search invoices..." />
+src/components/admin/invoices/PaymentRecorder.tsx:115:              placeholder="Check #, transaction ID..." />
+src/components/admin/invoices/RecurringScheduleFormModal.tsx:46:          <FormInput type="text" required value={clientId} onChange={(e) => setClientId(e.target.value)} placeholder="Client UUID" />
+src/components/admin/leads/LeadEditModal.tsx:128:            <FormInput type="number" step="0.01" value={budget} onChange={(e) => setBudget(e.target.value)} placeholder="e.g. 50000" />
+src/components/admin/leads/LeadEditModal.tsx:134:          <FormInput type="text" value={source} onChange={(e) => setSource(e.target.value)} placeholder="e.g. Website, Referral" />
+src/components/admin/leads/LeadFormModal.tsx:108:            <FormInput type="text" required value={contactFirstName} onChange={(e) => setContactFirstName(e.target.value)} placeholder="e.g. Rachel" />
+src/components/admin/leads/LeadFormModal.tsx:112:            <FormInput type="text" value={contactLastName} onChange={(e) => setContactLastName(e.target.value)} placeholder="e.g. Kim" />
+src/components/admin/leads/LeadFormModal.tsx:121:              placeholder="rachel@example.com"
+src/components/admin/leads/LeadFormModal.tsx:137:            <FormInput type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="e.g. Nike, Google" />
+src/components/admin/leads/LeadFormModal.tsx:141:            <FormInput type="tel" value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} placeholder="+1 555 000 0000" />
+src/components/admin/leads/LeadFormModal.tsx:155:            <FormInput type="number" min={0} step="1000" value={estimatedBudget} onChange={(e) => setEstimatedBudget(e.target.value)} placeholder="50000" />
+src/components/admin/leads/LeadFormModal.tsx:162:            placeholder="Any additional context..." />
+src/components/admin/leads/LeadIntakeFormModal.tsx:42:          <FormInput type="text" required value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Website Contact Form" />
+src/components/admin/leads/LeadIntakeFormModal.tsx:46:          <FormInput type="url" value={redirectUrl} onChange={(e) => setRedirectUrl(e.target.value)} placeholder="https://example.com/thank-you" />
+src/components/admin/leads/LeadsTable.tsx:143:            <SearchInput value={search} onChange={setSearch} placeholder="Search leads..." />
+src/components/admin/locations/LocationFormModal.tsx:117:          <FormInput type="text" required value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Madison Square Garden" />
+src/components/admin/locations/LocationFormModal.tsx:129:            <FormInput type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+1 (212) 465-6741" />
+src/components/admin/locations/LocationFormModal.tsx:139:              <FormInput type="text" value={street} onChange={(e) => setStreet(e.target.value)} placeholder="4 Pennsylvania Plaza" />
+src/components/admin/locations/LocationFormModal.tsx:144:                <FormInput type="text" value={city} onChange={(e) => setCity(e.target.value)} placeholder="New York" />
+src/components/admin/locations/LocationFormModal.tsx:148:                <FormInput type="text" value={state} onChange={(e) => setState(e.target.value)} placeholder="NY" />
+src/components/admin/locations/LocationFormModal.tsx:152:                <FormInput type="text" value={zip} onChange={(e) => setZip(e.target.value)} placeholder="10001" />
+src/components/admin/locations/LocationFormModal.tsx:157:              <FormInput type="text" value={country} onChange={(e) => setCountry(e.target.value)} placeholder="United States" />
+src/components/admin/locations/LocationFormModal.tsx:164:              <FormInput type="text" value={googlePlaceId} onChange={(e) => setGooglePlaceId(e.target.value)} placeholder="ChIJhRwB-yFawokR5Phil-QQ3zM" />
+src/components/admin/locations/LocationFormModal.tsx:169:                <FormInput type="number" step="0.0000001" value={latitude} onChange={(e) => setLatitude(e.target.value)} placeholder="40.7505045" />
+src/components/admin/locations/LocationFormModal.tsx:173:                <FormInput type="number" step="0.0000001" value={longitude} onChange={(e) => setLongitude(e.target.value)} placeholder="-73.9934387" />
+src/components/admin/locations/LocationFormModal.tsx:182:            <FormInput type="number" min="0" value={capacity} onChange={(e) => setCapacity(e.target.value)} placeholder="20,000" />
+src/components/admin/locations/LocationFormModal.tsx:186:            <FormInput type="text" value={timezone} onChange={(e) => setTimezone(e.target.value)} placeholder="America/New_York" />
+src/components/admin/locations/LocationFormModal.tsx:192:          <FormInput type="url" value={siteMapUrl} onChange={(e) => setSiteMapUrl(e.target.value)} placeholder="https://..." />
+src/components/admin/locations/LocationFormModal.tsx:197:          <FormTextarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} placeholder="Any additional details..." />
+src/components/admin/locations/LocationsTable.tsx:107:            <SearchInput value={search} onChange={setSearch} placeholder="Search locations..." />
+src/components/admin/my-inbox/MyInboxTable.tsx:146:            <SearchInput value={search} onChange={setSearch} placeholder="Search notifications..." />
+src/components/admin/my-tasks/MyTasksTable.tsx:144:            <SearchInput value={search} onChange={setSearch} placeholder={t('myTasks.searchPlaceholder')} />
+src/components/admin/people/InviteMemberModal.tsx:78:          <FormInput type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="colleague@company.com" />
+src/components/admin/people/InviteMemberModal.tsx:91:            placeholder="Hey! I'm inviting you to join our team on FlyteDeck..." />
+src/components/admin/people/PeopleGrid.tsx:118:              placeholder="Search people..."
+src/components/admin/people/PersonEditModal.tsx:98:            <FormInput type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Senior Designer" />
+src/components/admin/people/PersonEditModal.tsx:104:          <FormInput type="text" value={rateCard} onChange={(e) => setRateCard(e.target.value)} placeholder="e.g. $150/hr" />
+src/components/admin/pipeline/DealEmailDraft.tsx:42:- Don't use generic placeholder text like [Insert Name]
+src/components/admin/pipeline/DealFormModal.tsx:99:          <FormInput type="text" required value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Nike Air Max Experience" />
+src/components/admin/pipeline/DealFormModal.tsx:113:            <FormInput type="number" required min={0} step="0.01" value={value} onChange={(e) => setValue(e.target.value)} placeholder="0.00" />
+src/components/admin/pipeline/PipelineTable.tsx:48:        <SearchInput value={search} onChange={setSearch} placeholder="Search deals..." />
+src/components/admin/portfolio/PortalSettingsCard.tsx:123:                placeholder="e.g. 3:00 PM — Saturday, March 28"
+src/components/admin/portfolio/PortalSettingsCard.tsx:133:                  placeholder="Zone B via E 4th Ave..."
+src/components/admin/portfolio/PortalSettingsCard.tsx:142:                  placeholder="Rideshare loop on E 32nd St..."
+src/components/admin/portfolio/PortalSettingsCard.tsx:151:                  placeholder="MetroRail Green Line..."
+src/components/admin/portfolio/PortalSettingsCard.tsx:160:                  placeholder="Proceed to Staff Check-in..."
+src/components/admin/portfolio/PortfolioFormModal.tsx:53:            <FormInput type="text" required value={projectName} onChange={(e) => setProjectName(e.target.value)} placeholder="e.g. Nike Air Max Launch" />
+src/components/admin/portfolio/PortfolioFormModal.tsx:57:            <FormInput type="text" value={clientName} onChange={(e) => setClientName(e.target.value)} placeholder="e.g. Nike" />
+src/components/admin/portfolio/PortfolioFormModal.tsx:75:          <FormTextarea value={description} onChange={(e) => setDescription(e.target.value)} rows={2} placeholder="Brief project description..." />
+src/components/admin/proposals/AIDraftProposalModal.tsx:80:            placeholder="50000" />
+src/components/admin/proposals/AIDraftProposalModal.tsx:87:            rows={3} placeholder="Tell us about the event, venue, and goals…" />
+src/components/admin/proposals/ProposalsTable.tsx:148:            <SearchInput value={search} onChange={setSearch} placeholder="Search proposals..." />
+src/components/admin/reports/ReportBuilder.tsx:176:                placeholder="Label" />
+src/components/admin/reports/ReportBuilder.tsx:238:                placeholder="Value" />
+src/components/admin/security/AuditLogTable.tsx:91:            <SearchInput value={search} onChange={setSearch} placeholder="Search audit logs..." />
+src/components/admin/settings/CostRateFormModal.tsx:54:            <FormInput type="number" required min={0} step="0.01" value={hourlyCost} onChange={(e) => setHourlyCost(e.target.value)} placeholder="0.00" />
+src/components/admin/settings/CostRateFormModal.tsx:58:            <FormInput type="number" required min={0} step="0.01" value={hourlyBillable} onChange={(e) => setHourlyBillable(e.target.value)} placeholder="0.00" />
+src/components/admin/settings/FacilityFormModal.tsx:47:            <FormInput type="text" required value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Warehouse A" />
+src/components/admin/settings/FacilityFormModal.tsx:61:          <FormInput type="text" value={street} onChange={(e) => setStreet(e.target.value)} placeholder="123 Main St" />
+src/components/admin/settings/FacilityFormModal.tsx:66:            <FormInput type="text" value={city} onChange={(e) => setCity(e.target.value)} placeholder="New York" />
+src/components/admin/settings/FacilityFormModal.tsx:70:            <FormInput type="text" value={state} onChange={(e) => setState(e.target.value)} placeholder="NY" />
+src/components/admin/tasks/GanttChart.tsx:41:    todo: 'bg-gray-400',
+src/components/admin/tasks/GanttChart.tsx:54:  { id: '3', title: 'Client review', startDate: '2026-04-12', dueDate: '2026-04-14', status: 'todo', assigneeName: null },
+src/components/admin/tasks/GanttChart.tsx:55:  { id: '4', title: 'Fabrication', startDate: '2026-04-12', dueDate: '2026-04-25', status: 'todo', assigneeName: 'Team' },
+src/components/admin/tasks/GanttChart.tsx:57:  { id: '6', title: 'Load-in', startDate: '2026-04-26', dueDate: '2026-04-27', status: 'todo', assigneeName: 'Crew' },
+src/components/admin/tasks/GanttChart.tsx:58:  { id: '7', title: 'Activation', startDate: '2026-04-28', dueDate: '2026-04-30', status: 'todo', assigneeName: null },
+src/components/admin/tasks/GuestCollaborators.tsx:99:            placeholder="collaborator@example.com"
+src/components/admin/tasks/KanbanBoard.tsx:41:const COLUMNS = ['todo', 'in_progress', 'review', 'done'] as const;
+src/components/admin/tasks/KanbanBoard.tsx:45:  todo: 'To Do',
+src/components/admin/tasks/KanbanBoard.tsx:52:  todo: 'bg-gray-400',
+src/components/admin/tasks/KanbanBoard.tsx:59:  todo: 'todo',
+src/components/admin/tasks/KanbanBoard.tsx:60:  not_started: 'todo',
+src/components/admin/tasks/KanbanBoard.tsx:65:  blocked: 'todo',
+src/components/admin/tasks/KanbanBoard.tsx:189:  return { todo: [], in_progress: [], review: [], done: [] };
+src/components/admin/tasks/KanbanBoard.tsx:225:          const col = STATUS_MAP[row.status as string] ?? 'todo';
+src/components/admin/tasks/KanbanBoard.tsx:322:              {Array.from({ length: col === 'todo' ? 3 : 2 }).map((_, i) => (
+src/components/admin/tasks/ProjectStatusUpdates.tsx:112:            placeholder="What's the latest on this project?"
+src/components/admin/tasks/SavedFilters.tsx:108:            placeholder="Filter name"
+src/components/admin/tasks/TaskAttachments.tsx:137:              placeholder="https://storage.example.com/file.pdf"
+src/components/admin/tasks/TaskAttachments.tsx:147:              placeholder="Design mockup v2.pdf"
+src/components/admin/tasks/TaskChecklist.tsx:194:            placeholder="Add checklist item…"
+src/components/admin/tasks/TaskComments.tsx:147:          placeholder="Leave a comment… Use @[Name](id) to mention someone"
+src/components/admin/tasks/TaskDependencies.tsx:179:              placeholder="Search tasks to add as dependency..."
+src/components/admin/tasks/TaskFormModal.tsx:20:const STATUS_OPTIONS = ['todo', 'in_progress', 'in_review', 'done'] as const;
+src/components/admin/tasks/TaskFormModal.tsx:27:  const [status, setStatus] = useState('todo');
+src/components/admin/tasks/TaskFormModal.tsx:38:    setStatus('todo'); setDueDate(''); setEstimatedHours('');
+src/components/admin/tasks/TaskFormModal.tsx:92:          <FormInput type="text" required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Design stage layout for Nike activation" />
+src/components/admin/tasks/TaskFormModal.tsx:98:            placeholder="Task details..." />
+src/components/admin/tasks/TaskFormModal.tsx:123:            <FormInput type="number" min={0} step="0.5" value={estimatedHours} onChange={(e) => setEstimatedHours(e.target.value)} placeholder="0" />
+src/components/admin/tasks/TaskPhotoCapture.tsx:99:                placeholder="https://storage.example.com/photo.jpg" />
+src/components/admin/tasks/TaskPhotoCapture.tsx:119:              placeholder="Describe what this photo shows…" />
+src/components/admin/tasks/TaskTemplateLibrary.tsx:203:              placeholder="e.g. Brand Activation Checklist"
+src/components/admin/tasks/TaskTemplateLibrary.tsx:213:              placeholder="What this template is used for…"
+src/components/admin/tasks/TaskTemplateLibrary.tsx:226:                    placeholder={`Task ${idx + 1}`}
+src/components/admin/tasks/TasksTable.tsx:168:            <SearchInput value={search} onChange={setSearch} placeholder="Search tasks..." />
+src/components/admin/templates/TemplateFormModal.tsx:43:          <FormInput type="text" required value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Standard 3-Phase" />
+src/components/admin/templates/TemplateFormModal.tsx:47:          <FormTextarea value={description} onChange={(e) => setDescription(e.target.value)} rows={2} placeholder="What does this template include?" />
+src/components/admin/time/TimerWidget.tsx:199:            placeholder="What are you working on?" />
+src/components/admin/time/WeeklyTimesheet.tsx:77:                      placeholder="Project name" />
+src/components/admin/vendors/VendorListClient.tsx:68:        <SearchInput value={search} onChange={setSearch} placeholder="Search vendors..." />
+src/components/admin/warehouse/TransferForm.tsx:176:                    placeholder="Search asset..."
+src/components/admin/workloads/AllocationForm.tsx:111:            placeholder="e.g. Lead Designer" />
+src/components/forms/LeadIntakeForm.tsx:100:                placeholder="Jane" />
+src/components/forms/LeadIntakeForm.tsx:108:                placeholder="Doe" />
+src/components/forms/LeadIntakeForm.tsx:117:                placeholder="jane@example.com" />
+src/components/forms/LeadIntakeForm.tsx:128:                placeholder="Acme Corp" />
+src/components/forms/LeadIntakeForm.tsx:136:                placeholder="+1 (555) 123-4567" />
+src/components/forms/LeadIntakeForm.tsx:146:                placeholder="e.g. Brand Activation, Custom Stage, etc." />
+src/components/forms/LeadIntakeForm.tsx:179:              placeholder="Tell us more about the goals, scale, and requirements of the project..." />
+src/components/portal/CommentForm.tsx:71:          placeholder="Write your comment..."
+src/components/portal/PortalMagicLinkForm.tsx:97:              placeholder="your-email@company.com"
+src/components/portal/PortalRequestForm.tsx:107:              placeholder="Jane Smith"
+src/components/portal/PortalRequestForm.tsx:121:              placeholder="jane@company.com"
+src/components/portal/PortalRequestForm.tsx:135:            placeholder="+1 (555) 123-4567"
+src/components/portal/PortalRequestForm.tsx:191:            placeholder="50000"
+src/components/portal/PortalRequestForm.tsx:209:            placeholder="Describe the event, venue, audience size, and any special requirements..." />
+src/components/portal/journey/InvestmentSummaryBar.tsx:94:              placeholder="Full legal name"
+src/components/portal/journey/InvestmentSummaryBar.tsx:95:              className="w-full rounded-lg border border-border bg-bg-secondary/30 px-3 py-2.5 text-sm font-medium text-foreground placeholder:text-text-muted focus:outline-none focus:ring-1 focus:ring-org-primary/30"
+src/components/portal/journey/PhaseSection.tsx:311:                placeholder="Leave a comment or question…"
+src/components/portal/journey/PhaseSection.tsx:312:                className="flex-1 rounded-lg border border-border bg-bg-secondary/30 px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-1 focus:ring-org-primary/30"
+src/components/shared/BulkReassignModal.tsx:98:        <SearchInput value={search} onChange={setSearch} placeholder="Search team members..." />
+src/components/shared/BulkTagModal.tsx:96:        <SearchInput value={search} onChange={(val) => { setSearch(val); setSelectedTag(null); }} placeholder="Search or create a tag..." />
+src/components/shared/CommandPalette.tsx:37:  { id: 'nav-tasks', label: 'Tasks', section: 'Navigate', href: '/app/tasks', icon: <NavIcon />, keywords: ['todo', 'checklist'] },
+src/components/shared/CommandPalette.tsx:220:            placeholder="Search or jump to..."
+src/components/shared/CommandPalette.tsx:227:            className="flex-1 bg-transparent py-3.5 text-sm text-foreground placeholder:text-text-muted focus:outline-none"
+src/components/shared/CopilotPanel.tsx:312:              placeholder="Ask about your data…"
+src/components/shared/CopilotPanel.tsx:315:              className="flex-1 resize-none rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/20 disabled:opacity-50 transition-colors max-h-32"
+src/components/shared/DataImportDialog.tsx:368:              {/* Missing required fields warning */}
+src/components/shared/DataImportDialog.tsx:369:              {coverage.missing.length > 0 && (
+src/components/shared/DataImportDialog.tsx:371:                  <strong>Missing required:</strong> {coverage.missing.join(', ')}
+src/components/shared/DataImportDialog.tsx:647:                disabled={!mapping.some((m) => m.targetField) || coverage.missing.length > 0 || duplicateTargets.size > 0}
+src/components/shared/NotificationBell.tsx:98:      // Supabase not configured or table missing — graceful degradation
+src/components/shared/PreferencesProvider.tsx:43:function applyThemeToDOM(mode: ThemeMode) {
+src/components/shared/PreferencesProvider.tsx:50:function applyDensityToDOM(density: Density) {
+src/components/shared/PreferencesProvider.tsx:102:          applyThemeToDOM(data.theme);
+src/components/shared/PreferencesProvider.tsx:112:          applyDensityToDOM(data.density);
+src/components/shared/PreferencesProvider.tsx:123:    const handler = () => applyThemeToDOM('system');
+src/components/shared/PreferencesProvider.tsx:130:    applyThemeToDOM(mode);
+src/components/shared/PreferencesProvider.tsx:135:    applyDensityToDOM(d);
+src/components/shared/ShareDialog.tsx:65:            <FormInput type="email" placeholder="email@example.com" className="flex-1" />
+src/components/shared/ViewBar.tsx:163:                  placeholder="e.g. My Custom View"
+src/components/shared/ViewSidebar.tsx:179:          placeholder="Find a view..." />
+src/components/shared/ViewSidebar.tsx:208:            placeholder="View name"
+src/components/ui/EmptyState.tsx:18: * Replaces inconsistent dashed-border empty placeholders across entity tables and wizards.
+src/components/ui/FormInput.tsx:22:        className={`w-full rounded-lg border border-border bg-background text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 ${SIZE_CLASSES[inputSize]} ${className}`}
+src/components/ui/FormTextarea.tsx:22:        className={`w-full rounded-lg border border-border bg-background text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 resize-none ${SIZE_CLASSES[inputSize]} ${className}`}
+src/components/ui/SearchInput.tsx:9:  placeholder?: string;
+src/components/ui/SearchInput.tsx:21:  placeholder = 'Search...',
+src/components/ui/SearchInput.tsx:56:        placeholder={placeholder}
+src/components/ui/SearchInput.tsx:57:        className="w-full rounded-lg border border-border bg-background pl-9 pr-8 py-2.5 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/20 transition-shadow"
+src/components/ui/Skeleton.tsx:10: * Replaces ad-hoc `animate-pulse` loading placeholders across settings and detail pages.
+src/components/ui/StatusBadge.tsx:19:  todo: 'bg-bg-secondary text-text-secondary',
+src/hooks/useUndoRedo.ts:8: *   push({ id: task.id, prev: { status: 'todo' }, next: { status: 'done' } });
+src/lib/ai/tools.ts:339:          .enum(['todo', 'in_progress', 'done', 'blocked', 'cancelled'])
+src/lib/api/auth-guard.ts:120:    { error: { code: 'UNAUTHORIZED', message: 'Invalid or missing secret' } },
+src/lib/api/cron-guard.ts:18:      { error: { code: 'UNAUTHORIZED', message: 'Invalid or missing cron secret' } },
+src/lib/api/rate-limit.ts:4:// Conditionally init Upstash to avoid breaking dev environments missing the vars
+src/lib/assets/transitions.ts:39:export function getMissingTransitionFields(
+src/lib/automations/actions.ts:113:    status: (config.status as string) ?? 'todo',
+src/lib/automations/actions.ts:234: * Replace `{{key}}` placeholders in a template string with values from the payload.
+src/lib/dal/pagination.ts:27: * Returns validated defaults if params are missing or invalid.
+src/lib/email.ts:48:      'SMTP email provider is not implemented. ' +
+src/lib/env.ts:5: * Throws immediately if required variables are missing, preventing
+src/lib/i18n/dictionaries/de-DE.json:258:    "searchPlaceholder": "Search tasks...",
+src/lib/i18n/dictionaries/en-AU.json:258:    "searchPlaceholder": "Search tasks...",
+src/lib/i18n/dictionaries/en-GB.json:258:    "searchPlaceholder": "Search tasks...",
+src/lib/i18n/dictionaries/en-US.json:258:    "searchPlaceholder": "Search tasks...",
+src/lib/i18n/dictionaries/es-ES.json:26:    "viewAll": "Ver todo",
+src/lib/i18n/dictionaries/es-ES.json:35:    "selectAll": "Seleccionar todo",
+src/lib/i18n/dictionaries/es-ES.json:36:    "deselectAll": "Deseleccionar todo",
+src/lib/i18n/dictionaries/es-ES.json:51:    "clearAll": "Borrar todo"
+src/lib/i18n/dictionaries/es-ES.json:258:    "searchPlaceholder": "Search tasks...",
+src/lib/i18n/dictionaries/es-MX.json:26:    "viewAll": "Ver todo",
+src/lib/i18n/dictionaries/es-MX.json:35:    "selectAll": "Seleccionar todo",
+src/lib/i18n/dictionaries/es-MX.json:36:    "deselectAll": "Deseleccionar todo",
+src/lib/i18n/dictionaries/es-MX.json:51:    "clearAll": "Borrar todo"
+src/lib/i18n/dictionaries/es-MX.json:258:    "searchPlaceholder": "Search tasks...",
+src/lib/i18n/dictionaries/fr-FR.json:258:    "searchPlaceholder": "Rechercher des tâches...",
+src/lib/import-parsers.ts:405:): { mapped: number; total: number; missing: string[] } {
+src/lib/import-parsers.ts:408:  const missing = required.filter((f) => !mappedKeys.has(f.key)).map((f) => f.label);
+src/lib/import-parsers.ts:409:  return { mapped: required.length - missing.length, total: required.length, missing };
+src/lib/integrations/base.ts:39:    throw new Error(`${this.platform}: connect() not implemented. Override in your adapter subclass.`);
+src/lib/integrations/quickbooks.ts:99:      return { entityType: 'invoice', entityCount: 0, errors: ['Missing QuickBooks realm or token'] };
+src/lib/integrations/salesforce.ts:82:      return { entityType: 'client', entityCount: 0, errors: ['Missing Salesforce credentials'] };
+src/lib/notifications/email.ts:15: * Requires the RESEND_API_KEY environment variable. If the key is missing
+src/lib/notifications/sms.ts:16: * environment variables. If any are missing the provider logs a warning
+src/lib/schemas/common.ts:90:  'todo', 'in_progress', 'review', 'done', 'blocked', 'cancelled',
+src/lib/schemas/common.ts:100:  status: taskStatusSchema.default('todo'),
+src/lib/supabase/database.ts:11097:        | "todo"
+src/lib/supabase/database.ts:11560:        "todo",
+src/lib/supabase/database.types.ts:12195:        | "todo"
+src/lib/supabase/database.types.ts:12661:        "todo",
+src/types/database.ts:12662:        | "todo"
+src/types/database.ts:13128:        "todo",
+src/types/supabase.ts:7381:        | "todo"
+src/types/supabase.ts:7669:        "todo",
+supabase/bedrock/CUSTOM_FIELDS_CERTIFICATION.md:38:| `field_key` (snake_case machine identifier) | ❌ Missing | Only human-readable `field_name` exists |
+supabase/bedrock/CUSTOM_FIELDS_CERTIFICATION.md:39:| `field_key CHECK (field_key ~ '^[a-z][a-z0-9_]*$')` | ❌ Missing | No format enforcement |
+supabase/bedrock/CUSTOM_FIELDS_CERTIFICATION.md:40:| `UNIQUE(organization_id, entity_type, field_key)` | ❌ Missing | Duplicate definitions possible |
+supabase/bedrock/CUSTOM_FIELDS_CERTIFICATION.md:42:| `description TEXT` | ❌ Missing | No field documentation |
+supabase/bedrock/CUSTOM_FIELDS_CERTIFICATION.md:43:| `section TEXT` | ❌ Missing | No UI grouping |
+supabase/bedrock/CUSTOM_FIELDS_CERTIFICATION.md:44:| `is_active BOOLEAN DEFAULT true` | ❌ Missing | No soft-delete / deactivation |
+supabase/bedrock/CUSTOM_FIELDS_CERTIFICATION.md:45:| `is_filterable BOOLEAN DEFAULT false` | ❌ Missing | No query optimization hint |
+supabase/bedrock/CUSTOM_FIELDS_CERTIFICATION.md:46:| `is_visible_in_list BOOLEAN DEFAULT true` | ❌ Missing | No list view control |
+supabase/bedrock/CUSTOM_FIELDS_CERTIFICATION.md:47:| `visibility_roles TEXT[]` | ❌ Missing | No role-based field visibility |
+supabase/bedrock/CUSTOM_FIELDS_CERTIFICATION.md:48:| `created_by UUID FK` | ❌ Missing | No auditing of who created |
+supabase/bedrock/CUSTOM_FIELDS_CERTIFICATION.md:49:| `default_value JSONB` | ❌ Missing | No preset values |
+supabase/bedrock/CUSTOM_FIELDS_CERTIFICATION.md:55:| `entity_type TEXT NOT NULL` | ❌ Missing | Cannot validate entity_id matches definition's entity_type |
+supabase/bedrock/CUSTOM_FIELDS_CERTIFICATION.md:56:| `value_text TEXT` | ❌ Missing (single `value JSONB`) | No type-specific querying |
+supabase/bedrock/CUSTOM_FIELDS_CERTIFICATION.md:57:| `value_number NUMERIC` | ❌ Missing | No type-specific indexing |
+supabase/bedrock/CUSTOM_FIELDS_CERTIFICATION.md:58:| `value_date DATE` | ❌ Missing | No date comparison |
+supabase/bedrock/CUSTOM_FIELDS_CERTIFICATION.md:59:| `value_boolean BOOLEAN` | ❌ Missing | No boolean optimization |
+supabase/bedrock/CUSTOM_FIELDS_CERTIFICATION.md:61:| GIN index on value | ❌ Missing | JSONB not indexed |
+supabase/bedrock/CUSTOM_FIELDS_CERTIFICATION.md:62:| CHECK constraint on typed columns | ❌ Missing | Can have values in wrong typed column |
+supabase/bedrock/CUSTOM_FIELDS_CERTIFICATION.md:118:| Schema Architecture | 40% — EAV pattern correct, but missing critical columns |
+supabase/bedrock/FK_INDEX_OPTIMIZATION.md:7:## 1. MISSING FK INDEXES
+supabase/bedrock/FK_INDEX_OPTIMIZATION.md:9:PostgreSQL does NOT auto-create indexes on FK columns. These missing indexes degrade JOIN and CASCADE DELETE performance:
+supabase/bedrock/FK_INDEX_OPTIMIZATION.md:72:### Missing Composite Indexes (Query Performance)
+supabase/bedrock/FK_INDEX_OPTIMIZATION.md:117:**Fix:** Add `ALTER TABLE` statements to add missing columns from 00021 version.
+supabase/bedrock/FK_INDEX_OPTIMIZATION.md:121:## 4. MISSING FK CONSTRAINTS
+supabase/bedrock/MIGRATION_PLAN.md:13:| M-001 | Missing FK Indexes | 🟢 Low | Phase 5 | 32 CREATE INDEX — zero downtime |
+supabase/bedrock/MIGRATION_PLAN.md:14:| M-002 | Missing updated_at Triggers | 🟢 Low | Phase 7 | 17 triggers — zero downtime |
+supabase/bedrock/MIGRATION_PLAN.md:24:## M-001: Missing FK Indexes
+supabase/bedrock/MIGRATION_PLAN.md:76:## M-002: Missing updated_at Triggers
+supabase/bedrock/MIGRATION_PLAN.md:81:-- Migration 00025_bedrock_missing_triggers.sql
+supabase/bedrock/MIGRATION_PLAN.md:108:| M-003 | Resolve calendar_sync_configs: ALTER TABLE to add missing 00021 columns, add `outlook` to CHECK | `00026_bedrock_calendar_sync_fix.sql` |
+supabase/bedrock/NAMING_CANONIZATION.md:60:| `updated_at` MISSING | 12 tables | 🔴 | invoice_payments, email_notifications, email_messages, capacity_overrides, holiday_calendars, webhook_deliveries, integration_sync_log, budget_alerts, credit_notes, payment_links, invite_code_redemptions, invitations |
+supabase/bedrock/RECONCILIATION_QUERIES.sql:110:-- 5. MISSING TRIGGER DETECTION
+supabase/bedrock/RELATIONSHIP_MAP.md:132:| `proposals.pipeline_id` (UUID) | sales_pipelines | 🔴 Missing FK constraint | Add FK |
+supabase/bedrock/RELATIONSHIP_MAP.md:158:### Missing ON DELETE Specifications (defaulting to NO ACTION)
+supabase/bedrock/RLS_ALIGNMENT.md:85:### Tables missing write policies (SELECT-only)
+supabase/bedrock/SCHEMA_CATALOG.md:230:| invoice_line_items | ENTITY | 12 | 🟡 Missing FK indexes on deliverable_id, addon_id |
+supabase/bedrock/SCHEMA_CATALOG.md:233:| activity_log | AUDIT | 9 | 🟡 Missing index on actor_id |
+supabase/bedrock/SCHEMA_CATALOG.md:296:| resource_allocations | ENTITY | 🟡 Missing CHECK end_date ≥ start_date |
+supabase/bedrock/SCHEMA_CATALOG.md:455:| 🟡 Moderate | 35+ | Missing ENUMs, missing FK indexes, boolean naming, denormalized org_id, missing triggers |
+supabase/bedrock/TRIGGER_FUNCTION_AUDIT.md:71:#### 🔴 MISSING `updated_at` TRIGGER (Tables WITH `updated_at` Column)
+supabase/bedrock/TRIGGER_FUNCTION_AUDIT.md:93:**Total missing: 17 tables** with `updated_at` columns but no trigger.
+supabase/bedrock/TRIGGER_FUNCTION_AUDIT.md:119:## 3. MISSING DENORMALIZATION TRIGGERS
+supabase/bedrock/TYPE_CANONIZATION.md:33:## 2. MISSING ENUM TYPES
+supabase/bedrock/TYPE_CANONIZATION.md:39:| 1 | `tasks.status` | 'todo' (default, no CHECK) | `CREATE TYPE task_status AS ENUM ('todo','in_progress','review','done','blocked','cancelled')` |
+supabase/bedrock/TYPE_CANONIZATION.md:84:## 3. MISSING CONSTRAINTS
+supabase/bedrock/TYPE_CANONIZATION.md:102:### NOT NULL Audit (Missing NOT NULLs)
+supabase/migrations/00013_tasks_customfields.sql:8:  status TEXT NOT NULL DEFAULT 'todo',
+supabase/migrations/00024_bedrock_fk_indexes.sql:2:-- BEDROCK M-001: Missing FK Indexes
+supabase/migrations/00025_bedrock_missing_triggers.sql:2:-- BEDROCK M-002: Missing updated_at Triggers
+supabase/migrations/00026_bedrock_calendar_sync_fix.sql:11:-- Add missing columns from the 00021 definition
+supabase/migrations/00027_bedrock_enum_types.sql:7:-- 1. Create all missing ENUM types
+supabase/migrations/00027_bedrock_enum_types.sql:8:DO $$ BEGIN CREATE TYPE task_status AS ENUM ('todo','in_progress','review','done','blocked','cancelled'); EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+supabase/migrations/00028_bedrock_check_constraints.sql:36:-- Missing FK constraint: proposals.pipeline_id → sales_pipelines(id)
+supabase/migrations/00032_missing_tables.sql:2:-- Migration 00032: Missing Tables
+supabase/migrations/00033_normalize_ssot.sql:154:-- V-05: Calendar sync configs — add missing columns, expand provider check
+supabase/migrations/00033_normalize_ssot.sql:237:-- TRANCHE 4: Missing FKs & Junction Tables
+supabase/migrations/00067_missing_triggers.sql:2:-- Migration 00067: Missing updated_at Triggers
+supabase/migrations/00068_fk_indexes_notifications.sql:2:-- Migration 00068: FK Constraints, Missing Indexes & Notifications Alignment
+supabase/migrations/00068_fk_indexes_notifications.sql:6:-- 2. Adds missing indexes on FK columns for query performance.
+supabase/migrations/00068_fk_indexes_notifications.sql:33:-- 2. Missing FK indexes (production verticals)
+supabase/migrations/00068_fk_indexes_notifications.sql:85:-- Solution: add the missing columns from 00060 to the existing table.
+supabase/migrations/00071_missing_tables.sql:1:-- Migration 00071: Create 11 missing tables referenced by application code.
+supabase/migrations/00072_missing_rls_policies.sql:1:-- Migration 00072: Add missing RLS policies for venues and atproto OAuth tables.
