@@ -28,6 +28,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     .from('advance_line_items')
     .select('*')
     .eq('advance_id', id)
+    .is('deleted_at', null)
     .order('sort_order', { ascending: true });
 
   // Fetch collaborators if collection mode
@@ -37,6 +38,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       .from('advance_collaborators')
       .select('*, users(full_name, email), organizations(name)')
       .eq('advance_id', id)
+      .is('deleted_at', null)
       .order('invited_at', { ascending: true });
     collaborators = collabs;
   }
@@ -91,7 +93,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   // Build update object — only include fields that were sent
   const update: Record<string, unknown> = {};
   const allowedFields = [
-    'event_name', 'venue_name', 'venue_address', 'advance_type', 'priority',
+    'event_name', 'company_name', 'venue_name', 'venue_address', 'advance_type', 'priority',
+    'contact_name', 'contact_email', 'contact_phone',
     'service_start_date', 'service_end_date', 'load_in_date', 'strike_date',
     'submission_deadline', 'purpose', 'special_considerations', 'notes',
     'internal_notes', 'submission_instructions', 'fulfillment_type',
@@ -103,15 +106,17 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     if (field in body) update[field] = body[field];
   }
 
-  // Optimistic locking
-  if (body.version) {
-    update.version = body.version;
+  // Optimistic locking — version is a WHERE filter, not an update field
+  let query = ctx.supabase
+    .from('production_advances')
+    .update({ ...update, version: (body.version ?? 0) + 1, updated_at: new Date().toISOString() })
+    .eq('id', id);
+
+  if (body.version !== undefined) {
+    query = query.eq('version', body.version);
   }
 
-  const { data, error } = await ctx.supabase
-    .from('production_advances')
-    .update(update)
-    .eq('id', id)
+  const { data, error } = await query
     .select()
     .single();
 
@@ -149,11 +154,14 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     return NextResponse.json({ error: 'Only draft advances can be deleted' }, { status: 400 });
   }
 
-  const { error } = await ctx.supabase.from('production_advances').delete().eq('id', id);
+  const { error } = await ctx.supabase
+    .from('production_advances')
+    .update({ deleted_at: new Date().toISOString(), status: 'cancelled' })
+    .eq('id', id);
 
   if (error) {
     return NextResponse.json({ error: 'Failed to delete advance', details: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ data: { deleted: true } });
+  return NextResponse.json({ data: { deleted: true, soft: true } });
 }

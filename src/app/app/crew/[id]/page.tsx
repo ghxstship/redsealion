@@ -44,37 +44,42 @@ async function getCrewMember(id: string): Promise<CrewDetail> {
 
     const { data: profile } = await supabase
       .from('crew_profiles')
-      .select('*, users(email)')
+      .select('*, users(full_name, email)')
       .eq('id', id)
       .single();
 
     if (!profile) throw new Error('Not found');
 
+    const userRec = profile.users as Record<string, string> | null;
+
     const { data: bookings } = await supabase
       .from('crew_bookings')
-      .select('id, project_name, venue, date, status')
+      .select('id, project_name, venue_name, shift_start, status')
       .eq('crew_profile_id', id)
-      .order('date', { ascending: true })
+      .is('deleted_at', null)
+      .order('shift_start', { ascending: true })
       .limit(10);
 
     return {
-      full_name: profile.full_name,
-      email: (profile.users as Record<string, string>)?.email ?? '',
+      full_name: profile.full_name || userRec?.full_name || '',
+      email: userRec?.email ?? '',
       phone: profile.phone ?? null,
       skills: profile.skills ?? [],
-      certifications: profile.certifications ?? [],
+      certifications: Array.isArray(profile.certifications)
+        ? (profile.certifications as Array<string | { name: string }>).map((c) => typeof c === 'string' ? c : c.name)
+        : [],
       hourly_rate: profile.hourly_rate ?? null,
       day_rate: profile.day_rate ?? null,
-      availability_status: profile.availability_status ?? 'available',
-      onboarding_status: profile.onboarding_status ?? 'pending',
+      availability_status: profile.availability_status ?? profile.availability_default ?? 'available',
+      onboarding_status: profile.onboarding_status ?? 'not_started',
       emergency_contact_name: profile.emergency_contact_name ?? null,
       emergency_contact_phone: profile.emergency_contact_phone ?? null,
       bio: profile.bio ?? null,
       bookings: (bookings ?? []).map((b: Record<string, unknown>) => ({
         id: b.id as string,
-        project_name: b.project_name as string,
-        venue: b.venue as string,
-        date: b.date as string,
+        project_name: (b.project_name as string) ?? 'Untitled',
+        venue: (b.venue_name as string) ?? '—',
+        date: b.shift_start ? new Date(b.shift_start as string).toISOString().split('T')[0] : '',
         status: b.status as string,
       })),
     };
@@ -107,6 +112,7 @@ const AVAILABILITY_COLORS: Record<string, string> = {
 const ONBOARDING_COLORS: Record<string, string> = {
   complete: 'bg-green-50 text-green-700',
   in_progress: 'bg-blue-50 text-blue-700',
+  not_started: 'bg-bg-secondary text-text-muted',
   pending: 'bg-bg-secondary text-text-muted',
 };
 
@@ -252,9 +258,9 @@ export default async function CrewMemberPage({
             Onboarding: {formatLabel(member.onboarding_status)}
           </span>
         </div>
-        <button className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary">
+        <a href={`/app/crew/${id}/edit`} className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary">
           Edit Profile
-        </button>
+        </a>
       </PageHeader>
 
       {/* Two-column layout */}

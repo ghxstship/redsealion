@@ -31,7 +31,7 @@ async function getCreditNotes(): Promise<CreditNoteRow[]> {
     if (!user) throw new Error('No auth');
 const { data: creditNotes } = await supabase
       .from('credit_notes')
-      .select('*, invoices(invoice_number), clients(company_name)')
+      .select('*, invoices(invoice_number, clients(company_name))')
       .eq('organization_id', ctx.organizationId)
       .order('issued_date', { ascending: false });
 
@@ -40,11 +40,11 @@ const { data: creditNotes } = await supabase
     return creditNotes.map((cn: Record<string, unknown>) => ({
       id: cn.id as string,
       credit_number: cn.credit_number as string,
-      invoice_number: (cn.invoices as Record<string, string>)?.invoice_number ?? 'Unknown',
+      invoice_number: ((cn.invoices as Record<string, unknown>)?.invoice_number as string) ?? 'Unknown',
       amount: cn.amount as number,
       reason: (cn.reason as string) ?? '',
       issued_date: cn.issued_date as string,
-      client_name: (cn.clients as Record<string, string>)?.company_name ?? 'Unknown',
+      client_name: (((cn.invoices as Record<string, unknown>)?.clients as Record<string, string>)?.company_name) ?? 'Unknown',
     }));
   } catch {
     return [];

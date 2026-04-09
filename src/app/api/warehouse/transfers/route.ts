@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
       to_facility_id,
       status: 'pending',
       initiated_by: perm.userId,
-      items: JSON.stringify(items),
+      items,
       notes: notes || null,
     })
     .select()

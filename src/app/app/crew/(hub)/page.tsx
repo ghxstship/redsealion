@@ -20,7 +20,7 @@ import Button from '@/components/ui/Button';
 import Tabs from '@/components/ui/Tabs';
 import { Upload } from 'lucide-react';
 import { TierGate } from '@/components/shared/TierGate';
-import CrewHubTabs from '../CrewHubTabs';
+
 
 interface CrewMember {
   id: string;
@@ -41,6 +41,7 @@ const AVAILABILITY_COLORS: Record<string, string> = {
 const ONBOARDING_COLORS: Record<string, string> = {
   complete: 'bg-green-50 text-green-700',
   in_progress: 'bg-blue-50 text-blue-700',
+  not_started: 'bg-bg-secondary text-text-muted',
   pending: 'bg-bg-secondary text-text-muted',
 };
 
@@ -62,21 +63,24 @@ export default function CrewPage() {
         const supabase = createClient();
         const { data: profiles } = await supabase
           .from('crew_profiles')
-          .select('*, users(email)')
+          .select('*, users(full_name, email)')
           .eq('organization_id', ctx.organizationId)
-          .order('full_name');
+          .order('created_at', { ascending: false });
 
         if (profiles && profiles.length > 0) {
           setCrew(
-            profiles.map((p: Record<string, unknown>) => ({
-              id: p.id as string,
-              full_name: p.full_name as string,
-              email: (p.users as Record<string, string>)?.email ?? '',
-              skills: (p.skills as string[]) ?? [],
-              hourly_rate: p.hourly_rate as number | null,
-              availability_status: (p.availability_status as string) ?? 'available',
-              onboarding_status: (p.onboarding_status as string) ?? 'pending',
-            }))
+            profiles.map((p: Record<string, unknown>) => {
+              const userRec = p.users as Record<string, string> | null;
+              return {
+                id: p.id as string,
+                full_name: (p.full_name as string) || userRec?.full_name || '',
+                email: userRec?.email ?? '',
+                skills: (p.skills as string[]) ?? [],
+                hourly_rate: p.hourly_rate as number | null,
+                availability_status: (p.availability_status as string) ?? (p.availability_default as string) ?? 'available',
+                onboarding_status: (p.onboarding_status as string) ?? 'not_started',
+              };
+            })
           );
         }
       } catch (error) {
@@ -128,7 +132,6 @@ export default function CrewPage() {
         onCreated={() => router.refresh()}
       />
 
-      <CrewHubTabs />
 
       {/* Availability tabs */}
       <Tabs

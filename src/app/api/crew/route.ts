@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
+import { logAudit } from '@/lib/audit';
+import { dispatchWebhook } from '@/lib/webhooks/dispatch';
 import type { CrewProfile, User } from '@/types/database';
 
 export async function GET(request: NextRequest) {
@@ -29,7 +31,7 @@ export async function GET(request: NextRequest) {
     query = query.contains('skills', [skills]);
   }
   if (status) {
-    query = query.eq('status', status);
+    query = query.eq('availability_status', status);
   }
 
   const { data: profiles, error } = await query;
@@ -118,6 +120,24 @@ export async function POST(request: NextRequest) {
       { status: 500 },
     );
   }
+
+  // Backfill full_name from users if not explicitly set
+  if (!profile.full_name) {
+    const { data: user } = await supabase
+      .from('users')
+      .select('full_name')
+      .eq('id', user_id)
+      .single();
+    if (user?.full_name) {
+      await supabase
+        .from('crew_profiles')
+        .update({ full_name: user.full_name })
+        .eq('id', (profile as Record<string, unknown>).id);
+    }
+  }
+
+  await logAudit({ action: 'crew.profile.created', entityType: 'crew_profile', entityId: (profile as Record<string, unknown>).id as string }, supabase);
+  await dispatchWebhook('crew.created', profile, perm.organizationId, supabase).catch(() => {});
 
   return NextResponse.json({ success: true, profile });
 }

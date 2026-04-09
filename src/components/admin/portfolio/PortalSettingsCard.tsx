@@ -1,15 +1,24 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { createClient } from '@/lib/supabase/client';
+/**
+ * Portal settings card — manages project portal configuration.
+ * Uses the /api/project-portals API routes instead of direct Supabase client.
+ * Addresses GAP-P17 (API-based) and GAP-P32 (pre-arrival, FAQ, amenity editors).
+ */
+
+import { useState, useEffect, useCallback } from 'react';
 import Button from '@/components/ui/Button';
 import FormInput from '@/components/ui/FormInput';
 import FormTextarea from '@/components/ui/FormTextarea';
 import Tabs from '@/components/ui/Tabs';
 import Alert from '@/components/ui/Alert';
+import { Plus, Trash2 } from 'lucide-react';
 import type { Database } from '@/types/database';
 
 type PortalType = Database['public']['Enums']['portal_type'];
+
+interface FaqEntry { q: string; a: string; }
+interface ChecklistItem { text: string; completed: boolean; }
 
 const PORTAL_TYPES: { key: PortalType; label: string }[] = [
   { key: 'production', label: 'Production' },
@@ -20,72 +29,195 @@ const PORTAL_TYPES: { key: PortalType; label: string }[] = [
   { key: 'temporary', label: 'Temporary Access' },
 ];
 
+interface PortalData {
+  id?: string;
+  project_id: string;
+  portal_type: PortalType;
+  organization_id?: string;
+  is_published: boolean;
+  call_time: string;
+  parking_instructions: string;
+  rideshare_instructions: string;
+  transit_instructions: string;
+  check_in_instructions: string;
+  pre_arrival_checklist: ChecklistItem[];
+  faqs: FaqEntry[];
+  amenities: Record<string, boolean>;
+}
+
+const DEFAULT_AMENITIES = [
+  'wifi', 'parking', 'catering', 'green_room', 'showers',
+  'lockers', 'power_outlets', 'loading_dock', 'security',
+];
+
 export function PortalSettingsCard({ projectId }: { projectId: string }) {
   const [activeTab, setActiveTab] = useState<PortalType>('production');
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [data, setData] = useState<Partial<Database['public']['Tables']['project_portals']['Row']>>({});
+  const [data, setData] = useState<PortalData>({
+    project_id: projectId,
+    portal_type: 'production',
+    is_published: false,
+    call_time: '',
+    parking_instructions: '',
+    rideshare_instructions: '',
+    transit_instructions: '',
+    check_in_instructions: '',
+    pre_arrival_checklist: [],
+    faqs: [],
+    amenities: {},
+  });
   const [message, setMessage] = useState('');
 
-  const supabase = createClient();
-
-  useEffect(() => {
-    async function loadPortal() {
-      setIsLoading(true);
-      const { data: portal, error } = await supabase
-        .from('project_portals')
-        .select('*')
-        .eq('project_id', projectId)
-        .eq('portal_type', activeTab)
-        .maybeSingle();
-
-      if (portal) {
-        setData(portal);
-      } else {
-        setData({
-          project_id: projectId,
-          portal_type: activeTab,
-          is_published: false,
-          call_time: '',
-          parking_instructions: '',
-          rideshare_instructions: '',
-          transit_instructions: '',
-        });
+  const loadPortal = useCallback(async () => {
+    setIsLoading(true);
+    setMessage('');
+    try {
+      const res = await fetch(`/api/project-portals?project_id=${projectId}&portal_type=${activeTab}`);
+      if (res.ok) {
+        const result = await res.json();
+        const portals = result.portals ?? [];
+        if (portals.length > 0) {
+          const portal = portals[0];
+          setData({
+            id: portal.id,
+            project_id: projectId,
+            portal_type: activeTab,
+            organization_id: portal.organization_id,
+            is_published: portal.is_published ?? false,
+            call_time: portal.call_time ?? '',
+            parking_instructions: portal.parking_instructions ?? '',
+            rideshare_instructions: portal.rideshare_instructions ?? '',
+            transit_instructions: portal.transit_instructions ?? '',
+            check_in_instructions: portal.check_in_instructions ?? '',
+            pre_arrival_checklist: (portal.pre_arrival_checklist as ChecklistItem[]) ?? [],
+            faqs: (portal.faqs as FaqEntry[]) ?? [],
+            amenities: (portal.amenities as Record<string, boolean>) ?? {},
+          });
+        } else {
+          setData({
+            project_id: projectId,
+            portal_type: activeTab,
+            is_published: false,
+            call_time: '',
+            parking_instructions: '',
+            rideshare_instructions: '',
+            transit_instructions: '',
+            check_in_instructions: '',
+            pre_arrival_checklist: [],
+            faqs: [],
+            amenities: {},
+          });
+        }
       }
-      setIsLoading(false);
-    }
-    loadPortal();
-  }, [projectId, activeTab, supabase]);
+    } catch { /* silent */ }
+    finally { setIsLoading(false); }
+  }, [projectId, activeTab]);
+
+  useEffect(() => { loadPortal(); }, [loadPortal]);
 
   const handleSave = async () => {
     setIsSaving(true);
     setMessage('');
     try {
       const payload = {
-        ...data,
-      } as Database['public']['Tables']['project_portals']['Insert'];
+        is_published: data.is_published,
+        call_time: data.call_time,
+        parking_instructions: data.parking_instructions,
+        rideshare_instructions: data.rideshare_instructions,
+        transit_instructions: data.transit_instructions,
+        check_in_instructions: data.check_in_instructions,
+        pre_arrival_checklist: data.pre_arrival_checklist,
+        faqs: data.faqs,
+        amenities: data.amenities,
+      };
 
       if (data.id) {
-        // Update existing
-        await supabase.from('project_portals').update(payload).eq('id', data.id);
+        // Update existing portal via API
+        const res = await fetch(`/api/project-portals/${data.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (res.ok) setMessage('Portal settings saved successfully.');
+        else setMessage('Failed to save portal settings.');
       } else {
-        // Find org_id from project
-        const { data: project } = await supabase.from('projects').select('organization_id').eq('id', projectId).single();
-        if (project) {
-          payload.organization_id = project.organization_id;
-          const { data: inserted } = await supabase.from('project_portals').insert(payload).select().single();
-          if (inserted) {
-            setData(inserted);
+        // Create new portal via API
+        const res = await fetch('/api/project-portals', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            project_id: projectId,
+            portal_type: activeTab,
+            ...payload,
+          }),
+        });
+        if (res.ok) {
+          const result = await res.json();
+          if (result.portal) {
+            setData((prev) => ({ ...prev, id: result.portal.id }));
           }
+          setMessage('Portal created successfully.');
+        } else {
+          setMessage('Failed to create portal.');
         }
       }
-      setMessage('Portal settings saved successfully.');
     } catch {
       setMessage('Failed to save portal settings.');
     } finally {
       setIsSaving(false);
     }
   };
+
+  // ─── Checklist helpers ─────────────────────────────
+  function addChecklistItem() {
+    setData((prev) => ({
+      ...prev,
+      pre_arrival_checklist: [...prev.pre_arrival_checklist, { text: '', completed: false }],
+    }));
+  }
+  function updateChecklistItem(index: number, text: string) {
+    setData((prev) => {
+      const list = [...prev.pre_arrival_checklist];
+      list[index] = { ...list[index], text };
+      return { ...prev, pre_arrival_checklist: list };
+    });
+  }
+  function removeChecklistItem(index: number) {
+    setData((prev) => ({
+      ...prev,
+      pre_arrival_checklist: prev.pre_arrival_checklist.filter((_, i) => i !== index),
+    }));
+  }
+
+  // ─── FAQ helpers ───────────────────────────────────
+  function addFaq() {
+    setData((prev) => ({
+      ...prev,
+      faqs: [...prev.faqs, { q: '', a: '' }],
+    }));
+  }
+  function updateFaq(index: number, field: 'q' | 'a', value: string) {
+    setData((prev) => {
+      const list = [...prev.faqs];
+      list[index] = { ...list[index], [field]: value };
+      return { ...prev, faqs: list };
+    });
+  }
+  function removeFaq(index: number) {
+    setData((prev) => ({
+      ...prev,
+      faqs: prev.faqs.filter((_, i) => i !== index),
+    }));
+  }
+
+  // ─── Amenity helpers ──────────────────────────────
+  function toggleAmenity(key: string) {
+    setData((prev) => ({
+      ...prev,
+      amenities: { ...prev.amenities, [key]: !prev.amenities[key] },
+    }));
+  }
 
   const activeLabel = PORTAL_TYPES.find(t => t.key === activeTab)?.label || 'Portal';
 
@@ -103,6 +235,7 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
           <div className="text-sm text-text-muted">Loading portal data...</div>
         ) : (
           <>
+            {/* Published toggle */}
             <div className="flex items-center space-x-2">
               <input
                 type="checkbox"
@@ -115,6 +248,7 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
               </label>
             </div>
 
+            {/* Call time */}
             <div>
               <label className="block text-sm font-medium text-text-secondary mb-1">Call Time / Doors Time</label>
               <FormInput
@@ -124,6 +258,7 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
               />
             </div>
             
+            {/* Wayfinding instructions */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-text-secondary mb-1">Parking Instructions</label>
@@ -163,6 +298,94 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
               </div>
             </div>
 
+            {/* Pre-arrival checklist — GAP-P32 */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-sm font-medium text-text-secondary">Pre-Arrival Checklist</label>
+                <button onClick={addChecklistItem} className="text-xs font-medium text-text-muted hover:text-foreground flex items-center gap-1">
+                  <Plus size={12} /> Add Item
+                </button>
+              </div>
+              {data.pre_arrival_checklist.length === 0 ? (
+                <p className="text-xs text-text-muted italic">No checklist items yet.</p>
+              ) : (
+                <div className="space-y-2">
+                  {data.pre_arrival_checklist.map((item, idx) => (
+                    <div key={idx} className="flex items-center gap-2">
+                      <FormInput
+                        value={item.text}
+                        onChange={(e) => updateChecklistItem(idx, e.target.value)}
+                        placeholder="e.g., Bring valid photo ID"
+                        className="flex-1"
+                      />
+                      <button onClick={() => removeChecklistItem(idx)} className="text-text-muted hover:text-red-500 p-1">
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* FAQs — GAP-P32 */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-sm font-medium text-text-secondary">FAQs</label>
+                <button onClick={addFaq} className="text-xs font-medium text-text-muted hover:text-foreground flex items-center gap-1">
+                  <Plus size={12} /> Add FAQ
+                </button>
+              </div>
+              {data.faqs.length === 0 ? (
+                <p className="text-xs text-text-muted italic">No FAQs yet.</p>
+              ) : (
+                <div className="space-y-4">
+                  {data.faqs.map((faq, idx) => (
+                    <div key={idx} className="rounded-lg border border-border p-3 space-y-2">
+                      <div className="flex items-start gap-2">
+                        <div className="flex-1">
+                          <FormInput
+                            value={faq.q}
+                            onChange={(e) => updateFaq(idx, 'q', e.target.value)}
+                            placeholder="Question"
+                          />
+                        </div>
+                        <button onClick={() => removeFaq(idx)} className="text-text-muted hover:text-red-500 p-1 mt-1">
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                      <FormTextarea
+                        value={faq.a}
+                        onChange={(e) => updateFaq(idx, 'a', e.target.value)}
+                        placeholder="Answer"
+                        rows={2}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Amenities — GAP-P32 */}
+            <div>
+              <label className="block text-sm font-medium text-text-secondary mb-2">Amenities</label>
+              <div className="flex flex-wrap gap-2">
+                {DEFAULT_AMENITIES.map((amenity) => (
+                  <button
+                    key={amenity}
+                    onClick={() => toggleAmenity(amenity)}
+                    className={`rounded-full px-3 py-1 text-xs font-medium transition-colors border ${
+                      data.amenities[amenity]
+                        ? 'bg-foreground text-white border-foreground'
+                        : 'bg-bg-secondary text-text-secondary border-border hover:border-foreground/30'
+                    }`}
+                  >
+                    {amenity.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Save */}
             <div className="flex justify-end pt-4">
               <Button onClick={handleSave} loading={isSaving} className="w-full sm:w-auto">
                 {isSaving ? 'Saving...' : `Save ${activeLabel} Portal`}

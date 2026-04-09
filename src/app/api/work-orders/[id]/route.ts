@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
+import { dispatchWebhookEvent } from '@/lib/webhooks/outbound';
 
 interface RouteContext { params: Promise<{ id: string }> }
 
@@ -66,6 +67,13 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
 
   if (error || !wo) return NextResponse.json({ error: 'Failed to update work order', details: error?.message }, { status: 500 });
 
+  if ('status' in updates) {
+    const eventType = updates.status === 'dispatched' ? 'work_order.dispatched' :
+                      updates.status === 'completed' ? 'work_order.completed' :
+                      'work_order.status_changed';
+    dispatchWebhookEvent(perm.organizationId, eventType as any, { work_order_id: id, status: updates.status }).catch(() => {});
+  }
+
   return NextResponse.json({ success: true, work_order: wo });
 }
 
@@ -79,7 +87,7 @@ export async function DELETE(_request: NextRequest, context: RouteContext) {
 
   const { error } = await supabase
     .from('work_orders')
-    .delete()
+    .update({ deleted_at: new Date().toISOString() })
     .eq('id', id)
     .eq('organization_id', perm.organizationId);
 

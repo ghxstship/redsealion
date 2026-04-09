@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
+import { logAuditAction } from '@/lib/api/audit-logger';
 
 export async function POST(
   _request: Request,
@@ -52,6 +53,14 @@ export async function POST(
       { status: 500 },
     );
   }
+
+  logAuditAction({
+    orgId: perm.organizationId,
+    action: 'invoice.voided',
+    entity: 'invoice',
+    entityId: id,
+    metadata: { previous_status: invoice.status },
+  }).catch(() => {});
 
   return NextResponse.json({ success: true, invoice: updatedInvoice });
 }

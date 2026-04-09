@@ -15,8 +15,9 @@ async function getAssignments() {
       .from('production_advances')
       .select('id, advance_number, event_name, status, advance_type, line_item_count, service_start_date')
       .eq('organization_id', ctx.organizationId)
-      .in('status', ['approved', 'in_progress'])
-      .order('service_start_date', { ascending: true });
+      .in('status', ['approved', 'partially_fulfilled'])
+      .order('service_start_date', { ascending: true })
+      .range(0, 99);
 
     return (data ?? []) as Array<{
       id: string; advance_number: string; event_name: string | null;
@@ -29,7 +30,7 @@ export default async function AdvancingAssignmentsPage() {
   const assignments = await getAssignments();
 
   const unassigned = assignments.filter((a) => a.status === 'approved');
-  const inProgress = assignments.filter((a) => a.status === 'in_progress');
+  const inProgress = assignments.filter((a) => a.status === 'partially_fulfilled');
 
   return (
     <TierGate feature="work_orders">
@@ -78,7 +79,7 @@ export default async function AdvancingAssignmentsPage() {
                     <td className="px-4 py-3 tabular-nums">{item.line_item_count}</td>
                     <td className="px-4 py-3 text-text-secondary">{item.service_start_date ? new Date(item.service_start_date).toLocaleDateString() : '—'}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${item.status === 'in_progress' ? 'bg-blue-50 text-blue-700' : 'bg-yellow-50 text-yellow-700'}`}>
+                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${item.status === 'partially_fulfilled' ? 'bg-blue-50 text-blue-700' : 'bg-yellow-50 text-yellow-700'}`}>
                         {item.status.replace('_', ' ')}
                       </span>
                     </td>

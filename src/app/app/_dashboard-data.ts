@@ -106,7 +106,7 @@ export async function getDashboardData(): Promise<{
     const tier = (org?.subscription_tier as SubscriptionTier) || 'free';
 
     // Core queries (all tiers)
-    const [proposalsRes, activeRes, pipelineRes, pendingRes, activityRes] =
+    const [proposalsRes, activeRes, pipelineRes, pendingRes, activityRes, projectsRes] =
       await Promise.all([
         supabase
           .from('proposals')
@@ -137,6 +137,14 @@ export async function getDashboardData(): Promise<{
           .eq('organization_id', orgId)
           .order('created_at', { ascending: false })
           .limit(10),
+
+        // GAP-P28: Count from canonical projects table
+        supabase
+          .from('projects')
+          .select('id', { count: 'exact', head: true })
+          .eq('organization_id', orgId)
+          .is('deleted_at', null)
+          .in('status', ['active', 'in_progress']),
       ]);
 
     // Pipeline aggregation
@@ -257,7 +265,7 @@ export async function getDashboardData(): Promise<{
       stats: {
         userName: firstName,
         totalProposals: proposalsRes.count ?? 0,
-        activeProjects: activeRes.count ?? 0,
+        activeProjects: Math.max(activeRes.count ?? 0, projectsRes.count ?? 0),
         revenuePipeline,
         pendingApprovals: pendingRes.count ?? 0,
         automationsRun,

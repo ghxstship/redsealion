@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
+import { dispatchWebhookEvent } from '@/lib/webhooks/outbound';
 
 export async function GET(
   _request: NextRequest,
@@ -15,7 +16,7 @@ export async function GET(
 
   const { data: event, error } = await supabase
     .from('events')
-    .select('*, activations(*), locations(*)')
+    .select('*, activations(*, locations(id, name, type)), event_locations(location_id, is_primary, locations(id, name, type))')
     .eq('id', id)
     .eq('organization_id', perm.organizationId)
     .is('deleted_at', null)
@@ -38,7 +39,7 @@ export async function PATCH(
   const body = await request.json().catch(() => ({}));
   const supabase = await createClient();
 
-  const allowedFields = ['name', 'description', 'event_type', 'status', 'start_date', 'end_date', 'venue_name', 'venue_address', 'capacity', 'project_id'];
+  const allowedFields = ['name', 'slug', 'subtitle', 'type', 'status', 'starts_at', 'ends_at', 'daily_hours', 'doors_time', 'general_email', 'presenter', 'event_code', 'notes'];
   const updates: Record<string, unknown> = {};
   for (const f of allowedFields) {
     if (f in body) updates[f] = body[f];
@@ -54,6 +55,10 @@ export async function PATCH(
     .single();
 
   if (error || !event) return NextResponse.json({ error: 'Failed to update event', details: error?.message }, { status: 500 });
+
+  if ('status' in updates) {
+    dispatchWebhookEvent(perm.organizationId, 'event.status_changed' as any, { event_id: id, status: updates.status }).catch(() => {});
+  }
 
   return NextResponse.json({ success: true, event });
 }
@@ -71,6 +76,8 @@ export async function DELETE(
 
   const { error } = await supabase.from('events').update({ deleted_at: new Date().toISOString() }).eq('id', id).eq('organization_id', perm.organizationId);
   if (error) return NextResponse.json({ error: 'Failed to delete event', details: error.message }, { status: 500 });
+
+  dispatchWebhookEvent(perm.organizationId, 'event.deleted' as any, { event_id: id }).catch(() => {});
 
   return NextResponse.json({ success: true });
 }

@@ -76,6 +76,7 @@ export const navSections: NavSection[] = [
     labelKey: 'nav.projects',
     icon: <IconNavProjects size={16} />,
     items: [
+      { label: 'Projects', labelKey: 'nav.projectsList', href: '/app/projects', feature: 'proposals', icon: <IconNavProjects size={18} /> },
       { label: 'Tasks', labelKey: 'nav.tasks', href: '/app/tasks', feature: 'tasks', icon: <IconNavTasks size={18} /> },
       { label: 'Goals', labelKey: 'nav.goals', href: '/app/goals', feature: 'tasks', icon: <IconNavGoals size={18} /> },
       { label: 'Roadmap', labelKey: 'nav.roadmap', href: '/app/roadmap', feature: 'tasks', icon: <IconNavRoadmap size={18} /> },

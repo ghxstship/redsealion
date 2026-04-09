@@ -30,7 +30,8 @@ export async function GET(request: NextRequest) {
 
   let query = ctx.supabase
     .from('production_advances')
-    .select('*, projects(name)', { count: 'exact' });
+    .select('*, projects(name)', { count: 'exact' })
+    .is('deleted_at', null);
 
   // Tab-based filtering
   switch (tab) {
@@ -67,7 +68,7 @@ export async function GET(request: NextRequest) {
   if (status) query = query.eq('status', status);
   if (mode) query = query.eq('advance_mode', mode);
   if (type) query = query.eq('advance_type', type);
-  if (search) query = query.or(`advance_number.ilike.%${search}%,event_name.ilike.%${search}%,venue_name.ilike.%${search}%`);
+  if (search) query = query.textSearch('search_vector', search, { type: 'websearch', config: 'english' });
 
   query = query.order('created_at', { ascending: false }).range(offset, offset + limit - 1);
 
@@ -112,6 +113,28 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 422 });
   }
 
+  // M-12: Enforce advancesPerMonth tier limit
+  const { TIER_LIMITS } = await import('@/lib/advances/constants');
+  const limits = TIER_LIMITS[ctx.tier as keyof typeof TIER_LIMITS] ?? TIER_LIMITS.free;
+  if (limits.advancesPerMonth < Infinity) {
+    const monthStart = new Date();
+    monthStart.setDate(1);
+    monthStart.setHours(0, 0, 0, 0);
+
+    const { count } = await ctx.supabase
+      .from('production_advances')
+      .select('id', { count: 'exact', head: true })
+      .eq('organization_id', ctx.organizationId)
+      .gte('created_at', monthStart.toISOString());
+
+    if ((count ?? 0) >= limits.advancesPerMonth) {
+      return NextResponse.json(
+        { error: `Monthly advance limit reached (${limits.advancesPerMonth} on ${ctx.tier} plan)` },
+        { status: 403 },
+      );
+    }
+  }
+
   // Generate advance number
   const { data: advNumber } = await ctx.supabase.rpc('generate_advance_number', { org_id: ctx.organizationId });
 
@@ -124,9 +147,11 @@ export async function POST(request: NextRequest) {
       advance_type: body.advance_type,
       project_id: body.project_id ?? null,
       event_name: body.event_name ?? null,
+      company_name: body.company_name ?? null,
       venue_name: body.venue_name ?? null,
       venue_address: body.venue_address ?? null,
       submitted_by: ctx.userId,
+      created_by: ctx.userId,
       contact_name: body.contact_name ?? null,
       contact_email: body.contact_email ?? null,
       contact_phone: body.contact_phone ?? null,

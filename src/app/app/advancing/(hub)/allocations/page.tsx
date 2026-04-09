@@ -16,8 +16,9 @@ async function getAllocations() {
       .from('production_advances')
       .select('id, advance_number, event_name, status, total_cents, line_item_count')
       .eq('organization_id', ctx.organizationId)
-      .in('status', ['approved', 'in_progress', 'fulfilled'])
-      .order('created_at', { ascending: false });
+      .in('status', ['approved', 'partially_fulfilled', 'fulfilled', 'completed'])
+      .order('created_at', { ascending: false })
+      .range(0, 99);
 
     const advances = (data ?? []) as Array<{
       id: string; advance_number: string; event_name: string | null;

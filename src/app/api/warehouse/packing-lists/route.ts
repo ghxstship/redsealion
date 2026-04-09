@@ -14,11 +14,12 @@ export async function GET(request: NextRequest) {
 
   const url = new URL(request.url);
   const proposalId = url.searchParams.get('proposalId');
-  const venueId = url.searchParams.get('venueId');
+  const locationId = url.searchParams.get('locationId') ?? url.searchParams.get('venueId');
+  const eventId = url.searchParams.get('eventId');
 
-  if (!proposalId || !venueId) {
+  if (!proposalId && !eventId) {
     return NextResponse.json(
-      { error: 'proposalId and venueId query parameters are required.' },
+      { error: 'proposalId or eventId query parameter is required.' },
       { status: 400 },
     );
   }
@@ -26,13 +27,17 @@ export async function GET(request: NextRequest) {
   const supabase = await createClient();
   const orgId = perm.organizationId;
 
-  // Fetch equipment reservations for the venue
-  const { data: reservations, error } = await supabase
+  // Fetch equipment reservations
+  let query = supabase
     .from('equipment_reservations')
     .select('*, asset:assets(id, name, category, serial_number)')
-    .eq('organization_id', orgId)
-    .eq('proposal_id', proposalId)
-    .eq('venue_id', venueId);
+    .eq('organization_id', orgId);
+
+  if (proposalId) query = query.eq('proposal_id', proposalId);
+  if (eventId) query = query.eq('event_id', eventId);
+  if (locationId) query = query.eq('venue_id', locationId);
+
+  const { data: reservations, error } = await query;
 
   if (error) {
     return NextResponse.json(
@@ -76,7 +81,7 @@ export async function GET(request: NextRequest) {
 
   return NextResponse.json({
     proposal_id: proposalId,
-    venue_id: venueId,
+    location_id: locationId,
     categories: grouped,
     total_items: (reservations ?? []).length,
   });

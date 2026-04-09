@@ -157,7 +157,7 @@ CREATE POLICY "campaign_recipients_delete" ON campaign_recipients
 
 ALTER TABLE public.proposals
   ADD CONSTRAINT proposals_probability_range
-  CHECK (probability IS NULL OR (probability >= 0 AND probability <= 100));
+  CHECK (probability_percent IS NULL OR (probability_percent >= 0 AND probability_percent <= 100));
 
 
 -- ═══════════════════════════════════════════════════════════════════════

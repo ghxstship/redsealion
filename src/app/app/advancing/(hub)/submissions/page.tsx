@@ -17,7 +17,8 @@ async function getSubmissions() {
       .select('id, advance_number, event_name, status, total_cents, created_at, submission_deadline')
       .eq('organization_id', ctx.organizationId)
       .in('status', ['draft', 'submitted'])
-      .order('submission_deadline', { ascending: true });
+      .order('submission_deadline', { ascending: true })
+      .range(0, 99);
 
     return (data ?? []) as Array<{
       id: string; advance_number: string; event_name: string | null;

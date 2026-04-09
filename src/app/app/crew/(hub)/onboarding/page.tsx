@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
-import CrewHubTabs from '../../CrewHubTabs';
+
 
 interface OnboardingMember {
   id: string;
@@ -19,6 +19,7 @@ interface OnboardingMember {
 const STATUS_COLORS: Record<string, string> = {
   complete: 'bg-green-50 text-green-700',
   in_progress: 'bg-blue-50 text-blue-700',
+  not_started: 'bg-bg-secondary text-text-muted',
   pending: 'bg-bg-secondary text-text-muted',
 };
 
@@ -35,19 +36,22 @@ const { data: profiles } = await supabase
       .from('crew_profiles')
       .select('*, users(email)')
       .eq('organization_id', ctx.organizationId)
-      .order('full_name');
+      .order('created_at', { ascending: false });
 
     if (!profiles || profiles.length === 0) throw new Error('No profiles');
 
-    return profiles.map((p: Record<string, unknown>) => ({
-      id: p.id as string,
-      full_name: p.full_name as string,
-      email: (p.users as Record<string, string>)?.email ?? '',
-      onboarding_status: (p.onboarding_status as string) ?? 'pending',
-      documents_total: (p.documents_total as number) ?? 6,
-      documents_completed: (p.documents_completed as number) ?? 0,
-      started_at: (p.onboarding_started_at as string) ?? null,
-    }));
+    return profiles.map((p: Record<string, unknown>) => {
+      const userRec = p.users as Record<string, string> | null;
+      return {
+        id: p.id as string,
+        full_name: (p.full_name as string) || userRec?.email?.split('@')[0] || '',
+        email: userRec?.email ?? '',
+        onboarding_status: (p.onboarding_status as string) ?? 'not_started',
+        documents_total: (p.documents_total as number) ?? 6,
+        documents_completed: (p.documents_completed as number) ?? 0,
+        started_at: (p.onboarding_started_at as string) ?? null,
+      };
+    });
   } catch {
     return [];
   }
@@ -73,7 +77,7 @@ export default async function OnboardingPage() {
 
   const completeCount = members.filter((m) => m.onboarding_status === 'complete').length;
   const inProgressCount = members.filter((m) => m.onboarding_status === 'in_progress').length;
-  const pendingCount = members.filter((m) => m.onboarding_status === 'pending').length;
+  const pendingCount = members.filter((m) => m.onboarding_status === 'not_started' || m.onboarding_status === 'pending').length;
 
   return (
     <>
@@ -82,7 +86,6 @@ export default async function OnboardingPage() {
         subtitle={`${completeCount} complete \u00b7 ${inProgressCount} in progress \u00b7 ${pendingCount} pending`}
       />
 
-      <CrewHubTabs />
 
       {/* Summary cards */}
       <div className="grid grid-cols-3 gap-4 mb-8">

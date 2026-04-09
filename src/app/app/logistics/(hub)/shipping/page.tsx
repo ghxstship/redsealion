@@ -80,7 +80,7 @@ export default async function ShippingPage() {
               <tbody className="divide-y divide-border">
                 {shipments.map((s) => (
                   <tr key={s.id} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3"><Link href={`/app/logistics/shipping/${s.id}`} className="font-medium text-foreground hover:underline">{s.shipment_number}</Link></td>
+                    <td className="px-4 py-3"><Link href={`/app/logistics/shipments/${s.id}`} className="font-medium text-foreground hover:underline">{s.shipment_number}</Link></td>
                     <td className="px-4 py-3 text-text-secondary">{s.event_name ?? s.client_name ?? s.destination ?? '—'}</td>
                     <td className="px-4 py-3 text-text-secondary">{s.carrier ?? '—'}</td>
                     <td className="px-4 py-3 font-mono text-xs text-text-muted">{s.tracking_number ?? '—'}</td>

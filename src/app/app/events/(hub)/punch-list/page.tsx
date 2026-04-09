@@ -9,17 +9,17 @@ async function getPunchList() {
     const supabase = await createClient();
     const ctx = await resolveCurrentOrg();
     if (!ctx) return [];
-    // Punch list items tracked as tasks with priority and due_date
     const { data } = await supabase
       .from('tasks')
-      .select('id, title, status, priority, due_date, assigned_to, events(name)')
+      .select('id, title, status, priority, due_date, assigned_to, event_id, events:event_id(name)')
       .eq('organization_id', ctx.organizationId)
+      .eq('task_type', 'punch_list')
       .order('due_date', { ascending: true })
       .limit(50);
     return (data ?? []).map((r: Record<string, unknown>) => ({
       id: r.id as string, title: r.title as string, status: r.status as string,
       priority: r.priority as string | null, due_date: r.due_date as string | null,
-      event_name: Array.isArray(r.events) ? (r.events as Record<string, unknown>[])[0]?.name as string : (r.events as Record<string, unknown> | null)?.name as string ?? null,
+      event_name: (r.events as Record<string, unknown> | null)?.name as string ?? null,
     }));
   } catch { return []; }
 }

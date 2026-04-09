@@ -10,6 +10,7 @@ export async function GET(request: NextRequest) {
   const supabase = await createClient();
 
   const projectId = request.nextUrl.searchParams.get('project_id');
+  const portalType = request.nextUrl.searchParams.get('portal_type');
 
   let query = supabase
     .from('project_portals')
@@ -19,6 +20,9 @@ export async function GET(request: NextRequest) {
 
   if (projectId) {
     query = query.eq('project_id', projectId);
+  }
+  if (portalType) {
+    query = query.eq('portal_type', portalType);
   }
 
   const { data: portals, error } = await query;
@@ -34,14 +38,22 @@ export async function POST(request: NextRequest) {
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
   const body = await request.json().catch(() => ({}));
-  const { project_id, portal_type, is_published, call_time, parking_instructions, check_in_instructions, faqs } = body as {
+  const {
+    project_id, portal_type, is_published, call_time,
+    parking_instructions, rideshare_instructions, transit_instructions,
+    check_in_instructions, pre_arrival_checklist, faqs, amenities,
+  } = body as {
     project_id?: string;
     portal_type?: string;
     is_published?: boolean;
     call_time?: string;
     parking_instructions?: string;
+    rideshare_instructions?: string;
+    transit_instructions?: string;
     check_in_instructions?: string;
+    pre_arrival_checklist?: unknown[];
     faqs?: unknown[];
+    amenities?: Record<string, boolean>;
   };
 
   if (!project_id || !portal_type) {
@@ -59,8 +71,12 @@ export async function POST(request: NextRequest) {
       is_published: is_published ?? false,
       call_time: call_time ?? null,
       parking_instructions: parking_instructions ?? null,
+      rideshare_instructions: rideshare_instructions ?? null,
+      transit_instructions: transit_instructions ?? null,
       check_in_instructions: check_in_instructions ?? null,
+      pre_arrival_checklist: pre_arrival_checklist ?? [],
       faqs: faqs ?? [],
+      amenities: amenities ?? {},
     })
     .select()
     .single();

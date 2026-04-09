@@ -62,13 +62,40 @@ export async function POST(request: Request) {
         const total = invoice.total as number;
         const newStatus = newAmountPaid >= total ? 'paid' : 'partially_paid';
 
+        const updatePayload: Record<string, unknown> = {
+          amount_paid: newAmountPaid,
+          status: newStatus,
+        };
+
+        // Set paid_date when fully paid
+        if (newStatus === 'paid') {
+          updatePayload.paid_date = new Date().toISOString().split('T')[0];
+        }
+
         await supabase
           .from('invoices')
-          .update({
-            amount_paid: newAmountPaid,
-            status: newStatus,
-          })
+          .update(updatePayload)
           .eq('id', invoiceId);
+
+        // Create invoice_payments record for audit trail
+        const { data: fullInvoice } = await supabase
+          .from('invoices')
+          .select('organization_id')
+          .eq('id', invoiceId)
+          .single();
+
+        if (fullInvoice) {
+          await supabase.from('invoice_payments').insert({
+            invoice_id: invoiceId,
+            organization_id: fullInvoice.organization_id,
+            amount: amountReceived,
+            payment_method: 'stripe',
+            payment_date: new Date().toISOString().split('T')[0],
+            stripe_payment_id: (data.id as string) ?? null,
+            reference: `Stripe PI: ${(data.id as string) ?? 'unknown'}`,
+            notes: 'Automatically recorded from Stripe webhook',
+          });
+        }
 
         // Fire-and-forget: notify org admin of payment
         notifyPaymentReceived(invoiceId, amountReceived).catch((err) => {
@@ -76,11 +103,8 @@ export async function POST(request: Request) {
         });
 
         // Dispatch webhook for paid invoices
-        if (newStatus === 'paid') {
-          const { data: inv } = await supabase.from('invoices').select('organization_id').eq('id', invoiceId).single();
-          if (inv) {
-            dispatchWebhookEvent(inv.organization_id, 'invoice.paid', { invoice_id: invoiceId, amount: newAmountPaid }).catch(() => {});
-          }
+        if (newStatus === 'paid' && fullInvoice) {
+          dispatchWebhookEvent(fullInvoice.organization_id, 'invoice.paid', { invoice_id: invoiceId, amount: newAmountPaid }).catch(() => {});
         }
       }
     }

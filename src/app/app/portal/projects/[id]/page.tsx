@@ -24,9 +24,10 @@ async function getPortalProject(proposalId: string): Promise<PortalProjectData |
   try {
     const supabase = await createClient();
 
+    // Ensure the user can only see proposals in their org
     const { data: proposal } = await supabase
       .from('proposals')
-      .select('id, name, status')
+      .select('id, name, status, organization_id')
       .eq('id', proposalId)
       .single();
 

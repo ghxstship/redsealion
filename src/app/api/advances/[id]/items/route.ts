@@ -3,8 +3,52 @@ import { requireAuth } from '@/lib/api/auth-guard';
 import { validateAddLineItem } from '@/lib/advances/validations';
 
 /**
+ * GET  /api/advances/[id]/items — List line items with filtering & pagination
  * POST /api/advances/[id]/items — Add line item
  */
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { ctx, denied } = await requireAuth();
+  if (denied) return denied;
+  const { id } = await params;
+
+  const url = new URL(request.url);
+  const page = parseInt(url.searchParams.get('page') ?? '1', 10);
+  const limit = Math.min(parseInt(url.searchParams.get('limit') ?? '50', 10), 100);
+  const offset = (page - 1) * limit;
+  const fulfillmentStatus = url.searchParams.get('fulfillment_status');
+  const approvalStatus = url.searchParams.get('approval_status');
+  const collaboratorId = url.searchParams.get('collaborator_id');
+
+  let query = ctx.supabase
+    .from('advance_line_items')
+    .select('*', { count: 'exact' })
+    .eq('advance_id', id)
+    .is('deleted_at', null);
+
+  if (fulfillmentStatus) query = query.eq('fulfillment_status', fulfillmentStatus);
+  if (approvalStatus) query = query.eq('approval_status', approvalStatus);
+  if (collaboratorId) query = query.eq('collaborator_id', collaboratorId);
+
+  query = query
+    .order('sort_order', { ascending: true })
+    .range(offset, offset + limit - 1);
+
+  const { data, error, count } = await query;
+
+  if (error) {
+    return NextResponse.json({ error: 'Failed to fetch line items', details: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json({
+    data: data ?? [],
+    pagination: { page, limit, total: count ?? 0, totalPages: Math.ceil((count ?? 0) / limit) },
+  });
+}
+
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { ctx, denied } = await requireAuth();
   if (denied) return denied;
@@ -38,6 +82,30 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
   // Check ad-hoc item permission
   if (!body.catalog_item_id && a.allow_ad_hoc_items === false) {
     return NextResponse.json({ error: 'Ad-hoc items are not allowed on this advance' }, { status: 400 });
+  }
+
+  // M-12: Enforce tier limits on line items per advance
+  const { count: itemCount } = await ctx.supabase
+    .from('advance_line_items')
+    .select('id', { count: 'exact', head: true })
+    .eq('advance_id', id);
+
+  // Get org tier from subscription
+  const { data: orgData } = await ctx.supabase
+    .from('organizations')
+    .select('subscription_plan')
+    .eq('id', a.organization_id)
+    .single();
+
+  const tier = ((orgData as Record<string, unknown>)?.subscription_plan as string) ?? 'free';
+  const { TIER_LIMITS } = await import('@/lib/advances/constants');
+  const limits = TIER_LIMITS[tier as keyof typeof TIER_LIMITS] ?? TIER_LIMITS.free;
+
+  if ((itemCount ?? 0) >= limits.lineItemsPerAdvance) {
+    return NextResponse.json(
+      { error: `Line item limit reached (${limits.lineItemsPerAdvance} per advance on ${tier} plan)` },
+      { status: 403 },
+    );
   }
 
   // Check submission deadline for collaborators

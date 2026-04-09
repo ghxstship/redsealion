@@ -86,9 +86,15 @@ CREATE TABLE IF NOT EXISTS public.email_messages (
   created_at       TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-CREATE INDEX IF NOT EXISTS idx_email_messages_org ON public.email_messages(organization_id);
+-- Add missing columns if table already existed from a prior migration
+ALTER TABLE public.email_messages ADD COLUMN IF NOT EXISTS organization_id UUID REFERENCES public.organizations(id) ON DELETE CASCADE;
+ALTER TABLE public.email_messages ADD COLUMN IF NOT EXISTS cc_emails TEXT[] NOT NULL DEFAULT '{}';
+ALTER TABLE public.email_messages ADD COLUMN IF NOT EXISTS deal_title TEXT;
+ALTER TABLE public.email_messages ADD COLUMN IF NOT EXISTS read_at TIMESTAMPTZ;
+
+CREATE INDEX IF NOT EXISTS idx_email_messages_org ON public.email_messages(organization_id) WHERE organization_id IS NOT NULL;
 CREATE INDEX IF NOT EXISTS idx_email_messages_thread ON public.email_messages(thread_id);
-CREATE INDEX IF NOT EXISTS idx_email_messages_sent ON public.email_messages(organization_id, sent_at DESC);
+CREATE INDEX IF NOT EXISTS idx_email_messages_sent ON public.email_messages(sent_at DESC);
 
 ALTER TABLE public.email_messages ENABLE ROW LEVEL SECURITY;
 

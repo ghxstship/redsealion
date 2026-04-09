@@ -17,7 +17,8 @@ async function getApprovals() {
       .select('id, advance_number, event_name, status, priority, total_cents, created_at')
       .eq('organization_id', ctx.organizationId)
       .in('status', ['submitted', 'under_review', 'approved', 'rejected'])
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .range(0, 99);
 
     return (data ?? []) as Array<{
       id: string; advance_number: string; event_name: string | null;
@@ -78,7 +79,7 @@ export default async function AdvancingApprovalsPage() {
                     </td>
                     <td className="px-4 py-3 text-text-secondary">{item.event_name ?? '—'}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${item.priority === 'urgent' ? 'bg-red-50 text-red-700' : item.priority === 'high' ? 'bg-orange-50 text-orange-700' : 'bg-bg-secondary text-text-secondary'}`}>
+                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${item.priority === 'critical' ? 'bg-red-50 text-red-700' : item.priority === 'high' ? 'bg-orange-50 text-orange-700' : 'bg-bg-secondary text-text-secondary'}`}>
                         {item.priority}
                       </span>
                     </td>

@@ -55,6 +55,8 @@ const RESOURCE_LABELS: Record<PermissionResource, string> = {
   ai_drafting: 'AI Drafting',
   email_campaigns: 'Email Campaigns',
   referral_program: 'Referral Program',
+  purchase_orders: 'Purchase Orders',
+  vendors: 'Vendors',
 };
 
 const ROLE_LABELS: Record<string, string> = {

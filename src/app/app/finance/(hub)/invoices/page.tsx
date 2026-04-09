@@ -6,6 +6,7 @@ import Button from '@/components/ui/Button';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { Plus } from 'lucide-react';
 import FinanceHubTabs from '../../FinanceHubTabs';
+import InvoiceSubNav from '@/components/admin/invoices/InvoiceSubNav';
 import PageHeader from '@/components/shared/PageHeader';
 
 interface InvoiceRow {
@@ -25,15 +26,12 @@ async function getInvoices(): Promise<InvoiceRow[]> {
     const supabase = await createClient();
     const ctx = await resolveCurrentOrg();
     if (!ctx) throw new Error('No auth');
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
 
-    if (!user) return [];
-const { data: invoices } = await supabase
+    const { data: invoices } = await supabase
       .from('invoices')
       .select('*, clients(company_name)')
       .eq('organization_id', ctx.organizationId)
+      .is('deleted_at', null)
       .order('issue_date', { ascending: false });
 
     if (!invoices) return [];
@@ -54,15 +52,14 @@ const { data: invoices } = await supabase
   }
 }
 
-export default async function InvoicesPage() {
+export default async function FinanceInvoicesPage() {
   const invoices = await getInvoices();
 
   return (
     <>
-<PageHeader
+      <PageHeader
         title="Invoices"
-        subtitle={`{invoices.length} invoices ·{' '}
-            {formatCurrency(invoices.reduce((s, i) => s + i.total, 0))} total`}
+        subtitle={`${invoices.length} invoices · ${formatCurrency(invoices.reduce((s, i) => s + i.total, 0))} total`}
       >
         <Button href="/app/invoices/new">
           <Plus className="h-4 w-4" />
@@ -71,6 +68,8 @@ export default async function InvoicesPage() {
       </PageHeader>
 
       <FinanceHubTabs />
+
+      <InvoiceSubNav basePath="/app/finance/invoices" className="mb-6" />
 
       <TierGate feature="invoices">
         <InvoiceTabs invoices={invoices} />

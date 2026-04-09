@@ -77,7 +77,14 @@ export async function GET(
       }
     };
 
-    return NextResponse.json(payload);
+    return NextResponse.json(payload, {
+      headers: {
+        'Cache-Control': 'public, max-age=300, s-maxage=600, stale-while-revalidate=1200',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
+    });
   } catch (error) {
     log.error('Error fetching portal', { project_slug: (await context.params).project_slug }, error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

@@ -19,7 +19,7 @@ interface BookingModalProps {
   onCreated: () => void;
 }
 
-const RATE_TYPE_OPTIONS = ['hourly', 'daily', 'flat', 'overtime'] as const;
+const RATE_TYPE_OPTIONS = ['hourly', 'day', 'overtime', 'per_diem', 'travel', 'flat'] as const;
 
 export default function BookingModal({ userId, userName, onClose, onCreated }: BookingModalProps) {
   const [proposals, setProposals] = useState<Proposal[]>([]);

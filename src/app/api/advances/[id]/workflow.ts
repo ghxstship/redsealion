@@ -66,6 +66,61 @@ export async function transitionAdvanceStatus(
     return NextResponse.json({ error: 'Failed to update status', details: error.message }, { status: 500 });
   }
 
+  // H-05: Dispatch in-app notifications (fire-and-forget)
+  try {
+    const d = data as Record<string, unknown>;
+    const STATUS_LABELS: Record<string, string> = {
+      submitted: 'submitted for review',
+      approved: 'approved',
+      rejected: 'rejected',
+      changes_requested: 'sent back for changes',
+      on_hold: 'placed on hold',
+      partially_fulfilled: 'partially fulfilled',
+      fulfilled: 'marked as fulfilled',
+      completed: 'completed',
+      cancelled: 'cancelled',
+    };
+    const label = STATUS_LABELS[targetStatus] ?? targetStatus.replace(/_/g, ' ');
+    const title = `Advance ${d.advance_number} ${label}`;
+
+    // Notify the advance creator (if not the actor)
+    const recipients: string[] = [];
+    if (d.created_by && d.created_by !== ctx.userId) {
+      recipients.push(d.created_by as string);
+    }
+
+    // Notify active collaborators
+    const { data: collabs } = await ctx.supabase
+      .from('advance_collaborators')
+      .select('user_id')
+      .eq('advance_id', advanceId)
+      .eq('invite_status', 'accepted');
+
+    if (collabs) {
+      for (const c of collabs as Array<{ user_id: string | null }>) {
+        if (c.user_id && c.user_id !== ctx.userId && !recipients.includes(c.user_id)) {
+          recipients.push(c.user_id);
+        }
+      }
+    }
+
+    if (recipients.length > 0) {
+      const notifications = recipients.map((uid) => ({
+        organization_id: ctx.organizationId,
+        user_id: uid,
+        type: 'advance_status_change',
+        title,
+        body: `${d.event_name ?? 'Advance'} has been ${label}.${options?.reason ? ` Reason: ${options.reason}` : ''}`,
+        entity_type: 'advance',
+        entity_id: advanceId,
+        is_read: false,
+      }));
+      await ctx.supabase.from('notifications').insert(notifications);
+    }
+  } catch {
+    // Notification failures must not block the workflow
+  }
+
   return NextResponse.json({ data });
 }
 

@@ -158,7 +158,7 @@ export default async function InvoiceDetailPage({
       <PageHeader
 
 
-        title="{invoice.invoice_number}"
+        title={invoice.invoice_number}
 
 
         subtitle={`${invoice.client_name} · ${formatStatus(invoice.type)}`}

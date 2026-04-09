@@ -15,9 +15,10 @@ export async function GET(
 
   const { data: activation, error } = await supabase
     .from('activations')
-    .select()
+    .select('*, events(id, name), locations(id, name, type)')
     .eq('id', id)
     .eq('organization_id', perm.organizationId)
+    .is('deleted_at', null)
     .single();
 
   if (error || !activation) return NextResponse.json({ error: 'Activation not found' }, { status: 404 });
@@ -37,7 +38,7 @@ export async function PATCH(
   const body = await request.json().catch(() => ({}));
   const supabase = await createClient();
 
-  const allowedFields = ['name', 'description', 'status', 'activation_type', 'start_date', 'end_date', 'budget', 'event_id', 'location_id'];
+  const allowedFields = ['name', 'slug', 'type', 'status', 'starts_at', 'ends_at', 'budget_cents', 'notes', 'location_id'];
   const updates: Record<string, unknown> = {};
   for (const f of allowedFields) {
     if (f in body) updates[f] = body[f];
@@ -68,7 +69,11 @@ export async function DELETE(
   const { id } = await params;
   const supabase = await createClient();
 
-  const { error } = await supabase.from('activations').delete().eq('id', id).eq('organization_id', perm.organizationId);
+  const { error } = await supabase
+    .from('activations')
+    .update({ deleted_at: new Date().toISOString() })
+    .eq('id', id)
+    .eq('organization_id', perm.organizationId);
   if (error) return NextResponse.json({ error: 'Failed to delete activation', details: error.message }, { status: 500 });
 
   return NextResponse.json({ success: true });

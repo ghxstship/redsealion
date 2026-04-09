@@ -27,12 +27,13 @@ export async function POST(request: NextRequest) {
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
   const body = await request.json().catch(() => ({}));
-  const { category, amount, description, expense_date, proposal_id } = body as {
+  const { category, amount, description, expense_date, proposal_id, is_billable } = body as {
     category?: string;
     amount?: number;
     description?: string;
     expense_date?: string;
     proposal_id?: string;
+    is_billable?: boolean;
   };
 
   if (!category || amount == null || amount <= 0) {
@@ -51,6 +52,7 @@ export async function POST(request: NextRequest) {
       description: description ?? null,
       expense_date: expense_date ?? new Date().toISOString().split('T')[0],
       proposal_id: proposal_id ?? null,
+      is_billable: is_billable ?? false,
       status: 'pending',
     })
     .select()

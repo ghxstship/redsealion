@@ -15,6 +15,7 @@ export async function GET(request: NextRequest) {
     .from('work_orders')
     .select('*, work_order_assignments(*, crew_profiles(id, full_name))')
     .eq('organization_id', perm.organizationId)
+    .is('deleted_at', null)
     .order('created_at', { ascending: false });
 
   if (status) query = query.eq('status', status);

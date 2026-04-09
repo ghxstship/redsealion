@@ -15,7 +15,7 @@ import type { AdvanceStatus, AdvanceMode, AdvanceType, AdvancePriority, Fulfillm
 export const INTERNAL_TRANSITIONS: Record<AdvanceStatus, AdvanceStatus[]> = {
   draft: ['submitted', 'cancelled'],
   open_for_submissions: [], // Not used in internal mode
-  submitted: ['under_review', 'cancelled'],
+  submitted: ['under_review', 'approved', 'changes_requested', 'rejected', 'cancelled'],
   under_review: ['approved', 'changes_requested', 'rejected', 'on_hold'],
   changes_requested: ['submitted'],
   approved: ['partially_fulfilled', 'fulfilled', 'cancelled'],

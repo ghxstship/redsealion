@@ -48,6 +48,14 @@ export async function GET(request: Request) {
       });
     }
 
+    // Auto-update status to 'overdue' for invoices that are past due
+    const invoiceIds = invoices.map((inv) => inv.id);
+    await supabase
+      .from('invoices')
+      .update({ status: 'overdue', overdue_at: new Date().toISOString() })
+      .in('id', invoiceIds)
+      .eq('status', 'sent'); // only update 'sent' → 'overdue', leave partially_paid alone
+
     // Send reminders in parallel (fire-and-forget per invoice)
     const results = await Promise.allSettled(
       invoices.map((inv) => {

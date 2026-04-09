@@ -49,7 +49,7 @@ export function formatCents(cents: number, currency: string = 'USD'): string {
 }
 
 export function formatAdvanceNumber(advanceNumber: string): string {
-  return advanceNumber;
+  return advanceNumber.toUpperCase();
 }
 
 const UOM_LABELS: Record<UnitOfMeasure, string> = {

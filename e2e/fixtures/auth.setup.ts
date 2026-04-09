@@ -8,9 +8,23 @@
 import { chromium } from '@playwright/test';
 import { seedTestData, ROLE_EMAILS, TEST_PASSWORD, ROLE_LIST } from '../helpers/seed';
 import path from 'path';
+import fs from 'fs';
 
 const BASE_URL = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3001';
 const MAX_AUTH_RETRIES = 2;
+const AUTH_FILE_MAX_AGE_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+function hasValidAuthFile(role: string): boolean {
+  const authFile = path.join(__dirname, '..', '.auth', `${role}.json`);
+  try {
+    const stat = fs.statSync(authFile);
+    const age = Date.now() - stat.mtimeMs;
+    if (age < AUTH_FILE_MAX_AGE_MS && stat.size > 100) {
+      return true;
+    }
+  } catch { /* file doesn't exist */ }
+  return false;
+}
 
 async function globalSetup() {
   console.log('[E2E Setup] Seeding test data...');
@@ -21,6 +35,12 @@ async function globalSetup() {
   const browser = await chromium.launch();
 
   for (const role of ROLE_LIST) {
+    // Skip roles that already have a valid (recent) auth file
+    if (hasValidAuthFile(role)) {
+      console.log(`  ✓ ${role} auth file fresh — skipping login`);
+      continue;
+    }
+
     const email = ROLE_EMAILS[role];
     let authenticated = false;
 

@@ -217,27 +217,31 @@ export const PAYMENT_LINK_COLUMNS = [
 // ─── Crew ──────────────────────────────────────────────────────────────────
 
 export const CREW_MEMBER_COLUMNS = [
-  'id', 'organization_id', 'user_id', 'role', 'department',
+  'id', 'organization_id', 'user_id', 'full_name', 'bio', 'phone',
   'hourly_rate', 'day_rate', 'overtime_rate', 'certifications',
-  'skills', 'emergency_contact', 'status',
+  'skills', 'availability_default', 'availability_status',
+  'onboarding_status', 'emergency_contact_name', 'emergency_contact_phone',
+  'avg_rating', 'total_ratings', 'documents_total', 'documents_completed',
   'created_at', 'updated_at',
 ].join(', ');
 
 export const CREW_BOOKING_COLUMNS = [
-  'id', 'organization_id', 'crew_member_id', 'proposal_id',
-  'start_date', 'end_date', 'role', 'status', 'notes',
-  'rate', 'rate_type', 'created_at', 'updated_at',
+  'id', 'organization_id', 'crew_profile_id', 'user_id', 'proposal_id',
+  'venue_id', 'project_name', 'venue_name', 'shift_start', 'shift_end',
+  'role', 'status', 'rate', 'rate_type', 'responded_at', 'notes',
+  'deleted_at', 'created_at', 'updated_at',
 ].join(', ');
 
 export const CREW_AVAILABILITY_COLUMNS = [
-  'id', 'crew_member_id', 'organization_id',
-  'start_date', 'end_date', 'status', 'notes',
+  'id', 'crew_profile_id', 'user_id', 'organization_id',
+  'date', 'status', 'notes',
   'created_at', 'updated_at',
 ].join(', ');
 
 export const CREW_DOCUMENT_COLUMNS = [
-  'id', 'crew_member_id', 'organization_id',
-  'name', 'type', 'url', 'expires_at', 'status',
+  'id', 'crew_profile_id', 'organization_id',
+  'document_name', 'document_type', 'file_url', 'expiry_date', 'status',
+  'verified_by', 'verified_at', 'notes',
   'created_at', 'updated_at',
 ].join(', ');
 

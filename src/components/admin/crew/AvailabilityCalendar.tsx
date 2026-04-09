@@ -58,7 +58,7 @@ export default function AvailabilityCalendar({
       await fetch(`/api/crew/${userId}/availability`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ date: dateStr, status: nextStatus }),
+        body: JSON.stringify({ entries: [{ date: dateStr, status: nextStatus }] }),
       });
     } catch (error) {
         void error; /* Caught: error boundary handles display */

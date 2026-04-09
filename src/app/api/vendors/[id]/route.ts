@@ -6,7 +6,7 @@ export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const perm = await checkPermission('settings', 'view');
+  const perm = await checkPermission('vendors', 'view');
   if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
@@ -18,6 +18,7 @@ export async function GET(
     .select('*')
     .eq('id', id)
     .eq('organization_id', perm.organizationId)
+    .is('deleted_at', null)
     .single();
 
   if (error || !data) {
@@ -31,7 +32,7 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const perm = await checkPermission('settings', 'edit');
+  const perm = await checkPermission('vendors', 'edit');
   if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
@@ -73,7 +74,7 @@ export async function DELETE(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const perm = await checkPermission('settings', 'delete');
+  const perm = await checkPermission('vendors', 'delete');
   if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
@@ -82,7 +83,7 @@ export async function DELETE(
 
   const { error } = await supabase
     .from('vendors')
-    .delete()
+    .update({ deleted_at: new Date().toISOString() })
     .eq('id', id)
     .eq('organization_id', perm.organizationId);
 

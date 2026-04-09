@@ -22,7 +22,8 @@ export type PermissionResource =
   | 'ai_assistant' | 'crew' | 'equipment' | 'leads' | 'warehouse'
   | 'advances' | 'activations' | 'events' | 'locations'
   | 'work_orders' | 'resources' | 'resource_scheduling'
-  | 'ai_drafting' | 'email_campaigns' | 'referral_program';
+  | 'ai_drafting' | 'email_campaigns' | 'referral_program'
+  | 'purchase_orders' | 'vendors';
 
 export const ALL_RESOURCES: PermissionResource[] = [
   'proposals', 'pipeline', 'clients', 'invoices', 'budgets',
@@ -32,6 +33,7 @@ export const ALL_RESOURCES: PermissionResource[] = [
   'advances', 'activations', 'events', 'locations',
   'work_orders', 'resources', 'resource_scheduling',
   'ai_drafting', 'email_campaigns', 'referral_program',
+  'purchase_orders', 'vendors',
 ];
 
 export type PermissionAction = 'view' | 'create' | 'edit' | 'delete';

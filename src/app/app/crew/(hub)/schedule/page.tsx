@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
-import CrewHubTabs from '../../CrewHubTabs';
+
 
 interface ScheduleEntry {
   id: string;
@@ -30,21 +30,26 @@ async function getSchedule(): Promise<ScheduleEntry[]> {
       .from('crew_bookings')
       .select('*, crew_profiles(full_name)')
       .eq('organization_id', ctx.organizationId)
-      .gte('date', new Date().toISOString().split('T')[0])
-      .order('date', { ascending: true });
+      .is('deleted_at', null)
+      .gte('shift_start', new Date().toISOString())
+      .order('shift_start', { ascending: true });
 
     if (!bookings || bookings.length === 0) throw new Error('No bookings');
 
-    return bookings.map((b: Record<string, unknown>) => ({
-      id: b.id as string,
-      crew_name: (b.crew_profiles as Record<string, string>)?.full_name ?? 'Unknown',
-      project_name: b.project_name as string,
-      venue: b.venue as string,
-      date: b.date as string,
-      start_time: b.start_time as string,
-      end_time: b.end_time as string,
-      status: b.status as string,
-    }));
+    return bookings.map((b: Record<string, unknown>) => {
+      const shiftStart = b.shift_start ? new Date(b.shift_start as string) : null;
+      const shiftEnd = b.shift_end ? new Date(b.shift_end as string) : null;
+      return {
+        id: b.id as string,
+        crew_name: (b.crew_profiles as Record<string, string>)?.full_name ?? 'Unknown',
+        project_name: (b.project_name as string) ?? 'Untitled',
+        venue: (b.venue_name as string) ?? '—',
+        date: shiftStart ? shiftStart.toISOString().split('T')[0] : '',
+        start_time: shiftStart ? shiftStart.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : '',
+        end_time: shiftEnd ? shiftEnd.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : '',
+        status: b.status as string,
+      };
+    });
   } catch {
     return [];
   }
@@ -82,7 +87,6 @@ export default async function CrewSchedulePage() {
         subtitle={`${schedule.length} upcoming bookings`}
       />
 
-      <CrewHubTabs />
 
       {/* Schedule table */}
       <div className="rounded-xl border border-border bg-background overflow-hidden overflow-x-auto">

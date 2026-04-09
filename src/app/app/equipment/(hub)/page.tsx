@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import { TierGate } from '@/components/shared/TierGate';
 import EquipmentTable from '@/components/admin/equipment/EquipmentTable';
 import EquipmentHeader from '@/components/admin/equipment/EquipmentHeader';
 import PageHeader from '@/components/shared/PageHeader';
@@ -59,7 +60,7 @@ export default async function EquipmentPage() {
   );
 
   return (
-    <>
+    <TierGate feature="equipment">
       {/* Header */}
       <PageHeader
         title="Equipment"
@@ -72,7 +73,7 @@ export default async function EquipmentPage() {
 
       {/* Status summary cards */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">
-        {(['planned', 'deployed', 'in_storage', 'retired'] as const).map((status) => (
+        {(['available', 'deployed', 'maintenance', 'disposed'] as const).map((status) => (
           <Card key={status} padding="sm">
             <p className="text-xs text-text-muted">{formatLabel(status)}</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{statusCounts[status] ?? 0}</p>
@@ -82,6 +83,6 @@ export default async function EquipmentPage() {
 
 
       <EquipmentTable equipment={equipment} />
-    </>
+    </TierGate>
   );
 }

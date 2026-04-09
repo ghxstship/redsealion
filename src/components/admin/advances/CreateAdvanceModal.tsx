@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Button from '@/components/ui/Button';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
@@ -31,6 +31,21 @@ export default function CreateAdvanceModal({ open, onClose, onCreated }: CreateA
   const [strikeDate, setStrikeDate] = useState('');
   const [submissionDeadline, setSubmissionDeadline] = useState('');
   const [instructions, setInstructions] = useState('');
+  const [projectId, setProjectId] = useState('');
+  const [projects, setProjects] = useState<Array<{ id: string; name: string }>>([]);
+  const [contactName, setContactName] = useState('');
+  const [contactEmail, setContactEmail] = useState('');
+  const [contactPhone, setContactPhone] = useState('');
+  const [companyName, setCompanyName] = useState('');
+
+  useEffect(() => {
+    if (open) {
+      fetch('/api/projects?limit=100')
+        .then((r) => r.json())
+        .then((r) => setProjects(r.data ?? []))
+        .catch(() => {});
+    }
+  }, [open]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -46,6 +61,11 @@ export default function CreateAdvanceModal({ open, onClose, onCreated }: CreateA
           event_name: eventName || undefined,
           venue_name: venueName || undefined,
           purpose: purpose || undefined,
+          project_id: projectId || undefined,
+          contact_name: contactName || undefined,
+          contact_email: contactEmail || undefined,
+          contact_phone: contactPhone || undefined,
+          company_name: companyName || undefined,
           service_start_date: serviceStart || undefined,
           service_end_date: serviceEnd || undefined,
           load_in_date: loadIn || undefined,
@@ -108,6 +128,15 @@ export default function CreateAdvanceModal({ open, onClose, onCreated }: CreateA
             <FormLabel htmlFor="purpose">Purpose / Description</FormLabel>
             <FormTextarea id="purpose" value={purpose} onChange={(e) => setPurpose(e.target.value)} placeholder="Brief description of what this advance covers..." rows={3} />
           </div>
+          <div>
+            <FormLabel htmlFor="project">Project</FormLabel>
+            <FormSelect id="project" value={projectId} onChange={(e) => setProjectId(e.target.value)}>
+              <option value="">No project</option>
+              {projects.map((p) => (
+                <option key={p.id} value={p.id}>{p.name}</option>
+              ))}
+            </FormSelect>
+          </div>
         </div>
 
         {/* Dates */}
@@ -140,6 +169,26 @@ export default function CreateAdvanceModal({ open, onClose, onCreated }: CreateA
             <div>
               <FormLabel htmlFor="instructions">Submission Instructions</FormLabel>
               <FormTextarea id="instructions" value={instructions} onChange={(e) => setInstructions(e.target.value)} placeholder="Instructions for collaborators..." rows={3} />
+            </div>
+
+            {/* M-08: Contact information */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <FormLabel htmlFor="contact-name">Contact Name</FormLabel>
+                <FormInput id="contact-name" value={contactName} onChange={(e) => setContactName(e.target.value)} placeholder="Primary contact" />
+              </div>
+              <div>
+                <FormLabel htmlFor="contact-email">Contact Email</FormLabel>
+                <FormInput id="contact-email" type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} placeholder="email@example.com" />
+              </div>
+              <div>
+                <FormLabel htmlFor="contact-phone">Contact Phone</FormLabel>
+                <FormInput id="contact-phone" type="tel" value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} placeholder="+1 555-0100" />
+              </div>
+              <div>
+                <FormLabel htmlFor="company-name">Company</FormLabel>
+                <FormInput id="company-name" value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="Organization or vendor" />
+              </div>
             </div>
           </div>
         )}

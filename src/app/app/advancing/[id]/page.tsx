@@ -20,6 +20,7 @@ async function getAdvanceDetail(id: string) {
     .from('advance_line_items')
     .select('*')
     .eq('advance_id', id)
+    .is('deleted_at', null)
     .order('sort_order', { ascending: true });
 
   const { data: statusHistory } = await supabase
@@ -40,6 +41,7 @@ async function getAdvanceDetail(id: string) {
       .from('advance_collaborators')
       .select('*, users(full_name, email), organizations(name)')
       .eq('advance_id', id)
+      .is('deleted_at', null)
       .order('invited_at', { ascending: true });
     collaborators = data;
   }

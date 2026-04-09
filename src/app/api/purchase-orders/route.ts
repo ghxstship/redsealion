@@ -2,12 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { requireFeature } from '@/lib/api/tier-guard';
+import { logAuditAction } from '@/lib/api/audit-logger';
 
 export async function GET(request: NextRequest) {
   const tierError = await requireFeature('profitability');
   if (tierError) return tierError;
 
-  const perm = await checkPermission('tasks', 'view');
+  const perm = await checkPermission('purchase_orders', 'view');
   if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
@@ -19,6 +20,7 @@ export async function GET(request: NextRequest) {
     .from('purchase_orders')
     .select('*')
     .eq('organization_id', perm.organizationId)
+    .is('deleted_at', null)
     .order('created_at', { ascending: false });
 
   if (status) {
@@ -38,7 +40,7 @@ export async function POST(request: NextRequest) {
   const tierError = await requireFeature('profitability');
   if (tierError) return tierError;
 
-  const perm = await checkPermission('tasks', 'create');
+  const perm = await checkPermission('purchase_orders', 'create');
   if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
@@ -86,6 +88,7 @@ export async function POST(request: NextRequest) {
       proposal_id: proposal_id || null,
       issued_date: null,
       due_date: due_date || null,
+      created_by: perm.userId,
     })
     .select()
     .single();
@@ -93,6 +96,14 @@ export async function POST(request: NextRequest) {
   if (insertError || !data) {
     return NextResponse.json({ error: 'Failed to create purchase order.', details: insertError?.message }, { status: 500 });
   }
+
+  logAuditAction({
+    orgId: perm.organizationId,
+    action: 'purchase_order.created',
+    entity: 'purchase_order',
+    entityId: data.id,
+    metadata: { po_number: data.po_number, total_amount, vendor_name },
+  }).catch(() => {});
 
   return NextResponse.json({ purchase_order: data });
 }

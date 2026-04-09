@@ -16,8 +16,9 @@ async function getFulfillment() {
       .from('production_advances')
       .select('id, advance_number, event_name, status, total_cents, service_start_date, service_end_date')
       .eq('organization_id', ctx.organizationId)
-      .in('status', ['in_progress', 'fulfilled', 'completed', 'closed'])
-      .order('service_end_date', { ascending: true });
+      .in('status', ['approved', 'partially_fulfilled', 'fulfilled', 'completed'])
+      .order('service_end_date', { ascending: true })
+      .range(0, 99);
 
     return (data ?? []) as Array<{
       id: string; advance_number: string; event_name: string | null;
@@ -29,7 +30,7 @@ async function getFulfillment() {
 export default async function AdvancingFulfillmentPage() {
   const items = await getFulfillment();
 
-  const inProgress = items.filter((i) => i.status === 'in_progress');
+  const inProgress = items.filter((i) => i.status === 'approved' || i.status === 'partially_fulfilled');
   const fulfilled = items.filter((i) => i.status === 'fulfilled' || i.status === 'completed');
 
   return (
@@ -79,7 +80,7 @@ export default async function AdvancingFulfillmentPage() {
                     <td className="px-4 py-3 text-text-secondary">{item.service_start_date ? new Date(item.service_start_date).toLocaleDateString() : '—'}</td>
                     <td className="px-4 py-3 text-text-secondary">{item.service_end_date ? new Date(item.service_end_date).toLocaleDateString() : '—'}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${item.status === 'fulfilled' || item.status === 'completed' ? 'bg-green-50 text-green-700' : 'bg-blue-50 text-blue-700'}`}>
+                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${item.status === 'fulfilled' || item.status === 'completed' ? 'bg-green-50 text-green-700' : item.status === 'partially_fulfilled' ? 'bg-amber-50 text-amber-700' : 'bg-blue-50 text-blue-700'}`}>
                         {item.status.replace('_', ' ')}
                       </span>
                     </td>

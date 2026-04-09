@@ -14,7 +14,7 @@ export async function PATCH(
   const tierError = await requireFeature('profitability');
   if (tierError) return tierError;
 
-  const perm = await checkPermission('tasks', 'edit');
+  const perm = await checkPermission('purchase_orders', 'edit');
   if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
@@ -58,6 +58,22 @@ export async function PATCH(
   if (updateError) {
     return NextResponse.json({ error: 'Failed to update PO status.', details: updateError.message }, { status: 500 });
   }
+
+  // Create goods receipt record for 3-way matching (PO → receipt → invoice)
+  const { count: grCount } = await supabase
+    .from('goods_receipts')
+    .select('*', { count: 'exact', head: true })
+    .eq('organization_id', perm.organizationId);
+  const receiptNumber = `GR-${String((grCount ?? 0) + 1).padStart(4, '0')}`;
+
+  await supabase.from('goods_receipts').insert({
+    organization_id: perm.organizationId,
+    purchase_order_id: id,
+    receipt_number: receiptNumber,
+    received_by: perm.userId,
+    received_date: new Date().toISOString(),
+    notes: `Auto-created from PO ${po.po_number} receive`,
+  });
 
   let createdAssets: { id: string; name: string }[] = [];
 

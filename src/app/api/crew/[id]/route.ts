@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
+import { logAudit } from '@/lib/audit';
+import { dispatchWebhook } from '@/lib/webhooks/dispatch';
 
 export async function GET(
   _request: NextRequest,
@@ -38,9 +40,11 @@ export async function PATCH(
   const supabase = await createClient();
 
   const allowedFields = [
-    'skills', 'certifications', 'hourly_rate', 'day_rate', 'ot_rate',
-    'per_diem_rate', 'travel_rate', 'availability_default',
+    'full_name', 'bio', 'phone', 'skills', 'certifications',
+    'hourly_rate', 'day_rate', 'ot_rate',
+    'per_diem_rate', 'travel_rate', 'availability_default', 'availability_status',
     'emergency_contact_name', 'emergency_contact_phone', 'notes', 'status',
+    'onboarding_status',
   ];
   const updates: Record<string, unknown> = {};
   for (const f of allowedFields) {
@@ -58,6 +62,9 @@ export async function PATCH(
 
   if (error || !profile) return NextResponse.json({ error: 'Failed to update', details: error?.message }, { status: 500 });
 
+  await logAudit({ action: 'crew.profile.updated', entityType: 'crew_profile', entityId: id, metadata: updates }, supabase);
+  await dispatchWebhook('crew.updated', profile, perm.organizationId, supabase).catch(() => {});
+
   return NextResponse.json({ success: true, profile });
 }
 
@@ -74,6 +81,9 @@ export async function DELETE(
 
   const { error } = await supabase.from('crew_profiles').delete().eq('id', id).eq('organization_id', perm.organizationId);
   if (error) return NextResponse.json({ error: 'Failed to delete', details: error.message }, { status: 500 });
+
+  await logAudit({ action: 'crew.profile.deleted', entityType: 'crew_profile', entityId: id }, supabase);
+  await dispatchWebhook('crew.deleted', { id }, perm.organizationId, supabase).catch(() => {});
 
   return NextResponse.json({ success: true });
 }

@@ -96,3 +96,39 @@ export function extractRequestMeta(request: Request): {
     userAgent: request.headers.get('user-agent') ?? null,
   };
 }
+
+/**
+ * Simplified audit helper for use in API routes that already have a client.
+ * Fire-and-forget — failures are silently swallowed.
+ */
+export async function logAudit(
+  params: {
+    action: string;
+    entityType: string;
+    entityId: string;
+    metadata?: Record<string, unknown>;
+  },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  supabase?: any,
+): Promise<void> {
+  try {
+    const client = supabase ?? (await createClient());
+    const { data: userData } = await client.auth.getUser();
+    const userId = userData?.user?.id ?? null;
+    const { data: user } = userId
+      ? await client.from('users').select('organization_id').eq('id', userId).single()
+      : { data: null };
+    const orgId = user?.organization_id ?? null;
+
+    await client.from('audit_log').insert({
+      organization_id: orgId,
+      user_id: userId,
+      action: params.action,
+      entity_type: params.entityType,
+      entity_id: params.entityId,
+      metadata: params.metadata ?? null,
+    });
+  } catch {
+    // Audit logging must never block the operation
+  }
+}

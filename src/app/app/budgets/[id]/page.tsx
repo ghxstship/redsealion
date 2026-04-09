@@ -74,7 +74,7 @@ export default async function BudgetDetailPage(props: { params: Promise<{ id: st
   return (
     <TierGate feature="budgets">
 <PageHeader
-        title="{budget.projectName}"
+        title={budget.projectName}
         subtitle="Budget tracking and burn-down analysis."
       />
 

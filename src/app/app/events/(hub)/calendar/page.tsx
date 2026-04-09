@@ -12,13 +12,14 @@ const PERSIST_KEY = 'flytedeck:view:calendar';
 interface CalendarEvent {
   id: string;
   title: string;
-  type: 'proposal' | 'venue_activation' | 'crew_booking' | 'task';
+  type: 'proposal' | 'venue_activation' | 'crew_booking' | 'task' | 'event';
   date: string;
   end_date?: string;
   href?: string;
 }
 
 const EVENT_COLORS: Record<string, string> = {
+  event: 'bg-rose-100 text-rose-800 border-rose-200',
   proposal: 'bg-blue-100 text-blue-800 border-blue-200',
   venue_activation: 'bg-purple-100 text-purple-800 border-purple-200',
   crew_booking: 'bg-green-100 text-green-800 border-green-200',
@@ -26,6 +27,7 @@ const EVENT_COLORS: Record<string, string> = {
 };
 
 const EVENT_LABELS: Record<string, string> = {
+  event: 'Event',
   proposal: 'Proposal',
   venue_activation: 'Activation',
   crew_booking: 'Crew',
@@ -114,7 +116,25 @@ export default function CalendarPage() {
             href: `/app/tasks/${t.id}`,
           }));
 
-        setEvents([...proposalEvents, ...crewEvents, ...taskEvents]);
+        // Fetch actual events from the events table
+        const { data: eventRows } = await supabase
+          .from('events')
+          .select('id, name, starts_at, ends_at')
+          .eq('organization_id', orgId)
+          .is('deleted_at', null)
+          .not('starts_at', 'is', null);
+
+        const eventEntries: CalendarEvent[] = (eventRows ?? [])
+          .filter((e: Record<string, unknown>) => e.starts_at)
+          .map((e: Record<string, unknown>) => ({
+            id: e.id as string,
+            title: e.name as string,
+            type: 'event' as const,
+            date: (e.starts_at as string).slice(0, 10),
+            end_date: e.ends_at ? (e.ends_at as string).slice(0, 10) : undefined,
+          }));
+
+        setEvents([...eventEntries, ...proposalEvents, ...crewEvents, ...taskEvents]);
       } catch {
         // Silently fail — calendar shows empty
       }
@@ -327,6 +347,10 @@ export default function CalendarPage() {
 
       {/* Legend */}
       <div className="mt-4 flex flex-wrap gap-4 text-xs text-text-secondary">
+        <div className="flex items-center gap-1.5">
+          <span className="inline-block h-3 w-3 rounded border border-rose-200 bg-rose-100" />
+          Events
+        </div>
         <div className="flex items-center gap-1.5">
           <span className="inline-block h-3 w-3 rounded border border-blue-200 bg-blue-100" />
           Proposals

@@ -2,7 +2,7 @@
 
 import { Check } from 'lucide-react';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Button from '@/components/ui/Button';
 import { useRouter } from 'next/navigation';
 import Alert from '@/components/ui/Alert';
@@ -22,6 +22,16 @@ export default function ExpenseForm() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [proposalId, setProposalId] = useState('');
+  const [isBillable, setIsBillable] = useState(false);
+  const [proposals, setProposals] = useState<Array<{ id: string; name: string }>>([]);
+
+  useEffect(() => {
+    fetch('/api/proposals?status=active')
+      .then((r) => r.json())
+      .then((d) => setProposals(d.proposals ?? []))
+      .catch(() => {});
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -37,6 +47,8 @@ export default function ExpenseForm() {
           amount: parseFloat(amount),
           description: description || null,
           expense_date: date,
+          proposal_id: proposalId || null,
+          is_billable: isBillable,
         }),
       });
 
@@ -141,6 +153,32 @@ export default function ExpenseForm() {
             rows={3}
             placeholder="Describe the expense..."
           />
+        </div>
+
+        <div>
+          <FormLabel>Project (Optional)</FormLabel>
+          <FormSelect
+            value={proposalId}
+            onChange={(e) => setProposalId(e.target.value)}
+          >
+            <option value="">No project</option>
+            {proposals.map((p) => (
+              <option key={p.id} value={p.id}>{p.name}</option>
+            ))}
+          </FormSelect>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <input
+            id="is_billable"
+            type="checkbox"
+            checked={isBillable}
+            onChange={(e) => setIsBillable(e.target.checked)}
+            className="h-4 w-4 rounded border-border text-brand-primary focus:ring-brand-primary"
+          />
+          <FormLabel htmlFor="is_billable" className="mb-0 cursor-pointer">
+            Billable to client
+          </FormLabel>
         </div>
       </div>
 

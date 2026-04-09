@@ -17,13 +17,30 @@ export async function POST(request: Request) {
 
   const supabase = await createServiceClient();
   const now = new Date();
+  const todayStr = now.toISOString().split('T')[0];
   const in30Days = new Date(now.getTime() + 30 * 86400000).toISOString().split('T')[0];
 
+  // Auto-expire documents past their expiry date
+  const { data: expired, error: expireError } = await supabase
+    .from('compliance_documents')
+    .update({ status: 'expired' })
+    .lt('expiry_date', todayStr)
+    .not('status', 'in', '("rejected","expired")')
+    .select('id');
+
+  if (expireError) {
+    log.error('Failed to auto-expire compliance documents', {}, expireError);
+  } else {
+    log.info('Auto-expired compliance documents', { count: expired?.length ?? 0 });
+  }
+
+  // Find documents expiring within 30 days
   const { data: expiring, error } = await supabase
     .from('compliance_documents')
-    .select('id, title, type, expiry_date, organization_id, crew_profile_id')
+    .select('id, document_name, document_type, expiry_date, organization_id, crew_profile_id')
     .lte('expiry_date', in30Days)
-    .gte('expiry_date', now.toISOString().split('T')[0])
+    .gte('expiry_date', todayStr)
+    .not('status', 'in', '("rejected","expired")')
     .order('expiry_date', { ascending: true });
 
   if (error) {
@@ -41,13 +58,13 @@ export async function POST(request: Request) {
     await supabase.from('notifications').insert({
       organization_id: doc.organization_id,
       type: 'compliance_expiry',
-      title: `${doc.type} expiring in ${daysLeft} day${daysLeft !== 1 ? 's' : ''}`,
-      body: `${doc.title} expires on ${doc.expiry_date}.`,
+      title: `${doc.document_type} expiring in ${daysLeft} day${daysLeft !== 1 ? 's' : ''}`,
+      body: `${doc.document_name} expires on ${doc.expiry_date}.`,
       metadata: { document_id: doc.id, crew_profile_id: doc.crew_profile_id },
     });
     notified++;
   }
 
-  log.info('Compliance expiry check complete', { expiring: expiring?.length ?? 0, notified });
-  return NextResponse.json({ expiring: expiring?.length ?? 0, notified });
+  log.info('Compliance expiry check complete', { expiring: expiring?.length ?? 0, notified, autoExpired: expired?.length ?? 0 });
+  return NextResponse.json({ expiring: expiring?.length ?? 0, notified, autoExpired: expired?.length ?? 0 });
 }

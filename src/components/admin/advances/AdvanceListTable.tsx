@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useSort } from '@/hooks/useSort';
 import SortableHeader from '@/components/shared/SortableHeader';
 import RowActionMenu from '@/components/shared/RowActionMenu';
@@ -81,14 +82,31 @@ export default function AdvanceListTable({ advances, activeTab, onTabChange }: A
   });
 
   const filtered = useMemo(() => {
-    if (!search) return advances;
-    const q = search.toLowerCase();
-    return advances.filter((a) =>
-      a.advance_number.toLowerCase().includes(q) ||
-      a.event_name?.toLowerCase().includes(q) ||
-      a.venue_name?.toLowerCase().includes(q)
-    );
-  }, [advances, search]);
+    let result = advances;
+
+    // M-04: Tab-based filtering
+    if (activeTab === 'pending_review') {
+      result = result.filter((a) => ['submitted', 'under_review'].includes(a.status));
+    } else if (activeTab === 'approved') {
+      result = result.filter((a) => a.status === 'approved');
+    } else if (activeTab === 'fulfilled') {
+      result = result.filter((a) => ['fulfilled', 'completed'].includes(a.status));
+    } else if (activeTab === 'drafts') {
+      result = result.filter((a) => a.status === 'draft');
+    }
+
+    // Text search
+    if (search) {
+      const q = search.toLowerCase();
+      result = result.filter((a) =>
+        a.advance_number.toLowerCase().includes(q) ||
+        a.event_name?.toLowerCase().includes(q) ||
+        a.venue_name?.toLowerCase().includes(q)
+      );
+    }
+
+    return result;
+  }, [advances, search, activeTab]);
 
   const { sorted, sort, handleSort } = useSort(filtered);
 
@@ -202,6 +220,11 @@ export default function AdvanceListTable({ advances, activeTab, onTabChange }: A
                   <td className="px-4 py-3">
                     <RowActionMenu actions={[
                       { label: 'View', onClick: () => { /* navigation handled by link */ } },
+                      { label: 'Duplicate', onClick: async () => {
+                        const res = await fetch(`/api/advances/${advance.id}/duplicate`, { method: 'POST' });
+                        if (res.ok) { const { data: newAdv } = await res.json(); window.location.href = `/app/advancing/${newAdv.id}`; }
+                      }},
+                      { label: 'Export CSV', onClick: () => window.open(`/api/advances/${advance.id}/export?format=csv`, '_blank') },
                     ]} />
                   </td>
                 </tr>

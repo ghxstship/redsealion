@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
 import PageHeader from '@/components/shared/PageHeader';
-import CrewHubTabs from '../../CrewHubTabs';
+
 import EmptyState from '@/components/ui/EmptyState';
 
 interface CrewAvailability {
@@ -114,7 +114,6 @@ export default function CrewAvailabilityPage() {
         subtitle="View crew availability across the month."
       />
 
-      <CrewHubTabs />
 
       {/* Month navigation */}
       <div className="mb-6 flex items-center justify-between">

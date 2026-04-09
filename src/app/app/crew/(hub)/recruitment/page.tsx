@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
-import CrewHubTabs from '../../CrewHubTabs';
+
 import Card from '@/components/ui/Card';
 import EmptyState from '@/components/ui/EmptyState';
 
@@ -82,7 +82,6 @@ export default async function RecruitmentPage() {
         subtitle={positions.length > 0 ? `${openCount} open positions · ${totalApplicants} total applicants` : 'Manage open positions and track applicants.'}
       />
 
-      <CrewHubTabs />
 
       {/* Summary cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-8">

@@ -155,6 +155,7 @@ export interface CreateAdvanceRequest {
   advance_type: AdvanceType;
   project_id?: string;
   event_name?: string;
+  company_name?: string;
   venue_name?: string;
   venue_address?: Record<string, unknown>;
   priority?: AdvancePriority;

@@ -3,7 +3,7 @@ import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
 
 export async function GET(request: NextRequest) {
-  const perm = await checkPermission('settings', 'view');
+  const perm = await checkPermission('vendors', 'view');
   if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
     .from('vendors')
     .select('*')
     .eq('organization_id', perm.organizationId)
+    .is('deleted_at', null)
     .order('name');
 
   if (status) query = query.eq('status', status);
@@ -30,7 +31,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const perm = await checkPermission('settings', 'create');
+  const perm = await checkPermission('vendors', 'create');
   if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 

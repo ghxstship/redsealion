@@ -9,11 +9,22 @@ async function getMilestones() {
     const supabase = await createClient();
     const ctx = await resolveCurrentOrg();
     if (!ctx) return [];
+
+    // First fetch schedule IDs for this org to prevent cross-org data leakage
+    const { data: schedules } = await supabase
+      .from('production_schedules')
+      .select('id')
+      .eq('organization_id', ctx.organizationId);
+
+    const scheduleIds = (schedules ?? []).map((s: { id: string }) => s.id);
+    if (scheduleIds.length === 0) return [];
+
     const { data } = await supabase
       .from('schedule_milestones')
-      .select('id, title, due_at, completed_at, status, production_schedules(name)')
-      .eq('production_schedules.organization_id', ctx.organizationId)
+      .select('id, title, due_at, completed_at, status, schedule_id, production_schedules(name)')
+      .in('schedule_id', scheduleIds)
       .order('due_at', { ascending: true });
+
     return (data ?? []).map((m: Record<string, unknown>) => ({
       id: m.id as string, title: m.title as string,
       due_at: m.due_at as string, completed_at: m.completed_at as string | null,

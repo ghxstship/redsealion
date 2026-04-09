@@ -8,9 +8,9 @@ import FormTextarea from '@/components/ui/FormTextarea';
 import FormInput from '@/components/ui/FormInput';
 import Button from '@/components/ui/Button';
 import Alert from '@/components/ui/Alert';
+import { PORTFOLIO_CATEGORIES } from '@/components/admin/portfolio/PortfolioGrid';
 
 interface PortfolioFormModalProps { open: boolean; onClose: () => void; onCreated: () => void; }
-const CATEGORIES = ['Brand Activation', 'Concert & Festival', 'Corporate Event', 'Film & TV', 'Immersive Experience', 'Pop-Up', 'Trade Show', 'Other'] as const;
 
 export default function PortfolioFormModal({ open, onClose, onCreated }: PortfolioFormModalProps) {
   const [projectName, setProjectName] = useState('');
@@ -62,7 +62,7 @@ export default function PortfolioFormModal({ open, onClose, onCreated }: Portfol
             <FormLabel>Category</FormLabel>
             <FormSelect required value={category} onChange={(e) => setCategory(e.target.value)}>
               <option value="">Select...</option>
-              {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+              {PORTFOLIO_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
             </FormSelect>
           </div>
           <div>

@@ -5,7 +5,7 @@ import { checkPermission } from '@/lib/api/permission-guard';
 interface RouteContext { params: Promise<{ id: string }> }
 
 export async function GET(_request: NextRequest, context: RouteContext) {
-  const perm = await checkPermission('budgets', 'view');
+  const perm = await checkPermission('purchase_orders', 'view');
   if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
@@ -17,6 +17,7 @@ export async function GET(_request: NextRequest, context: RouteContext) {
     .select()
     .eq('id', id)
     .eq('organization_id', perm.organizationId)
+    .is('deleted_at', null)
     .single();
 
   if (error || !po) return NextResponse.json({ error: 'Purchase order not found' }, { status: 404 });
@@ -24,7 +25,7 @@ export async function GET(_request: NextRequest, context: RouteContext) {
 }
 
 export async function PATCH(request: NextRequest, context: RouteContext) {
-  const perm = await checkPermission('budgets', 'edit');
+  const perm = await checkPermission('purchase_orders', 'edit');
   if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
@@ -55,14 +56,14 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
 }
 
 export async function DELETE(_request: NextRequest, context: RouteContext) {
-  const perm = await checkPermission('budgets', 'delete');
+  const perm = await checkPermission('purchase_orders', 'delete');
   if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
   const { id } = await context.params;
   const supabase = await createClient();
 
-  const { error } = await supabase.from('purchase_orders').delete().eq('id', id).eq('organization_id', perm.organizationId);
+  const { error } = await supabase.from('purchase_orders').update({ deleted_at: new Date().toISOString() }).eq('id', id).eq('organization_id', perm.organizationId);
   if (error) return NextResponse.json({ error: 'Failed to delete PO', details: error.message }, { status: 500 });
 
   return NextResponse.json({ success: true });

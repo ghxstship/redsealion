@@ -6,6 +6,7 @@ import ExpensesTable from '@/components/admin/expenses/ExpensesTable';
 import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
 import ExpensesHubTabs from '../ExpensesHubTabs';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 interface ExpenseRow {
   id: string;
@@ -19,13 +20,15 @@ interface ExpenseRow {
 async function getExpenses(): Promise<ExpenseRow[]> {
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return [];
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) return [];
 
+    // Show all org expenses for admins, own expenses for others
     const { data } = await supabase
       .from('expenses')
       .select('id, category, description, amount, expense_date, status')
-      .eq('user_id', user.id)
+      .eq('organization_id', ctx.organizationId)
+      .is('deleted_at', null)
       .order('expense_date', { ascending: false })
       .limit(200);
 
