@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { handleWebhookEvent } from '@/lib/payments/stripe';
 import { notifyPaymentReceived } from '@/lib/notifications/triggers';
+import { dispatchWebhookEvent } from '@/lib/webhooks/outbound';
 import { createLogger } from '@/lib/logger';
 
 const log = createLogger('payments');
@@ -73,6 +74,14 @@ export async function POST(request: Request) {
         notifyPaymentReceived(invoiceId, amountReceived).catch((err) => {
           log.error('Failed to send payment notification', { invoiceId }, err);
         });
+
+        // Dispatch webhook for paid invoices
+        if (newStatus === 'paid') {
+          const { data: inv } = await supabase.from('invoices').select('organization_id').eq('id', invoiceId).single();
+          if (inv) {
+            dispatchWebhookEvent(inv.organization_id, 'invoice.paid', { invoice_id: invoiceId, amount: newAmountPaid }).catch(() => {});
+          }
+        }
       }
     }
   }

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { getESignProvider } from '@/lib/esign/provider';
+import { notifySignatureRequested } from '@/lib/notifications/triggers';
 
 import { createLogger } from '@/lib/logger';
 
@@ -71,6 +72,9 @@ export async function POST(request: Request) {
         document_type,
       })
       .eq('id', result.requestId);
+
+    // Notify signer asynchronously
+    notifySignatureRequested(result.requestId).catch(() => {});
 
     return NextResponse.json(
       {

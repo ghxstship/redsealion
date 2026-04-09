@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
+import { dispatchWebhookEvent } from '@/lib/webhooks/outbound';
 
 export async function GET(request: NextRequest) {
   const perm = await checkPermission('leads', 'view');
@@ -109,6 +110,9 @@ export async function POST(request: NextRequest) {
       { status: 500 },
     );
   }
+
+  // Dispatch webhook event
+  dispatchWebhookEvent(orgId, 'lead.created', { lead }).catch(() => {});
 
   return NextResponse.json({ success: true, lead });
 }

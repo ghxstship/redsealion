@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
+import { notifyCommentPosted } from '@/lib/notifications/triggers';
 
 export async function GET(
   _request: Request,
@@ -70,6 +71,11 @@ export async function POST(
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  // Notify org admin of new comment
+  if (comment) {
+    notifyCommentPosted(comment.id as string, id, perm.organizationId).catch(() => {});
   }
 
   return NextResponse.json({ data: comment }, { status: 201 });

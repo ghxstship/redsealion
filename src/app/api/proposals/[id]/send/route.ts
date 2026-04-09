@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { sendEmail } from '@/lib/email';
+import { notifyProposalSent } from '@/lib/notifications/triggers';
+import { dispatchWebhookEvent } from '@/lib/webhooks/outbound';
 
 import { createLogger } from '@/lib/logger';
 
@@ -87,6 +89,10 @@ export async function POST(
         `,
       });
     }
+
+    // Fire notification asynchronously
+    notifyProposalSent(id, organizationId).catch(() => {});
+    dispatchWebhookEvent(organizationId, 'proposal.sent', { proposal_id: id }).catch(() => {});
 
     return NextResponse.json({
       success: true,

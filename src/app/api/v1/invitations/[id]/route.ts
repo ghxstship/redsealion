@@ -72,9 +72,19 @@ export async function POST(
         return NextResponse.json({ error: 'Failed to create membership', details: memErr.message }, { status: 500 });
       }
 
-      // Increment seat count
+      // Increment seat count (direct update — no RPC needed)
       const seatKey = invitation.seat_type === 'internal' ? 'internal_seats_used' : 'external_seats_used';
-      await ctx.supabase.rpc('increment_counter', { table_name: 'seat_allocations', column_name: seatKey, row_id: orgId });
+      const { data: currentSeats } = await ctx.supabase
+        .from('seat_allocations')
+        .select(seatKey)
+        .eq('organization_id', orgId)
+        .single();
+      if (currentSeats) {
+        await ctx.supabase
+          .from('seat_allocations')
+          .update({ [seatKey]: ((currentSeats as Record<string, number>)[seatKey] ?? 0) + 1 })
+          .eq('organization_id', orgId);
+      }
     } else if (scopeType === 'team') {
       await ctx.supabase.from('team_memberships').insert({
         user_id: ctx.userId,

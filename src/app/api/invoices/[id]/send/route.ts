@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
 import { sendEmail } from '@/lib/email';
+import { notifyInvoiceSent } from '@/lib/notifications/triggers';
 
 export async function POST(
   _request: Request,
@@ -87,6 +88,9 @@ export async function POST(
       ].join('\n'),
     });
   }
+
+  // Fire notification asynchronously
+  notifyInvoiceSent(id, perm.organizationId).catch(() => {});
 
   return NextResponse.json({ success: true, invoice: updatedInvoice });
 }

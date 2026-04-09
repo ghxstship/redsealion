@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
+import { dispatchWebhookEvent } from '@/lib/webhooks/outbound';
 
 export async function GET(request: NextRequest) {
   const perm = await checkPermission('clients', 'view');
@@ -77,6 +78,9 @@ export async function POST(request: NextRequest) {
     }));
     await supabase.from('client_contacts').insert(contactRows);
   }
+
+  // Dispatch webhook event
+  dispatchWebhookEvent(perm.organizationId, 'client.created', { client }).catch(() => {});
 
   return NextResponse.json({ success: true, client }, { status: 201 });
 }

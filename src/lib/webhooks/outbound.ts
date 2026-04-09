@@ -7,6 +7,7 @@
  */
 
 import { createLogger } from '@/lib/logger';
+import { createServiceClient } from '@/lib/supabase/server';
 
 const log = createLogger('webhooks-outbound');
 
@@ -56,12 +57,23 @@ export async function dispatchWebhookEvent(
     data,
   };
 
-  // If no endpoints provided, attempt to load from settings
-  const targets = endpoints ?? [];
+  // If no endpoints provided, load from the webhook_endpoints table
+  let targets = endpoints ?? [];
   if (targets.length === 0) {
-    // In production this would load from org settings or a webhooks table
-    return;
+    try {
+      const supabase = await createServiceClient();
+      const { data } = await supabase
+        .from('webhook_endpoints')
+        .select('id, url, secret, events, is_active')
+        .eq('organization_id', organizationId)
+        .eq('is_active', true);
+      targets = (data ?? []) as WebhookEndpoint[];
+    } catch {
+      log.error('Failed to load webhook endpoints', { organizationId });
+      return;
+    }
   }
+  if (targets.length === 0) return;
 
   const relevantEndpoints = targets.filter(
     (ep) => ep.is_active && (ep.events.includes(event) || ep.events.length === 0)

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
+import { dispatchWebhookEvent } from '@/lib/webhooks/outbound';
 
 export async function GET() {
   const perm = await checkPermission('pipeline', 'view');
@@ -102,6 +103,9 @@ export async function POST(request: Request) {
     type: 'created',
     description: 'Deal created',
   });
+
+  // Dispatch webhook event
+  dispatchWebhookEvent(orgId, 'deal.created', { deal }).catch(() => {});
 
   return NextResponse.json({ success: true, deal });
 }

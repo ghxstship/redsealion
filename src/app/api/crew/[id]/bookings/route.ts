@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
+import { notifyCrewBookingOffer } from '@/lib/notifications/triggers';
 import type { CrewBooking, CrewBookingStatus } from '@/types/database';
 
 export async function GET(
@@ -150,6 +151,11 @@ export async function POST(
       { error: 'Failed to create booking.', details: insertError?.message },
       { status: 500 },
     );
+  }
+
+  // Notify crew member of the booking
+  if (booking) {
+    notifyCrewBookingOffer(booking.id as string).catch(() => {});
   }
 
   return NextResponse.json({ success: true, booking });
