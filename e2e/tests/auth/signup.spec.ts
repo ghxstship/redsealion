@@ -29,17 +29,18 @@ test.describe('Signup Page', () => {
     
     // Step 1: Account
     const testEmail = generateTestEmail();
+    const testTimestamp = Date.now();
     await page.locator('input[id="fullName"]').fill('Test User');
     await page.locator('input[id="email"]').fill(testEmail);
     await page.locator('input[id="password"]').fill('Password123!');
     await page.locator('button[type="submit"]').click();
     
     // Step 2: Organization
-    await expect(page.locator('input[id="companyName"]')).toBeVisible();
-    await page.locator('input[id="companyName"]').fill('E2E Test Corp');
+    await expect(page.locator('input[id="companyName"]')).toBeVisible({ timeout: 15000 });
+    await page.locator('input[id="companyName"]').fill(`E2E Test Corp ${testTimestamp}`);
     
     // Ensure slug is populated automatically
-    await expect(page.locator('input[id="slug"]')).toHaveValue('e2e-test-corp');
+    await expect(page.locator('input[id="slug"]')).toHaveValue(`e2e-test-corp-${testTimestamp}`, { timeout: 15000 });
     await page.locator('button[type="submit"]').click();
 
     // Verify successful redirection to app
