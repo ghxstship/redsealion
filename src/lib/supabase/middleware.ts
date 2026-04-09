@@ -140,6 +140,48 @@ export async function updateSession(request: NextRequest) {
     }
   }
 
+  // ---------------------------------------------------------------------------
+  // M-NEW-14: Subscription tier enforcement
+  // If org subscription is cancelled/past_due, redirect to billing page
+  // Only check when status cookie was just set (not on every request)
+  // ---------------------------------------------------------------------------
+  if (user && isAppRoute && !pathname.startsWith('/app/settings/billing')) {
+    const subCookie = request.cookies.get('fd_sub_status')?.value;
+    if (!subCookie) {
+      const { data: membership } = await supabase
+        .from('organization_memberships')
+        .select('organization_id')
+        .eq('user_id', user.id)
+        .eq('status', 'active')
+        .limit(1)
+        .single();
+
+      if (membership) {
+        const { data: org } = await supabase
+          .from('organizations')
+          .select('subscription_status')
+          .eq('id', membership.organization_id)
+          .single();
+
+        const subStatus = (org?.subscription_status as string) ?? 'active';
+
+        supabaseResponse.cookies.set('fd_sub_status', subStatus, {
+          maxAge: 300,
+          httpOnly: true,
+          sameSite: 'lax',
+          path: '/',
+        });
+
+        if (subStatus === 'cancelled' || subStatus === 'past_due') {
+          const url = request.nextUrl.clone();
+          url.pathname = '/app/settings/billing';
+          url.searchParams.set('reason', 'subscription_' + subStatus);
+          return NextResponse.redirect(url);
+        }
+      }
+    }
+  }
+
   // MFA check (only when not cached — runs on first request after cache expires)
   if (user && isAppRoute && !pathname.startsWith('/app/settings/security/mfa')) {
     // Only run MFA check if status was fetched from DB (no cache cookie existed)

@@ -68,3 +68,22 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
 
   return NextResponse.json({ success: true, work_order: wo });
 }
+
+export async function DELETE(_request: NextRequest, context: RouteContext) {
+  const perm = await checkPermission('work_orders', 'delete');
+  if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+
+  const { id } = await context.params;
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from('work_orders')
+    .delete()
+    .eq('id', id)
+    .eq('organization_id', perm.organizationId);
+
+  if (error) return NextResponse.json({ error: 'Failed to delete work order', details: error.message }, { status: 500 });
+
+  return NextResponse.json({ success: true });
+}

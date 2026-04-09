@@ -1,6 +1,29 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
+
+export async function GET(request: NextRequest) {
+  const perm = await checkPermission('clients', 'view');
+  if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+
+  const clientId = request.nextUrl.searchParams.get('client_id');
+  const supabase = await createClient();
+
+  let query = supabase
+    .from('client_interactions')
+    .select()
+    .eq('organization_id', perm.organizationId)
+    .order('occurred_at', { ascending: false })
+    .limit(100);
+
+  if (clientId) query = query.eq('client_id', clientId);
+
+  const { data, error } = await query;
+  if (error) return NextResponse.json({ error: 'Failed to fetch interactions', details: error.message }, { status: 500 });
+
+  return NextResponse.json({ interactions: data ?? [] });
+}
 
 export async function POST(request: Request) {
   const perm = await checkPermission('clients', 'edit');

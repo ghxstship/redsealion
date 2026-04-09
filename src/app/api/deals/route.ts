@@ -2,6 +2,24 @@ import { NextResponse } from 'next/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
 
+export async function GET() {
+  const perm = await checkPermission('pipeline', 'view');
+  if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('deals')
+    .select('*, clients(id, name)')
+    .eq('organization_id', perm.organizationId)
+    .order('created_at', { ascending: false });
+
+  if (error) return NextResponse.json({ error: 'Failed to fetch deals', details: error.message }, { status: 500 });
+
+  return NextResponse.json({ deals: data ?? [] });
+}
+
 export async function POST(request: Request) {
   const perm = await checkPermission('pipeline', 'create');
   if (!perm) {

@@ -4,6 +4,32 @@ import { requireFeature } from '@/lib/api/tier-guard';
 import { createClient } from '@/lib/supabase/server';
 import { checkAutomationTriggers } from '@/lib/automations/trigger';
 
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const tierError = await requireFeature('tasks');
+  if (tierError) return tierError;
+
+  const perm = await checkPermission('tasks', 'view');
+  if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+
+  const { id } = await params;
+  const supabase = await createClient();
+
+  const { data: task, error } = await supabase
+    .from('tasks')
+    .select('*, task_checklist_items(*), task_watchers(*), task_attachments(*), task_comments(*)')
+    .eq('id', id)
+    .eq('organization_id', perm.organizationId)
+    .single();
+
+  if (error || !task) return NextResponse.json({ error: 'Task not found' }, { status: 404 });
+
+  return NextResponse.json({ task });
+}
+
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
