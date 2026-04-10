@@ -4,6 +4,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import { formatCurrency } from '@/lib/utils';
 import RentalsHubTabs from '../../RentalsHubTabs';
+import CreateSubRentalButton from './CreateSubRentalButton';
 
 async function getSubRentals() {
   try {
@@ -31,7 +32,9 @@ export default async function SubRentalsPage() {
 
   return (
     <TierGate feature="equipment">
-      <PageHeader title="Sub-Rentals" subtitle="Equipment rented from external suppliers to fill shortages." />
+      <PageHeader title="Sub-Rentals" subtitle="Equipment rented from external suppliers to fill shortages.">
+        <CreateSubRentalButton />
+      </PageHeader>
       <RentalsHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">

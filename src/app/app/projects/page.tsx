@@ -4,6 +4,7 @@ import ProjectsHubClient from './ProjectsHubClient';
 import PageHeader from '@/components/shared/PageHeader';
 import EmptyState from '@/components/ui/EmptyState';
 import { TierGate } from '@/components/shared/TierGate';
+import Link from 'next/link';
 
 interface ProjectRow {
   id: string;
@@ -63,7 +64,14 @@ export default async function ProjectsPage() {
       <PageHeader
         title="Projects"
         subtitle={`${projects.length} project${projects.length !== 1 ? 's' : ''}`}
-      />
+      >
+        <Link
+          href="/app/projects/new"
+          className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity whitespace-nowrap"
+        >
+          New Project
+        </Link>
+      </PageHeader>
 
       {projects.length === 0 ? (
         <EmptyState

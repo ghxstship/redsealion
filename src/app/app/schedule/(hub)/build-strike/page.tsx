@@ -18,11 +18,11 @@ async function getBuildStrikeSchedules() {
       .order('start_date', { ascending: true });
 
     const scheduleIds = (schedules ?? []).map((s: { id: string }) => s.id);
-    let blocks: Array<{ id: string; schedule_id: string; title: string; block_type: string; start_time: string; end_time: string; status: string; location: string | null }> = [];
+    let blocks: Array<{ id: string; schedule_id: string; title: string; block_type: string; start_time: string; end_time: string; status: string; location: string | null; notes: string | null }> = [];
     if (scheduleIds.length > 0) {
       const { data: blockData } = await supabase
         .from('schedule_blocks')
-        .select('id, schedule_id, title, block_type, start_time, end_time, status, location')
+        .select('id, schedule_id, title, block_type, start_time, end_time, status, location, notes')
         .in('schedule_id', scheduleIds)
         .order('sort_order', { ascending: true });
       blocks = (blockData ?? []) as typeof blocks;
@@ -97,6 +97,7 @@ export default async function BuildStrikePage() {
                           <div>
                             <p className="text-sm font-medium text-foreground">{block.title}</p>
                             <p className="text-xs text-text-muted capitalize">{block.block_type.replace('_', ' ')}{block.location ? ` • ${block.location}` : ''}</p>
+                            {block.notes && <p className="text-xs text-text-secondary mt-1 italic">{block.notes}</p>}
                           </div>
                           <div className="text-right">
                             <p className="text-xs text-text-secondary">{new Date(block.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} – {new Date(block.end_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>

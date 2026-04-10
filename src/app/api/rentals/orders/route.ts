@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
+import { logAuditAction } from '@/lib/api/audit-logger';
+import { parsePagination } from '@/lib/pagination';
 
 export async function GET(request: NextRequest) {
   const perm = await checkPermission('warehouse', 'view');
@@ -10,19 +12,28 @@ export async function GET(request: NextRequest) {
   const supabase = await createClient();
   const url = new URL(request.url);
   const status = url.searchParams.get('status');
+  const pagination = parsePagination(url.searchParams);
 
   let query = supabase
     .from('rental_orders')
-    .select('*, rental_line_items(count), clients(id, name), events(id, name)')
+    .select('*, rental_line_items(count), clients(id, name), events(id, name)', { count: 'exact' })
     .eq('organization_id', perm.organizationId)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .range(pagination.offset, pagination.offset + pagination.limit - 1);
 
   if (status) query = query.eq('status', status);
 
-  const { data, error } = await query;
+  const { data, error, count } = await query;
   if (error) return NextResponse.json({ error: 'Failed to fetch rental orders', details: error.message }, { status: 500 });
 
-  return NextResponse.json({ orders: data ?? [] });
+  return NextResponse.json({
+    orders: data ?? [],
+    page: pagination.page,
+    limit: pagination.limit,
+    total: count ?? 0,
+    totalPages: Math.ceil((count ?? 0) / pagination.limit),
+    hasMore: pagination.page < Math.ceil((count ?? 0) / pagination.limit),
+  });
 }
 
 export async function POST(request: NextRequest) {
@@ -60,6 +71,8 @@ export async function POST(request: NextRequest) {
     .single();
 
   if (error || !order) return NextResponse.json({ error: 'Failed to create rental order', details: error?.message }, { status: 500 });
+
+  logAuditAction({ orgId: perm.organizationId, action: 'rental_order.create', entity: 'rental_orders', entityId: order.id, metadata: { order_number: orderNumber } }).catch(() => {});
 
   return NextResponse.json({ success: true, order }, { status: 201 });
 }

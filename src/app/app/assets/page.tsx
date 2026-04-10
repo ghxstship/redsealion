@@ -4,6 +4,7 @@ import AssetsTable from '@/components/admin/assets/AssetsTable';
 import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
 import { formatCurrency } from '@/lib/utils';
+import NewAssetButton from './NewAssetButton';
 
 interface AssetRow {
   id: string;
@@ -68,7 +69,9 @@ export default async function AssetsHubPage() {
       <PageHeader
         title="Assets"
         subtitle="Track physical assets across projects and storage."
-      />
+      >
+        <NewAssetButton />
+      </PageHeader>
 
       {/* Summary stats */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">

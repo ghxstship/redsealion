@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
+import { logAuditAction } from '@/lib/api/audit-logger';
 
 export async function GET(request: NextRequest) {
   const perm = await checkPermission('events', 'view');
@@ -58,6 +59,8 @@ export async function POST(request: NextRequest) {
     .single();
 
   if (error || !schedule) return NextResponse.json({ error: 'Failed to create schedule', details: error?.message }, { status: 500 });
+
+  logAuditAction({ orgId: perm.organizationId, action: 'schedule.create', entity: 'production_schedules', entityId: schedule.id, metadata: { name: name as string } }).catch(() => {});
 
   return NextResponse.json({ success: true, schedule }, { status: 201 });
 }

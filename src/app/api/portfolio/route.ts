@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
+import { logAuditAction } from '@/lib/api/audit-logger';
 
 export async function GET() {
   const perm = await checkPermission('proposals', 'view');
@@ -55,5 +56,8 @@ export async function POST(request: NextRequest) {
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  logAuditAction({ orgId: perm.organizationId, action: 'portfolio.create', entity: 'portfolio_library', entityId: data.id, metadata: { project_name } }).catch(() => {});
+
   return NextResponse.json({ data }, { status: 201 });
 }

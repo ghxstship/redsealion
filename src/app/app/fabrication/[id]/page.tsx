@@ -5,6 +5,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import { TierGate } from '@/components/shared/TierGate';
 import { formatCurrency } from '@/lib/utils';
 import BOMEditor from '@/components/fabrication/BOMEditor';
+import StatusActions from '@/components/fabrication/StatusActions';
 import Link from 'next/link';
 
 export default async function FabricationOrderDetailsPage({ params }: { params: Promise<{ id: string }> }) {
@@ -31,7 +32,9 @@ export default async function FabricationOrderDetailsPage({ params }: { params: 
         <PageHeader 
           title={`Order: ${order.order_number}`} 
           subtitle={order.name} 
-        />
+        >
+          <StatusActions orderId={order.id} currentStatus={order.status} />
+        </PageHeader>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">

@@ -3,12 +3,16 @@
 /**
  * Keyboard shortcut handler — global shortcuts for power users.
  *
- * Common patterns from ClickUp/Monday/Asana:
- * - `n` = new task
+ * Standard shortcuts:
+ * - `n` = new task (when not in input)
  * - `/` = focus search
  * - `?` = show help
  * - `g t` = go to tasks
  * - `g p` = go to pipeline
+ * - `⌘N` / `Ctrl+N` = new item (works even in inputs)
+ * - `⌘S` / `Ctrl+S` = save (prevents browser default)
+ *
+ * X-05 remediation: Added ⌘N/⌘S modifier shortcuts.
  *
  * @module components/shared/KeyboardShortcuts
  */
@@ -24,7 +28,9 @@ interface Shortcut {
 }
 
 const SHORTCUTS: Shortcut[] = [
-  { keys: 'n', label: 'New task', category: 'Tasks' },
+  { keys: '⌘ + N', label: 'New item', category: 'Actions' },
+  { keys: '⌘ + S', label: 'Save current form', category: 'Actions' },
+  { keys: 'n', label: 'New task (when not typing)', category: 'Tasks' },
   { keys: '/', label: 'Focus search', category: 'Navigation' },
   { keys: '?', label: 'Show keyboard shortcuts', category: 'Help' },
   { keys: 'g then t', label: 'Go to Tasks', category: 'Navigation' },
@@ -38,16 +44,33 @@ const SHORTCUTS: Shortcut[] = [
 interface KeyboardShortcutsProps {
   onNewTask?: () => void;
   onFocusSearch?: () => void;
+  onSave?: () => void;
 }
 
-export default function KeyboardShortcuts({ onNewTask, onFocusSearch }: KeyboardShortcutsProps) {
+export default function KeyboardShortcuts({ onNewTask, onFocusSearch, onSave }: KeyboardShortcutsProps) {
   const router = useRouter();
   const [showHelp, setShowHelp] = useState(false);
   const [pendingGo, setPendingGo] = useState(false);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
-      // Skip if user is typing in an input
+      const metaOrCtrl = e.metaKey || e.ctrlKey;
+
+      // ⌘N / Ctrl+N — new item (works even in inputs)
+      if (metaOrCtrl && e.key === 'n') {
+        e.preventDefault();
+        onNewTask?.();
+        return;
+      }
+
+      // ⌘S / Ctrl+S — save (prevent browser Save dialog)
+      if (metaOrCtrl && e.key === 's') {
+        e.preventDefault();
+        onSave?.();
+        return;
+      }
+
+      // Skip remaining shortcuts if user is typing in an input
       const tag = (e.target as HTMLElement).tagName;
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes(tag) || (e.target as HTMLElement).isContentEditable) {
         return;
@@ -86,7 +109,7 @@ export default function KeyboardShortcuts({ onNewTask, onFocusSearch }: Keyboard
           break;
       }
     },
-    [pendingGo, router, onNewTask, onFocusSearch],
+    [pendingGo, router, onNewTask, onFocusSearch, onSave],
   );
 
   useEffect(() => {

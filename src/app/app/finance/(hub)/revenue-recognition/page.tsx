@@ -6,6 +6,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import FinanceHubTabs from '../../FinanceHubTabs';
 import Card from '@/components/ui/Card';
 import EmptyState from '@/components/ui/EmptyState';
+import RecordRecognitionButton from './RecordRecognitionButton';
 
 interface RevRecRow {
   id: string;
@@ -61,7 +62,9 @@ export default async function RevenueRecognitionPage() {
 
   return (
     <TierGate feature="profitability">
-      <PageHeader title="Revenue Recognition" subtitle="Track recognized vs. deferred revenue across projects." />
+      <PageHeader title="Revenue Recognition" subtitle="Track recognized vs. deferred revenue across projects.">
+        <RecordRecognitionButton />
+      </PageHeader>
 
       <FinanceHubTabs />
 

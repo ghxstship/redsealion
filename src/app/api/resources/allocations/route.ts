@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
+import { logAuditAction } from '@/lib/api/audit-logger';
 
 export async function GET() {
   const perm = await checkPermission('resources', 'view', 'resource_scheduling');
@@ -63,6 +64,8 @@ export async function POST(request: Request) {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  logAuditAction({ orgId: perm.organizationId, action: 'allocation.create', entity: 'resource_allocations', entityId: allocation.id, metadata: { user_id: body.user_id } }).catch(() => {});
 
   return NextResponse.json({ data: allocation }, { status: 201 });
 }

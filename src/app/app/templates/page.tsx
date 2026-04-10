@@ -1,8 +1,8 @@
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import TemplatesHeader from '@/components/admin/templates/TemplatesHeader';
+import TemplateActions from '@/components/admin/templates/TemplateActions';
 import PageHeader from '@/components/shared/PageHeader';
-import EmptyState from '@/components/ui/EmptyState';
 
 interface TemplateRow {
   id: string;
@@ -91,10 +91,11 @@ export default async function TemplatesPage() {
                   {template.description}
                 </p>
               </div>
-              <div className="shrink-0 text-right">
+              <div className="shrink-0 flex flex-col items-end gap-2">
                 <p className="text-xs text-text-muted">
                   Updated {formatDate(template.updated_at)}
                 </p>
+                <TemplateActions templateId={template.id} />
               </div>
             </div>
 

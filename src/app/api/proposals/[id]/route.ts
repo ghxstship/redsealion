@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { checkAutomationTriggers } from '@/lib/automations/trigger';
+import { logAuditAction } from '@/lib/api/audit-logger';
 
 export async function GET(
   _request: NextRequest,
@@ -57,6 +58,11 @@ export async function PATCH(
     if (field in body) updates[field] = body[field];
   }
 
+  // PRP-04: Auto-set sent_at when marking as sent
+  if (updates.status === 'sent') {
+    updates.sent_at = new Date().toISOString();
+  }
+
   if (Object.keys(updates).length === 0) {
     return NextResponse.json({ error: 'No fields to update' }, { status: 400 });
   }
@@ -106,6 +112,8 @@ export async function PATCH(
     }
   }
 
+  logAuditAction({ orgId: perm.organizationId, action: 'proposal.update', entity: 'proposals', entityId: id, metadata: updates }).catch(() => {});
+
   return NextResponse.json({ success: true, proposal });
 }
 
@@ -129,6 +137,8 @@ export async function DELETE(
   if (error) {
     return NextResponse.json({ error: 'Failed to delete proposal', details: error.message }, { status: 500 });
   }
+
+  logAuditAction({ orgId: perm.organizationId, action: 'proposal.delete', entity: 'proposals', entityId: id }).catch(() => {});
 
   return NextResponse.json({ success: true });
 }

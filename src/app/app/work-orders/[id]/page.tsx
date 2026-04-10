@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
+import WorkOrderActions from './WorkOrderActions';
 
 async function getWorkOrder(id: string) {
   try {
@@ -50,7 +51,10 @@ export default async function WorkOrderDetailPage({ params }: { params: Promise<
   return (
     <TierGate feature="work_orders">
       <PageHeader title={wo.wo_number as string} subtitle={wo.title as string}>
-        <Link href="/app/dispatch" className="btn-secondary text-sm">← Back to Dispatch</Link>
+        <div className="flex items-center gap-3">
+          <WorkOrderActions id={id} currentStatus={wo.status as string} />
+          <Link href="/app/work-orders" className="btn-secondary text-sm">← Work Orders</Link>
+        </div>
       </PageHeader>
 
       <div className="grid gap-6 md:grid-cols-2 mb-8">
@@ -72,12 +76,14 @@ export default async function WorkOrderDetailPage({ params }: { params: Promise<
         <div className="rounded-xl border border-border bg-background p-6">
           <h3 className="text-sm font-semibold text-foreground mb-4">Schedule</h3>
           <dl className="space-y-3 text-sm">
+            <div className="flex justify-between"><dt className="text-text-muted">Estimated Hours</dt><dd className="text-foreground tabular-nums">{wo.estimated_hours != null ? `${wo.estimated_hours}h` : '—'}</dd></div>
             <div className="flex justify-between"><dt className="text-text-muted">Scheduled Start</dt><dd className="text-foreground">{wo.scheduled_start ? new Date(wo.scheduled_start as string).toLocaleString() : '—'}</dd></div>
             <div className="flex justify-between"><dt className="text-text-muted">Scheduled End</dt><dd className="text-foreground">{wo.scheduled_end ? new Date(wo.scheduled_end as string).toLocaleString() : '—'}</dd></div>
             <div className="flex justify-between"><dt className="text-text-muted">Actual Start</dt><dd className="text-foreground">{wo.actual_start ? new Date(wo.actual_start as string).toLocaleString() : '—'}</dd></div>
             <div className="flex justify-between"><dt className="text-text-muted">Actual End</dt><dd className="text-foreground">{wo.actual_end ? new Date(wo.actual_end as string).toLocaleString() : '—'}</dd></div>
             <div className="flex justify-between"><dt className="text-text-muted">Dispatched At</dt><dd className="text-foreground">{wo.dispatched_at ? new Date(wo.dispatched_at as string).toLocaleString() : '—'}</dd></div>
             <div className="flex justify-between"><dt className="text-text-muted">Completed At</dt><dd className="text-foreground">{wo.completed_at ? new Date(wo.completed_at as string).toLocaleString() : '—'}</dd></div>
+            <div className="flex justify-between"><dt className="text-text-muted">Estimated Hours</dt><dd className="text-foreground">{wo.estimated_hours ? `${wo.estimated_hours}h` : '—'}</dd></div>
           </dl>
           {wo.completion_notes && <p className="mt-4 text-sm text-text-secondary border-t border-border pt-4"><strong>Completion Notes:</strong> {wo.completion_notes as string}</p>}
         </div>

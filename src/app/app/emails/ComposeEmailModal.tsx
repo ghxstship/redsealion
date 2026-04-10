@@ -1,10 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import ModalShell from '@/components/ui/ModalShell';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
 import Button from '@/components/ui/Button';
+import { createClient } from '@/lib/supabase/client';
+import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
 
 export default function ComposeEmailModal({
   open,
@@ -15,7 +18,9 @@ export default function ComposeEmailModal({
   onClose: () => void;
   onCreated: () => void;
 }) {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [to, setTo] = useState('');
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');
@@ -23,18 +28,59 @@ export default function ComposeEmailModal({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    // In a real implementation we would insert into email_messages 
-    // and trigger backend processing sync.
-    // For now we mock the successful response to unblock the UI flow.
-    setTimeout(() => {
-      setLoading(false);
+    setError(null);
+
+    try {
+      const supabase = createClient();
+      const ctx = await resolveClientOrg();
+      if (!ctx) {
+        setError('Not authenticated.');
+        setLoading(false);
+        return;
+      }
+
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setError('Not authenticated.');
+        setLoading(false);
+        return;
+      }
+
+      const { error: insertError } = await supabase.from('email_messages').insert({
+        organization_id: ctx.organizationId,
+        direction: 'outbound',
+        from_name: user.user_metadata?.full_name ?? user.email ?? 'Unknown',
+        from_email: user.email ?? '',
+        to_emails: [to],
+        subject,
+        body_text: body,
+        sent_at: new Date().toISOString(),
+        status: 'sent',
+      });
+
+      if (insertError) {
+        setError(insertError.message);
+        setLoading(false);
+        return;
+      }
+
+      setTo('');
+      setSubject('');
+      setBody('');
       onCreated();
-    }, 500);
+      router.refresh();
+    } catch {
+      setError('Failed to send email.');
+      setLoading(false);
+    }
   }
 
   return (
     <ModalShell title="New Email Draft" open={open} onClose={onClose}>
       <form onSubmit={handleSubmit} className="space-y-4">
+        {error && (
+          <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>
+        )}
         <div>
           <FormLabel>To</FormLabel>
           <FormInput 
@@ -54,7 +100,7 @@ export default function ComposeEmailModal({
           />
         </div>
         <div>
-          <FormLabel>MessageBody</FormLabel>
+          <FormLabel>Message Body</FormLabel>
           <textarea
             className="w-full flex min-h-[120px] rounded-lg border border-border bg-input px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
             value={body}

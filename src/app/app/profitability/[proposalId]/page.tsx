@@ -4,6 +4,8 @@ import { formatCurrency } from '@/lib/utils';
 import MarginChart from '@/components/admin/profitability/MarginChart';
 import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
+import AddCostButton from './AddCostButton';
+import Link from 'next/link';
 
 interface ProjectDetail {
   name: string;
@@ -66,7 +68,12 @@ export default async function ProjectProfitabilityPage(props: { params: Promise<
 <PageHeader
         title={project.name}
         subtitle="Detailed profitability breakdown."
-      />
+      >
+        <div className="flex items-center gap-3">
+          <AddCostButton proposalId={proposalId} />
+          <Link href="/app/profitability" className="text-sm text-text-muted hover:text-foreground">← All Projects</Link>
+        </div>
+      </PageHeader>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-8">
         <Card padding="default" className="px-5 py-5">

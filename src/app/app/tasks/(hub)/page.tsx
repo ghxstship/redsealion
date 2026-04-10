@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import TasksHeader from '@/components/admin/tasks/TasksHeader';
 import TasksTable from '@/components/admin/tasks/TasksTable';
@@ -18,16 +19,15 @@ interface TaskRow {
 async function getTasks(): Promise<TaskRow[]> {
   try {
     const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) throw new Error('No auth');
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) return [];
 
     const { data: tasks } = await supabase
       .from('tasks')
       .select(
         '*, assignee:users!tasks_assignee_id_fkey(id, full_name)',
       )
+      .eq('organization_id', ctx.organizationId)
       .is('parent_task_id', null)
       .order('sort_order')
       .limit(200);
@@ -39,6 +39,7 @@ async function getTasks(): Promise<TaskRow[]> {
     const { data: subtaskCounts } = await supabase
       .from('tasks')
       .select('parent_task_id')
+      .eq('organization_id', ctx.organizationId)
       .in('parent_task_id', taskIds);
 
     const countMap = new Map<string, number>();

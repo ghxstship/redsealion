@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { dispatchWebhookEvent } from '@/lib/webhooks/outbound';
+import { logAuditAction } from '@/lib/api/audit-logger';
 
 interface RouteContext { params: Promise<{ id: string }> }
 
@@ -56,6 +57,8 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
     dispatchWebhookEvent(perm.organizationId, 'fabrication_order.status_changed' as any, { fabrication_order_id: id, status: updates.status }).catch(() => {});
   }
 
+  logAuditAction({ orgId: perm.organizationId, action: 'fabrication_order.update', entity: 'fabrication_orders', entityId: id, metadata: updates }).catch(() => {});
+
   return NextResponse.json({ success: true, order });
 }
 
@@ -74,6 +77,8 @@ export async function DELETE(_request: NextRequest, context: RouteContext) {
     .eq('organization_id', perm.organizationId);
 
   if (error) return NextResponse.json({ error: 'Failed to delete order', details: error.message }, { status: 500 });
+
+  logAuditAction({ orgId: perm.organizationId, action: 'fabrication_order.delete', entity: 'fabrication_orders', entityId: id }).catch(() => {});
 
   return NextResponse.json({ success: true });
 }

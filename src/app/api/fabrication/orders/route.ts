@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
+import { parsePagination } from '@/lib/pagination';
+import { logAuditAction } from '@/lib/api/audit-logger';
 
 export async function GET(request: NextRequest) {
   const perm = await checkPermission('warehouse', 'view');
@@ -11,20 +13,29 @@ export async function GET(request: NextRequest) {
   const url = new URL(request.url);
   const status = url.searchParams.get('status');
   const orderType = url.searchParams.get('order_type');
+  const pagination = parsePagination(url.searchParams);
 
   let query = supabase
     .from('fabrication_orders')
-    .select('*, bill_of_materials(count), shop_floor_logs(count), events(id, name)')
+    .select('*, bill_of_materials(count), shop_floor_logs(count), events(id, name)', { count: 'exact' })
     .eq('organization_id', perm.organizationId)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .range(pagination.offset, pagination.offset + pagination.limit - 1);
 
   if (status) query = query.eq('status', status);
   if (orderType) query = query.eq('order_type', orderType);
 
-  const { data, error } = await query;
+  const { data, error, count } = await query;
   if (error) return NextResponse.json({ error: 'Failed to fetch fabrication orders', details: error.message }, { status: 500 });
 
-  return NextResponse.json({ orders: data ?? [] });
+  return NextResponse.json({
+    orders: data ?? [],
+    page: pagination.page,
+    limit: pagination.limit,
+    total: count ?? 0,
+    totalPages: Math.ceil((count ?? 0) / pagination.limit),
+    hasMore: pagination.page < Math.ceil((count ?? 0) / pagination.limit),
+  });
 }
 
 export async function POST(request: NextRequest) {
@@ -72,6 +83,8 @@ export async function POST(request: NextRequest) {
     .single();
 
   if (error || !order) return NextResponse.json({ error: 'Failed to create order', details: error?.message }, { status: 500 });
+
+  logAuditAction({ orgId: perm.organizationId, action: 'fabrication_order.create', entity: 'fabrication_orders', entityId: order.id, metadata: { order_number: orderNumber, name: name as string } }).catch(() => {});
 
   return NextResponse.json({ success: true, order }, { status: 201 });
 }

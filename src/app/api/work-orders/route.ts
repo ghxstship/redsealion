@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
 import { logAuditAction } from '@/lib/api/audit-logger';
+import { parsePagination } from '@/lib/pagination';
 
 export async function GET(request: NextRequest) {
   const perm = await checkPermission('work_orders', 'view');
@@ -10,21 +11,30 @@ export async function GET(request: NextRequest) {
 
   const url = new URL(request.url);
   const status = url.searchParams.get('status');
+  const pagination = parsePagination(url.searchParams);
 
   const supabase = await createClient();
   let query = supabase
     .from('work_orders')
-    .select('*, work_order_assignments(*, crew_profiles(id, full_name))')
+    .select('*, work_order_assignments(*, crew_profiles(id, full_name))', { count: 'exact' })
     .eq('organization_id', perm.organizationId)
     .is('deleted_at', null)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .range(pagination.offset, pagination.offset + pagination.limit - 1);
 
   if (status) query = query.eq('status', status);
 
-  const { data, error } = await query;
+  const { data, error, count } = await query;
   if (error) return NextResponse.json({ error: 'Failed to fetch work orders.', details: error.message }, { status: 500 });
 
-  return NextResponse.json({ work_orders: data ?? [] });
+  return NextResponse.json({
+    work_orders: data ?? [],
+    page: pagination.page,
+    limit: pagination.limit,
+    total: count ?? 0,
+    totalPages: Math.ceil((count ?? 0) / pagination.limit),
+    hasMore: pagination.page < Math.ceil((count ?? 0) / pagination.limit),
+  });
 }
 
 export async function POST(request: NextRequest) {

@@ -13,6 +13,13 @@ interface CalendarTask {
   dueDate: string;
 }
 
+interface UnscheduledTask {
+  id: string;
+  title: string;
+  status: string;
+  priority: string;
+}
+
 const PRIORITY_COLORS: Record<string, string> = {
   urgent: 'bg-red-100 text-red-800 border-red-200',
   high: 'bg-orange-100 text-orange-800 border-orange-200',
@@ -62,6 +69,33 @@ async function getTasksForMonth(year: number, month: number): Promise<CalendarTa
   }
 }
 
+async function getUnscheduledTasks(): Promise<UnscheduledTask[]> {
+  try {
+    const supabase = await createClient();
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No auth');
+
+    const { data } = await supabase
+      .from('tasks')
+      .select('id, title, status, priority')
+      .eq('organization_id', ctx.organizationId)
+      .is('due_date', null)
+      .not('status', 'in', '("completed","done","cancelled")')
+      .order('priority')
+      .limit(25);
+
+    if (!data) return [];
+    return data.map((t) => ({
+      id: t.id,
+      title: t.title,
+      status: t.status,
+      priority: t.priority,
+    }));
+  } catch {
+    return [];
+  }
+}
+
 function getCalendarDays(year: number, month: number) {
   const firstDay = new Date(year, month, 1).getDay(); // 0 = Sunday
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -90,6 +124,7 @@ export default async function TaskCalendarPage({
   const month = sp.month ? parseInt(sp.month, 10) : today.getMonth(); // 0-indexed
 
   const tasks = await getTasksForMonth(year, month);
+  const unscheduledTasks = await getUnscheduledTasks();
   const days = getCalendarDays(year, month);
   const monthName = new Date(year, month, 1).toLocaleString('default', { month: 'long' });
 
@@ -137,64 +172,102 @@ export default async function TaskCalendarPage({
         </Link>
       </div>
 
-      {/* Calendar grid */}
-      <div className="rounded-xl border border-border bg-background overflow-hidden overflow-x-auto">
-        {/* Weekday headers */}
-        <div className="grid grid-cols-7 border-b border-border bg-bg-secondary min-w-[600px]">
-          {weekdays.map((wd) => (
-            <div
-              key={wd}
-              className="px-2 py-3 text-center text-xs font-medium uppercase tracking-wider text-text-muted"
-            >
-              {wd}
-            </div>
-          ))}
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Calendar grid */}
+        <div className="flex-1 rounded-xl border border-border bg-background overflow-hidden overflow-x-auto">
+          {/* Weekday headers */}
+          <div className="grid grid-cols-7 border-b border-border bg-bg-secondary min-w-[600px]">
+            {weekdays.map((wd) => (
+              <div
+                key={wd}
+                className="px-2 py-3 text-center text-xs font-medium uppercase tracking-wider text-text-muted"
+              >
+                {wd}
+              </div>
+            ))}
+          </div>
+
+          {/* Day cells */}
+          <div className="grid grid-cols-7 min-w-[600px]">
+            {days.map((day, index) => {
+              const isToday =
+                day !== null &&
+                year === today.getFullYear() &&
+                month === today.getMonth() &&
+                day === today.getDate();
+              const dayTasks = day !== null ? (tasksByDay.get(day) ?? []) : [];
+
+              return (
+                <div
+                  key={index}
+                  className={`min-h-[100px] border-b border-r border-border p-2 ${
+                    day === null ? 'bg-bg-secondary/30' : ''
+                  } ${isToday ? 'bg-blue-50/50' : ''}`}
+                >
+                  {day !== null && (
+                    <>
+                      <div
+                        className={`mb-1 text-sm font-medium ${
+                          isToday
+                            ? 'inline-flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-white'
+                            : 'text-text-secondary'
+                        }`}
+                      >
+                        {day}
+                      </div>
+                      <div className="space-y-1">
+                        {dayTasks.map((task) => (
+                          <div
+                            key={task.id}
+                            className={`rounded border px-1.5 py-0.5 text-xs truncate ${priorityColor(task.priority)} ${STATUS_COLORS[task.status] ?? ''}`}
+                            title={`${task.title} (${task.priority})`}
+                          >
+                            {task.title}
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
 
-        {/* Day cells */}
-        <div className="grid grid-cols-7 min-w-[600px]">
-          {days.map((day, index) => {
-            const isToday =
-              day !== null &&
-              year === today.getFullYear() &&
-              month === today.getMonth() &&
-              day === today.getDate();
-            const dayTasks = day !== null ? (tasksByDay.get(day) ?? []) : [];
-
-            return (
-              <div
-                key={index}
-                className={`min-h-[100px] border-b border-r border-border p-2 ${
-                  day === null ? 'bg-bg-secondary/30' : ''
-                } ${isToday ? 'bg-blue-50/50' : ''}`}
-              >
-                {day !== null && (
-                  <>
-                    <div
-                      className={`mb-1 text-sm font-medium ${
-                        isToday
-                          ? 'inline-flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-white'
-                          : 'text-text-secondary'
-                      }`}
-                    >
-                      {day}
-                    </div>
-                    <div className="space-y-1">
-                      {dayTasks.map((task) => (
-                        <div
-                          key={task.id}
-                          className={`rounded border px-1.5 py-0.5 text-xs truncate ${priorityColor(task.priority)} ${STATUS_COLORS[task.status] ?? ''}`}
-                          title={`${task.title} (${task.priority})`}
-                        >
-                          {task.title}
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                )}
+        {/* Unscheduled sidebar (TSK-04) */}
+        <div className="lg:w-64 shrink-0">
+          <div className="rounded-xl border border-border bg-background overflow-hidden">
+            <div className="px-4 py-3 border-b border-border bg-bg-secondary">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-text-muted">
+                Unscheduled ({unscheduledTasks.length})
+              </h3>
+            </div>
+            {unscheduledTasks.length === 0 ? (
+              <div className="px-4 py-8 text-center text-xs text-text-muted">
+                All tasks have due dates assigned.
               </div>
-            );
-          })}
+            ) : (
+              <div className="divide-y divide-border max-h-[500px] overflow-y-auto">
+                {unscheduledTasks.map((task) => (
+                  <Link
+                    key={task.id}
+                    href={`/app/tasks?task=${task.id}`}
+                    className="block px-4 py-2.5 hover:bg-bg-secondary/50 transition-colors"
+                  >
+                    <p className="text-xs font-medium text-foreground truncate">{task.title}</p>
+                    <div className="mt-1 flex items-center gap-2">
+                      <span className={`rounded border px-1.5 py-0.5 text-[10px] ${priorityColor(task.priority)}`}>
+                        {task.priority}
+                      </span>
+                      <span className="text-[10px] text-text-muted capitalize">
+                        {task.status.replace('_', ' ')}
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

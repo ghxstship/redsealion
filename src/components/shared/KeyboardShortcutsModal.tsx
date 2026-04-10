@@ -41,6 +41,8 @@ const sections: ShortcutSection[] = [
   {
     title: 'Actions',
     shortcuts: [
+      { keys: ['⌘', 'N'], description: 'New item' },
+      { keys: ['⌘', 'S'], description: 'Save current form' },
       { keys: ['N', 'P'], description: 'New Proposal' },
       { keys: ['N', 'I'], description: 'New Invoice' },
       { keys: ['N', 'C'], description: 'New Client' },

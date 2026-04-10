@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
+import { logAuditAction } from '@/lib/api/audit-logger';
 
 export async function PATCH(
   request: NextRequest,
@@ -36,6 +37,8 @@ export async function PATCH(
     return NextResponse.json({ error: error?.message || 'Item not found' }, { status: 500 });
   }
 
+  logAuditAction({ orgId: perm.organizationId, action: 'portfolio.update', entity: 'portfolio_library', entityId: id, metadata: body }).catch(() => {});
+
   return NextResponse.json({ data });
 }
 
@@ -60,6 +63,8 @@ export async function DELETE(
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  logAuditAction({ orgId: perm.organizationId, action: 'portfolio.delete', entity: 'portfolio_library', entityId: id }).catch(() => {});
 
   return NextResponse.json({ success: true });
 }

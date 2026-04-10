@@ -1,5 +1,7 @@
+import { createClient } from '@/lib/supabase/server';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import Link from 'next/link';
-import { Filter, TrendingUp, Funnel, PieChart, BarChart3, LayoutDashboard, Users, Wrench } from 'lucide-react';
+import { Filter, TrendingUp, Funnel, PieChart, BarChart3, LayoutDashboard, Users, Wrench, FileText } from 'lucide-react';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import ReportsHubTabs from '../ReportsHubTabs';
@@ -55,7 +57,35 @@ const reportTypes = [
   },
 ];
 
-export default function ReportsPage() {
+interface SavedReport {
+  id: string;
+  name: string;
+  description: string | null;
+  created_at: string;
+}
+
+async function getSavedReports(): Promise<SavedReport[]> {
+  try {
+    const supabase = await createClient();
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) return [];
+
+    const { data } = await supabase
+      .from('custom_reports')
+      .select('id, name, description, created_at')
+      .eq('organization_id', ctx.organizationId)
+      .order('created_at', { ascending: false })
+      .limit(12);
+
+    return (data ?? []) as SavedReport[];
+  } catch {
+    return [];
+  }
+}
+
+export default async function ReportsPage() {
+  const savedReports = await getSavedReports();
+
   return (
     <>
       <PageHeader title="Reports" subtitle="Analytics and insights across your pipeline" />
@@ -84,6 +114,36 @@ export default function ReportsPage() {
             </Link>
           ))}
         </div>
+
+        {/* Saved Custom Reports */}
+        {savedReports.length > 0 && (
+          <div className="mt-10">
+            <h2 className="text-base font-semibold text-foreground mb-4">Saved Reports</h2>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {savedReports.map((report) => (
+                <div
+                  key={report.id}
+                  className="rounded-xl border border-border bg-background p-5 hover:border-foreground/20 transition-colors"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-bg-secondary text-text-muted flex-shrink-0">
+                      <FileText size={16} />
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="text-sm font-semibold text-foreground truncate">{report.name}</h3>
+                      {report.description && (
+                        <p className="text-xs text-text-secondary mt-1 line-clamp-2">{report.description}</p>
+                      )}
+                      <p className="text-[11px] text-text-muted mt-2">
+                        Created {new Date(report.created_at).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </TierGate>
     </>
   );

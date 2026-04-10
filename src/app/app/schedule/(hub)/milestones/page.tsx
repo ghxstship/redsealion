@@ -3,6 +3,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import ScheduleHubTabs from '../../ScheduleHubTabs';
+import AddMilestoneButton from './AddMilestoneButton';
 
 async function getMilestones() {
   try {
@@ -42,7 +43,12 @@ export default async function MilestonesPage() {
 
   return (
     <TierGate feature="events">
-      <PageHeader title="Milestones" subtitle="Track critical deadlines across all production schedules." />
+      <PageHeader title="Milestones" subtitle="Track critical deadlines across all production schedules.">
+        <AddMilestoneButton schedules={milestones.reduce<Array<{ id: string; name: string }>>((acc, m) => {
+          if (!acc.find((s) => s.name === m.schedule_name)) acc.push({ id: (m as any).schedule_id ?? m.id, name: m.schedule_name ?? 'Unknown' });
+          return acc;
+        }, [])} />
+      </PageHeader>
       <ScheduleHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">

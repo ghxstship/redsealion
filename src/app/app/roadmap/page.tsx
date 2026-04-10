@@ -4,6 +4,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import Link from 'next/link';
 import PageHeader from '@/components/shared/PageHeader';
 import { castRelation } from '@/lib/supabase/cast-relation';
+import RoadmapClient from './RoadmapClient';
 
 /**
  * Roadmap view — timeline-based project visualization
@@ -73,17 +74,6 @@ async function getRoadmapItems(): Promise<RoadmapItem[]> {
   }
 }
 
-function statusColor(status: string): string {
-  const map: Record<string, string> = {
-    approved: 'bg-green-500',
-    sent: 'bg-blue-500',
-    active: 'bg-blue-500',
-    completed: 'bg-text-muted',
-    cancelled: 'bg-red-400',
-  };
-  return map[status] ?? 'bg-purple-500';
-}
-
 export default async function RoadmapPage() {
   const items = await getRoadmapItems();
 
@@ -98,6 +88,9 @@ export default async function RoadmapPage() {
     );
   }
 
+  const timeRangeStart = quarterStart.getTime();
+  const timeRangeEnd = new Date(quarterStart.getFullYear(), quarterStart.getMonth() + 6, 1).getTime();
+
   return (
     <TierGate feature="tasks">
 <PageHeader
@@ -105,70 +98,12 @@ export default async function RoadmapPage() {
         subtitle="Project timeline across the next two quarters"
       />
 
-      {/* Timeline header */}
-      <div className="rounded-xl border border-border bg-background overflow-hidden">
-        <div className="grid grid-cols-[200px_1fr] border-b border-border">
-          <div className="px-4 py-3 border-r border-border">
-            <span className="text-xs font-medium uppercase tracking-wider text-text-muted">
-              Project
-            </span>
-          </div>
-          <div className="grid grid-cols-6">
-            {months.map((m, idx) => (
-              <div
-                key={idx}
-                className="px-2 py-3 text-center border-r border-border last:border-r-0"
-              >
-                <span className="text-xs font-medium text-text-muted">{m}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Items */}
-        {items.length === 0 ? (
-          <div className="px-4 py-8 text-center text-sm text-text-muted">
-            No active projects to display.
-          </div>
-        ) : (
-          items.map((item) => (
-            <div
-              key={item.id}
-              className="grid grid-cols-[200px_1fr] border-b border-border last:border-b-0 hover:bg-bg-secondary/30 transition-colors"
-            >
-              <div className="px-4 py-3 border-r border-border">
-                <Link
-                  href={`/app/proposals/${item.id}`}
-                  className="text-sm font-medium text-foreground hover:underline truncate block"
-                >
-                  {item.name}
-                </Link>
-                {item.clientName && (
-                  <p className="text-[11px] text-text-muted truncate">
-                    {item.clientName}
-                  </p>
-                )}
-              </div>
-              <div className="relative px-2 py-3">
-                {/* Bar */}
-                <div className="relative h-6 flex items-center">
-                  <div
-                    className={`h-5 rounded-full ${statusColor(item.status)} opacity-80 flex items-center px-2`}
-                    style={{
-                      width: `${Math.max(item.progress || 20, 15)}%`,
-                      minWidth: '60px',
-                    }}
-                  >
-                    <span className="text-[10px] font-medium text-white truncate">
-                      {item.progress}%
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
+      <RoadmapClient
+        items={items}
+        months={months}
+        timeRangeStart={timeRangeStart}
+        timeRangeEnd={timeRangeEnd}
+      />
 
       <div className="mt-6 text-center">
         <Link
