@@ -5,6 +5,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
 import RentalsHubTabs from '../RentalsHubTabs';
+import StatusBadge, { RENTAL_ORDER_STATUS_COLORS } from '@/components/ui/StatusBadge';
 
 async function getRentalCatalog() {
   try {
@@ -28,7 +29,7 @@ async function getRentalCatalog() {
   } catch { return { orders: [], totalRevenue: 0, activeOrders: 0 }; }
 }
 
-const STATUS_COLORS: Record<string, string> = { draft: 'bg-bg-secondary text-text-secondary', reserved: 'bg-blue-50 text-blue-700', checked_out: 'bg-purple-50 text-purple-700', on_site: 'bg-green-50 text-green-700', returned: 'bg-bg-secondary text-text-secondary', invoiced: 'bg-green-50 text-green-700', cancelled: 'bg-red-50 text-red-700' };
+
 
 export default async function RentalsCatalogPage() {
   const { orders, totalRevenue, activeOrders } = await getRentalCatalog();
@@ -75,7 +76,7 @@ export default async function RentalsCatalogPage() {
                     <td className="px-4 py-3 text-text-secondary">{o.client_name ?? '—'}</td>
                     <td className="px-4 py-3 text-text-secondary">{new Date(o.rental_start).toLocaleDateString()} – {new Date(o.rental_end).toLocaleDateString()}</td>
                     <td className="px-4 py-3 tabular-nums">{formatCurrency(o.total_cents / 100)}</td>
-                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[o.status]}`}>{o.status.replace('_', ' ')}</span></td>
+                    <td className="px-4 py-3"><StatusBadge status={o.status} colorMap={RENTAL_ORDER_STATUS_COLORS} /></td>
                   </tr>
                 ))}
               </tbody>

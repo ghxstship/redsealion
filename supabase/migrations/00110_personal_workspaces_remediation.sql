@@ -30,6 +30,7 @@ BEGIN
     WHERE tgname = 'set_notifications_updated_at'
     AND tgrelid = 'public.notifications'::regclass
   ) THEN
+    DROP TRIGGER IF EXISTS set_notifications_updated_at ON public.notifications;
     CREATE TRIGGER set_notifications_updated_at
       BEFORE UPDATE ON public.notifications
       FOR EACH ROW EXECUTE FUNCTION update_updated_at();

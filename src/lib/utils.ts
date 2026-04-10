@@ -1,26 +1,25 @@
 import { type ClassValue, clsx } from '@/lib/clsx';
+import { formatCurrencyAmount } from '@/lib/currency';
 
 // Lightweight clsx — we don't need the full library
 export function cn(...inputs: ClassValue[]) {
   return clsx(inputs);
 }
 
+/**
+ * Format currency — delegates to the canonical formatter in lib/currency.ts.
+ * Kept here for backward-compatibility with 280+ existing imports.
+ */
 export function formatCurrency(amount: number, currency = 'USD', locale = 'en-US'): string {
-  return new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(amount);
+  return formatCurrencyAmount(amount, currency, locale);
 }
 
+/**
+ * @deprecated Use `formatCurrency` instead. This alias is retained for
+ * backward-compatibility but will be removed in a future version.
+ */
 export function formatCurrencyDetailed(amount: number, currency = 'USD', locale = 'en-US'): string {
-  return new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency,
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(amount);
+  return formatCurrencyAmount(amount, currency, locale);
 }
 
 export function slugify(text: string): string {

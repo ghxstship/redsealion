@@ -18,6 +18,7 @@ BEGIN
     WHERE tgname = 'set_updated_at_projects'
     AND tgrelid = 'public.projects'::regclass
   ) THEN
+    DROP TRIGGER IF EXISTS set_updated_at_projects ON public.projects;
     CREATE TRIGGER set_updated_at_projects
       BEFORE UPDATE ON public.projects
       FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -32,6 +33,7 @@ BEGIN
     WHERE tgname = 'set_updated_at_project_memberships'
     AND tgrelid = 'public.project_memberships'::regclass
   ) THEN
+    DROP TRIGGER IF EXISTS set_updated_at_project_memberships ON public.project_memberships;
     CREATE TRIGGER set_updated_at_project_memberships
       BEFORE UPDATE ON public.project_memberships
       FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -51,6 +53,7 @@ BEGIN
     WHERE tgname = 'set_updated_at_portfolio_library'
     AND tgrelid = 'public.portfolio_library'::regclass
   ) THEN
+    DROP TRIGGER IF EXISTS set_updated_at_portfolio_library ON public.portfolio_library;
     CREATE TRIGGER set_updated_at_portfolio_library
       BEFORE UPDATE ON public.portfolio_library
       FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -66,6 +69,7 @@ BEGIN
     WHERE tgname = 'set_updated_at_project_portals'
     AND tgrelid = 'public.project_portals'::regclass
   ) THEN
+    DROP TRIGGER IF EXISTS set_updated_at_project_portals ON public.project_portals;
     CREATE TRIGGER set_updated_at_project_portals
       BEFORE UPDATE ON public.project_portals
       FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -97,6 +101,7 @@ BEGIN
     WHERE tgname = 'set_updated_at_project_events'
     AND tgrelid = 'public.project_events'::regclass
   ) THEN
+    DROP TRIGGER IF EXISTS set_updated_at_project_events ON public.project_events;
     CREATE TRIGGER set_updated_at_project_events
       BEFORE UPDATE ON public.project_events
       FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -114,6 +119,7 @@ BEGIN
     WHERE tgname = 'set_updated_at_project_status_updates'
     AND tgrelid = 'public.project_status_updates'::regclass
   ) THEN
+    DROP TRIGGER IF EXISTS set_updated_at_project_status_updates ON public.project_status_updates;
     CREATE TRIGGER set_updated_at_project_status_updates
       BEFORE UPDATE ON public.project_status_updates
       FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -247,6 +253,7 @@ CREATE INDEX IF NOT EXISTS idx_portfolio_library_project
 -- ============================================================
 
 -- P14: UPDATE policy for project_status_updates (only author can edit)
+DROP POLICY IF EXISTS "project_status_updates_update" ON public.project_status_updates;
 CREATE POLICY "project_status_updates_update" ON public.project_status_updates
   FOR UPDATE USING (
     created_by = auth.uid()
@@ -257,6 +264,7 @@ CREATE POLICY "project_status_updates_update" ON public.project_status_updates
   );
 
 -- P14: DELETE policy for project_status_updates (only author or admin)
+DROP POLICY IF EXISTS "project_status_updates_delete" ON public.project_status_updates;
 CREATE POLICY "project_status_updates_delete" ON public.project_status_updates
   FOR DELETE USING (
     (created_by = auth.uid() OR is_org_admin_or_above())

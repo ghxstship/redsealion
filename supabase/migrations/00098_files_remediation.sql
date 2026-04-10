@@ -43,6 +43,7 @@ DROP POLICY IF EXISTS "files_select" ON file_attachments;
 DROP POLICY IF EXISTS "files_modify" ON file_attachments;
 
 -- Apply simplified, robust policies
+DROP POLICY IF EXISTS "files_select" ON file_attachments;
 CREATE POLICY "files_select" ON file_attachments FOR SELECT
   USING (
     organization_id = auth_user_org_id() 
@@ -54,6 +55,7 @@ CREATE POLICY "files_select" ON file_attachments FOR SELECT
     AND deleted_at IS NULL
   );
 
+DROP POLICY IF EXISTS "files_modify" ON file_attachments;
 CREATE POLICY "files_modify" ON file_attachments FOR ALL
   USING (
     organization_id = auth_user_org_id()
@@ -62,18 +64,21 @@ CREATE POLICY "files_modify" ON file_attachments FOR ALL
 -- 3. Storage Policies
 -- Note: 'authenticated' users can modify their own files. More stringent checks can be placed
 -- in the API route, but this baseline prevents public access.
+DROP POLICY IF EXISTS "storage_buckets_select" ON storage.objects;
 CREATE POLICY "storage_buckets_select" ON storage.objects FOR SELECT
   USING (
     bucket_id IN ('attachments', 'compliance-documents', 'receipts')
     AND auth.role() = 'authenticated'
   );
 
+DROP POLICY IF EXISTS "storage_buckets_insert" ON storage.objects;
 CREATE POLICY "storage_buckets_insert" ON storage.objects FOR INSERT
   WITH CHECK (
     bucket_id IN ('attachments', 'compliance-documents', 'receipts')
     AND auth.role() = 'authenticated'
   );
 
+DROP POLICY IF EXISTS "storage_buckets_delete" ON storage.objects;
 CREATE POLICY "storage_buckets_delete" ON storage.objects FOR DELETE
   USING (
     bucket_id IN ('attachments', 'compliance-documents', 'receipts')

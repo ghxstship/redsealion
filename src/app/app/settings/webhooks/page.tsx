@@ -4,10 +4,12 @@ import { useState, useEffect } from 'react';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import Button from '@/components/ui/Button';
+import ConfirmDialog from '@/components/shared/ConfirmDialog';
 
 export default function WebhooksSettingsPage() {
   const [endpoints, setEndpoints] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchEndpoints() {
@@ -24,6 +26,7 @@ export default function WebhooksSettingsPage() {
   }, []);
 
   return (
+    <>
     <TierGate feature="integrations">
       <div className="max-w-4xl space-y-6">
         <PageHeader
@@ -58,11 +61,7 @@ export default function WebhooksSettingsPage() {
                       {ep.is_active ? 'Active' : 'Inactive'}
                     </span>
                     <button
-                      onClick={async () => {
-                        if (!confirm('Delete webhook?')) return;
-                        await fetch(`/api/webhooks/endpoints/${ep.id}`, { method: 'DELETE' });
-                        setEndpoints(endpoints.filter(e => e.id !== ep.id));
-                      }}
+                      onClick={() => setDeletingId(ep.id)}
                       className="text-xs font-medium text-red-600 hover:text-red-700"
                     >
                       Delete
@@ -91,5 +90,22 @@ export default function WebhooksSettingsPage() {
         )}
       </div>
     </TierGate>
+
+    <ConfirmDialog
+      open={!!deletingId}
+      title="Delete Webhook"
+      message="Are you sure you want to delete this webhook endpoint? It will stop receiving events immediately."
+      variant="danger"
+      confirmLabel="Delete"
+      onConfirm={async () => {
+        if (deletingId) {
+          await fetch(`/api/webhooks/endpoints/${deletingId}`, { method: 'DELETE' });
+          setEndpoints(endpoints.filter(e => e.id !== deletingId));
+        }
+        setDeletingId(null);
+      }}
+      onCancel={() => setDeletingId(null)}
+    />
+    </>
   );
 }

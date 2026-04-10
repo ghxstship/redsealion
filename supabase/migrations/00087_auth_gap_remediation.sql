@@ -44,10 +44,12 @@ CREATE INDEX IF NOT EXISTS idx_auth_events_type ON public.auth_events(event_type
 ALTER TABLE public.auth_events ENABLE ROW LEVEL SECURITY;
 
 -- Users can see their own events
+DROP POLICY IF EXISTS "auth_events_select_own" ON public.auth_events;
 CREATE POLICY "auth_events_select_own" ON public.auth_events FOR SELECT
   USING (user_id = auth.uid());
 
 -- Org admins can see org events
+DROP POLICY IF EXISTS "auth_events_select_admin" ON public.auth_events;
 CREATE POLICY "auth_events_select_admin" ON public.auth_events FOR SELECT
   USING (
     organization_id IS NOT NULL
@@ -55,5 +57,6 @@ CREATE POLICY "auth_events_select_admin" ON public.auth_events FOR SELECT
   );
 
 -- System/service role can insert
+DROP POLICY IF EXISTS "auth_events_insert_service" ON public.auth_events;
 CREATE POLICY "auth_events_insert_service" ON public.auth_events FOR INSERT
   WITH CHECK (true);

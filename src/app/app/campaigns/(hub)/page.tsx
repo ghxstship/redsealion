@@ -6,18 +6,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import CampaignsHubTabs from '../CampaignsHubTabs';
 import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
-
-const STATUS_COLORS: Record<string, string> = {
-  draft: 'bg-bg-secondary text-text-muted',
-  scheduled: 'bg-blue-50 text-blue-700',
-  sending: 'bg-amber-50 text-amber-700',
-  sent: 'bg-green-50 text-green-700',
-  cancelled: 'bg-red-50 text-red-600',
-};
-
-function formatLabel(s: string): string {
-  return s.charAt(0).toUpperCase() + s.slice(1);
-}
+import StatusBadge, { CAMPAIGN_STATUS_COLORS } from '@/components/ui/StatusBadge';
 
 async function getCampaigns() {
   try {
@@ -86,9 +75,7 @@ export default async function CampaignsPage() {
                     </td>
                     <td className="px-6 py-3.5 text-sm text-text-secondary">{c.subject as string}</td>
                     <td className="px-6 py-3.5">
-                      <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_COLORS[(c.status as string)] ?? STATUS_COLORS.draft}`}>
-                        {formatLabel(c.status as string)}
-                      </span>
+                      <StatusBadge status={c.status as string} colorMap={CAMPAIGN_STATUS_COLORS} />
                     </td>
                     <td className="px-6 py-3.5 text-sm tabular-nums text-text-muted">{c.sent_count as number}</td>
                     <td className="px-6 py-3.5 text-sm tabular-nums text-text-muted">{c.open_count as number}</td>

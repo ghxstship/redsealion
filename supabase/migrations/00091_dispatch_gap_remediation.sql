@@ -56,10 +56,12 @@ CREATE INDEX IF NOT EXISTS idx_wo_status_log_created ON work_order_status_log(cr
 
 ALTER TABLE work_order_status_log ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "org_read_wo_status_log" ON work_order_status_log;
 CREATE POLICY "org_read_wo_status_log" ON work_order_status_log
   FOR SELECT USING (
     work_order_id IN (SELECT id FROM work_orders WHERE organization_id IN (SELECT user_org_ids()))
   );
+DROP POLICY IF EXISTS "org_insert_wo_status_log" ON work_order_status_log;
 CREATE POLICY "org_insert_wo_status_log" ON work_order_status_log
   FOR INSERT WITH CHECK (
     work_order_id IN (SELECT id FROM work_orders WHERE organization_id IN (SELECT user_org_ids()))

@@ -109,6 +109,7 @@ DROP POLICY IF EXISTS "Users can update compliance docs in their org" ON complia
 DROP POLICY IF EXISTS "Users can delete compliance docs in their org" ON compliance_documents;
 
 -- Re-create with role checks
+DROP POLICY IF EXISTS "Admins can update compliance docs in their org" ON compliance_documents;
 CREATE POLICY "Admins can update compliance docs in their org" ON compliance_documents
   FOR UPDATE USING (
     organization_id IN (
@@ -120,6 +121,7 @@ CREATE POLICY "Admins can update compliance docs in their org" ON compliance_doc
     )
   );
 
+DROP POLICY IF EXISTS "Admins can delete compliance docs in their org" ON compliance_documents;
 CREATE POLICY "Admins can delete compliance docs in their org" ON compliance_documents
   FOR DELETE USING (
     organization_id IN (

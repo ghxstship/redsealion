@@ -201,6 +201,47 @@ export default function OverviewTab({
           ))}
         </div>
       )}
+
+      {/* Payment Terms */}
+      {proposal.payment_terms && (
+        <div className="rounded-xl border border-border bg-background px-6 py-6">
+          <h2 className="text-sm font-semibold text-foreground mb-4">
+            Payment Terms
+          </h2>
+          <dl className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div>
+              <dt className="text-xs font-medium uppercase tracking-wider text-text-muted">
+                Structure
+              </dt>
+              <dd className="mt-1 text-sm font-medium text-foreground capitalize">
+                {proposal.payment_terms.structure?.replace(/_/g, ' ') ?? 'Standard'}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-xs font-medium uppercase tracking-wider text-text-muted">
+                Deposit
+              </dt>
+              <dd className="mt-1 text-sm font-medium text-foreground tabular-nums">
+                {proposal.payment_terms.depositPercent ?? 0}%
+                <span className="text-text-muted ml-1">
+                  ({formatCurrency((proposal.total_value * (proposal.payment_terms.depositPercent ?? 0)) / 100, proposal.currency)})
+                </span>
+              </dd>
+            </div>
+            <div>
+              <dt className="text-xs font-medium uppercase tracking-wider text-text-muted">
+                Balance Due
+              </dt>
+              <dd className="mt-1 text-sm font-medium text-foreground tabular-nums">
+                {proposal.payment_terms.balancePercent ?? 0}%
+                <span className="text-text-muted ml-1">
+                  ({formatCurrency((proposal.total_value * (proposal.payment_terms.balancePercent ?? 0)) / 100, proposal.currency)})
+                </span>
+              </dd>
+            </div>
+          </dl>
+        </div>
+      )}
     </div>
   );
 }

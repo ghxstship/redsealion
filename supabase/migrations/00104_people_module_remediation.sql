@@ -41,6 +41,7 @@ DO $$ BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM pg_trigger WHERE tgname = 'update_holiday_calendars_updated_at'
   ) THEN
+    DROP TRIGGER IF EXISTS update_holiday_calendars_updated_at ON public.holiday_calendars;
     CREATE TRIGGER update_holiday_calendars_updated_at
       BEFORE UPDATE ON public.holiday_calendars
       FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -64,6 +65,7 @@ CREATE INDEX IF NOT EXISTS idx_departments_org ON public.departments(organizatio
 ALTER TABLE public.departments ENABLE ROW LEVEL SECURITY;
 
 DO $$ BEGIN
+  DROP POLICY IF EXISTS "dept_select" ON public.departments;
   CREATE POLICY "dept_select" ON public.departments FOR SELECT
     USING (organization_id IN (
       SELECT om.organization_id FROM public.organization_memberships om
@@ -73,6 +75,7 @@ EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 
 DO $$ BEGIN
+  DROP POLICY IF EXISTS "dept_admin_all" ON public.departments;
   CREATE POLICY "dept_admin_all" ON public.departments FOR ALL
     USING (organization_id IN (
       SELECT om.organization_id FROM public.organization_memberships om
@@ -85,6 +88,7 @@ DO $$ BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM pg_trigger WHERE tgname = 'update_departments_updated_at'
   ) THEN
+    DROP TRIGGER IF EXISTS update_departments_updated_at ON public.departments;
     CREATE TRIGGER update_departments_updated_at
       BEFORE UPDATE ON public.departments
       FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -111,6 +115,7 @@ CREATE INDEX IF NOT EXISTS idx_user_emergency_contacts_user
 ALTER TABLE public.user_emergency_contacts ENABLE ROW LEVEL SECURITY;
 
 DO $$ BEGIN
+  DROP POLICY IF EXISTS "emergency_contacts_select" ON public.user_emergency_contacts;
   CREATE POLICY "emergency_contacts_select" ON public.user_emergency_contacts FOR SELECT
     USING (organization_id IN (
       SELECT om.organization_id FROM public.organization_memberships om
@@ -120,12 +125,14 @@ EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 
 DO $$ BEGIN
+  DROP POLICY IF EXISTS "emergency_contacts_manage_own" ON public.user_emergency_contacts;
   CREATE POLICY "emergency_contacts_manage_own" ON public.user_emergency_contacts FOR ALL
     USING (user_id = auth.uid());
 EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 
 DO $$ BEGIN
+  DROP POLICY IF EXISTS "emergency_contacts_admin_all" ON public.user_emergency_contacts;
   CREATE POLICY "emergency_contacts_admin_all" ON public.user_emergency_contacts FOR ALL
     USING (organization_id IN (
       SELECT om.organization_id FROM public.organization_memberships om
@@ -138,6 +145,7 @@ DO $$ BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM pg_trigger WHERE tgname = 'update_user_emergency_contacts_updated_at'
   ) THEN
+    DROP TRIGGER IF EXISTS update_user_emergency_contacts_updated_at ON public.user_emergency_contacts;
     CREATE TRIGGER update_user_emergency_contacts_updated_at
       BEFORE UPDATE ON public.user_emergency_contacts
       FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -170,6 +178,7 @@ CREATE INDEX IF NOT EXISTS idx_user_documents_org
 ALTER TABLE public.user_documents ENABLE ROW LEVEL SECURITY;
 
 DO $$ BEGIN
+  DROP POLICY IF EXISTS "user_docs_select" ON public.user_documents;
   CREATE POLICY "user_docs_select" ON public.user_documents FOR SELECT
     USING (
       user_id = auth.uid()
@@ -182,6 +191,7 @@ EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 
 DO $$ BEGIN
+  DROP POLICY IF EXISTS "user_docs_admin_all" ON public.user_documents;
   CREATE POLICY "user_docs_admin_all" ON public.user_documents FOR ALL
     USING (organization_id IN (
       SELECT om.organization_id FROM public.organization_memberships om
@@ -194,6 +204,7 @@ DO $$ BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM pg_trigger WHERE tgname = 'update_user_documents_updated_at'
   ) THEN
+    DROP TRIGGER IF EXISTS update_user_documents_updated_at ON public.user_documents;
     CREATE TRIGGER update_user_documents_updated_at
       BEFORE UPDATE ON public.user_documents
       FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -203,6 +214,7 @@ END $$;
 -- ─── 6. RLS: time_off_balances — admin management policy ────────────────────
 
 DO $$ BEGIN
+  DROP POLICY IF EXISTS "Admins manage balances" ON public.time_off_balances;
   CREATE POLICY "Admins manage balances" ON public.time_off_balances FOR ALL
     USING (organization_id = public.auth_user_org_id() AND public.is_org_admin_or_above());
 EXCEPTION WHEN duplicate_object THEN NULL;

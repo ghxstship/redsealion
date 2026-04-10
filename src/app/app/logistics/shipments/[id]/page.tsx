@@ -7,6 +7,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import ShipmentActions from '@/components/admin/warehouse/ShipmentActions';
 import ShipmentLineItems from '@/components/admin/warehouse/ShipmentLineItems';
 import ShipmentBOLCard from '@/components/admin/warehouse/ShipmentBOLCard';
+import StatusBadge, { SHIPMENT_STATUS_COLORS } from '@/components/ui/StatusBadge';
 
 interface ShipmentDetail {
   id: string;
@@ -37,7 +38,7 @@ interface ShipmentDetail {
     weight_lbs: number | null;
   }>;
   events: { id: string; name: string } | null;
-  clients: { id: string; name: string } | null;
+  clients: { id: string; company_name: string } | null;
   vendors: { id: string; name: string } | null;
 }
 
@@ -48,7 +49,7 @@ async function getShipment(id: string): Promise<ShipmentDetail | null> {
     if (!ctx) return null;
     const { data } = await supabase
       .from('shipments')
-      .select('*, shipment_line_items(*), events(id, name), clients(id, name), vendors(id, name)')
+      .select('*, shipment_line_items(*), events(id, name), clients(id, company_name), vendors(id, name)')
       .eq('id', id)
       .eq('organization_id', ctx.organizationId)
       .single();
@@ -56,12 +57,7 @@ async function getShipment(id: string): Promise<ShipmentDetail | null> {
   } catch { return null; }
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  pending: 'bg-yellow-50 text-yellow-700',
-  in_transit: 'bg-blue-50 text-blue-700',
-  delivered: 'bg-green-50 text-green-700',
-  cancelled: 'bg-red-50 text-red-700',
-};
+
 
 export default async function ShipmentDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -97,7 +93,7 @@ export default async function ShipmentDetailPage({ params }: { params: Promise<{
         <div className="rounded-xl border border-border bg-background p-6">
           <h3 className="text-sm font-semibold text-foreground mb-4">Shipment Details</h3>
           <dl className="space-y-3 text-sm">
-            <div className="flex justify-between"><dt className="text-text-muted">Status</dt><dd><span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[shipment.status] ?? ''}`}>{shipment.status}</span></dd></div>
+            <div className="flex justify-between"><dt className="text-text-muted">Status</dt><dd><StatusBadge status={shipment.status} colorMap={SHIPMENT_STATUS_COLORS} /></dd></div>
             <div className="flex justify-between"><dt className="text-text-muted">Direction</dt><dd className="text-foreground capitalize">{shipment.direction}</dd></div>
             <div className="flex justify-between"><dt className="text-text-muted">Carrier</dt><dd className="text-foreground">{shipment.carrier ?? '—'}</dd></div>
             <div className="flex justify-between"><dt className="text-text-muted">Tracking #</dt><dd className="text-foreground">{shipment.tracking_number ?? '—'}</dd></div>
@@ -121,7 +117,7 @@ export default async function ShipmentDetailPage({ params }: { params: Promise<{
             <div className="mt-4 pt-4 border-t border-border">
               <h4 className="text-xs font-medium text-text-muted mb-2">Linked To</h4>
               {shipment.events && <p className="text-sm text-foreground">Event: {shipment.events.name}</p>}
-              {shipment.clients && <p className="text-sm text-foreground">Client: {shipment.clients.name}</p>}
+              {shipment.clients && <p className="text-sm text-foreground">Client: {shipment.clients.company_name}</p>}
               {shipment.vendors && <p className="text-sm text-foreground">Vendor: {shipment.vendors.name}</p>}
             </div>
           )}

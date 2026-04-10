@@ -25,10 +25,13 @@ CREATE TABLE IF NOT EXISTS public.goal_task_links (
 
 ALTER TABLE public.goal_task_links ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "goal_task_links_select" ON public.goal_task_links;
 CREATE POLICY "goal_task_links_select" ON public.goal_task_links FOR SELECT
   USING (EXISTS (SELECT 1 FROM public.goals g WHERE g.id = goal_id AND g.organization_id = auth_user_org_id()));
+DROP POLICY IF EXISTS "goal_task_links_insert" ON public.goal_task_links;
 CREATE POLICY "goal_task_links_insert" ON public.goal_task_links FOR INSERT
   WITH CHECK (EXISTS (SELECT 1 FROM public.goals g WHERE g.id = goal_id AND g.organization_id = auth_user_org_id()));
+DROP POLICY IF EXISTS "goal_task_links_delete" ON public.goal_task_links;
 CREATE POLICY "goal_task_links_delete" ON public.goal_task_links FOR DELETE
   USING (EXISTS (SELECT 1 FROM public.goals g WHERE g.id = goal_id AND g.organization_id = auth_user_org_id()));
 
@@ -49,8 +52,10 @@ CREATE TABLE IF NOT EXISTS public.goal_check_ins (
 
 ALTER TABLE public.goal_check_ins ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "goal_check_ins_select" ON public.goal_check_ins;
 CREATE POLICY "goal_check_ins_select" ON public.goal_check_ins FOR SELECT
   USING (EXISTS (SELECT 1 FROM public.goals g WHERE g.id = goal_id AND g.organization_id = auth_user_org_id()));
+DROP POLICY IF EXISTS "goal_check_ins_insert" ON public.goal_check_ins;
 CREATE POLICY "goal_check_ins_insert" ON public.goal_check_ins FOR INSERT
   WITH CHECK (EXISTS (SELECT 1 FROM public.goals g WHERE g.id = goal_id AND g.organization_id = auth_user_org_id()));
 

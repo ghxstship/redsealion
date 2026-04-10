@@ -98,8 +98,10 @@ CREATE INDEX IF NOT EXISTS idx_form_submissions_lead
 
 ALTER TABLE public.lead_form_submissions ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "lead_form_submissions_org_read" ON public.lead_form_submissions;
 CREATE POLICY "lead_form_submissions_org_read" ON public.lead_form_submissions
   FOR SELECT USING (organization_id = auth_user_org_id());
+DROP POLICY IF EXISTS "lead_form_submissions_org_write" ON public.lead_form_submissions;
 CREATE POLICY "lead_form_submissions_org_write" ON public.lead_form_submissions
   FOR ALL USING (organization_id = auth_user_org_id());
 
@@ -123,8 +125,10 @@ CREATE INDEX IF NOT EXISTS idx_lead_activities_org
 
 ALTER TABLE public.lead_activities ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "lead_activities_org_read" ON public.lead_activities;
 CREATE POLICY "lead_activities_org_read" ON public.lead_activities
   FOR SELECT USING (organization_id = auth_user_org_id());
+DROP POLICY IF EXISTS "lead_activities_org_write" ON public.lead_activities;
 CREATE POLICY "lead_activities_org_write" ON public.lead_activities
   FOR ALL USING (organization_id = auth_user_org_id());
 
@@ -133,6 +137,7 @@ CREATE POLICY "lead_activities_org_write" ON public.lead_activities
 -- ---------------------------------------------------------------------------
 DO $$
 BEGIN
+  DROP TRIGGER IF EXISTS set_lead_forms_updated_at ON public.lead_forms;
   CREATE TRIGGER set_lead_forms_updated_at
     BEFORE UPDATE ON public.lead_forms
     FOR EACH ROW

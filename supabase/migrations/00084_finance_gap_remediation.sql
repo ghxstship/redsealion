@@ -90,6 +90,7 @@ ALTER TABLE public.invoice_payments
   ADD COLUMN IF NOT EXISTS voided_at TIMESTAMPTZ;
 
 -- Add updated_at trigger for invoice_payments
+DROP TRIGGER IF EXISTS set_invoice_payments_updated_at ON public.invoice_payments;
 CREATE TRIGGER set_invoice_payments_updated_at
   BEFORE UPDATE ON public.invoice_payments
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -191,15 +192,19 @@ CREATE INDEX IF NOT EXISTS idx_mileage_user ON public.mileage_entries(user_id);
 
 ALTER TABLE public.mileage_entries ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users view own mileage" ON public.mileage_entries;
 CREATE POLICY "Users view own mileage" ON public.mileage_entries
   FOR SELECT USING (organization_id = auth_user_org_id() AND (user_id = auth.uid() OR is_org_admin_or_above()));
 
+DROP POLICY IF EXISTS "Users manage own mileage" ON public.mileage_entries;
 CREATE POLICY "Users manage own mileage" ON public.mileage_entries
   FOR ALL USING (organization_id = auth_user_org_id() AND user_id = auth.uid());
 
+DROP POLICY IF EXISTS "Admins manage all mileage" ON public.mileage_entries;
 CREATE POLICY "Admins manage all mileage" ON public.mileage_entries
   FOR ALL USING (organization_id = auth_user_org_id() AND is_org_admin_or_above());
 
+DROP TRIGGER IF EXISTS set_mileage_entries_updated_at ON public.mileage_entries;
 CREATE TRIGGER set_mileage_entries_updated_at
   BEFORE UPDATE ON public.mileage_entries
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -229,17 +234,20 @@ CREATE INDEX IF NOT EXISTS idx_po_line_items_po ON public.purchase_order_line_it
 
 ALTER TABLE public.purchase_order_line_items ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Org view PO line items" ON public.purchase_order_line_items;
 CREATE POLICY "Org view PO line items" ON public.purchase_order_line_items
   FOR SELECT USING (
     EXISTS (SELECT 1 FROM public.purchase_orders po WHERE po.id = po_id AND po.organization_id = auth_user_org_id())
   );
 
+DROP POLICY IF EXISTS "Admins manage PO line items" ON public.purchase_order_line_items;
 CREATE POLICY "Admins manage PO line items" ON public.purchase_order_line_items
   FOR ALL USING (
     EXISTS (SELECT 1 FROM public.purchase_orders po WHERE po.id = po_id AND po.organization_id = auth_user_org_id())
     AND is_org_admin_or_above()
   );
 
+DROP TRIGGER IF EXISTS set_po_line_items_updated_at ON public.purchase_order_line_items;
 CREATE TRIGGER set_po_line_items_updated_at
   BEFORE UPDATE ON public.purchase_order_line_items
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -250,6 +258,7 @@ CREATE TRIGGER set_po_line_items_updated_at
 -- ═══════════════════════════════════════════════════════════════════════
 
 -- F-1: budget_line_items write policy (CRITICAL — only SELECT exists)
+DROP POLICY IF EXISTS "Admins manage budget line items" ON public.budget_line_items;
 CREATE POLICY "Admins manage budget line items" ON public.budget_line_items
   FOR ALL USING (
     EXISTS (
@@ -261,6 +270,7 @@ CREATE POLICY "Admins manage budget line items" ON public.budget_line_items
   );
 
 -- F-2: budget_alerts write policies
+DROP POLICY IF EXISTS "Admins manage alerts" ON public.budget_alerts;
 CREATE POLICY "Admins manage alerts" ON public.budget_alerts
   FOR ALL USING (
     organization_id = auth_user_org_id()
@@ -268,6 +278,7 @@ CREATE POLICY "Admins manage alerts" ON public.budget_alerts
   );
 
 -- F-3: expense admin approval policy — admins can update any org expense
+DROP POLICY IF EXISTS "Admins manage org expenses" ON public.expenses;
 CREATE POLICY "Admins manage org expenses" ON public.expenses
   FOR ALL USING (
     organization_id = auth_user_org_id()

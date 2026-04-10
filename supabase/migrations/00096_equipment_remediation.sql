@@ -24,6 +24,7 @@ CREATE INDEX IF NOT EXISTS idx_equipment_bundle_items_asset ON equipment_bundle_
 
 ALTER TABLE public.equipment_bundle_items ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "org_isolation_equipment_bundle_items" ON public.equipment_bundle_items;
 CREATE POLICY "org_isolation_equipment_bundle_items" ON public.equipment_bundle_items
   FOR ALL USING (
     bundle_id IN (

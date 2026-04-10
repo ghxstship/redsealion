@@ -151,8 +151,10 @@ CREATE TABLE IF NOT EXISTS public.deal_stage_history (
 
 ALTER TABLE public.deal_stage_history ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "deal_stage_history_select" ON public.deal_stage_history;
 CREATE POLICY "deal_stage_history_select" ON public.deal_stage_history FOR SELECT
   USING (organization_id = auth_user_org_id());
+DROP POLICY IF EXISTS "deal_stage_history_insert" ON public.deal_stage_history;
 CREATE POLICY "deal_stage_history_insert" ON public.deal_stage_history FOR INSERT
   WITH CHECK (organization_id = auth_user_org_id());
 
@@ -198,14 +200,13 @@ DECLARE
 BEGIN
   SELECT ROUND(AVG(
     CASE
-      WHEN target_value IS NULL OR target_value = 0 THEN 0
-      ELSE LEAST((current_value / target_value) * 100, 100)
+      WHEN target IS NULL OR target = 0 THEN 0
+      ELSE LEAST((current / target) * 100, 100)
     END
   ))
   INTO v_progress
   FROM public.goal_key_results
-  WHERE goal_id = COALESCE(NEW.goal_id, OLD.goal_id)
-    AND (deleted_at IS NULL OR deleted_at IS NOT DISTINCT FROM NULL);
+  WHERE goal_id = COALESCE(NEW.goal_id, OLD.goal_id);
 
   UPDATE public.goals
   SET progress = COALESCE(v_progress, 0)
@@ -217,7 +218,7 @@ $$ LANGUAGE plpgsql;
 
 DROP TRIGGER IF EXISTS trg_goal_progress_recalc ON public.goal_key_results;
 CREATE TRIGGER trg_goal_progress_recalc
-  AFTER INSERT OR UPDATE OF current_value, target_value OR DELETE
+  AFTER INSERT OR UPDATE OF current, target OR DELETE
   ON public.goal_key_results
   FOR EACH ROW EXECUTE FUNCTION public.recalc_goal_progress();
 
@@ -296,12 +297,16 @@ CREATE TABLE IF NOT EXISTS public.packing_lists (
 
 ALTER TABLE public.packing_lists ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "packing_lists_select" ON public.packing_lists;
 CREATE POLICY "packing_lists_select" ON public.packing_lists FOR SELECT
   USING (organization_id = auth_user_org_id());
+DROP POLICY IF EXISTS "packing_lists_insert" ON public.packing_lists;
 CREATE POLICY "packing_lists_insert" ON public.packing_lists FOR INSERT
   WITH CHECK (organization_id = auth_user_org_id());
+DROP POLICY IF EXISTS "packing_lists_update" ON public.packing_lists;
 CREATE POLICY "packing_lists_update" ON public.packing_lists FOR UPDATE
   USING (organization_id = auth_user_org_id());
+DROP POLICY IF EXISTS "packing_lists_delete" ON public.packing_lists;
 CREATE POLICY "packing_lists_delete" ON public.packing_lists FOR DELETE
   USING (organization_id = auth_user_org_id());
 
@@ -311,6 +316,7 @@ CREATE INDEX IF NOT EXISTS idx_packing_lists_event
   ON public.packing_lists(event_id) WHERE event_id IS NOT NULL;
 
 DO $$ BEGIN
+  DROP TRIGGER IF EXISTS set_updated_at_packing_lists ON public.packing_lists;
   CREATE TRIGGER set_updated_at_packing_lists
     BEFORE UPDATE ON public.packing_lists
     FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -319,7 +325,7 @@ EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
 CREATE TABLE IF NOT EXISTS public.packing_list_items (
   id              UUID    PRIMARY KEY DEFAULT gen_random_uuid(),
-  list_id         UUID    NOT NULL REFERENCES public.packing_lists(id) ON DELETE CASCADE,
+  list_id         UUID    REFERENCES public.packing_lists(id) ON DELETE CASCADE,
   asset_id        UUID    REFERENCES public.assets(id) ON DELETE SET NULL,
   description     TEXT,
   quantity        INT     NOT NULL DEFAULT 1,
@@ -328,27 +334,51 @@ CREATE TABLE IF NOT EXISTS public.packing_list_items (
   notes           TEXT
 );
 
+-- Add columns that may be missing on the pre-existing table from 00071
+ALTER TABLE public.packing_list_items ADD COLUMN IF NOT EXISTS list_id UUID REFERENCES public.packing_lists(id) ON DELETE CASCADE;
+ALTER TABLE public.packing_list_items ADD COLUMN IF NOT EXISTS asset_id UUID REFERENCES public.assets(id) ON DELETE SET NULL;
+ALTER TABLE public.packing_list_items ADD COLUMN IF NOT EXISTS packed_by UUID REFERENCES public.users(id) ON DELETE SET NULL;
+ALTER TABLE public.packing_list_items ADD COLUMN IF NOT EXISTS packed_at TIMESTAMPTZ;
+ALTER TABLE public.packing_list_items ADD COLUMN IF NOT EXISTS notes TEXT;
+
 ALTER TABLE public.packing_list_items ENABLE ROW LEVEL SECURITY;
 
+-- Use organization_id if present (old table), or list_id via join (new table)
+DROP POLICY IF EXISTS "packing_list_items_select" ON public.packing_list_items;
 CREATE POLICY "packing_list_items_select" ON public.packing_list_items FOR SELECT
-  USING (list_id IN (
-    SELECT id FROM public.packing_lists WHERE organization_id = auth_user_org_id()
-  ));
+  USING (
+    (organization_id IS NOT NULL AND organization_id = auth_user_org_id())
+    OR (list_id IS NOT NULL AND list_id IN (
+      SELECT id FROM public.packing_lists WHERE organization_id = auth_user_org_id()
+    ))
+  );
+DROP POLICY IF EXISTS "packing_list_items_insert" ON public.packing_list_items;
 CREATE POLICY "packing_list_items_insert" ON public.packing_list_items FOR INSERT
-  WITH CHECK (list_id IN (
-    SELECT id FROM public.packing_lists WHERE organization_id = auth_user_org_id()
-  ));
+  WITH CHECK (
+    (organization_id IS NOT NULL AND organization_id = auth_user_org_id())
+    OR (list_id IS NOT NULL AND list_id IN (
+      SELECT id FROM public.packing_lists WHERE organization_id = auth_user_org_id()
+    ))
+  );
+DROP POLICY IF EXISTS "packing_list_items_update" ON public.packing_list_items;
 CREATE POLICY "packing_list_items_update" ON public.packing_list_items FOR UPDATE
-  USING (list_id IN (
-    SELECT id FROM public.packing_lists WHERE organization_id = auth_user_org_id()
-  ));
+  USING (
+    (organization_id IS NOT NULL AND organization_id = auth_user_org_id())
+    OR (list_id IS NOT NULL AND list_id IN (
+      SELECT id FROM public.packing_lists WHERE organization_id = auth_user_org_id()
+    ))
+  );
+DROP POLICY IF EXISTS "packing_list_items_delete" ON public.packing_list_items;
 CREATE POLICY "packing_list_items_delete" ON public.packing_list_items FOR DELETE
-  USING (list_id IN (
-    SELECT id FROM public.packing_lists WHERE organization_id = auth_user_org_id()
-  ));
+  USING (
+    (organization_id IS NOT NULL AND organization_id = auth_user_org_id())
+    OR (list_id IS NOT NULL AND list_id IN (
+      SELECT id FROM public.packing_lists WHERE organization_id = auth_user_org_id()
+    ))
+  );
 
 CREATE INDEX IF NOT EXISTS idx_packing_list_items_list
-  ON public.packing_list_items(list_id);
+  ON public.packing_list_items(list_id) WHERE list_id IS NOT NULL;
 
 
 -- ─────────────────────────────────────────────────────────────────────────────
@@ -367,8 +397,10 @@ CREATE TABLE IF NOT EXISTS public.asset_scan_events (
 
 ALTER TABLE public.asset_scan_events ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "asset_scan_events_select" ON public.asset_scan_events;
 CREATE POLICY "asset_scan_events_select" ON public.asset_scan_events FOR SELECT
   USING (organization_id = auth_user_org_id());
+DROP POLICY IF EXISTS "asset_scan_events_insert" ON public.asset_scan_events;
 CREATE POLICY "asset_scan_events_insert" ON public.asset_scan_events FOR INSERT
   WITH CHECK (organization_id = auth_user_org_id());
 

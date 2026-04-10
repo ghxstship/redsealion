@@ -32,6 +32,7 @@ CREATE TRIGGER set_updated_at_goods_receipts
 -- ═══════════════════════════════════════════════════════════════════════
 
 DO $$ BEGIN
+  DROP POLICY IF EXISTS "org_delete_goods_receipts" ON goods_receipts;
   CREATE POLICY "org_delete_goods_receipts" ON goods_receipts
     FOR DELETE USING (organization_id IN (SELECT user_org_ids()));
 EXCEPTION WHEN duplicate_object THEN NULL;
@@ -101,6 +102,7 @@ CREATE INDEX IF NOT EXISTS idx_gr_line_items_po_line ON goods_receipt_line_items
 ALTER TABLE goods_receipt_line_items ENABLE ROW LEVEL SECURITY;
 
 DO $$ BEGIN
+  DROP POLICY IF EXISTS "org_view_gr_line_items" ON goods_receipt_line_items;
   CREATE POLICY "org_view_gr_line_items" ON goods_receipt_line_items
     FOR SELECT USING (
       EXISTS (
@@ -113,6 +115,7 @@ EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 
 DO $$ BEGIN
+  DROP POLICY IF EXISTS "org_manage_gr_line_items" ON goods_receipt_line_items;
   CREATE POLICY "org_manage_gr_line_items" ON goods_receipt_line_items
     FOR ALL USING (
       EXISTS (

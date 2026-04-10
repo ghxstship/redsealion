@@ -19,9 +19,11 @@ CREATE INDEX IF NOT EXISTS idx_expense_receipts_org ON public.expense_receipts(o
 
 ALTER TABLE public.expense_receipts ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Org view expense receipts" ON public.expense_receipts;
 CREATE POLICY "Org view expense receipts" ON public.expense_receipts
   FOR SELECT USING (organization_id = auth_user_org_id());
 
+DROP POLICY IF EXISTS "Users manage own expense receipts" ON public.expense_receipts;
 CREATE POLICY "Users manage own expense receipts" ON public.expense_receipts
   FOR ALL USING (
     organization_id = auth_user_org_id() 

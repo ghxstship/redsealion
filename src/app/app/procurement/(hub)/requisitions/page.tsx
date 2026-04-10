@@ -5,6 +5,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
 import ProcurementHubTabs from '../../ProcurementHubTabs';
+import StatusBadge, { PROCUREMENT_REQUISITION_STATUS_COLORS } from '@/components/ui/StatusBadge';
 
 async function getRequisitions() {
   try {
@@ -23,7 +24,7 @@ async function getRequisitions() {
   } catch { return []; }
 }
 
-const STATUS_COLORS: Record<string, string> = { draft: 'bg-bg-secondary text-text-secondary', submitted: 'bg-yellow-50 text-yellow-700', approved: 'bg-green-50 text-green-700', rejected: 'bg-red-50 text-red-700', ordered: 'bg-blue-50 text-blue-700' };
+
 
 export default async function RequisitionsPage() {
   const reqs = await getRequisitions();
@@ -69,7 +70,7 @@ export default async function RequisitionsPage() {
                     <td className="px-4 py-3 capitalize text-text-secondary">{r.priority}</td>
                     <td className="px-4 py-3 tabular-nums">{formatCurrency(r.total_cents / 100)}</td>
                     <td className="px-4 py-3 text-text-secondary">{r.needed_by ? new Date(r.needed_by).toLocaleDateString() : '—'}</td>
-                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[r.status]}`}>{r.status}</span></td>
+                    <td className="px-4 py-3"><StatusBadge status={r.status} colorMap={PROCUREMENT_REQUISITION_STATUS_COLORS} /></td>
                   </tr>
                 ))}
               </tbody>

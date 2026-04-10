@@ -38,9 +38,11 @@ CREATE INDEX IF NOT EXISTS idx_event_incidents_report ON public.event_incidents(
 
 ALTER TABLE public.event_incidents ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "org_access_incidents" ON public.event_incidents;
 CREATE POLICY "org_access_incidents" ON public.event_incidents
   FOR ALL USING (organization_id IN (SELECT user_org_ids()));
 
+DROP TRIGGER IF EXISTS set_updated_at_event_incidents ON public.event_incidents;
 CREATE TRIGGER set_updated_at_event_incidents
   BEFORE UPDATE ON public.event_incidents
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -65,5 +67,6 @@ CREATE INDEX IF NOT EXISTS idx_event_roles_user ON public.event_roles(user_id);
 
 ALTER TABLE public.event_roles ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "org_access_roles" ON public.event_roles;
 CREATE POLICY "org_access_roles" ON public.event_roles
   FOR ALL USING (organization_id IN (SELECT user_org_ids()));

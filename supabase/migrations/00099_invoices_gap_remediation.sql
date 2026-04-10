@@ -36,12 +36,14 @@ CREATE TABLE IF NOT EXISTS invoice_refunds (
   deleted_at TIMESTAMPTZ
 );
 
-CREATE INDEX idx_invoice_refunds_org ON invoice_refunds(organization_id);
-CREATE INDEX idx_invoice_refunds_invoice ON invoice_refunds(invoice_id);
+CREATE INDEX IF NOT EXISTS idx_invoice_refunds_org ON invoice_refunds(organization_id);
+CREATE INDEX IF NOT EXISTS idx_invoice_refunds_invoice ON invoice_refunds(invoice_id);
 CREATE TRIGGER update_invoice_refunds_updated_at BEFORE UPDATE ON invoice_refunds FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
 ALTER TABLE invoice_refunds ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Org members can view refunds" ON invoice_refunds;
 CREATE POLICY "Org members can view refunds" ON invoice_refunds FOR SELECT USING (organization_id = auth_user_org_id());
+DROP POLICY IF EXISTS "Admins can manage refunds" ON invoice_refunds;
 CREATE POLICY "Admins can manage refunds" ON invoice_refunds FOR ALL USING (organization_id = auth_user_org_id() AND is_org_admin_or_above());
 
 -- 6. Trigger for invoice totals calculation

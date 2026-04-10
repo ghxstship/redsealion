@@ -28,7 +28,9 @@ CREATE INDEX IF NOT EXISTS idx_deal_contacts_deal ON public.deal_contacts(deal_i
 CREATE INDEX IF NOT EXISTS idx_deal_contacts_contact ON public.deal_contacts(contact_id);
 
 ALTER TABLE public.deal_contacts ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Org members can view deal contacts" ON public.deal_contacts;
 CREATE POLICY "Org members can view deal contacts" ON public.deal_contacts FOR SELECT USING (organization_id = auth_user_org_id());
+DROP POLICY IF EXISTS "Producers can manage deal contacts" ON public.deal_contacts;
 CREATE POLICY "Producers can manage deal contacts" ON public.deal_contacts FOR ALL USING (organization_id = auth_user_org_id() AND is_producer_role());
 
 -- ============================================================
@@ -53,6 +55,7 @@ ALTER TABLE public.deals ADD COLUMN IF NOT EXISTS stage_entered_at TIMESTAMPTZ N
 -- #31: updated_at on deal_activities
 -- ============================================================
 ALTER TABLE public.deal_activities ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT now();
+DROP TRIGGER IF EXISTS update_deal_activities_updated_at ON public.deal_activities;
 CREATE TRIGGER update_deal_activities_updated_at
   BEFORE UPDATE ON public.deal_activities
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -107,5 +110,7 @@ CREATE INDEX IF NOT EXISTS idx_deal_tags_deal ON public.deal_tags(deal_id);
 CREATE INDEX IF NOT EXISTS idx_deal_tags_org_tag ON public.deal_tags(organization_id, tag);
 
 ALTER TABLE public.deal_tags ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Org members can view deal tags" ON public.deal_tags;
 CREATE POLICY "Org members can view deal tags" ON public.deal_tags FOR SELECT USING (organization_id = auth_user_org_id());
+DROP POLICY IF EXISTS "Producers can manage deal tags" ON public.deal_tags;
 CREATE POLICY "Producers can manage deal tags" ON public.deal_tags FOR ALL USING (organization_id = auth_user_org_id() AND is_producer_role());

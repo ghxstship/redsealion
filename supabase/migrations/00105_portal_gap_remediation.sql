@@ -110,11 +110,13 @@ CREATE INDEX IF NOT EXISTS idx_portal_access_log_accessed ON public.portal_acces
 ALTER TABLE public.portal_access_log ENABLE ROW LEVEL SECURITY;
 
 DO $$ BEGIN
+  DROP POLICY IF EXISTS "portal_access_log_select" ON public.portal_access_log;
   CREATE POLICY "portal_access_log_select" ON public.portal_access_log
     FOR SELECT USING (organization_id = auth_user_org_id());
 EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 DO $$ BEGIN
+  DROP POLICY IF EXISTS "portal_access_log_insert" ON public.portal_access_log;
   CREATE POLICY "portal_access_log_insert" ON public.portal_access_log
     FOR INSERT WITH CHECK (organization_id = auth_user_org_id());
 EXCEPTION WHEN duplicate_object THEN NULL;
@@ -148,27 +150,32 @@ CREATE INDEX IF NOT EXISTS idx_portal_invitations_status ON public.portal_invita
 ALTER TABLE public.portal_invitations ENABLE ROW LEVEL SECURITY;
 
 DO $$ BEGIN
+  DROP POLICY IF EXISTS "portal_invitations_select" ON public.portal_invitations;
   CREATE POLICY "portal_invitations_select" ON public.portal_invitations
     FOR SELECT USING (organization_id = auth_user_org_id());
 EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 DO $$ BEGIN
+  DROP POLICY IF EXISTS "portal_invitations_insert" ON public.portal_invitations;
   CREATE POLICY "portal_invitations_insert" ON public.portal_invitations
     FOR INSERT WITH CHECK (organization_id = auth_user_org_id());
 EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 DO $$ BEGIN
+  DROP POLICY IF EXISTS "portal_invitations_update" ON public.portal_invitations;
   CREATE POLICY "portal_invitations_update" ON public.portal_invitations
     FOR UPDATE USING (organization_id = auth_user_org_id());
 EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 DO $$ BEGIN
+  DROP POLICY IF EXISTS "portal_invitations_delete" ON public.portal_invitations;
   CREATE POLICY "portal_invitations_delete" ON public.portal_invitations
     FOR DELETE USING (organization_id = auth_user_org_id());
 EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 
 DO $$ BEGIN
+  DROP TRIGGER IF EXISTS set_updated_at_portal_invitations ON public.portal_invitations;
   CREATE TRIGGER set_updated_at_portal_invitations
     BEFORE UPDATE ON public.portal_invitations
     FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -204,6 +211,7 @@ ALTER TABLE public.portal_contacts ENABLE ROW LEVEL SECURITY;
 
 -- RLS: inherit access from the portal's organization
 DO $$ BEGIN
+  DROP POLICY IF EXISTS "portal_contacts_select" ON public.portal_contacts;
   CREATE POLICY "portal_contacts_select" ON public.portal_contacts
     FOR SELECT USING (
       EXISTS (
@@ -216,6 +224,7 @@ DO $$ BEGIN
 EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 DO $$ BEGIN
+  DROP POLICY IF EXISTS "portal_contacts_insert" ON public.portal_contacts;
   CREATE POLICY "portal_contacts_insert" ON public.portal_contacts
     FOR INSERT WITH CHECK (
       EXISTS (
@@ -228,6 +237,7 @@ DO $$ BEGIN
 EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 DO $$ BEGIN
+  DROP POLICY IF EXISTS "portal_contacts_delete" ON public.portal_contacts;
   CREATE POLICY "portal_contacts_delete" ON public.portal_contacts
     FOR DELETE USING (
       EXISTS (

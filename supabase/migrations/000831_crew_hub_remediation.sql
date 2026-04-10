@@ -184,18 +184,23 @@ CREATE TABLE IF NOT EXISTS public.recruitment_applicants (
 
 ALTER TABLE public.recruitment_applicants ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "recruitment_applicants_select" ON public.recruitment_applicants;
 CREATE POLICY "recruitment_applicants_select" ON public.recruitment_applicants FOR SELECT
   USING (organization_id = auth_user_org_id());
+DROP POLICY IF EXISTS "recruitment_applicants_insert" ON public.recruitment_applicants;
 CREATE POLICY "recruitment_applicants_insert" ON public.recruitment_applicants FOR INSERT
   WITH CHECK (organization_id = auth_user_org_id());
+DROP POLICY IF EXISTS "recruitment_applicants_update" ON public.recruitment_applicants;
 CREATE POLICY "recruitment_applicants_update" ON public.recruitment_applicants FOR UPDATE
   USING (organization_id = auth_user_org_id());
+DROP POLICY IF EXISTS "recruitment_applicants_delete" ON public.recruitment_applicants;
 CREATE POLICY "recruitment_applicants_delete" ON public.recruitment_applicants FOR DELETE
   USING (organization_id = auth_user_org_id());
 
 CREATE INDEX IF NOT EXISTS idx_recruitment_applicants_org ON public.recruitment_applicants(organization_id);
 CREATE INDEX IF NOT EXISTS idx_recruitment_applicants_position ON public.recruitment_applicants(position_id);
 
+DROP TRIGGER IF EXISTS set_recruitment_applicants_updated_at ON public.recruitment_applicants;
 CREATE TRIGGER set_recruitment_applicants_updated_at
   BEFORE UPDATE ON public.recruitment_applicants
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -238,16 +243,19 @@ CREATE TABLE IF NOT EXISTS public.notifications (
 ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
 
 DO $$ BEGIN
+  DROP POLICY IF EXISTS "notifications_select" ON public.notifications;
   CREATE POLICY "notifications_select" ON public.notifications FOR SELECT
     USING (organization_id = auth_user_org_id() OR user_id = auth.uid());
 EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 DO $$ BEGIN
+  DROP POLICY IF EXISTS "notifications_insert" ON public.notifications;
   CREATE POLICY "notifications_insert" ON public.notifications FOR INSERT
     WITH CHECK (organization_id = auth_user_org_id());
 EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 DO $$ BEGIN
+  DROP POLICY IF EXISTS "notifications_update" ON public.notifications;
   CREATE POLICY "notifications_update" ON public.notifications FOR UPDATE
     USING (organization_id = auth_user_org_id() OR user_id = auth.uid());
 EXCEPTION WHEN duplicate_object THEN NULL;

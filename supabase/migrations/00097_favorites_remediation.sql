@@ -36,6 +36,7 @@ DROP POLICY IF EXISTS "Users can create their own favorites in active organizati
 DROP POLICY IF EXISTS "Users can update their own favorites in active organizations" ON public.favorites;
 DROP POLICY IF EXISTS "Users can delete their own favorites in active organizations" ON public.favorites;
 
+DROP POLICY IF EXISTS "Users can view their own favorites in active organizations" ON public.favorites;
 CREATE POLICY "Users can view their own favorites in active organizations"
   ON public.favorites
   FOR SELECT
@@ -49,6 +50,7 @@ CREATE POLICY "Users can view their own favorites in active organizations"
     )
   );
 
+DROP POLICY IF EXISTS "Users can create their own favorites in active organizations" ON public.favorites;
 CREATE POLICY "Users can create their own favorites in active organizations"
   ON public.favorites
   FOR INSERT
@@ -62,6 +64,7 @@ CREATE POLICY "Users can create their own favorites in active organizations"
     )
   );
 
+DROP POLICY IF EXISTS "Users can delete their own favorites in active organizations" ON public.favorites;
 CREATE POLICY "Users can delete their own favorites in active organizations"
   ON public.favorites
   FOR DELETE

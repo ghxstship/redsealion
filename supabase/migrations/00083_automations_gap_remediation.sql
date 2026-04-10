@@ -31,6 +31,7 @@ ALTER TABLE automation_runs ADD COLUMN IF NOT EXISTS retry_count INTEGER NOT NUL
 ALTER TABLE automation_runs ADD COLUMN IF NOT EXISTS max_retries INTEGER NOT NULL DEFAULT 3;
 
 -- updated_at trigger
+DROP TRIGGER IF EXISTS update_automation_runs_updated_at ON automation_runs;
 CREATE TRIGGER update_automation_runs_updated_at
   BEFORE UPDATE ON automation_runs
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -47,6 +48,7 @@ END $$;
 -- 3. RLS policies for automation_runs INSERT/UPDATE (#3)
 -- -------------------------------------------------------------------------
 DO $$ BEGIN
+  DROP POLICY IF EXISTS "Org members can create runs" ON automation_runs;
   CREATE POLICY "Org members can create runs"
     ON automation_runs FOR INSERT
     WITH CHECK (organization_id = auth_user_org_id());
@@ -54,6 +56,7 @@ EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 
 DO $$ BEGIN
+  DROP POLICY IF EXISTS "Admins can update runs" ON automation_runs;
   CREATE POLICY "Admins can update runs"
     ON automation_runs FOR UPDATE
     USING (organization_id = auth_user_org_id() AND is_org_admin_or_above());
@@ -65,6 +68,7 @@ END $$;
 -- -------------------------------------------------------------------------
 ALTER TABLE email_threads ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT now();
 
+DROP TRIGGER IF EXISTS update_email_threads_updated_at ON email_threads;
 CREATE TRIGGER update_email_threads_updated_at
   BEFORE UPDATE ON email_threads
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -112,6 +116,7 @@ CREATE INDEX IF NOT EXISTS idx_automation_steps_automation ON automation_steps(a
 ALTER TABLE automation_steps ENABLE ROW LEVEL SECURITY;
 
 DO $$ BEGIN
+  DROP POLICY IF EXISTS "Org members can view automation steps" ON automation_steps;
   CREATE POLICY "Org members can view automation steps"
     ON automation_steps FOR SELECT
     USING (EXISTS (
@@ -121,6 +126,7 @@ EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 
 DO $$ BEGIN
+  DROP POLICY IF EXISTS "Admins can manage automation steps" ON automation_steps;
   CREATE POLICY "Admins can manage automation steps"
     ON automation_steps FOR ALL
     USING (EXISTS (
@@ -129,6 +135,7 @@ DO $$ BEGIN
 EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 
+DROP TRIGGER IF EXISTS update_automation_steps_updated_at ON automation_steps;
 CREATE TRIGGER update_automation_steps_updated_at
   BEFORE UPDATE ON automation_steps
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();

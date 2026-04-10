@@ -30,6 +30,7 @@ ALTER TABLE work_order_bids
 ALTER TABLE work_order_bids
   ALTER COLUMN status SET DEFAULT 'pending';
 
+DROP POLICY IF EXISTS "crew_update_bids" ON work_order_bids;
 CREATE POLICY "crew_update_bids" ON work_order_bids 
   FOR UPDATE USING (
     crew_profile_id IN (SELECT id FROM crew_profiles WHERE user_id = auth.uid())
@@ -58,9 +59,11 @@ CREATE INDEX IF NOT EXISTS idx_bid_status_log_org ON work_order_bid_status_log(o
 -- RLS for bid status log
 ALTER TABLE work_order_bid_status_log ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "org_read_bid_status_log" ON work_order_bid_status_log;
 CREATE POLICY "org_read_bid_status_log" ON work_order_bid_status_log
   FOR SELECT USING (organization_id IN (SELECT user_org_ids()));
 
+DROP POLICY IF EXISTS "org_insert_bid_status_log" ON work_order_bid_status_log;
 CREATE POLICY "org_insert_bid_status_log" ON work_order_bid_status_log
   FOR INSERT WITH CHECK (organization_id IN (SELECT user_org_ids()));
 

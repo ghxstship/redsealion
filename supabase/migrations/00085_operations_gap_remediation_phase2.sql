@@ -24,11 +24,13 @@ CREATE TABLE IF NOT EXISTS event_contacts (
 CREATE INDEX IF NOT EXISTS idx_event_contacts_event ON event_contacts(event_id);
 
 ALTER TABLE event_contacts ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "org_access_event_contacts" ON event_contacts;
 CREATE POLICY "org_access_event_contacts" ON event_contacts
   FOR ALL USING (
     event_id IN (SELECT id FROM events WHERE organization_id IN (SELECT user_org_ids()))
   );
 
+DROP TRIGGER IF EXISTS set_updated_at_event_contacts ON event_contacts;
 CREATE TRIGGER set_updated_at_event_contacts
   BEFORE UPDATE ON event_contacts
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -54,6 +56,7 @@ ALTER TABLE locations
 ALTER TABLE event_locations
   ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT now();
 
+DROP TRIGGER IF EXISTS set_updated_at_event_locations ON event_locations;
 CREATE TRIGGER set_updated_at_event_locations
   BEFORE UPDATE ON event_locations
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -61,6 +64,7 @@ CREATE TRIGGER set_updated_at_event_locations
 ALTER TABLE project_events
   ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT now();
 
+DROP TRIGGER IF EXISTS set_updated_at_project_events ON project_events;
 CREATE TRIGGER set_updated_at_project_events
   BEFORE UPDATE ON project_events
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -68,6 +72,7 @@ CREATE TRIGGER set_updated_at_project_events
 ALTER TABLE project_locations
   ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT now();
 
+DROP TRIGGER IF EXISTS set_updated_at_project_locations ON project_locations;
 CREATE TRIGGER set_updated_at_project_locations
   BEFORE UPDATE ON project_locations
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -95,9 +100,11 @@ CREATE TABLE IF NOT EXISTS warehouse_facilities (
 CREATE INDEX IF NOT EXISTS idx_warehouse_facilities_org ON warehouse_facilities(organization_id);
 
 ALTER TABLE warehouse_facilities ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "org_access_warehouse_facilities" ON warehouse_facilities;
 CREATE POLICY "org_access_warehouse_facilities" ON warehouse_facilities
   FOR ALL USING (organization_id IN (SELECT user_org_ids()));
 
+DROP TRIGGER IF EXISTS set_updated_at_warehouse_facilities ON warehouse_facilities;
 CREATE TRIGGER set_updated_at_warehouse_facilities
   BEFORE UPDATE ON warehouse_facilities
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -129,6 +136,7 @@ CREATE INDEX IF NOT EXISTS idx_bundle_items_bundle ON equipment_bundle_items(bun
 CREATE INDEX IF NOT EXISTS idx_bundle_items_asset ON equipment_bundle_items(asset_id);
 
 ALTER TABLE equipment_bundle_items ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "org_access_bundle_items" ON equipment_bundle_items;
 CREATE POLICY "org_access_bundle_items" ON equipment_bundle_items
   FOR ALL USING (
     bundle_id IN (SELECT id FROM equipment_bundles WHERE organization_id IN (SELECT user_org_ids()))
@@ -152,6 +160,7 @@ CREATE INDEX IF NOT EXISTS idx_block_assignments_block ON schedule_block_assignm
 CREATE INDEX IF NOT EXISTS idx_block_assignments_crew ON schedule_block_assignments(crew_profile_id);
 
 ALTER TABLE schedule_block_assignments ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "org_access_block_assignments" ON schedule_block_assignments;
 CREATE POLICY "org_access_block_assignments" ON schedule_block_assignments
   FOR ALL USING (
     block_id IN (

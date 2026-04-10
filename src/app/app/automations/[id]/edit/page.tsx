@@ -7,6 +7,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import { TriggerSelector } from '@/components/admin/automations/TriggerSelector';
 import { ActionSelector } from '@/components/admin/automations/ActionSelector';
 import PageHeader from '@/components/shared/PageHeader';
+import ConfirmDialog from '@/components/shared/ConfirmDialog';
 
 export default function EditAutomationPage() {
   const router = useRouter();
@@ -24,6 +25,7 @@ export default function EditAutomationPage() {
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     async function loadAutomation() {
@@ -88,9 +90,9 @@ export default function EditAutomationPage() {
   }
 
   async function handleDelete() {
-    if (!confirm('Are you sure you want to delete this automation? This action cannot be undone.')) return;
     setDeleting(true);
     setError(null);
+    setShowDeleteConfirm(false);
 
     try {
       const response = await fetch(`/api/automations/${automationId}`, {
@@ -128,6 +130,7 @@ export default function EditAutomationPage() {
   }
 
   return (
+    <>
     <TierGate feature="automations">
       <div className="mb-6">
         <Link
@@ -212,7 +215,7 @@ export default function EditAutomationPage() {
         {/* Save / Delete */}
         <div className="flex justify-between">
           <button
-            onClick={handleDelete}
+            onClick={() => setShowDeleteConfirm(true)}
             disabled={deleting}
             className="rounded-lg border border-red-200 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
           >
@@ -236,5 +239,16 @@ export default function EditAutomationPage() {
         </div>
       </div>
     </TierGate>
+
+    <ConfirmDialog
+      open={showDeleteConfirm}
+      title="Delete Automation"
+      message="Are you sure you want to delete this automation? This action cannot be undone."
+      variant="danger"
+      confirmLabel="Delete"
+      onConfirm={handleDelete}
+      onCancel={() => setShowDeleteConfirm(false)}
+    />
+    </>
   );
 }

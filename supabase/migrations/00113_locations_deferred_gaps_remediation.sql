@@ -48,6 +48,7 @@ CREATE INDEX IF NOT EXISTS idx_location_files_location ON public.location_files(
 CREATE INDEX IF NOT EXISTS idx_location_files_org ON public.location_files(organization_id);
 
 DO $$ BEGIN
+  DROP TRIGGER IF EXISTS set_updated_at_location_files ON public.location_files;
   CREATE TRIGGER set_updated_at_location_files
     BEFORE UPDATE ON public.location_files
     FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -55,12 +56,16 @@ EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
 ALTER TABLE public.location_files ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "location_files_select" ON public.location_files;
 CREATE POLICY "location_files_select" ON public.location_files FOR SELECT
   USING (organization_id = auth_user_org_id());
+DROP POLICY IF EXISTS "location_files_insert" ON public.location_files;
 CREATE POLICY "location_files_insert" ON public.location_files FOR INSERT
   WITH CHECK (organization_id = auth_user_org_id());
+DROP POLICY IF EXISTS "location_files_update" ON public.location_files;
 CREATE POLICY "location_files_update" ON public.location_files FOR UPDATE
   USING (organization_id = auth_user_org_id());
+DROP POLICY IF EXISTS "location_files_delete" ON public.location_files;
 CREATE POLICY "location_files_delete" ON public.location_files FOR DELETE
   USING (organization_id = auth_user_org_id());
 
@@ -84,6 +89,7 @@ CREATE INDEX IF NOT EXISTS idx_location_contacts_location ON public.location_con
 CREATE INDEX IF NOT EXISTS idx_location_contacts_org ON public.location_contacts(organization_id);
 
 DO $$ BEGIN
+  DROP TRIGGER IF EXISTS set_updated_at_location_contacts ON public.location_contacts;
   CREATE TRIGGER set_updated_at_location_contacts
     BEFORE UPDATE ON public.location_contacts
     FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -91,11 +97,15 @@ EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
 ALTER TABLE public.location_contacts ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "location_contacts_select" ON public.location_contacts;
 CREATE POLICY "location_contacts_select" ON public.location_contacts FOR SELECT
   USING (organization_id = auth_user_org_id());
+DROP POLICY IF EXISTS "location_contacts_insert" ON public.location_contacts;
 CREATE POLICY "location_contacts_insert" ON public.location_contacts FOR INSERT
   WITH CHECK (organization_id = auth_user_org_id());
+DROP POLICY IF EXISTS "location_contacts_update" ON public.location_contacts;
 CREATE POLICY "location_contacts_update" ON public.location_contacts FOR UPDATE
   USING (organization_id = auth_user_org_id());
+DROP POLICY IF EXISTS "location_contacts_delete" ON public.location_contacts;
 CREATE POLICY "location_contacts_delete" ON public.location_contacts FOR DELETE
   USING (organization_id = auth_user_org_id());

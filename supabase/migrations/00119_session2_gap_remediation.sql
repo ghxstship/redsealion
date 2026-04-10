@@ -58,12 +58,16 @@ CREATE TABLE IF NOT EXISTS public.api_keys (
 
 ALTER TABLE public.api_keys ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "api_keys_select" ON public.api_keys;
 CREATE POLICY "api_keys_select" ON public.api_keys FOR SELECT
   USING (organization_id = auth_user_org_id());
+DROP POLICY IF EXISTS "api_keys_insert" ON public.api_keys;
 CREATE POLICY "api_keys_insert" ON public.api_keys FOR INSERT
   WITH CHECK (organization_id = auth_user_org_id());
+DROP POLICY IF EXISTS "api_keys_update" ON public.api_keys;
 CREATE POLICY "api_keys_update" ON public.api_keys FOR UPDATE
   USING (organization_id = auth_user_org_id());
+DROP POLICY IF EXISTS "api_keys_delete" ON public.api_keys;
 CREATE POLICY "api_keys_delete" ON public.api_keys FOR DELETE
   USING (organization_id = auth_user_org_id());
 
@@ -85,12 +89,16 @@ CREATE TABLE IF NOT EXISTS public.webhook_endpoints (
 
 ALTER TABLE public.webhook_endpoints ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "webhook_endpoints_select" ON public.webhook_endpoints;
 CREATE POLICY "webhook_endpoints_select" ON public.webhook_endpoints FOR SELECT
   USING (organization_id = auth_user_org_id());
+DROP POLICY IF EXISTS "webhook_endpoints_insert" ON public.webhook_endpoints;
 CREATE POLICY "webhook_endpoints_insert" ON public.webhook_endpoints FOR INSERT
   WITH CHECK (organization_id = auth_user_org_id());
+DROP POLICY IF EXISTS "webhook_endpoints_update" ON public.webhook_endpoints;
 CREATE POLICY "webhook_endpoints_update" ON public.webhook_endpoints FOR UPDATE
   USING (organization_id = auth_user_org_id());
+DROP POLICY IF EXISTS "webhook_endpoints_delete" ON public.webhook_endpoints;
 CREATE POLICY "webhook_endpoints_delete" ON public.webhook_endpoints FOR DELETE
   USING (organization_id = auth_user_org_id());
 
@@ -98,6 +106,7 @@ CREATE INDEX IF NOT EXISTS idx_webhook_endpoints_org
   ON public.webhook_endpoints(organization_id) WHERE is_active = true;
 
 DO $$ BEGIN
+  DROP TRIGGER IF EXISTS set_updated_at_webhook_endpoints ON public.webhook_endpoints;
   CREATE TRIGGER set_updated_at_webhook_endpoints
     BEFORE UPDATE ON public.webhook_endpoints
     FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -116,17 +125,25 @@ CREATE TABLE IF NOT EXISTS public.webhook_deliveries (
   delivered_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- Add columns that may be missing on the pre-existing table from 00006
+ALTER TABLE public.webhook_deliveries ADD COLUMN IF NOT EXISTS organization_id UUID REFERENCES public.organizations(id) ON DELETE CASCADE;
+ALTER TABLE public.webhook_deliveries ADD COLUMN IF NOT EXISTS status_code INTEGER;
+ALTER TABLE public.webhook_deliveries ADD COLUMN IF NOT EXISTS response_time_ms INTEGER;
+ALTER TABLE public.webhook_deliveries ADD COLUMN IF NOT EXISTS error_message TEXT;
+
 ALTER TABLE public.webhook_deliveries ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "webhook_deliveries_select" ON public.webhook_deliveries;
 CREATE POLICY "webhook_deliveries_select" ON public.webhook_deliveries FOR SELECT
   USING (organization_id = auth_user_org_id());
+DROP POLICY IF EXISTS "webhook_deliveries_insert" ON public.webhook_deliveries;
 CREATE POLICY "webhook_deliveries_insert" ON public.webhook_deliveries FOR INSERT
   WITH CHECK (organization_id = auth_user_org_id());
 
-CREATE INDEX IF NOT EXISTS idx_webhook_deliveries_endpoint
-  ON public.webhook_deliveries(endpoint_id, delivered_at DESC);
+ALTER TABLE public.webhook_deliveries ADD COLUMN IF NOT EXISTS endpoint_id UUID REFERENCES public.webhook_endpoints(id) ON DELETE CASCADE;
+
 CREATE INDEX IF NOT EXISTS idx_webhook_deliveries_org
-  ON public.webhook_deliveries(organization_id, delivered_at DESC);
+  ON public.webhook_deliveries(organization_id) WHERE organization_id IS NOT NULL;
 
 
 -- ─────────────────────────────────────────────────────────────────────────────
@@ -187,7 +204,7 @@ BEGIN
   UPDATE public.automations
   SET
     run_count   = COALESCE(run_count, 0) + 1,
-    last_run_at = NEW.ran_at
+    last_run_at = COALESCE(NEW.ran_at, NEW.started_at, now())
   WHERE id = NEW.automation_id;
   RETURN NEW;
 END;
@@ -221,12 +238,16 @@ CREATE TABLE IF NOT EXISTS public.time_off_requests (
 
 ALTER TABLE public.time_off_requests ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "time_off_requests_select" ON public.time_off_requests;
 CREATE POLICY "time_off_requests_select" ON public.time_off_requests FOR SELECT
   USING (organization_id = auth_user_org_id());
+DROP POLICY IF EXISTS "time_off_requests_insert" ON public.time_off_requests;
 CREATE POLICY "time_off_requests_insert" ON public.time_off_requests FOR INSERT
   WITH CHECK (organization_id = auth_user_org_id() AND user_id = auth.uid());
+DROP POLICY IF EXISTS "time_off_requests_update" ON public.time_off_requests;
 CREATE POLICY "time_off_requests_update" ON public.time_off_requests FOR UPDATE
   USING (organization_id = auth_user_org_id());
+DROP POLICY IF EXISTS "time_off_requests_delete" ON public.time_off_requests;
 CREATE POLICY "time_off_requests_delete" ON public.time_off_requests FOR DELETE
   USING (organization_id = auth_user_org_id());
 
@@ -236,6 +257,7 @@ CREATE INDEX IF NOT EXISTS idx_time_off_requests_org_status
   ON public.time_off_requests(organization_id, status);
 
 DO $$ BEGIN
+  DROP TRIGGER IF EXISTS set_updated_at_time_off_requests ON public.time_off_requests;
   CREATE TRIGGER set_updated_at_time_off_requests
     BEFORE UPDATE ON public.time_off_requests
     FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -295,7 +317,7 @@ CREATE INDEX IF NOT EXISTS idx_projects_client
 -- Table was created in 00116; ensure org index exists.
 -- ─────────────────────────────────────────────────────────────────────────────
 CREATE INDEX IF NOT EXISTS idx_rev_rec_org
-  ON public.revenue_recognition(organization_id, recognition_date DESC);
+  ON public.revenue_recognition(organization_id);
 
 
 -- ─────────────────────────────────────────────────────────────────────────────
@@ -339,12 +361,16 @@ CREATE TABLE IF NOT EXISTS public.custom_reports (
 
 ALTER TABLE public.custom_reports ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "custom_reports_select" ON public.custom_reports;
 CREATE POLICY "custom_reports_select" ON public.custom_reports FOR SELECT
   USING (organization_id = auth_user_org_id());
+DROP POLICY IF EXISTS "custom_reports_insert" ON public.custom_reports;
 CREATE POLICY "custom_reports_insert" ON public.custom_reports FOR INSERT
   WITH CHECK (organization_id = auth_user_org_id());
+DROP POLICY IF EXISTS "custom_reports_update" ON public.custom_reports;
 CREATE POLICY "custom_reports_update" ON public.custom_reports FOR UPDATE
   USING (organization_id = auth_user_org_id());
+DROP POLICY IF EXISTS "custom_reports_delete" ON public.custom_reports;
 CREATE POLICY "custom_reports_delete" ON public.custom_reports FOR DELETE
   USING (organization_id = auth_user_org_id());
 
@@ -352,6 +378,7 @@ CREATE INDEX IF NOT EXISTS idx_custom_reports_org
   ON public.custom_reports(organization_id, updated_at DESC);
 
 DO $$ BEGIN
+  DROP TRIGGER IF EXISTS set_updated_at_custom_reports ON public.custom_reports;
   CREATE TRIGGER set_updated_at_custom_reports
     BEFORE UPDATE ON public.custom_reports
     FOR EACH ROW EXECUTE FUNCTION update_updated_at();

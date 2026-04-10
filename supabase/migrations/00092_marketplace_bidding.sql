@@ -47,6 +47,7 @@ BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM pg_trigger WHERE tgname = 'set_updated_at' AND tgrelid = 'work_order_bids'::regclass
   ) THEN
+    DROP TRIGGER IF EXISTS set_updated_at ON work_order_bids;
     CREATE TRIGGER set_updated_at 
     BEFORE UPDATE ON work_order_bids 
     FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -61,15 +62,18 @@ $$;
 ALTER TABLE work_order_bids ENABLE ROW LEVEL SECURITY;
 
 -- Admins can read all bids in their organization
+DROP POLICY IF EXISTS "org_read_bids" ON work_order_bids;
 CREATE POLICY "org_read_bids" ON work_order_bids 
   FOR SELECT USING (organization_id IN (SELECT user_org_ids()));
 
 -- Admins can update bids (e.g. to accept/reject)
+DROP POLICY IF EXISTS "org_update_bids" ON work_order_bids;
 CREATE POLICY "org_update_bids" ON work_order_bids 
   FOR UPDATE USING (organization_id IN (SELECT user_org_ids()));
 
 -- Crew profiles can insert their own bids if the work order is public and under the same org
 -- (Crew can bid if they belong to the organization. This restricts external unvetted contractors per typical config).
+DROP POLICY IF EXISTS "crew_insert_bids" ON work_order_bids;
 CREATE POLICY "crew_insert_bids" ON work_order_bids 
   FOR INSERT WITH CHECK (
     crew_profile_id IN (SELECT id FROM crew_profiles WHERE user_id = auth.uid())
@@ -78,6 +82,7 @@ CREATE POLICY "crew_insert_bids" ON work_order_bids
   );
 
 -- Crew can update their own pending bids (e.g. to withdraw or change amount)
+DROP POLICY IF EXISTS "crew_update_bids" ON work_order_bids;
 CREATE POLICY "crew_update_bids" ON work_order_bids 
   FOR UPDATE USING (
     crew_profile_id IN (SELECT id FROM crew_profiles WHERE user_id = auth.uid())
@@ -85,12 +90,14 @@ CREATE POLICY "crew_update_bids" ON work_order_bids
   );
 
 -- Also need to allow crew to read their OWN bids, even if not admin.
+DROP POLICY IF EXISTS "crew_read_own_bids" ON work_order_bids;
 CREATE POLICY "crew_read_own_bids" ON work_order_bids
   FOR SELECT USING (
     crew_profile_id IN (SELECT id FROM crew_profiles WHERE user_id = auth.uid())
   );
 
 -- Allow crew to read public work orders
+DROP POLICY IF EXISTS "crew_read_public_work_orders" ON work_orders;
 CREATE POLICY "crew_read_public_work_orders" ON work_orders
   FOR SELECT USING (
     is_public_board = true

@@ -75,6 +75,7 @@ BEGIN
   END IF;
 END $$;
 
+DROP POLICY IF EXISTS "org_insert_asset_checkouts" ON asset_checkouts;
 CREATE POLICY "org_insert_asset_checkouts" ON asset_checkouts
   FOR INSERT WITH CHECK (
     organization_id IN (

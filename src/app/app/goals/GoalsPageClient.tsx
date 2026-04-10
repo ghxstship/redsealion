@@ -8,6 +8,7 @@ import GoalDialog from './GoalDialog';
 import KeyResultForm from './KeyResultForm';
 import CheckInDialog from './CheckInDialog';
 import { deleteGoal, deleteKeyResult } from './actions';
+import ConfirmDialog from '@/components/shared/ConfirmDialog';
 
 interface Goal {
   id: string;
@@ -60,17 +61,22 @@ export default function GoalsPageClient({ goals }: GoalsPageClientProps) {
     setEditingGoal(g);
     setIsGoalDialogOpen(true);
   }
+  const [confirmAction, setConfirmAction] = useState<{ title: string; message: string; onConfirm: () => Promise<void> } | null>(null);
 
   async function handleDeleteGoal(id: string) {
-    if (confirm('Are you sure you want to delete this goal?')) {
-      await deleteGoal(id);
-    }
+    setConfirmAction({
+      title: 'Delete Goal',
+      message: 'Are you sure you want to delete this goal?',
+      onConfirm: async () => { await deleteGoal(id); setConfirmAction(null); },
+    });
   }
 
   async function handleDeleteKr(id: string) {
-    if (confirm('Delete this key result?')) {
-      await deleteKeyResult(id);
-    }
+    setConfirmAction({
+      title: 'Delete Key Result',
+      message: 'Delete this key result?',
+      onConfirm: async () => { await deleteKeyResult(id); setConfirmAction(null); },
+    });
   }
 
   return (
@@ -201,6 +207,16 @@ export default function GoalsPageClient({ goals }: GoalsPageClientProps) {
           ← Back to Tasks
         </Link>
       </div>
+
+      <ConfirmDialog
+        open={!!confirmAction}
+        title={confirmAction?.title ?? ''}
+        message={confirmAction?.message ?? ''}
+        variant="danger"
+        confirmLabel="Delete"
+        onConfirm={confirmAction?.onConfirm ?? (() => {})}
+        onCancel={() => setConfirmAction(null)}
+      />
     </>
   );
 }

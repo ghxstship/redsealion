@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
+import StatusBadge, { EVENT_STATUS_COLORS } from '@/components/ui/StatusBadge';
 
 async function getEvent(id: string) {
   try {
@@ -21,13 +22,7 @@ async function getEvent(id: string) {
   } catch { return null; }
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  draft: 'bg-yellow-50 text-yellow-700',
-  confirmed: 'bg-green-50 text-green-700',
-  in_progress: 'bg-blue-50 text-blue-700',
-  completed: 'bg-purple-50 text-purple-700',
-  cancelled: 'bg-red-50 text-red-700',
-};
+
 
 export default async function EventDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -49,7 +44,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
         <div className="rounded-xl border border-border bg-background p-6 md:col-span-2">
           <h3 className="text-sm font-semibold text-foreground mb-4">Event Details</h3>
           <dl className="grid grid-cols-2 gap-y-3 gap-x-8 text-sm">
-            <div><dt className="text-text-muted">Status</dt><dd className="mt-0.5"><span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[event.status as string] ?? ''}`}>{event.status as string}</span></dd></div>
+            <div><dt className="text-text-muted">Status</dt><dd className="mt-0.5"><StatusBadge status={event.status as string} colorMap={EVENT_STATUS_COLORS} /></dd></div>
             <div><dt className="text-text-muted">Type</dt><dd className="mt-0.5 text-foreground capitalize">{event.type as string}</dd></div>
             <div><dt className="text-text-muted">Starts</dt><dd className="mt-0.5 text-foreground">{event.starts_at ? new Date(event.starts_at as string).toLocaleString() : '—'}</dd></div>
             <div><dt className="text-text-muted">Ends</dt><dd className="mt-0.5 text-foreground">{event.ends_at ? new Date(event.ends_at as string).toLocaleString() : '—'}</dd></div>
@@ -103,7 +98,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
                 <tr key={a.id as string} className="hover:bg-bg-secondary/50">
                   <td className="px-4 py-3 font-medium text-foreground">{a.name as string}</td>
                   <td className="px-4 py-3 text-text-secondary capitalize">{(a.type as string) ?? '—'}</td>
-                  <td className="px-4 py-3"><span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[a.status as string] ?? ''}`}>{a.status as string}</span></td>
+                  <td className="px-4 py-3"><StatusBadge status={a.status as string} colorMap={EVENT_STATUS_COLORS} /></td>
                 </tr>
               ))}
             </tbody>
@@ -126,7 +121,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
                 <tr key={s.id as string} className="hover:bg-bg-secondary/50">
                   <td className="px-4 py-3"><Link href={`/app/schedule/${s.id}`} className="font-medium text-foreground hover:underline">{s.name as string}</Link></td>
                   <td className="px-4 py-3 text-text-secondary capitalize">{(s.schedule_type as string)?.replace('_', ' ')}</td>
-                  <td className="px-4 py-3"><span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[s.status as string] ?? ''}`}>{s.status as string}</span></td>
+                  <td className="px-4 py-3"><StatusBadge status={s.status as string} colorMap={EVENT_STATUS_COLORS} /></td>
                 </tr>
               ))}
             </tbody>

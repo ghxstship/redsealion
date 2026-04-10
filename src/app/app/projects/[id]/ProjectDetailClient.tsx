@@ -11,6 +11,7 @@ import { ArrowLeft, Archive, Users, Settings, Shield, Activity } from 'lucide-re
 import Button from '@/components/ui/Button';
 import PageHeader from '@/components/shared/PageHeader';
 import { PortalSettingsCard } from '@/components/admin/portfolio/PortalSettingsCard';
+import ConfirmDialog from '@/components/shared/ConfirmDialog';
 
 interface Member {
   id: string;
@@ -79,9 +80,10 @@ const SEAT_LABELS: Record<string, string> = {
 export default function ProjectDetailClient({ project }: ProjectDetailProps) {
   const [activeTab, setActiveTab] = useState('overview');
   const [isArchiving, setIsArchiving] = useState(false);
+  const [showArchiveConfirm, setShowArchiveConfirm] = useState(false);
 
   async function handleArchive() {
-    if (!window.confirm('Are you sure you want to archive this project? It can be restored later.')) return;
+    setShowArchiveConfirm(false);
     setIsArchiving(true);
     try {
       await fetch(`/api/projects/${project.id}`, { method: 'DELETE' });
@@ -91,6 +93,7 @@ export default function ProjectDetailClient({ project }: ProjectDetailProps) {
   }
 
   return (
+    <>
     <div className="space-y-6">
       {/* Back link + header */}
       <div>
@@ -265,7 +268,7 @@ export default function ProjectDetailClient({ project }: ProjectDetailProps) {
             <Button
               variant="secondary"
               size="sm"
-              onClick={handleArchive}
+              onClick={() => setShowArchiveConfirm(true)}
               loading={isArchiving}
               className="border-red-300 text-red-700 hover:bg-red-100"
             >
@@ -275,5 +278,16 @@ export default function ProjectDetailClient({ project }: ProjectDetailProps) {
         </div>
       )}
     </div>
+
+    <ConfirmDialog
+      open={showArchiveConfirm}
+      title="Archive Project"
+      message="Are you sure you want to archive this project? It can be restored later by an administrator."
+      variant="danger"
+      confirmLabel="Archive"
+      onConfirm={handleArchive}
+      onCancel={() => setShowArchiveConfirm(false)}
+    />
+    </>
   );
 }

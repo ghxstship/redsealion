@@ -60,6 +60,7 @@ CREATE POLICY "Users manage own conversations"
   );
 
 -- Admin policy to view all org conversations (for audit/support)
+DROP POLICY IF EXISTS "Admins view all org conversations" ON ai_conversations;
 CREATE POLICY "Admins view all org conversations"
   ON ai_conversations
   FOR SELECT
@@ -99,23 +100,26 @@ CREATE TABLE IF NOT EXISTS ai_usage_log (
 
 ALTER TABLE ai_usage_log ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users view own usage" ON ai_usage_log;
 CREATE POLICY "Users view own usage"
   ON ai_usage_log
   FOR SELECT
   USING (organization_id = auth_user_org_id() AND user_id = auth.uid());
 
+DROP POLICY IF EXISTS "Admins view all org usage" ON ai_usage_log;
 CREATE POLICY "Admins view all org usage"
   ON ai_usage_log
   FOR SELECT
   USING (organization_id = auth_user_org_id() AND is_org_admin_or_above());
 
+DROP POLICY IF EXISTS "System insert usage" ON ai_usage_log;
 CREATE POLICY "System insert usage"
   ON ai_usage_log
   FOR INSERT
   WITH CHECK (organization_id = auth_user_org_id());
 
-CREATE INDEX idx_ai_usage_log_org ON ai_usage_log(organization_id, created_at DESC);
-CREATE INDEX idx_ai_usage_log_user ON ai_usage_log(organization_id, user_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_ai_usage_log_org ON ai_usage_log(organization_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_ai_usage_log_user ON ai_usage_log(organization_id, user_id, created_at DESC);
 
 -- ---------------------------------------------------------------------------
 -- 5. AI Conversation Feedback table (GAP-26)
@@ -134,11 +138,12 @@ CREATE TABLE IF NOT EXISTS ai_conversation_feedback (
 
 ALTER TABLE ai_conversation_feedback ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users manage own feedback" ON ai_conversation_feedback;
 CREATE POLICY "Users manage own feedback"
   ON ai_conversation_feedback
   FOR ALL
   USING (organization_id = auth_user_org_id() AND user_id = auth.uid())
   WITH CHECK (organization_id = auth_user_org_id() AND user_id = auth.uid());
 
-CREATE INDEX idx_ai_feedback_conversation
+CREATE INDEX IF NOT EXISTS idx_ai_feedback_conversation
   ON ai_conversation_feedback(conversation_id);

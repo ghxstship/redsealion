@@ -97,12 +97,16 @@ CREATE TABLE IF NOT EXISTS packing_lists (
 
 ALTER TABLE packing_lists ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "packing_lists_select" ON packing_lists;
 CREATE POLICY "packing_lists_select" ON packing_lists FOR SELECT
   USING (organization_id IN (SELECT user_org_ids()));
+DROP POLICY IF EXISTS "packing_lists_insert" ON packing_lists;
 CREATE POLICY "packing_lists_insert" ON packing_lists FOR INSERT
   WITH CHECK (organization_id IN (SELECT user_org_ids()));
+DROP POLICY IF EXISTS "packing_lists_update" ON packing_lists;
 CREATE POLICY "packing_lists_update" ON packing_lists FOR UPDATE
   USING (organization_id IN (SELECT user_org_ids()));
+DROP POLICY IF EXISTS "packing_lists_delete" ON packing_lists;
 CREATE POLICY "packing_lists_delete" ON packing_lists FOR DELETE
   USING (organization_id IN (SELECT user_org_ids()));
 
@@ -131,24 +135,28 @@ CREATE INDEX IF NOT EXISTS idx_packing_list_items_list ON packing_list_items(pac
 -- ═══════════════════════════════════════════════════════════════════════
 DROP POLICY IF EXISTS "transfer_items_org_access" ON warehouse_transfer_items;
 
+DROP POLICY IF EXISTS "transfer_items_select" ON warehouse_transfer_items;
 CREATE POLICY "transfer_items_select" ON warehouse_transfer_items FOR SELECT
   USING (EXISTS (
     SELECT 1 FROM warehouse_transfers wt
     WHERE wt.id = transfer_id AND wt.organization_id IN (SELECT user_org_ids())
   ));
 
+DROP POLICY IF EXISTS "transfer_items_insert" ON warehouse_transfer_items;
 CREATE POLICY "transfer_items_insert" ON warehouse_transfer_items FOR INSERT
   WITH CHECK (EXISTS (
     SELECT 1 FROM warehouse_transfers wt
     WHERE wt.id = transfer_id AND wt.organization_id IN (SELECT user_org_ids())
   ));
 
+DROP POLICY IF EXISTS "transfer_items_update" ON warehouse_transfer_items;
 CREATE POLICY "transfer_items_update" ON warehouse_transfer_items FOR UPDATE
   USING (EXISTS (
     SELECT 1 FROM warehouse_transfers wt
     WHERE wt.id = transfer_id AND wt.organization_id IN (SELECT user_org_ids())
   ));
 
+DROP POLICY IF EXISTS "transfer_items_delete" ON warehouse_transfer_items;
 CREATE POLICY "transfer_items_delete" ON warehouse_transfer_items FOR DELETE
   USING (EXISTS (
     SELECT 1 FROM warehouse_transfers wt

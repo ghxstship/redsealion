@@ -5,6 +5,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
 import ProcurementHubTabs from '../../ProcurementHubTabs';
+import StatusBadge, { PO_STATUS_COLORS } from '@/components/ui/StatusBadge';
 
 async function getPOs() {
   try {
@@ -23,7 +24,7 @@ async function getPOs() {
   } catch { return []; }
 }
 
-const STATUS_COLORS: Record<string, string> = { draft: 'bg-bg-secondary text-text-secondary', sent: 'bg-blue-50 text-blue-700', acknowledged: 'bg-purple-50 text-purple-700', partially_received: 'bg-yellow-50 text-yellow-700', received: 'bg-green-50 text-green-700', cancelled: 'bg-red-50 text-red-700' };
+
 
 export default async function ProcurementPOPage() {
   const pos = await getPOs();
@@ -65,7 +66,7 @@ export default async function ProcurementPOPage() {
                     <td className="px-4 py-3 tabular-nums">{formatCurrency(po.total_amount ?? 0)}</td>
                     <td className="px-4 py-3 text-text-secondary">{po.issued_date ? new Date(po.issued_date).toLocaleDateString() : '—'}</td>
                     <td className="px-4 py-3 text-text-secondary">{po.due_date ? new Date(po.due_date).toLocaleDateString() : '—'}</td>
-                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[po.status] ?? 'bg-bg-secondary text-text-secondary'}`}>{po.status?.replace('_', ' ')}</span></td>
+                    <td className="px-4 py-3"><StatusBadge status={po.status} colorMap={PO_STATUS_COLORS} /></td>
                   </tr>
                 ))}
               </tbody>

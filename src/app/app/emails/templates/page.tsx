@@ -9,6 +9,7 @@ import FormLabel from '@/components/ui/FormLabel';
 import PageHeader from '@/components/shared/PageHeader';
 import { createClient } from '@/lib/supabase/client';
 import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
+import ConfirmDialog from '@/components/shared/ConfirmDialog';
 
 interface EmailTemplate {
   id: string;
@@ -30,6 +31,7 @@ export default function EmailTemplatesPage() {
   const [editFormData, setEditFormData] = useState<Partial<EmailTemplate>>({});
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     resolveClientOrg().then((org) => {
@@ -81,9 +83,9 @@ export default function EmailTemplatesPage() {
   }
 
   async function handleDelete(id: string) {
-    if (!confirm('Delete this template?')) return;
     await supabase.from('email_templates').delete().eq('id', id);
     setPreviewTemplate(null);
+    setDeletingId(null);
     loadTemplates();
   }
 
@@ -210,7 +212,7 @@ export default function EmailTemplatesPage() {
               </div>
             </div>
             <div className="flex justify-between items-center pt-4 border-t border-border mt-4">
-              <Button variant="danger_ghost" size="sm" onClick={() => handleDelete(previewTemplate.id)}>Delete</Button>
+              <Button variant="ghost" size="sm" className="text-red-600 hover:bg-red-50" onClick={() => setDeletingId(previewTemplate.id)}>Delete</Button>
               <div className="flex gap-3">
                 <Button variant="secondary" size="sm" onClick={() => { setPreviewTemplate(null); handleOpenEdit(previewTemplate); }}>
                   Edit
@@ -259,6 +261,16 @@ export default function EmailTemplatesPage() {
           </div>
         </form>
       </ModalShell>
+
+      <ConfirmDialog
+        open={!!deletingId}
+        title="Delete Template"
+        message="Are you sure you want to delete this email template? This action cannot be undone."
+        variant="danger"
+        confirmLabel="Delete"
+        onConfirm={() => { if (deletingId) handleDelete(deletingId); }}
+        onCancel={() => setDeletingId(null)}
+      />
     </TierGate>
   );
 }

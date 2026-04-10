@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
+import ConfirmDialog from '@/components/shared/ConfirmDialog';
 
 interface ConvertToRentalButtonProps {
   orderId: string;
@@ -13,12 +14,13 @@ interface ConvertToRentalButtonProps {
 export default function ConvertToRentalButton({ orderId, orderNumber, currentStatus }: ConvertToRentalButtonProps) {
   const router = useRouter();
   const [converting, setConverting] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   // Only show for reserved orders
   if (currentStatus !== 'reserved') return null;
 
   async function handleConvert() {
-    if (!confirm(`Convert reservation ${orderNumber} to an active rental? This will change status to "checked_out".`)) return;
+    setShowConfirm(false);
 
     setConverting(true);
     try {
@@ -42,8 +44,20 @@ export default function ConvertToRentalButton({ orderId, orderNumber, currentSta
   }
 
   return (
-    <Button size="sm" onClick={handleConvert} disabled={converting}>
+    <>
+    <Button size="sm" onClick={() => setShowConfirm(true)} disabled={converting}>
       {converting ? 'Converting...' : 'Convert to Rental'}
     </Button>
+
+    <ConfirmDialog
+      open={showConfirm}
+      title="Convert to Rental"
+      message={`Convert reservation ${orderNumber} to an active rental? This will change status to "checked_out".`}
+      variant="default"
+      confirmLabel="Convert"
+      onConfirm={handleConvert}
+      onCancel={() => setShowConfirm(false)}
+    />
+    </>
   );
 }

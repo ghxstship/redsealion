@@ -4,6 +4,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import Link from 'next/link';
 import ProcurementHubTabs from '../../ProcurementHubTabs';
+import StatusBadge, { RECEIPT_STATUS_COLORS } from '@/components/ui/StatusBadge';
 
 async function getReceipts() {
   try {
@@ -24,7 +25,7 @@ async function getReceipts() {
   } catch { return []; }
 }
 
-const STATUS_COLORS: Record<string, string> = { partial: 'bg-yellow-50 text-yellow-700', complete: 'bg-green-50 text-green-700', rejected: 'bg-red-50 text-red-700' };
+
 
 export default async function ReceivingPage() {
   const receipts = await getReceipts();
@@ -69,7 +70,7 @@ export default async function ReceivingPage() {
                     <td className="px-4 py-3 text-text-secondary">{r.vendor_name ?? '—'}</td>
                     <td className="px-4 py-3 text-text-secondary">{new Date(r.received_date).toLocaleDateString()}</td>
                     <td className="px-4 py-3 text-text-secondary text-xs line-clamp-1">{r.notes ?? '—'}</td>
-                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[r.status]}`}>{r.status}</span></td>
+                    <td className="px-4 py-3"><StatusBadge status={r.status} colorMap={RECEIPT_STATUS_COLORS} /></td>
                   </tr>
                 ))}
               </tbody>

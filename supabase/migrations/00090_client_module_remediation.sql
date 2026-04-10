@@ -43,6 +43,7 @@ ALTER TABLE public.client_interactions
   ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT now();
 
 DO $$ BEGIN
+  DROP TRIGGER IF EXISTS set_updated_at_client_interactions ON public.client_interactions;
   CREATE TRIGGER set_updated_at_client_interactions
     BEFORE UPDATE ON public.client_interactions
     FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -86,6 +87,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_contact_unique_email
 -- ═══════════════════════════════════════════════════════════════════════
 
 DO $$ BEGIN
+  DROP TRIGGER IF EXISTS set_updated_at_client_contacts ON public.client_contacts;
   CREATE TRIGGER set_updated_at_client_contacts
     BEFORE UPDATE ON public.client_contacts
     FOR EACH ROW EXECUTE FUNCTION update_updated_at();

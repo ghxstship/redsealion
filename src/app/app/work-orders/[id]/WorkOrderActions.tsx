@@ -3,27 +3,28 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
+import ConfirmDialog from '@/components/shared/ConfirmDialog';
 
 interface WorkOrderActionsProps {
   id: string;
   currentStatus: string;
 }
 
-const TRANSITIONS: Record<string, { label: string; nextStatus: string; variant: 'default' | 'secondary'; className?: string }[]> = {
+const TRANSITIONS: Record<string, { label: string; nextStatus: string; variant: 'primary' | 'secondary'; className?: string }[]> = {
   draft: [
-    { label: 'Dispatch', nextStatus: 'dispatched', variant: 'default' },
+    { label: 'Dispatch', nextStatus: 'dispatched', variant: 'primary' },
     { label: 'Cancel', nextStatus: 'cancelled', variant: 'secondary', className: 'text-red-600 hover:bg-red-50' },
   ],
   dispatched: [
-    { label: 'Start Work', nextStatus: 'in_progress', variant: 'default' },
+    { label: 'Start Work', nextStatus: 'in_progress', variant: 'primary' },
     { label: 'Cancel', nextStatus: 'cancelled', variant: 'secondary', className: 'text-red-600 hover:bg-red-50' },
   ],
   accepted: [
-    { label: 'Start Work', nextStatus: 'in_progress', variant: 'default' },
+    { label: 'Start Work', nextStatus: 'in_progress', variant: 'primary' },
     { label: 'Cancel', nextStatus: 'cancelled', variant: 'secondary', className: 'text-red-600 hover:bg-red-50' },
   ],
   in_progress: [
-    { label: 'Complete', nextStatus: 'completed', variant: 'default' },
+    { label: 'Complete', nextStatus: 'completed', variant: 'primary' },
     { label: 'Cancel', nextStatus: 'cancelled', variant: 'secondary', className: 'text-red-600 hover:bg-red-50' },
   ],
 };
@@ -31,13 +32,13 @@ const TRANSITIONS: Record<string, { label: string; nextStatus: string; variant: 
 export default function WorkOrderActions({ id, currentStatus }: WorkOrderActionsProps) {
   const router = useRouter();
   const [updating, setUpdating] = useState<string | null>(null);
+  const [pendingTransition, setPendingTransition] = useState<string | null>(null);
 
   const actions = TRANSITIONS[currentStatus] ?? [];
   if (actions.length === 0) return null;
 
   async function handleTransition(nextStatus: string) {
-    if (!confirm(`Are you sure you want to change this work order to "${nextStatus.replace(/_/g, ' ')}"?`)) return;
-
+    setPendingTransition(null);
     setUpdating(nextStatus);
     try {
       const res = await fetch(`/api/work-orders/${id}`, {
@@ -60,6 +61,7 @@ export default function WorkOrderActions({ id, currentStatus }: WorkOrderActions
   }
 
   return (
+    <>
     <div className="flex items-center gap-2">
       {actions.map((action) => (
         <Button
@@ -68,11 +70,22 @@ export default function WorkOrderActions({ id, currentStatus }: WorkOrderActions
           size="sm"
           className={action.className}
           disabled={updating !== null}
-          onClick={() => handleTransition(action.nextStatus)}
+          onClick={() => setPendingTransition(action.nextStatus)}
         >
           {updating === action.nextStatus ? 'Updating...' : action.label}
         </Button>
       ))}
     </div>
+
+    <ConfirmDialog
+      open={!!pendingTransition}
+      title="Update Work Order"
+      message={`Are you sure you want to change this work order to "${pendingTransition?.replace(/_/g, ' ') ?? ''}"?`}
+      variant="default"
+      confirmLabel="Confirm"
+      onConfirm={() => { if (pendingTransition) handleTransition(pendingTransition); }}
+      onCancel={() => setPendingTransition(null)}
+    />
+    </>
   );
 }

@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
+import StatusBadge, { AUTOMATION_RUN_STATUS_COLORS } from '@/components/ui/StatusBadge';
 
 interface RunRow {
   id: string;
@@ -44,13 +45,7 @@ async function getRuns(): Promise<RunRow[]> {
   }
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  completed: 'bg-green-50 text-green-700',
-  running: 'bg-blue-50 text-blue-700',
-  failed: 'bg-red-50 text-red-700',
-  pending: 'bg-yellow-50 text-yellow-700',
-  cancelled: 'bg-bg-secondary text-text-secondary',
-};
+
 
 export default async function AutomationRunsPage() {
   const runs = await getRuns();
@@ -105,9 +100,7 @@ export default async function AutomationRunsPage() {
                   <tr key={run.id} className="hover:bg-bg-secondary/50 transition-colors">
                     <td className="px-4 py-3 font-medium text-foreground">{run.automation_name ?? '—'}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[run.status] ?? 'bg-bg-secondary text-text-secondary'}`}>
-                        {run.status}
-                      </span>
+                      <StatusBadge status={run.status} colorMap={AUTOMATION_RUN_STATUS_COLORS} />
                     </td>
                     <td className="px-4 py-3 text-text-secondary">{new Date(run.started_at).toLocaleString()}</td>
                     <td className="px-4 py-3 text-text-secondary">{run.completed_at ? new Date(run.completed_at).toLocaleString() : '—'}</td>

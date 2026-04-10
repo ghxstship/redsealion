@@ -7,6 +7,7 @@ import { MappingEditor } from '@/components/admin/integrations/MappingEditor';
 import Tabs from '@/components/ui/Tabs';
 import EmptyState from '@/components/ui/EmptyState';
 import PageHeader from '@/components/shared/PageHeader';
+import ConfirmDialog from '@/components/shared/ConfirmDialog';
 
 const PLATFORM_META: Record<string, { displayName: string; category: string }> = {
   salesforce: { displayName: 'Salesforce', category: 'crm' },
@@ -47,6 +48,7 @@ export default function IntegrationConfigPage({
   const [isConnected, setIsConnected] = useState(false);
   const [loadingStatus, setLoadingStatus] = useState(true);
   const [syncLogs, setSyncLogs] = useState<any[]>([]);
+  const [showDisconnectConfirm, setShowDisconnectConfirm] = useState(false);
 
   const meta = PLATFORM_META[platform] ?? { displayName: platform, category: 'unknown' };
 
@@ -103,6 +105,7 @@ export default function IntegrationConfigPage({
   }
 
   return (
+    <>
     <TierGate feature="integrations">
       <div className="mb-6">
         <Link
@@ -137,11 +140,7 @@ export default function IntegrationConfigPage({
         </div>
         {isConnected ? (
           <button
-            onClick={async () => {
-              if (!confirm('Are you sure you want to disconnect this integration?')) return;
-              await fetch(`/api/integrations/${platform}`, { method: 'DELETE' });
-              setIsConnected(false);
-            }}
+            onClick={() => setShowDisconnectConfirm(true)}
             className="rounded-lg border border-red-200 bg-red-50 text-red-600 px-4 py-1.5 text-xs font-medium hover:bg-red-100 transition-colors"
           >
             Disconnect
@@ -250,5 +249,20 @@ export default function IntegrationConfigPage({
         </div>
       )}
     </TierGate>
+
+    <ConfirmDialog
+      open={showDisconnectConfirm}
+      title="Disconnect Integration"
+      message={`Are you sure you want to disconnect ${meta.displayName}? Data syncing will stop immediately.`}
+      variant="danger"
+      confirmLabel="Disconnect"
+      onConfirm={async () => {
+        await fetch(`/api/integrations/${platform}`, { method: 'DELETE' });
+        setIsConnected(false);
+        setShowDisconnectConfirm(false);
+      }}
+      onCancel={() => setShowDisconnectConfirm(false)}
+    />
+    </>
   );
 }

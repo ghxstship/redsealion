@@ -67,6 +67,7 @@ CREATE INDEX IF NOT EXISTS idx_integration_sync_log_status
 ALTER TABLE integration_sync_log ENABLE ROW LEVEL SECURITY;
 
 DO $$ BEGIN
+  DROP POLICY IF EXISTS "org members can view sync logs" ON integration_sync_log;
   CREATE POLICY "org members can view sync logs" ON integration_sync_log
     FOR SELECT USING (
       organization_id IN (
@@ -96,6 +97,7 @@ CREATE INDEX IF NOT EXISTS idx_expense_receipts_expense
 ALTER TABLE expense_receipts ENABLE ROW LEVEL SECURITY;
 
 DO $$ BEGIN
+  DROP POLICY IF EXISTS "org members can manage receipts" ON expense_receipts;
   CREATE POLICY "org members can manage receipts" ON expense_receipts
     FOR ALL USING (
       expense_id IN (
@@ -129,6 +131,7 @@ CREATE INDEX IF NOT EXISTS idx_custom_reports_org
 ALTER TABLE custom_reports ENABLE ROW LEVEL SECURITY;
 
 DO $$ BEGIN
+  DROP POLICY IF EXISTS "org members can manage reports" ON custom_reports;
   CREATE POLICY "org members can manage reports" ON custom_reports
     FOR ALL USING (
       organization_id IN (
