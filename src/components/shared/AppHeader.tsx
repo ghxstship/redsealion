@@ -10,6 +10,7 @@ import MiniTimer from '@/components/shared/MiniTimer';
 import HelpMenu from '@/components/shared/HelpMenu';
 import ThemeToggle from '@/components/shared/ThemeToggle';
 import LocalizationMenu from '@/components/shared/LocalizationMenu';
+import CopilotTrigger from '@/components/shared/CopilotTrigger';
 import KeyboardShortcutsModal from '@/components/shared/KeyboardShortcutsModal';
 import { useTranslation } from '@/lib/i18n/client';
 
@@ -98,6 +99,7 @@ export default function AppHeader({ user, orgName }: AppHeaderProps) {
           <HelpMenu onOpenShortcuts={openShortcuts} />
           <LocalizationMenu />
           <ThemeToggle />
+          <CopilotTrigger />
 
           {/* Divider */}
           <div className="hidden md:block h-5 w-px bg-border/60 mx-1" />

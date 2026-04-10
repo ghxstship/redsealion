@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import EmptyState from '@/components/ui/EmptyState';
+import FileDownloadButton from '@/components/portal/FileDownloadButton';
 
 interface PageProps {
   params: Promise<{ orgSlug: string; id: string }>;
@@ -177,9 +178,8 @@ export default async function FilesPage({ params }: PageProps) {
 
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {groupFiles.map((file) => (
-              <button
+              <div
                 key={file.id}
-                type="button"
                 className="group rounded-lg border border-border bg-background p-4 text-left transition-[color,background-color,border-color,opacity,box-shadow] hover:border-text-muted hover:shadow-sm"
               >
                 <div className="flex items-start gap-3">
@@ -201,14 +201,9 @@ export default async function FilesPage({ params }: PageProps) {
                 </div>
                 <div className="mt-3 flex items-center justify-between">
                   <CategoryBadge category={file.category} />
-                  <span
-                    className="text-[11px] font-medium opacity-0 group-hover:opacity-100 transition-opacity"
-                    style={{ color: 'var(--org-primary)' }}
-                  >
-                    Open &rarr;
-                  </span>
+                  <FileDownloadButton fileId={file.id} fileName={file.file_name} />
                 </div>
-              </button>
+              </div>
             ))}
           </div>
         </section>

@@ -50,7 +50,7 @@ export default async function WorkOrderDetailPage({ params }: { params: Promise<
   return (
     <TierGate feature="work_orders">
       <PageHeader title={wo.wo_number as string} subtitle={wo.title as string}>
-        <Link href="/app/work-orders" className="btn-secondary text-sm">← Back to Work Orders</Link>
+        <Link href="/app/dispatch" className="btn-secondary text-sm">← Back to Dispatch</Link>
       </PageHeader>
 
       <div className="grid gap-6 md:grid-cols-2 mb-8">

@@ -25,6 +25,7 @@ export function LeadIntakeForm({ organizationId }: { organizationId: string }) {
     const formData = new FormData(e.currentTarget);
     const payload = {
       organization_id: organizationId,
+      company_name: formData.get('company_name'),
       contact_first_name: formData.get('contact_first_name'),
       contact_last_name: formData.get('contact_last_name'),
       contact_email: formData.get('contact_email'),
@@ -43,6 +44,10 @@ export function LeadIntakeForm({ organizationId }: { organizationId: string }) {
       });
 
       if (!response.ok) {
+        if (response.status === 429) {
+          const retryAfter = parseInt(response.headers.get('Retry-After') || '60', 10);
+          throw new Error(`Too many submissions. Please wait ${retryAfter} seconds before trying again.`);
+        }
         const data = await response.json().catch(() => ({}));
         throw new Error(data.error || 'Failed to submit form');
       }

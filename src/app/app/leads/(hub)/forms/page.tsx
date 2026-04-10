@@ -11,7 +11,9 @@ interface LeadForm {
   name: string;
   description: string | null;
   status: string;
-  embed_url: string | null;
+  is_active: boolean;
+  embed_token: string;
+  redirect_url: string | null;
   submissions_count: number;
   created_at: string;
   last_submission_at: string | null;
@@ -34,7 +36,7 @@ async function getLeadForms(): Promise<LeadForm[]> {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) throw new Error('No auth');
-const { data: forms } = await supabase
+    const { data: forms } = await supabase
       .from('lead_forms')
       .select()
       .eq('organization_id', ctx.organizationId)
@@ -42,16 +44,41 @@ const { data: forms } = await supabase
 
     if (!forms) throw new Error('No forms');
 
-    return forms.map((f: Record<string, unknown>) => ({
-      id: f.id as string,
-      name: f.name as string,
-      description: (f.description as string) ?? null,
-      status: (f.status as string) ?? 'draft',
-      embed_url: (f.embed_url as string) ?? null,
-      submissions_count: (f.submissions_count as number) ?? 0,
-      created_at: f.created_at as string,
-      last_submission_at: (f.last_submission_at as string) ?? null,
-    }));
+    // Fetch submission counts per form
+    const formIds = forms.map((f: Record<string, unknown>) => f.id as string);
+    let submissionCounts: Record<string, { count: number; last: string | null }> = {};
+    if (formIds.length > 0) {
+      const { data: submissions } = await supabase
+        .from('lead_form_submissions')
+        .select('form_id, submitted_at')
+        .in('form_id', formIds)
+        .order('submitted_at', { ascending: false });
+
+      if (submissions) {
+        for (const s of submissions as Array<{ form_id: string; submitted_at: string }>) {
+          if (!submissionCounts[s.form_id]) {
+            submissionCounts[s.form_id] = { count: 0, last: s.submitted_at };
+          }
+          submissionCounts[s.form_id].count++;
+        }
+      }
+    }
+
+    return forms.map((f: Record<string, unknown>) => {
+      const fid = f.id as string;
+      return {
+        id: fid,
+        name: f.name as string,
+        description: (f.description as string) ?? null,
+        status: (f.status as string) ?? (f.is_active ? 'active' : 'draft'),
+        is_active: (f.is_active as boolean) ?? true,
+        embed_token: (f.embed_token as string) ?? '',
+        redirect_url: (f.redirect_url as string) ?? null,
+        submissions_count: submissionCounts[fid]?.count ?? 0,
+        created_at: f.created_at as string,
+        last_submission_at: submissionCounts[fid]?.last ?? null,
+      };
+    });
   } catch {
     return [];
   }
@@ -113,11 +140,11 @@ export default async function LeadFormsPage() {
                 {form.description && (
                   <p className="mt-1 text-sm text-text-secondary">{form.description}</p>
                 )}
-                {form.embed_url && (
+                {form.embed_token && (
                   <div className="mt-3 flex items-center gap-2">
-                    <span className="text-xs text-text-muted">Embed URL:</span>
+                    <span className="text-xs text-text-muted">Embed Token:</span>
                     <code className="rounded bg-bg-tertiary px-2 py-0.5 text-xs text-text-secondary">
-                      {form.embed_url}
+                      {form.embed_token}
                     </code>
                   </div>
                 )}

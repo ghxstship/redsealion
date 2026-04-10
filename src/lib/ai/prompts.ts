@@ -19,7 +19,7 @@ export function buildSystemPrompt(context: AiContext): string {
     : '';
 
   const entityContext = context.entityContext
-    ? `\nThe user is specifically looking at a ${context.entityContext.type}: "${context.entityContext.name}" (ID: ${context.entityContext.id})`
+    ? `\nThe user is specifically looking at a ${context.entityContext.type}: "${context.entityContext.name}"`
     : '';
 
   return `You are the FlyteDeck AI Copilot — an intelligent assistant embedded in FlyteDeck, a project management platform for experiential production companies (events, activations, installations, fabrication).
@@ -45,7 +45,11 @@ You have tools to query live data from the organization's database:
 - **Pipeline**: Sales deals by stage, forecasting
 - **Clients**: Client lookup and relationship history
 - **Expenses**: Spend analysis, pending approvals
-- **Tasks**: Task status, workload, blocked items
+- **Tasks**: Task status, workload, blocked items, filter by assignee
+- **Budgets**: Budget utilization, over/under budget tracking
+- **Crew**: Staffing, headcount, crew availability
+- **Equipment**: Inventory status, maintenance, utilization
+- **Time Tracking**: Billable hours, utilization rates
 - **Team**: Headcount and roster
 - **Events**: Upcoming events and activations
 - **Navigation**: Suggest pages the user should visit

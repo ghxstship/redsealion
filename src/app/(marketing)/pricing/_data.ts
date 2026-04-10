@@ -10,6 +10,7 @@ export const tiers = [
   {
     name: 'Starter',
     price: '$49',
+    priceAnnual: '$39',
     period: '/mo',
     description: 'For freelancers and small teams getting started.',
     features: [
@@ -30,6 +31,7 @@ export const tiers = [
   {
     name: 'Professional',
     price: '$149',
+    priceAnnual: '$119',
     period: '/mo',
     description: 'For growing production companies.',
     features: [
@@ -51,6 +53,7 @@ export const tiers = [
   {
     name: 'Enterprise',
     price: 'Custom',
+    priceAnnual: 'Custom',
     period: '',
     description: 'For large organizations with complex needs.',
     features: [
@@ -70,7 +73,7 @@ export const tiers = [
       'SLA & uptime guarantees',
     ],
     cta: 'Contact Sales',
-    href: '#',
+    href: 'mailto:sales@flytedeck.io?subject=FlyteDeck%20Enterprise%20Inquiry',
     featured: false,
   },
 ];

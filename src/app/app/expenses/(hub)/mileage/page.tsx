@@ -6,6 +6,7 @@ import EmptyState from '@/components/ui/EmptyState';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { formatCurrency } from '@/lib/utils';
+import Link from 'next/link';
 
 interface MileageStats {
   milesThisMonth: number;
@@ -83,7 +84,14 @@ export default async function MileagePage() {
       <PageHeader
         title="Mileage Tracking"
         subtitle="Log and reimburse mileage for business travel."
-      />
+      >
+        <Link
+          href="/app/expenses/mileage/new"
+          className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90"
+        >
+          New Mileage
+        </Link>
+      </PageHeader>
 
       <ExpensesHubTabs />
 

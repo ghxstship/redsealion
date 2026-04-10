@@ -27,32 +27,36 @@ function formatLabel(s: string): string {
   return s.split('_').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 }
 
-async function getWorkOrders() {
+async function getWorkOrders(): Promise<{ data: Array<Record<string, unknown>>; error: string | null }> {
   try {
     const supabase = await createClient();
     const ctx = await resolveCurrentOrg();
-    if (!ctx) return [];
+    if (!ctx) return { data: [], error: null };
 
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('work_orders')
       .select('*, work_order_assignments(crew_profiles(full_name))')
       .eq('organization_id', ctx.organizationId)
+      .is('deleted_at', null)
       .order('created_at', { ascending: false });
 
-    return data ?? [];
+    if (error) return { data: [], error: error.message };
+    return { data: data ?? [], error: null };
   } catch {
-    return [];
+    return { data: [], error: 'Failed to load work orders.' };
   }
 }
 
 export default async function DispatchPage() {
-  const workOrders = await getWorkOrders();
+  const { data: workOrders, error } = await getWorkOrders();
 
   const statCounts = {
     draft: workOrders.filter((wo: Record<string, unknown>) => wo.status === 'draft').length,
     dispatched: workOrders.filter((wo: Record<string, unknown>) => wo.status === 'dispatched').length,
+    accepted: workOrders.filter((wo: Record<string, unknown>) => wo.status === 'accepted').length,
     in_progress: workOrders.filter((wo: Record<string, unknown>) => wo.status === 'in_progress').length,
     completed: workOrders.filter((wo: Record<string, unknown>) => wo.status === 'completed').length,
+    cancelled: workOrders.filter((wo: Record<string, unknown>) => wo.status === 'cancelled').length,
   };
 
   return (
@@ -70,6 +74,12 @@ export default async function DispatchPage() {
       </PageHeader>
 
       <DispatchHubTabs />
+
+      {error && (
+        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {error}
+        </div>
+      )}
 
       {/* Status summary */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">

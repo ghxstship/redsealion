@@ -38,6 +38,17 @@ interface InvoiceDetail {
     payment_date: string;
     reference: string | null;
   }>;
+  credit_notes: Array<{
+    id: string;
+    amount: number;
+    reason: string | null;
+  }>;
+  refunds: Array<{
+    id: string;
+    amount: number;
+    reason: string | null;
+  }>;
+  terms_and_conditions: string | null;
 }
 
 async function getInvoice(id: string): Promise<InvoiceDetail | null> {
@@ -68,6 +79,16 @@ async function getInvoice(id: string): Promise<InvoiceDetail | null> {
       .eq('invoice_id', id)
       .order('payment_date', { ascending: false });
 
+    const { data: creditNotes } = await supabase
+      .from('credit_notes')
+      .select()
+      .eq('invoice_id', id);
+
+    const { data: refunds } = await supabase
+      .from('invoice_refunds')
+      .select()
+      .eq('invoice_id', id);
+
     return {
       id: invoice.id,
       invoice_number: invoice.invoice_number,
@@ -84,6 +105,7 @@ async function getInvoice(id: string): Promise<InvoiceDetail | null> {
       due_date: invoice.due_date,
       paid_date: invoice.paid_date,
       sent_at: invoice.sent_at,
+      terms_and_conditions: invoice.terms_and_conditions,
       line_items: (lineItems ?? []).map((li: Record<string, unknown>) => ({
         id: li.id as string,
         description: li.description as string,
@@ -99,6 +121,16 @@ async function getInvoice(id: string): Promise<InvoiceDetail | null> {
         payment_method: (p.payment_method as string) ?? 'other',
         payment_date: (p.payment_date as string) ?? '',
         reference: (p.reference as string) ?? null,
+      })),
+      credit_notes: (creditNotes ?? []).map((cn: Record<string, unknown>) => ({
+        id: cn.id as string,
+        amount: cn.amount as number,
+        reason: (cn.reason as string) ?? null,
+      })),
+      refunds: (refunds ?? []).map((r: Record<string, unknown>) => ({
+        id: r.id as string,
+        amount: r.amount as number,
+        reason: (r.reason as string) ?? null,
       })),
     };
   } catch {
@@ -143,7 +175,9 @@ export default async function InvoiceDetailPage({
     );
   }
 
-  const balanceDue = invoice.total - invoice.amount_paid;
+  const totalCredits = invoice.credit_notes.reduce((sum, cn) => sum + cn.amount, 0);
+  const totalRefunds = invoice.refunds.reduce((sum, r) => sum + r.amount, 0);
+  const balanceDue = invoice.total - invoice.amount_paid - totalCredits + totalRefunds;
 
   return (
     <TierGate feature="invoices">
@@ -255,6 +289,18 @@ export default async function InvoiceDetailPage({
                 <span className="text-text-muted">Paid</span>
                 <span className="tabular-nums text-green-700">{formatCurrencyDetailed(invoice.amount_paid)}</span>
               </div>
+              {totalCredits > 0 && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-text-muted">Credits Applied</span>
+                  <span className="tabular-nums text-green-700">-{formatCurrencyDetailed(totalCredits)}</span>
+                </div>
+              )}
+              {totalRefunds > 0 && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-text-muted">Refunded</span>
+                  <span className="tabular-nums text-red-700">+{formatCurrencyDetailed(totalRefunds)}</span>
+                </div>
+              )}
               <div className="flex justify-between text-sm font-semibold">
                 <span className="text-foreground">Balance Due</span>
                 <span className={`tabular-nums ${balanceDue > 0 ? 'text-red-700' : 'text-green-700'}`}>
@@ -262,6 +308,13 @@ export default async function InvoiceDetailPage({
                 </span>
               </div>
             </div>
+
+            {invoice.terms_and_conditions && (
+              <div className="mt-4 pt-4 border-t border-border">
+                <p className="text-xs text-text-muted mb-1">Terms & Conditions</p>
+                <p className="text-sm text-text-secondary whitespace-pre-wrap">{invoice.terms_and_conditions}</p>
+              </div>
+            )}
 
             {invoice.memo && (
               <div className="mt-4 pt-4 border-t border-border">

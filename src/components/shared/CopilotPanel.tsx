@@ -13,10 +13,11 @@
  * @module components/shared/CopilotPanel
  */
 
-import { useEffect, useRef, useState, type FormEvent } from 'react';
-import { Sparkles, Trash2, X, Send } from 'lucide-react';
+import { useEffect, useRef, useMemo, useState, type FormEvent } from 'react';
+import { Sparkles, Trash2, X, Send, ExternalLink, Wrench, History, Download, Plus, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { useCopilot } from './CopilotProvider';
 import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 import type { UIMessage } from '@ai-sdk/react';
 
 /* ─────────────────────────────────────────────────────────
@@ -89,6 +90,12 @@ function getMessageText(msg: UIMessage): string {
     .join('');
 }
 
+function getToolParts(msg: UIMessage) {
+  return (msg.parts ?? []).filter(
+    (p) => p.type === 'tool-invocation'
+  );
+}
+
 /* ─────────────────────────────────────────────────────────
    Markdown-lite renderer (no heavy deps)
    ───────────────────────────────────────────────────────── */
@@ -126,12 +133,22 @@ export default function CopilotPanel() {
     isLoading,
     clearMessages,
     stop,
+    conversationHistory,
+    loadConversation,
+    deleteConversation,
+    startNewConversation,
+    exportConversation,
+    submitFeedback,
+    activeConversationId,
+    isHistoryLoading,
   } = useCopilot();
+
+  const [showHistory, setShowHistory] = useState(false);
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const pathname = usePathname();
-  const [suggestions] = useState(() => getSuggestions(pathname));
+  const suggestions = useMemo(() => getSuggestions(pathname), [pathname]);
 
   // Auto-scroll to bottom on new messages
   useEffect(() => {
@@ -202,6 +219,39 @@ export default function CopilotPanel() {
             </p>
           </div>
 
+          {/* History toggle (GAP-10) */}
+          <button
+            onClick={() => setShowHistory((p) => !p)}
+            className={`flex items-center justify-center w-8 h-8 rounded-lg transition-colors hover:bg-bg-secondary ${showHistory ? 'bg-amber-50 text-amber-600' : ''}`}
+            aria-label="Conversation history"
+            title="Conversation history"
+          >
+            <History size={14} className={showHistory ? 'text-amber-600' : 'text-text-muted'} />
+          </button>
+
+          {/* New conversation */}
+          <button
+            onClick={() => { startNewConversation(); setShowHistory(false); }}
+            className="flex items-center justify-center w-8 h-8 rounded-lg transition-colors hover:bg-bg-secondary"
+            aria-label="New conversation"
+            title="New conversation"
+          >
+            <Plus size={14} className="text-text-muted" />
+          </button>
+
+          {/* Export (GAP-33) */}
+          <button
+            onClick={() => {
+              const md = exportConversation();
+              navigator.clipboard.writeText(md);
+            }}
+            className="flex items-center justify-center w-8 h-8 rounded-lg transition-colors hover:bg-bg-secondary"
+            aria-label="Export conversation"
+            title="Copy as Markdown"
+          >
+            <Download size={14} className="text-text-muted" />
+          </button>
+
           {/* Clear conversation */}
           <button
             onClick={clearMessages}
@@ -223,16 +273,56 @@ export default function CopilotPanel() {
           </button>
         </div>
 
+        {/* ── Conversation History Sidebar (GAP-10) ────── */}
+        {showHistory && (
+          <div className="border-b border-border max-h-60 overflow-y-auto bg-bg-secondary/30">
+            <div className="px-4 py-2 text-[10px] font-medium text-text-muted uppercase tracking-wider">Recent Conversations</div>
+            {isHistoryLoading ? (
+              <div className="px-4 py-3 text-xs text-text-muted">Loading…</div>
+            ) : conversationHistory.length === 0 ? (
+              <div className="px-4 py-3 text-xs text-text-muted">No saved conversations yet.</div>
+            ) : (
+              conversationHistory.map((conv) => (
+                <div
+                  key={conv.id}
+                  className={`flex items-center gap-2 px-4 py-2 text-xs cursor-pointer transition-colors hover:bg-bg-secondary ${
+                    activeConversationId === conv.id ? 'bg-amber-50 border-l-2 border-amber-500' : ''
+                  }`}
+                >
+                  <button
+                    onClick={() => { loadConversation(conv.id); setShowHistory(false); }}
+                    className="flex-1 text-left truncate text-text-secondary hover:text-foreground"
+                  >
+                    {conv.title || 'Untitled'}
+                  </button>
+                  <span className="text-[10px] text-text-muted whitespace-nowrap">
+                    {new Date(conv.created_at).toLocaleDateString()}
+                  </span>
+                  <button
+                    onClick={() => deleteConversation(conv.id)}
+                    className="text-text-muted hover:text-red-500 transition-colors shrink-0"
+                    title="Delete"
+                  >
+                    <Trash2 size={10} />
+                  </button>
+                </div>
+              ))
+            )}
+          </div>
+        )}
+
         {/* ── Messages ────────────────────────────────── */}
-        <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
+        <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4" role="log" aria-live="polite">
           {messages.map((msg) => {
             const text = getMessageText(msg);
-            if (!text) return null;
+            const toolParts = getToolParts(msg);
+            if (!text && toolParts.length === 0) return null;
 
             return (
               <div
                 key={msg.id}
                 className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                role="article"
               >
                 <div
                   className={`max-w-[90%] rounded-xl px-4 py-3 ${
@@ -241,15 +331,89 @@ export default function CopilotPanel() {
                       : 'bg-bg-secondary/80 text-foreground border border-border/50'
                   }`}
                 >
-                  {msg.role === 'assistant' ? (
+                  {/* Tool invocation indicators (GAP-13) */}
+                  {toolParts.length > 0 && msg.role === 'assistant' && (
+                    <div className="space-y-1.5 mb-2">
+                      {toolParts.map((part, i) => {
+                        const tp = part as { type: 'tool-invocation'; toolInvocation: { toolName: string; state: string; result?: unknown } };
+                        const inv = tp.toolInvocation;
+                        const isComplete = inv.state === 'result';
+
+                        // Special rendering for navigate_to (GAP-12)
+                        if (inv.toolName === 'navigate_to' && isComplete && inv.result) {
+                          const res = inv.result as { url?: string; label?: string; reason?: string };
+                          if (res.url) {
+                            return (
+                              <Link
+                                key={i}
+                                href={res.url}
+                                className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 hover:bg-amber-100 transition-colors"
+                              >
+                                <ExternalLink size={12} />
+                                <span className="font-medium">{res.label}</span>
+                                {res.reason && <span className="text-amber-600">— {res.reason}</span>}
+                              </Link>
+                            );
+                          }
+                        }
+
+                        // Generic tool indicator
+                        const toolLabel = inv.toolName.replace(/_/g, ' ').replace(/query /i, '');
+                        return (
+                          <div
+                            key={i}
+                            className={`flex items-center gap-1.5 text-[11px] rounded-md px-2 py-1 ${
+                              isComplete
+                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                                : 'bg-amber-50 text-amber-700 border border-amber-200 animate-pulse'
+                            }`}
+                          >
+                            <Wrench size={10} />
+                            <span>{isComplete ? `Queried ${toolLabel}` : `Querying ${toolLabel}…`}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  {/* Text content */}
+                  {text && msg.role === 'assistant' ? (
                     <div
                       className="text-sm leading-relaxed prose-sm [&_li]:text-sm [&_strong]:font-semibold [&_code]:text-xs"
                       dangerouslySetInnerHTML={{
                         __html: renderMarkdown(text),
                       }}
                     />
-                  ) : (
+                  ) : text ? (
                     <p className="text-sm whitespace-pre-wrap">{text}</p>
+                  ) : null}
+
+                  {/* Feedback buttons (GAP-26) */}
+                  {msg.role === 'assistant' && msg.id !== 'welcome' && text && (
+                    <div className="flex items-center gap-1 mt-2 pt-1.5 border-t border-border/30">
+                      <button
+                        onClick={() => {
+                          const idx = messages.indexOf(msg);
+                          submitFeedback(idx, 'positive');
+                        }}
+                        className="flex items-center justify-center w-6 h-6 rounded transition-colors text-text-muted hover:text-emerald-600 hover:bg-emerald-50"
+                        title="Helpful"
+                        aria-label="Mark as helpful"
+                      >
+                        <ThumbsUp size={11} />
+                      </button>
+                      <button
+                        onClick={() => {
+                          const idx = messages.indexOf(msg);
+                          submitFeedback(idx, 'negative');
+                        }}
+                        className="flex items-center justify-center w-6 h-6 rounded transition-colors text-text-muted hover:text-red-500 hover:bg-red-50"
+                        title="Not helpful"
+                        aria-label="Mark as not helpful"
+                      >
+                        <ThumbsDown size={11} />
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>

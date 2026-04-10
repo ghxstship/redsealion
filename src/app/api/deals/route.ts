@@ -12,8 +12,9 @@ export async function GET() {
 
   const { data, error } = await supabase
     .from('deals')
-    .select('*, clients(id, name)')
+    .select('*, clients(id, company_name)')
     .eq('organization_id', perm.organizationId)
+    .is('deleted_at', null)
     .order('created_at', { ascending: false });
 
   if (error) return NextResponse.json({ error: 'Failed to fetch deals', details: error.message }, { status: 500 });
@@ -79,7 +80,7 @@ export async function POST(request: Request) {
       title: name,
       client_id,
       pipeline_id: pipeline_id || null,
-      value,
+      deal_value: value,
       probability: probability ?? 50,
       expected_close_date: expected_close_date || null,
       stage: stage || 'lead',

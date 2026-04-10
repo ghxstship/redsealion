@@ -27,9 +27,9 @@ async function getBundles(): Promise<Bundle[]> {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) throw new Error('No auth');
-const { data: bundles } = await supabase
+    const { data: bundles } = await supabase
       .from('equipment_bundles')
-      .select()
+      .select('*, equipment_bundle_items(count)')
       .eq('organization_id', ctx.organizationId)
       .order('name');
 
@@ -39,7 +39,7 @@ const { data: bundles } = await supabase
       id: b.id as string,
       name: b.name as string,
       description: (b.description as string) ?? null,
-      item_count: (b.item_count as number) ?? 0,
+      item_count: ((b.equipment_bundle_items as Record<string, number>[])?.[0]?.count) ?? 0,
       category: (b.category as string) ?? 'General',
       created_at: b.created_at as string,
     }));

@@ -3,7 +3,7 @@
  *
  * Leads:
  *   + Lead creation from inbound sources
- *   + Status lifecycle: new → contacted → qualified → converted / disqualified
+ *   + Status lifecycle: new → contacted → qualified → converted / lost
  *   + Required field validation
  *   + Filtering by status
  *
@@ -34,14 +34,14 @@ import {
   TEST_USER_ID,
 } from '../helpers';
 
-const LEAD_STATUSES = ['new', 'contacted', 'qualified', 'converted', 'disqualified'];
+const LEAD_STATUSES = ['new', 'contacted', 'qualified', 'converted', 'lost'];
 
 const VALID_LEAD_TRANSITIONS: Record<string, string[]> = {
-  new: ['contacted', 'disqualified'],
-  contacted: ['qualified', 'disqualified'],
-  qualified: ['converted', 'disqualified'],
+  new: ['contacted', 'lost'],
+  contacted: ['qualified', 'lost'],
+  qualified: ['converted', 'lost'],
   converted: [],
-  disqualified: ['new'],     // can reopen
+  lost: ['new'],     // can reopen
 };
 
 const TRANSFER_STATUSES = ['pending', 'in_transit', 'received', 'cancelled'];
@@ -79,18 +79,18 @@ describe('Lead Workflow', () => {
       expect(VALID_LEAD_TRANSITIONS.qualified).toContain('converted');
     });
 
-    it('allows disqualification from any active state', () => {
-      expect(VALID_LEAD_TRANSITIONS.new).toContain('disqualified');
-      expect(VALID_LEAD_TRANSITIONS.contacted).toContain('disqualified');
-      expect(VALID_LEAD_TRANSITIONS.qualified).toContain('disqualified');
+    it('allows marking as lost from any active state', () => {
+      expect(VALID_LEAD_TRANSITIONS.new).toContain('lost');
+      expect(VALID_LEAD_TRANSITIONS.contacted).toContain('lost');
+      expect(VALID_LEAD_TRANSITIONS.qualified).toContain('lost');
     });
 
     it('prevents transitions from converted (terminal)', () => {
       expect(VALID_LEAD_TRANSITIONS.converted).toHaveLength(0);
     });
 
-    it('allows reopening disqualified leads', () => {
-      expect(VALID_LEAD_TRANSITIONS.disqualified).toContain('new');
+    it('allows reopening lost leads', () => {
+      expect(VALID_LEAD_TRANSITIONS.lost).toContain('new');
     });
   });
 

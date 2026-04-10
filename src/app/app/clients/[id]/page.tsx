@@ -83,9 +83,6 @@ export default async function ClientDetailPage({
     <div className="rounded-xl border border-border bg-background overflow-hidden">
       <div className="px-6 py-4 border-b border-border flex items-center justify-between">
         <h2 className="text-sm font-semibold text-foreground">Contacts</h2>
-        <button className="text-xs font-medium text-text-muted hover:text-foreground transition-colors">
-          + Add Contact
-        </button>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full">
@@ -216,6 +213,13 @@ export default async function ClientDetailPage({
 <PageHeader title={client.company_name} />
           <p className="mt-1 text-sm text-text-secondary">
             {client.industry} &middot; Source: {client.source ?? 'Unknown'}
+            <span className={`ml-2 inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
+              client.status === 'active' ? 'bg-green-50 text-green-700' :
+              client.status === 'churned' ? 'bg-red-50 text-red-700' :
+              'bg-zinc-100 text-zinc-600'
+            }`}>
+              {client.status.charAt(0).toUpperCase() + client.status.slice(1)}
+            </span>
           </p>
           <div className="mt-3 flex flex-wrap gap-1.5">
             {client.tags.map((tag) => (
@@ -228,7 +232,21 @@ export default async function ClientDetailPage({
             ))}
           </div>
         </div>
-        <ClientDetailActions clientId={id} clientName={client.company_name} />
+        <ClientDetailActions
+          clientId={id}
+          clientName={client.company_name}
+          clientData={{
+            company_name: client.company_name,
+            industry: client.industry,
+            website: client.website,
+            linkedin: client.linkedin,
+            source: client.source,
+            notes: client.notes,
+            annual_revenue: client.annual_revenue,
+            employee_count: client.employee_count,
+            status: client.status,
+          }}
+        />
       </div>
 
       <ClientDetailTabs

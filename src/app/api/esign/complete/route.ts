@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
         status: 'signed',
         signature_data,
         signed_at: new Date().toISOString(),
-        signer_ip: ip,
+        ip_address: ip === 'unknown' ? null : ip,
       })
       .eq('id', esignRequest.id);
 
@@ -84,4 +84,17 @@ export async function POST(request: NextRequest) {
       { status: 500 },
     );
   }
+}
+
+/** CORS preflight handler */
+export async function OPTIONS() {
+  return new Response(null, {
+    status: 204,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Access-Control-Max-Age': '86400',
+    },
+  });
 }

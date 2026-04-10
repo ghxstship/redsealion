@@ -80,6 +80,10 @@ export async function POST(
             status: result.errors.length > 0 ? 'completed_with_errors' : 'completed',
             entity_type: result.entityType,
             entity_count: result.entityCount,
+            records_processed: result.recordsProcessed ?? 0,
+            records_filtered: result.recordsFiltered ?? 0,
+            records_failed: result.recordsFailed ?? 0,
+            details: result.details ?? null,
             error_message: result.errors.length > 0 ? result.errors.join('; ') : null,
             completed_at: new Date().toISOString(),
           })

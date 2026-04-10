@@ -62,5 +62,17 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to create expense', details: error?.message }, { status: 500 });
   }
 
+  const { receipts } = body as { receipts?: { url: string; name: string }[] };
+  if (receipts && receipts.length > 0) {
+    await supabase.from('expense_receipts').insert(
+      receipts.map(r => ({
+        expense_id: expense.id,
+        organization_id: perm.organizationId,
+        file_url: r.url,
+        file_name: r.name
+      }))
+    );
+  }
+
   return NextResponse.json({ success: true, expense }, { status: 201 });
 }

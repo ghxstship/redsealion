@@ -564,3 +564,245 @@ export async function notifyCommentPosted(
     log.error('[Triggers] notifyCommentPosted failed:', {}, err);
   }
 }
+
+// ---------------------------------------------------------------------------
+// 9. Work order dispatched (crew notification)
+// ---------------------------------------------------------------------------
+
+export async function notifyWorkOrderDispatched(
+  workOrderId: string,
+  orgId: string,
+): Promise<void> {
+  try {
+    const supabase = await createServiceClient();
+
+    const { data: wo } = await supabase
+      .from('work_orders')
+      .select('id, wo_number, title, location_name, scheduled_start')
+      .eq('id', workOrderId)
+      .single();
+
+    if (!wo) return;
+
+    const { data: org } = await supabase
+      .from('organizations')
+      .select('name')
+      .eq('id', orgId)
+      .single();
+
+    if (!org) return;
+
+    // Find all assigned crew members
+    const { data: assignments } = await supabase
+      .from('work_order_assignments')
+      .select('crew_profile_id, crew_profiles(user_id)')
+      .eq('work_order_id', workOrderId);
+
+    if (!assignments || assignments.length === 0) return;
+
+    for (const assignment of assignments) {
+      const crewProfile = castRelation<{ user_id: string }>(assignment.crew_profiles);
+      if (!crewProfile?.user_id) continue;
+
+      const { data: user } = await supabase
+        .from('users')
+        .select('id, email, full_name')
+        .eq('id', crewProfile.user_id)
+        .single();
+
+      if (!user?.email) continue;
+
+      const scheduledDate = wo.scheduled_start
+        ? new Date(wo.scheduled_start).toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric',
+          })
+        : '';
+
+      const tpl = templates.workOrderDispatched({
+        crewName: user.full_name ?? 'there',
+        woNumber: wo.wo_number,
+        title: wo.title,
+        location: wo.location_name ?? '',
+        scheduledDate,
+        orgName: org.name,
+      });
+
+      await sendNotification({
+        orgId,
+        userId: user.id,
+        eventType: 'work_order.dispatched',
+        channel: 'email',
+        subject: tpl.subject,
+        body: tpl.html,
+        to: user.email,
+      });
+    }
+  } catch (err) {
+    log.error('[Triggers] notifyWorkOrderDispatched failed:', {}, err);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// 10. Lead received (internal notification to org admins)
+// ---------------------------------------------------------------------------
+
+export async function notifyLeadReceived(
+  leadId: string,
+  orgId: string,
+): Promise<void> {
+  try {
+    const supabase = await createServiceClient();
+
+    const [{ data: lead }, { data: org }] = await Promise.all([
+      supabase
+        .from('leads')
+        .select('id, contact_first_name, contact_last_name, event_type')
+        .eq('id', leadId)
+        .single(),
+      supabase
+        .from('organizations')
+        .select('name')
+        .eq('id', orgId)
+        .single(),
+    ]);
+
+    if (!lead || !org) return;
+
+    const admin = await getOrgAdmin(supabase, orgId);
+    if (!admin) return;
+
+    const leadName = [lead.contact_first_name, lead.contact_last_name].filter(Boolean).join(' ') || 'A new prospect';
+    const eventName = lead.event_type || 'an upcoming event';
+
+    const tpl = templates.leadReceived({
+      leadName,
+      eventName,
+      orgName: org.name,
+    });
+
+    await sendNotification({
+      orgId,
+      userId: admin.userId,
+      eventType: 'lead.received', // We can use this as eventType, it doesn't have to exist in a strictly-typed enum unless required (I'll assume it's string)
+      channel: 'email',
+      subject: tpl.subject,
+      body: tpl.html,
+      to: admin.email,
+    });
+  } catch (err) {
+    log.error('[Triggers] notifyLeadReceived failed:', {}, err);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// 11. Bid submitted (internal notification to org admin)
+// ---------------------------------------------------------------------------
+
+export async function notifyBidSubmitted(
+  workOrderId: string,
+  orgId: string,
+  bidAmount: number,
+): Promise<void> {
+  try {
+    const supabase = await createServiceClient();
+
+    const [{ data: wo }, { data: org }] = await Promise.all([
+      supabase
+        .from('work_orders')
+        .select('wo_number, title')
+        .eq('id', workOrderId)
+        .single(),
+      supabase
+        .from('organizations')
+        .select('name')
+        .eq('id', orgId)
+        .single(),
+    ]);
+
+    if (!wo || !org) return;
+
+    const admin = await getOrgAdmin(supabase, orgId);
+    if (!admin) return;
+
+    const amountStr = formatCurrency(bidAmount);
+
+    await sendNotification({
+      orgId,
+      userId: admin.userId,
+      eventType: 'bid.submitted',
+      channel: 'email',
+      subject: `New bid on ${wo.wo_number}: ${wo.title}`,
+      body: `A new bid of ${amountStr} has been submitted on work order ${wo.wo_number} (${wo.title}). Review the bid in the Dispatch panel.`,
+      to: admin.email,
+    });
+  } catch (err) {
+    log.error('[Triggers] notifyBidSubmitted failed:', {}, err);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// 12. Bid resolved — accepted, rejected, or withdrawn (crew notification)
+// ---------------------------------------------------------------------------
+
+export async function notifyBidResolved(
+  bidId: string,
+  workOrderId: string,
+  orgId: string,
+  status: 'accepted' | 'rejected' | 'withdrawn',
+): Promise<void> {
+  try {
+    // Don't notify on withdrawal — the user initiated it themselves
+    if (status === 'withdrawn') return;
+
+    const supabase = await createServiceClient();
+
+    const [{ data: bid }, { data: wo }, { data: org }] = await Promise.all([
+      supabase
+        .from('work_order_bids')
+        .select('crew_profile_id, proposed_amount, crew_profiles(user_id)')
+        .eq('id', bidId)
+        .single(),
+      supabase
+        .from('work_orders')
+        .select('wo_number, title')
+        .eq('id', workOrderId)
+        .single(),
+      supabase
+        .from('organizations')
+        .select('name')
+        .eq('id', orgId)
+        .single(),
+    ]);
+
+    if (!bid || !wo || !org) return;
+
+    const crewProfile = castRelation<{ user_id: string }>(bid.crew_profiles);
+    if (!crewProfile?.user_id) return;
+
+    const { data: user } = await supabase
+      .from('users')
+      .select('id, email, full_name')
+      .eq('id', crewProfile.user_id)
+      .single();
+
+    if (!user?.email) return;
+
+    const statusLabel = status === 'accepted' ? 'accepted' : 'not selected';
+    const amountStr = formatCurrency(bid.proposed_amount);
+
+    await sendNotification({
+      orgId,
+      userId: user.id,
+      eventType: `bid.${status}`,
+      channel: 'email',
+      subject: `Your bid on ${wo.wo_number} has been ${statusLabel}`,
+      body: `Your bid of ${amountStr} on work order ${wo.wo_number} (${wo.title}) has been ${statusLabel} by ${org.name}.${status === 'accepted' ? ' You will receive assignment details shortly.' : ''}`,
+      to: user.email,
+    });
+  } catch (err) {
+    log.error('[Triggers] notifyBidResolved failed:', {}, err);
+  }
+}
+

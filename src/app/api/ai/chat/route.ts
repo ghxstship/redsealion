@@ -1,13 +1,13 @@
 /**
  * AI Chat API — streaming Claude responses with tool-use.
  *
- * Replaces the legacy regex-intent detection system with full
- * Vercel AI SDK streaming and Anthropic tool-use integration.
+ * Uses Vercel AI SDK streaming with Anthropic tool-use integration.
+ * Includes rate limiting, usage tracking, and audit logging.
  *
  * @module app/api/ai/chat/route
  */
 
-import { streamText, stepCountIs, convertToModelMessages, type ToolSet } from 'ai';
+import { streamText, stepCountIs, convertToModelMessages, type StepResult } from 'ai';
 import { createClient } from '@/lib/supabase/server';
 import { requireFeature } from '@/lib/api/tier-guard';
 import { requirePermission } from '@/lib/api/permission-guard';
@@ -15,6 +15,7 @@ import { getCopilotModel, isAiConfigured } from '@/lib/ai/client';
 import { buildSystemPrompt } from '@/lib/ai/prompts';
 import { gatherContext } from '@/lib/ai/context';
 import { buildCopilotTools } from '@/lib/ai/tools';
+import { checkAiRateLimit } from '@/lib/ai/rate-limit';
 import { createLogger } from '@/lib/logger';
 
 const log = createLogger('api-ai-chat');
@@ -74,9 +75,16 @@ export async function POST(request: Request) {
       );
     }
 
+    // ── Rate limiting (GAP-08) ───────────────────────────────
+    const rateLimitError = checkAiRateLimit(user.id, aiContext.organizationId);
+    if (rateLimitError) return rateLimitError;
+
     // ── Build system prompt + tools ──────────────────────────
     const systemPrompt = buildSystemPrompt(aiContext);
     const tools = buildCopilotTools(supabase, aiContext.organizationId);
+
+    // ── Track timing ─────────────────────────────────────────
+    const startTime = Date.now();
 
     // ── Stream response ──────────────────────────────────────
     const result = streamText({
@@ -88,6 +96,49 @@ export async function POST(request: Request) {
       temperature: 0.3, // Low temp for data queries, slightly creative for drafting
       onError: (error) => {
         log.error('AI stream error', {}, error);
+      },
+      onFinish: async ({ usage, steps }) => {
+        // ── Usage tracking (GAP-09, GAP-25) ──────────────────
+        try {
+          const durationMs = Date.now() - startTime;
+          const inputTokens = usage?.inputTokens ?? 0;
+          const outputTokens = usage?.outputTokens ?? 0;
+          // Approximate cost for Claude Sonnet 4 pricing
+          const estimatedCost = (inputTokens * 3 + outputTokens * 15) / 1_000_000;
+          const toolCallsCount = (steps ?? []).reduce(
+            (sum: number, step: StepResult<typeof tools>) =>
+              sum + (step.toolCalls?.length ?? 0),
+            0
+          );
+
+          await supabase.from('ai_usage_log').insert({
+            organization_id: aiContext.organizationId,
+            user_id: user.id,
+            model: 'claude-sonnet-4-20250514',
+            input_tokens: inputTokens,
+            output_tokens: outputTokens,
+            estimated_cost_usd: estimatedCost,
+            tool_calls_count: toolCallsCount,
+            duration_ms: durationMs,
+          });
+
+          // ── Audit log entry (GAP-25) ────────────────────────
+          await supabase.from('audit_log').insert({
+            organization_id: aiContext.organizationId,
+            user_id: user.id,
+            action: 'ai_chat_message',
+            entity_type: 'ai_conversation',
+            metadata: {
+              input_tokens: inputTokens,
+              output_tokens: outputTokens,
+              tool_calls: toolCallsCount,
+              duration_ms: durationMs,
+            },
+          });
+        } catch (trackingError) {
+          // Non-blocking: don't fail the response if tracking fails
+          log.error('AI usage tracking error', {}, trackingError);
+        }
       },
     });
 

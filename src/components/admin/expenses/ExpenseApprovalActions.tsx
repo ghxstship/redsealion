@@ -4,14 +4,15 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
 
-export default function ExpenseApprovalActions({ expenseId }: { expenseId: string }) {
+export default function ExpenseApprovalActions({ expenseId, isMileage = false }: { expenseId: string, isMileage?: boolean }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   async function handleAction(action: 'approve' | 'reject') {
     setLoading(true);
     try {
-      const res = await fetch(`/api/expenses/${expenseId}/${action}`, {
+      const endpoint = isMileage ? `/api/mileage/${expenseId}/${action}` : `/api/expenses/${expenseId}/${action}`;
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(action === 'reject' ? { reason: 'Rejected by admin' } : {}),

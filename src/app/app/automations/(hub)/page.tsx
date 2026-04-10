@@ -2,9 +2,6 @@ import Link from 'next/link';
 import { TierGate } from '@/components/shared/TierGate';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
-import PageHeader from '@/components/shared/PageHeader';
-import AutomationsHubTabs from '../AutomationsHubTabs';
-import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
 
 interface AutomationRow {
@@ -18,13 +15,7 @@ interface AutomationRow {
   last_run_at: string | null;
 }
 
-
-
-function formatTrigger(type: string): string {
-  return type.split('_').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-}
-
-function formatAction(type: string): string {
+function formatLabel(type: string): string {
   return type.split('_').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 }
 
@@ -32,19 +23,16 @@ async function getAutomations(): Promise<AutomationRow[]> {
   try {
     const supabase = await createClient();
     const ctx = await resolveCurrentOrg();
-    if (!ctx) throw new Error('No auth');
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    if (!ctx) return [];
 
-    if (!user) throw new Error('No auth');
-const { data: automations } = await supabase
+    const { data: automations } = await supabase
       .from('automations')
       .select()
       .eq('organization_id', ctx.organizationId)
+      .is('deleted_at', null)
       .order('created_at', { ascending: false });
 
-    if (!automations) throw new Error('No automations');
+    if (!automations) return [];
 
     return automations.map((a: Record<string, unknown>) => ({
       id: a.id as string,
@@ -66,15 +54,6 @@ export default async function AutomationsPage() {
 
   return (
     <TierGate feature="automations">
-      <PageHeader
-        title="Automations"
-        subtitle="Automate workflows with event triggers and actions."
-      >
-        <Button href="/app/automations/new">New Automation</Button>
-      </PageHeader>
-
-      <AutomationsHubTabs />
-
       <div className="rounded-xl border border-border bg-background divide-y divide-border">
         {automations.map((automation) => (
           <div key={automation.id} className="px-5 py-4 flex items-center justify-between">
@@ -93,19 +72,22 @@ export default async function AutomationsPage() {
                   {automation.is_active ? 'Active' : 'Inactive'}
                 </span>
               </div>
-              <p className="mt-0.5 text-xs text-text-secondary">{automation.description}</p>
+              <p className="mt-0.5 text-xs text-text-secondary">{automation.description || 'No description'}</p>
               <div className="mt-1 flex items-center gap-4 text-xs text-text-muted">
-                <span>Trigger: {formatTrigger(automation.trigger_type)}</span>
-                <span>Action: {formatAction(automation.action_type)}</span>
+                <span>Trigger: {formatLabel(automation.trigger_type)}</span>
+                <span>Action: {formatLabel(automation.action_type)}</span>
                 <span>Runs: {automation.run_count}</span>
                 {automation.last_run_at && (
                   <span>Last run: {new Date(automation.last_run_at).toLocaleDateString()}</span>
                 )}
               </div>
             </div>
-            <Button variant="secondary" size="sm">
+            <Link
+              href={`/app/automations/${automation.id}`}
+              className="rounded-lg border border-border px-3 py-1.5 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors"
+            >
               Edit
-            </Button>
+            </Link>
           </div>
         ))}
       </div>

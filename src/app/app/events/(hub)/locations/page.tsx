@@ -17,11 +17,13 @@ async function getLocations(): Promise<LocationItem[]> {
       .from('locations')
       .select()
       .eq('organization_id', ctx.organizationId)
+      .is('deleted_at', null)
       .order('name');
 
     if (!items || items.length === 0) return [];
 
     return items.map((item: Record<string, unknown>) => ({
+      ...item,
       id: item.id as string,
       name: item.name as string,
       type: (item.type as string) ?? 'venue',
@@ -31,7 +33,7 @@ async function getLocations(): Promise<LocationItem[]> {
       timezone: (item.timezone as string) ?? null,
       google_place_id: (item.google_place_id as string) ?? null,
       status: (item.status as string) ?? 'active',
-    }));
+    })) as LocationItem[];
   } catch {
     return [];
   }
@@ -73,11 +75,11 @@ export default async function LocationsPage() {
       {/* Type summary cards */}
       {topTypes.length > 0 && (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">
-          {topTypes.map(([type, count]) => (
-            <div key={type} className="rounded-xl border border-border bg-background p-4">
-              <p className="text-xs text-text-muted">{formatLabel(type)}</p>
+          {topTypes.map(([typeStr, count]) => (
+            <Link key={typeStr} href={`/app/events/locations?type=${typeStr}`} className="rounded-xl border border-border bg-background p-4 hover:bg-bg-secondary transition-colors block">
+              <p className="text-xs text-text-muted">{formatLabel(typeStr)}</p>
               <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{count}</p>
-            </div>
+            </Link>
           ))}
         </div>
       )}

@@ -1,36 +1,31 @@
 import { createClient } from '@/lib/supabase/server';
-import { FileText } from 'lucide-react';
 import { TierGate } from '@/components/shared/TierGate';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
+import FilesDataTable, { FileData } from '@/components/files/FilesDataTable';
 
 interface FileStats {
   total: number;
   totalSizeMb: number;
   categories: Record<string, number>;
+  files: FileData[];
 }
 
 async function getFileStats(): Promise<FileStats> {
-  const fallback: FileStats = { total: 0, totalSizeMb: 0, categories: {} };
+  const fallback: FileStats = { total: 0, totalSizeMb: 0, categories: {}, files: [] };
   try {
     const supabase = await createClient();
     const ctx = await resolveCurrentOrg();
     if (!ctx) throw new Error('No auth');
 
-    // file_attachments scoped via proposal_id; RLS handles org filtering
-    const { data: proposals } = await supabase
-      .from('proposals')
-      .select('id')
-      .eq('organization_id', ctx.organizationId);
-
-    if (!proposals || proposals.length === 0) return fallback;
-
-    const proposalIds = proposals.map((p) => p.id);
+    // Fetch all files associated with the current org that are not soft-deleted
     const { data } = await supabase
       .from('file_attachments')
-      .select('id, file_size, category, file_name')
-      .in('proposal_id', proposalIds);
+      .select('id, file_size, category, file_name, created_at, mime_type')
+      .eq('organization_id', ctx.organizationId)
+      .is('deleted_at', null)
+      .order('created_at', { ascending: false });
 
     if (!data || data.length === 0) return fallback;
 
@@ -46,6 +41,7 @@ async function getFileStats(): Promise<FileStats> {
       total: data.length,
       totalSizeMb: Math.round((totalSize / (1024 * 1024)) * 10) / 10,
       categories,
+      files: data as FileData[]
     };
   } catch {
     return fallback;
@@ -59,7 +55,7 @@ export default async function FilesPage() {
     <TierGate feature="proposals">
 <PageHeader
         title="Files"
-        subtitle="All documents and attachments across your projects."
+        subtitle="All documents and attachments across your organization."
       />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-8">
@@ -77,16 +73,7 @@ export default async function FilesPage() {
         </Card>
       </div>
 
-      <div className="rounded-xl border border-border bg-background px-8 py-16 text-center">
-        <div className="mx-auto max-w-md">
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-bg-secondary">
-            <FileText size={24} className="text-text-muted" />
-          </div>
-          <p className="text-sm text-text-secondary">
-            Files attached to proposals, projects, and deliverables are surfaced here. Upload files from individual project pages.
-          </p>
-        </div>
-      </div>
+      <FilesDataTable initialFiles={stats.files} />
     </TierGate>
   );
 }

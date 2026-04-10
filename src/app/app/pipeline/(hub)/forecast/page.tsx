@@ -12,17 +12,18 @@ async function getForecast() {
     if (!ctx) return { stages: [], totalPipeline: 0, totalWeighted: 0 };
     const { data } = await supabase
       .from('deals')
-      .select('stage, value, probability')
+      .select('stage, deal_value, probability')
       .eq('organization_id', ctx.organizationId)
+      .is('deleted_at', null)
       .not('stage', 'eq', 'closed_lost');
 
-    const deals = (data ?? []) as Array<{ stage: string; value: number; probability: number }>;
+    const deals = (data ?? []) as Array<{ stage: string; deal_value: number; probability: number }>;
     const stageMap = deals.reduce((acc, d) => {
       const key = d.stage ?? 'unknown';
       if (!acc[key]) acc[key] = { count: 0, value: 0, weighted: 0 };
       acc[key].count++;
-      acc[key].value += d.value ?? 0;
-      acc[key].weighted += (d.value ?? 0) * ((d.probability ?? 0) / 100);
+      acc[key].value += d.deal_value ?? 0;
+      acc[key].weighted += (d.deal_value ?? 0) * ((d.probability ?? 0) / 100);
       return acc;
     }, {} as Record<string, { count: number; value: number; weighted: number }>);
 

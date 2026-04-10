@@ -20,6 +20,9 @@ interface Lead {
   status: string;
   estimated_budget: number | null;
   message: string | null;
+  event_type: string | null;
+  event_date: string | null;
+  lost_reason: string | null;
 }
 
 interface LeadEditModalProps {
@@ -47,6 +50,9 @@ export default function LeadEditModal({ open, onClose, onSaved, lead }: LeadEdit
   const [status, setStatus] = useState(lead.status);
   const [budget, setBudget] = useState(lead.estimated_budget?.toString() ?? '');
   const [message, setMessage] = useState(lead.message ?? '');
+  const [eventType, setEventType] = useState(lead.event_type ?? '');
+  const [eventDate, setEventDate] = useState(lead.event_date ?? '');
+  const [lostReason, setLostReason] = useState(lead.lost_reason ?? '');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -69,6 +75,9 @@ export default function LeadEditModal({ open, onClose, onSaved, lead }: LeadEdit
           status,
           estimated_budget: budget ? parseFloat(budget) : null,
           message: message || null,
+          event_type: eventType || null,
+          event_date: eventDate || null,
+          ...(status === 'lost' && lostReason ? { lost_reason: lostReason } : {}),
         }),
       });
       if (!res.ok) {
@@ -133,6 +142,24 @@ export default function LeadEditModal({ open, onClose, onSaved, lead }: LeadEdit
           <FormLabel>Source</FormLabel>
           <FormInput type="text" value={source} onChange={(e) => setSource(e.target.value)} placeholder="e.g. Website, Referral" />
         </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <FormLabel>Event Type</FormLabel>
+            <FormInput type="text" value={eventType} onChange={(e) => setEventType(e.target.value)} placeholder="e.g. Wedding, Corporate" />
+          </div>
+          <div>
+            <FormLabel>Event Date</FormLabel>
+            <FormInput type="date" value={eventDate} onChange={(e) => setEventDate(e.target.value)} />
+          </div>
+        </div>
+
+        {status === 'lost' && (
+          <div>
+            <FormLabel>Lost Reason</FormLabel>
+            <FormInput type="text" value={lostReason} onChange={(e) => setLostReason(e.target.value)} placeholder="e.g. Budget too low, went with competitor" />
+          </div>
+        )}
 
         <div>
           <FormLabel>Notes</FormLabel>

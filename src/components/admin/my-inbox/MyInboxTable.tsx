@@ -44,14 +44,23 @@ const NOTIFICATION_TYPE_COLORS: Record<string, string> = {
   system: 'bg-bg-secondary text-text-secondary',
 };
 
+const NOTIFICATION_PRIORITY_COLORS: Record<string, string> = {
+  urgent: 'bg-red-50 text-red-700',
+  high: 'bg-amber-50 text-amber-700',
+  normal: 'bg-bg-secondary text-text-secondary',
+  low: 'bg-slate-50 text-slate-500',
+};
+
 const typeOptions = ['all', 'comment', 'mention', 'tag', 'approval', 'system'] as const;
 const readOptions = ['all', 'unread', 'read'] as const;
+const priorityOptions = ['all', 'urgent', 'high', 'normal', 'low'] as const;
 
 export default function MyInboxTable({ notifications }: { notifications: NotificationRow[] }) {
   const router = useRouter();
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
   const [readFilter, setReadFilter] = useState('all');
+  const [priorityFilter, setPriorityFilter] = useState('all');
   const [showColumnConfig, setShowColumnConfig] = useState(false);
 
   const {
@@ -79,6 +88,7 @@ export default function MyInboxTable({ notifications }: { notifications: Notific
     if (typeFilter !== 'all') result = result.filter((n) => n.type === typeFilter);
     if (readFilter === 'unread') result = result.filter((n) => !n.read);
     if (readFilter === 'read') result = result.filter((n) => n.read);
+    if (priorityFilter !== 'all') result = result.filter((n) => n.priority === priorityFilter);
     if (search) {
       const q = search.toLowerCase();
       result = result.filter(
@@ -90,7 +100,7 @@ export default function MyInboxTable({ notifications }: { notifications: Notific
       );
     }
     return result;
-  }, [notifications, typeFilter, readFilter, search]);
+  }, [notifications, typeFilter, readFilter, priorityFilter, search]);
 
   const { sorted, sort, handleSort } = useSort(filtered);
   const allIds = useMemo(() => sorted.map((n) => n.id), [sorted]);
@@ -110,6 +120,15 @@ export default function MyInboxTable({ notifications }: { notifications: Notific
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ids }),
+    });
+    router.refresh();
+  }
+
+  async function handleBulkArchive(ids: string[]) {
+    await fetch('/api/notifications', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ids, archived: true }),
     });
     router.refresh();
   }
@@ -144,6 +163,10 @@ export default function MyInboxTable({ notifications }: { notifications: Notific
           />
           <div className="flex items-center gap-3">
             <SearchInput value={search} onChange={setSearch} placeholder="Search notifications..." />
+            <Button variant="ghost" size="sm" onClick={() => router.push('/app/settings/notifications')} title="Notification Preferences">
+              <SlidersHorizontal size={14} className="mr-2" />
+              Preferences
+            </Button>
             <Button variant="ghost" size="sm" onClick={() => setShowColumnConfig(true)} title="Column Settings">
               <SlidersHorizontal size={14} />
             </Button>
@@ -173,9 +196,19 @@ export default function MyInboxTable({ notifications }: { notifications: Notific
               activeKey={typeFilter}
               onChange={setTypeFilter}
             />
+            <div className="h-4 w-px bg-border hidden sm:block" />
+            <FilterPills
+              items={priorityOptions.map((key) => ({
+                key,
+                label: key === 'all' ? 'All Priority' : formatLabel(key),
+                count: key === 'all' ? notifications.length : notifications.filter((n) => n.priority === key).length,
+              }))}
+              activeKey={priorityFilter}
+              onChange={setPriorityFilter}
+            />
             <ActiveFilterBadge
-              count={(typeFilter !== 'all' ? 1 : 0) + (readFilter !== 'all' ? 1 : 0)}
-              onClearAll={() => { setTypeFilter('all'); setReadFilter('all'); setSearch(''); }}
+              count={(typeFilter !== 'all' ? 1 : 0) + (readFilter !== 'all' ? 1 : 0) + (priorityFilter !== 'all' ? 1 : 0)}
+              onClearAll={() => { setTypeFilter('all'); setReadFilter('all'); setPriorityFilter('all'); setSearch(''); }}
             />
           </div>
         </div>
@@ -189,6 +222,7 @@ export default function MyInboxTable({ notifications }: { notifications: Notific
         actions={[
           { label: 'Mark Read', onClick: (ids) => handleBulkRead(ids, true) },
           { label: 'Mark Unread', onClick: (ids) => handleBulkRead(ids, false) },
+          { label: 'Archive', onClick: handleBulkArchive },
           {
             label: 'Delete', variant: 'danger',
             confirm: { title: 'Delete Notifications', message: 'Are you sure you want to delete the selected notifications?' },
@@ -223,6 +257,7 @@ export default function MyInboxTable({ notifications }: { notifications: Notific
                 {isVisible('title') && <th className="px-6 py-3"><SortableHeader label="Title" field="title" currentSort={sort} onSort={handleSort} /></th>}
                 {isVisible('actor_name') && <th className="px-6 py-3"><SortableHeader label="From" field="actor_name" currentSort={sort} onSort={handleSort} /></th>}
                 {isVisible('source_label') && <th className="px-6 py-3"><SortableHeader label="Source" field="source_label" currentSort={sort} onSort={handleSort} /></th>}
+                {isVisible('priority') && <th className="px-6 py-3"><SortableHeader label="Priority" field="priority" currentSort={sort} onSort={handleSort} /></th>}
                 {isVisible('created_at') && <th className="px-6 py-3"><SortableHeader label="Date" field="created_at" currentSort={sort} onSort={handleSort} /></th>}
                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted w-16">
                   <span className="sr-only">Actions</span>
@@ -275,6 +310,11 @@ export default function MyInboxTable({ notifications }: { notifications: Notific
                   {isVisible('source_label') && (
                     <td className="px-6 py-3.5 text-sm text-text-secondary">{notif.source_label ?? '\u2014'}</td>
                   )}
+                  {isVisible('priority') && (
+                    <td className="px-6 py-3.5">
+                      <StatusBadge status={notif.priority} colorMap={NOTIFICATION_PRIORITY_COLORS} />
+                    </td>
+                  )}
                   {isVisible('created_at') && (
                     <td className="px-6 py-3.5 text-sm text-text-secondary">
                       {new Date(notif.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
@@ -283,6 +323,7 @@ export default function MyInboxTable({ notifications }: { notifications: Notific
                   <td className="px-6 py-3.5">
                     <RowActionMenu actions={[
                       { label: notif.read ? 'Mark Unread' : 'Mark Read', onClick: () => handleMarkRead(notif.id, !notif.read) },
+                      { label: 'Archive', onClick: () => handleBulkArchive([notif.id]) },
                       ...(notif.action_url ? [{ label: 'View Source', onClick: () => router.push(notif.action_url!) }] : []),
                       { label: 'Delete', variant: 'danger' as const, onClick: () => handleBulkDelete([notif.id]) },
                     ]} />

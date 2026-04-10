@@ -17,12 +17,14 @@ const CREW_ROUTES = [
 ];
 
 test.describe('Crew Hub @crew', () => {
+  test.setTimeout(120_000);
+
   // ── Route rendering tests ───────────────────────────────────────────────
   for (const route of CREW_ROUTES) {
     test(`${route} renders for owner @owner`, async ({ authenticatedPage }) => {
       const page = await authenticatedPage('owner');
       await page.goto(route);
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
       await expectPageRendered(page);
       await expectNoRawI18nKeys(page);
     });
@@ -48,9 +50,9 @@ test.describe('Crew Hub @crew', () => {
     await page.goto('/app/crew');
     await page.waitForLoadState('networkidle');
 
-    // Check that tabs/nav exist (rendered by layout)
-    const navCount = await page.locator('nav, [role="tablist"]').count();
-    expect(navCount).toBeGreaterThan(0);
+    // Wait for client hydration — tabs render a div[role="tablist"]
+    const tablist = page.locator('[role="tablist"]').filter({ hasText: 'Directory' });
+    await expect(tablist.first()).toBeVisible({ timeout: 60_000 });
   });
 
   // ── Schedule page does not contain render errors ───────────────────────

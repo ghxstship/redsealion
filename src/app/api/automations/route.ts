@@ -17,6 +17,7 @@ export async function GET(request: NextRequest) {
     .from('automations')
     .select('*, automation_runs(id, status, created_at)')
     .eq('organization_id', perm.organizationId)
+    .is('deleted_at', null)
     .order('created_at', { ascending: false });
 
   if (error) return NextResponse.json({ error: 'Failed to fetch automations' }, { status: 500 });
@@ -33,8 +34,8 @@ export async function POST(request: NextRequest) {
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
   const body = await request.json().catch(() => ({}));
-  const { name, trigger_type, trigger_config, action_type, action_config } = body as {
-    name?: string; trigger_type?: string; trigger_config?: Record<string, unknown>;
+  const { name, description, trigger_type, trigger_config, action_type, action_config } = body as {
+    name?: string; description?: string; trigger_type?: string; trigger_config?: Record<string, unknown>;
     action_type?: string; action_config?: Record<string, unknown>;
   };
 
@@ -49,12 +50,14 @@ export async function POST(request: NextRequest) {
     .insert({
       organization_id: perm.organizationId,
       name,
+      description: description ?? null,
       trigger_type,
       trigger_config: trigger_config ?? {},
       action_type,
       action_config: action_config ?? {},
       is_active: true,
       run_count: 0,
+      created_by: perm.userId,
     })
     .select()
     .single();
@@ -62,6 +65,16 @@ export async function POST(request: NextRequest) {
   if (error || !automation) {
     return NextResponse.json({ error: 'Failed to create automation', details: error?.message }, { status: 500 });
   }
+
+  // Audit log
+  await supabase.from('audit_log').insert({
+    organization_id: perm.organizationId,
+    actor_id: perm.userId,
+    entity_type: 'automation',
+    entity_id: automation.id,
+    action: 'created',
+    details: { name, trigger_type, action_type },
+  }).then(() => {}, () => {});
 
   return NextResponse.json({ success: true, automation }, { status: 201 });
 }

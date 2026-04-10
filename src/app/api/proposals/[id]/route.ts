@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
+import { checkAutomationTriggers } from '@/lib/automations/trigger';
 
 export async function GET(
   _request: NextRequest,
@@ -70,6 +71,39 @@ export async function PATCH(
 
   if (error || !proposal) {
     return NextResponse.json({ error: 'Failed to update proposal', details: error?.message }, { status: 500 });
+  }
+
+  // Fire automation triggers on status change
+  if ('status' in updates && proposal) {
+    const newStatus = updates.status as string;
+    checkAutomationTriggers('proposal_status_change', {
+      org_id: perm.organizationId,
+      proposal_id: id,
+      proposal_name: proposal.name,
+      new_status: newStatus,
+      entity_type: 'proposal',
+      entity_id: id,
+    }).catch(() => {});
+
+    if (newStatus === 'approved') {
+      checkAutomationTriggers('proposal_approved', {
+        org_id: perm.organizationId,
+        proposal_id: id,
+        proposal_name: proposal.name,
+        entity_type: 'proposal',
+        entity_id: id,
+      }).catch(() => {});
+    }
+
+    if (newStatus === 'sent') {
+      checkAutomationTriggers('proposal_sent', {
+        org_id: perm.organizationId,
+        proposal_id: id,
+        proposal_name: proposal.name,
+        entity_type: 'proposal',
+        entity_id: id,
+      }).catch(() => {});
+    }
   }
 
   return NextResponse.json({ success: true, proposal });

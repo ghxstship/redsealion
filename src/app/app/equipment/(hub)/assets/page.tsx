@@ -31,6 +31,7 @@ async function getAssets(): Promise<AssetRow[]> {
       .from('assets')
       .select('id, name, type, status, condition, current_location, current_value, proposal_id')
       .eq('organization_id', ctx.organizationId)
+      .is('deleted_at', null)
       .order('name');
 
     if (!assets || assets.length === 0) return [];

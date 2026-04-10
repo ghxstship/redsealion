@@ -1,11 +1,22 @@
 'use client';
 
-import { useState } from 'react';
+/**
+ * DealEmailDraft — AI-powered email drafting for pipeline deals.
+ *
+ * Uses the AI SDK useChat hook with streaming for real-time generation.
+ * Sends a structured prompt as a user message to the /api/ai/chat endpoint.
+ *
+ * @module components/admin/pipeline/DealEmailDraft
+ */
+
+import { useState, useId } from 'react';
 import { Send, Loader2, Copy } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import ModalShell from '@/components/ui/ModalShell';
 import FormSelect from '@/components/ui/FormSelect';
 import { formatCurrency } from '@/lib/utils';
+import { useChat, type UIMessage } from '@ai-sdk/react';
+import { DefaultChatTransport } from 'ai';
 
 interface DealEmailDraftProps {
   dealTitle: string;
@@ -41,9 +52,17 @@ Rules:
 - Include a clear call-to-action
 - Don't use generic placeholder text like [Insert Name]
 - Use the client name naturally
-- Don't include a subject line`;
+- Don't include a subject line
+- Output ONLY the email body text, no preamble or explanation`;
 
   return base;
+}
+
+function getMessageText(msg: UIMessage): string {
+  return (msg.parts ?? [])
+    .filter((p): p is { type: 'text'; text: string } => p.type === 'text')
+    .map((p) => p.text)
+    .join('');
 }
 
 export default function DealEmailDraft({
@@ -55,36 +74,42 @@ export default function DealEmailDraft({
 }: DealEmailDraftProps) {
   const [open, setOpen] = useState(false);
   const [tone, setTone] = useState<Tone>('check_in');
-  const [draft, setDraft] = useState('');
-  const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const chatId = useId();
+
+  const {
+    messages,
+    sendMessage,
+    setMessages,
+    status,
+  } = useChat({
+    id: `deal-email-${chatId}`,
+    transport: new DefaultChatTransport({
+      api: '/api/ai/chat',
+      body: {
+        context: {
+          currentPage: '/app/pipeline',
+          entityContext: {
+            type: 'deal',
+            name: dealTitle,
+            id: 'email-draft',
+          },
+        },
+      },
+    }),
+  });
+
+  const isLoading = status === 'submitted' || status === 'streaming';
+
+  // Extract the last assistant message as the draft
+  const lastAssistant = [...messages].reverse().find((m) => m.role === 'assistant');
+  const draft = lastAssistant ? getMessageText(lastAssistant) : '';
 
   async function generateDraft() {
-    setLoading(true);
-    setError(null);
-    setDraft('');
-
-    try {
-      const prompt = buildPrompt({ dealTitle, dealValue, dealStage, clientName, notes }, tone);
-      const res = await fetch('/api/ai/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: prompt }),
-      });
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || 'Failed to generate email');
-      }
-
-      const data = await res.json();
-      setDraft(data.response || 'No response generated.');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
-    } finally {
-      setLoading(false);
-    }
+    const prompt = buildPrompt({ dealTitle, dealValue, dealStage, clientName, notes }, tone);
+    // Clear previous messages and send new prompt
+    setMessages([]);
+    sendMessage({ text: prompt });
   }
 
   async function handleCopy() {
@@ -95,8 +120,7 @@ export default function DealEmailDraft({
 
   function handleOpen() {
     setOpen(true);
-    setDraft('');
-    setError(null);
+    setMessages([]);
     setCopied(false);
   }
 
@@ -122,8 +146,8 @@ export default function DealEmailDraft({
                 ))}
               </FormSelect>
             </div>
-            <Button onClick={generateDraft} loading={loading} size="sm">
-              {loading ? 'Generating...' : 'Generate'}
+            <Button onClick={generateDraft} loading={isLoading} size="sm">
+              {isLoading ? 'Generating...' : 'Generate'}
             </Button>
           </div>
 
@@ -131,15 +155,12 @@ export default function DealEmailDraft({
             <p className="text-xs text-text-muted mb-2">
               {dealTitle} — {clientName} — {formatCurrency(dealValue)}
             </p>
-            {error && (
-              <p className="text-sm text-red-600">{error}</p>
-            )}
-            {!draft && !loading && !error && (
+            {!draft && !isLoading && (
               <p className="text-sm text-text-muted italic">
                 Choose a tone and click Generate to draft an email.
               </p>
             )}
-            {loading && (
+            {isLoading && !draft && (
               <div className="flex items-center gap-2 text-sm text-text-muted">
                 <Loader2 size={16} className="animate-spin" />
                 Drafting email...

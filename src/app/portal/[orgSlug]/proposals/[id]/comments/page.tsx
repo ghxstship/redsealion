@@ -47,7 +47,7 @@ export default async function CommentsPage({ params }: PageProps) {
   // Fetch phase and deliverable names for reference badges
   const { data: phases } = await supabase
     .from('phases')
-    .select('id, number, name')
+    .select('id, phase_number, name')
     .eq('proposal_id', id);
 
   const { data: deliverables } = await supabase
@@ -55,7 +55,7 @@ export default async function CommentsPage({ params }: PageProps) {
     .select('id, name')
     .in('phase_id', (phases ?? []).map((p) => p.id));
 
-  const phaseMap = new Map((phases ?? []).map((p) => [p.id, `Phase ${p.number}: ${p.name}`]));
+  const phaseMap = new Map((phases ?? []).map((p) => [p.id, `Phase ${p.phase_number}: ${p.name}`]));
   const deliverableMap = new Map((deliverables ?? []).map((d) => [d.id, d.name]));
 
   return (

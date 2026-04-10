@@ -15,7 +15,7 @@ export async function GET(_request: NextRequest, context: RouteContext) {
 
   const { data: order, error } = await supabase
     .from('fabrication_orders')
-    .select('*, bill_of_materials(*), shop_floor_logs(*, users(full_name)), events(id, name), proposals(id, name)')
+    .select('*, bill_of_materials(*), shop_floor_logs(*, users(full_name)), events(id, name), proposals(id, name), fabrication_files(*), quality_checks(*)')
     .eq('id', id)
     .eq('organization_id', perm.organizationId)
     .single();
@@ -34,7 +34,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
   const body = await request.json().catch(() => ({}));
   const supabase = await createClient();
 
-  const allowedFields = ['name', 'status', 'priority', 'quantity', 'unit_cost_cents', 'total_cost_cents', 'start_date', 'due_date', 'completed_date', 'assigned_to', 'notes'];
+  const allowedFields = ['name', 'status', 'priority', 'quantity', 'unit_cost_cents', 'total_cost_cents', 'start_date', 'due_date', 'completed_date', 'assigned_to', 'notes', 'estimated_labor_cents', 'actual_labor_cents', 'material_cost_cents', 'assigned_equipment_id'];
   const updates: Record<string, unknown> = {};
   for (const field of allowedFields) {
     if (field in body) updates[field] = body[field];

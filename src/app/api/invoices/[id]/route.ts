@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
+import { checkAutomationTriggers } from '@/lib/automations/trigger';
 
 export async function GET(
   _request: NextRequest,
@@ -54,6 +55,27 @@ export async function PATCH(
     .single();
 
   if (error || !invoice) return NextResponse.json({ error: 'Failed to update invoice', details: error?.message }, { status: 500 });
+
+  // Fire automation triggers on status change
+  if ('status' in updates && invoice) {
+    const statusEventMap: Record<string, string> = {
+      paid: 'invoice_paid',
+      sent: 'invoice_sent',
+      overdue: 'invoice_overdue',
+    };
+    const eventType = statusEventMap[updates.status as string];
+    if (eventType) {
+      checkAutomationTriggers(eventType as 'invoice_paid' | 'invoice_sent' | 'invoice_overdue', {
+        org_id: perm.organizationId,
+        invoice_id: id,
+        invoice_number: invoice.invoice_number,
+        total: invoice.total,
+        status: updates.status as string,
+        entity_type: 'invoice',
+        entity_id: id,
+      }).catch(() => {});
+    }
+  }
 
   return NextResponse.json({ success: true, invoice });
 }

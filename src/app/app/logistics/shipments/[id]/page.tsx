@@ -4,6 +4,9 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
+import ShipmentActions from '@/components/admin/warehouse/ShipmentActions';
+import ShipmentLineItems from '@/components/admin/warehouse/ShipmentLineItems';
+import ShipmentBOLCard from '@/components/admin/warehouse/ShipmentBOLCard';
 
 interface ShipmentDetail {
   id: string;
@@ -21,6 +24,11 @@ interface ShipmentDetail {
   num_pieces: number;
   shipping_cost_cents: number;
   notes: string | null;
+  freight_class: string | null;
+  nmfc_code: string | null;
+  declared_value_cents: number | null;
+  is_hazardous: boolean | null;
+  bol_special_instructions: string | null;
   created_at: string;
   shipment_line_items: Array<{
     id: string;
@@ -68,9 +76,20 @@ export default async function ShipmentDetailPage({ params }: { params: Promise<{
         title={shipment.shipment_number}
         subtitle={`${isOutbound ? 'Outbound' : 'Inbound'} Shipment — ${shipment.status}`}
       >
-        <Link href={isOutbound ? '/app/logistics/shipping' : '/app/logistics/receiving'} className="btn-secondary text-sm">
-          ← Back to {isOutbound ? 'Shipping' : 'Receiving'}
-        </Link>
+        <div className="flex flex-wrap items-center gap-3">
+          <ShipmentActions
+            shipmentId={shipment.id}
+            currentStatus={shipment.status}
+            direction={isOutbound ? 'outbound' : 'inbound'}
+          />
+          <Link href={isOutbound ? '/app/logistics/shipping' : '/app/logistics/receiving'} className="btn-secondary text-sm">
+            ← Back to {isOutbound ? 'Shipping' : 'Receiving'}
+          </Link>
+          <Link href={`/app/logistics/shipments/${shipment.id}/bol`} target="_blank" className="btn-primary text-sm flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            Generate BOL
+          </Link>
+        </div>
       </PageHeader>
 
       <div className="grid gap-6 md:grid-cols-2 mb-8">
@@ -110,24 +129,22 @@ export default async function ShipmentDetailPage({ params }: { params: Promise<{
       </div>
 
       {/* Line Items */}
-      <div className="rounded-xl border border-border bg-background overflow-hidden">
-        <div className="px-6 py-4 border-b border-border">
-          <h3 className="text-sm font-semibold text-foreground">Line Items ({shipment.shipment_line_items?.length ?? 0})</h3>
-        </div>
-        {(shipment.shipment_line_items?.length ?? 0) === 0 ? (
-          <div className="px-8 py-12 text-center text-sm text-text-secondary">No line items added to this shipment.</div>
-        ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr><th className="px-4 py-3">Description</th><th className="px-4 py-3">Qty</th><th className="px-4 py-3">Weight</th></tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {shipment.shipment_line_items.map((item) => (
-                <tr key={item.id} className="hover:bg-bg-secondary/50"><td className="px-4 py-3 text-foreground">{item.description ?? '—'}</td><td className="px-4 py-3 tabular-nums">{item.quantity}</td><td className="px-4 py-3 tabular-nums text-text-secondary">{item.weight_lbs ? `${item.weight_lbs} lbs` : '—'}</td></tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+      <div className="mb-6">
+        <ShipmentLineItems shipmentId={shipment.id} items={shipment.shipment_line_items ?? []} />
+      </div>
+
+      {/* BOL Capture Form */}
+      <div className="mb-6">
+        <ShipmentBOLCard
+          shipmentId={shipment.id}
+          initialData={{
+            freight_class: shipment.freight_class,
+            nmfc_code: shipment.nmfc_code,
+            declared_value_cents: shipment.declared_value_cents,
+            is_hazardous: shipment.is_hazardous,
+            bol_special_instructions: shipment.bol_special_instructions,
+          }}
+        />
       </div>
 
       {shipment.notes && (

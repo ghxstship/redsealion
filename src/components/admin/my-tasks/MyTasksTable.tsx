@@ -26,6 +26,7 @@ import ColumnConfigPanel from '@/components/shared/ColumnConfigPanel';
 import InlineEditCell from '@/components/shared/InlineEditCell';
 import EmptyState from '@/components/ui/EmptyState';
 import { CheckCircle2 } from 'lucide-react';
+import RowDate from '@/components/ui/RowDate';
 import { useTranslation } from '@/lib/i18n/client';
 
 export interface MyTaskRow {
@@ -34,12 +35,21 @@ export interface MyTaskRow {
   status: string;
   priority: string;
   dueDate: string | null;
+  startDate: string | null;
+  startTime: string | null;
+  endTime: string | null;
+  estimatedHours: number | null;
+  actualHours: number | null;
+  createdBy: string | null;
   projectName: string | null;
   subtaskCount: number;
 }
 
-const statusOptions = ['all', 'not_started', 'in_progress', 'review', 'done', 'blocked'] as const;
-const priorityOptions = ['all', 'urgent', 'high', 'medium', 'low'] as const;
+const statusFilterOptions = ['all', 'not_started', 'in_progress', 'review', 'done', 'blocked'] as const;
+const priorityFilterOptions = ['all', 'urgent', 'high', 'medium', 'low'] as const;
+
+const statusEditOptions = ['not_started', 'in_progress', 'review', 'done', 'blocked'] as const;
+const priorityEditOptions = ['urgent', 'high', 'medium', 'low'] as const;
 
 export default function MyTasksTable({ tasks }: { tasks: MyTaskRow[] }) {
   const router = useRouter();
@@ -65,6 +75,11 @@ export default function MyTasksTable({ tasks }: { tasks: MyTaskRow[] }) {
       { key: 'priority', label: t('myTasks.columns.priority') },
       { key: 'dueDate', label: t('myTasks.columns.dueDate') },
       { key: 'projectName', label: t('myTasks.columns.project') },
+      { key: 'startDate', label: 'Start Date' },
+      { key: 'timeBlock', label: 'Time Block' },
+      { key: 'estimatedHours', label: 'Est. Hours' },
+      { key: 'actualHours', label: 'Actual Hours' },
+      { key: 'createdBy', label: 'Created By' },
       { key: 'subtaskCount', label: 'Subtasks' },
     ],
     activeView,
@@ -157,7 +172,7 @@ export default function MyTasksTable({ tasks }: { tasks: MyTaskRow[] }) {
         <div className="flex items-center justify-between bg-bg-secondary/30 rounded-lg p-2 border border-border">
           <div className="flex items-center gap-4">
             <FilterPills
-              items={statusOptions.map((key) => ({
+              items={statusFilterOptions.map((key) => ({
                 key,
                 label: key === 'all' ? 'All Status' : formatLabel(key),
                 count: key === 'all' ? tasks.length : tasks.filter((t) => t.status === key).length,
@@ -168,7 +183,7 @@ export default function MyTasksTable({ tasks }: { tasks: MyTaskRow[] }) {
             <div className="h-4 w-px bg-border hidden sm:block" />
             <div className="flex items-center gap-2">
               <FormSelect value={priorityFilter} onChange={(e) => setPriorityFilter(e.target.value)}>
-                {priorityOptions.map((p) => (
+                {priorityFilterOptions.map((p) => (
                   <option key={p} value={p}>{p === 'all' ? 'All Priority' : formatLabel(p)}</option>
                 ))}
               </FormSelect>
@@ -223,9 +238,12 @@ export default function MyTasksTable({ tasks }: { tasks: MyTaskRow[] }) {
                 {isVisible('priority') && <th className="px-6 py-3"><SortableHeader label="Priority" field="priority" currentSort={sort} onSort={handleSort} /></th>}
                 {isVisible('dueDate') && <th className="px-6 py-3"><SortableHeader label="Due Date" field="dueDate" currentSort={sort} onSort={handleSort} /></th>}
                 {isVisible('projectName') && <th className="px-6 py-3"><SortableHeader label="Project" field="projectName" currentSort={sort} onSort={handleSort} /></th>}
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted w-16">
-                  <span className="sr-only">Actions</span>
-                </th>
+                {isVisible('startDate') && <th className="px-6 py-3"><SortableHeader label="Start Date" field="startDate" currentSort={sort} onSort={handleSort} /></th>}
+                {isVisible('timeBlock') && <th className="px-6 py-3"><span className="text-xs font-medium uppercase tracking-wider text-text-muted">Time Block</span></th>}
+                {isVisible('estimatedHours') && <th className="px-6 py-3"><SortableHeader label="Est. Hours" field="estimatedHours" currentSort={sort} onSort={handleSort} /></th>}
+                {isVisible('actualHours') && <th className="px-6 py-3"><SortableHeader label="Actual Hours" field="actualHours" currentSort={sort} onSort={handleSort} /></th>}
+                {isVisible('createdBy') && <th className="px-6 py-3"><SortableHeader label="Created By" field="createdBy" currentSort={sort} onSort={handleSort} /></th>}
+                <th className="px-6 py-3 text-left w-16 text-xs font-medium uppercase tracking-wider text-text-muted"><span className="sr-only">Actions</span></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -259,7 +277,7 @@ export default function MyTasksTable({ tasks }: { tasks: MyTaskRow[] }) {
                       <InlineEditCell
                         type="select"
                         value={task.status}
-                        options={statusOptions}
+                        options={statusEditOptions as any}
                         onSave={(val) => patchTask(task.id, { status: val })}
                         renderValue={(v) => <StatusBadge status={v} colorMap={TASK_STATUS_COLORS} />}
                       />
@@ -270,7 +288,7 @@ export default function MyTasksTable({ tasks }: { tasks: MyTaskRow[] }) {
                       <InlineEditCell
                         type="select"
                         value={task.priority}
-                        options={priorityOptions}
+                        options={priorityEditOptions as any}
                         onSave={(val) => patchTask(task.id, { priority: val })}
                         renderValue={(v) => <StatusBadge status={v} colorMap={TASK_PRIORITY_COLORS} />}
                       />
@@ -295,6 +313,30 @@ export default function MyTasksTable({ tasks }: { tasks: MyTaskRow[] }) {
                   )}
                   {isVisible('projectName') && (
                     <td className="px-6 py-3.5 text-sm text-text-secondary">{task.projectName ?? '\u2014'}</td>
+                  )}
+                  {isVisible('startDate') && (
+                    <td className="px-6 py-3.5">
+                      <RowDate dateString={task.startDate} fallback="\u2014" />
+                    </td>
+                  )}
+                  {isVisible('timeBlock') && (
+                    <td className="px-6 py-3.5 text-sm text-text-secondary">
+                      {task.startTime ? (
+                        <span>
+                          {task.startTime.substring(0, 5)}
+                          {task.endTime ? ` - ${task.endTime.substring(0, 5)}` : ''}
+                        </span>
+                      ) : '\u2014'}
+                    </td>
+                  )}
+                  {isVisible('estimatedHours') && (
+                    <td className="px-6 py-3.5 text-sm text-text-secondary">{task.estimatedHours ?? '\u2014'}</td>
+                  )}
+                  {isVisible('actualHours') && (
+                    <td className="px-6 py-3.5 text-sm text-text-secondary">{task.actualHours ?? '\u2014'}</td>
+                  )}
+                  {isVisible('createdBy') && (
+                    <td className="px-6 py-3.5 text-sm text-text-secondary">{task.createdBy ?? '\u2014'}</td>
                   )}
                   <td className="px-6 py-3.5">
                     <RowActionMenu actions={[

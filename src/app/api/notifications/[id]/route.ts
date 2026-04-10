@@ -1,27 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { checkPermission } from '@/lib/api/permission-guard';
 
 interface RouteContext { params: Promise<{ id: string }> }
 
 export async function PATCH(request: NextRequest, context: RouteContext) {
-  const perm = await checkPermission('settings', 'edit');
-  if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const { id } = await context.params;
   const body = await request.json().catch(() => ({}));
-  const supabase = await createClient();
 
   const updates: Record<string, unknown> = {};
-  if (body.read !== undefined) updates.read_at = body.read ? new Date().toISOString() : null;
+  if (body.read !== undefined) {
+    updates.read = body.read;
+    updates.read_at = body.read ? new Date().toISOString() : null;
+  }
+  if (body.archived !== undefined) {
+    updates.archived = body.archived;
+  }
+  
   if (Object.keys(updates).length === 0) return NextResponse.json({ error: 'No fields to update' }, { status: 400 });
 
   const { data, error } = await supabase
     .from('notifications')
     .update(updates)
     .eq('id', id)
-    .eq('organization_id', perm.organizationId)
+    .eq('user_id', user.id)
     .select()
     .single();
 
@@ -30,14 +35,13 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
 }
 
 export async function DELETE(_request: NextRequest, context: RouteContext) {
-  const perm = await checkPermission('settings', 'edit');
-  if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const { id } = await context.params;
-  const supabase = await createClient();
 
-  const { error } = await supabase.from('notifications').delete().eq('id', id).eq('organization_id', perm.organizationId);
+  const { error } = await supabase.from('notifications').delete().eq('id', id).eq('user_id', user.id);
   if (error) return NextResponse.json({ error: 'Failed to delete', details: error.message }, { status: 500 });
 
   return NextResponse.json({ success: true });

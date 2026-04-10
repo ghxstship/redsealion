@@ -10,11 +10,12 @@ export default async function AssetDetailPage({
   const { id } = await params;
   const supabase = await createClient();
 
-  // Fetch asset
+  // Fetch asset — C-6: filter soft-deleted
   const { data: asset } = await supabase
     .from('assets')
     .select('*')
     .eq('id', id)
+    .is('deleted_at', null)
     .single();
 
   if (!asset) notFound();
@@ -32,7 +33,8 @@ export default async function AssetDetailPage({
     .order('moved_at', { ascending: false });
 
   const history = (locationHistory ?? []).map((entry) => {
-    const loc = entry.location as { name?: string } | null;
+    const loc = (entry as Record<string, unknown>).to_location as { name?: string } | null
+      ?? entry.location as { name?: string } | null;
     return {
       id: entry.id,
       location: loc?.name ?? 'Unknown',
@@ -41,6 +43,10 @@ export default async function AssetDetailPage({
       notes: entry.notes ?? '',
     };
   });
+
+  // C-5: Access lifecycle fields safely — these exist from migration 00055+
+  // Using a typed accessor to avoid Record<string, unknown> casts throughout.
+  const a = asset as Record<string, unknown>;
 
   return (
     <AssetDetailClient
@@ -65,18 +71,24 @@ export default async function AssetDetailPage({
         max_deployments: asset.max_deployments,
         is_reusable: asset.is_reusable,
         photo_urls: asset.photo_urls,
-        warranty_start_date: (asset as Record<string, unknown>).warranty_start_date as string | null ?? null,
-        warranty_end_date: (asset as Record<string, unknown>).warranty_end_date as string | null ?? null,
-        warranty_provider: (asset as Record<string, unknown>).warranty_provider as string | null ?? null,
-        vendor_name: (asset as Record<string, unknown>).vendor_name as string | null ?? null,
-        insurance_policy_number: (asset as Record<string, unknown>).insurance_policy_number as string | null ?? null,
-        insurance_expiry_date: (asset as Record<string, unknown>).insurance_expiry_date as string | null ?? null,
-        disposed_at: (asset as Record<string, unknown>).disposed_at as string | null ?? null,
-        disposal_method: (asset as Record<string, unknown>).disposal_method as string | null ?? null,
-        disposal_proceeds: (asset as Record<string, unknown>).disposal_proceeds as number | null ?? null,
-        retired_at: (asset as Record<string, unknown>).retired_at as string | null ?? null,
+        warranty_start_date: (a.warranty_start_date as string) ?? null,
+        warranty_end_date: (a.warranty_end_date as string) ?? null,
+        warranty_provider: (a.warranty_provider as string) ?? null,
+        vendor_name: (a.vendor_name as string) ?? null,
+        insurance_policy_number: (a.insurance_policy_number as string) ?? null,
+        insurance_expiry_date: (a.insurance_expiry_date as string) ?? null,
+        disposed_at: (a.disposed_at as string) ?? null,
+        disposal_method: (a.disposal_method as string) ?? null,
+        disposal_proceeds: (a.disposal_proceeds as number) ?? null,
+        disposal_reason: (a.disposal_reason as string) ?? null,
+        retired_at: (a.retired_at as string) ?? null,
+        serial_number: (a.serial_number as string) ?? null,
+        total_usage_hours: (a.total_usage_hours as number) ?? null,
+        last_failure_at: (a.last_failure_at as string) ?? null,
+        purchase_order_id: (a.purchase_order_id as string) ?? null,
         created_at: asset.created_at,
       }}
+      proposalId={asset.proposal_id ?? null}
       proposalName={proposal?.name ?? null}
       locationHistory={history}
     />

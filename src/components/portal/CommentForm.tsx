@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 import Alert from '@/components/ui/Alert';
 import FormTextarea from '@/components/ui/FormTextarea';
 
@@ -14,6 +15,7 @@ export default function CommentForm({ proposalId, orgSlug }: CommentFormProps) {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -41,8 +43,8 @@ export default function CommentForm({ proposalId, orgSlug }: CommentFormProps) {
 
         setBody('');
         setSuccess(true);
-        // Trigger page refresh to show new comment
-        window.location.reload();
+        // Trigger server re-render to show new comment without full page reload
+        router.refresh();
       } catch {
         setError('Network error. Please try again.');
       }

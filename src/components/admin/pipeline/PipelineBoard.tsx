@@ -10,7 +10,7 @@ import {
   type DragStartEvent,
   type DragEndEvent,
 } from '@dnd-kit/core';
-import { useDroppable } from '@dnd-kit/core';
+import { useDroppable, useDraggable } from '@dnd-kit/core';
 import DealCard from './DealCard';
 import PipelineFilters, { type PipelineFilterValues } from './PipelineFilters';
 import { formatCurrency } from '@/lib/utils';
@@ -78,10 +78,23 @@ function DroppableColumn({
 }
 
 function DraggableDealCard({ deal }: { deal: DealWithClient }) {
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
+    id: deal.id,
+  });
+
+  const style = transform
+    ? {
+        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+      }
+    : undefined;
+
   return (
     <div
-      data-deal-id={deal.id}
-      className="cursor-grab active:cursor-grabbing"
+      ref={setNodeRef}
+      style={style}
+      {...listeners}
+      {...attributes}
+      className={`cursor-grab active:cursor-grabbing ${isDragging ? 'opacity-50' : ''}`}
     >
       <DealCard
         id={deal.id}
@@ -105,7 +118,7 @@ export default function PipelineBoard({
 }) {
   const [deals, setDeals] = useState(initialDeals);
   const [activeDeal, setActiveDeal] = useState<DealWithClient | null>(null);
-  const [, setFilters] = useState<PipelineFilterValues>({
+  const [filters, setFilters] = useState<PipelineFilterValues>({
     owner: 'all',
     minProbability: 0,
     maxProbability: 100,
@@ -164,23 +177,38 @@ export default function PipelineBoard({
     setFilters(f);
   }, []);
 
-  // Group deals by stage
+  // Compute dynamic options for filters
+  const uniqueOwners = Array.from(
+    new Set(deals.map((d) => d.owner_name).filter((n): n is string => Boolean(n)))
+  ).sort();
+
+  // Apply filters
+  const filteredDeals = deals.filter((d) => {
+    if (filters.owner !== 'all' && d.owner_name !== filters.owner) return false;
+    if (d.probability < filters.minProbability) return false;
+    if (d.probability > filters.maxProbability) return false;
+    if (filters.dateFrom && d.expected_close_date && new Date(d.expected_close_date) < new Date(filters.dateFrom)) return false;
+    if (filters.dateTo && d.expected_close_date && new Date(d.expected_close_date) > new Date(filters.dateTo)) return false;
+    return true;
+  });
+
+  // Group filtered deals by stage
   const grouped = ACTIVE_STAGES.reduce<Record<DealStage, DealWithClient[]>>(
     (acc, stage) => {
-      acc[stage] = deals.filter((d) => d.stage === stage);
+      acc[stage] = filteredDeals.filter((d) => d.stage === stage);
       return acc;
     },
     {} as Record<DealStage, DealWithClient[]>
   );
 
-  const totalPipelineValue = deals
+  const totalPipelineValue = filteredDeals
     .filter((d) => d.stage !== 'contract_signed')
     .reduce((sum, d) => sum + d.deal_value * (d.probability / 100), 0);
 
   return (
     <div>
       <div className="mb-6">
-        <PipelineFilters onFilterChange={handleFilterChange} />
+        <PipelineFilters onFilterChange={handleFilterChange} owners={uniqueOwners} />
       </div>
 
       <div className="mb-4 flex items-center gap-6">
@@ -191,9 +219,9 @@ export default function PipelineBoard({
           </p>
         </div>
         <div>
-          <p className="text-xs text-text-muted">Total deals</p>
+          <p className="text-xs text-text-muted">Filtered deals</p>
           <p className="text-lg font-semibold tabular-nums text-foreground">
-            {deals.length}
+            {filteredDeals.length}
           </p>
         </div>
       </div>

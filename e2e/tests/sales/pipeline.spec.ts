@@ -53,8 +53,7 @@ test.describe('Pipeline Hub @pipeline', () => {
     const page = await authenticatedPage('manager');
     await page.goto('/app/pipeline/settings');
     await page.waitForLoadState('networkidle');
-    // TODO: expectAccessDenied once server-side role gating is enforced
-    await expectPageRendered(page);
+    await expectAccessDenied(page);
   });
 
   // ── Access Denied (role) ──
@@ -63,8 +62,7 @@ test.describe('Pipeline Hub @pipeline', () => {
       const page = await authenticatedPage(role);
       await page.goto('/app/pipeline');
       await page.waitForLoadState('networkidle');
-      // TODO: expectAccessDenied once server-side role gating is enforced
-    await expectPageRendered(page);
+      await expectAccessDenied(page);
     });
   }
 });

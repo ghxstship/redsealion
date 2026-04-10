@@ -35,7 +35,7 @@ export default async function PortalAppLayout({ children, params }: PortalAppLay
         {/* Demo banner — spans full width */}
         <DemoBanner />
 
-        <div className="flex min-h-screen bg-background">
+        <div className="flex min-h-screen bg-background" style={{ '--sidebar-width': '16rem' } as React.CSSProperties}>
           <PortalSidebar />
           <main className="flex-1 min-w-0 transition-[margin] duration-normal md:ml-[var(--sidebar-width)]">
             {/* Simplified header for portal */}

@@ -140,6 +140,7 @@ export {
   LayoutPanelLeft as IconNavWorkloads,
   Clock as IconNavTime,
   Send as IconNavDispatch,
+  Store as IconNavMarketplace,
   Package as IconNavInventory,
   Warehouse as IconNavLogistics,
 

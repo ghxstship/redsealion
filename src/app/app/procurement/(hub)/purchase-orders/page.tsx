@@ -13,12 +13,12 @@ async function getPOs() {
     if (!ctx) return [];
     const { data } = await supabase
       .from('purchase_orders')
-      .select('id, po_number, vendor_name, status, total_amount, order_date, expected_delivery')
+      .select('id, po_number, vendor_name, status, total_amount, issued_date, due_date')
       .eq('organization_id', ctx.organizationId)
-      .order('order_date', { ascending: false });
+      .order('created_at', { ascending: false });
     return (data ?? []) as Array<{
       id: string; po_number: string; vendor_name: string | null; status: string;
-      total_amount: number; order_date: string | null; expected_delivery: string | null;
+      total_amount: number; issued_date: string | null; due_date: string | null;
     }>;
   } catch { return []; }
 }
@@ -29,7 +29,7 @@ export default async function ProcurementPOPage() {
   const pos = await getPOs();
 
   return (
-    <TierGate feature="equipment">
+    <TierGate feature="profitability">
       <PageHeader title="Purchase Orders" subtitle="Track POs from issuance through delivery." />
       <ProcurementHubTabs />
 
@@ -60,11 +60,11 @@ export default async function ProcurementPOPage() {
               <tbody className="divide-y divide-border">
                 {pos.map((po) => (
                   <tr key={po.id} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3"><Link href={`/app/finance/purchase-orders/${po.id}`} className="font-medium text-foreground hover:underline">{po.po_number}</Link></td>
+                    <td className="px-4 py-3"><Link href={`/app/procurement/purchase-orders/${po.id}`} className="font-medium text-foreground hover:underline">{po.po_number}</Link></td>
                     <td className="px-4 py-3 text-text-secondary">{po.vendor_name ?? '—'}</td>
                     <td className="px-4 py-3 tabular-nums">{formatCurrency(po.total_amount ?? 0)}</td>
-                    <td className="px-4 py-3 text-text-secondary">{po.order_date ? new Date(po.order_date).toLocaleDateString() : '—'}</td>
-                    <td className="px-4 py-3 text-text-secondary">{po.expected_delivery ? new Date(po.expected_delivery).toLocaleDateString() : '—'}</td>
+                    <td className="px-4 py-3 text-text-secondary">{po.issued_date ? new Date(po.issued_date).toLocaleDateString() : '—'}</td>
+                    <td className="px-4 py-3 text-text-secondary">{po.due_date ? new Date(po.due_date).toLocaleDateString() : '—'}</td>
                     <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[po.status] ?? 'bg-bg-secondary text-text-secondary'}`}>{po.status?.replace('_', ' ')}</span></td>
                   </tr>
                 ))}

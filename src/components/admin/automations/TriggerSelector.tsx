@@ -4,20 +4,7 @@ import { useState } from 'react';
 import FormSelect from '@/components/ui/FormSelect';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
-
-const TRIGGER_TYPES = [
-  { value: 'proposal_status_change', label: 'Proposal Status Change', description: 'Fires when a proposal status changes' },
-  { value: 'proposal_follow_up', label: 'Proposal Follow-Up', description: 'Fires when a sent proposal has no response after a delay' },
-  { value: 'proposal_viewed_no_action', label: 'Proposal Viewed (No Action)', description: 'Fires when a proposal is viewed but not approved' },
-  { value: 'deal_stage_change', label: 'Deal Stage Change', description: 'Fires when a deal moves to a new stage' },
-  { value: 'invoice_paid', label: 'Invoice Paid', description: 'Fires when an invoice is fully paid' },
-  { value: 'invoice_overdue', label: 'Invoice Overdue', description: 'Fires when an invoice passes its due date' },
-  { value: 'milestone_completed', label: 'Milestone Completed', description: 'Fires when a milestone gate is completed' },
-  { value: 'client_created', label: 'Client Created', description: 'Fires when a new client is added' },
-  { value: 'proposal_approved', label: 'Proposal Approved', description: 'Fires when a proposal is approved by the client' },
-  { value: 'schedule', label: 'Scheduled', description: 'Fires on a recurring schedule (cron)' },
-  { value: 'webhook_received', label: 'Webhook Received', description: 'Fires when a webhook event is received' },
-];
+import { TRIGGER_TYPES } from '@/lib/automations/constants';
 
 interface TriggerSelectorProps {
   value: string;

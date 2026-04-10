@@ -55,13 +55,38 @@ export async function POST(request: Request) {
     // Only notify at 30, 14, 7, 1 day thresholds
     if (![30, 14, 7, 1].includes(daysLeft)) continue;
 
-    await supabase.from('notifications').insert({
-      organization_id: doc.organization_id,
-      type: 'compliance_expiry',
-      title: `${doc.document_type} expiring in ${daysLeft} day${daysLeft !== 1 ? 's' : ''}`,
-      body: `${doc.document_name} expires on ${doc.expiry_date}.`,
-      metadata: { document_id: doc.id, crew_profile_id: doc.crew_profile_id },
-    });
+    const notifTitle = `${doc.document_type} expiring in ${daysLeft} day${daysLeft !== 1 ? 's' : ''}`;
+
+    // GAP-M8: De-duplicate — check if notification already exists for this doc + threshold
+    const { data: existing } = await supabase
+      .from('notifications')
+      .select('id')
+      .eq('organization_id', doc.organization_id)
+      .eq('type', 'compliance_expiry')
+      .eq('title', notifTitle)
+      .contains('metadata', { document_id: doc.id })
+      .limit(1);
+
+    if (existing && existing.length > 0) continue;
+
+    // GAP-H5: Target admin/owner users specifically
+    const { data: admins } = await supabase
+      .from('organization_memberships')
+      .select('user_id')
+      .eq('organization_id', doc.organization_id)
+      .eq('status', 'active')
+      .in('role', ['owner', 'admin', 'manager']);
+
+    for (const admin of admins ?? []) {
+      await supabase.from('notifications').insert({
+        organization_id: doc.organization_id,
+        user_id: admin.user_id,
+        type: 'compliance_expiry',
+        title: notifTitle,
+        body: `${doc.document_name} expires on ${doc.expiry_date}.`,
+        metadata: { document_id: doc.id, crew_profile_id: doc.crew_profile_id },
+      });
+    }
     notified++;
   }
 

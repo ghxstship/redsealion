@@ -1,4 +1,3 @@
-Connecting to db 5432
 export type Json =
   | string
   | number
@@ -7203,7 +7202,7 @@ export type Database = {
           id: string
           message: string | null
           organization_id: string
-          source: string
+          source: Database["public"]["Enums"]["lead_source"]
           status: string
           updated_at: string
         }
@@ -7224,7 +7223,7 @@ export type Database = {
           id?: string
           message?: string | null
           organization_id: string
-          source: string
+          source?: Database["public"]["Enums"]["lead_source"]
           status?: string
           updated_at?: string
         }
@@ -7245,7 +7244,7 @@ export type Database = {
           id?: string
           message?: string | null
           organization_id?: string
-          source?: string
+          source?: Database["public"]["Enums"]["lead_source"]
           status?: string
           updated_at?: string
         }
@@ -13836,6 +13835,14 @@ export type Database = {
         | "lost"
         | "on_hold"
       esign_status: "pending" | "viewed" | "signed" | "declined" | "expired"
+      lead_source: 
+        | "website"
+        | "referral"
+        | "linkedin"
+        | "cold_outreach"
+        | "lead_form"
+        | "event"
+        | "other"
       event_type:
         | "festival"
         | "conference"

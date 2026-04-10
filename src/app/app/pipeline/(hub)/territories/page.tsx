@@ -12,10 +12,11 @@ async function getTerritoryData() {
     if (!ctx) return { territories: [], deals: [] };
     const { data: deals } = await supabase
       .from('deals')
-      .select('id, title, stage, value, owner_id, clients(state, country)')
-      .eq('organization_id', ctx.organizationId);
+      .select('id, title, stage, deal_value, owner_id, clients(state, country)')
+      .eq('organization_id', ctx.organizationId)
+      .is('deleted_at', null);
     const parsed = (deals ?? []).map((d: Record<string, unknown>) => ({
-      id: d.id as string, title: d.title as string, stage: d.stage as string, value: (d.value ?? 0) as number,
+      id: d.id as string, title: d.title as string, stage: d.stage as string, value: (d.deal_value ?? 0) as number,
       owner_id: d.owner_id as string | null,
       region: Array.isArray(d.clients) ? (d.clients as Record<string, unknown>[])[0]?.state as string ?? (d.clients as Record<string, unknown>[])[0]?.country as string : (d.clients as Record<string, unknown> | null)?.state as string ?? (d.clients as Record<string, unknown> | null)?.country as string ?? 'Unassigned',
     }));

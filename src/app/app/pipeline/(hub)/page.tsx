@@ -20,16 +20,18 @@ async function getDeals(): Promise<DealWithClient[]> {
     } = await supabase.auth.getUser();
 
     if (!user) return [];
-const { data: deals } = await supabase
+    const { data: deals } = await supabase
       .from('deals')
-      .select('*, clients(company_name), users!deals_owner_id_fkey(full_name)')
+      .select('id, title, stage, deal_value, probability, expected_close_date, owner_id, owner:users!deals_owner_id_fkey(full_name), client:clients(company_name)')
       .eq('organization_id', ctx.organizationId)
+      .is('deleted_at', null)
+      .limit(500)
       .order('created_at', { ascending: false });
 
     if (!deals) return [];
 
     return deals.map((d: Record<string, unknown>) => {
-      const { clients: _clients, users: _users, ...rest } = d;
+      const { client: _clients, owner: _users, ...rest } = d;
       return {
         ...rest,
         client_name: castRelation<Record<string, string>>(_clients)?.company_name ?? 'Unknown',

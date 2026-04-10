@@ -46,9 +46,10 @@ export async function GET(request: Request) {
         organization_id: task.organization_id,
         type: 'task_due_today',
         title: 'Task due today',
-        body: task.title,
-        entity_type: 'task',
-        entity_id: task.id,
+        message: task.title,
+        source_type: 'task',
+        source_id: task.id,
+        action_url: `/app/tasks/${task.id}`,
         read: false,
       });
 
@@ -82,9 +83,10 @@ export async function GET(request: Request) {
         organization_id: task.organization_id,
         type: 'task_overdue',
         title: `Task overdue by ${daysOverdue} day${daysOverdue > 1 ? 's' : ''}`,
-        body: task.title,
-        entity_type: 'task',
-        entity_id: task.id,
+        message: task.title,
+        source_type: 'task',
+        source_id: task.id,
+        action_url: `/app/tasks/${task.id}`,
         read: false,
       });
 

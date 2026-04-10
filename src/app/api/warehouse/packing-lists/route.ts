@@ -14,12 +14,10 @@ export async function GET(request: NextRequest) {
 
   const url = new URL(request.url);
   const proposalId = url.searchParams.get('proposalId');
-  const locationId = url.searchParams.get('locationId') ?? url.searchParams.get('venueId');
-  const eventId = url.searchParams.get('eventId');
 
-  if (!proposalId && !eventId) {
+  if (!proposalId) {
     return NextResponse.json(
-      { error: 'proposalId or eventId query parameter is required.' },
+      { error: 'proposalId query parameter is required.' },
       { status: 400 },
     );
   }
@@ -27,62 +25,48 @@ export async function GET(request: NextRequest) {
   const supabase = await createClient();
   const orgId = perm.organizationId;
 
-  // Fetch equipment reservations
-  let query = supabase
+  // Check for existing items
+  const { data: existingItems, error: itemsError } = await supabase
+    .from('packing_list_items')
+    .select('*')
+    .eq('organization_id', orgId)
+    .eq('proposal_id', proposalId)
+    .order('category')
+    .order('name');
+
+  if (!itemsError && existingItems && existingItems.length > 0) {
+    return NextResponse.json({ items: existingItems });
+  }
+
+  // If none exist, generate from equipment_reservations
+  const { data: reservations } = await supabase
     .from('equipment_reservations')
-    .select('*, asset:assets(id, name, category, serial_number)')
-    .eq('organization_id', orgId);
+    .select('*, asset:assets(id, name, category)')
+    .eq('organization_id', orgId)
+    .eq('proposal_id', proposalId);
 
-  if (proposalId) query = query.eq('proposal_id', proposalId);
-  if (eventId) query = query.eq('event_id', eventId);
-  if (locationId) query = query.eq('venue_id', locationId);
-
-  const { data: reservations, error } = await query;
-
-  if (error) {
-    return NextResponse.json(
-      { error: 'Failed to fetch equipment reservations.', details: error.message },
-      { status: 500 },
-    );
+  if (!reservations || reservations.length === 0) {
+    return NextResponse.json({ items: [] });
   }
 
-  // Group by category
-  const grouped: Record<
-    string,
-    Array<{
-      asset_id: string;
-      name: string;
-      serial_number: string | null;
-      quantity: number;
-    }>
-  > = {};
-
-  for (const r of reservations ?? []) {
-    const asset = castRelation<{
-      id: string;
-      name: string;
-      category: string;
-      serial_number: string | null;
-    }>(r.asset);
-
-    const category = asset?.category ?? 'Uncategorized';
-
-    if (!grouped[category]) {
-      grouped[category] = [];
-    }
-
-    grouped[category].push({
-      asset_id: asset?.id ?? (r.asset_id as string),
+  const newItems = reservations.map((r) => {
+    const asset = castRelation<{ id: string; name: string; category: string }>(r.asset);
+    return {
+      organization_id: orgId,
+      proposal_id: proposalId,
+      equipment_id: asset?.id ?? (r.asset_id as string),
       name: asset?.name ?? 'Unknown',
-      serial_number: asset?.serial_number ?? null,
+      category: asset?.category ?? 'Uncategorized',
       quantity: (r.quantity as number) ?? 1,
-    });
-  }
-
-  return NextResponse.json({
-    proposal_id: proposalId,
-    location_id: locationId,
-    categories: grouped,
-    total_items: (reservations ?? []).length,
+      packed: false,
+    };
   });
+
+  const { data: insertedItems } = await supabase
+    .from('packing_list_items')
+    .insert(newItems)
+    .select();
+
+  return NextResponse.json({ items: insertedItems ?? newItems });
 }
+

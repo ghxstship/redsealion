@@ -13,7 +13,7 @@
     "back": "Back",
     "next": "Next",
     "done": "Done",
-    "search": "Search…",
+    "search": "Search\u2026",
     "filter": "Filter",
     "sort": "Sort",
     "export": "Export",
@@ -21,7 +21,7 @@
     "columns": "Columns",
     "actions": "Actions",
     "settings": "Settings",
-    "loading": "Loading…",
+    "loading": "Loading\u2026",
     "noResults": "No results found",
     "viewAll": "View All",
     "learnMore": "Learn more",
@@ -100,6 +100,7 @@
     "integrations": "Integrations",
     "terms": "Terms",
     "projects": "Projects",
+    "projectsList": "Projects",
     "productions": "Productions",
     "schedule": "Schedule",
     "goals": "Goals",
@@ -108,10 +109,11 @@
     "logistics": "Logistics",
     "fabrication": "Fabrication",
     "procurement": "Procurement",
-    "rentals": "Rentals"
+    "rentals": "Rentals",
+    "marketplace": "Marketplace"
   },
   "header": {
-    "search": "Search…",
+    "search": "Search\u2026",
     "notifications": "Notifications",
     "help": "Help & Support",
     "theme": "Theme",
@@ -162,7 +164,7 @@
     "action": "Add Item"
   },
   "table": {
-    "search": "Search…",
+    "search": "Search\u2026",
     "columns": "Columns",
     "export": "Export",
     "import": "Import",
@@ -238,12 +240,12 @@
     "loggedByAllMembers": "Logged by all members",
     "awaitingApproval": "Awaiting approval",
     "activeCrewMembers": "Active crew members",
-    "view": "View →",
+    "view": "View \u2192",
     "pipelineByStatus": "Pipeline by Status",
     "salesLeaderboard": "Sales Leaderboard",
     "recentActivity": "Recent Activity",
     "youHave": "You have",
-    "everythingOnTrack": "Everything is on track. You’re all caught up.",
+    "everythingOnTrack": "Everything is on track. You\u2019re all caught up.",
     "tasksDue": "task(s) due today",
     "pendingApprovalCount": "pending approval(s)",
     "expensesAwaiting": "expense(s) awaiting review",
@@ -293,6 +295,22 @@
     "emptyState": {
       "title": "No documents uploaded",
       "description": "Your personal document library is currently being configured."
+    }
+  },
+  "compliance": {
+    "docTypes": {
+      "coi": "Certificate of Insurance",
+      "w9": "W-9",
+      "w4": "W-4",
+      "license": "Professional License",
+      "certification": "Certification",
+      "background_check": "Background Check",
+      "nda": "NDA",
+      "i9": "I-9",
+      "drivers_license": "Driver's License",
+      "contract": "Contract",
+      "permit": "Permit",
+      "other": "Other"
     }
   }
 }

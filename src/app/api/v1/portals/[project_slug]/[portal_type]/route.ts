@@ -4,6 +4,21 @@ import { createLogger } from '@/lib/logger';
 
 const log = createLogger('portals-api');
 
+// GAP-PTL-29: Recursively strip null values from response payload
+function stripNulls(obj: unknown): unknown {
+  if (obj === null || obj === undefined) return undefined;
+  if (Array.isArray(obj)) return obj.map(stripNulls);
+  if (typeof obj === 'object') {
+    const result: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(obj as Record<string, unknown>)) {
+      const stripped = stripNulls(value);
+      if (stripped !== undefined) result[key] = stripped;
+    }
+    return result;
+  }
+  return obj;
+}
+
 export async function GET(
   request: NextRequest,
   context: { params: Promise<{ project_slug: string; portal_type: string }> }
@@ -77,10 +92,13 @@ export async function GET(
       }
     };
 
-    return NextResponse.json(payload, {
+    // GAP-PTL-05: Use origin-aware CORS instead of wildcard
+    const origin = request.headers.get('origin') || '*';
+
+    return NextResponse.json(stripNulls(payload), {
       headers: {
         'Cache-Control': 'public, max-age=300, s-maxage=600, stale-while-revalidate=1200',
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': origin,
         'Access-Control-Allow-Methods': 'GET, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type',
       },
@@ -89,4 +107,18 @@ export async function GET(
     log.error('Error fetching portal', { project_slug: (await context.params).project_slug }, error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
+}
+
+/** GAP-PTL-15: CORS preflight handler */
+export async function OPTIONS(request: NextRequest) {
+  const origin = request.headers.get('origin') || '*';
+  return new Response(null, {
+    status: 204,
+    headers: {
+      'Access-Control-Allow-Origin': origin,
+      'Access-Control-Allow-Methods': 'GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Max-Age': '86400',
+    },
+  });
 }

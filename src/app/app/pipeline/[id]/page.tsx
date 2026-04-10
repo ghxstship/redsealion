@@ -12,6 +12,9 @@ import Card from '@/components/ui/Card';
 import DealEmailDraft from '@/components/admin/pipeline/DealEmailDraft';
 import DealRiskAssessment from '@/components/admin/pipeline/DealRiskAssessment';
 import DealNextAction from '@/components/admin/pipeline/DealNextAction';
+import DealEditActions from '@/components/admin/pipeline/DealEditActions';
+import DealToInvoiceButton from '@/components/admin/pipeline/DealToInvoiceButton';
+import DealActivityForm from '@/components/admin/pipeline/DealActivityForm';
 import DealDetailTabs from './DealDetailTabs';
 
 const STAGE_LABELS: Record<DealStage, string> = {
@@ -184,6 +187,7 @@ export default async function DealDetailPage({
   const activityContent = (
     <div className="rounded-xl border border-border bg-background p-6">
       <h2 className="text-sm font-semibold text-foreground mb-4">Activity</h2>
+      <DealActivityForm dealId={deal.id} />
       {deal.activities.length === 0 ? (
         <EmptyState message="No activity recorded yet" className="border-0 shadow-none px-2 py-8" />
       ) : (
@@ -247,11 +251,15 @@ export default async function DealDetailPage({
         title={deal.title}
         subtitle={deal.client_name}
       >
-        <span
-          className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${statusColor(deal.stage)}`}
-        >
-          {STAGE_LABELS[deal.stage]}
-        </span>
+        <div className="flex items-center gap-3">
+          <span
+            className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${statusColor(deal.stage)}`}
+          >
+            {STAGE_LABELS[deal.stage]}
+          </span>
+          <DealToInvoiceButton dealId={deal.id} dealValue={deal.deal_value} stage={deal.stage} />
+          <DealEditActions deal={deal} />
+        </div>
       </PageHeader>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">

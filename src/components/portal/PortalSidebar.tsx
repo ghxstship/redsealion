@@ -53,7 +53,7 @@ export default function PortalSidebar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { canAccess } = useSubscription();
-  const { orgSlug } = usePortalContext();
+  const { orgSlug, orgName } = usePortalContext();
 
   // Section collapse state — default all open, persist to localStorage
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>(readCollapsed);
@@ -91,8 +91,10 @@ export default function PortalSidebar() {
     return !collapsed[sectionId];
   };
 
-  // Filter out Settings from portal nav — clients don't manage settings
-  const portalSections = navSections.filter((s) => s.id !== 'system');
+  // GAP-PTL-20: Show only portal-relevant sections (not the full admin nav)
+  // Only include sections that make sense for a demo/portal context
+  const portalAllowedSections = new Set(['overview', 'projects', 'sales', 'finance', 'admin']);
+  const portalSections = navSections.filter((s) => portalAllowedSections.has(s.id));
 
   return (
     <>
@@ -129,13 +131,17 @@ export default function PortalSidebar() {
           ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}
         `}
       >
-        {/* Brand */}
+        {/* Brand — GAP-PTL-39: Use org branding instead of hardcoded */}
         <div className="flex items-center gap-2.5 px-6 py-5 border-b border-border">
           <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-600 to-violet-600">
-            <span className="text-white text-xs font-semibold tracking-tight">FD</span>
+            <span className="text-white text-xs font-semibold tracking-tight">
+              {orgSlug.slice(0, 2).toUpperCase()}
+            </span>
           </div>
           <div className="flex flex-col">
-            <span className="text-base font-semibold tracking-tight text-foreground">FlyteDeck</span>
+            <span className="text-base font-semibold tracking-tight text-foreground">
+              {orgName || 'Portal'}
+            </span>
             <span className="text-[10px] font-medium text-violet-600 uppercase tracking-wider">Demo</span>
           </div>
         </div>

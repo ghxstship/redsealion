@@ -1,25 +1,35 @@
-'use client';
+import { createClient } from '@/lib/supabase/server';
+import MyInboxTable, { type NotificationRow } from '@/components/admin/my-inbox/MyInboxTable';
+import MyInboxHeader from '@/components/admin/my-inbox/MyInboxHeader';
 
-import EmptyState from '@/components/ui/EmptyState';
-import { Inbox } from 'lucide-react';
-import { useTranslation } from '@/lib/i18n/client';
-import PageHeader from '@/components/shared/PageHeader';
+async function getMyNotifications(): Promise<NotificationRow[]> {
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return [];
 
-export default function MyInboxPage() {
-  const { t } = useTranslation();
+    const { data: notifications } = await supabase
+      .from('notifications')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('archived', false)
+      .order('created_at', { ascending: false })
+      .limit(200);
+
+    return notifications || [];
+  } catch {
+    return [];
+  }
+}
+
+export default async function MyInboxPage() {
+  const notifications = await getMyNotifications();
+  const unreadCount = notifications.filter((n) => !n.read).length;
 
   return (
     <div>
-<PageHeader
-        title={t('myInbox.title')}
-        subtitle={t('myInbox.subtitle')}
-      />
-
-      <EmptyState
-        icon={<Inbox className="w-8 h-8" />}
-        message={t('myInbox.emptyState.title')}
-        description={t('myInbox.emptyState.description')}
-      />
+      <MyInboxHeader unreadCount={unreadCount} />
+      <MyInboxTable notifications={notifications} />
     </div>
   );
 }

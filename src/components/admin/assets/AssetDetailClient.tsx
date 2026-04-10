@@ -1,13 +1,16 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import StatusBadge, { EQUIPMENT_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import Button from '@/components/ui/Button';
 import Alert from '@/components/ui/Alert';
 import EmptyState from '@/components/ui/EmptyState';
 import DisposalModal from '@/components/admin/assets/DisposalModal';
 import RevaluationModal from '@/components/admin/assets/RevaluationModal';
+import MoveAssetModal from '@/components/admin/assets/MoveAssetModal';
+import AssetFormModal from '@/components/admin/assets/AssetFormModal';
 import { formatCurrency, formatLabel, formatDate } from '@/lib/utils';
 
 /**
@@ -46,9 +49,15 @@ interface AssetDetailClientProps {
     disposed_at: string | null;
     disposal_method: string | null;
     disposal_proceeds: number | null;
+    disposal_reason: string | null;
     retired_at: string | null;
+    serial_number: string | null;
+    total_usage_hours: number | null;
+    last_failure_at: string | null;
+    purchase_order_id: string | null;
     created_at: string;
   };
+  proposalId: string | null;
   proposalName: string | null;
   locationHistory: Array<{
     id: string;
@@ -67,6 +76,32 @@ interface DepreciationEntry {
   bookValue: number;
 }
 
+interface AuditLogEntry {
+  id: string;
+  field_changed: string;
+  old_value: string | null;
+  new_value: string | null;
+  created_at: string;
+  change_source: string;
+}
+
+interface ValueHistoryEntry {
+  id: string;
+  previous_value: number | null;
+  new_value: number | null;
+  change_type: string;
+  reason: string | null;
+  created_at: string;
+}
+
+interface MaintenanceSchedule {
+  id: string;
+  task_name: string;
+  frequency: string;
+  next_due_date: string | null;
+  last_performed_at: string | null;
+}
+
 const CONDITION_COLORS: Record<string, string> = {
   new: 'bg-green-50 text-green-700',
   excellent: 'bg-green-50 text-green-700',
@@ -76,36 +111,88 @@ const CONDITION_COLORS: Record<string, string> = {
   damaged: 'bg-red-100 text-red-800',
 };
 
-export default function AssetDetailClient({ asset, proposalName, locationHistory }: AssetDetailClientProps) {
+export default function AssetDetailClient({ asset, proposalId, proposalName, locationHistory }: AssetDetailClientProps) {
   const router = useRouter();
   const [actionMenuOpen, setActionMenuOpen] = useState(false);
   const [disposalOpen, setDisposalOpen] = useState(false);
   const [revaluationOpen, setRevaluationOpen] = useState(false);
+  const [moveOpen, setMoveOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
   const [depreciationSchedule, setDepreciationSchedule] = useState<DepreciationEntry[]>([]);
   const [depreciationLoading, setDepreciationLoading] = useState(false);
+  const [depreciationError, setDepreciationError] = useState<string | null>(null);
   const [maintenanceCostTotal, setMaintenanceCostTotal] = useState<number | null>(null);
+  const [maintenanceError, setMaintenanceError] = useState<string | null>(null);
+  const [auditLog, setAuditLog] = useState<AuditLogEntry[]>([]);
+  const [valueHistory, setValueHistory] = useState<ValueHistoryEntry[]>([]);
+  const [maintenanceSchedules, setMaintenanceSchedules] = useState<MaintenanceSchedule[]>([]);
+  const actionMenuRef = useRef<HTMLDivElement>(null);
 
   const refresh = useCallback(() => router.refresh(), [router]);
 
-  // Fetch depreciation schedule
+  // M-8: Click-outside handler for action menu
+  useEffect(() => {
+    if (!actionMenuOpen) return;
+    function handleClickOutside(e: MouseEvent) {
+      if (actionMenuRef.current && !actionMenuRef.current.contains(e.target as Node)) {
+        setActionMenuOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [actionMenuOpen]);
+
+  // Fetch depreciation schedule — M-2: with error handling
   useEffect(() => {
     if (!asset.depreciation_method || !asset.useful_life_months || !asset.acquisition_cost) return;
     setDepreciationLoading(true);
+    setDepreciationError(null);
     fetch(`/api/assets/${asset.id}/depreciation`)
       .then((r) => r.json())
       .then((data) => setDepreciationSchedule(data.schedule ?? []))
-      .catch(() => {})
+      .catch(() => setDepreciationError('Failed to load depreciation schedule.'))
       .finally(() => setDepreciationLoading(false));
   }, [asset.id, asset.depreciation_method, asset.useful_life_months, asset.acquisition_cost]);
 
-  // Fetch maintenance TCO
+  // Fetch maintenance TCO — M-2: with error handling
   useEffect(() => {
+    setMaintenanceError(null);
     fetch(`/api/equipment/maintenance?assetId=${asset.id}`)
       .then((r) => r.json())
       .then((data) => {
         const records = data.records ?? [];
         const total = records.reduce((sum: number, r: { cost?: number }) => sum + (r.cost ?? 0), 0);
         setMaintenanceCostTotal(total);
+      })
+      .catch(() => setMaintenanceError('Failed to load maintenance data.'));
+  }, [asset.id]);
+
+  // H-6: Fetch audit log
+  useEffect(() => {
+    fetch(`/api/assets/${asset.id}/audit-log`)
+      .then((r) => r.json())
+      .then((data) => setAuditLog(data.entries ?? []))
+      .catch(() => {});
+  }, [asset.id]);
+
+  // H-7: Fetch value history
+  useEffect(() => {
+    fetch(`/api/assets/${asset.id}/value-history`)
+      .then((r) => r.json())
+      .then((data) => setValueHistory(data.entries ?? []))
+      .catch(() => {});
+  }, [asset.id]);
+
+  // H-5: Fetch maintenance schedules
+  useEffect(() => {
+    fetch(`/api/assets/${asset.id}/maintenance`)
+      .then((r) => r.json())
+      .then((data) => {
+        setMaintenanceSchedules(data.schedules ?? []);
+        // Also compute TCO from records
+        const records = data.records ?? [];
+        const total = records.reduce((sum: number, r: Record<string, unknown>) => sum + ((r.cost as number) ?? 0), 0);
+        if (total > 0) setMaintenanceCostTotal(total);
       })
       .catch(() => {});
   }, [asset.id]);
@@ -125,6 +212,34 @@ export default function AssetDetailClient({ asset, proposalName, locationHistory
 
   const isTerminal = asset.status === 'disposed';
 
+  // Edit form initial data
+  const editFormData = {
+    id: asset.id,
+    name: asset.name,
+    type: asset.type,
+    category: asset.category,
+    description: asset.description ?? '',
+    barcode: asset.barcode ?? '',
+    serial_number: asset.serial_number ?? '',
+    dimensions: asset.dimensions ?? '',
+    weight: asset.weight ?? '',
+    material: asset.material ?? '',
+    storage_requirements: asset.storage_requirements ?? '',
+    acquisition_cost: asset.acquisition_cost != null ? String(asset.acquisition_cost) : '',
+    current_value: asset.current_value != null ? String(asset.current_value) : '',
+    depreciation_method: asset.depreciation_method ?? '',
+    useful_life_months: asset.useful_life_months != null ? String(asset.useful_life_months) : '',
+    is_reusable: asset.is_reusable,
+    max_deployments: asset.max_deployments != null ? String(asset.max_deployments) : '',
+    warranty_start_date: asset.warranty_start_date?.split('T')[0] ?? '',
+    warranty_end_date: asset.warranty_end_date?.split('T')[0] ?? '',
+    warranty_provider: asset.warranty_provider ?? '',
+    vendor_name: asset.vendor_name ?? '',
+    insurance_policy_number: asset.insurance_policy_number ?? '',
+    insurance_expiry_date: asset.insurance_expiry_date?.split('T')[0] ?? '',
+    status: asset.status,
+  };
+
   return (
     <>
       {/* ── Header ────────────────────────────────────────────────── */}
@@ -135,25 +250,42 @@ export default function AssetDetailClient({ asset, proposalName, locationHistory
             <StatusBadge status={asset.status} colorMap={EQUIPMENT_STATUS_COLORS} />
           </div>
           <p className="mt-1 text-sm text-text-secondary">
-            {asset.type} &middot; {asset.category} {asset.barcode ? `· ${asset.barcode}` : ''}
+            {asset.type} &middot; {asset.category} {asset.barcode ? `· ${asset.barcode}` : ''}{asset.serial_number ? ` · S/N: ${asset.serial_number}` : ''}
           </p>
         </div>
         {!isTerminal && (
-          <div className="relative flex items-center gap-3 shrink-0">
-            <Button variant="secondary" onClick={() => setRevaluationOpen(true)}>Revalue</Button>
-            <div className="relative">
-              <Button variant="secondary" onClick={() => setActionMenuOpen(!actionMenuOpen)}>
+          <div className="flex items-center gap-3 shrink-0">
+            <Button variant="secondary" size="sm" onClick={() => setEditOpen(true)}>Edit</Button>
+            <Button variant="secondary" size="sm" onClick={() => setRevaluationOpen(true)}>Revalue</Button>
+            <div className="relative" ref={actionMenuRef}>
+              <Button variant="secondary" size="sm" onClick={() => setActionMenuOpen(!actionMenuOpen)}>
                 Actions ▾
               </Button>
               {actionMenuOpen && (
-                <div className="absolute right-0 top-full mt-1 w-44 rounded-lg border border-border bg-background shadow-lg py-1 z-10">
+                <div className="absolute right-0 top-full mt-1 w-48 rounded-lg border border-border bg-background shadow-lg py-1 z-10">
                   {asset.status !== 'retired' && asset.status !== 'disposed' && (
                     <button
-                      className="w-full px-4 py-2 text-left text-sm text-text-muted cursor-not-allowed"
-                      disabled
-                      title="Asset movement will be available in Logistics v2"
+                      className="w-full px-4 py-2 text-left text-sm text-foreground hover:bg-bg-secondary transition-colors"
+                      onClick={() => { setActionMenuOpen(false); setMoveOpen(true); }}
                     >
                       Move Asset
+                    </button>
+                  )}
+                  {/* H-2: Recondition button for retired assets */}
+                  {asset.status === 'retired' && (
+                    <button
+                      className="w-full px-4 py-2 text-left text-sm text-green-700 hover:bg-green-50 transition-colors"
+                      onClick={async () => {
+                        setActionMenuOpen(false);
+                        await fetch(`/api/assets/${asset.id}`, {
+                          method: 'PATCH',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ status: 'in_storage', condition: 'good' }),
+                        });
+                        refresh();
+                      }}
+                    >
+                      Recondition → Storage
                     </button>
                   )}
                   {['deployed', 'in_storage'].includes(asset.status) && (
@@ -187,21 +319,22 @@ export default function AssetDetailClient({ asset, proposalName, locationHistory
         )}
       </div>
 
-      {/* Alert for disposed/retired */}
+      {/* Alert for disposed/retired — L-4: include disposal_reason */}
       {asset.status === 'disposed' && (
         <Alert variant="warning" className="mb-6">
           This asset was disposed on {formatDate(asset.disposed_at!)} via {formatLabel(asset.disposal_method ?? 'unknown')}.
+          {asset.disposal_reason ? ` Reason: ${asset.disposal_reason}.` : ''}
           {asset.disposal_proceeds ? ` Proceeds: ${formatCurrency(asset.disposal_proceeds)}.` : ''}
         </Alert>
       )}
       {asset.status === 'retired' && (
         <Alert variant="info" className="mb-6">
-          This asset was retired on {formatDate(asset.retired_at!)}. It can be reconditioned and returned to storage, or disposed.
+          This asset was retired on {formatDate(asset.retired_at!)}. Use <strong>Actions → Recondition</strong> to return it to storage, or <strong>Dispose</strong> to remove it permanently.
         </Alert>
       )}
 
       <div className="space-y-8">
-        {/* ── Row 1: Details + Lifecycle ──────────────────────────── */}
+        {/* ── Row 1: Details + Financial ──────────────────────────── */}
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           {/* Details */}
           <div className="rounded-xl border border-border bg-background px-6 py-5">
@@ -243,12 +376,36 @@ export default function AssetDetailClient({ asset, proposalName, locationHistory
                   <dd className="text-sm text-foreground">{asset.vendor_name}</dd>
                 </div>
               )}
+              {/* L-1: Serial Number */}
+              {asset.serial_number && (
+                <div className="flex justify-between border-t border-border pt-3">
+                  <dt className="text-sm text-text-muted">Serial Number</dt>
+                  <dd className="text-sm text-foreground font-mono">{asset.serial_number}</dd>
+                </div>
+              )}
+              {/* L-2: Usage hours */}
+              {asset.total_usage_hours != null && asset.total_usage_hours > 0 && (
+                <div className="flex justify-between border-t border-border pt-3">
+                  <dt className="text-sm text-text-muted">Usage Hours</dt>
+                  <dd className="text-sm text-foreground tabular-nums">{asset.total_usage_hours}h</dd>
+                </div>
+              )}
+              {/* L-2: Last failure */}
+              {asset.last_failure_at && (
+                <div className="flex justify-between border-t border-border pt-3">
+                  <dt className="text-sm text-text-muted">Last Failure</dt>
+                  <dd className="text-sm text-red-700">{formatDate(asset.last_failure_at)}</dd>
+                </div>
+              )}
             </dl>
           </div>
 
           {/* Financial Summary */}
           <div className="rounded-xl border border-border bg-background px-6 py-5">
             <h2 className="text-sm font-semibold text-foreground mb-4">Financial Summary</h2>
+            {maintenanceError && (
+              <Alert variant="warning" className="mb-3 text-xs">{maintenanceError}</Alert>
+            )}
             <dl className="space-y-3">
               <div className="flex justify-between">
                 <dt className="text-sm text-text-muted">Condition</dt>
@@ -294,10 +451,30 @@ export default function AssetDetailClient({ asset, proposalName, locationHistory
                 <dt className="text-sm text-text-muted">Reusable</dt>
                 <dd className="text-sm text-foreground">{asset.is_reusable ? 'Yes' : 'No'}</dd>
               </div>
+              {/* M-11: Proposal name as clickable link */}
               <div className="flex justify-between border-t border-border pt-3">
                 <dt className="text-sm text-text-muted">Current Proposal</dt>
-                <dd className="text-sm text-foreground">{proposalName ?? '—'}</dd>
+                <dd className="text-sm text-foreground">
+                  {proposalId && proposalName ? (
+                    <Link href={`/app/proposals/${proposalId}`} className="text-blue-600 hover:underline">
+                      {proposalName}
+                    </Link>
+                  ) : (
+                    '—'
+                  )}
+                </dd>
               </div>
+              {/* L-3: Purchase order linkage */}
+              {asset.purchase_order_id && (
+                <div className="flex justify-between border-t border-border pt-3">
+                  <dt className="text-sm text-text-muted">Purchase Order</dt>
+                  <dd className="text-sm">
+                    <Link href={`/app/finance/purchase-orders/${asset.purchase_order_id}`} className="text-blue-600 hover:underline font-mono text-xs">
+                      {asset.purchase_order_id.slice(0, 8)}…
+                    </Link>
+                  </dd>
+                </div>
+              )}
             </dl>
           </div>
         </div>
@@ -358,6 +535,9 @@ export default function AssetDetailClient({ asset, proposalName, locationHistory
           {/* Depreciation Config */}
           <div className="rounded-xl border border-border bg-background px-6 py-5">
             <h2 className="text-sm font-semibold text-foreground mb-4">Depreciation</h2>
+            {depreciationError && (
+              <Alert variant="warning" className="mb-3 text-xs">{depreciationError}</Alert>
+            )}
             {asset.depreciation_method ? (
               <dl className="space-y-3">
                 <div className="flex justify-between">
@@ -396,7 +576,29 @@ export default function AssetDetailClient({ asset, proposalName, locationHistory
           <div className="rounded-xl border border-border bg-background overflow-hidden">
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h2 className="text-sm font-semibold text-foreground">Depreciation Schedule</h2>
-              <span className="text-xs text-text-muted">{depreciationSchedule.length} periods</span>
+              <div className="flex items-center gap-3">
+                <span className="text-xs text-text-muted">{depreciationSchedule.length} periods</span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    const csv = ['Period,Date,Depreciation,Accumulated,Book Value']
+                      .concat(depreciationSchedule.map((e) =>
+                        `${e.periodNumber},${e.entryDate},${e.depreciationAmount},${e.accumulatedDepreciation},${e.bookValue}`
+                      ))
+                      .join('\n');
+                    const blob = new Blob([csv], { type: 'text/csv' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${asset.name.replace(/\s+/g, '-')}-depreciation.csv`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                  }}
+                >
+                  Export CSV
+                </Button>
+              </div>
             </div>
             {depreciationLoading ? (
               <div className="px-6 py-8 text-center text-sm text-text-muted">Loading schedule...</div>
@@ -433,7 +635,8 @@ export default function AssetDetailClient({ asset, proposalName, locationHistory
         <div className="rounded-xl border border-border bg-background px-6 py-5">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-semibold text-foreground">Photos</h2>
-            <Button variant="ghost" size="sm">+ Upload Photo</Button>
+            {/* C-8: Photo upload — placeholder until storage integration */}
+            <Button variant="ghost" size="sm" disabled title="Photo upload coming soon">+ Upload Photo</Button>
           </div>
           {asset.photo_urls && asset.photo_urls.length > 0 ? (
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -480,6 +683,99 @@ export default function AssetDetailClient({ asset, proposalName, locationHistory
             </div>
           )}
         </div>
+
+        {/* ── H-5: Maintenance ───────────────────────────────────── */}
+        {maintenanceSchedules.length > 0 && (
+          <div className="rounded-xl border border-border bg-background px-6 py-5">
+            <h2 className="text-sm font-semibold text-foreground mb-4">Maintenance Schedules</h2>
+            <div className="space-y-3">
+              {maintenanceSchedules.map((s) => (
+                <div key={s.id} className="flex items-center justify-between border-b border-border pb-3 last:border-0">
+                  <div>
+                    <p className="text-sm font-medium text-foreground">{s.task_name}</p>
+                    <p className="text-xs text-text-muted mt-0.5">Frequency: {formatLabel(s.frequency)}</p>
+                  </div>
+                  <div className="text-right">
+                    {s.next_due_date && (
+                      <p className="text-xs text-text-muted">Due: {formatDate(s.next_due_date)}</p>
+                    )}
+                    {s.last_performed_at && (
+                      <p className="text-xs text-text-muted">Last: {formatDate(s.last_performed_at)}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── H-7: Value History ─────────────────────────────────── */}
+        {valueHistory.length > 0 && (
+          <div className="rounded-xl border border-border bg-background overflow-hidden">
+            <div className="px-6 py-4 border-b border-border">
+              <h2 className="text-sm font-semibold text-foreground">Value History</h2>
+            </div>
+            <div className="overflow-x-auto max-h-48 overflow-y-auto">
+              <table className="w-full">
+                <thead className="sticky top-0">
+                  <tr className="border-b border-border bg-bg-secondary">
+                    <th className="px-6 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Date</th>
+                    <th className="px-6 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Type</th>
+                    <th className="px-6 py-2 text-right text-xs font-medium uppercase tracking-wider text-text-muted">From</th>
+                    <th className="px-6 py-2 text-right text-xs font-medium uppercase tracking-wider text-text-muted">To</th>
+                    <th className="px-6 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Reason</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {valueHistory.map((v) => (
+                    <tr key={v.id} className="transition-colors hover:bg-bg-secondary/50">
+                      <td className="px-6 py-2 text-sm text-text-secondary">{formatDate(v.created_at)}</td>
+                      <td className="px-6 py-2 text-sm">
+                        <StatusBadge status={v.change_type} />
+                      </td>
+                      <td className="px-6 py-2 text-sm text-right text-text-secondary tabular-nums">{v.previous_value != null ? formatCurrency(v.previous_value) : '—'}</td>
+                      <td className="px-6 py-2 text-sm text-right font-medium text-foreground tabular-nums">{v.new_value != null ? formatCurrency(v.new_value) : '—'}</td>
+                      <td className="px-6 py-2 text-sm text-text-muted max-w-xs truncate">{v.reason ?? '—'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* ── H-6: Audit Trail ───────────────────────────────────── */}
+        {auditLog.length > 0 && (
+          <div className="rounded-xl border border-border bg-background overflow-hidden">
+            <div className="px-6 py-4 border-b border-border">
+              <h2 className="text-sm font-semibold text-foreground">Audit Trail</h2>
+            </div>
+            <div className="overflow-x-auto max-h-48 overflow-y-auto">
+              <table className="w-full">
+                <thead className="sticky top-0">
+                  <tr className="border-b border-border bg-bg-secondary">
+                    <th className="px-6 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Date</th>
+                    <th className="px-6 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Field</th>
+                    <th className="px-6 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted">From</th>
+                    <th className="px-6 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted">To</th>
+                    <th className="px-6 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Source</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {auditLog.map((log) => (
+                    <tr key={log.id} className="transition-colors hover:bg-bg-secondary/50">
+                      <td className="px-6 py-2 text-sm text-text-secondary">{formatDate(log.created_at)}</td>
+                      <td className="px-6 py-2 text-sm text-foreground font-mono text-xs">{log.field_changed}</td>
+                      <td className="px-6 py-2 text-sm text-text-secondary">{log.old_value ?? '—'}</td>
+                      <td className="px-6 py-2 text-sm text-foreground">{log.new_value ?? '—'}</td>
+                      <td className="px-6 py-2 text-sm text-text-muted">{log.change_source}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ── Modals ────────────────────────────────────────────────── */}
@@ -494,6 +790,18 @@ export default function AssetDetailClient({ asset, proposalName, locationHistory
         onClose={() => setRevaluationOpen(false)}
         onRevalued={refresh}
         asset={{ id: asset.id, name: asset.name, currentValue: currentValue }}
+      />
+      <MoveAssetModal
+        open={moveOpen}
+        onClose={() => setMoveOpen(false)}
+        onMoved={refresh}
+        asset={{ id: asset.id, name: asset.name }}
+      />
+      <AssetFormModal
+        open={editOpen}
+        onClose={() => setEditOpen(false)}
+        onSaved={refresh}
+        initialData={editFormData}
       />
     </>
   );

@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import { statusColor } from '@/lib/utils';
 import TimeOffCalendar from '@/components/admin/people/TimeOffCalendar';
+import TimeOffClient from '@/components/admin/people/TimeOffClient';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PeopleHubTabs from '../../PeopleHubTabs';
 import PageHeader from '@/components/shared/PageHeader';
@@ -56,61 +57,37 @@ async function getTimeOffRequests(): Promise<TimeOffRow[]> {
 
 export default async function TimeOffPage() {
   const requests = await getTimeOffRequests();
+  const supabase = await createClient();
+  const ctx = await resolveCurrentOrg();
+  let isAdmin = false;
+
+  if (ctx) {
+    const { data: membership } = await supabase
+      .from('organization_memberships')
+      .select('roles(name)')
+      .eq('user_id', ctx.userId)
+      .eq('organization_id', ctx.organizationId)
+      .single();
+
+    const roleMap: Record<string, any> = membership?.roles || {};
+    const roleName = roleMap.name?.toLowerCase() || '';
+    isAdmin = ['owner', 'admin', 'manager'].includes(roleName);
+  }
 
   return (
     <TierGate feature="time_off">
-<PageHeader
+      <PageHeader
         title="Time Off"
         subtitle="Manage time-off requests and team availability."
       />
 
       <PeopleHubTabs />
 
-      <div className="mb-8">
-        <TimeOffCalendar />
+      <div className="mb-6">
+        <TimeOffCalendar requests={requests} />
       </div>
 
-      {requests.length === 0 ? (
-        <div className="rounded-xl border border-border bg-background px-8 py-16 text-center">
-          <p className="text-sm text-text-secondary">No time-off requests.</p>
-        </div>
-      ) : (
-        <div className="rounded-xl border border-border bg-background overflow-hidden">
-          <div className="px-6 py-4 border-b border-border">
-            <h2 className="text-base font-semibold text-foreground">Recent Requests</h2>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border bg-bg-secondary">
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Person</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Dates</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Days</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Reason</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {requests.map((req) => (
-                  <tr key={req.id} className="transition-colors hover:bg-bg-secondary/50">
-                    <td className="px-6 py-3.5 text-sm font-medium text-foreground">{req.userName}</td>
-                    <td className="px-6 py-3.5 text-sm text-text-secondary">
-                      {new Date(req.startDate).toLocaleDateString()} - {new Date(req.endDate).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{req.days}</td>
-                    <td className="px-6 py-3.5 text-sm text-text-secondary">{req.reason ?? '-'}</td>
-                    <td className="px-6 py-3.5">
-                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColor(req.status)}`}>
-                        {req.status.charAt(0).toUpperCase() + req.status.slice(1)}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
+      <TimeOffClient requests={requests} isAdmin={isAdmin} />
     </TierGate>
   );
 }

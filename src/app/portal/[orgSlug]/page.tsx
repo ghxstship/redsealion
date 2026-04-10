@@ -1,11 +1,20 @@
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { formatCurrency, statusColor } from '@/lib/utils';
 import EmptyState from '@/components/ui/EmptyState';
 
+import type { Metadata } from 'next';
+
 interface PortalPageProps {
   params: Promise<{ orgSlug: string }>;
+}
+
+export async function generateMetadata({ params }: PortalPageProps): Promise<Metadata> {
+  const { orgSlug } = await params;
+  const supabase = await createClient();
+  const { data: org } = await supabase.from('organizations').select('name').eq('slug', orgSlug).single();
+  return { title: `Proposals | ${org?.name ?? orgSlug}` };
 }
 
 export default async function PortalPage({ params }: PortalPageProps) {
@@ -24,15 +33,51 @@ export default async function PortalPage({ params }: PortalPageProps) {
     redirect('/');
   }
 
-  // Fetch proposals for this organization that have portal access (sent to client)
-  const { data: proposals } = await supabase
-    .from('proposals')
-    .select('id, name, status, total_value, currency, updated_at, portal_access_token')
-    .eq('organization_id', org.id)
-    .not('portal_access_token', 'is', null)
-    .order('updated_at', { ascending: false });
+  // C-07: Check authentication — if not authenticated, redirect to login
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  const proposalList = proposals ?? [];
+  if (!user) {
+    redirect(`/portal/${orgSlug}/login`);
+  }
+
+  // C-09: Filter proposals by client_id — resolve via client_contacts.email
+  let clientId: string | null = null;
+  const { data: contact } = await supabase
+    .from('client_contacts')
+    .select('client_id')
+    .eq('email', user.email ?? '')
+    .limit(1)
+    .maybeSingle();
+
+  clientId = contact?.client_id ?? null;
+
+  let proposalList: Array<{
+    id: string;
+    name: string;
+    status: string;
+    total_value: number;
+    currency: string;
+    updated_at: string;
+    portal_access_token: string | null;
+  }> = [];
+
+  if (clientId) {
+    // GAP-PTL-03: Enforce portal_token_expires_at — only show proposals
+    // with no expiry date or expiry in the future
+    const { data: proposals } = await supabase
+      .from('proposals')
+      .select('id, name, status, total_value, currency, updated_at, portal_access_token')
+      .eq('organization_id', org.id)
+      .eq('client_id', clientId)
+      .not('portal_access_token', 'is', null)
+      .or('portal_token_expires_at.is.null,portal_token_expires_at.gt.now()')
+      .order('updated_at', { ascending: false })
+      .limit(50);
+
+    proposalList = proposals ?? [];
+  }
 
   return (
     <div className="space-y-10">
@@ -54,8 +99,12 @@ export default async function PortalPage({ params }: PortalPageProps) {
 
         {proposalList.length === 0 ? (
           <EmptyState
-            message="No proposals available yet"
-            description="Proposals will appear here once they have been shared with you."
+            message={clientId ? 'No proposals available yet' : 'Account not linked'}
+            description={
+              clientId
+                ? 'Proposals will appear here once they have been shared with you.'
+                : `No client account is linked to ${user.email}. Please contact ${org.name} to set up portal access.`
+            }
           />
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

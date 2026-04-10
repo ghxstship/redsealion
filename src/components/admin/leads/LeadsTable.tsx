@@ -16,8 +16,7 @@ import LeadEditModal from './LeadEditModal';
 import SearchInput from '@/components/ui/SearchInput';
 import FilterPills from '@/components/ui/FilterPills';
 import Button from '@/components/ui/Button';
-import { computeLeadScore, scoreBarColor, scoreTierClasses } from '@/lib/leads/lead-scoring';
-import Tooltip from '@/components/ui/Tooltip';
+import { scoreBarColor, scoreTierClasses } from '@/lib/leads/lead-scoring';
 import { Upload, SlidersHorizontal } from 'lucide-react';
 import { useEntityViews } from '@/hooks/useEntityViews';
 import { useStoredColumnConfig } from '@/hooks/useStoredColumnConfig';
@@ -36,10 +35,18 @@ interface Lead {
   source: string;
   estimated_budget: number | null;
   message: string | null;
+  event_type: string | null;
+  event_date: string | null;
+  assigned_to: string | null;
+  assigned_user_name: string | null;
+  converted_to_deal_id: string | null;
+  lost_reason: string | null;
+  score: number;
+  score_tier: string;
   created_at: string;
 }
 
-const STATUS_TAB_KEYS = ['all', 'new', 'contacted', 'qualified'] as const;
+const STATUS_TAB_KEYS = ['all', 'new', 'contacted', 'qualified', 'converted', 'lost'] as const;
 
 export default function LeadsTable({ leads }: { leads: Lead[] }) {
   const router = useRouter();
@@ -275,21 +282,20 @@ export default function LeadsTable({ leads }: { leads: Lead[] }) {
                 {isVisible('score') && (
                   <td className="px-6 py-3.5">
                     {(() => {
-                      const { score, tier, signals } = computeLeadScore(lead);
+                      const score = lead.score ?? 0;
+                      const tier = (lead.score_tier ?? 'cold') as 'hot' | 'warm' | 'cold';
                       return (
-                        <Tooltip label={signals.join(' · ')}>
-                          <div className="flex items-center gap-2">
-                            <div className="w-12 h-1.5 rounded-full bg-bg-secondary overflow-hidden">
-                              <div
-                                className={`h-full rounded-full transition-all ${scoreBarColor(score)}`}
-                                style={{ width: `${score}%` }}
-                              />
-                            </div>
-                            <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums ${scoreTierClasses(tier)}`}>
-                              {score}
-                            </span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-12 h-1.5 rounded-full bg-bg-secondary overflow-hidden">
+                            <div
+                              className={`h-full rounded-full transition-all ${scoreBarColor(score)}`}
+                              style={{ width: `${score}%` }}
+                            />
                           </div>
-                        </Tooltip>
+                          <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums ${scoreTierClasses(tier)}`}>
+                            {score}
+                          </span>
+                        </div>
                       );
                     })()}
                   </td>
@@ -301,8 +307,13 @@ export default function LeadsTable({ leads }: { leads: Lead[] }) {
                 )}
                 <td className="px-4 py-3.5">
                   <RowActionMenu actions={[
+                    { label: 'View', onClick: () => router.push(`/app/leads/${lead.id}`) },
                     { label: 'Edit', onClick: () => setEditingLead(lead) },
-                    { label: 'Delete', variant: 'danger', onClick: () => {
+                    ...(lead.status !== 'converted' ? [{ label: 'Convert to Project', onClick: async () => {
+                      const res = await fetch(`/api/leads/${lead.id}/convert`, { method: 'POST' });
+                      if (res.ok) router.refresh();
+                    }}] : []),
+                    { label: 'Delete', variant: 'danger' as const, onClick: () => {
                       void fetch(`/api/leads/${lead.id}`, { method: 'DELETE' }).then(() => router.refresh());
                     }},
                   ]} />
@@ -335,7 +346,7 @@ export default function LeadsTable({ leads }: { leads: Lead[] }) {
           open={!!editingLead}
           onClose={() => setEditingLead(null)}
           onSaved={() => router.refresh()}
-          lead={{ ...editingLead, contact_email: editingLead.contact_email ?? '', contact_phone: editingLead.contact_phone ?? null, message: editingLead.message ?? null }}
+          lead={{ ...editingLead, contact_email: editingLead.contact_email ?? '', contact_phone: editingLead.contact_phone ?? null, message: editingLead.message ?? null, event_type: editingLead.event_type ?? null, event_date: editingLead.event_date ?? null, lost_reason: editingLead.lost_reason ?? null }}
         />
       )}
 

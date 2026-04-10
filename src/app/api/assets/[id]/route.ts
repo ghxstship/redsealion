@@ -101,13 +101,15 @@ export async function PATCH(
   if (Object.keys(updates).length === 0) return NextResponse.json({ error: 'No fields to update' }, { status: 400 });
 
   // ── Location history ──────────────────────────────────────────
-  if ('current_location' in updates && existing.current_location) {
+  if ('current_location' in updates) {
     await supabase.from('asset_location_history').insert({
       asset_id: id,
-      from_location: existing.current_location,
-      to_location: updates.current_location,
+      location: updates.current_location ?? {},
+      from_location: existing.current_location ?? null,
+      to_location: updates.current_location ?? null,
       moved_by: perm.userId,
       moved_at: new Date().toISOString(),
+      condition_at_move: ('condition' in updates ? updates.condition : existing.status) as string ?? null,
     });
   }
 

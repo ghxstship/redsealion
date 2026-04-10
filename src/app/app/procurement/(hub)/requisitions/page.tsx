@@ -3,6 +3,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import { formatCurrency } from '@/lib/utils';
+import Link from 'next/link';
 import ProcurementHubTabs from '../../ProcurementHubTabs';
 
 async function getRequisitions() {
@@ -28,9 +29,15 @@ export default async function RequisitionsPage() {
   const reqs = await getRequisitions();
 
   return (
-    <TierGate feature="equipment">
+    <TierGate feature="profitability">
       <PageHeader title="Requisitions" subtitle="Submit and track internal purchase requests." />
       <ProcurementHubTabs />
+
+      <div className="flex justify-end mb-6">
+        <Link href="/app/procurement/requisitions/new" className="inline-flex items-center gap-2 rounded-lg bg-brand-primary px-4 py-2 text-sm font-medium text-white hover:bg-brand-primary/90 transition-colors">
+          + New Requisition
+        </Link>
+      </div>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">
         {[
@@ -58,7 +65,7 @@ export default async function RequisitionsPage() {
               <tbody className="divide-y divide-border">
                 {reqs.map((r) => (
                   <tr key={r.id} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3 font-medium text-foreground">{r.requisition_number}</td>
+                    <td className="px-4 py-3"><Link href={`/app/procurement/requisitions/${r.id}`} className="font-medium text-foreground hover:underline">{r.requisition_number}</Link></td>
                     <td className="px-4 py-3 capitalize text-text-secondary">{r.priority}</td>
                     <td className="px-4 py-3 tabular-nums">{formatCurrency(r.total_cents / 100)}</td>
                     <td className="px-4 py-3 text-text-secondary">{r.needed_by ? new Date(r.needed_by).toLocaleDateString() : '—'}</td>

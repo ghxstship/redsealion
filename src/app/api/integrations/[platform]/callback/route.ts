@@ -133,6 +133,7 @@ export async function GET(
         organization_id: ctx.organizationId,
         platform,
         status: 'connected',
+        connected_by_user_id: user.id,
         access_token_encrypted: encryptToken(accessToken),
         refresh_token_encrypted: refreshToken ? encryptToken(refreshToken) : null,
         config: {

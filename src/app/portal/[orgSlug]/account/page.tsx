@@ -1,20 +1,25 @@
 import { createClient } from '@/lib/supabase/server';
 import { getInitials } from '@/lib/utils';
+import ProfileEditForm from '@/components/portal/ProfileEditForm';
+import NotificationToggles from '@/components/portal/NotificationToggles';
+import type { Metadata } from 'next';
 
 interface PageProps {
   params: Promise<{ orgSlug: string }>;
 }
 
-// ---------------------------------------------------------------------------
-// Component
-// ---------------------------------------------------------------------------
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { orgSlug } = await params;
+  const supabase = await createClient();
+  const { data: org } = await supabase.from('organizations').select('name').eq('slug', orgSlug).single();
+  return { title: `Account | ${org?.name ?? orgSlug}` };
+}
 
 export default async function AccountPage({ params }: PageProps) {
   const { orgSlug } = await params;
 
   const supabase = await createClient();
 
-  // Try to get current user (portal users may or may not be authenticated)
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -22,13 +27,13 @@ export default async function AccountPage({ params }: PageProps) {
   // Get org info
   const { data: org } = await supabase
     .from('organizations')
-    .select('id, name')
+    .select('id, name, contact_email')
     .eq('slug', orgSlug)
     .single();
 
   const orgName = org?.name ?? orgSlug
     .split('-')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 
   // If authenticated, try to load client contact profile
@@ -43,7 +48,6 @@ export default async function AccountPage({ params }: PageProps) {
   };
 
   if (user && org) {
-    // Look up user as a client contact
     const { data: contact } = await supabase
       .from('client_contacts')
       .select('first_name, last_name, email, phone, title, client_id')
@@ -58,7 +62,6 @@ export default async function AccountPage({ params }: PageProps) {
       clientProfile.phone = contact.phone ?? '';
       clientProfile.title = contact.title ?? '';
 
-      // Get client company info
       const { data: client } = await supabase
         .from('clients')
         .select('company_name, billing_address')
@@ -73,14 +76,13 @@ export default async function AccountPage({ params }: PageProps) {
           : '';
       }
     } else {
-      // Fallback: use auth user metadata
       clientProfile.email = user.email ?? '';
       clientProfile.firstName = (user.user_metadata?.first_name as string) ?? '';
       clientProfile.lastName = (user.user_metadata?.last_name as string) ?? '';
     }
   }
 
-  // Fetch notification preferences
+  // Notification preferences
   const notificationDefaults = [
     { id: 'n-1', label: 'Proposal updates', description: 'When a proposal status changes or new content is shared', enabled: true },
     { id: 'n-2', label: 'Milestone completions', description: 'When a milestone gate is completed or requires your action', enabled: true },
@@ -89,7 +91,6 @@ export default async function AccountPage({ params }: PageProps) {
     { id: 'n-5', label: 'File uploads', description: 'When new files or deliverables are shared with you', enabled: false },
   ];
 
-  // If user is authenticated, load saved preferences
   let notifications = notificationDefaults;
   if (user && org) {
     const { data: prefs } = await supabase
@@ -110,6 +111,9 @@ export default async function AccountPage({ params }: PageProps) {
   const fullName = [clientProfile.firstName, clientProfile.lastName].filter(Boolean).join(' ') || 'Guest';
   const initials = getInitials(fullName);
 
+  // Resolve org support contact — fall back to org slug-based email
+  const supportEmail = (org as Record<string, unknown>)?.contact_email as string | undefined;
+
   return (
     <div className="space-y-10">
       <div>
@@ -128,43 +132,14 @@ export default async function AccountPage({ params }: PageProps) {
             {initials}
           </div>
 
-          <div className="flex-1 grid gap-5 sm:grid-cols-2">
-            <div>
-              <label className="block text-xs font-medium text-text-muted mb-1">Full Name</label>
-              <input
-                type="text"
-                defaultValue={fullName}
-                readOnly
-                className="w-full rounded-md border border-border bg-gray-50 px-3 py-2 text-sm text-foreground"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-text-muted mb-1">Email</label>
-              <input
-                type="email"
-                defaultValue={clientProfile.email}
-                readOnly
-                className="w-full rounded-md border border-border bg-gray-50 px-3 py-2 text-sm text-foreground"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-text-muted mb-1">Phone</label>
-              <input
-                type="tel"
-                defaultValue={clientProfile.phone}
-                readOnly
-                className="w-full rounded-md border border-border bg-gray-50 px-3 py-2 text-sm text-foreground"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-text-muted mb-1">Title</label>
-              <input
-                type="text"
-                defaultValue={clientProfile.title}
-                readOnly
-                className="w-full rounded-md border border-border bg-gray-50 px-3 py-2 text-sm text-foreground"
-              />
-            </div>
+          <div className="flex-1">
+            <ProfileEditForm
+              firstName={clientProfile.firstName}
+              lastName={clientProfile.lastName}
+              email={clientProfile.email}
+              phone={clientProfile.phone}
+              title={clientProfile.title}
+            />
           </div>
         </div>
       </section>
@@ -202,34 +177,10 @@ export default async function AccountPage({ params }: PageProps) {
           Notification Preferences
         </h2>
 
-        <div className="space-y-4">
-          {notifications.map((notif) => (
-            <div
-              key={notif.id}
-              className="flex items-center justify-between gap-4 py-2"
-            >
-              <div>
-                <p className="text-sm font-medium text-foreground">{notif.label}</p>
-                <p className="text-xs text-text-muted">{notif.description}</p>
-              </div>
-              {/* Toggle */}
-              <button
-                type="button"
-                className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${
-                  notif.enabled ? 'bg-green-500' : 'bg-gray-200'
-                }`}
-                role="switch"
-                aria-checked={notif.enabled}
-              >
-                <span
-                  className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition-transform ${
-                    notif.enabled ? 'translate-x-4' : 'translate-x-0'
-                  }`}
-                />
-              </button>
-            </div>
-          ))}
-        </div>
+        <NotificationToggles
+          notifications={notifications}
+          organizationId={org?.id ?? ''}
+        />
       </section>
 
       {/* Contact info */}
@@ -242,16 +193,10 @@ export default async function AccountPage({ params }: PageProps) {
         </p>
         <div className="mt-4 flex gap-3">
           <a
-            href="mailto:support@example.com"
+            href={`mailto:${supportEmail || `hello@${orgSlug}.com`}`}
             className="inline-flex items-center rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-gray-50 transition-colors"
           >
             Email Support
-          </a>
-          <a
-            href="tel:+15035550100"
-            className="inline-flex items-center rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-gray-50 transition-colors"
-          >
-            Call Us
           </a>
         </div>
       </section>

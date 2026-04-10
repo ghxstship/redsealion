@@ -1,9 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
+import { randomUUID } from 'crypto';
+
+// GAP-PTL-06: Helper to check project_portals permission with proposals fallback
+async function checkPortalPermission(action: 'view' | 'create' | 'edit' | 'delete') {
+  // Try project_portals first, fall back to proposals
+  const perm = await checkPermission('project_portals', action)
+    ?? await checkPermission('proposals', action);
+  return perm;
+}
 
 export async function GET(request: NextRequest) {
-  const perm = await checkPermission('proposals', 'view');
+  const perm = await checkPortalPermission('view');
   if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
@@ -33,7 +42,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const perm = await checkPermission('proposals', 'create');
+  const perm = await checkPortalPermission('create');
   if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
@@ -62,6 +71,9 @@ export async function POST(request: NextRequest) {
 
   const supabase = await createClient();
 
+  // GAP-PTL-08: Generate access_token for portal sharing
+  const accessToken = randomUUID();
+
   const { data: portal, error } = await supabase
     .from('project_portals')
     .insert({
@@ -77,6 +89,10 @@ export async function POST(request: NextRequest) {
       pre_arrival_checklist: pre_arrival_checklist ?? [],
       faqs: faqs ?? [],
       amenities: amenities ?? {},
+      access_token: accessToken,
+      // GAP-PTL-07: Populate audit trail columns
+      created_by: perm.userId ?? null,
+      updated_by: perm.userId ?? null,
     })
     .select()
     .single();

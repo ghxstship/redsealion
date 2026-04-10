@@ -5,19 +5,7 @@ import FormSelect from '@/components/ui/FormSelect';
 import FormTextarea from '@/components/ui/FormTextarea';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
-
-const ACTION_TYPES = [
-  { value: 'send_email', label: 'Send Email', description: 'Send an email notification' },
-  { value: 'send_follow_up_email', label: 'Send Follow-Up Email', description: 'Send a proposal follow-up nudge to the client' },
-  { value: 'send_review_request', label: 'Request Review', description: 'Ask the client for a review after project completion' },
-  { value: 'send_slack', label: 'Send Slack Message', description: 'Post a message to a Slack channel' },
-  { value: 'create_invoice', label: 'Create Invoice', description: 'Auto-generate an invoice' },
-  { value: 'update_deal_stage', label: 'Update Deal Stage', description: 'Move a deal to a different stage' },
-  { value: 'create_task', label: 'Create Task', description: 'Create a task in a connected PM tool' },
-  { value: 'sync_crm', label: 'Sync to CRM', description: 'Push data to connected CRM' },
-  { value: 'webhook_call', label: 'Call Webhook', description: 'Send data to an external URL' },
-  { value: 'create_calendar_event', label: 'Create Calendar Event', description: 'Add event to connected calendar' },
-];
+import { ACTION_TYPES } from '@/lib/automations/constants';
 
 interface ActionSelectorProps {
   value: string;
@@ -83,10 +71,15 @@ export function ActionSelector({ value, config, onChange }: ActionSelectorProps)
               placeholder="Email body..."
             />
           </div>
+          <div className="rounded-lg border border-border bg-bg-secondary/50 p-3">
+            <p className="text-xs text-text-muted">
+              <strong>Available variables:</strong> {'{{client_name}}'}, {'{{proposal_name}}'}, {'{{proposal_value}}'}, {'{{portal_link}}'}
+            </p>
+          </div>
         </div>
       )}
 
-      {selectedType === 'webhook_call' && (
+      {selectedType === 'webhook' && (
         <div className="mt-3">
           <FormLabel>Webhook URL</FormLabel>
           <FormInput
@@ -134,7 +127,7 @@ export function ActionSelector({ value, config, onChange }: ActionSelectorProps)
           )}
           <div className="rounded-lg border border-border bg-bg-secondary/50 p-3">
             <p className="text-xs text-text-muted">
-              <strong>Available variables:</strong> {'{client_name}'}, {'{proposal_name}'}, {'{proposal_value}'}, {'{portal_link}'}
+              <strong>Available variables:</strong> {'{{client_name}}'}, {'{{proposal_name}}'}, {'{{proposal_value}}'}, {'{{portal_link}}'}
             </p>
           </div>
         </div>
@@ -160,6 +153,48 @@ export function ActionSelector({ value, config, onChange }: ActionSelectorProps)
               <option value={1}>1 day</option>
               <option value={3}>3 days</option>
               <option value={7}>7 days</option>
+            </FormSelect>
+          </div>
+        </div>
+      )}
+
+      {selectedType === 'update_deal_stage' && (
+        <div className="mt-3">
+          <FormLabel>New Stage</FormLabel>
+          <FormSelect
+            value={(config.new_stage as string) ?? ''}
+            onChange={(e) => onChange(selectedType, { ...config, new_stage: e.target.value })}
+          >
+            <option value="">Select stage...</option>
+            <option value="qualifying">Qualifying</option>
+            <option value="proposal_sent">Proposal Sent</option>
+            <option value="negotiation">Negotiation</option>
+            <option value="contract_signed">Contract Signed</option>
+            <option value="lost">Lost</option>
+          </FormSelect>
+        </div>
+      )}
+
+      {selectedType === 'create_task' && (
+        <div className="mt-3 space-y-2">
+          <div>
+            <FormLabel>Task Title</FormLabel>
+            <FormInput
+              type="text"
+              value={(config.title as string) ?? ''}
+              onChange={(e) => onChange(selectedType, { ...config, title: e.target.value })}
+              placeholder="e.g., Follow up with {{client_name}}" />
+          </div>
+          <div>
+            <FormLabel>Priority</FormLabel>
+            <FormSelect
+              value={(config.priority as string) ?? 'medium'}
+              onChange={(e) => onChange(selectedType, { ...config, priority: e.target.value })}
+            >
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+              <option value="urgent">Urgent</option>
             </FormSelect>
           </div>
         </div>

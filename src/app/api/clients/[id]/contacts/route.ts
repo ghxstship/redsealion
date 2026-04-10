@@ -23,7 +23,9 @@ export async function POST(
       email: body.email,
       phone: body.phone ?? null,
       title: body.title ?? null,
-      is_primary: body.is_primary ?? false,
+      role: body.role ?? 'primary',
+      is_decision_maker: body.is_decision_maker ?? false,
+      is_signatory: body.is_signatory ?? false,
     })
     .select()
     .single();
@@ -50,7 +52,8 @@ export async function GET(
     .from('client_contacts')
     .select('*')
     .eq('client_id', clientId)
-    .order('is_primary', { ascending: false });
+    .is('deleted_at', null)
+    .order('role', { ascending: true });
 
   if (error) {
     return NextResponse.json({ error: 'Failed to fetch contacts' }, { status: 500 });

@@ -120,7 +120,12 @@ describe('Permission System', () => {
     it('grants admin full access to all resources', () => {
       for (const resource of ALL_RESOURCES) {
         for (const action of ALL_ACTIONS) {
-          expect(getDefaultPermission('admin', resource, action)).toBe(true);
+          // Admin cannot delete org-level settings (by design — prevents org deletion/transfer by admin)
+          if (resource === 'settings' && action === 'delete') {
+            expect(getDefaultPermission('admin', resource, action)).toBe(false);
+          } else {
+            expect(getDefaultPermission('admin', resource, action)).toBe(true);
+          }
         }
       }
     });

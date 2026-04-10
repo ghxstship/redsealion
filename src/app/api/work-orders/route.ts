@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
+import { logAuditAction } from '@/lib/api/audit-logger';
 
 export async function GET(request: NextRequest) {
   const perm = await checkPermission('work_orders', 'view');
@@ -75,6 +76,23 @@ export async function POST(request: NextRequest) {
     }));
     await supabase.from('work_order_assignments').insert(assignments);
   }
+
+  // Insert status log entry for initial creation
+  await supabase.from('work_order_status_log').insert({
+    work_order_id: wo.id,
+    from_status: null,
+    to_status: 'draft',
+    changed_by: perm.userId,
+  });
+
+  // Audit log
+  logAuditAction({
+    orgId: perm.organizationId,
+    action: 'work_order.created',
+    entity: 'work_order',
+    entityId: wo.id,
+    metadata: { wo_number: wo.wo_number, title, crew_count: crew_ids?.length ?? 0 },
+  }).catch(() => {});
 
   return NextResponse.json({ success: true, work_order: wo });
 }

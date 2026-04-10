@@ -4,6 +4,7 @@ import { use, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { formatCurrency, statusColor } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/client';
+import { toast } from 'react-hot-toast';
 import ShareDialog from '@/components/shared/ShareDialog';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import Tabs from '@/components/ui/Tabs';
@@ -33,6 +34,22 @@ export default function ProposalDetailPage({
   const [loading, setLoading] = useState(true);
   const [showShare, setShowShare] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
+  const [converting, setConverting] = useState(false);
+
+  async function handleConvertToJob() {
+    if (!proposal || proposal.status !== 'approved') return;
+    setConverting(true);
+    try {
+      const res = await fetch(`/api/proposals/${proposal.id}/convert`, { method: 'POST' });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error);
+      toast.success('Converted to Work Order successfully!');
+      window.location.href = `/app/dispatch/${json.workOrder.id}`;
+    } catch (err: any) {
+      toast.error('Failed to convert: ' + err.message);
+      setConverting(false);
+    }
+  }
 
   useEffect(() => {
     async function load() {
@@ -141,6 +158,11 @@ export default function ProposalDetailPage({
         >
           Delete
         </button>
+        {proposal.status === 'approved' && (
+          <Button onClick={handleConvertToJob} disabled={converting}>
+            {converting ? 'Converting...' : 'Convert to Job'}
+          </Button>
+        )}
         <Button onClick={() => setShowShare(true)}>
           Send to Client
         </Button>

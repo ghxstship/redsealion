@@ -14,10 +14,24 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { getBlueskyOAuthClient } from '@/lib/bluesky/oauth-client';
 import { createLogger } from '@/lib/logger';
+import { withRateLimit, RATE_LIMITS } from '@/lib/middleware/rate-limit';
+import { createHmac, randomBytes } from 'crypto';
 
 const logger = createLogger('bluesky-auth');
 
-export async function POST(request: NextRequest) {
+/**
+ * L-06: Sign the OAuth state parameter with HMAC to prevent forgery.
+ * The state contains the userId, a nonce, and a signature.
+ */
+function signState(userId: string): string {
+  const secret = process.env.BLUESKY_STATE_SECRET ?? process.env.SUPABASE_SERVICE_ROLE_KEY ?? 'fallback-secret';
+  const nonce = randomBytes(16).toString('hex');
+  const payload = JSON.stringify({ userId, nonce });
+  const sig = createHmac('sha256', secret).update(payload).digest('hex');
+  return JSON.stringify({ userId, nonce, sig });
+}
+
+export const POST = withRateLimit(RATE_LIMITS.auth, async function POST(request: any) {
   try {
     // Require authenticated user (link-account flow)
     const supabase = await createClient();
@@ -43,10 +57,9 @@ export async function POST(request: NextRequest) {
     const client = await getBlueskyOAuthClient();
 
     // Initiate the AT Protocol OAuth flow
-    // This resolves the handle → PDS → auth server, and returns a URL
+    // L-06: Use HMAC-signed state to prevent state forgery
     const authUrl = await client.authorize(handle, {
-      // Store the FlyteDeck user ID in the state so we can link on callback
-      state: JSON.stringify({ userId: user.id }),
+      state: signState(user.id),
     });
 
     return NextResponse.json({ url: authUrl.toString() });
@@ -59,4 +72,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+});

@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
   const body = await request.json().catch(() => ({}));
-  const { name, order_type, event_id, proposal_id, quantity, unit_cost_cents, start_date, due_date, priority, assigned_to, notes } = body as Record<string, unknown>;
+  const { name, order_type, event_id, proposal_id, quantity, unit_cost_cents, start_date, due_date, priority, assigned_to, notes, estimated_labor_cents, actual_labor_cents, material_cost_cents, assigned_equipment_id } = body as Record<string, unknown>;
 
   if (!name) return NextResponse.json({ error: 'name is required' }, { status: 400 });
 
@@ -63,6 +63,10 @@ export async function POST(request: NextRequest) {
       priority: (priority as string) ?? 'medium',
       assigned_to: (assigned_to as string) ?? null,
       notes: (notes as string) ?? null,
+      estimated_labor_cents: (estimated_labor_cents as number) ?? 0,
+      actual_labor_cents: (actual_labor_cents as number) ?? 0,
+      material_cost_cents: (material_cost_cents as number) ?? 0,
+      assigned_equipment_id: (assigned_equipment_id as string) ?? null,
     })
     .select()
     .single();

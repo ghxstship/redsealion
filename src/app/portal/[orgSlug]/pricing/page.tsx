@@ -126,15 +126,16 @@ export default async function PricingPage({ params }: PricingPageProps) {
                 ))}
               </ul>
 
-              <button
-                className={`mt-8 w-full rounded-lg px-4 py-3 text-sm font-semibold transition-colors ${
+              <Link
+                href={`/signup?plan=${plan.tier}`}
+                className={`mt-8 w-full rounded-lg px-4 py-3 text-sm font-semibold transition-colors text-center block ${
                   plan.highlighted
                     ? 'bg-foreground text-white hover:bg-foreground/90'
                     : 'border border-border bg-white text-foreground hover:bg-bg-secondary'
                 }`}
               >
                 Start 14-Day Free Trial
-              </button>
+              </Link>
             </div>
           ))}
         </div>
@@ -142,7 +143,13 @@ export default async function PricingPage({ params }: PricingPageProps) {
         {/* FAQ / Trust */}
         <div className="mt-16 text-center">
           <p className="text-sm text-text-muted">
-            Questions? <span className="text-foreground font-medium">Contact our sales team</span> for
+            Questions?{' '}
+            <Link
+              href={`/portal/${orgSlug}/request`}
+              className="text-foreground font-medium hover:underline"
+            >
+              Contact our sales team
+            </Link>{' '}for
             a personalized demo or custom enterprise pricing.
           </p>
           <div className="mt-8 flex items-center justify-center gap-8">

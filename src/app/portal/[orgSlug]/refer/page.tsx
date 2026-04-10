@@ -1,10 +1,18 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import ReferralLinkSection from '@/components/portal/ReferralLinkSection';
+import type { Metadata } from 'next';
 
 interface PortalReferPageProps {
   params: Promise<{ orgSlug: string }>;
 }
 
+export async function generateMetadata({ params }: PortalReferPageProps): Promise<Metadata> {
+  const { orgSlug } = await params;
+  const supabase = await createClient();
+  const { data: org } = await supabase.from('organizations').select('name').eq('slug', orgSlug).single();
+  return { title: `Refer a Friend | ${org?.name ?? orgSlug}` };
+}
 export default async function PortalReferPage({ params }: PortalReferPageProps) {
   const { orgSlug } = await params;
 
@@ -17,6 +25,38 @@ export default async function PortalReferPage({ params }: PortalReferPageProps) 
     .single();
 
   if (!org) redirect('/');
+
+  // Check if user is authenticated
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  // If authenticated, look up their referral code
+  let referralCode: string | null = null;
+  if (user) {
+    // Find their client_contact
+    const { data: contact } = await supabase
+      .from('client_contacts')
+      .select('client_id')
+      .eq('email', user.email ?? '')
+      .limit(1)
+      .maybeSingle();
+
+    if (contact) {
+      // Look up existing referral code
+      const { data: referral } = await supabase
+        .from('referrals')
+        .select('referral_code')
+        .eq('organization_id', org.id)
+        .eq('referrer_client_id', contact.client_id)
+        .limit(1)
+        .maybeSingle();
+
+      referralCode = referral?.referral_code ?? null;
+    }
+  }
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3001';
 
   return (
     <div className="max-w-2xl mx-auto space-y-8">
@@ -51,30 +91,12 @@ export default async function PortalReferPage({ params }: PortalReferPageProps) 
           </div>
         </div>
 
-        <div className="border-t border-border pt-6">
-          <h2 className="text-sm font-semibold text-foreground mb-3">Your Referral Link</h2>
-          <div className="flex items-center gap-2">
-            <input
-              type="text"
-              readOnly
-              value={`${typeof window !== 'undefined' ? window.location.origin : ''}/api/public/referral/YOUR-CODE`}
-              className="flex-1 rounded-md border border-border bg-bg-secondary px-3 py-2 text-sm text-text-muted"
-              onClick={(e) => (e.target as HTMLInputElement).select()}
-            />
-            <button
-              className="rounded-lg px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
-              style={{ backgroundColor: 'var(--org-primary, var(--color-foreground))' }}
-              onClick={() => {
-                /* navigator.clipboard in client wrapper */
-              }}
-            >
-              Copy
-            </button>
-          </div>
-          <p className="mt-2 text-xs text-text-muted">
-            Sign in to generate your personalized referral code.
-          </p>
-        </div>
+        {/* Referral link section */}
+        <ReferralLinkSection
+          referralCode={referralCode}
+          appUrl={appUrl}
+          isAuthenticated={!!user}
+        />
       </div>
     </div>
   );

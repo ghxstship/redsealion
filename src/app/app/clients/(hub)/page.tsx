@@ -25,21 +25,26 @@ async function getClients(): Promise<ClientRow[]> {
 
     const { data: clients } = await supabase
       .from('clients')
-      .select()
+      .select('id, company_name, industry, tags, updated_at, proposals(id, total_value)')
       .eq('organization_id', ctx.organizationId)
-      .order('company_name');
+      .is('deleted_at', null)
+      .order('company_name')
+      .limit(500);
 
     if (!clients) return [];
 
-    return clients.map((c: Record<string, unknown>) => ({
-      id: c.id as string,
-      company_name: c.company_name as string,
-      industry: c.industry as string | null,
-      tags: (c.tags as string[]) ?? [],
-      proposals: 0,
-      total_value: 0,
-      last_activity: c.updated_at as string,
-    }));
+    return clients.map((c: Record<string, unknown>) => {
+      const proposals = (c.proposals ?? []) as Array<{ id: string; total_value: number }>;
+      return {
+        id: c.id as string,
+        company_name: c.company_name as string,
+        industry: c.industry as string | null,
+        tags: (c.tags as string[]) ?? [],
+        proposals: proposals.length,
+        total_value: proposals.reduce((sum, p) => sum + (p.total_value ?? 0), 0),
+        last_activity: c.updated_at as string,
+      };
+    });
   } catch {
     return [];
   }

@@ -13,8 +13,9 @@ import RowActionMenu from '@/components/shared/RowActionMenu';
 import SearchInput from '@/components/ui/SearchInput';
 import Button from '@/components/ui/Button';
 import FilterPills from '@/components/ui/FilterPills';
-import { SlidersHorizontal } from 'lucide-react';
+import { SlidersHorizontal, Sparkles } from 'lucide-react';
 import { IconPlus } from '@/components/ui/Icons';
+import AIDraftProposalModal from '@/components/admin/proposals/AIDraftProposalModal';
 import { useEntityViews } from '@/hooks/useEntityViews';
 import { useStoredColumnConfig } from '@/hooks/useStoredColumnConfig';
 import ViewBar from '@/components/shared/ViewBar';
@@ -49,6 +50,7 @@ export default function ProposalsTable({
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [showColumnConfig, setShowColumnConfig] = useState(false);
+  const [showAiDraft, setShowAiDraft] = useState(false);
 
   const {
     views,
@@ -122,6 +124,10 @@ export default function ProposalsTable({
         title="Proposals"
         subtitle={`${filtered.length} proposal${filtered.length !== 1 ? 's' : ''} \u00B7 ${formatCurrency(totalPipelineValue)} total value`}
       >
+        <Button variant="secondary" onClick={() => setShowAiDraft(true)}>
+          <Sparkles size={16} />
+          AI Draft
+        </Button>
         <Button href="/app/proposals/new">
           <IconPlus size={20} />
           New Proposal
@@ -248,6 +254,18 @@ export default function ProposalsTable({
         onColumnsChange={setColumns}
         rowHeight={rowHeight}
         onRowHeightChange={setRowHeight}
+      />
+
+      <AIDraftProposalModal
+        open={showAiDraft}
+        onClose={() => setShowAiDraft(false)}
+        onDraftReady={(draft) => {
+          // Navigate to new proposal page — draft data can be
+          // consumed via URL state or stored in sessionStorage
+          console.log('AI draft ready:', draft);
+          setShowAiDraft(false);
+          router.push('/app/proposals/new');
+        }}
       />
     </>
   );

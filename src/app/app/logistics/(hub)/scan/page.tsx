@@ -1,5 +1,6 @@
 import ScanPageClient from './ScanPageClient';
 import LogisticsHubTabs from "../../LogisticsHubTabs";
+import PageHeader from '@/components/shared/PageHeader';
 
 export const metadata = {
   title: 'Scan Equipment',
@@ -7,19 +8,17 @@ export const metadata = {
 
 export default function ScanPage() {
   return (
-    <div className="max-w-2xl mx-auto px-2 sm:px-4 py-4">
-      <div className="mb-6">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          Scan Equipment
-        </h1>
-        <p className="mt-1 text-sm text-text-muted">
-          Scan a barcode or QR code to look up equipment and manage check in/out.
-        </p>
-      </div>
+    <>
+      <PageHeader
+        title="Scan Equipment"
+        subtitle="Scan a barcode or QR code to look up equipment and manage check in/out."
+      />
 
       <LogisticsHubTabs />
 
-      <ScanPageClient />
-    </div>
+      <div className="max-w-2xl mt-8">
+        <ScanPageClient />
+      </div>
+    </>
   );
 }

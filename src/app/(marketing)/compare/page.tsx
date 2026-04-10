@@ -1,6 +1,21 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { IconChevronRight } from '@/components/ui/Icons';
+import JsonLd from '@/components/marketing/JsonLd';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'Compare FlyteDeck',
+  description: 'Compare FlyteDeck to spreadsheets, generic project management tools, and Productive.io.',
+  breadcrumb: {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://flytedeck.io' },
+      { '@type': 'ListItem', position: 2, name: 'Compare', item: 'https://flytedeck.io/compare' },
+    ],
+  },
+};
 
 export const metadata: Metadata = {
   title: 'Compare FlyteDeck — See How We Stack Up',
@@ -50,6 +65,17 @@ const comparisons = [
 export default function ComparePage() {
   return (
     <>
+      <JsonLd data={jsonLd} />
+
+      {/* Breadcrumb */}
+      <nav className="px-8 pt-8 lg:px-16" aria-label="Breadcrumb">
+        <ol className="flex items-center gap-2 text-sm text-zinc-400">
+          <li><Link href="/" className="transition-colors hover:text-zinc-600">Home</Link></li>
+          <li>/</li>
+          <li className="text-zinc-600">Compare</li>
+        </ol>
+      </nav>
+
       {/* Hero */}
       <div className="px-8 py-20 text-center lg:px-16">
         <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 sm:text-4xl lg:text-5xl">

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
+import { useState, useEffect, type FormEvent } from 'react';
 import ModalShell from '@/components/ui/ModalShell';
 import FormLabel from '@/components/ui/FormLabel';
 import FormInput from '@/components/ui/FormInput';
@@ -13,6 +13,7 @@ interface LocationFormModalProps {
   open: boolean;
   onClose: () => void;
   onCreated: () => void;
+  location?: Record<string, unknown> | null;
 }
 
 const LOCATION_TYPES = [
@@ -24,8 +25,9 @@ function formatLabel(s: string): string {
   return s.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 }
 
-export default function LocationFormModal({ open, onClose, onCreated }: LocationFormModalProps) {
+export default function LocationFormModal({ open, onClose, onCreated, location }: LocationFormModalProps) {
   const [name, setName] = useState('');
+  const [slug, setSlug] = useState('');
   const [type, setType] = useState<string>('venue');
   const [phone, setPhone] = useState('');
   const [timezone, setTimezone] = useState('');
@@ -48,8 +50,36 @@ export default function LocationFormModal({ open, onClose, onCreated }: Location
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const isEdit = !!location?.id;
+
+  // Prefill form when editing
+  useEffect(() => {
+    if (open && location) {
+      setName((location.name as string) || '');
+      setSlug((location.slug as string) || '');
+      setType((location.type as string) || 'venue');
+      setPhone((location.phone as string) || '');
+      setTimezone((location.timezone as string) || '');
+      setCapacity(location.capacity ? String(location.capacity) : '');
+      setSiteMapUrl((location.site_map_url as string) || '');
+      setNotes((location.notes as string) || '');
+      
+      setStreet((location.address_line1 as string) || ((location.address as any)?.street) || '');
+      setCity((location.city as string) || ((location.address as any)?.city) || '');
+      setState((location.state_province as string) || ((location.address as any)?.state) || '');
+      setZip((location.postal_code as string) || ((location.address as any)?.zip) || '');
+      setCountry((location.country as string) || ((location.address as any)?.country) || '');
+
+      setGooglePlaceId((location.google_place_id as string) || '');
+      setLatitude(location.latitude ? String(location.latitude) : '');
+      setLongitude(location.longitude ? String(location.longitude) : '');
+    } else if (open && !location) {
+      resetForm();
+    }
+  }, [open, location]);
+
   function resetForm() {
-    setName(''); setType('venue'); setPhone(''); setTimezone('');
+    setName(''); setSlug(''); setType('venue'); setPhone(''); setTimezone('');
     setCapacity(''); setSiteMapUrl(''); setNotes('');
     setStreet(''); setCity(''); setState(''); setZip(''); setCountry('');
     setGooglePlaceId(''); setLatitude(''); setLongitude('');
@@ -71,13 +101,21 @@ export default function LocationFormModal({ open, onClose, onCreated }: Location
     const formatted = [street, city, state, zip, country].filter(Boolean).join(', ');
 
     try {
-      const res = await fetch('/api/locations', {
-        method: 'POST',
+      const url = isEdit ? `/api/locations/${location.id}` : '/api/locations';
+      const method = isEdit ? 'PATCH' : 'POST';
+      const res = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name,
+          slug: slug || undefined,
           type,
           address: Object.keys(address).length ? address : {},
+          address_line1: street || null,
+          city: city || null,
+          state_province: state || null,
+          postal_code: zip || null,
+          country: country || 'US',
           formatted_address: formatted || null,
           phone: phone || null,
           timezone: timezone || null,
@@ -92,7 +130,7 @@ export default function LocationFormModal({ open, onClose, onCreated }: Location
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || 'Failed to create location');
+        throw new Error(data.error || `Failed to ${isEdit ? 'update' : 'create'} location`);
       }
 
       resetForm();
@@ -108,13 +146,19 @@ export default function LocationFormModal({ open, onClose, onCreated }: Location
   const isVirtual = type === 'virtual';
 
   return (
-    <ModalShell open={open} onClose={onClose} title="Add Location" size="xl">
+    <ModalShell open={open} onClose={onClose} title={isEdit ? "Edit Location" : "Add Location"} size="xl">
       {error && <Alert className="mb-4">{error}</Alert>}
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <FormLabel>Location Name *</FormLabel>
-          <FormInput type="text" required value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Madison Square Garden" />
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <FormLabel>Location Name *</FormLabel>
+            <FormInput type="text" required value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Madison Square Garden" />
+          </div>
+          <div>
+            <FormLabel>Slug</FormLabel>
+            <FormInput type="text" value={slug} onChange={(e) => setSlug(e.target.value)} placeholder="Auto-generated if empty" />
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -200,7 +244,7 @@ export default function LocationFormModal({ open, onClose, onCreated }: Location
         <div className="flex items-center justify-end gap-3 pt-2">
           <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
           <Button type="submit" loading={submitting}>
-            {submitting ? 'Creating...' : 'Add Location'}
+            {submitting ? 'Saving...' : isEdit ? 'Save Changes' : 'Add Location'}
           </Button>
         </div>
       </form>

@@ -1,83 +1,68 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { TierGate } from '@/components/shared/TierGate';
 import Button from '@/components/ui/Button';
 import ModalShell from '@/components/ui/ModalShell';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
 import PageHeader from '@/components/shared/PageHeader';
+import { createClient } from '@/lib/supabase/client';
+import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
 
 interface EmailTemplate {
   id: string;
   name: string;
-  subject: string;
-  body: string;
+  subject_template: string;
+  body_template: string;
   category: string;
-  mergeFields: string[];
+  merge_fields: string[];
 }
 
-const BUILT_IN_TEMPLATES: EmailTemplate[] = [
-  {
-    id: 'tpl_initial_outreach',
-    name: 'Initial Outreach',
-    subject: 'Hi {{contact_name}} — quick intro from {{company_name}}',
-    body: `Hi {{contact_name}},\n\nI'm reaching out because I came across {{client_company}} and wanted to introduce our team. We specialize in {{industry}} production and have worked with companies like yours to deliver exceptional results.\n\nWould you be open to a brief conversation this week?\n\nBest,\n{{sender_name}}`,
-    category: 'Prospecting',
-    mergeFields: ['contact_name', 'client_company', 'company_name', 'industry', 'sender_name'],
-  },
-  {
-    id: 'tpl_proposal_followup',
-    name: 'Proposal Follow-Up',
-    subject: 'Following up on our proposal for {{deal_title}}',
-    body: `Hi {{contact_name}},\n\nI wanted to follow up on the proposal we sent for {{deal_title}} ({{deal_value}}). I'd love to hear your thoughts and answer any questions.\n\nIs there a good time to connect this week?\n\nBest,\n{{sender_name}}`,
-    category: 'Follow-Up',
-    mergeFields: ['contact_name', 'deal_title', 'deal_value', 'sender_name'],
-  },
-  {
-    id: 'tpl_check_in',
-    name: 'Friendly Check-In',
-    subject: 'Checking in — {{client_company}}',
-    body: `Hi {{contact_name}},\n\nIt's been a little while since we connected, and I wanted to check in. How have things been going with {{client_company}}?\n\nIf there's anything we can help with — even just brainstorming — I'm happy to chat.\n\nHope you're doing well!\n\n{{sender_name}}`,
-    category: 'Relationship',
-    mergeFields: ['contact_name', 'client_company', 'sender_name'],
-  },
-  {
-    id: 'tpl_meeting_request',
-    name: 'Meeting Request',
-    subject: 'Quick meeting to discuss {{deal_title}}?',
-    body: `Hi {{contact_name}},\n\nI'd love to schedule a brief call to discuss {{deal_title}} and align on next steps.\n\nWould any of these times work for you?\n- [Option 1]\n- [Option 2]\n- [Option 3]\n\nAlternatively, feel free to pick a time that works best.\n\nLooking forward to connecting,\n{{sender_name}}`,
-    category: 'Scheduling',
-    mergeFields: ['contact_name', 'deal_title', 'sender_name'],
-  },
-  {
-    id: 'tpl_thank_you',
-    name: 'Post-Project Thank You',
-    subject: 'Thank you — {{project_name}}',
-    body: `Hi {{contact_name}},\n\nI wanted to extend a sincere thank you for the opportunity to work with {{client_company}} on {{project_name}}. It was a fantastic project and we're proud of what we delivered together.\n\nIf you ever need anything in the future, don't hesitate to reach out. We'd also love a testimonial if you're open to it!\n\nWarmly,\n{{sender_name}}`,
-    category: 'Relationship',
-    mergeFields: ['contact_name', 'client_company', 'project_name', 'sender_name'],
-  },
-  {
-    id: 'tpl_closing_push',
-    name: 'Closing Push',
-    subject: 'Ready to move forward on {{deal_title}}?',
-    body: `Hi {{contact_name}},\n\nI know there's been a lot to consider with {{deal_title}}, and I want to make sure we're aligned before the {{expected_close_date}} timeline.\n\nIs there anything holding things up that I can help address? I'm confident we can make this work.\n\nLet me know how you'd like to proceed.\n\nBest,\n{{sender_name}}`,
-    category: 'Closing',
-    mergeFields: ['contact_name', 'deal_title', 'expected_close_date', 'sender_name'],
-  },
-];
-
-const CATEGORIES = ['All', ...new Set(BUILT_IN_TEMPLATES.map((t) => t.category))];
-
 export default function EmailTemplatesPage() {
+  const supabase = createClient();
+  const [currentOrgId, setCurrentOrgId] = useState<string | null>(null);
+  const [templates, setTemplates] = useState<EmailTemplate[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [previewTemplate, setPreviewTemplate] = useState<EmailTemplate | null>(null);
+  
+  const [isEditing, setIsEditing] = useState(false);
+  const [editFormData, setEditFormData] = useState<Partial<EmailTemplate>>({});
+  const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
 
+  useEffect(() => {
+    resolveClientOrg().then((org) => {
+      if (org) {
+        setCurrentOrgId(org.organizationId);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (currentOrgId) {
+      loadTemplates();
+    }
+  }, [currentOrgId]);
+
+  async function loadTemplates() {
+    if (!currentOrgId) return;
+    const { data } = await supabase
+      .from('email_templates')
+      .select('*')
+      .eq('organization_id', currentOrgId)
+      .order('created_at', { ascending: false });
+    
+    if (data) {
+      setTemplates(data as unknown as EmailTemplate[]);
+    }
+  }
+
+  const categories = ['All', ...new Set(templates.map((t) => t.category).filter(Boolean))];
+
   const filtered = selectedCategory === 'All'
-    ? BUILT_IN_TEMPLATES
-    : BUILT_IN_TEMPLATES.filter((t) => t.category === selectedCategory);
+    ? templates
+    : templates.filter((t) => t.category === selectedCategory);
 
   async function handleCopy(body: string) {
     await navigator.clipboard.writeText(body);
@@ -85,16 +70,64 @@ export default function EmailTemplatesPage() {
     setTimeout(() => setCopied(false), 2000);
   }
 
+  function handleOpenCreate() {
+    setEditFormData({ name: '', subject_template: '', body_template: '', category: 'General' });
+    setIsEditing(true);
+  }
+
+  function handleOpenEdit(template: EmailTemplate) {
+    setEditFormData(template);
+    setIsEditing(true);
+  }
+
+  async function handleDelete(id: string) {
+    if (!confirm('Delete this template?')) return;
+    await supabase.from('email_templates').delete().eq('id', id);
+    setPreviewTemplate(null);
+    loadTemplates();
+  }
+
+  async function handleSave(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    
+    // Auto-extract merge fields
+    const mergeFieldsMatches = (editFormData.body_template || '').match(/{{([^}]+)}}/g);
+    const autoMergeFields = mergeFieldsMatches ? Array.from(new Set(mergeFieldsMatches.map(m => m.replace(/[{}]/g, '')))) : [];
+
+    const payload = {
+      organization_id: currentOrgId!,
+      name: editFormData.name,
+      category: editFormData.category || 'General',
+      subject_template: editFormData.subject_template || '',
+      body_template: editFormData.body_template || '',
+      event_type: editFormData.name, // Fallback for schema constraint
+      merge_fields: autoMergeFields,
+    };
+
+    if (editFormData.id) {
+      await supabase.from('email_templates').update(payload).eq('id', editFormData.id);
+    } else {
+      await supabase.from('email_templates').insert([payload]);
+    }
+
+    setLoading(false);
+    setIsEditing(false);
+    loadTemplates();
+  }
+
   return (
     <TierGate feature="email_inbox">
-<PageHeader
+      <PageHeader
         title="Email Templates"
         subtitle="Reusable email templates with merge fields for quick, personalized outreach."
+        actionLabel="New Template"
+        onAction={handleOpenCreate}
       />
 
       {/* Category filters */}
       <div className="mb-6 flex flex-wrap items-center gap-2">
-        {CATEGORIES.map((cat) => (
+        {categories.map((cat) => (
           <button
             key={cat}
             onClick={() => setSelectedCategory(cat)}
@@ -109,12 +142,18 @@ export default function EmailTemplatesPage() {
         ))}
       </div>
 
+      {templates.length === 0 && (
+        <div className="text-center py-12 text-sm text-text-muted border border-dashed rounded-xl">
+          No templates found. Create your first template.
+        </div>
+      )}
+
       {/* Template grid */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {filtered.map((template) => (
           <div
             key={template.id}
-            className="group rounded-xl border border-border bg-background p-5 transition-colors hover:border-foreground/20 cursor-pointer"
+            className="group rounded-xl border border-border bg-background p-5 transition-colors hover:border-foreground/20 cursor-pointer flex flex-col"
             onClick={() => setPreviewTemplate(template)}
           >
             <div className="flex items-center justify-between mb-2">
@@ -123,9 +162,9 @@ export default function EmailTemplatesPage() {
                 {template.category}
               </span>
             </div>
-            <p className="text-xs text-text-secondary line-clamp-2 mb-3">{template.subject}</p>
+            <p className="text-xs text-text-secondary line-clamp-2 mb-3 flex-1">{template.subject_template}</p>
             <div className="flex flex-wrap gap-1">
-              {template.mergeFields.slice(0, 3).map((field) => (
+              {(template.merge_fields || []).slice(0, 3).map((field) => (
                 <span
                   key={field}
                   className="inline-flex items-center rounded bg-bg-secondary px-1.5 py-0.5 text-[10px] font-mono text-text-muted"
@@ -133,8 +172,8 @@ export default function EmailTemplatesPage() {
                   {`{{${field}}}`}
                 </span>
               ))}
-              {template.mergeFields.length > 3 && (
-                <span className="text-[10px] text-text-muted">+{template.mergeFields.length - 3} more</span>
+              {(template.merge_fields || []).length > 3 && (
+                <span className="text-[10px] text-text-muted">+{(template.merge_fields || []).length - 3} more</span>
               )}
             </div>
           </div>
@@ -142,25 +181,25 @@ export default function EmailTemplatesPage() {
       </div>
 
       {/* Preview modal */}
-      <ModalShell open={!!previewTemplate} onClose={() => setPreviewTemplate(null)} title={previewTemplate?.name ?? 'Template Preview'}>
+      <ModalShell open={!!previewTemplate && !isEditing} onClose={() => setPreviewTemplate(null)} title={previewTemplate?.name ?? 'Template Preview'}>
         {previewTemplate && (
           <div className="space-y-4">
             <div>
               <FormLabel>Subject</FormLabel>
-              <FormInput value={previewTemplate.subject} readOnly />
+              <FormInput value={previewTemplate.subject_template} readOnly />
             </div>
             <div>
               <FormLabel>Body</FormLabel>
               <div className="rounded-lg border border-border bg-bg-secondary p-4 min-h-[200px]">
                 <pre className="text-sm text-foreground whitespace-pre-wrap font-sans leading-relaxed">
-                  {previewTemplate.body}
+                  {previewTemplate.body_template}
                 </pre>
               </div>
             </div>
             <div>
               <FormLabel>Merge Fields</FormLabel>
               <div className="flex flex-wrap gap-1.5 mt-1">
-                {previewTemplate.mergeFields.map((field) => (
+                {(previewTemplate.merge_fields || []).map((field) => (
                   <span
                     key={field}
                     className="inline-flex items-center rounded bg-bg-secondary px-2 py-1 text-xs font-mono text-text-secondary"
@@ -170,16 +209,55 @@ export default function EmailTemplatesPage() {
                 ))}
               </div>
             </div>
-            <div className="flex justify-end gap-3 pt-2">
-              <Button variant="secondary" size="sm" onClick={() => handleCopy(previewTemplate.body)}>
-                {copied ? 'Copied!' : 'Copy Body'}
-              </Button>
-              <Button size="sm" onClick={() => setPreviewTemplate(null)}>
-                Close
-              </Button>
+            <div className="flex justify-between items-center pt-4 border-t border-border mt-4">
+              <Button variant="danger_ghost" size="sm" onClick={() => handleDelete(previewTemplate.id)}>Delete</Button>
+              <div className="flex gap-3">
+                <Button variant="secondary" size="sm" onClick={() => { setPreviewTemplate(null); handleOpenEdit(previewTemplate); }}>
+                  Edit
+                </Button>
+                <Button variant="secondary" size="sm" onClick={() => handleCopy(previewTemplate.body_template)}>
+                  {copied ? 'Copied!' : 'Copy Body'}
+                </Button>
+                <Button size="sm" onClick={() => setPreviewTemplate(null)}>
+                  Close
+                </Button>
+              </div>
             </div>
           </div>
         )}
+      </ModalShell>
+
+      {/* Editor Modal */}
+      <ModalShell open={isEditing} onClose={() => setIsEditing(false)} title={editFormData.id ? "Edit Template" : "New Template"}>
+        <form onSubmit={handleSave} className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <FormLabel>Name</FormLabel>
+              <FormInput required value={editFormData.name || ''} onChange={e => setEditFormData({...editFormData, name: e.target.value})} />
+            </div>
+            <div>
+              <FormLabel>Category</FormLabel>
+              <FormInput required value={editFormData.category || ''} onChange={e => setEditFormData({...editFormData, category: e.target.value})} />
+            </div>
+          </div>
+          <div>
+            <FormLabel>Subject Template</FormLabel>
+            <FormInput required value={editFormData.subject_template || ''} onChange={e => setEditFormData({...editFormData, subject_template: e.target.value})} />
+          </div>
+          <div>
+            <FormLabel>Body Template (Use {'{{field}}'} for variables)</FormLabel>
+            <textarea 
+              required
+              className="w-full flex min-h-[200px] rounded-lg border border-border bg-input px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              value={editFormData.body_template || ''} 
+              onChange={e => setEditFormData({...editFormData, body_template: e.target.value})} 
+            />
+          </div>
+          <div className="flex justify-end gap-3 pt-4">
+            <Button type="button" variant="secondary" onClick={() => setIsEditing(false)}>Cancel</Button>
+            <Button type="submit" loading={loading}>Save Template</Button>
+          </div>
+        </form>
       </ModalShell>
     </TierGate>
   );

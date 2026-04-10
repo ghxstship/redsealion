@@ -11,14 +11,14 @@ async function getActivity() {
     if (!ctx) return [];
     const { data } = await supabase
       .from('deal_activities')
-      .select('id, type, notes, created_at, deals(title, clients(name))')
+      .select('id, type, description, created_at, deals(title, clients(company_name))')
       .eq('organization_id', ctx.organizationId)
       .order('created_at', { ascending: false })
       .limit(50);
     // Supabase deeply-nested join return type differs from actual runtime shape; cast at boundary
     return (data ?? []) as unknown as Array<{
-      id: string; type: string; notes: string | null; created_at: string;
-      deals: { title: string; clients: { name: string } | null } | null;
+      id: string; type: string; description: string | null; created_at: string;
+      deals: { title: string; clients: { company_name: string } | null } | null;
     }>;
   } catch { return []; }
 }
@@ -46,11 +46,11 @@ export default async function ClientActivityPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="inline-flex rounded-full px-2 py-0.5 text-xs font-medium bg-bg-secondary text-text-secondary capitalize">{activity.type}</span>
-                    {activity.deals?.clients?.name && (
-                      <span className="text-xs text-text-muted">• {activity.deals.clients.name}</span>
+                    {activity.deals?.clients?.company_name && (
+                      <span className="text-xs text-text-muted">• {activity.deals.clients.company_name}</span>
                     )}
                   </div>
-                  {activity.notes && <p className="text-sm text-text-secondary mt-1 line-clamp-2">{activity.notes}</p>}
+                  {activity.description && <p className="text-sm text-text-secondary mt-1 line-clamp-2">{activity.description}</p>}
                   {activity.deals?.title && <p className="text-xs text-text-muted mt-1">Deal: {activity.deals.title}</p>}
                 </div>
                 <p className="text-xs text-text-muted whitespace-nowrap">{new Date(activity.created_at).toLocaleDateString()}</p>

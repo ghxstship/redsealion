@@ -1,16 +1,17 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { TierGate } from '@/components/shared/TierGate';
 import { TriggerSelector } from '@/components/admin/automations/TriggerSelector';
 import { ActionSelector } from '@/components/admin/automations/ActionSelector';
-import { createClient } from '@/lib/supabase/client';
-import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
 import PageHeader from '@/components/shared/PageHeader';
+import { AUTOMATION_TEMPLATES } from '@/lib/automations/templates';
+
 export default function NewAutomationPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [triggerType, setTriggerType] = useState('');
@@ -20,48 +21,45 @@ export default function NewAutomationPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Pre-fill from template if specified
+  useEffect(() => {
+    const templateId = searchParams.get('template');
+    if (templateId) {
+      const template = AUTOMATION_TEMPLATES.find((t) => t.id === templateId);
+      if (template) {
+        setName(template.name);
+        setDescription(template.description);
+        setTriggerType(template.trigger_type);
+        setTriggerConfig(template.trigger_config);
+        setActionType(template.action_type);
+        setActionConfig(template.action_config);
+      }
+    }
+  }, [searchParams]);
+
   async function handleSave() {
     if (!name || !triggerType || !actionType) return;
     setSaving(true);
     setError(null);
 
     try {
-      const supabase = createClient();
-
-      // Get current user
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
-      if (authError || !user) {
-        setError('You must be logged in to create automations.');
-        return;
-      }
-
-      // Resolve org via Harbor Master membership
-      const { data: membership } = await supabase
-        .from('organization_memberships')
-        .select('organization_id')
-        .eq('user_id', user.id)
-        .eq('status', 'active')
-        .limit(1)
-        .single();
-
-      if (!membership?.organization_id) {
-        setError('Could not determine your organization.');
-        return;
-      }
-
-      const { error: insertError } = await supabase.from('automations').insert({
-        organization_id: membership.organization_id,
-        name,
-        description: description || null,
-        trigger_type: triggerType,
-        trigger_config: triggerConfig,
-        action_type: actionType,
-        action_config: actionConfig,
-        is_active: true,
+      const response = await fetch('/api/automations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          description: description || null,
+          trigger_type: triggerType,
+          trigger_config: triggerConfig,
+          action_type: actionType,
+          action_config: actionConfig,
+        }),
       });
 
-      if (insertError) {
-        setError(insertError.message);
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error ?? 'Failed to create automation.');
         return;
       }
 
@@ -85,14 +83,8 @@ export default function NewAutomationPage() {
       </div>
 
       <PageHeader
-
-
         title="New Automation"
-
-
         subtitle="Define a trigger event and an action to automate."
-
-
       />
 
       {error && (

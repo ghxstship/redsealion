@@ -11,10 +11,18 @@ async function getSegments() {
     if (!ctx) return [];
     const { data } = await supabase
       .from('clients')
-      .select('id, name, industry, status, city, state')
+      .select('id, company_name, industry, status, billing_address')
       .eq('organization_id', ctx.organizationId)
-      .order('name', { ascending: true });
-    return (data ?? []) as Array<{ id: string; name: string; industry: string | null; status: string; city: string | null; state: string | null }>;
+      .is('deleted_at', null)
+      .order('company_name', { ascending: true });
+    return (data ?? []).map((c: Record<string, unknown>) => ({
+      id: c.id as string,
+      name: c.company_name as string,
+      industry: c.industry as string | null,
+      status: (c.status as string) ?? 'active',
+      city: (c.billing_address as Record<string, string> | null)?.city ?? null,
+      state: (c.billing_address as Record<string, string> | null)?.state ?? null,
+    }));
   } catch { return []; }
 }
 

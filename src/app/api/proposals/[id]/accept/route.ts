@@ -14,10 +14,11 @@ export async function POST(
     const { id } = await params;
 
     const body = await request.json().catch(() => ({}));
-    const { signature_data, signer_name, signer_title } = body as {
+    const { signature_data, signer_name, signer_title, selectedAddonIds } = body as {
       signature_data?: string;
       signer_name?: string;
       signer_title?: string;
+      selectedAddonIds?: string[];
     };
 
     if (!signature_data) {
@@ -56,6 +57,22 @@ export async function POST(
         status: 'approved',
       })
       .eq('id', id);
+    
+    // Save selected addons
+    if (selectedAddonIds && selectedAddonIds.length >= 0) {
+      // First deselect all addons for this proposal
+      // To do this we must first find all phases for this proposal
+      const { data: phases } = await supabase.from('phases').select('id').eq('proposal_id', id);
+      if (phases && phases.length > 0) {
+        const phaseIds = phases.map(p => p.id);
+        await supabase.from('phase_addons').update({ selected: false }).in('phase_id', phaseIds);
+        
+        // Then select the chosen ones
+        if (selectedAddonIds.length > 0) {
+          await supabase.from('phase_addons').update({ selected: true }).in('id', selectedAddonIds);
+        }
+      }
+    }
 
     if (updateError) {
       const { createLogger } = await import('@/lib/logger');

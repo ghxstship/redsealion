@@ -1,14 +1,17 @@
 import { createClient } from '@/lib/supabase/server';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { Check } from 'lucide-react';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
-import Card from '@/components/ui/Card';
 
 /**
  * Client-facing project dashboard — a read-only view clients see
  * in the portal showing project health, milestones, and recent activity.
  *
  * Route: /app/portal/projects/[id]
+ *
+ * GAP-PTL-01: Refactored to query `projects` table directly instead of
+ * `proposals`, and to use `tasks.project_id` for task aggregation.
  */
 
 interface PortalProjectData {
@@ -20,24 +23,28 @@ interface PortalProjectData {
   recentUpdates: Array<{ summary: string; status: string; created_at: string }>;
 }
 
-async function getPortalProject(proposalId: string): Promise<PortalProjectData | null> {
+async function getPortalProject(projectId: string): Promise<PortalProjectData | null> {
   try {
     const supabase = await createClient();
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) return null;
 
-    // Ensure the user can only see proposals in their org
-    const { data: proposal } = await supabase
-      .from('proposals')
+    // GAP-PTL-01: Query from projects table, scoped to org
+    const { data: project } = await supabase
+      .from('projects')
       .select('id, name, status, organization_id')
-      .eq('id', proposalId)
+      .eq('id', projectId)
+      .eq('organization_id', ctx.organizationId)
+      .is('deleted_at', null)
       .single();
 
-    if (!proposal) return null;
+    if (!project) return null;
 
-    // Get tasks for this project
+    // Get tasks for this project using tasks.project_id
     const { data: tasks } = await supabase
       .from('tasks')
       .select('id, status')
-      .eq('proposal_id', proposalId)
+      .eq('project_id', projectId)
       .is('parent_task_id', null);
 
     const allTasks = tasks ?? [];
@@ -47,7 +54,7 @@ async function getPortalProject(proposalId: string): Promise<PortalProjectData |
     const { data: milestoneRows } = await supabase
       .from('tasks')
       .select('title, status, due_date')
-      .eq('proposal_id', proposalId)
+      .eq('project_id', projectId)
       .eq('priority', 'urgent')
       .is('parent_task_id', null)
       .order('due_date', { ascending: true })
@@ -59,17 +66,17 @@ async function getPortalProject(proposalId: string): Promise<PortalProjectData |
       due_date: m.due_date,
     }));
 
-    // Get recent status updates
+    // Get recent status updates linked to this project
     const { data: updates } = await supabase
       .from('project_status_updates')
       .select('summary, status, created_at')
-      .eq('proposal_id', proposalId)
+      .eq('project_id', projectId)
       .order('created_at', { ascending: false })
       .limit(5);
 
     return {
-      name: proposal.name,
-      status: proposal.status,
+      name: project.name,
+      status: project.status,
       totalTasks: allTasks.length,
       completedTasks,
       milestones,

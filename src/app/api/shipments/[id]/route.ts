@@ -37,7 +37,8 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
   const allowedFields = [
     'status', 'carrier', 'tracking_number', 'origin_address', 'destination_address',
     'ship_date', 'estimated_arrival', 'actual_arrival', 'weight_lbs', 'num_pieces',
-    'shipping_cost_cents', 'notes',
+    'shipping_cost_cents', 'notes', 'freight_class', 'nmfc_code', 'declared_value_cents',
+    'is_hazardous', 'bol_special_instructions', 'bol_generated_at'
   ];
 
   const updates: Record<string, unknown> = {};
@@ -59,6 +60,19 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
 
   if ('status' in updates) {
     dispatchWebhookEvent(perm.organizationId, 'shipment.status_changed' as any, { shipment_id: id, status: updates.status }).catch(() => {});
+    
+    // L-1: Audit logging for status changes
+    await supabase.from('audit_logs').insert({
+      organization_id: perm.organizationId,
+      user_id: perm.userId,
+      action: 'shipment.status_changed',
+      entity_type: 'shipment',
+      entity_id: id,
+      details: {
+        new_status: updates.status,
+        updated_fields: Object.keys(updates)
+      }
+    });
   }
 
   return NextResponse.json({ success: true, shipment });
@@ -74,11 +88,12 @@ export async function DELETE(_request: NextRequest, context: RouteContext) {
 
   const { error } = await supabase
     .from('shipments')
-    .delete()
+    .update({ deleted_at: new Date().toISOString() })
     .eq('id', id)
     .eq('organization_id', perm.organizationId);
 
-  if (error) return NextResponse.json({ error: 'Failed to delete shipment', details: error.message }, { status: 500 });
+  if (error) return NextResponse.json({ error: 'Failed to archive shipment', details: error.message }, { status: 500 });
 
   return NextResponse.json({ success: true });
 }
+

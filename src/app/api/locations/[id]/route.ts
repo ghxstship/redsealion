@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
+import { logAuditAction } from '@/lib/api/audit-logger';
 
 export async function GET(
   _request: NextRequest,
@@ -38,7 +39,12 @@ export async function PATCH(
   const body = await request.json().catch(() => ({}));
   const supabase = await createClient();
 
-  const allowedFields = ['name', 'address', 'city', 'state', 'zip', 'country', 'latitude', 'longitude', 'notes', 'location_type'];
+  const allowedFields = [
+    'name', 'slug', 'type', 'address', 'address_line1', 'address_line2',
+    'city', 'state_province', 'postal_code', 'country', 'formatted_address',
+    'phone', 'timezone', 'capacity', 'site_map_url', 'google_place_id',
+    'latitude', 'longitude', 'notes', 'status'
+  ];
   const updates: Record<string, unknown> = {};
   for (const f of allowedFields) {
     if (f in body) updates[f] = body[f];
@@ -54,6 +60,12 @@ export async function PATCH(
     .single();
 
   if (error || !location) return NextResponse.json({ error: 'Failed to update location', details: error?.message }, { status: 500 });
+
+  await logAuditAction({
+    supabase, user: perm.user, organizationId: perm.organizationId,
+    action: 'update', entity: 'location', entityId: id,
+    targetName: location.name as string, metadata: { updates }, req: request
+  });
 
   return NextResponse.json({ success: true, location });
 }
@@ -71,6 +83,12 @@ export async function DELETE(
 
   const { error } = await supabase.from('locations').update({ deleted_at: new Date().toISOString() }).eq('id', id).eq('organization_id', perm.organizationId);
   if (error) return NextResponse.json({ error: 'Failed to delete location', details: error.message }, { status: 500 });
+
+  await logAuditAction({
+    supabase, user: perm.user, organizationId: perm.organizationId,
+    action: 'delete', entity: 'location', entityId: id,
+    req: _request
+  });
 
   return NextResponse.json({ success: true });
 }

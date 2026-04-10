@@ -13,9 +13,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 1,
   workers: process.env.CI ? 2 : 2,
-  reporter: process.env.CI
-    ? [['html', { open: 'never' }], ['github']]
-    : [['html', { open: 'on-failure' }]],
+  reporter: [['html', { open: 'never' }], ['github']],
 
   globalSetup: './e2e/fixtures/auth.setup.ts',
   globalTeardown: './e2e/fixtures/teardown.ts',
@@ -37,12 +35,12 @@ export default defineConfig({
   ],
 
   /* Optionally start the dev server before tests */
-  webServer: process.env.CI
+  webServer: (process.env.CI && !process.env.MANUAL_SERVER)
     ? {
         command: 'npm run dev',
         url: BASE_URL,
-        reuseExistingServer: false,
-        timeout: 60_000,
+        reuseExistingServer: true,
+        timeout: 120_000,
       }
     : undefined,
 });

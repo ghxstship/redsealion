@@ -5,6 +5,7 @@ import MaintenanceKPIs from '@/components/admin/equipment/MaintenanceKPIs';
 import { formatDate, formatLabel, formatCurrency } from '@/lib/utils';
 import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
+import AssetDetailHeaderActions from '@/components/admin/equipment/AssetDetailHeaderActions';
 
 const RESERVATION_COLORS: Record<string, string> = {
   confirmed: 'bg-green-50 text-green-700',
@@ -97,6 +98,9 @@ export default async function EquipmentDetailPage({
             {item.category ?? 'Uncategorized'} &middot; {currentLocation?.type ?? 'Unknown location'}
             {item.serial_number ? ` · ${item.serial_number}` : ''}
           </p>
+        </div>
+        <div className="flex shrink-0 gap-3">
+          <AssetDetailHeaderActions assetId={item.id} status={item.status} />
         </div>
       </div>
 

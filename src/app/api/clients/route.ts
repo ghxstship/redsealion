@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { dispatchWebhookEvent } from '@/lib/webhooks/outbound';
+import { logAuditAction } from '@/lib/api/audit-logger';
 
 export async function GET(request: NextRequest) {
   const perm = await checkPermission('clients', 'view');
@@ -79,8 +80,9 @@ export async function POST(request: NextRequest) {
     await supabase.from('client_contacts').insert(contactRows);
   }
 
-  // Dispatch webhook event
+  // Dispatch webhook event + audit log
   dispatchWebhookEvent(perm.organizationId, 'client.created', { client }).catch(() => {});
+  logAuditAction({ orgId: perm.organizationId, action: 'client.created', entity: 'clients', entityId: client.id, metadata: { company_name } }).catch(() => {});
 
   return NextResponse.json({ success: true, client }, { status: 201 });
 }

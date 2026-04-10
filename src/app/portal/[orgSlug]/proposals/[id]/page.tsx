@@ -94,10 +94,62 @@ export default async function ProposalJourneyPage({ params }: PageProps) {
     notFound();
   }
 
-
-
   if (!org || proposal.organization_id !== org.id) {
     notFound();
+  }
+
+  // GAP-PTL-03: Enforce portal_token_expires_at
+  if (
+    proposal.portal_token_expires_at &&
+    new Date(proposal.portal_token_expires_at) < new Date()
+  ) {
+    notFound();
+  }
+
+  // GAP-PTL-09: Verify the authenticated client has access to THIS proposal.
+  // Org members (with a membership) can view any proposal in their org.
+  // Portal clients must match via client_contacts → client_id → proposal.client_id.
+  if (user && org) {
+    const { data: membership } = await supabase
+      .from('organization_memberships')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('organization_id', org.id)
+      .eq('status', 'active')
+      .limit(1)
+      .maybeSingle();
+
+    if (!membership) {
+      // Not an org member — must be a portal client. Check client_id match.
+      const { data: contact } = await supabase
+        .from('client_contacts')
+        .select('client_id')
+        .eq('email', user.email ?? '')
+        .limit(1)
+        .maybeSingle();
+
+      if (!contact || contact.client_id !== proposal.client_id) {
+        notFound();
+      }
+    }
+  }
+
+  // M-03: Track first portal view
+  if (user && !proposal.portal_first_viewed_at) {
+    // Check if this user is a client (not an org member)
+    const { data: contact } = await supabase
+      .from('client_contacts')
+      .select('id')
+      .eq('email', user.email ?? '')
+      .limit(1)
+      .maybeSingle();
+
+    if (contact) {
+      await supabase
+        .from('proposals')
+        .update({ portal_first_viewed_at: new Date().toISOString() })
+        .eq('id', id);
+    }
   }
 
   // Fetch phases for this proposal

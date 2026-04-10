@@ -27,8 +27,10 @@ interface TeamMember {
   email: string;
   role: string;
   title: string | null;
+  department: string | null;
   facility: string | null;
   rate_card: string | null;
+  avatar_url: string | null;
 }
 
 const ROLE_LABELS: Record<string, string> = {
@@ -72,6 +74,11 @@ export default function PeopleGrid({ members }: { members: TeamMember[] }) {
         m.role.toLowerCase().includes(q),
     );
   }, [members, search]);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
+  const totalPages = Math.ceil(filtered.length / itemsPerPage);
+  const paginatedItems = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
@@ -132,57 +139,96 @@ export default function PeopleGrid({ members }: { members: TeamMember[] }) {
           description={search ? 'Try a different search term.' : 'Invite your first team member to start collaborating.'}
         />
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((member) => (
-            <div
-              key={member.id}
-              className="group relative rounded-xl border border-border bg-background px-6 py-5 transition-[color,background-color,border-color,opacity,box-shadow,transform] duration-normal hover:shadow-md hover:-translate-y-0.5"
-            >
-              {/* Action menu */}
-              <div className="absolute top-3 right-3">
-                <RowActionMenu actions={[
-                  { label: 'View', onClick: () => router.push(`/app/people/${member.id}`) },
-                  { label: 'Edit', onClick: () => setEditPerson(member) },
-                  { label: 'Remove', variant: 'danger', onClick: () => setDeletePerson(member) },
-                ]} />
-              </div>
+        <>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {paginatedItems.map((member) => (
+              <div
+                key={member.id}
+                className="group relative rounded-xl border border-border bg-background px-6 py-5 transition-[color,background-color,border-color,opacity,box-shadow,transform] duration-normal hover:shadow-md hover:-translate-y-0.5"
+              >
+                {/* Action menu */}
+                <div className="absolute top-3 right-3 z-10">
+                  <RowActionMenu actions={[
+                    { label: 'View', onClick: () => router.push(`/app/people/${member.id}`) },
+                    { label: 'Edit', onClick: () => setEditPerson(member) },
+                    { label: 'Remove', variant: 'danger', onClick: () => setDeletePerson(member) },
+                  ]} />
+                </div>
 
-              <Link href={`/app/people/${member.id}`}>
-                <div className="flex items-start gap-4">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-bg-tertiary">
-                    <span className="text-sm font-semibold text-text-secondary">{getInitials(member.full_name)}</span>
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-foreground truncate group-hover:underline">{member.full_name}</p>
-                    <p className="text-xs text-text-muted mt-0.5 truncate">{member.title ?? member.role.replace(/_/g, ' ')}</p>
-                  </div>
-                </div>
-                <div className="mt-4 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-text-muted">Role</span>
-                    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${ROLE_BADGE_COLORS[member.role] ?? 'bg-bg-secondary text-text-secondary'}`}>
-                      {ROLE_LABELS[member.role] ?? member.role}
-                    </span>
-                  </div>
-                  {member.facility && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-text-muted">Facility</span>
-                      <span className="text-xs text-foreground text-right truncate ml-4">{member.facility}</span>
+                <Link href={`/app/people/${member.id}`}>
+                  <div className="flex items-start gap-4">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-bg-tertiary">
+                     {member.avatar_url ? (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img src={member.avatar_url} alt={member.full_name} className="h-full w-full rounded-full object-cover" />
+                      ) : (
+                        <span className="text-sm font-semibold text-text-secondary">{getInitials(member.full_name)}</span>
+                      )}
                     </div>
-                  )}
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-text-muted">Rate</span>
-                    <span className="text-xs font-medium text-foreground tabular-nums">{member.rate_card ?? '\u2014'}</span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium text-foreground truncate group-hover:underline">{member.full_name}</p>
+                      <p className="text-xs text-text-muted mt-0.5 truncate">{member.title ?? member.role.replace(/_/g, ' ')}</p>
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-text-muted">Email</span>
-                    <span className="text-xs text-text-secondary truncate ml-4">{member.email}</span>
+                  <div className="mt-4 space-y-2 relative z-0">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-text-muted">Role</span>
+                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${ROLE_BADGE_COLORS[member.role] ?? 'bg-bg-secondary text-text-secondary'}`}>
+                        {ROLE_LABELS[member.role] ?? member.role}
+                      </span>
+                    </div>
+                    {member.department && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-text-muted">Department</span>
+                        <span className="text-xs text-foreground text-right truncate ml-4 py-0.5">{member.department}</span>
+                      </div>
+                    )}
+                    {member.facility && (
+                      <div className="flex items-center justify-between border-t border-border/50 pt-1.5 mt-1.5">
+                        <span className="text-xs text-text-muted">Facility</span>
+                        <span className="text-xs text-foreground text-right truncate ml-4 py-0.5">{member.facility}</span>
+                      </div>
+                    )}
+                    <div className="flex items-center justify-between border-t border-border/50 pt-1.5 mt-1.5">
+                      <span className="text-xs text-text-muted">Rate</span>
+                      <span className="text-xs font-medium text-foreground tabular-nums py-0.5">{member.rate_card ?? '\u2014'}</span>
+                    </div>
+                    <div className="flex items-center justify-between border-t border-border/50 pt-1.5 mt-1.5">
+                      <span className="text-xs text-text-muted">Email</span>
+                      <span className="text-xs text-text-secondary truncate ml-4 py-0.5">{member.email}</span>
+                    </div>
                   </div>
-                </div>
-              </Link>
+                </Link>
+              </div>
+            ))}
+          </div>
+
+          {totalPages > 1 && (
+            <div className="mt-6 flex items-center justify-between border-t border-border pt-4">
+              <span className="text-sm text-text-secondary">
+                Showing {Math.min(filtered.length, (currentPage - 1) * itemsPerPage + 1)} to {Math.min(filtered.length, currentPage * itemsPerPage)} of {filtered.length} entries
+              </span>
+              <div className="flex items-center gap-2">
+                <Button 
+                  variant="secondary" 
+                  size="sm" 
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                >
+                  Previous
+                </Button>
+                <Button 
+                  variant="secondary" 
+                  size="sm" 
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                </Button>
+              </div>
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
 
       <DataImportDialog

@@ -533,6 +533,51 @@ export function makeChangeOrder(overrides: RowData = {}) {
   };
 }
 
+export function makeWorkOrder(overrides: RowData = {}) {
+  return {
+    id: 'wo_test_001',
+    organization_id: TEST_ORG_ID,
+    wo_number: 'WO-2026-001',
+    title: 'Festival Stage Build',
+    description: 'Full stage construction for summer festival',
+    status: 'draft',
+    priority: 'high',
+    is_public_board: false,
+    bidding_deadline: null,
+    budget_range: '$5,000 – $10,000',
+    client_id: TEST_CLIENT_ID,
+    proposal_id: null,
+    location_name: 'Central Park West',
+    location_address: '100 Central Park West, New York, NY',
+    scheduled_start: '2026-05-01T08:00:00Z',
+    scheduled_end: '2026-05-03T18:00:00Z',
+    deleted_at: null,
+    created_at: '2026-03-01T00:00:00Z',
+    updated_at: '2026-03-01T00:00:00Z',
+    ...overrides,
+  };
+}
+
+export function makeWorkOrderBid(overrides: RowData = {}) {
+  return {
+    id: 'bid_test_001',
+    organization_id: TEST_ORG_ID,
+    work_order_id: 'wo_test_001',
+    crew_profile_id: 'crew_test_001',
+    proposed_amount: 7500,
+    proposed_start: '2026-05-01T08:00:00Z',
+    proposed_end: '2026-05-03T18:00:00Z',
+    notes: 'Available for the full duration. Have all required certifications.',
+    status: 'pending',
+    accepted_by: null,
+    resolved_at: null,
+    deleted_at: null,
+    created_at: '2026-03-15T10:00:00Z',
+    updated_at: '2026-03-15T10:00:00Z',
+    ...overrides,
+  };
+}
+
 // ---------------------------------------------------------------------------
 // Permission context helpers
 // ---------------------------------------------------------------------------

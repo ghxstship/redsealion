@@ -29,7 +29,7 @@ export default function AIDraftProposalModal({ open, onClose, onDraftReady }: AI
     setError(null);
 
     try {
-      const res = await fetch('/api/proposals/ai-draft', {
+      const res = await fetch('/api/ai/draft-proposal', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -44,8 +44,8 @@ export default function AIDraftProposalModal({ open, onClose, onDraftReady }: AI
         throw new Error(data.error || 'Failed to generate draft');
       }
 
-      const draft = await res.json();
-      onDraftReady(draft);
+      const data = await res.json();
+      onDraftReady(data.draft);
       onClose();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');

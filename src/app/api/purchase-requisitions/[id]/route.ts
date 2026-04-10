@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
+import { logAuditAction } from '@/lib/api/audit-logger';
 
 interface RouteContext { params: Promise<{ id: string }> }
 
@@ -39,9 +40,10 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
     if (field in body) updates[field] = body[field];
   }
 
-  // Auto-set approver on approval
+  // Auto-set approver and timestamp on approval
   if (updates.status === 'approved') {
     updates.approved_by = perm.userId;
+    updates.approved_at = new Date().toISOString();
   }
 
   if (Object.keys(updates).length === 0) return NextResponse.json({ error: 'No fields to update' }, { status: 400 });
@@ -56,6 +58,14 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
 
   if (error || !requisition) return NextResponse.json({ error: 'Failed to update requisition', details: error?.message }, { status: 500 });
 
+  logAuditAction({
+    orgId: perm.organizationId,
+    action: 'purchase_requisition.updated',
+    entity: 'purchase_requisition',
+    entityId: id,
+    metadata: updates,
+  }).catch(() => {});
+
   return NextResponse.json({ success: true, requisition });
 }
 
@@ -69,11 +79,18 @@ export async function DELETE(_request: NextRequest, context: RouteContext) {
 
   const { error } = await supabase
     .from('purchase_requisitions')
-    .delete()
+    .update({ deleted_at: new Date().toISOString() })
     .eq('id', id)
     .eq('organization_id', perm.organizationId);
 
   if (error) return NextResponse.json({ error: 'Failed to delete requisition', details: error.message }, { status: 500 });
+
+  logAuditAction({
+    orgId: perm.organizationId,
+    action: 'purchase_requisition.deleted',
+    entity: 'purchase_requisition',
+    entityId: id,
+  }).catch(() => {});
 
   return NextResponse.json({ success: true });
 }

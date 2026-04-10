@@ -1,25 +1,37 @@
-'use client';
-
-import EmptyState from '@/components/ui/EmptyState';
-import { FileText } from 'lucide-react';
-import { useTranslation } from '@/lib/i18n/client';
+import { createClient } from '@/lib/supabase/server';
 import PageHeader from '@/components/shared/PageHeader';
+import MyDocumentsTable, { type MyDocumentData } from '@/components/admin/my-documents/MyDocumentsTable';
 
-export default function MyDocumentsPage() {
-  const { t } = useTranslation();
+async function getMyDocuments(): Promise<MyDocumentData[]> {
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return [];
+
+    const { data: files } = await supabase
+      .from('file_attachments')
+      .select('id, file_name, file_size, category, mime_type, created_at, version_number')
+      .eq('uploaded_by', user.id)
+      .eq('is_personal', true)
+      .is('deleted_at', null)
+      .order('created_at', { ascending: false });
+
+    return files as MyDocumentData[] || [];
+  } catch {
+    return [];
+  }
+}
+
+export default async function MyDocumentsPage() {
+  const files = await getMyDocuments();
 
   return (
     <div>
-<PageHeader
-        title={t('myDocuments.title')}
-        subtitle={t('myDocuments.subtitle')}
+      <PageHeader
+        title="My Documents"
+        subtitle="Your personal file repository."
       />
-
-      <EmptyState
-        icon={<FileText className="w-8 h-8" />}
-        message={t('myDocuments.emptyState.title')}
-        description={t('myDocuments.emptyState.description')}
-      />
+      <MyDocumentsTable initialFiles={files} />
     </div>
   );
 }

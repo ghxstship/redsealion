@@ -211,23 +211,26 @@ export default function CalendarPage() {
 
       {/* Navigation */}
       <div className="mb-6 flex items-center justify-between">
-        <button
-          onClick={goToPrev}
-          className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
-        >
-          &larr; Previous
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={goToPrev}
+            className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
+          >
+            &larr; Previous
+          </button>
+          <button
+            onClick={goToNext}
+            className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
+          >
+            Next &rarr;
+          </button>
+        </div>
         <h2 className="text-lg font-semibold text-foreground">
           {view === 'month'
             ? `${monthName} ${year}`
             : `Week of ${weekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`}
         </h2>
-        <button
-          onClick={goToNext}
-          className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
-        >
-          Next &rarr;
-        </button>
+        <button className="btn-primary text-sm whitespace-nowrap hidden sm:inline-flex">+ New Event</button>
       </div>
 
       {/* Month view */}

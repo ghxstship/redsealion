@@ -60,7 +60,22 @@ export async function POST(
   if (!isValidTransition(currentStatus, 'disposed')) {
     // Try retiring first if it's a valid path
     if (isValidTransition(currentStatus, 'retired')) {
-      // Auto-retire then dispose
+      // Auto-retire: perform the intermediate step
+      await supabase.from('assets').update({
+        status: 'retired',
+        retired_at: new Date().toISOString(),
+      }).eq('id', id).eq('organization_id', perm.organizationId);
+
+      // Record audit log for the intermediate retirement
+      await supabase.from('asset_audit_log').insert({
+        asset_id: id,
+        organization_id: perm.organizationId,
+        field_changed: 'status',
+        old_value: currentStatus,
+        new_value: 'retired',
+        changed_by: perm.userId,
+        change_source: 'api',
+      });
     } else {
       return NextResponse.json(
         { error: `Cannot dispose asset with status "${currentStatus}". Must be in_storage or retired first.` },

@@ -4,8 +4,26 @@ import { useState, type FormEvent } from 'react';
 import ModalShell from '@/components/ui/ModalShell';
 import FormLabel from '@/components/ui/FormLabel';
 import FormInput from '@/components/ui/FormInput';
+import FormSelect from '@/components/ui/FormSelect';
 import Button from '@/components/ui/Button';
 import Alert from '@/components/ui/Alert';
+
+const INDUSTRY_OPTIONS = [
+  'Technology',
+  'Automotive',
+  'Fashion & Apparel',
+  'Entertainment',
+  'Food & Beverage',
+  'Healthcare',
+  'Finance',
+  'Real Estate',
+  'Retail',
+  'Manufacturing',
+  'Education',
+  'Non-Profit',
+  'Government',
+  'Other',
+];
 
 interface ClientFormModalProps {
   open: boolean;
@@ -20,12 +38,18 @@ export default function ClientFormModal({ open, onClose, onCreated }: ClientForm
   const [contactLastName, setContactLastName] = useState('');
   const [contactEmail, setContactEmail] = useState('');
   const [website, setWebsite] = useState('');
+  const [linkedin, setLinkedin] = useState('');
+  const [source, setSource] = useState('');
+  const [notes, setNotes] = useState('');
+  const [showMore, setShowMore] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   function resetForm() {
     setCompanyName(''); setIndustry(''); setContactFirstName('');
-    setContactLastName(''); setContactEmail(''); setWebsite(''); setError(null);
+    setContactLastName(''); setContactEmail(''); setWebsite('');
+    setLinkedin(''); setSource(''); setNotes('');
+    setShowMore(false); setError(null);
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -46,6 +70,9 @@ export default function ClientFormModal({ open, onClose, onCreated }: ClientForm
           company_name: companyName,
           industry: industry || undefined,
           website: website || undefined,
+          linkedin: linkedin || undefined,
+          source: source || undefined,
+          notes: notes || undefined,
           contacts,
         }),
       });
@@ -66,24 +93,63 @@ export default function ClientFormModal({ open, onClose, onCreated }: ClientForm
   }
 
   return (
-    <ModalShell open={open} onClose={onClose} title="New Client">
+    <ModalShell open={open} onClose={onClose} title="New Client" size="lg">
       {error && <Alert className="mb-4">{error}</Alert>}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <FormLabel>Company Name</FormLabel>
+          <FormLabel>Company Name *</FormLabel>
           <FormInput type="text" required value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="e.g. Acme Corp" />
         </div>
 
-        <div>
-          <FormLabel>Industry</FormLabel>
-          <FormInput type="text" value={industry} onChange={(e) => setIndustry(e.target.value)} placeholder="e.g. Technology, Automotive, Fashion" />
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <FormLabel>Industry</FormLabel>
+            <FormSelect value={industry} onChange={(e) => setIndustry(e.target.value)}>
+              <option value="">Select industry...</option>
+              {INDUSTRY_OPTIONS.map((opt) => (
+                <option key={opt} value={opt}>{opt}</option>
+              ))}
+            </FormSelect>
+          </div>
+
+          <div>
+            <FormLabel>Source</FormLabel>
+            <FormInput type="text" value={source} onChange={(e) => setSource(e.target.value)} placeholder="e.g. Referral, Conference" />
+          </div>
         </div>
 
-        <div>
-          <FormLabel>Website</FormLabel>
-          <FormInput type="url" value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="https://example.com" />
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <FormLabel>Website</FormLabel>
+            <FormInput type="url" value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="https://example.com" />
+          </div>
+
+          <div>
+            <FormLabel>LinkedIn</FormLabel>
+            <FormInput type="url" value={linkedin} onChange={(e) => setLinkedin(e.target.value)} placeholder="https://linkedin.com/company/..." />
+          </div>
         </div>
+
+        {/* Collapsible additional details */}
+        {!showMore && (
+          <button type="button" onClick={() => setShowMore(true)} className="text-sm text-text-muted hover:text-foreground transition-colors">
+            + Additional details (notes)
+          </button>
+        )}
+
+        {showMore && (
+          <div>
+            <FormLabel>Notes</FormLabel>
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              rows={3}
+              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:border-foreground/30 focus:outline-none focus:ring-1 focus:ring-foreground/10 resize-none"
+              placeholder="Internal notes about this client..."
+            />
+          </div>
+        )}
 
         <div className="border-t border-border pt-4">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted mb-3">Primary Contact</p>

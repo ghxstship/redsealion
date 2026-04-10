@@ -46,3 +46,22 @@ next-env.d.ts
 /blob-report/
 /test-results/
 /e2e/.auth/
+
+# temp logs and artifacts
+*.log
+*.pid
+e2e_run.txt
+clean-report.json
+e2e-report.json
+get_policies.sql
+parse_report.js
+test_script.js
+
+# ad-hoc scripts
+run-stress.sh
+run_e2e_stress.sh
+run_stress.sh
+run_test.sh
+stress_test.sh
+stress_test_fabrication.sh
+test.sh

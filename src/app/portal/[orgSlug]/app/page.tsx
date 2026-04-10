@@ -108,6 +108,14 @@ export default async function PortalDashboardPage({ params }: PortalDashboardPro
   if (!org) redirect('/');
 
   const stats = await getPortalDashboardData(org.organizationId);
+
+  /* H-07: Clarify that demo dashboard shows org-level demo data */
+  const demoNotice = (
+    <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-2.5 text-xs text-amber-800">
+      <strong>Demo View:</strong> Statistics shown below reflect organization-wide data for demo purposes.
+      Your personal projects are available on the <a href={`/portal/${orgSlug}`} className="underline font-medium">Proposals page</a>.
+    </div>
+  );
   const tier = 'portal' as const;
 
   // Build stat cards — portal tier only gets the core cards
@@ -156,6 +164,8 @@ export default async function PortalDashboardPage({ params }: PortalDashboardPro
           Overview of {org.orgName}&apos;s business activity.
         </p>
       </div>
+
+      {demoNotice}
 
       {/* Stat cards — core metrics */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">

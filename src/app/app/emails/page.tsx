@@ -3,6 +3,9 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import EmptyState from '@/components/ui/EmptyState';
 import PageHeader from '@/components/shared/PageHeader';
+import Button from '@/components/ui/Button';
+import Link from 'next/link';
+import ComposeEmailModal from './ComposeEmailModal';
 
 interface EmailThreadRow {
   id: string;
@@ -92,18 +95,20 @@ export default async function EmailsPage() {
   const threads = await getEmailThreads();
 
   return (
-    <TierGate feature="email_inbox">
-<PageHeader
-        title="Email Inbox"
-        subtitle="Email threads linked to your deals and clients."
-      />
+      <TierGate feature="email_inbox">
+        <PageHeader
+          title="Email Inbox"
+          subtitle="Email threads linked to your deals and clients."
+        />
 
       <div className="rounded-xl border border-border bg-background divide-y divide-border">
         {threads.map((thread) => (
-          <div
+          <Link
+            href={`/app/emails/${thread.id}`}
             key={thread.id}
-            className="px-5 py-4 flex items-start gap-4 hover:bg-bg-secondary transition-colors cursor-pointer"
+            className="block px-5 py-4 hover:bg-bg-secondary transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
+            <div className="flex items-start gap-4">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-bg-secondary text-xs font-semibold text-text-secondary">
               {thread.from_name.split(' ').map((n) => n[0]).join('')}
             </div>
@@ -125,8 +130,9 @@ export default async function EmailsPage() {
                   </span>
                 )}
               </div>
+              </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
 
@@ -134,6 +140,7 @@ export default async function EmailsPage() {
         <EmptyState
           message="No email threads yet"
           description="Connect your email or integration to see conversations here."
+          action={<Link href="/app/settings/integrations"><Button>Connect Integration</Button></Link>}
         />
       )}
     </TierGate>

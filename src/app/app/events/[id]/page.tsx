@@ -63,7 +63,10 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
 
         {/* Locations */}
         <div className="rounded-xl border border-border bg-background p-6">
-          <h3 className="text-sm font-semibold text-foreground mb-4">Locations ({eventLocations.length})</h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-sm font-semibold text-foreground">Locations ({eventLocations.length})</h3>
+            <button className="text-xs font-medium text-blue-600 hover:underline">+ Add</button>
+          </div>
           {eventLocations.length === 0 ? (
             <p className="text-sm text-text-secondary">No locations linked.</p>
           ) : (
@@ -84,8 +87,9 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
 
       {/* Activations */}
       <div className="rounded-xl border border-border bg-background overflow-hidden mb-6">
-        <div className="px-6 py-4 border-b border-border">
+        <div className="px-6 py-4 border-b border-border flex items-center justify-between">
           <h3 className="text-sm font-semibold text-foreground">Activations ({activations.length})</h3>
+          <button className="text-xs font-medium text-blue-600 hover:underline">+ Add Activation</button>
         </div>
         {activations.length === 0 ? (
           <div className="px-8 py-12 text-center text-sm text-text-secondary">No activations for this event.</div>

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
+import { logAuditAction } from '@/lib/api/audit-logger';
 
 export async function GET(request: NextRequest) {
   const perm = await checkPermission('warehouse', 'view');
@@ -56,6 +57,14 @@ export async function POST(request: NextRequest) {
     .single();
 
   if (error || !requisition) return NextResponse.json({ error: 'Failed to create requisition', details: error?.message }, { status: 500 });
+
+  logAuditAction({
+    orgId: perm.organizationId,
+    action: 'purchase_requisition.created',
+    entity: 'purchase_requisition',
+    entityId: requisition.id,
+    metadata: { requisition_number: requisition.requisition_number, priority: requisition.priority },
+  }).catch(() => {});
 
   return NextResponse.json({ success: true, requisition }, { status: 201 });
 }

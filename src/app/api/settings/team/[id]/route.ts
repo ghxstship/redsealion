@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
+import { logAudit } from '@/lib/audit';
 
 export async function PATCH(
   request: NextRequest,
@@ -12,19 +13,32 @@ export async function PATCH(
 
   const { id } = await params;
   const body = await request.json().catch(() => ({}));
-  const { full_name, title, role, rate_card } = body as {
-    full_name?: string;
-    title?: string | null;
-    role?: string;
-    rate_card?: string | null;
-  };
+
+  // Extended field set — includes all HR fields from audit gaps #12 and #13
+  const allowedFields = [
+    'full_name', 'title', 'role', 'rate_card', 'phone',
+    'department', 'employment_type', 'start_date', 'hourly_cost',
+    'facility_id', 'avatar_url',
+  ];
+
+  const updates: Record<string, unknown> = {};
+  for (const f of allowedFields) {
+    if (f in body) updates[f] = body[f];
+  }
+
+  if (Object.keys(updates).length === 0) {
+    return NextResponse.json({ error: 'No fields to update' }, { status: 400 });
+  }
 
   const supabase = await createClient();
-  const updates: Record<string, unknown> = {};
-  if (full_name !== undefined) updates.full_name = full_name;
-  if (title !== undefined) updates.title = title;
-  if (role !== undefined) updates.role = role;
-  if (rate_card !== undefined) updates.rate_card = rate_card;
+
+  // Fetch prior state for audit diff
+  const { data: before } = await supabase
+    .from('users')
+    .select('full_name, role, title, department, employment_type')
+    .eq('id', id)
+    .eq('organization_id', perm.organizationId)
+    .single();
 
   const { error } = await supabase
     .from('users')
@@ -35,6 +49,17 @@ export async function PATCH(
   if (error) {
     return NextResponse.json({ error: 'Failed to update team member', details: error.message }, { status: 500 });
   }
+
+  // Audit log — gap #32
+  await logAudit({
+    action: 'team.member.updated',
+    entityType: 'user',
+    entityId: id,
+    metadata: {
+      changed_fields: Object.keys(updates),
+      before: before ?? {},
+    },
+  }, supabase);
 
   return NextResponse.json({ success: true });
 }
@@ -56,7 +81,14 @@ export async function DELETE(
 
   const supabase = await createClient();
 
-  // Deactivate membership rather than hard-delete for audit trail
+  // Soft-deactivate via deleted_at on users table as well
+  await supabase
+    .from('users')
+    .update({ deleted_at: new Date().toISOString() })
+    .eq('id', id)
+    .eq('organization_id', perm.organizationId);
+
+  // Deactivate membership
   const { error } = await supabase
     .from('organization_memberships')
     .update({ status: 'deactivated' })
@@ -66,6 +98,13 @@ export async function DELETE(
   if (error) {
     return NextResponse.json({ error: 'Failed to remove team member', details: error.message }, { status: 500 });
   }
+
+  // Audit log — gap #32
+  await logAudit({
+    action: 'team.member.removed',
+    entityType: 'user',
+    entityId: id,
+  }, supabase);
 
   return NextResponse.json({ success: true });
 }

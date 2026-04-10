@@ -12,21 +12,21 @@ const TABS: Array<{ key: EquipmentTab; label: string }> = [
   { key: 'maintenance', label: 'Maintenance' },
   { key: 'assets', label: 'Assets' },
 ];
-
 const TAB_ROUTES: Record<EquipmentTab, string> = {
-  inventory: '/app/equipment',
+  assets: '/app/equipment',
+  inventory: '/app/equipment/inventory',
   'check-in-out': '/app/equipment/check-in-out',
   bundles: '/app/equipment/bundles',
   maintenance: '/app/equipment/maintenance',
-  assets: '/app/equipment/assets',
 };
 
 function getActiveTab(pathname: string): EquipmentTab {
+  if (pathname.includes('/inventory')) return 'inventory';
   if (pathname.includes('/check-in-out')) return 'check-in-out';
   if (pathname.includes('/bundles')) return 'bundles';
   if (pathname.includes('/maintenance')) return 'maintenance';
   if (pathname.includes('/assets')) return 'assets';
-  return 'inventory';
+  return 'assets';
 }
 
 export default function EquipmentHubTabs() {

@@ -3,21 +3,34 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Pencil } from 'lucide-react';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import AddContactModal from '@/components/admin/clients/AddContactModal';
-import ShareDialog from '@/components/shared/ShareDialog';
+import EditClientModal from '@/components/admin/clients/EditClientModal';
+import AddInteractionModal from '@/components/admin/clients/AddInteractionModal';
 
 interface ClientDetailActionsProps {
   clientId: string;
   clientName: string;
+  clientData?: {
+    company_name: string;
+    industry: string | null;
+    website: string | null;
+    linkedin: string | null;
+    source: string | null;
+    notes: string | null;
+    annual_revenue: number | null;
+    employee_count: number | null;
+    status: string;
+  };
 }
 
-export default function ClientDetailActions({ clientId, clientName }: ClientDetailActionsProps) {
+export default function ClientDetailActions({ clientId, clientName, clientData }: ClientDetailActionsProps) {
   const router = useRouter();
   const [showDelete, setShowDelete] = useState(false);
   const [showAddContact, setShowAddContact] = useState(false);
-  const [showShare, setShowShare] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
+  const [showInteraction, setShowInteraction] = useState(false);
 
   async function handleDelete() {
     const res = await fetch(`/api/clients/${clientId}`, { method: 'DELETE' });
@@ -33,16 +46,23 @@ export default function ClientDetailActions({ clientId, clientName }: ClientDeta
     <>
       <div className="flex items-center gap-3 shrink-0">
         <button
-          onClick={() => setShowShare(true)}
+          onClick={() => setShowInteraction(true)}
           className="rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
         >
-          Share
+          Log Interaction
         </button>
         <button
           onClick={() => setShowAddContact(true)}
           className="rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
         >
           + Add Contact
+        </button>
+        <button
+          onClick={() => setShowEdit(true)}
+          className="rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
+        >
+          <Pencil size={14} className="inline mr-1" />
+          Edit
         </button>
         <button
           onClick={() => setShowDelete(true)}
@@ -52,7 +72,7 @@ export default function ClientDetailActions({ clientId, clientName }: ClientDeta
           Delete
         </button>
         <Link
-          href="/app/proposals/new"
+          href={`/app/proposals/new?client_id=${clientId}`}
           className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90"
         >
           New Proposal
@@ -60,7 +80,16 @@ export default function ClientDetailActions({ clientId, clientName }: ClientDeta
       </div>
 
       <AddContactModal clientId={clientId} open={showAddContact} onClose={() => setShowAddContact(false)} onCreated={() => router.refresh()} />
-      <ShareDialog open={showShare} onClose={() => setShowShare(false)} entityType="clients" entityId={clientId} entityName={clientName} />
+      <AddInteractionModal clientId={clientId} open={showInteraction} onClose={() => setShowInteraction(false)} />
+
+      {clientData && (
+        <EditClientModal
+          clientId={clientId}
+          open={showEdit}
+          onClose={() => setShowEdit(false)}
+          initialData={clientData}
+        />
+      )}
 
       <ConfirmDialog
         open={showDelete}
@@ -74,4 +103,3 @@ export default function ClientDetailActions({ clientId, clientName }: ClientDeta
     </>
   );
 }
-

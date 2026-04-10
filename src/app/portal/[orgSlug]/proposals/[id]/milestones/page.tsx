@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { Minus } from 'lucide-react';
 import { IconCheck } from '@/components/ui/Icons';
 import EmptyState from '@/components/ui/EmptyState';
+import RequirementAction from '@/components/portal/RequirementAction';
 import type {
   MilestoneStatus,
   RequirementStatus,
@@ -20,13 +21,13 @@ interface PageProps {
 
 function RequirementStatusIcon({ status }: { status: RequirementStatus }) {
   if (status === 'complete') {
-      <IconCheck className="h-4 w-4 text-green-600 shrink-0" strokeWidth={2.5} />
+    return <IconCheck className="h-4 w-4 text-green-600 shrink-0" strokeWidth={2.5} />;
   }
   if (status === 'in_progress') {
     return <span className="h-4 w-4 shrink-0 rounded-full border-2 border-blue-500 bg-blue-100" />;
   }
   if (status === 'waived') {
-      <Minus className="h-4 w-4 text-gray-400 shrink-0" strokeWidth={2} />
+    return <Minus className="h-4 w-4 text-gray-400 shrink-0" strokeWidth={2} />;
   }
   return <span className="h-4 w-4 shrink-0 rounded-full border-2 border-gray-300" />;
 }
@@ -227,24 +228,14 @@ export default async function MilestonesPage({ params }: PageProps) {
                             </p>
                           )}
                         </div>
-                        {req.assignee === 'client' && req.status === 'pending' && (
-                          <button
-                            type="button"
-                            className="shrink-0 rounded-md px-3 py-1 text-xs font-medium text-white transition-colors"
-                            style={{ backgroundColor: 'var(--org-primary)' }}
-                          >
-                            Approve
-                          </button>
-                        )}
-                        {req.assignee === 'client' && req.status === 'in_progress' && (
-                          <button
-                            type="button"
-                            className="shrink-0 rounded-md px-3 py-1 text-xs font-medium text-white transition-colors"
-                            style={{ backgroundColor: 'var(--org-primary)' }}
-                          >
-                            Mark Complete
-                          </button>
-                        )}
+                        <RequirementAction
+                          proposalId={id}
+                          milestoneId={pm.milestone.id}
+                          requirementId={req.id}
+                          currentStatus={req.status}
+                          assignee={req.assignee}
+                          action={req.status === 'pending' ? 'approve' : 'complete'}
+                        />
                       </div>
                     ))}
                   </div>

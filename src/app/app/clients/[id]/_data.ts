@@ -5,6 +5,7 @@
  */
 
 import { createClient } from '@/lib/supabase/server';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 /* ─── Types ─────────────────────────────────────────────── */
 
@@ -13,6 +14,7 @@ export interface ClientDetail {
   industry: string | null;
   tags: string[];
   billing_address: string;
+  status: string;
   source: string | null;
   website: string | null;
   linkedin: string | null;
@@ -63,6 +65,7 @@ const defaultClient: ClientDetail = {
   industry: null,
   tags: [],
   billing_address: '',
+  status: 'active',
   source: null,
   website: null,
   linkedin: null,
@@ -81,16 +84,15 @@ const defaultClient: ClientDetail = {
 export async function getClient(id: string): Promise<ClientDetail> {
   try {
     const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) throw new Error('No auth');
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No org context');
 
     const { data: client } = await supabase
       .from('clients')
       .select()
       .eq('id', id)
+      .eq('organization_id', ctx.organizationId)
+      .is('deleted_at', null)
       .single();
 
     if (!client) throw new Error('Not found');
@@ -98,7 +100,8 @@ export async function getClient(id: string): Promise<ClientDetail> {
     const { data: contacts } = await supabase
       .from('client_contacts')
       .select()
-      .eq('client_id', id);
+      .eq('client_id', id)
+      .is('deleted_at', null);
 
     const { data: proposals } = await supabase
       .from('proposals')
@@ -121,11 +124,25 @@ export async function getClient(id: string): Promise<ClientDetail> {
       ? [addr.street, addr.city, addr.state, addr.zip].filter(Boolean).join(', ')
       : '';
 
+    // H-05: Build real activity feed from deal_activities for this client
+    const dealIds = (deals ?? []).map((d: Record<string, unknown>) => d.id as string);
+    let activityData: Array<Record<string, unknown>> = [];
+    if (dealIds.length > 0) {
+      const { data: feed } = await supabase
+        .from('deal_activities')
+        .select('id, type, description, created_at')
+        .in('deal_id', dealIds)
+        .order('created_at', { ascending: false })
+        .limit(30);
+      activityData = (feed ?? []) as Array<Record<string, unknown>>;
+    }
+
     return {
       company_name: client.company_name,
       industry: client.industry,
       tags: client.tags ?? [],
       billing_address: addrStr,
+      status: client.status ?? 'active',
       source: client.source,
       website: client.website ?? null,
       linkedin: client.linkedin ?? null,
@@ -161,7 +178,12 @@ export async function getClient(id: string): Promise<ClientDetail> {
         body: (i.body as string) ?? null,
         occurred_at: i.occurred_at as string,
       })),
-      activity: [],
+      activity: activityData.map((a) => ({
+        id: a.id as string,
+        action: a.type as string,
+        detail: (a.description as string) ?? '',
+        date: a.created_at as string,
+      })),
     };
   } catch {
     return defaultClient;
@@ -185,12 +207,4 @@ export function formatDate(dateStr: string): string {
   });
 }
 
-export function roleLabel(role: string): string {
-  const map: Record<string, string> = {
-    primary: 'Primary',
-    billing: 'Billing',
-    creative: 'Creative',
-    operations: 'Operations',
-  };
-  return map[role] ?? role;
-}
+export { roleLabel } from '@/lib/clients/contact-roles';

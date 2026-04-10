@@ -2,57 +2,19 @@ import Link from 'next/link';
 import {
   features,
   useCases,
-  testimonials,
   comparisonRows,
   comparisonData,
   faqs,
 } from './_landing-data';
 import { IconCheck, IconX, IconChevronDown } from '@/components/ui/Icons';
+import MarketingNav from '@/components/marketing/MarketingNav';
+import MarketingFooter from '@/components/marketing/MarketingFooter';
 
 
 export default function HomePage() {
   return (
-    <div className="flex min-h-screen flex-col font-[family-name:var(--font-inter)]">
-      {/* Nav */}
-      <nav className="flex items-center justify-between px-6 py-6 sm:px-8 lg:px-16">
-        <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-900">
-            <span className="text-xs font-bold text-white">FD</span>
-          </div>
-          <span className="text-lg font-semibold tracking-tight text-zinc-900">
-            FlyteDeck
-          </span>
-        </div>
-        <div className="flex items-center gap-4">
-          <Link
-            href="/features"
-            className="hidden text-sm font-medium text-zinc-500 transition-colors hover:text-zinc-900 sm:inline"
-          >
-            Features
-          </Link>
-          <span className="hidden text-sm font-medium text-zinc-500 sm:inline">
-            Use Cases
-          </span>
-          <Link
-            href="/pricing"
-            className="hidden text-sm font-medium text-zinc-500 transition-colors hover:text-zinc-900 sm:inline"
-          >
-            Pricing
-          </Link>
-          <Link
-            href="/login"
-            className="text-sm font-medium text-zinc-500 transition-colors hover:text-zinc-900"
-          >
-            Sign in
-          </Link>
-          <Link
-            href="/signup"
-            className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
-          >
-            Get Started
-          </Link>
-        </div>
-      </nav>
+    <div className="relative flex min-h-screen flex-col font-[family-name:var(--font-inter)]">
+      <MarketingNav />
 
       <main>
         {/* Hero */}
@@ -81,28 +43,9 @@ export default function HomePage() {
               </a>
             </div>
             <p className="mt-8 text-sm text-zinc-400">
-              Trusted by production teams managing brand activations, live
-              events, and immersive experiences worldwide
+              Purpose-built for production teams managing brand activations, live
+              events, and immersive experiences
             </p>
-          </div>
-        </section>
-
-        {/* Logo Bar */}
-        <section className="border-y border-zinc-100 px-6 py-12 sm:px-8 lg:px-16">
-          <p className="mb-8 text-center text-xs font-medium uppercase tracking-wider text-zinc-400">
-            Trusted by leading brands and agencies
-          </p>
-          <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-x-12 gap-y-6 sm:gap-x-16">
-            {['Red Bull', 'Nike', 'Samsung', 'Spotify', 'Coca-Cola', 'Adobe'].map(
-              (brand) => (
-                <span
-                  key={brand}
-                  className="text-lg font-semibold tracking-wider text-zinc-300"
-                >
-                  {brand}
-                </span>
-              )
-            )}
           </div>
         </section>
 
@@ -151,10 +94,17 @@ export default function HomePage() {
                   <div
                     className={`${feature.reverse ? 'lg:order-1' : 'lg:order-2'}`}
                   >
-                    <div className="flex h-64 items-center justify-center rounded-xl bg-zinc-100 sm:h-80">
-                      <span className="text-sm font-medium text-zinc-400">
-                        {feature.visual}
-                      </span>
+                    <div className="flex h-64 items-center justify-center rounded-xl border border-zinc-200 bg-gradient-to-br from-zinc-50 to-zinc-100 sm:h-80">
+                      <div className="flex flex-col items-center gap-2 px-8 text-center">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-zinc-200/70">
+                          <svg className="h-6 w-6 text-zinc-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0 0 22.5 18.75V5.25A2.25 2.25 0 0 0 20.25 3H3.75A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21Z" />
+                          </svg>
+                        </div>
+                        <span className="text-xs font-medium text-zinc-400">
+                          {feature.visual}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -208,38 +158,6 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Testimonials */}
-        <section className="px-6 py-20 sm:px-8 sm:py-28 lg:px-16">
-          <div className="mx-auto max-w-6xl">
-            <div className="mb-16 text-center">
-              <h2 className="text-3xl font-semibold tracking-tight text-zinc-900 sm:text-4xl">
-                What production teams are saying
-              </h2>
-            </div>
-
-            <div className="grid gap-8 md:grid-cols-3">
-              {testimonials.map((testimonial) => (
-                <div
-                  key={testimonial.name}
-                  className="rounded-xl border border-zinc-200 p-6"
-                >
-                  <p className="text-sm italic leading-relaxed text-zinc-600">
-                    &ldquo;{testimonial.quote}&rdquo;
-                  </p>
-                  <div className="mt-6">
-                    <p className="text-sm font-semibold text-zinc-900">
-                      {testimonial.name}
-                    </p>
-                    <p className="text-sm text-zinc-400">
-                      {testimonial.title}, {testimonial.company}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
         {/* Comparison */}
         <section className="bg-zinc-50 px-6 py-20 sm:px-8 sm:py-28 lg:px-16">
           <div className="mx-auto max-w-4xl">
@@ -262,7 +180,7 @@ export default function HomePage() {
                       </span>
                     </th>
                     <th className="pb-4 text-center text-sm font-medium text-zinc-400">
-                      Spreadsheets & Email
+                      Spreadsheets &amp; Email
                     </th>
                     <th className="pb-4 text-center text-sm font-medium text-zinc-400">
                       Generic PM Tools
@@ -358,38 +276,7 @@ export default function HomePage() {
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-zinc-100 px-6 py-8 sm:px-8 lg:px-16">
-        <div className="flex flex-col items-center justify-between gap-4 text-sm text-zinc-400 sm:flex-row">
-          <span>&copy; {new Date().getFullYear()} FlyteDeck. All rights reserved.</span>
-          <div className="flex flex-wrap items-center justify-center gap-6">
-            <Link
-              href="/features"
-              className="transition-colors hover:text-zinc-600"
-            >
-              Features
-            </Link>
-            <Link
-              href="/pricing"
-              className="transition-colors hover:text-zinc-600"
-            >
-              Pricing
-            </Link>
-            <Link
-              href="/use-cases/brand-activations"
-              className="transition-colors hover:text-zinc-600"
-            >
-              Use Cases
-            </Link>
-            <a href="#" className="transition-colors hover:text-zinc-600">
-              Privacy
-            </a>
-            <a href="#" className="transition-colors hover:text-zinc-600">
-              Terms
-            </a>
-          </div>
-        </div>
-      </footer>
+      <MarketingFooter />
     </div>
   );
 }

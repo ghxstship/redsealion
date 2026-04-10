@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase/server';
 import { createLogger } from '@/lib/logger';
+import { serveRateLimit } from '@/lib/api/rate-limit';
 
 const log = createLogger('crew-bookings');
 
@@ -15,6 +16,16 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: bookingId } = await params;
+
+  // M-02: Rate limit — 10 requests per minute per IP
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
+  const { success: withinLimit } = await serveRateLimit(`booking_respond_${ip}`, 10, 60000);
+  if (!withinLimit) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please try again later.' },
+      { status: 429 },
+    );
+  }
 
   try {
     // Parse form data (native HTML form) or JSON body

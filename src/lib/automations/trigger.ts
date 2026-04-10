@@ -12,30 +12,13 @@
 import { createClient } from '@/lib/supabase/server';
 import { executeAction } from './actions';
 import { evaluateConditions } from './conditions';
+import type { AutomationTriggerType } from './constants';
 
 // ---------------------------------------------------------------------------
-// Event types
+// Event types — re-export from constants for backward compatibility
 // ---------------------------------------------------------------------------
 
-export type AutomationEvent =
-  | 'task_created'
-  | 'task_status_change'
-  | 'task_assigned'
-  | 'task_overdue'
-  | 'proposal_approved'
-  | 'proposal_sent'
-  | 'proposal_viewed'
-  | 'invoice_created'
-  | 'invoice_sent'
-  | 'invoice_overdue'
-  | 'invoice_paid'
-  | 'milestone_completed'
-  | 'deal_stage_change'
-  | 'expense_submitted'
-  | 'timesheet_submitted'
-  | 'client_portal_viewed'
-  | 'comment_added'
-  | 'mention_received';
+export type AutomationEvent = AutomationTriggerType;
 
 export interface AutomationPayload {
   org_id: string;
@@ -48,7 +31,7 @@ export interface AutomationPayload {
 
 /**
  * Check all active automations for an organization against an incoming event.
- * Matched automations have their actions executed asynchronously.
+ * Matched automations have their actions executed and tracked in automation_runs.
  */
 export async function checkAutomationTriggers(
   event: AutomationEvent,
@@ -63,7 +46,8 @@ export async function checkAutomationTriggers(
       .select('*')
       .eq('organization_id', payload.org_id)
       .eq('trigger_type', event)
-      .eq('is_active', true);
+      .eq('is_active', true)
+      .is('deleted_at', null);
 
     if (error || !automations || automations.length === 0) return;
 
@@ -76,35 +60,76 @@ export async function checkAutomationTriggers(
         continue;
       }
 
-      // Execute the action
-      const actionConfig = (automation.action_config ?? {}) as Record<string, unknown>;
-      executeAction(
-        automation.action_type as string,
-        actionConfig,
-        payload,
-        automation.id as string,
-      ).catch(() => {
-        // Action execution failures are logged but don't block
-      });
+      // Rate limiting — check runs in the last hour
+      const maxPerHour = (automation.max_runs_per_hour as number) ?? 100;
+      const oneHourAgo = new Date(Date.now() - 3600_000).toISOString();
+      const { count: recentRuns } = await supabase
+        .from('automation_runs')
+        .select('id', { count: 'exact', head: true })
+        .eq('automation_id', automation.id)
+        .gte('started_at', oneHourAgo);
 
-      // Update run count and last_run_at
-      await supabase
-        .from('automations')
-        .update({
-          run_count: (automation.run_count ?? 0) + 1,
-          last_run_at: new Date().toISOString(),
-        })
-        .eq('id', automation.id);
+      if ((recentRuns ?? 0) >= maxPerHour) continue;
 
-      // Log the automation run
-      await supabase.from('automation_runs').insert({
+      // Create initial run record with 'running' status
+      const { data: run } = await supabase.from('automation_runs').insert({
         automation_id: automation.id,
         organization_id: payload.org_id,
-        status: 'completed',
+        status: 'running',
         trigger_data: payload,
         started_at: new Date().toISOString(),
-        completed_at: new Date().toISOString(),
+      }).select('id').single();
+
+      // Execute the action and track result
+      const actionConfig = (automation.action_config ?? {}) as Record<string, unknown>;
+      try {
+        await executeAction(
+          automation.action_type as string,
+          actionConfig,
+          payload,
+          automation.id as string,
+        );
+
+        // Mark run as completed
+        if (run) {
+          await supabase.from('automation_runs').update({
+            status: 'completed',
+            completed_at: new Date().toISOString(),
+          }).eq('id', run.id);
+        }
+      } catch (err) {
+        // Mark run as failed with error message
+        if (run) {
+          await supabase.from('automation_runs').update({
+            status: 'failed',
+            error: err instanceof Error ? err.message : 'Unknown execution error',
+            completed_at: new Date().toISOString(),
+          }).eq('id', run.id);
+        }
+      }
+
+      // Atomic run_count increment
+      await supabase.rpc('increment_counter', {
+        table_name: 'automations',
+        row_id: automation.id,
+        column_name: 'run_count',
+      }).then(() => {}, () => {
+        // Fallback if rpc doesn't exist — non-atomic but functional
+        supabase
+          .from('automations')
+          .update({
+            run_count: ((automation.run_count as number) ?? 0) + 1,
+            last_run_at: new Date().toISOString(),
+          })
+          .eq('id', automation.id)
+          .then(() => {}, () => {});
       });
+
+      // Also update last_run_at
+      await supabase
+        .from('automations')
+        .update({ last_run_at: new Date().toISOString() })
+        .eq('id', automation.id);
     }
   } catch {
     // Automation failures should never block the triggering operation

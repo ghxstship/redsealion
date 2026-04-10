@@ -25,25 +25,25 @@ export async function POST(_request: NextRequest, context: RouteContext) {
 
   const lines = (count.inventory_count_lines ?? []) as Array<{
     asset_id: string;
-    counted_qty: number;
-    expected_qty: number;
+    counted_quantity: number;
+    expected_quantity: number;
   }>;
 
   const reconciled: string[] = [];
 
   for (const line of lines) {
-    if (line.counted_qty !== line.expected_qty) {
-      // Update asset quantity
+    if (line.counted_quantity != null && line.counted_quantity !== line.expected_quantity) {
+      // Update asset quantity to match counted value
       const { error: updateError } = await supabase
         .from('assets')
-        .update({ quantity: line.counted_qty })
+        .update({ quantity: line.counted_quantity })
         .eq('id', line.asset_id);
 
       if (!updateError) reconciled.push(line.asset_id);
     }
   }
 
-  // Mark count as reconciled
+  // Mark count as reconciled (added to CHECK constraint in migration 00106)
   await supabase
     .from('inventory_counts')
     .update({ status: 'reconciled' })
@@ -51,3 +51,4 @@ export async function POST(_request: NextRequest, context: RouteContext) {
 
   return NextResponse.json({ success: true, reconciled_count: reconciled.length });
 }
+

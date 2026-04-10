@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useState } from 'react';
+import { use, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { TierGate } from '@/components/shared/TierGate';
 import { MappingEditor } from '@/components/admin/integrations/MappingEditor';
@@ -43,8 +43,39 @@ export default function IntegrationConfigPage({
   const [syncDirection, setSyncDirection] = useState('bidirectional');
   const [syncFrequency, setSyncFrequency] = useState('realtime');
   const [saving, setSaving] = useState(false);
+  
+  const [isConnected, setIsConnected] = useState(false);
+  const [loadingStatus, setLoadingStatus] = useState(true);
+  const [syncLogs, setSyncLogs] = useState<any[]>([]);
 
   const meta = PLATFORM_META[platform] ?? { displayName: platform, category: 'unknown' };
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [configRes, logsRes] = await Promise.all([
+          fetch(`/api/integrations/${platform}`),
+          fetch(`/api/integrations/${platform}/sync-logs`)
+        ]);
+        if (configRes.ok) {
+          const data = await configRes.json();
+          if (data.integration) {
+            setIsConnected(data.integration.status === 'connected');
+            if (data.integration.config) {
+              setSyncDirection(data.integration.config.syncDirection || 'bidirectional');
+              setSyncFrequency(data.integration.config.syncFrequency || 'realtime');
+            }
+          }
+        }
+        if (logsRes.ok) {
+          const logsData = await logsRes.json();
+          setSyncLogs(logsData.logs || []);
+        }
+      } catch (err) {}
+      setLoadingStatus(false);
+    }
+    fetchData();
+  }, [platform]);
 
   async function handleSaveSettings() {
     setSaving(true);
@@ -99,19 +130,35 @@ export default function IntegrationConfigPage({
       {/* Status banner */}
       <div className="mb-6 rounded-xl border border-border bg-background px-5 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="h-2.5 w-2.5 rounded-full bg-text-muted" />
-          <span className="text-sm font-medium text-foreground">Not connected</span>
+          <div className={`h-2.5 w-2.5 rounded-full ${isConnected ? 'bg-green-500' : 'bg-text-muted'}`} />
+          <span className="text-sm font-medium text-foreground">
+            {loadingStatus ? 'Loading...' : isConnected ? 'Connected' : 'Not connected'}
+          </span>
         </div>
-        <button
-          onClick={async () => {
-            const res = await fetch(`/api/integrations/${platform}/connect`, { method: 'POST' });
-            const data = await res.json();
-            if (data.authUrl) window.location.href = data.authUrl;
-          }}
-          className="rounded-lg bg-foreground px-4 py-1.5 text-xs font-medium text-white hover:opacity-90 transition-opacity"
-        >
-          Connect
-        </button>
+        {isConnected ? (
+          <button
+            onClick={async () => {
+              if (!confirm('Are you sure you want to disconnect this integration?')) return;
+              await fetch(`/api/integrations/${platform}`, { method: 'DELETE' });
+              setIsConnected(false);
+            }}
+            className="rounded-lg border border-red-200 bg-red-50 text-red-600 px-4 py-1.5 text-xs font-medium hover:bg-red-100 transition-colors"
+          >
+            Disconnect
+          </button>
+        ) : (
+          <button
+            onClick={async () => {
+              const res = await fetch(`/api/integrations/${platform}/connect`, { method: 'POST' });
+              const data = await res.json();
+              if (data.authUrl) window.location.href = data.authUrl;
+            }}
+            disabled={loadingStatus}
+            className="rounded-lg bg-foreground px-4 py-1.5 text-xs font-medium text-white hover:opacity-90 transition-opacity disabled:opacity-50"
+          >
+            Connect
+          </button>
+        )}
       </div>
 
       {/* Tabs */}
@@ -172,10 +219,35 @@ export default function IntegrationConfigPage({
       )}
 
       {activeTab === 'sync_log' && (
-        <EmptyState
-          message="No sync activity yet"
-          description="Connect the integration and trigger a sync to see logs here."
-        />
+        <div className="rounded-xl border border-border bg-background px-5 py-5">
+          {syncLogs.length === 0 ? (
+            <EmptyState
+              message="No sync activity yet"
+              description="Connect the integration and trigger a sync to see logs here."
+            />
+          ) : (
+            <div className="space-y-4">
+               {syncLogs.map((log: any) => (
+                 <div key={log.id} className="border-b border-border pb-4 last:border-0 last:pb-0">
+                   <div className="flex justify-between items-start mb-1">
+                     <span className={`text-xs font-semibold ${log.status === 'failed' ? 'text-red-600' : 'text-green-600'}`}>
+                       {log.status.toUpperCase()}
+                     </span>
+                     <span className="text-xs text-text-muted">
+                       {new Date(log.started_at).toLocaleString()}
+                     </span>
+                   </div>
+                   <p className="text-sm text-foreground">
+                     {log.entity_count} {log.entity_type} {log.direction} processed.
+                   </p>
+                   {log.error_message && (
+                     <p className="mt-1 text-xs text-red-500">Error: {log.error_message}</p>
+                   )}
+                 </div>
+               ))}
+            </div>
+          )}
+        </div>
       )}
     </TierGate>
   );

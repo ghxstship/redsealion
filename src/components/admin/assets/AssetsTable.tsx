@@ -16,11 +16,12 @@ import ActiveFilterBadge from '@/components/shared/ActiveFilterBadge';
 import SearchInput from '@/components/ui/SearchInput';
 import Button from '@/components/ui/Button';
 import FilterPills from '@/components/ui/FilterPills';
-import { Upload, SlidersHorizontal } from 'lucide-react';
+import { Upload, SlidersHorizontal, Plus } from 'lucide-react';
 import { useEntityViews } from '@/hooks/useEntityViews';
 import { useStoredColumnConfig } from '@/hooks/useStoredColumnConfig';
 import ViewBar from '@/components/shared/ViewBar';
 import ColumnConfigPanel from '@/components/shared/ColumnConfigPanel';
+import AssetFormModal from '@/components/admin/assets/AssetFormModal';
 
 interface AssetRow {
   id: string;
@@ -42,7 +43,7 @@ const conditionColors: Record<string, string> = {
   fair: 'text-amber-600', poor: 'text-red-600', damaged: 'text-red-700',
 };
 
-const statusFilters = ['all', 'deployed', 'in_storage', 'in_production', 'in_transit', 'planned'] as const;
+const statusFilters = ['all', 'deployed', 'in_storage', 'in_production', 'in_transit', 'planned', 'retired', 'disposed'] as const;
 
 export default function AssetsTable({ assets }: { assets: AssetRow[] }) {
   const router = useRouter();
@@ -51,6 +52,8 @@ export default function AssetsTable({ assets }: { assets: AssetRow[] }) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
   const [showImport, setShowImport] = useState(false);
   const [showColumnConfig, setShowColumnConfig] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [editAssetData, setEditAssetData] = useState<Record<string, unknown> | null>(null);
 
   const {
     views,
@@ -138,6 +141,10 @@ export default function AssetsTable({ assets }: { assets: AssetRow[] }) {
               Import
             </Button>
             <DataExportMenu data={sorted} entityKey="assets" filename="assets-export" entityType="Assets" />
+            <Button size="sm" onClick={() => setShowCreateModal(true)}>
+              <Plus size={14} />
+              New Asset
+            </Button>
           </div>
         </div>
 
@@ -161,6 +168,15 @@ export default function AssetsTable({ assets }: { assets: AssetRow[] }) {
         onDeselectAll={deselectAll}
         entityLabel="asset"
         actions={[
+          {
+            label: 'Move to Storage',
+            variant: 'secondary',
+            confirm: { title: 'Move to Storage', message: `Move ${count} asset(s) to "In Storage" status?` },
+            onClick: async (ids: string[]) => {
+              await Promise.all(ids.map((id) => fetch(`/api/assets/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'in_storage' }) })));
+              router.refresh();
+            },
+          },
           {
             label: 'Delete',
             variant: 'danger',
@@ -220,6 +236,7 @@ export default function AssetsTable({ assets }: { assets: AssetRow[] }) {
                     <td className="px-6 py-3.5">
                       <RowActionMenu actions={[
                         { label: 'View', onClick: () => router.push(`/app/assets/${asset.id}`) },
+                        { label: 'Edit', onClick: () => setEditAssetData({ id: asset.id, name: asset.name, type: asset.type, category: '', status: asset.status }) },
                         { label: 'Delete', variant: 'danger', onClick: () => setShowDeleteConfirm(asset.id) },
                       ]} />
                     </td>
@@ -245,6 +262,21 @@ export default function AssetsTable({ assets }: { assets: AssetRow[] }) {
         rowHeight={rowHeight}
         onRowHeightChange={setRowHeight}
       />
+
+      <AssetFormModal
+        open={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onSaved={() => router.refresh()}
+      />
+
+      {editAssetData && (
+        <AssetFormModal
+          open={!!editAssetData}
+          onClose={() => setEditAssetData(null)}
+          onSaved={() => { setEditAssetData(null); router.refresh(); }}
+          initialData={editAssetData as Record<string, string>}
+        />
+      )}
     </>
   );
 }

@@ -18,9 +18,10 @@ const DEFAULT_STAGES = ['Lead', 'Qualified', 'Proposal Sent', 'Negotiation', 'Ve
 
 export default function PipelineSettingsPage() {
   const [pipelines, setPipelines] = useState<Pipeline[]>([]);
-  const [editingId, setEditingId] = useState<string | null>(null);
   const [orgId, setOrgId] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<{ type: 'error' | 'success', message: string } | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   // Load pipeline config from org settings
   useEffect(() => {
@@ -96,8 +97,12 @@ export default function PipelineSettingsPage() {
         .from('organizations')
         .update({ settings: newSettings })
         .eq('id', orgId);
-    } catch {
-      // Silent fail — local state remains
+      
+      setSaveStatus({ type: 'success', message: 'Pipelines saved reliably' });
+      setTimeout(() => setSaveStatus(null), 3000);
+    } catch (e) {
+      setSaveStatus({ type: 'error', message: 'Failed to save pipeline settings' });
+      setTimeout(() => setSaveStatus(null), 5000);
     }
   }, [orgId]);
 
@@ -181,6 +186,12 @@ export default function PipelineSettingsPage() {
       </PageHeader>
 
       <PipelineHubTabs />
+
+      {saveStatus && (
+        <div className={`mb-4 rounded-lg px-4 py-3 text-sm font-medium ${saveStatus.type === 'error' ? 'bg-red-50 text-red-700' : 'bg-green-50 text-green-700'}`}>
+          {saveStatus.message}
+        </div>
+      )}
 
       <div className="space-y-4">
         {pipelines.map((pipeline) => (

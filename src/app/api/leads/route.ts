@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
 import { dispatchWebhookEvent } from '@/lib/webhooks/outbound';
+import { computeLeadScore } from '@/lib/leads/lead-scoring';
 
 export async function GET(request: NextRequest) {
   const perm = await checkPermission('leads', 'view');
@@ -14,22 +15,31 @@ export async function GET(request: NextRequest) {
 
   const url = new URL(request.url);
   const status = url.searchParams.get('status');
+  const email = url.searchParams.get('email');
+  const page = Math.max(1, parseInt(url.searchParams.get('page') || '1', 10));
+  const pageSize = Math.min(100, Math.max(1, parseInt(url.searchParams.get('pageSize') || '50', 10)));
+  const from = (page - 1) * pageSize;
+  const to = from + pageSize - 1;
 
   const supabase = await createClient();
   const orgId = perm.organizationId;
 
   let query = supabase
     .from('leads')
-    .select()
+    .select('*, users!leads_assigned_to_fkey(id, full_name, avatar_url)', { count: 'exact' })
     .eq('organization_id', orgId)
     .is('deleted_at', null)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .range(from, to);
 
   if (status) {
     query = query.eq('status', status);
   }
+  if (email) {
+    query = query.eq('contact_email', email);
+  }
 
-  const { data: leads, error } = await query;
+  const { data: leads, error, count } = await query;
 
   if (error) {
     return NextResponse.json(
@@ -38,7 +48,7 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  return NextResponse.json({ leads: leads ?? [] });
+  return NextResponse.json({ leads: leads ?? [], total: count ?? 0, page, pageSize });
 }
 
 export async function POST(request: NextRequest) {
@@ -85,11 +95,24 @@ export async function POST(request: NextRequest) {
   const supabase = await createClient();
   const orgId = perm.organizationId;
 
+  // Compute lead score before insert
+  const scoreInput = {
+    contact_email: contact_email || null,
+    contact_phone: contact_phone || null,
+    estimated_budget: estimated_budget ?? null,
+    source: source || 'Manual',
+    status: 'new',
+    created_at: new Date().toISOString(),
+    company_name: company_name || null,
+    message: message || null,
+  };
+  const { score, tier } = computeLeadScore(scoreInput);
+
   const { data: lead, error } = await supabase
     .from('leads')
     .insert({
       organization_id: orgId,
-      source: source || null,
+      source: source || 'Manual',
       company_name: company_name || null,
       contact_first_name,
       contact_last_name: contact_last_name || '',
@@ -100,6 +123,9 @@ export async function POST(request: NextRequest) {
       estimated_budget: estimated_budget ?? null,
       message: message || null,
       status: 'new',
+      score,
+      score_tier: tier,
+      created_by: perm.userId ?? null,
     })
     .select()
     .single();

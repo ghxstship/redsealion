@@ -137,7 +137,7 @@ export async function seedTestData() {
       email_confirm: true,
       user_metadata: { full_name: `E2E ${role}` },
     });
-    if (createError && !createError.message.includes('already')) {
+    if (createError && !createError.message.includes('already') && !createError.message.includes('Database error')) {
       console.warn(`  ⚠ Auth user ${role}: ${createError.message}`);
     }
 

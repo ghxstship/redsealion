@@ -11,11 +11,25 @@ async function getClientLocations() {
     if (!ctx) return [];
     const { data } = await supabase
       .from('clients')
-      .select('id, name, city, state, country, status')
+      .select('id, company_name, billing_address, status')
       .eq('organization_id', ctx.organizationId)
-      .not('city', 'is', null)
-      .order('state', { ascending: true });
-    return (data ?? []) as Array<{ id: string; name: string; city: string | null; state: string | null; country: string | null; status: string }>;
+      .is('deleted_at', null)
+      .order('company_name', { ascending: true });
+
+    // Parse city/state/country from the billing_address JSONB
+    return (data ?? [])
+      .map((c: Record<string, unknown>) => {
+        const addr = c.billing_address as Record<string, string> | null;
+        return {
+          id: c.id as string,
+          name: c.company_name as string,
+          city: addr?.city ?? null,
+          state: addr?.state ?? null,
+          country: addr?.country ?? null,
+          status: (c.status as string) ?? 'active',
+        };
+      })
+      .filter((c) => c.city || c.state); // Only include clients with location data
   } catch { return []; }
 }
 

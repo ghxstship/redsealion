@@ -1,5 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { XCircle, Calendar, MapPin } from 'lucide-react';
+import BookingRespondButtons from '@/components/portal/BookingRespondButtons';
+import type { Metadata } from 'next';
 
 interface BookingData {
   id: string;
@@ -173,26 +175,7 @@ export default async function BookingDetailPage({
       </div>
 
       {booking.status === 'offered' && (
-        <div className="w-full max-w-lg flex gap-3">
-          <form action={`/api/crew-bookings/${bookingId}/respond`} method="POST" className="flex-1">
-            <input type="hidden" name="response" value="accepted" />
-            <button
-              type="submit"
-              className="w-full rounded-lg bg-foreground px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-foreground/90"
-            >
-              Accept Booking
-            </button>
-          </form>
-          <form action={`/api/crew-bookings/${bookingId}/respond`} method="POST" className="flex-1">
-            <input type="hidden" name="response" value="declined" />
-            <button
-              type="submit"
-              className="w-full rounded-lg border border-border bg-card px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
-            >
-              Decline
-            </button>
-          </form>
-        </div>
+        <BookingRespondButtons bookingId={bookingId} orgSlug={orgSlug} />
       )}
 
       <p className="mt-6 text-center text-xs text-text-muted">

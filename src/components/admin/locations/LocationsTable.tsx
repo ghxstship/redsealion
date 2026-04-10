@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import { useSort } from '@/hooks/useSort';
 import { useSelection } from '@/hooks/useSelection';
 import DataExportMenu from '@/components/shared/DataExportMenu';
@@ -18,8 +19,9 @@ import { useEntityViews } from '@/hooks/useEntityViews';
 import { useStoredColumnConfig } from '@/hooks/useStoredColumnConfig';
 import ViewBar from '@/components/shared/ViewBar';
 import ColumnConfigPanel from '@/components/shared/ColumnConfigPanel';
+import LocationFormModal from './LocationFormModal';
 
-export interface LocationItem {
+export interface LocationItem extends Record<string, unknown> {
   id: string;
   name: string;
   type: string;
@@ -33,9 +35,14 @@ export interface LocationItem {
 
 export default function LocationsTable({ locations }: { locations: LocationItem[] }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const typeFilter = searchParams.get('type');
   const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const limit = 50;
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
   const [showColumnConfig, setShowColumnConfig] = useState(false);
+  const [editingLocation, setEditingLocation] = useState<LocationItem | null>(null);
 
   const {
     views, activeView, activeViewId, setActiveViewId,
@@ -48,6 +55,7 @@ export default function LocationsTable({ locations }: { locations: LocationItem[
     baseColumns: [
       { key: 'name', label: 'Name' },
       { key: 'type', label: 'Type' },
+      { key: 'status', label: 'Status' },
       { key: 'formatted_address', label: 'Address' },
       { key: 'phone', label: 'Phone' },
       { key: 'capacity', label: 'Capacity' },
@@ -59,18 +67,28 @@ export default function LocationsTable({ locations }: { locations: LocationItem[
   });
 
   const filtered = useMemo(() => {
-    if (!search) return locations;
+    let result = locations;
+    if (typeFilter) {
+      result = result.filter(l => l.type === typeFilter);
+    }
+    if (!search) return result;
     const q = search.toLowerCase();
-    return locations.filter(
+    return result.filter(
       (l) =>
         l.name.toLowerCase().includes(q) ||
         l.type.toLowerCase().includes(q) ||
         l.formatted_address?.toLowerCase().includes(q) ||
         l.phone?.toLowerCase().includes(q),
     );
-  }, [locations, search]);
+  }, [locations, search, typeFilter]);
 
   const { sorted, sort, handleSort } = useSort(filtered);
+  // Reset page when sorted results change significantly
+  const totalPages = Math.ceil(sorted.length / limit);
+  const pagedItems = sorted.slice((page - 1) * limit, page * limit);
+  // Optional bounds check if page got out of sync
+  if (page > totalPages && totalPages > 0) setPage(totalPages);
+
   const allIds = useMemo(() => sorted.map((l) => l.id), [sorted]);
   const { selectedIds, isSelected, toggle, toggleAll, isAllSelected, isSomeSelected, deselectAll, count } = useSelection(allIds);
 
@@ -104,6 +122,11 @@ export default function LocationsTable({ locations }: { locations: LocationItem[
             onDuplicateView={duplicateView}
           />
           <div className="flex items-center gap-3">
+            {typeFilter && (
+              <Button variant="secondary" size="sm" onClick={() => router.push('/app/events/locations')} title="Clear Type Filter">
+                Clear: {formatLabel(typeFilter)}
+              </Button>
+            )}
             <SearchInput value={search} onChange={setSearch} placeholder="Search locations..." />
             <Button variant="ghost" size="sm" onClick={() => setShowColumnConfig(true)} title="Column Settings">
               <SlidersHorizontal size={14} />
@@ -136,6 +159,7 @@ export default function LocationsTable({ locations }: { locations: LocationItem[
               </th>
               {isVisible('name') && <th className="px-6 py-3"><SortableHeader label="Name" field="name" currentSort={sort} onSort={handleSort} /></th>}
               {isVisible('type') && <th className="px-6 py-3"><SortableHeader label="Type" field="type" currentSort={sort} onSort={handleSort} /></th>}
+              {isVisible('status') && <th className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></th>}
               {isVisible('formatted_address') && <th className="px-6 py-3"><SortableHeader label="Address" field="formatted_address" currentSort={sort} onSort={handleSort} /></th>}
               {isVisible('phone') && <th className="px-6 py-3"><SortableHeader label="Phone" field="phone" currentSort={sort} onSort={handleSort} /></th>}
               {isVisible('capacity') && <th className="px-6 py-3"><SortableHeader label="Capacity" field="capacity" currentSort={sort} onSort={handleSort} /></th>}
@@ -145,13 +169,20 @@ export default function LocationsTable({ locations }: { locations: LocationItem[
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {sorted.map((item) => (
+            {pagedItems.map((item) => (
               <tr key={item.id} className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(item.id) ? 'bg-blue-50/50' : ''}`}>
                 <td className="px-4 py-3.5">
                   <input type="checkbox" checked={isSelected(item.id)} onChange={() => toggle(item.id)} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
                 </td>
-                {isVisible('name') && <td className="px-6 py-3.5"><span className="text-sm font-medium text-foreground">{item.name}</span></td>}
+                {isVisible('name') && (
+                  <td className="px-6 py-3.5">
+                    <Link href={`/app/locations/${item.id}`} className="text-sm font-medium text-blue-600 hover:underline">
+                      {item.name}
+                    </Link>
+                  </td>
+                )}
                 {isVisible('type') && <td className="px-6 py-3.5"><StatusBadge status={item.type} colorMap={LOCATION_TYPE_COLORS} /></td>}
+                {isVisible('status') && <td className="px-6 py-3.5"><StatusBadge status={item.status} colorMap={{ active: 'green', archived: 'gray' }} /></td>}
                 {isVisible('formatted_address') && <td className="px-6 py-3.5 text-sm text-text-secondary max-w-xs truncate">{item.formatted_address ?? '\u2014'}</td>}
                 {isVisible('phone') && <td className="px-6 py-3.5 text-sm text-text-secondary">{item.phone ?? '\u2014'}</td>}
                 {isVisible('capacity') && <td className="px-6 py-3.5 text-sm tabular-nums text-foreground">{item.capacity?.toLocaleString() ?? '\u2014'}</td>}
@@ -167,6 +198,11 @@ export default function LocationsTable({ locations }: { locations: LocationItem[
                 )}
                 <td className="px-6 py-3.5">
                   <RowActionMenu actions={[
+                    { label: 'View', onClick: () => router.push(`/app/locations/${item.id}`) },
+                    { label: 'Edit', onClick: () => setEditingLocation(item) },
+                    item.status === 'archived' 
+                      ? { label: 'Unarchive', onClick: async () => { await fetch(`/api/locations/${item.id}`, { method: 'PATCH', body: JSON.stringify({ status: 'active' })}); router.refresh(); } }
+                      : { label: 'Archive', onClick: async () => { await fetch(`/api/locations/${item.id}`, { method: 'PATCH', body: JSON.stringify({ status: 'archived' })}); router.refresh(); } },
                     { label: 'Delete', variant: 'danger', onClick: () => setShowDeleteConfirm(item.id) },
                   ]} />
                 </td>
@@ -177,6 +213,18 @@ export default function LocationsTable({ locations }: { locations: LocationItem[
             )}
           </tbody>
         </table>
+        
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between border-t border-border px-6 py-3 bg-bg-secondary/20">
+            <div className="text-sm text-text-secondary">
+              Showing {(page - 1) * limit + 1} to {Math.min(page * limit, sorted.length)} of {sorted.length} locations
+            </div>
+            <div className="flex gap-2">
+              <Button variant="secondary" size="sm" disabled={page === 1} onClick={() => setPage(p => p - 1)}>Previous</Button>
+              <Button variant="secondary" size="sm" disabled={page >= totalPages} onClick={() => setPage(p => p + 1)}>Next</Button>
+            </div>
+          </div>
+        )}
       </div>
 
       {showDeleteConfirm && (
@@ -190,6 +238,16 @@ export default function LocationsTable({ locations }: { locations: LocationItem[
         onColumnsChange={setColumns}
         rowHeight={rowHeight}
         onRowHeightChange={setRowHeight}
+      />
+      
+      <LocationFormModal 
+        open={!!editingLocation} 
+        location={editingLocation}
+        onClose={() => setEditingLocation(null)}
+        onCreated={() => {
+          setEditingLocation(null);
+          router.refresh();
+        }}
       />
     </>
   );

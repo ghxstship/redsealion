@@ -5,7 +5,7 @@ import { getDocsByType, ComplianceTable } from '../../compliance-shared';
 
 export default async function ContractsPage() {
   const docs = await getDocsByType('contract');
-  const valid = docs.filter((d) => d.status === 'valid').length;
+  const verified = docs.filter((d) => d.status === 'verified').length;
   const expiring = docs.filter((d) => {
     if (!d.expiry_date) return false;
     const exp = new Date(d.expiry_date);
@@ -13,7 +13,7 @@ export default async function ContractsPage() {
   }).length;
 
   return (
-    <TierGate feature="crew">
+    <TierGate feature="compliance">
       <PageHeader title="Contracts" subtitle="Vendor and crew contracts, NDAs, and service agreements." />
       <ComplianceHubTabs />
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">
@@ -22,8 +22,8 @@ export default async function ContractsPage() {
           <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{docs.length}</p>
         </div>
         <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Active</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-green-600">{valid}</p>
+          <p className="text-xs text-text-muted">Verified</p>
+          <p className="mt-1 text-2xl font-semibold tabular-nums text-green-600">{verified}</p>
         </div>
         <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Expiring Soon</p>

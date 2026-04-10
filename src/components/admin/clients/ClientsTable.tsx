@@ -92,7 +92,12 @@ export default function ClientsTable({ clients }: { clients: ClientRow[] }) {
   }
 
   async function handleBulkDelete(ids: string[]) {
-    await Promise.all(ids.map((id) => fetch(`/api/clients/${id}`, { method: 'DELETE' })));
+    const res = await fetch('/api/clients/bulk-delete', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ids }),
+    });
+    if (!res.ok) throw new Error('Failed to delete clients');
     router.refresh();
   }
 
@@ -205,6 +210,7 @@ export default function ClientsTable({ clients }: { clients: ClientRow[] }) {
                   <td className="px-6 py-3.5">
                     <RowActionMenu actions={[
                       { label: 'View', onClick: () => router.push(`/app/clients/${client.id}`) },
+                      { label: 'Edit', onClick: () => router.push(`/app/clients/${client.id}`) },
                       { label: 'Delete', variant: 'danger', onClick: () => setShowDeleteConfirm(client.id) },
                     ]} />
                   </td>

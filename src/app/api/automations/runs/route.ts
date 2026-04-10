@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
       trigger_data: row.trigger_data,
       started_at: row.started_at,
       completed_at: row.completed_at,
-      error_message: row.error_message ?? null,
+      error_message: row.error ?? null,
     };
   });
 

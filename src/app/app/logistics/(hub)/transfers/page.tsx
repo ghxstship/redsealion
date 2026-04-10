@@ -22,7 +22,7 @@ interface Transfer {
 const STATUS_COLORS: Record<string, string> = {
   pending: 'bg-yellow-50 text-yellow-700',
   in_transit: 'bg-blue-50 text-blue-700',
-  completed: 'bg-green-50 text-green-700',
+  received: 'bg-green-50 text-green-700',
   cancelled: 'bg-red-50 text-red-700',
 };
 
@@ -31,40 +31,56 @@ async function getTransfers(): Promise<Transfer[]> {
     const supabase = await createClient();
     const ctx = await resolveCurrentOrg();
     if (!ctx) throw new Error('No auth');
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) throw new Error('No auth');
-const { data: transfers } = await supabase
-      .from('warehouse_transfers')
-      .select()
-      .eq('organization_id', ctx.organizationId)
-      .order('requested_date', { ascending: false });
+    
+    // Also fetch facilities and users to resolve names
+    const [{ data: transfers }, { data: facilities }, { data: users }] = await Promise.all([
+      supabase
+        .from('warehouse_transfers')
+        .select(`*, warehouse_transfer_items(count)`)
+        .eq('organization_id', ctx.organizationId)
+        .is('deleted_at', null)
+        .order('created_at', { ascending: false }),
+      supabase.from('facilities').select('id, name').eq('organization_id', ctx.organizationId),
+      supabase.from('users').select('id, full_name')
+    ]);
 
     if (!transfers) throw new Error('No transfers');
 
-    return transfers.map((t: Record<string, unknown>) => ({
-      id: t.id as string,
-      from_location: t.from_location as string,
-      to_location: t.to_location as string,
-      items_count: (t.items_count as number) ?? 0,
-      status: (t.status as string) ?? 'pending',
-      requested_by: (t.requested_by as string) ?? 'Unknown',
-      requested_date: t.requested_date as string,
-      completed_date: (t.completed_date as string) ?? null,
-      notes: (t.notes as string) ?? null,
-    }));
+    const facilityMap = new Map((facilities ?? []).map((f) => [f.id, f.name]));
+    const userMap = new Map((users ?? []).map((u) => [u.id, u.full_name]));
+
+    return transfers.map((t: Record<string, unknown>) => {
+      const itemsCount = Array.isArray(t.warehouse_transfer_items) 
+         ? t.warehouse_transfer_items.reduce((sum, i) => sum + (i.count ?? 0), 0)
+         : (t.warehouse_transfer_items as any)?.count ?? 0;
+         
+      return {
+        id: t.id as string,
+        from_location: facilityMap.get(t.from_facility_id as string) || (t.from_facility_id as string) || 'Unknown',
+        to_location: facilityMap.get(t.to_facility_id as string) || (t.to_facility_id as string) || 'Unknown',
+        items_count: itemsCount,
+        status: (t.status as string) ?? 'pending',
+        requested_by: userMap.get(t.initiated_by as string) || (t.initiated_by as string) || 'Unknown',
+        requested_date: (t.created_at as string) || new Date().toISOString(),
+        completed_date: (t.received_at as string) ?? null,
+        notes: (t.notes as string) ?? null,
+      };
+    });
   } catch {
     return [];
   }
 }
 
 function formatDate(dateStr: string): string {
-  return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
+  try {
+    return new Date(dateStr).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  } catch {
+    return dateStr;
+  }
 }
 
 function formatLabel(s: string): string {
@@ -77,21 +93,23 @@ function formatLabel(s: string): string {
 export default async function TransfersPage() {
   const transfers = await getTransfers();
 
-  const pending = transfers.filter((t) => t.status !== 'completed' && t.status !== 'cancelled').length;
-  const completed = transfers.filter((t) => t.status === 'completed').length;
+  const pending = transfers.filter((t) => t.status !== 'received' && t.status !== 'cancelled').length;
+  const completed = transfers.filter((t) => t.status === 'received').length;
 
   return (
     <>
       {/* Header */}
       <PageHeader
         title="Transfers"
-        subtitle={`${pending} pending · ${completed} completed`}
+        subtitle={`${pending} pending · ${completed} received`}
       >
         <TransfersHeader />
       </PageHeader>
+      
+      <LogisticsHubTabs />
 
       {/* Transfers table */}
-      <div className="rounded-xl border border-border bg-background overflow-hidden overflow-x-auto">
+      <div className="rounded-xl border border-border bg-background overflow-hidden overflow-x-auto mt-6">
         {transfers.length === 0 ? (
           <div className="px-6 py-12 text-center text-sm text-text-muted">
             No transfers found.
@@ -104,19 +122,22 @@ export default async function TransfersPage() {
                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">To</th>
                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Items</th>
                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Requested By</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Requested</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Completed</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Initiated By</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Created</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Received</th>
                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Notes</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
               {transfers.map((transfer) => (
-                <tr key={transfer.id} className="transition-colors hover:bg-bg-secondary/50">
-                  <td className="px-6 py-3.5 text-sm font-medium text-foreground">{transfer.from_location}</td>
-                  <td className="px-6 py-3.5 text-sm font-medium text-foreground">{transfer.to_location}</td>
-                  <td className="px-6 py-3.5 text-sm tabular-nums text-foreground">{transfer.items_count}</td>
-                  <td className="px-6 py-3.5">
+                <tr key={transfer.id} className="transition-colors hover:bg-bg-secondary/50 relative group">
+                  <td className="px-6 py-3.5 text-sm font-medium text-foreground">
+                    <Link href={`/app/logistics/transfers/${transfer.id}`} className="absolute inset-0 z-0" aria-label={`View transfer ${transfer.id}`}></Link>
+                    <span className="relative z-10">{transfer.from_location}</span>
+                  </td>
+                  <td className="px-6 py-3.5 text-sm font-medium text-foreground relative z-10">{transfer.to_location}</td>
+                  <td className="px-6 py-3.5 text-sm tabular-nums text-foreground relative z-10">{transfer.items_count}</td>
+                  <td className="px-6 py-3.5 relative z-10">
                     <span
                       className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
                         STATUS_COLORS[transfer.status] ?? 'bg-bg-secondary text-text-muted'
@@ -125,12 +146,12 @@ export default async function TransfersPage() {
                       {formatLabel(transfer.status)}
                     </span>
                   </td>
-                  <td className="px-6 py-3.5 text-sm text-text-secondary">{transfer.requested_by}</td>
-                  <td className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(transfer.requested_date)}</td>
-                  <td className="px-6 py-3.5 text-sm text-text-secondary">
+                  <td className="px-6 py-3.5 text-sm text-text-secondary relative z-10">{transfer.requested_by}</td>
+                  <td className="px-6 py-3.5 text-sm text-text-secondary relative z-10">{formatDate(transfer.requested_date)}</td>
+                  <td className="px-6 py-3.5 text-sm text-text-secondary relative z-10">
                     {transfer.completed_date ? formatDate(transfer.completed_date) : '\u2014'}
                   </td>
-                  <td className="px-6 py-3.5 text-sm text-text-muted max-w-xs truncate">{transfer.notes ?? '\u2014'}</td>
+                  <td className="px-6 py-3.5 text-sm text-text-muted max-w-xs truncate relative z-10">{transfer.notes ?? '\u2014'}</td>
                 </tr>
               ))}
             </tbody>

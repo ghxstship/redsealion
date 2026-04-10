@@ -30,15 +30,14 @@ export default function CheckInOut({ reservationId, currentStatus, onComplete }:
     setSubmitting(true);
     setError(null);
 
-    const endpoint = isCheckOut
-      ? `/api/equipment/reservations/${reservationId}/checkout`
-      : `/api/equipment/reservations/${reservationId}/checkin`;
+    const action = isCheckOut ? 'check_out' : 'check_in';
+    const endpoint = '/api/equipment/check-in-out';
 
     try {
       const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ condition, notes: notes || null }),
+        body: JSON.stringify({ reservation_id: reservationId, action, condition, notes: notes || null }),
       });
 
       if (!res.ok) {

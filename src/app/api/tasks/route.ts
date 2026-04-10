@@ -37,6 +37,16 @@ export async function GET(request: NextRequest) {
     query = query.eq('assignee_id', assigneeId);
   }
 
+  const eventId = searchParams.get('event_id');
+  if (eventId) {
+    query = query.eq('event_id', eventId);
+  }
+
+  const taskType = searchParams.get('task_type');
+  if (taskType) {
+    query = query.eq('task_type', taskType);
+  }
+
   const proposalId = searchParams.get('proposal_id');
   if (proposalId) {
     query = query.eq('proposal_id', proposalId);
@@ -91,6 +101,8 @@ export async function POST(request: NextRequest) {
     priority,
     assignee_id,
     proposal_id,
+    event_id,
+    task_type,
     phase_id,
     parent_task_id,
     due_date,
@@ -104,6 +116,8 @@ export async function POST(request: NextRequest) {
     priority?: string;
     assignee_id?: string;
     proposal_id?: string;
+    event_id?: string;
+    task_type?: string;
     phase_id?: string;
     parent_task_id?: string;
     due_date?: string;
@@ -129,6 +143,8 @@ export async function POST(request: NextRequest) {
       priority: priority || 'medium',
       assignee_id: assignee_id || null,
       proposal_id: proposal_id || null,
+      event_id: event_id || null,
+      task_type: task_type || 'standard',
       phase_id: phase_id || null,
       parent_task_id: parent_task_id || null,
       due_date: due_date || null,

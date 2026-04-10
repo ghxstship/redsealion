@@ -6,6 +6,8 @@ import { SubscriptionProvider } from '@/components/shared/SubscriptionProvider';
 import { PermissionsProvider } from '@/components/shared/PermissionsProvider';
 import { GlobalModalProvider } from '@/components/shared/GlobalModalProvider';
 import { PreferencesProvider } from '@/components/shared/PreferencesProvider';
+import { CopilotProvider } from '@/components/shared/CopilotProvider';
+import CopilotPanel from '@/components/shared/CopilotPanel';
 import { I18nProvider } from '@/lib/i18n/client';
 import { getDictionary } from '@/lib/i18n/dictionaries';
 import { DEFAULT_LOCALE, hasLocale, normalizeBareCode } from '@/lib/i18n/config';
@@ -128,18 +130,21 @@ export default async function AppLayout({
         <I18nProvider locale={ctx.locale} dictionary={dictionary}>
           <PreferencesProvider>
             <GlobalModalProvider>
-              <div className="flex min-h-screen bg-background">
-                <AdminSidebar user={ctx.user} />
-                <main className="flex-1 min-w-0 transition-[margin] duration-normal md:ml-[var(--sidebar-width)]">
-                  <AppHeader user={ctx.user} orgName={ctx.orgName} />
-                  <div className="px-6 py-8 md:px-10 md:py-10 max-w-7xl mx-auto">
-                    <PageTransition>
-                      {children}
-                    </PageTransition>
-                  </div>
-                </main>
-              </div>
-              <CommandPalette />
+              <CopilotProvider>
+                <div className="flex min-h-screen bg-background">
+                  <AdminSidebar user={ctx.user} />
+                  <main className="flex-1 min-w-0 transition-[margin] duration-normal md:ml-[var(--sidebar-width)]">
+                    <AppHeader user={ctx.user} orgName={ctx.orgName} />
+                    <div className="px-6 py-8 md:px-10 md:py-10 max-w-7xl mx-auto">
+                      <PageTransition>
+                        {children}
+                      </PageTransition>
+                    </div>
+                  </main>
+                  <CopilotPanel />
+                </div>
+                <CommandPalette />
+              </CopilotProvider>
             </GlobalModalProvider>
           </PreferencesProvider>
         </I18nProvider>

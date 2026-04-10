@@ -128,6 +128,7 @@ export default async function WarehousePage() {
               <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Location</th>
               <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Qty</th>
               <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</th>
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Context</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -160,6 +161,13 @@ export default async function WarehousePage() {
                   >
                     {formatLabel(asset.status)}
                   </span>
+                </td>
+                <td className="px-6 py-3.5 text-sm text-text-secondary">
+                  <div className="flex flex-col gap-1">
+                     <span className="text-xs text-text-muted break-all">ID: {asset.id}</span>
+                     {asset.status === 'maintenance' && <span className="text-xs text-red-500 font-medium">Flagged for repair</span>}
+                     {asset.status === 'deployed' && <span className="text-xs text-blue-500 font-medium">Currently on assignment</span>}
+                  </div>
                 </td>
               </tr>
             ))}

@@ -13,8 +13,10 @@ interface TeamMember {
   email: string;
   role: string;
   title: string | null;
+  department: string | null;
   facility: string | null;
   rate_card: string | null;
+  avatar_url: string | null;
 }
 
 async function getTeamMembers(): Promise<TeamMember[]> {
@@ -25,8 +27,9 @@ async function getTeamMembers(): Promise<TeamMember[]> {
 
     const { data } = await supabase
       .from('users')
-      .select('id, full_name, email, role, title, facility_id, rate_card')
+      .select('id, full_name, email, role, title, department, facility_id, rate_card, avatar_url')
       .eq('organization_id', ctx.organizationId)
+      .is('deleted_at', null)
       .order('full_name');
 
     return (data ?? []).map((u) => ({
@@ -35,8 +38,10 @@ async function getTeamMembers(): Promise<TeamMember[]> {
       email: u.email,
       role: u.role,
       title: u.title,
+      department: u.department,
       facility: u.facility_id,
       rate_card: u.rate_card,
+      avatar_url: u.avatar_url,
     }));
   } catch {
     return [];

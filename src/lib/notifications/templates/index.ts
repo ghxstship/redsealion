@@ -312,3 +312,62 @@ export function paymentReminder(data: {
     smsText: `${data.orgName}: Reminder — Invoice ${data.invoiceNumber} for ${data.amount} is ${data.daysOverdue} days overdue. Pay: ${data.paymentUrl}`,
   };
 }
+
+// ---------------------------------------------------------------------------
+// j) Work order dispatched (crew notification)
+// ---------------------------------------------------------------------------
+
+export function workOrderDispatched(data: {
+  crewName: string;
+  woNumber: string;
+  title: string;
+  location: string;
+  scheduledDate: string;
+  orgName: string;
+}): TemplateResult {
+  const details = detailTable(
+    [
+      detailRow('Work Order', `${data.woNumber} — ${data.title}`),
+      detailRow('Location', data.location || 'TBD'),
+      detailRow('Scheduled', data.scheduledDate || 'TBD'),
+    ].join('\n'),
+  );
+
+  const content = [
+    heading('You\'ve been dispatched'),
+    paragraph(`Hi ${data.crewName},`),
+    paragraph(
+      `${data.orgName} has dispatched you to a work order. Please review the details below.`,
+    ),
+    details,
+  ].join('\n');
+
+  return {
+    subject: `Dispatched: ${data.woNumber} — ${data.title}`,
+    html: wrapEmailHtml(content, data.orgName),
+    smsText: `${data.orgName}: You've been dispatched to ${data.woNumber} — ${data.title} at ${data.location || 'TBD'}`,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// k) Lead received (internal notification to org admins)
+// ---------------------------------------------------------------------------
+
+export function leadReceived(data: {
+  leadName: string;
+  eventName: string;
+  orgName: string;
+}): TemplateResult {
+  const content = [
+    heading('New lead received'),
+    paragraph(
+      `<strong>${data.leadName}</strong> has submitted an intake form for <strong>${data.eventName}</strong>.`,
+    ),
+    paragraph('You can view the full details in your FlyteDeck dashboard.'),
+  ].join('\n');
+
+  return {
+    subject: `New Lead: ${data.leadName} - ${data.eventName}`,
+    html: wrapEmailHtml(content, data.orgName),
+  };
+}

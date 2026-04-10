@@ -46,6 +46,7 @@ export async function PATCH(
     'contact_first_name', 'contact_last_name', 'contact_email', 'contact_phone',
     'company_name', 'source', 'event_type', 'event_date', 'estimated_budget',
     'message', 'status', 'assigned_to', 'converted_to_deal_id',
+    'converted_to_client_id', 'converted_to_contact_id', 'lost_reason',
   ];
   const updates: Record<string, unknown> = {};
   for (const f of allowedFields) {

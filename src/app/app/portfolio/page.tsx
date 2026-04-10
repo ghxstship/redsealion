@@ -13,6 +13,9 @@ interface PortfolioItem {
   client_name: string | null;
   description: string | null;
   image_url: string | null;
+  tags?: string[];
+  project_id?: string | null;
+  proposal_id?: string | null;
 }
 
 async function getPortfolioItems(): Promise<PortfolioItem[]> {
@@ -27,7 +30,7 @@ async function getPortfolioItems(): Promise<PortfolioItem[]> {
     if (!user) return [];
     const { data: items } = await supabase
       .from('portfolio_library')
-      .select('id, project_name, project_year, category, client_name, description, image_url')
+      .select('id, project_name, project_year, category, client_name, description, image_url, tags, project_id, proposal_id')
       .eq('organization_id', ctx.organizationId)
       .order('project_year', { ascending: false });
 

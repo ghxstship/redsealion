@@ -32,17 +32,11 @@ interface LeadScoreResult {
 
 const SOURCE_WEIGHTS: Record<string, number> = {
   referral: 20,
-  Referral: 20,
-  trade_show: 15,
-  Event: 15,
+  event: 15,
+  linkedin: 15,
   website: 12,
-  Website: 12,
-  'Lead Form': 12,
-  LinkedIn: 10,
-  social_media: 8,
+  lead_form: 12,
   cold_outreach: 3,
-  'Cold Outreach': 3,
-  Other: 2,
   other: 2,
 };
 
@@ -107,8 +101,8 @@ export function computeLeadScore(lead: LeadScoreInput): LeadScoreResult {
     new: 0,
     contacted: 5,
     qualified: 10,
-    proposal_sent: 15,
-    won: 20,
+    converted: 15,
+    lost: 0,
   };
   const statusBonus = statusScores[lead.status] ?? 0;
   if (statusBonus > 0) {

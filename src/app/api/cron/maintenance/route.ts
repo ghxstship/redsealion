@@ -15,13 +15,13 @@ export async function POST(request: Request) {
   }
 
   const supabase = await createServiceClient();
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toISOString();
 
   const { data: schedules, error } = await supabase
     .from('maintenance_schedules')
     .select('*')
     .eq('is_active', true)
-    .lte('next_due_date', today);
+    .lte('next_due_at', today);
 
   if (error || !schedules) {
     log.error('Failed to fetch schedules', {}, error);
@@ -30,32 +30,42 @@ export async function POST(request: Request) {
 
   let created = 0;
   for (const schedule of schedules) {
+    // Map to the correct columns based on migration 00055 & 00001
     const { error: insertErr } = await supabase
       .from('maintenance_records')
       .insert({
         organization_id: schedule.organization_id,
-        equipment_id: schedule.equipment_id,
-        schedule_id: schedule.id,
-        type: schedule.type ?? 'scheduled',
-        title: schedule.title ?? 'Scheduled maintenance',
-        description: schedule.description,
-        status: 'pending',
-        scheduled_date: today,
+        asset_id: schedule.asset_id,
+        type: schedule.maintenance_type ?? 'inspection',
+        description: schedule.description || 'Auto-generated from schedule',
+        status: 'scheduled',
+        scheduled_date: today.split('T')[0],
       });
 
-    if (insertErr) continue;
+    if (insertErr) {
+      log.error('Failed to insert maintenance record', { schedule_id: schedule.id }, insertErr);
+      continue;
+    }
 
-    // Advance next_due_date
-    const nextDate = new Date(schedule.next_due_date);
-    const interval = schedule.interval_value ?? 30;
-    const unit = schedule.interval_unit ?? 'days';
-    if (unit === 'days') nextDate.setDate(nextDate.getDate() + interval);
-    else if (unit === 'weeks') nextDate.setDate(nextDate.getDate() + interval * 7);
-    else if (unit === 'months') nextDate.setMonth(nextDate.getMonth() + interval);
+    // Advance next_due_at
+    let nextDate: Date | null = null;
+    if (schedule.schedule_type === 'time_based' && schedule.interval_days) {
+      nextDate = new Date();
+      nextDate.setDate(nextDate.getDate() + schedule.interval_days);
+    }
+
+    // Default 30 days if couldn't determine next date
+    if (!nextDate) {
+      nextDate = new Date();
+      nextDate.setDate(nextDate.getDate() + 30);
+    }
 
     await supabase
       .from('maintenance_schedules')
-      .update({ next_due_date: nextDate.toISOString().split('T')[0], last_performed: today })
+      .update({ 
+        next_due_at: nextDate.toISOString(), 
+        last_triggered_at: today 
+      })
       .eq('id', schedule.id);
 
     created++;

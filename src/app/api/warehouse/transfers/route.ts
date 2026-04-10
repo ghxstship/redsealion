@@ -19,8 +19,9 @@ export async function GET(request: NextRequest) {
 
   let query = supabase
     .from('warehouse_transfers')
-    .select()
+    .select('*, warehouse_transfer_items(count)')
     .eq('organization_id', orgId)
+    .is('deleted_at', null)
     .order('created_at', { ascending: false });
 
   if (status) {
@@ -52,7 +53,7 @@ export async function POST(request: NextRequest) {
   const { from_facility_id, to_facility_id, items, notes } = body as {
     from_facility_id?: string;
     to_facility_id?: string;
-    items?: Array<{ asset_id: string; quantity: number }>;
+    items?: Array<{ asset_id: string; quantity: number; notes?: string }>;
     notes?: string;
   };
 
@@ -80,6 +81,7 @@ export async function POST(request: NextRequest) {
   const supabase = await createClient();
   const orgId = perm.organizationId;
 
+  // Insert the transfer row (items column was dropped in migration 00033)
   const { data: transfer, error: transferError } = await supabase
     .from('warehouse_transfers')
     .insert({
@@ -88,7 +90,6 @@ export async function POST(request: NextRequest) {
       to_facility_id,
       status: 'pending',
       initiated_by: perm.userId,
-      items,
       notes: notes || null,
     })
     .select()
@@ -97,6 +98,27 @@ export async function POST(request: NextRequest) {
   if (transferError || !transfer) {
     return NextResponse.json(
       { error: 'Failed to create transfer.', details: transferError?.message },
+      { status: 500 },
+    );
+  }
+
+  // Batch-insert into junction table
+  const transferItems = items.map((i) => ({
+    transfer_id: transfer.id,
+    asset_id: i.asset_id,
+    quantity: i.quantity,
+    notes: i.notes || null,
+  }));
+
+  const { error: itemsError } = await supabase
+    .from('warehouse_transfer_items')
+    .insert(transferItems);
+
+  if (itemsError) {
+    // Clean up the transfer if items failed
+    await supabase.from('warehouse_transfers').delete().eq('id', transfer.id);
+    return NextResponse.json(
+      { error: 'Failed to create transfer items.', details: itemsError.message },
       { status: 500 },
     );
   }

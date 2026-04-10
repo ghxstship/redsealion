@@ -46,9 +46,9 @@ export const ENTITY_FIELDS: Record<string, EntityField[]> = {
     { key: 'contact_email', label: 'Email', type: 'email', example: 'jane@example.com', aliases: ['email_address', 'e-mail'] },
     { key: 'company_name', label: 'Company', type: 'text', example: 'Acme Events', aliases: ['company', 'organization', 'org', 'business'] },
     { key: 'contact_phone', label: 'Phone', type: 'phone', example: '(555) 123-4567', aliases: ['phone_number', 'tel', 'telephone', 'mobile'] },
-    { key: 'source', label: 'Source', type: 'enum', enumValues: ['referral', 'website', 'social_media', 'cold_outreach', 'trade_show', 'other'], example: 'referral', aliases: ['lead_source', 'origin'] },
+    { key: 'source', label: 'Source', type: 'enum', enumValues: ['website', 'referral', 'linkedin', 'cold_outreach', 'lead_form', 'event', 'other'], example: 'website', aliases: ['lead_source', 'origin'] },
     { key: 'estimated_budget', label: 'Budget', type: 'currency', example: '50000', aliases: ['budget', 'est_budget', 'estimated_value'] },
-    { key: 'status', label: 'Status', type: 'enum', enumValues: ['new', 'contacted', 'qualified', 'proposal_sent', 'won', 'lost', 'archived', 'disqualified'], example: 'new', defaultExportVisible: true },
+    { key: 'status', label: 'Status', type: 'enum', enumValues: ['new', 'contacted', 'qualified', 'converted', 'lost'], example: 'new', defaultExportVisible: true },
     { key: 'created_at', label: 'Date', type: 'date', exportOnly: true, example: '2026-01-15' },
   ],
 

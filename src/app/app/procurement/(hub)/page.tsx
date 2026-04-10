@@ -24,7 +24,7 @@ export default async function ProcurementOverviewPage() {
   const stats = await getProcurementStats();
 
   return (
-    <TierGate feature="equipment">
+    <TierGate feature="profitability">
       <PageHeader title="Procurement" subtitle="End-to-end purchasing from requisition to receiving." />
       <ProcurementHubTabs />
 

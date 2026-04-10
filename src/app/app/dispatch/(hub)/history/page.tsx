@@ -2,31 +2,62 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
+import Link from 'next/link';
 import DispatchHubTabs from '../../DispatchHubTabs';
+
+interface HistoryItem {
+  id: string;
+  title: string;
+  status: string;
+  location_name: string | null;
+  scheduled_start: string | null;
+  completed_at: string | null;
+  work_order_assignments: Array<{
+    crew_profiles: { full_name: string } | null;
+  }>;
+}
 
 async function getHistory() {
   try {
     const supabase = await createClient();
     const ctx = await resolveCurrentOrg();
-    if (!ctx) return [];
-    const { data } = await supabase
+    if (!ctx) return { data: [] as HistoryItem[], error: null };
+    const { data, error } = await supabase
       .from('work_orders')
-      .select('id, title, status, location, assigned_to, scheduled_date, completed_at')
+      .select('id, title, status, location_name, scheduled_start, completed_at, work_order_assignments(crew_profiles(full_name))')
       .eq('organization_id', ctx.organizationId)
+      .is('deleted_at', null)
       .eq('status', 'completed')
       .order('completed_at', { ascending: false })
       .limit(50);
-    return (data ?? []) as Array<{ id: string; title: string; status: string; location: string | null; assigned_to: string | null; scheduled_date: string | null; completed_at: string | null }>;
-  } catch { return []; }
+
+    if (error) return { data: [] as HistoryItem[], error: error.message };
+    return { data: (data ?? []) as unknown as HistoryItem[], error: null };
+  } catch {
+    return { data: [] as HistoryItem[], error: 'Failed to load history.' };
+  }
+}
+
+function crewNames(item: HistoryItem): string {
+  return item.work_order_assignments
+    ?.map((a) => a.crew_profiles?.full_name)
+    .filter(Boolean)
+    .join(', ') || '—';
 }
 
 export default async function DispatchHistoryPage() {
-  const history = await getHistory();
+  const { data: history, error } = await getHistory();
 
   return (
     <TierGate feature="work_orders">
       <PageHeader title="Dispatch History" subtitle="Completed dispatches and performance records." />
       <DispatchHubTabs />
+
+      {error && (
+        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {error}
+        </div>
+      )}
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 mb-8">
         <div className="rounded-xl border border-border bg-background p-4">
@@ -35,7 +66,7 @@ export default async function DispatchHistoryPage() {
         </div>
         <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Unique Locations Served</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{new Set(history.map((h) => h.location).filter(Boolean)).size}</p>
+          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{new Set(history.map((h) => h.location_name).filter(Boolean)).size}</p>
         </div>
       </div>
 
@@ -51,7 +82,7 @@ export default async function DispatchHistoryPage() {
                 <tr>
                   <th className="px-4 py-3">Job</th>
                   <th className="px-4 py-3">Location</th>
-                  <th className="px-4 py-3">Assigned To</th>
+                  <th className="px-4 py-3">Crew</th>
                   <th className="px-4 py-3">Scheduled</th>
                   <th className="px-4 py-3">Completed</th>
                 </tr>
@@ -59,10 +90,12 @@ export default async function DispatchHistoryPage() {
               <tbody className="divide-y divide-border">
                 {history.map((item) => (
                   <tr key={item.id} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3 font-medium text-foreground">{item.title}</td>
-                    <td className="px-4 py-3 text-text-secondary">{item.location ?? '—'}</td>
-                    <td className="px-4 py-3 text-text-secondary">{item.assigned_to ?? '—'}</td>
-                    <td className="px-4 py-3 text-text-secondary">{item.scheduled_date ? new Date(item.scheduled_date).toLocaleDateString() : '—'}</td>
+                    <td className="px-4 py-3 font-medium text-foreground">
+                      <Link href={`/app/dispatch/${item.id}`} className="hover:underline">{item.title}</Link>
+                    </td>
+                    <td className="px-4 py-3 text-text-secondary">{item.location_name ?? '—'}</td>
+                    <td className="px-4 py-3 text-text-secondary">{crewNames(item)}</td>
+                    <td className="px-4 py-3 text-text-secondary">{item.scheduled_start ? new Date(item.scheduled_start).toLocaleDateString() : '—'}</td>
                     <td className="px-4 py-3 text-text-secondary">{item.completed_at ? new Date(item.completed_at).toLocaleDateString() : '—'}</td>
                   </tr>
                 ))}

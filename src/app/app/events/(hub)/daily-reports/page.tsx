@@ -42,7 +42,9 @@ export default async function DailyReportsPage() {
 
   return (
     <TierGate feature="events">
-      <PageHeader title="Daily Reports" subtitle="Field reports for weather, labor, deliveries, and on-site incidents." />
+      <PageHeader title="Daily Reports" subtitle="Field reports for weather, labor, deliveries, and on-site incidents.">
+        <button className="btn-primary text-sm whitespace-nowrap hidden sm:inline-flex">+ New Daily Report</button>
+      </PageHeader>
       <EventsHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">

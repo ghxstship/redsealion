@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
+import Link from 'next/link';
 import ProcurementHubTabs from '../../ProcurementHubTabs';
 
 async function getReceipts() {
@@ -29,9 +30,15 @@ export default async function ReceivingPage() {
   const receipts = await getReceipts();
 
   return (
-    <TierGate feature="equipment">
+    <TierGate feature="profitability">
       <PageHeader title="Receiving" subtitle="Log and inspect incoming goods against purchase orders." />
       <ProcurementHubTabs />
+
+      <div className="flex justify-end mb-6">
+        <Link href="/app/procurement/receiving/new" className="inline-flex items-center gap-2 rounded-lg bg-brand-primary px-4 py-2 text-sm font-medium text-white hover:bg-brand-primary/90 transition-colors">
+          + Log Receipt
+        </Link>
+      </div>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">
         {[

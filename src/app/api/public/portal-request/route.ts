@@ -109,13 +109,14 @@ export async function POST(request: NextRequest) {
   }
 }
 
-/** CORS preflight handler */
-export async function OPTIONS() {
+/** CORS preflight handler — GAP-PTL-05: restrict to app origin */
+export async function OPTIONS(request: NextRequest) {
+  const allowedOrigin = request.headers.get('origin') || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3001';
   return new Response(null, {
     status: 204,
     headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Origin': allowedOrigin,
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
       'Access-Control-Max-Age': '86400',
     },

@@ -33,7 +33,9 @@ export default async function PunchListPage() {
 
   return (
     <TierGate feature="events">
-      <PageHeader title="Punch List" subtitle="Post-event close-out items and deficiency tracking." />
+      <PageHeader title="Punch List" subtitle="Post-event close-out items and deficiency tracking.">
+        <button className="btn-primary text-sm whitespace-nowrap hidden sm:inline-flex">+ New Punch List Item</button>
+      </PageHeader>
       <EventsHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">

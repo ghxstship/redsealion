@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
+import { logAudit } from '@/lib/audit';
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('api:crew:compliance');
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -23,6 +27,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
     .select()
     .eq('crew_profile_id', crewId)
     .eq('organization_id', perm.organizationId)
+    .is('deleted_at', null)
     .order('created_at', { ascending: false });
 
   if (error) {
@@ -31,6 +36,9 @@ export async function GET(request: NextRequest, context: RouteContext) {
       { status: 500 },
     );
   }
+
+  // GAP-M9: Read-access audit logging
+  await logAudit({ action: 'crew.compliance.viewed', entityType: 'compliance_document', entityId: crewId, metadata: { count: documents?.length ?? 0 } }, supabase).catch(() => {});
 
   return NextResponse.json({ documents: documents ?? [] });
 }
@@ -52,6 +60,8 @@ export async function POST(request: NextRequest, context: RouteContext) {
     file_size_bytes,
     issued_date,
     expiry_date,
+    issued_to,
+    notes,
   } = body as {
     document_type?: string;
     document_name?: string;
@@ -61,6 +71,8 @@ export async function POST(request: NextRequest, context: RouteContext) {
     file_size_bytes?: number;
     issued_date?: string;
     expiry_date?: string;
+    issued_to?: string;
+    notes?: string;
   };
 
   if (!document_type || !document_name) {
@@ -85,6 +97,8 @@ export async function POST(request: NextRequest, context: RouteContext) {
       file_size_bytes: file_size_bytes ?? null,
       issued_date: issued_date || null,
       expiry_date: expiry_date || null,
+      issued_to: issued_to || null,
+      notes: notes || null,
       status: file_url ? 'uploaded' : 'pending',
       created_by: perm.userId,
     })
@@ -97,6 +111,8 @@ export async function POST(request: NextRequest, context: RouteContext) {
       { status: 500 },
     );
   }
+
+  await logAudit({ action: 'crew.compliance.created', entityType: 'compliance_document', entityId: doc.id, metadata: { document_type, document_name } }, supabase);
 
   return NextResponse.json({ success: true, document: doc });
 }

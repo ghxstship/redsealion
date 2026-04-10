@@ -2,8 +2,24 @@ import { Fragment } from 'react';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { IconCheck } from '@/components/ui/Icons';
+import JsonLd from '@/components/marketing/JsonLd';
 
 import { tiers, comparisonData, type FeatureValue } from './_data';
+import PricingCards from '@/components/marketing/PricingCards';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'FlyteDeck Pricing',
+  description: 'Simple, transparent pricing for experiential production teams.',
+  breadcrumb: {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://flytedeck.io' },
+      { '@type': 'ListItem', position: 2, name: 'Pricing', item: 'https://flytedeck.io/pricing' },
+    ],
+  },
+};
 
 export const metadata: Metadata = {
   title: 'Pricing',
@@ -30,6 +46,7 @@ function CellValue({ value }: { value: FeatureValue }) {
 export default function PricingPage() {
   return (
     <>
+      <JsonLd data={jsonLd} />
       {/* Header */}
       <div className="px-8 py-20 text-center lg:px-16">
         <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 sm:text-4xl lg:text-5xl">
@@ -40,79 +57,8 @@ export default function PricingPage() {
         </p>
       </div>
 
-      {/* Pricing Cards */}
-      <div className="mx-auto grid w-full max-w-5xl gap-6 px-8 pb-24 lg:grid-cols-3 lg:px-16">
-        {tiers.map((tier) => (
-          <div
-            key={tier.name}
-            className={`flex flex-col rounded-2xl border p-8 ${
-              tier.featured
-                ? 'border-zinc-900 bg-zinc-900 text-white shadow-xl'
-                : 'border-zinc-200 bg-white'
-            }`}
-          >
-            <div className="mb-6">
-              <h3
-                className={`text-sm font-semibold uppercase tracking-wider ${
-                  tier.featured ? 'text-zinc-300' : 'text-zinc-500'
-                }`}
-              >
-                {tier.name}
-              </h3>
-              <div className="mt-3 flex items-baseline gap-1">
-                <span
-                  className={`text-4xl font-semibold tracking-tight ${
-                    tier.featured ? 'text-white' : 'text-zinc-900'
-                  }`}
-                >
-                  {tier.price}
-                </span>
-                {tier.period && (
-                  <span
-                    className={`text-sm ${tier.featured ? 'text-zinc-400' : 'text-zinc-500'}`}
-                  >
-                    {tier.period}
-                  </span>
-                )}
-              </div>
-              <p
-                className={`mt-3 text-sm ${tier.featured ? 'text-zinc-400' : 'text-zinc-500'}`}
-              >
-                {tier.description}
-              </p>
-            </div>
-
-            <ul className="mb-8 flex-1 space-y-3">
-              {tier.features.map((feature) => (
-                <li key={feature} className="flex items-start gap-2.5">
-                  <IconCheck
-                    className={`mt-0.5 h-4 w-4 shrink-0 ${
-                      tier.featured ? 'text-zinc-400' : 'text-zinc-400'
-                    }`}
-                    strokeWidth={2}
-                  />
-                  <span
-                    className={`text-sm ${tier.featured ? 'text-zinc-300' : 'text-zinc-600'}`}
-                  >
-                    {feature}
-                  </span>
-                </li>
-              ))}
-            </ul>
-
-            <Link
-              href={tier.href}
-              className={`block rounded-lg px-4 py-2.5 text-center text-sm font-medium transition-colors ${
-                tier.featured
-                  ? 'bg-white text-zinc-900 hover:bg-zinc-100'
-                  : 'bg-zinc-900 text-white hover:bg-zinc-800'
-              }`}
-            >
-              {tier.cta}
-            </Link>
-          </div>
-        ))}
-      </div>
+      {/* Pricing Cards with Billing Toggle */}
+      <PricingCards tiers={tiers} />
 
       {/* Feature Comparison Matrix */}
       <div className="mx-auto w-full max-w-5xl px-8 pb-24 lg:px-16">

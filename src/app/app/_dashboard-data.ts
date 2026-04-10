@@ -80,7 +80,7 @@ export async function getDashboardData(): Promise<{
   try {
     const supabase = await createClient();
     const ctx = await resolveCurrentOrg();
-    if (!ctx) throw new Error('No auth');
+    if (!ctx) return { stats: fallbackStats, tier: 'free' };
     const {
       data: { user },
     } = await supabase.auth.getUser();

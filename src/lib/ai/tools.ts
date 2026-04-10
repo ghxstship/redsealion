@@ -341,11 +341,11 @@ export function buildCopilotTools(
         assignee_name: z.string().optional().describe('Filter by assignee name'),
         limit: z.number().min(1).max(50).default(10),
       }),
-      execute: async ({ status, limit }: { status?: string; limit: number }) => {
+      execute: async ({ status, assignee_name, limit }: { status?: string; assignee_name?: string; limit: number }) => {
         try {
           let query = supabase
             .from('tasks')
-            .select('title, status, priority, due_date, created_at')
+            .select('title, status, priority, due_date, created_at, assignee_id')
             .eq('organization_id', orgId)
             .order('due_date', { ascending: true })
             .limit(limit);
@@ -355,7 +355,28 @@ export function buildCopilotTools(
           const { data, error } = await query;
           if (error) throw error;
 
-          const tasks = data ?? [];
+          let tasks = data ?? [];
+
+          // GAP-27: Filter by assignee name if provided
+          if (assignee_name && tasks.length > 0) {
+            const assigneeIds = [...new Set(tasks.map((t) => t.assignee_id).filter(Boolean) as string[])];
+            if (assigneeIds.length > 0) {
+              const { data: users } = await supabase
+                .from('users')
+                .select('id, full_name')
+                .in('id', assigneeIds);
+              const userMap = Object.fromEntries(
+                (users ?? []).map((u: { id: string; full_name: string }) => [u.id, u.full_name])
+              );
+              const search = assignee_name.toLowerCase();
+              tasks = tasks.filter(
+                (t) => t.assignee_id && userMap[t.assignee_id]?.toLowerCase().includes(search)
+              );
+            } else {
+              tasks = [];
+            }
+          }
+
           const byStatus: Record<string, number> = {};
           for (const t of tasks) {
             byStatus[t.status] = (byStatus[t.status] ?? 0) + 1;
@@ -439,6 +460,185 @@ export function buildCopilotTools(
         } catch (error) {
           log.error('query_events failed', {}, error);
           return { error: 'Failed to query events', count: 0, events: [] };
+        }
+      },
+    },
+
+    query_budgets: {
+      description:
+        'Query project budgets. Use for budget utilization, over/under budget, and cost tracking questions.',
+      inputSchema: z.object({
+        limit: z.number().min(1).max(20).default(10),
+      }),
+      execute: async ({ limit }: { limit: number }) => {
+        try {
+          const { data, error } = await supabase
+            .from('budgets')
+            .select('name, total_budget, spent, remaining, status, proposal_id')
+            .eq('organization_id', orgId)
+            .order('created_at', { ascending: false })
+            .limit(limit);
+
+          if (error) throw error;
+
+          const budgets = data ?? [];
+          const totalBudgeted = budgets.reduce((s, b) => s + (b.total_budget ?? 0), 0);
+          const totalSpent = budgets.reduce((s, b) => s + (b.spent ?? 0), 0);
+          const overBudget = budgets.filter((b) => (b.spent ?? 0) > (b.total_budget ?? 0));
+
+          return {
+            count: budgets.length,
+            total_budgeted: totalBudgeted,
+            total_spent: totalSpent,
+            utilization_pct: totalBudgeted > 0 ? Math.round((totalSpent / totalBudgeted) * 100) : 0,
+            over_budget_count: overBudget.length,
+            budgets: budgets.map((b) => ({
+              name: b.name,
+              budget: b.total_budget,
+              spent: b.spent,
+              remaining: b.remaining,
+              status: b.status,
+            })),
+          };
+        } catch (error) {
+          log.error('query_budgets failed', {}, error);
+          return { error: 'Failed to query budgets', count: 0, budgets: [] };
+        }
+      },
+    },
+
+    query_crew: {
+      description:
+        'Query crew members, their roles, and availability. Use for staffing, headcount, and crew management questions.',
+      inputSchema: z.object({
+        status: z.enum(['active', 'inactive', 'on_leave']).optional(),
+        limit: z.number().min(1).max(50).default(20),
+      }),
+      execute: async ({ status, limit }: { status?: string; limit: number }) => {
+        try {
+          let query = supabase
+            .from('crew_members')
+            .select('name, role, status, daily_rate, phone, email')
+            .eq('organization_id', orgId)
+            .order('name', { ascending: true })
+            .limit(limit);
+
+          if (status) query = query.eq('status', status);
+
+          const { data, error } = await query;
+          if (error) throw error;
+
+          const crew = data ?? [];
+          const byRole: Record<string, number> = {};
+          for (const c of crew) {
+            const r = c.role ?? 'unassigned';
+            byRole[r] = (byRole[r] ?? 0) + 1;
+          }
+
+          return {
+            count: crew.length,
+            by_role: byRole,
+            crew: crew.map((c) => ({
+              name: c.name,
+              role: c.role,
+              status: c.status,
+              daily_rate: c.daily_rate,
+            })),
+          };
+        } catch (error) {
+          log.error('query_crew failed', {}, error);
+          return { error: 'Failed to query crew', count: 0, crew: [] };
+        }
+      },
+    },
+
+    query_equipment: {
+      description:
+        'Query equipment inventory and availability. Use for equipment status, maintenance, and utilization questions.',
+      inputSchema: z.object({
+        status: z.enum(['available', 'in_use', 'maintenance', 'retired']).optional(),
+        limit: z.number().min(1).max(50).default(20),
+      }),
+      execute: async ({ status, limit }: { status?: string; limit: number }) => {
+        try {
+          let query = supabase
+            .from('equipment')
+            .select('name, category, status, serial_number, purchase_cost, location')
+            .eq('organization_id', orgId)
+            .order('name', { ascending: true })
+            .limit(limit);
+
+          if (status) query = query.eq('status', status);
+
+          const { data, error } = await query;
+          if (error) throw error;
+
+          const equipment = data ?? [];
+          const byStatus: Record<string, number> = {};
+          for (const e of equipment) {
+            const s = e.status ?? 'unknown';
+            byStatus[s] = (byStatus[s] ?? 0) + 1;
+          }
+
+          return {
+            count: equipment.length,
+            by_status: byStatus,
+            equipment: equipment.map((e) => ({
+              name: e.name,
+              category: e.category,
+              status: e.status,
+              serial: e.serial_number,
+              cost: e.purchase_cost,
+              location: e.location,
+            })),
+          };
+        } catch (error) {
+          log.error('query_equipment failed', {}, error);
+          return { error: 'Failed to query equipment', count: 0, equipment: [] };
+        }
+      },
+    },
+
+    query_time_entries: {
+      description:
+        'Query time tracking entries. Use for billable hours, utilization, timesheet, and work-hours questions.',
+      inputSchema: z.object({
+        billable: z.boolean().optional().describe('Filter by billable status'),
+        limit: z.number().min(1).max(50).default(20),
+      }),
+      execute: async ({ billable, limit }: { billable?: boolean; limit: number }) => {
+        try {
+          let query = supabase
+            .from('time_entries')
+            .select('description, hours, billable, date, user_id, proposal_id')
+            .eq('organization_id', orgId)
+            .order('date', { ascending: false })
+            .limit(limit);
+
+          if (billable !== undefined) query = query.eq('billable', billable);
+
+          const { data, error } = await query;
+          if (error) throw error;
+
+          const entries = data ?? [];
+          const totalHours = entries.reduce((s, e) => s + (e.hours ?? 0), 0);
+          const billableHours = entries.filter((e) => e.billable).reduce((s, e) => s + (e.hours ?? 0), 0);
+
+          return {
+            count: entries.length,
+            total_hours: totalHours,
+            billable_hours: billableHours,
+            utilization_pct: totalHours > 0 ? Math.round((billableHours / totalHours) * 100) : 0,
+            entries: entries.map((e) => ({
+              description: e.description,
+              hours: e.hours,
+              billable: e.billable,
+              date: e.date,
+            })),
+          };
+        } catch (error) {
+          log.error('query_time_entries failed', {}, error);
+          return { error: 'Failed to query time entries', count: 0, entries: [] };
         }
       },
     },

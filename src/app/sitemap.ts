@@ -116,6 +116,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'yearly',
       priority: 0.5,
     },
+    {
+      url: `${BASE_URL}/privacy`,
+      changeFrequency: 'yearly',
+      priority: 0.3,
+    },
+    {
+      url: `${BASE_URL}/terms`,
+      changeFrequency: 'yearly',
+      priority: 0.3,
+    },
   ];
 
   // Dynamic: Published portal pages
@@ -141,10 +151,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           return org?.slug && proj?.slug;
         })
         .map((portal) => {
-          const org = (portal.organizations as unknown) as { slug: string };
           const proj = (portal.projects as unknown) as { slug: string };
           return {
-            url: `${BASE_URL}/portal/${org.slug}/projects/${proj.slug}`,
+            // GAP-PTL-14: Use the V1 API endpoint which actually exists
+            url: `${BASE_URL}/api/v1/portals/${proj.slug}/${portal.portal_type}`,
             lastModified: portal.updated_at ? new Date(portal.updated_at) : undefined,
             changeFrequency: 'weekly' as const,
             priority: 0.6,

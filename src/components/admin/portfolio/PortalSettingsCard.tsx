@@ -110,7 +110,10 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
           });
         }
       }
-    } catch { /* silent */ }
+    } catch (err) {
+      // GAP-PTL-31: Surface load errors to the user
+      setMessage(err instanceof Error ? `Load error: ${err.message}` : 'Failed to load portal data.');
+    }
     finally { setIsLoading(false); }
   }, [projectId, activeTab]);
 
@@ -139,8 +142,13 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
-        if (res.ok) setMessage('Portal settings saved successfully.');
-        else setMessage('Failed to save portal settings.');
+        if (res.ok) {
+          setMessage('Portal settings saved successfully.');
+        } else {
+          // GAP-PTL-31: Parse and display API error details
+          const errData = await res.json().catch(() => ({}));
+          setMessage(errData.error || `Failed to save (${res.status}).`);
+        }
       } else {
         // Create new portal via API
         const res = await fetch('/api/project-portals', {
@@ -159,11 +167,14 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
           }
           setMessage('Portal created successfully.');
         } else {
-          setMessage('Failed to create portal.');
+          // GAP-PTL-31: Parse and display API error details
+          const errData = await res.json().catch(() => ({}));
+          setMessage(errData.error || `Failed to create portal (${res.status}).`);
         }
       }
-    } catch {
-      setMessage('Failed to save portal settings.');
+    } catch (err) {
+      // GAP-PTL-31: Surface create/update errors
+      setMessage(err instanceof Error ? err.message : 'Failed to save portal settings.');
     } finally {
       setIsSaving(false);
     }
@@ -235,13 +246,23 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
           <div className="text-sm text-text-muted">Loading portal data...</div>
         ) : (
           <>
-            {/* Published toggle */}
+            {/* Published toggle — GAP-PTL-17: with confirmation */}
             <div className="flex items-center space-x-2">
               <input
                 type="checkbox"
                 id="is_published"
                 checked={data.is_published || false}
-                onChange={(e) => setData({ ...data, is_published: e.target.checked })}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    // GAP-PTL-17: Confirm before publishing
+                    const confirmed = window.confirm(
+                      `Are you sure you want to publish the ${activeLabel} portal? ` +
+                      'This will make it publicly accessible via the production site.'
+                    );
+                    if (!confirmed) return;
+                  }
+                  setData({ ...data, is_published: e.target.checked });
+                }}
               />
               <label htmlFor="is_published" className="text-sm font-medium">
                 Publish this portal publicly

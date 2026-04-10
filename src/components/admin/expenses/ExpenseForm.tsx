@@ -10,6 +10,7 @@ import FormSelect from '@/components/ui/FormSelect';
 import FormTextarea from '@/components/ui/FormTextarea';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
+import ReceiptUploader from './ReceiptUploader';
 
 const CATEGORIES = ['travel', 'meals', 'supplies', 'equipment', 'software', 'other'] as const;
 
@@ -33,6 +34,8 @@ export default function ExpenseForm() {
       .catch(() => {});
   }, []);
 
+  const [receipts, setReceipts] = useState<Array<{ url: string; name: string }>>([]);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
@@ -49,6 +52,7 @@ export default function ExpenseForm() {
           expense_date: date,
           proposal_id: proposalId || null,
           is_billable: isBillable,
+          receipts,
         }),
       });
 
@@ -80,6 +84,7 @@ export default function ExpenseForm() {
               setCategory('');
               setAmount('');
               setDescription('');
+              setReceipts([]);
               setDate(new Date().toISOString().split('T')[0]);
             }}
             className="text-sm font-medium text-foreground hover:underline"
@@ -179,6 +184,13 @@ export default function ExpenseForm() {
           <FormLabel htmlFor="is_billable" className="mb-0 cursor-pointer">
             Billable to client
           </FormLabel>
+        </div>
+
+        <div className="pt-4 border-t border-border mt-4">
+          <FormLabel>Receipts (Optional)</FormLabel>
+          <ReceiptUploader 
+            onUploadComplete={(url, name) => setReceipts(prev => [...prev, { url, name }])} 
+          />
         </div>
       </div>
 

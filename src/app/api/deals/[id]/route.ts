@@ -2,6 +2,19 @@ import { NextResponse } from 'next/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
 import { dispatchWebhookEvent } from '@/lib/webhooks/outbound';
+import { checkAutomationTriggers } from '@/lib/automations/trigger';
+import type { DealStage } from '@/types/database';
+
+const VALID_DEAL_TRANSITIONS: Record<string, string[]> = {
+  lead: ['qualified', 'lost', 'on_hold'],
+  qualified: ['proposal_sent', 'lost', 'on_hold'],
+  proposal_sent: ['negotiation', 'lost', 'on_hold'],
+  negotiation: ['verbal_yes', 'lost', 'on_hold'],
+  verbal_yes: ['contract_signed', 'lost', 'on_hold'],
+  contract_signed: [],
+  lost: ['lead'],       // can reopen
+  on_hold: ['lead', 'qualified', 'proposal_sent', 'negotiation'],
+};
 
 export async function GET(
   _request: Request,
@@ -19,6 +32,7 @@ export async function GET(
     .select('*, clients(id, company_name), deal_activities(*)')
     .eq('id', id)
     .eq('organization_id', perm.organizationId)
+    .is('deleted_at', null)
     .single();
 
   if (error || !deal) return NextResponse.json({ error: 'Deal not found' }, { status: 404 });
@@ -85,7 +99,19 @@ export async function PATCH(
   if (value !== undefined) updates.deal_value = value;
   if (probability !== undefined) updates.probability = probability;
   if (expected_close_date !== undefined) updates.expected_close_date = expected_close_date;
-  if (stage !== undefined) updates.stage = stage;
+  if (stage !== undefined && stage !== existingDeal.stage) {
+    const currentStage = existingDeal.stage as string;
+    const allowedNext = VALID_DEAL_TRANSITIONS[currentStage] || [];
+    if (!allowedNext.includes(stage)) {
+      return NextResponse.json({ error: `Invalid stage transition from ${currentStage} to ${stage}` }, { status: 400 });
+    }
+    updates.stage = stage;
+    updates.stage_entered_at = new Date().toISOString();
+    if (currentStage === 'lost' && stage === 'lead') {
+      updates.reopened_at = new Date().toISOString();
+      updates.reopen_count = (existingDeal.reopen_count || 0) + 1;
+    }
+  }
   if (notes !== undefined) updates.notes = notes;
   if (lost_reason !== undefined) updates.lost_reason = lost_reason;
   if (owner_id !== undefined) updates.owner_id = owner_id;
@@ -138,6 +164,18 @@ export async function PATCH(
 
     // Dispatch stage-specific webhooks
     dispatchWebhookEvent(orgId, 'deal.stage_changed', { deal_id: id, old_stage: existingDeal.stage, new_stage: stage }).catch(() => {});
+
+    // Fire automation triggers
+    checkAutomationTriggers('deal_stage_change', {
+      org_id: orgId,
+      deal_id: id,
+      deal_title: deal.title,
+      old_stage: existingDeal.stage,
+      new_stage: stage,
+      deal_value: deal.deal_value,
+      entity_type: 'deal',
+      entity_id: id,
+    }).catch(() => {});
     if (stage === 'contract_signed') {
       dispatchWebhookEvent(orgId, 'deal.won', { deal }).catch(() => {});
     }
@@ -167,7 +205,7 @@ export async function DELETE(
 
   const { error } = await supabase
     .from('deals')
-    .delete()
+    .update({ deleted_at: new Date().toISOString() })
     .eq('id', id)
     .eq('organization_id', orgId);
 

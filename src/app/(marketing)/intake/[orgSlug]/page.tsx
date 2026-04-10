@@ -1,21 +1,36 @@
 import { notFound } from 'next/navigation';
-import { createClient } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase/server';
 import { LeadIntakeForm } from '@/components/forms/LeadIntakeForm';
 import Link from 'next/link';
+import type { Metadata } from 'next';
 
 interface IntakePageProps {
   params: Promise<{ orgSlug: string }>;
 }
 
+export async function generateMetadata({ params }: IntakePageProps): Promise<Metadata> {
+  const { orgSlug } = await params;
+  const supabase = await createServiceClient();
+  const { data: org } = await supabase
+    .from('organizations')
+    .select('name')
+    .eq('slug', orgSlug)
+    .single();
+
+  return {
+    title: org ? `Start Your Project — ${org.name}` : 'Start Your Project',
+    description: org
+      ? `Submit a project inquiry to ${org.name}. Tell us about your upcoming event, activation, or production.`
+      : 'Submit a project inquiry to get started.',
+  };
+}
+
 export default async function IntakePage({ params }: IntakePageProps) {
   const { orgSlug } = await params;
   
-  // We use the normal client but might need service client if the slug lookup is restricted
-  // Wait, `organizations` table usually has public read or at least unauthenticated read for slug resolving.
-  // Assuming it can be read without auth for this purpose.
-  // We'll use the server client and let RLS handle it. If RLS blocks unauthenticated users from reading orgs,
-  // we would need a service role here or build a public view.
-  const supabase = await createClient();
+  // Service client required: the organizations table has RLS that requires
+  // authentication, but this is a public-facing page for unauthenticated visitors.
+  const supabase = await createServiceClient();
   
   const { data: org } = await supabase
     .from('organizations')

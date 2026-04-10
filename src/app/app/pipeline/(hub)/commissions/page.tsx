@@ -12,12 +12,13 @@ async function getCommissions() {
     if (!ctx) return [];
     const { data } = await supabase
       .from('deals')
-      .select('id, title, stage, value, probability, owner_id, users:owner_id(full_name)')
+      .select('id, title, stage, deal_value, probability, owner_id, users:owner_id(full_name)')
       .eq('organization_id', ctx.organizationId)
-      .in('stage', ['won', 'closed_won', 'completed'])
-      .order('value', { ascending: false });
+      .in('stage', ['contract_signed'])
+      .is('deleted_at', null)
+      .order('deal_value', { ascending: false });
     return (data ?? []).map((d: Record<string, unknown>) => ({
-      id: d.id as string, title: d.title as string, stage: d.stage as string, value: (d.value ?? 0) as number,
+      id: d.id as string, title: d.title as string, stage: d.stage as string, value: (d.deal_value ?? 0) as number,
       owner_name: Array.isArray(d.users) ? (d.users as Record<string, unknown>[])[0]?.full_name as string : (d.users as Record<string, unknown> | null)?.full_name as string ?? 'Unassigned',
     }));
   } catch { return []; }

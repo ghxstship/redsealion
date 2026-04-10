@@ -21,7 +21,7 @@ export default function ReceiptUploader({
   onUploadComplete,
 }: {
   expenseId?: string;
-  onUploadComplete?: (url: string) => void;
+  onUploadComplete?: (url: string, name: string) => void;
 }) {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -84,9 +84,11 @@ export default function ReceiptUploader({
               ),
             );
             if (onUploadComplete && data.url) {
-              onUploadComplete(data.url);
+              onUploadComplete(data.url, file.name);
             }
-            router.refresh();
+            if (expenseId) {
+              router.refresh();
+            }
           })
           .catch((err) => {
             setFiles((prev) =>

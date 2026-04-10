@@ -11,22 +11,30 @@ async function getDocsByType(docType: string) {
     if (!ctx) return [];
     const { data } = await supabase
       .from('compliance_documents')
-      .select('id, document_name, status, expiry_date, issued_to, created_at')
+      .select('id, document_name, status, expiry_date, issued_to, notes, created_at')
       .eq('organization_id', ctx.organizationId)
       .eq('document_type', docType)
+      .is('deleted_at', null)
       .order('expiry_date', { ascending: true });
     return (data ?? []) as Array<{
       id: string; document_name: string; status: string;
-      expiry_date: string | null; issued_to: string | null; created_at: string;
+      expiry_date: string | null; issued_to: string | null; notes: string | null; created_at: string;
     }>;
   } catch { return []; }
 }
 
 function StatusBadge({ status }: { status: string }) {
-  const colors = status === 'valid' ? 'bg-green-50 text-green-700'
+  const colors = status === 'verified' ? 'bg-green-50 text-green-700'
     : status === 'expired' ? 'bg-red-50 text-red-700'
+    : status === 'rejected' ? 'bg-zinc-100 text-zinc-500'
+    : status === 'uploaded' ? 'bg-blue-50 text-blue-700'
     : 'bg-yellow-50 text-yellow-700';
-  return <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${colors}`}>{status}</span>;
+  const label = status === 'verified' ? 'Verified'
+    : status === 'expired' ? 'Expired'
+    : status === 'rejected' ? 'Rejected'
+    : status === 'uploaded' ? 'Uploaded'
+    : 'Pending';
+  return <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${colors}`}>{label}</span>;
 }
 
 function ComplianceTable({ docs, emptyMsg }: { docs: Awaited<ReturnType<typeof getDocsByType>>; emptyMsg: string }) {

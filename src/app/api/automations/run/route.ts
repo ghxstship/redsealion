@@ -198,6 +198,7 @@ export async function POST(request: NextRequest) {
       .select()
       .eq('id', automationId)
       .eq('organization_id', orgId)
+      .is('deleted_at', null)
       .single();
 
     if (!automation) {
@@ -239,18 +240,32 @@ export async function POST(request: NextRequest) {
         .update({
           status: result.success ? 'completed' : 'failed',
           result,
+          error: result.error ?? null,
           completed_at: new Date().toISOString(),
         })
         .eq('id', run.id);
     }
 
-    // Increment run count
+    // Increment run count — use SQL-based increment to avoid race conditions
+    await supabase.rpc('increment_counter', {
+      table_name: 'automations',
+      row_id: automationId,
+      column_name: 'run_count',
+    }).then(() => {}, () => {
+      // Fallback if rpc doesn't exist
+      supabase
+        .from('automations')
+        .update({
+          run_count: ((automation.run_count as number) ?? 0) + 1,
+          last_run_at: new Date().toISOString(),
+        })
+        .eq('id', automationId)
+        .then(() => {}, () => {});
+    });
+
     await supabase
       .from('automations')
-      .update({
-        run_count: (automation.run_count ?? 0) + 1,
-        last_run_at: new Date().toISOString(),
-      })
+      .update({ last_run_at: new Date().toISOString() })
       .eq('id', automationId);
 
     return NextResponse.json({

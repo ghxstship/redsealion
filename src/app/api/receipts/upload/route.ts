@@ -58,13 +58,16 @@ export async function POST(request: NextRequest) {
 
     const publicUrl = urlData?.publicUrl ?? '';
 
-    // If expense_id provided, update the expense with the receipt URL
+    // If expense_id provided, update the expense with the receipt URL by adding to expense_receipts
     if (expenseId) {
       await supabase
-        .from('expenses')
-        .update({ receipt_url: publicUrl })
-        .eq('id', expenseId)
-        .eq('organization_id', perm.organizationId);
+        .from('expense_receipts')
+        .insert({ 
+          file_url: publicUrl,
+          expense_id: expenseId,
+          organization_id: perm.organizationId,
+          file_name: file.name
+        });
     }
 
     return NextResponse.json({

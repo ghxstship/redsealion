@@ -1,5 +1,20 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import JsonLd from '@/components/marketing/JsonLd';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'FlyteDeck Features',
+  description: 'Explore FlyteDeck features: interactive proposals, CRM, invoicing, time tracking, budgeting, and AI.',
+  breadcrumb: {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://flytedeck.io' },
+      { '@type': 'ListItem', position: 2, name: 'Features', item: 'https://flytedeck.io/features' },
+    ],
+  },
+};
 
 export const metadata: Metadata = {
   title: 'Features',
@@ -224,7 +239,9 @@ const categories: FeatureCategory[] = [
 
 export default function FeaturesPage() {
   return (
-    <div className="px-8 py-16 lg:px-16">
+    <>
+      <JsonLd data={jsonLd} />
+      <div className="px-8 py-16 lg:px-16">
       {/* Hero */}
       <div className="mx-auto max-w-3xl text-center">
         <h1 className="text-4xl font-bold tracking-tight text-zinc-900 sm:text-5xl">
@@ -284,5 +301,6 @@ export default function FeaturesPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }

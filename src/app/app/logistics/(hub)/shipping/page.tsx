@@ -2,22 +2,36 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
+import ShipmentsHeader from '@/components/admin/warehouse/ShipmentsHeader';
 import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
 import LogisticsHubTabs from "../../LogisticsHubTabs";
 
-async function getOutboundShipments() {
+async function getOutboundShipments(page: number, limit: number, statusFilter?: string) {
   try {
     const supabase = await createClient();
     const ctx = await resolveCurrentOrg();
-    if (!ctx) return [];
-    const { data } = await supabase
+    if (!ctx) return { data: [], count: 0 };
+    
+    let query = supabase
       .from('shipments')
-      .select('id, shipment_number, status, carrier, tracking_number, destination_address, ship_date, estimated_arrival, num_pieces, shipping_cost_cents, events(name), clients(name)')
+      .select('id, shipment_number, status, carrier, tracking_number, destination_address, ship_date, estimated_arrival, num_pieces, shipping_cost_cents, events(name), clients(name)', { count: 'exact' })
       .eq('organization_id', ctx.organizationId)
       .eq('direction', 'outbound')
+      .is('deleted_at', null)
       .order('ship_date', { ascending: false });
-    return (data ?? []).map((s: Record<string, unknown>) => ({
+
+    if (statusFilter && statusFilter !== 'all') {
+      query = query.eq('status', statusFilter);
+    }
+    
+    const from = (page - 1) * limit;
+    const to = from + limit - 1;
+    query = query.range(from, to);
+
+    const { data, count } = await query;
+    
+    const mapped = (data ?? []).map((s: Record<string, unknown>) => ({
       id: s.id as string, shipment_number: s.shipment_number as string, status: s.status as string,
       carrier: s.carrier as string | null, tracking_number: s.tracking_number as string | null,
       destination: s.destination_address as string | null,
@@ -26,7 +40,8 @@ async function getOutboundShipments() {
       event_name: Array.isArray(s.events) ? (s.events as Record<string, unknown>[])[0]?.name as string : (s.events as Record<string, unknown> | null)?.name as string ?? null,
       client_name: Array.isArray(s.clients) ? (s.clients as Record<string, unknown>[])[0]?.name as string : (s.clients as Record<string, unknown> | null)?.name as string ?? null,
     }));
-  } catch { return []; }
+    return { data: mapped, count: count ?? 0 };
+  } catch { return { data: [], count: 0 }; }
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -35,21 +50,35 @@ const STATUS_COLORS: Record<string, string> = {
   delivered: 'bg-green-50 text-green-700', cancelled: 'bg-red-50 text-red-700',
 };
 
-export default async function ShippingPage() {
-  const shipments = await getOutboundShipments();
-  const inTransit = shipments.filter((s) => ['shipped', 'in_transit'].includes(s.status)).length;
-  const totalCost = shipments.reduce((s, sh) => s + sh.shipping_cost_cents, 0);
+export default async function ShippingPage({ searchParams }: { searchParams: Promise<{ page?: string; status?: string }> }) {
+  const params = await searchParams;
+  const page = Math.max(1, parseInt(params.page ?? '1', 10));
+  const statusFilter = params.status ?? 'all';
+  const limit = 25;
+  
+  const { data: shipments, count } = await getOutboundShipments(page, limit, statusFilter);
+  const totalPages = Math.ceil(count / limit);
+
+  // We fetch unpaginated counts purely for the quick KPI dash items
+  const supabase = await createClient();
+  const ctx = await resolveCurrentOrg();
+  const { data: allShipments } = await supabase.from('shipments').select('status, shipping_cost_cents').eq('organization_id', ctx?.organizationId ?? '').eq('direction', 'outbound').is('deleted_at', null);
+  
+  const inTransit = (allShipments ?? []).filter((s: any) => ['shipped', 'in_transit'].includes(s.status)).length;
+  const totalCost = (allShipments ?? []).reduce((s: number, sh: any) => s + sh.shipping_cost_cents, 0);
 
   return (
     <TierGate feature="warehouse">
-      <PageHeader title="Shipping" subtitle="Outbound shipments — equipment and materials sent to events, clients, and sites." />
+      <PageHeader title="Shipping" subtitle="Outbound shipments — equipment and materials sent to events, clients, and sites.">
+        <ShipmentsHeader defaultDirection="outbound" />
+      </PageHeader>
       <LogisticsHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">
         {[
-          { label: 'Total Shipments', value: String(shipments.length) },
+          { label: 'Total Shipments', value: String(allShipments?.length ?? 0) },
           { label: 'In Transit', value: String(inTransit), color: 'text-purple-600' },
-          { label: 'Delivered', value: String(shipments.filter((s) => s.status === 'delivered').length), color: 'text-green-600' },
+          { label: 'Delivered', value: String((allShipments ?? []).filter((s: any) => s.status === 'delivered').length), color: 'text-green-600' },
           { label: 'Shipping Cost', value: formatCurrency(totalCost / 100) },
         ].map((stat) => (
           <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
@@ -59,40 +88,63 @@ export default async function ShippingPage() {
         ))}
       </div>
 
-      <div className="rounded-xl border border-border bg-background overflow-hidden">
+      <div className="flex items-center justify-between mb-4">
+         <div className="flex gap-2">
+            <Link href="?status=all" className={`px-3 py-1.5 text-xs rounded-full border ${statusFilter === 'all' ? 'bg-foreground text-background' : 'border-border text-text-muted'}`}>All</Link>
+            <Link href="?status=pending" className={`px-3 py-1.5 text-xs rounded-full border ${statusFilter === 'pending' ? 'bg-foreground text-background' : 'border-border text-text-muted'}`}>Pending</Link>
+            <Link href="?status=in_transit" className={`px-3 py-1.5 text-xs rounded-full border ${statusFilter === 'in_transit' ? 'bg-foreground text-background' : 'border-border text-text-muted'}`}>In Transit</Link>
+         </div>
+      </div>
+
+      <div className="rounded-xl border border-border bg-background overflow-hidden relative">
         {shipments.length === 0 ? (
-          <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No outbound shipments. Create a shipment to track equipment and materials leaving the warehouse.</p></div>
+          <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No outbound shipments found.</p></div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr>
-                  <th className="px-4 py-3">Shipment #</th>
-                  <th className="px-4 py-3">Destination</th>
-                  <th className="px-4 py-3">Carrier</th>
-                  <th className="px-4 py-3">Tracking</th>
-                  <th className="px-4 py-3">Ship Date</th>
-                  <th className="px-4 py-3">ETA</th>
-                  <th className="px-4 py-3">Pcs</th>
-                  <th className="px-4 py-3">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {shipments.map((s) => (
-                  <tr key={s.id} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3"><Link href={`/app/logistics/shipments/${s.id}`} className="font-medium text-foreground hover:underline">{s.shipment_number}</Link></td>
-                    <td className="px-4 py-3 text-text-secondary">{s.event_name ?? s.client_name ?? s.destination ?? '—'}</td>
-                    <td className="px-4 py-3 text-text-secondary">{s.carrier ?? '—'}</td>
-                    <td className="px-4 py-3 font-mono text-xs text-text-muted">{s.tracking_number ?? '—'}</td>
-                    <td className="px-4 py-3 text-text-secondary">{s.ship_date ? new Date(s.ship_date).toLocaleDateString() : '—'}</td>
-                    <td className="px-4 py-3 text-text-secondary">{s.estimated_arrival ? new Date(s.estimated_arrival).toLocaleDateString() : '—'}</td>
-                    <td className="px-4 py-3 tabular-nums">{s.num_pieces}</td>
-                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[s.status]}`}>{s.status.replace('_', ' ')}</span></td>
+          <>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                  <tr>
+                    <th className="px-4 py-3">
+                      <input type="checkbox" className="rounded" /> {/* Bulk checkbox placeholder */}
+                    </th>
+                    <th className="px-4 py-3">Shipment #</th>
+                    <th className="px-4 py-3">Destination</th>
+                    <th className="px-4 py-3">Carrier</th>
+                    <th className="px-4 py-3">Tracking</th>
+                    <th className="px-4 py-3">Ship Date</th>
+                    <th className="px-4 py-3">ETA</th>
+                    <th className="px-4 py-3">Pcs</th>
+                    <th className="px-4 py-3">Status</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {shipments.map((s) => (
+                    <tr key={s.id} className="hover:bg-bg-secondary/50 transition-colors">
+                      <td className="px-4 py-3"><input type="checkbox" className="rounded" /></td>
+                      <td className="px-4 py-3"><Link href={`/app/logistics/shipments/${s.id}`} className="font-medium text-foreground hover:underline">{s.shipment_number}</Link></td>
+                      <td className="px-4 py-3 text-text-secondary">{s.event_name ?? s.client_name ?? s.destination ?? '—'}</td>
+                      <td className="px-4 py-3 text-text-secondary">{s.carrier ?? '—'}</td>
+                      <td className="px-4 py-3 font-mono text-xs text-text-muted">{s.tracking_number ?? '—'}</td>
+                      <td className="px-4 py-3 text-text-secondary">{s.ship_date ? new Date(s.ship_date).toLocaleDateString() : '—'}</td>
+                      <td className="px-4 py-3 text-text-secondary">{s.estimated_arrival ? new Date(s.estimated_arrival).toLocaleDateString() : '—'}</td>
+                      <td className="px-4 py-3 tabular-nums">{s.num_pieces}</td>
+                      <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[s.status]}`}>{s.status.replace('_', ' ')}</span></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            
+            {/* Pagination block */}
+            <div className="flex items-center justify-between border-t border-border px-4 py-3 bg-bg-secondary">
+              <span className="text-xs text-text-muted">Showing {(page - 1) * limit + 1} to {Math.min(page * limit, count)} of {count}</span>
+              <div className="flex items-center gap-2">
+                <Link href={`?page=${Math.max(page - 1, 1)}&status=${statusFilter}`} className={`px-2 py-1 border border-border rounded text-xs ${page <= 1 ? 'opacity-50 pointer-events-none' : ''}`}>Prev</Link>
+                <Link href={`?page=${Math.min(page + 1, totalPages)}&status=${statusFilter}`} className={`px-2 py-1 border border-border rounded text-xs ${page >= totalPages ? 'opacity-50 pointer-events-none' : ''}`}>Next</Link>
+              </div>
+            </div>
+          </>
         )}
       </div>
     </TierGate>

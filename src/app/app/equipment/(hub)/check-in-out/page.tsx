@@ -3,6 +3,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import EquipmentHubTabs from '../../EquipmentHubTabs';
+import CheckInOutHeader from '@/components/admin/equipment/CheckInOutHeader';
 
 async function getCheckouts() {
   try {
@@ -70,9 +71,24 @@ export default async function CheckInOutPage() {
   const returned = checkouts.filter((c) => c.status === 'checked_in');
   const issues = checkouts.filter((c) => ['lost', 'damaged_return'].includes(c.status));
 
+  // Determine available vs deployed assets for the standalone header
+  const supabase = await createClient();
+  const orgId = (await resolveCurrentOrg())?.organizationId;
+  let availableAssets = [];
+  let deployedAssets = [];
+  if (orgId) {
+    const { data: assets } = await supabase.from('assets').select('id, name, status').eq('organization_id', orgId);
+    if (assets) {
+      availableAssets = assets.filter((a) => a.status === 'available');
+      deployedAssets = assets.filter((a) => a.status === 'deployed');
+    }
+  }
+
   return (
     <TierGate feature="equipment">
-      <PageHeader title="Check In / Out" subtitle="Unified asset custody tracking for rentals, events, and productions." />
+      <PageHeader title="Check In / Out" subtitle="Unified asset custody tracking for rentals, events, and productions.">
+        <CheckInOutHeader availableAssets={availableAssets} deployedAssets={deployedAssets} />
+      </PageHeader>
       <EquipmentHubTabs />
 
       {/* Stats */}

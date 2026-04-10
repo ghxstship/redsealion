@@ -5,6 +5,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
 import FabricationHubTabs from '../FabricationHubTabs';
+import NewOrderButton from '@/components/fabrication/NewOrderButton';
 
 async function getOrders() {
   try {
@@ -33,7 +34,10 @@ export default async function FabricationOrdersPage() {
 
   return (
     <TierGate feature="equipment">
-      <PageHeader title="Fabrication" subtitle="Manage fabrication, print, and manufacturing orders from draft to delivery." />
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+        <PageHeader title="Fabrication" subtitle="Manage fabrication, print, and manufacturing orders from draft to delivery." />
+        <NewOrderButton />
+      </div>
       <FabricationHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">

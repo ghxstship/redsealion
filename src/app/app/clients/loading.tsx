@@ -1,4 +1,4 @@
-export default function ProposalsLoading() {
+export default function ClientsLoading() {
   return (
     <div className="animate-pulse space-y-6">
       <div className="h-8 w-48 rounded bg-zinc-200" />

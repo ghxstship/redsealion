@@ -1,6 +1,22 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { IconCheck } from '@/components/ui/Icons';
+import JsonLd from '@/components/marketing/JsonLd';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'FlyteDeck vs Monday.com',
+  description: 'See why experiential production teams choose FlyteDeck over Monday.com.',
+  breadcrumb: {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://flytedeck.io' },
+      { '@type': 'ListItem', position: 2, name: 'Compare', item: 'https://flytedeck.io/compare' },
+      { '@type': 'ListItem', position: 3, name: 'Monday.com', item: 'https://flytedeck.io/compare/monday' },
+    ],
+  },
+};
 
 export const metadata: Metadata = {
   title: "FlyteDeck vs Monday.com — Purpose-Built Production Management",
@@ -56,6 +72,19 @@ const dayOneGains = [
 export default function MondayComparisonPage() {
   return (
     <>
+      <JsonLd data={jsonLd} />
+
+      {/* Breadcrumb */}
+      <nav className="px-8 pt-8 lg:px-16" aria-label="Breadcrumb">
+        <ol className="flex items-center gap-2 text-sm text-zinc-400">
+          <li><Link href="/" className="transition-colors hover:text-zinc-600">Home</Link></li>
+          <li>/</li>
+          <li><Link href="/compare" className="transition-colors hover:text-zinc-600">Compare</Link></li>
+          <li>/</li>
+          <li className="text-zinc-600">Monday.com</li>
+        </ol>
+      </nav>
+
       {/* Hero */}
       <div className="px-8 py-20 text-center lg:px-16">
         <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 sm:text-4xl lg:text-5xl">

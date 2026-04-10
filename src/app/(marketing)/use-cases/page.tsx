@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { IconStar, IconCalendar, IconNavLogistics, IconNavActivations, IconUsers, IconNavAI, IconNavEvents, IconNavProduction, IconNavReports, IconChevronRight } from '@/components/ui/Icons';
-import StatusBadge from '@/components/ui/StatusBadge';
 import JsonLd from '@/components/marketing/JsonLd';
 
 export const metadata: Metadata = {

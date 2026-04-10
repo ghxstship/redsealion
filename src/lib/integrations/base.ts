@@ -8,6 +8,10 @@ const log = createLogger('integrations');
 export interface SyncResult {
   entityType: string;
   entityCount: number;
+  recordsProcessed?: number;
+  recordsFiltered?: number;
+  recordsFailed?: number;
+  details?: Record<string, unknown>;
   errors: string[];
 }
 

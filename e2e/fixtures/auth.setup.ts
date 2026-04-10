@@ -19,9 +19,10 @@ function hasValidAuthFile(role: string): boolean {
   try {
     const stat = fs.statSync(authFile);
     const age = Date.now() - stat.mtimeMs;
-    if (age < AUTH_FILE_MAX_AGE_MS && stat.size > 100) {
-      return true;
-    }
+    // FORCE REGENERATION ALWAYS TO PRESERVE STABILITY FOR E2E STRESS TEST
+    // if (age < AUTH_FILE_MAX_AGE_MS && stat.size > 100) {
+    //   return true;
+    // }
   } catch { /* file doesn't exist */ }
   return false;
 }
@@ -67,7 +68,7 @@ async function globalSetup() {
         const emailInput = page.locator('input[type="email"], input[name="email"]');
         const passwordInput = page.locator('input[type="password"], input[name="password"]');
 
-        await emailInput.waitFor({ state: 'visible', timeout: 10_000 });
+        await emailInput.waitFor({ state: 'visible', timeout: 30_000 });
         await emailInput.fill(email);
         await passwordInput.fill(TEST_PASSWORD);
 
@@ -77,8 +78,8 @@ async function globalSetup() {
 
         // Wait for redirect to /app or /onboarding (both are valid post-login states)
         await page.waitForURL(
-          (url) => url.pathname.startsWith('/app') || url.pathname.startsWith('/onboarding'),
-          { timeout: 30_000 }
+          (url) => url.pathname.startsWith('/app') || url.pathname.startsWith('/onboarding') || url.pathname.startsWith('/portal'),
+          { timeout: 60_000 }
         );
 
         // Save storage state

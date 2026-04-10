@@ -74,6 +74,8 @@ export async function expectAccessDenied(page: Page) {
     page.locator('[data-testid="access-denied"]'),
     page.locator('text=not available on your current plan'),
     page.locator('text=requires'),
+    page.locator('text=Access Restricted'),
+    page.locator('text=permission to view'),
   ];
 
   let found = false;
@@ -107,17 +109,23 @@ export async function expectRedirectToLogin(page: Page) {
  * Admin/PM roles see all nav items; restricted roles see a filtered subset.
  */
 export async function expectSidebarFiltered(page: Page, role: string) {
-  const sidebar = page.locator('nav, [data-testid="sidebar"], aside').first();
-  await expect(sidebar).toBeVisible({ timeout: 5_000 });
+  // The sidebar is an <aside> that contains a <nav> with links.
+  // On desktop (md+) it's translated into view; wait for it to appear in the DOM.
+  const sidebar = page.locator('aside');
+  await expect(sidebar.first()).toBeAttached({ timeout: 45_000 });
 
-  const navLinks = await sidebar.locator('a[href^="/app"]').allTextContents();
-  expect(navLinks.length).toBeGreaterThan(0);
+  // Wait for at least one navigation link to be present (client hydration)
+  const navLinks = sidebar.first().locator('a[href^="/app"]');
+  await expect(navLinks.first()).toBeAttached({ timeout: 45_000 });
+
+  const linkTexts = await navLinks.allTextContents();
+  expect(linkTexts.length).toBeGreaterThan(0);
 
   // Client roles should NOT see admin nav items
   if (role === 'client' || role === 'viewer') {
     const adminOnlyLabels = ['Settings', 'Automations', 'Integrations'];
     for (const label of adminOnlyLabels) {
-      expect(navLinks.join(' ')).not.toContain(label);
+      expect(linkTexts.join(' ')).not.toContain(label);
     }
   }
 }

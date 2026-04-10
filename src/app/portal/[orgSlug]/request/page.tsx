@@ -1,9 +1,17 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import PortalRequestForm from '@/components/portal/PortalRequestForm';
+import type { Metadata } from 'next';
 
 interface PortalRequestPageProps {
   params: Promise<{ orgSlug: string }>;
+}
+
+export async function generateMetadata({ params }: PortalRequestPageProps): Promise<Metadata> {
+  const { orgSlug } = await params;
+  const supabase = await createClient();
+  const { data: org } = await supabase.from('organizations').select('name').eq('slug', orgSlug).single();
+  return { title: `Request Work | ${org?.name ?? orgSlug}` };
 }
 
 export default async function PortalRequestPage({ params }: PortalRequestPageProps) {

@@ -2,7 +2,6 @@ import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
-import Card from '@/components/ui/Card';
 import ComplianceHubTabs from '../ComplianceHubTabs';
 
 interface ComplianceStats {
@@ -22,7 +21,8 @@ async function getComplianceStats(): Promise<ComplianceStats> {
     const { data } = await supabase
       .from('compliance_documents')
       .select('id, status, expiry_date')
-      .eq('organization_id', ctx.organizationId);
+      .eq('organization_id', ctx.organizationId)
+      .is('deleted_at', null);
 
     if (!data) return fallback;
 
@@ -31,7 +31,7 @@ async function getComplianceStats(): Promise<ComplianceStats> {
 
     return {
       total: data.length,
-      valid: data.filter((d) => d.status === 'valid').length,
+      valid: data.filter((d) => d.status === 'verified').length,
       expiring: data.filter((d) => {
         if (!d.expiry_date) return false;
         const exp = new Date(d.expiry_date);
@@ -49,7 +49,7 @@ export default async function CompliancePage() {
 
   const cards = [
     { label: 'Total Documents', value: String(stats.total), detail: 'All tracked documents' },
-    { label: 'Valid', value: String(stats.valid), detail: 'Current and compliant', color: 'text-green-600' },
+    { label: 'Verified', value: String(stats.valid), detail: 'Current and compliant', color: 'text-green-600' },
     { label: 'Expiring Soon', value: String(stats.expiring), detail: 'Within 30 days', color: 'text-yellow-600' },
     { label: 'Expired', value: String(stats.expired), detail: 'Requires renewal', color: 'text-red-600' },
   ];
@@ -77,6 +77,13 @@ export default async function CompliancePage() {
         <p className="text-sm text-text-secondary">
           Compliance documents will appear here. Add documents from individual crew member profiles.
         </p>
+        <a
+          href="/api/compliance/export"
+          download
+          className="mt-4 inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-xs font-medium text-foreground hover:bg-bg-secondary transition-colors"
+        >
+          ↓ Export CSV
+        </a>
       </div>
     </TierGate>
   );

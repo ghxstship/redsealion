@@ -15,9 +15,10 @@ export interface PipelineFilterValues {
 
 interface PipelineFiltersProps {
   onFilterChange: (filters: PipelineFilterValues) => void;
+  owners: string[];
 }
 
-export default function PipelineFilters({ onFilterChange }: PipelineFiltersProps) {
+export default function PipelineFilters({ onFilterChange, owners }: PipelineFiltersProps) {
   const [filters, setFilters] = useState<PipelineFilterValues>({
     owner: 'all',
     minProbability: 0,
@@ -41,6 +42,11 @@ export default function PipelineFilters({ onFilterChange }: PipelineFiltersProps
           onChange={(e) => update({ owner: e.target.value })}
         >
           <option value="all">All owners</option>
+          {owners.map((owner) => (
+            <option key={owner} value={owner}>
+              {owner}
+            </option>
+          ))}
         </FormSelect>
       </div>
       <div>

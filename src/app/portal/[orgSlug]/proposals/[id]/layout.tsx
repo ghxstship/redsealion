@@ -1,20 +1,12 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
+import ProposalTabs from '@/components/portal/ProposalTabs';
 
 interface ProposalLayoutProps {
   children: ReactNode;
   params: Promise<{ orgSlug: string; id: string }>;
 }
-
-const tabs = [
-  { label: 'Journey', segment: '' },
-  { label: 'Milestones', segment: '/milestones' },
-  { label: 'Files', segment: '/files' },
-  { label: 'Invoices', segment: '/invoices' },
-  { label: 'Progress', segment: '/progress' },
-  { label: 'Comments', segment: '/comments' },
-];
 
 export default async function ProposalLayout({ children, params }: ProposalLayoutProps) {
   const { orgSlug, id } = await params;
@@ -47,17 +39,7 @@ export default async function ProposalLayout({ children, params }: ProposalLayou
       </div>
 
       {/* Sub-navigation tabs */}
-      <nav className="flex gap-1 border-b border-border overflow-x-auto">
-        {tabs.map((tab) => (
-          <Link
-            key={tab.segment}
-            href={`${basePath}${tab.segment}`}
-            className="whitespace-nowrap px-4 py-2.5 text-sm font-medium text-text-muted hover:text-foreground border-b-2 border-transparent hover:border-text-muted transition-colors -mb-px"
-          >
-            {tab.label}
-          </Link>
-        ))}
-      </nav>
+      <ProposalTabs basePath={basePath} />
 
       {/* Page content */}
       <div>{children}</div>

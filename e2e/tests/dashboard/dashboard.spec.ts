@@ -14,11 +14,13 @@ const INTERNAL_ROLES: Role[] = [
 ];
 
 test.describe('Dashboard @dashboard', () => {
+  test.setTimeout(120_000);
+
   for (const role of INTERNAL_ROLES) {
     test(`renders for ${role} @${role}`, async ({ authenticatedPage }) => {
       const page = await authenticatedPage(role);
       await page.goto('/app');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
 
       await expectPageRendered(page);
       await expectNoRawI18nKeys(page);

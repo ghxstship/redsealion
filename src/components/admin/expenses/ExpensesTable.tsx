@@ -185,6 +185,12 @@ export default function ExpensesTable({ expenses }: { expenses: ExpenseRow[] }) 
                   )}
                   <td className="px-6 py-3.5">
                     <RowActionMenu actions={[
+                      ...(exp.status === 'approved' ? [{
+                        label: 'Mark Reimbursed',
+                        onClick: () => {
+                          void fetch(`/api/expenses/${exp.id}/reimburse`, { method: 'POST' }).then(() => router.refresh());
+                        }
+                      }] : []),
                       { label: 'Delete', variant: 'danger', onClick: () => {
                         void fetch(`/api/expenses/${exp.id}`, { method: 'DELETE' }).then(() => router.refresh());
                       }},

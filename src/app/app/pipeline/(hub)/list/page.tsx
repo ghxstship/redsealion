@@ -13,17 +13,19 @@ async function getDeals() {
     if (!ctx) return [];
     const { data } = await supabase
       .from('deals')
-      .select('id, title, stage, value, probability, expected_close_date, clients(name)')
+      .select('id, title, stage, deal_value, probability, expected_close_date, clients(company_name)')
       .eq('organization_id', ctx.organizationId)
-      .order('value', { ascending: false });
+      .is('deleted_at', null)
+      .order('deal_value', { ascending: false })
+      .limit(1000);
     return (data ?? []).map((d: Record<string, unknown>) => ({
       id: d.id as string,
       title: d.title as string,
       stage: d.stage as string,
-      value: (d.value as number) ?? 0,
+      value: (d.deal_value as number) ?? 0,
       probability: (d.probability as number) ?? 0,
       expected_close_date: d.expected_close_date as string | null,
-      clients: d.clients ? { name: (Array.isArray(d.clients) ? (d.clients as Record<string, unknown>[])[0]?.name as string : (d.clients as Record<string, unknown>).name as string) ?? '' } : null,
+      clients: d.clients ? { name: (Array.isArray(d.clients) ? (d.clients as Record<string, unknown>[])[0]?.company_name as string : (d.clients as Record<string, unknown>).company_name as string) ?? '' } : null,
     }));
   } catch { return []; }
 }

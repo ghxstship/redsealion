@@ -7,6 +7,7 @@
 
 import { useState, useMemo } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
+import PortfolioFormModal from './PortfolioFormModal';
 
 /** Canonical portfolio categories — shared between form and filter. */
 export const PORTFOLIO_CATEGORIES = [
@@ -30,6 +31,9 @@ interface PortfolioItem {
   client_name: string | null;
   description: string | null;
   image_url: string | null;
+  tags?: string[];
+  project_id?: string | null;
+  proposal_id?: string | null;
 }
 
 interface PortfolioGridProps {
@@ -40,6 +44,7 @@ export default function PortfolioGrid({ items: initialItems }: PortfolioGridProp
   const [items, setItems] = useState(initialItems);
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [itemToEdit, setItemToEdit] = useState<PortfolioItem | null>(null);
 
   // Derive categories present in data + the canonical list
   const categories = useMemo(() => {
@@ -97,13 +102,13 @@ export default function PortfolioGrid({ items: initialItems }: PortfolioGridProp
           >
             {/* Action buttons — visible on hover */}
             <div className="absolute top-2 right-2 z-10 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-              <a
-                href={`/app/portfolio/${item.id}`}
+              <button
+                onClick={() => setItemToEdit(item)}
                 className="rounded-lg bg-background/80 backdrop-blur p-1.5 text-text-muted hover:text-foreground shadow-sm border border-border/50"
                 title="Edit"
               >
                 <Pencil size={14} />
-              </a>
+              </button>
               <button
                 onClick={() => handleDelete(item.id)}
                 disabled={deletingId === item.id}
@@ -164,6 +169,16 @@ export default function PortfolioGrid({ items: initialItems }: PortfolioGridProp
           </button>
         </div>
       )}
+
+      <PortfolioFormModal
+        open={!!itemToEdit}
+        itemToEdit={itemToEdit}
+        onClose={() => setItemToEdit(null)}
+        onCreated={() => {
+          setItemToEdit(null);
+          window.location.reload();
+        }}
+      />
     </>
   );
 }

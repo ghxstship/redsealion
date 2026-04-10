@@ -2,11 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 
+// GAP-PTL-06: Helper to check project_portals permission with proposals fallback
+async function checkPortalPermission(action: 'view' | 'create' | 'edit' | 'delete') {
+  const perm = await checkPermission('project_portals', action)
+    ?? await checkPermission('proposals', action);
+  return perm;
+}
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const perm = await checkPermission('proposals', 'view');
+  const perm = await checkPortalPermission('view');
   if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
@@ -29,7 +35,7 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const perm = await checkPermission('proposals', 'edit');
+  const perm = await checkPortalPermission('edit');
   if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
@@ -48,6 +54,9 @@ export async function PATCH(
   }
   if (Object.keys(updates).length === 0) return NextResponse.json({ error: 'No fields to update' }, { status: 400 });
 
+  // GAP-PTL-07: Always set updated_by on update
+  updates.updated_by = perm.userId ?? null;
+
   const { data: portal, error } = await supabase
     .from('project_portals')
     .update(updates)
@@ -65,7 +74,7 @@ export async function DELETE(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const perm = await checkPermission('proposals', 'delete');
+  const perm = await checkPortalPermission('delete');
   if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 

@@ -47,6 +47,33 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Verify the email belongs to a client_contact for this org
+    const { data: contact } = await supabase
+      .from('client_contacts')
+      .select('id, client_id')
+      .eq('email', email)
+      .limit(10);
+
+    // Check if any of the matching contacts belong to a client under this org
+    let hasOrgAccess = false;
+    if (contact && contact.length > 0) {
+      const clientIds = contact.map((c) => c.client_id);
+      const { count } = await supabase
+        .from('clients')
+        .select('id', { count: 'exact', head: true })
+        .in('id', clientIds)
+        .eq('organization_id', org.id);
+
+      hasOrgAccess = (count ?? 0) > 0;
+    }
+
+    if (!hasOrgAccess) {
+      // Silently succeed to prevent email enumeration
+      // but don't actually send the magic link
+      log.info(`Magic link requested for unregistered email ${email} on org ${orgSlug}`);
+      return NextResponse.json({ success: true });
+    }
+
     // Determine the redirect URL for after magic link click
     const origin = request.headers.get('origin') || request.headers.get('x-forwarded-host') || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3001';
     const redirectTo = `${origin}/portal/${orgSlug}`;
@@ -56,7 +83,8 @@ export async function POST(request: NextRequest) {
       email,
       options: {
         emailRedirectTo: redirectTo,
-        shouldCreateUser: true, // Allow new portal users to be created automatically
+        // GAP-PTL-10: Do not auto-create auth users — contact must pre-exist
+        shouldCreateUser: false,
       },
     });
 
@@ -80,13 +108,14 @@ export async function POST(request: NextRequest) {
   }
 }
 
-/** CORS preflight handler */
-export async function OPTIONS() {
+/** CORS preflight handler — GAP-PTL-05: restrict to app origin */
+export async function OPTIONS(request: NextRequest) {
+  const allowedOrigin = request.headers.get('origin') || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3001';
   return new Response(null, {
     status: 204,
     headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Origin': allowedOrigin,
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
       'Access-Control-Max-Age': '86400',
     },

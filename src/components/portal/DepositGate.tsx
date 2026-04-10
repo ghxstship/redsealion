@@ -4,6 +4,17 @@ import { useState } from 'react';
 import FormLabel from '@/components/ui/FormLabel';
 import { IconAlert } from '@/components/ui/Icons';
 
+/**
+ * @status DEFERRED - Pending integration in Phase 2
+ *
+ * This component is designed to gate proposal content behind a deposit payment.
+ * It will be integrated into JourneyContent.tsx to conditionally lock phases
+ * behind deposit payment when `proposals.deposit_required` is true.
+ *
+ * Integration point: src/components/portal/journey/JourneyContent.tsx
+ * Depends on: proposals.deposit_required, proposals.deposit_percent,
+ *             proposals.deposit_amount, invoices.status === 'paid'
+ */
 interface DepositGateProps {
   proposalId: string;
   proposalName: string;
