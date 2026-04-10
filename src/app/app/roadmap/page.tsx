@@ -40,7 +40,6 @@ async function getRoadmapItems(): Promise<RoadmapItem[]> {
       .from('tasks')
       .select('id, proposal_id, status')
       .eq('organization_id', ctx.organizationId)
-      .is('parent_task_id', null)
       .not('proposal_id', 'is', null);
 
     const tasksByProposal = new Map<string, { total: number; done: number }>();

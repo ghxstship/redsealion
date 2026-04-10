@@ -27,11 +27,27 @@ async function getEquipment(): Promise<EquipmentItem[]> {
 
     const { data: items } = await supabase
       .from('assets')
-      .select()
+      .select('id, name, category, status, current_location, serial_number')
       .eq('organization_id', ctx.organizationId)
       .order('name');
 
     if (!items || items.length === 0) return [];
+
+    // Fetch active reservation counts per asset
+    const assetIds = items.map((i) => i.id as string);
+    const { data: reservations } = assetIds.length > 0
+      ? await supabase
+          .from('equipment_reservations')
+          .select('equipment_id')
+          .in('equipment_id', assetIds)
+          .eq('status', 'active')
+      : { data: [] };
+
+    const reservationMap = new Map<string, number>();
+    for (const r of reservations ?? []) {
+      const id = (r as Record<string, unknown>).equipment_id as string;
+      reservationMap.set(id, (reservationMap.get(id) ?? 0) + 1);
+    }
 
     return items.map((item: Record<string, unknown>) => ({
       id: item.id as string,
@@ -40,7 +56,7 @@ async function getEquipment(): Promise<EquipmentItem[]> {
       status: (item.status as string) ?? 'available',
       current_location: (item.current_location as string) ?? 'Unknown',
       serial_number: (item.serial_number as string) ?? null,
-      reservation_count: (item.reservation_count as number) ?? 0,
+      reservation_count: reservationMap.get(item.id as string) ?? 0,
     }));
   } catch {
     return [];

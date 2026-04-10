@@ -79,6 +79,32 @@ export async function DELETE(
   const { id } = await params;
   const supabase = await createClient();
 
+  // Guard: check for active bookings or open work order assignments
+  const [bookingsRes, assignmentsRes] = await Promise.all([
+    supabase
+      .from('crew_bookings')
+      .select('id', { count: 'exact', head: true })
+      .eq('crew_profile_id', id)
+      .in('status', ['confirmed', 'tentative']),
+    supabase
+      .from('work_order_assignments')
+      .select('work_order_id', { count: 'exact', head: true })
+      .eq('crew_profile_id', id),
+  ]);
+
+  if ((bookingsRes.count ?? 0) > 0) {
+    return NextResponse.json(
+      { error: 'Cannot delete crew member with active bookings. Reassign or cancel their bookings first.' },
+      { status: 409 }
+    );
+  }
+  if ((assignmentsRes.count ?? 0) > 0) {
+    return NextResponse.json(
+      { error: 'Cannot delete crew member assigned to work orders. Remove assignments first.' },
+      { status: 409 }
+    );
+  }
+
   const { error } = await supabase.from('crew_profiles').delete().eq('id', id).eq('organization_id', perm.organizationId);
   if (error) return NextResponse.json({ error: 'Failed to delete', details: error.message }, { status: 500 });
 

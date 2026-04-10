@@ -38,7 +38,8 @@ async function getWorkOrders(): Promise<{ data: Array<Record<string, unknown>>; 
       .select('*, work_order_assignments(crew_profiles(full_name))')
       .eq('organization_id', ctx.organizationId)
       .is('deleted_at', null)
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .limit(100);
 
     if (error) return { data: [], error: error.message };
     return { data: data ?? [], error: null };

@@ -47,7 +47,7 @@ async function getAssets(): Promise<AssetRow[]> {
       type: a.type,
       status: a.status,
       condition: a.condition,
-      location_name: (a.current_location as { name?: string } | null)?.name ?? null,
+      location_name: (a.current_location as string | null) ?? null,
       proposal_name: a.proposal_id ? (proposalMap.get(a.proposal_id) ?? null) : null,
       current_value: a.current_value,
     }));

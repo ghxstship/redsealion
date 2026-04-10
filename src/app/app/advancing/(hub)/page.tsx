@@ -15,6 +15,7 @@ async function getAdvances() {
       .from('production_advances')
       .select('*, projects(name)')
       .eq('organization_id', ctx.organizationId)
+      .is('deleted_at', null)
       .order('created_at', { ascending: false });
 
     if (!data) return [];

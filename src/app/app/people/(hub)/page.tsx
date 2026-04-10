@@ -27,22 +27,25 @@ async function getTeamMembers(): Promise<TeamMember[]> {
 
     const { data } = await supabase
       .from('users')
-      .select('id, full_name, email, role, title, department, facility_id, rate_card, avatar_url')
+      .select('id, full_name, email, role, title, department, facility_id, facilities(name), rate_card, avatar_url')
       .eq('organization_id', ctx.organizationId)
       .is('deleted_at', null)
       .order('full_name');
 
-    return (data ?? []).map((u) => ({
-      id: u.id,
-      full_name: u.full_name,
-      email: u.email,
-      role: u.role,
-      title: u.title,
-      department: u.department,
-      facility: u.facility_id,
-      rate_card: u.rate_card,
-      avatar_url: u.avatar_url,
-    }));
+    return (data ?? []).map((u) => {
+      const facilityRel = u.facilities as { name?: string } | null;
+      return {
+        id: u.id,
+        full_name: u.full_name,
+        email: u.email,
+        role: u.role,
+        title: u.title,
+        department: u.department,
+        facility: facilityRel?.name ?? null,
+        rate_card: u.rate_card,
+        avatar_url: u.avatar_url,
+      };
+    });
   } catch {
     return [];
   }
@@ -56,7 +59,7 @@ export default async function PeoplePage() {
     <TierGate feature="people_hr">
 <PageHeader
         title="People"
-        subtitle={`{members.length} team members · {roleCount} {roleCount === 1 ? 'role' : 'roles'}`}
+        subtitle={`${members.length} team members · ${roleCount} ${roleCount === 1 ? 'role' : 'roles'}`}
       >
         <PeopleHeader />
       </PageHeader>

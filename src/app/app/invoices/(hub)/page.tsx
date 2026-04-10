@@ -24,6 +24,7 @@ const STATUS_COLORS: Record<string, string> = {
   viewed: 'bg-indigo-50 text-indigo-700',
   paid: 'bg-green-50 text-green-700',
   partial: 'bg-yellow-50 text-yellow-700',
+  partially_paid: 'bg-yellow-50 text-yellow-700',
   overdue: 'bg-red-50 text-red-700',
   void: 'bg-zinc-50 text-zinc-500',
 };

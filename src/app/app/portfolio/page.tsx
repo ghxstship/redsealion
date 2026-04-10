@@ -32,6 +32,7 @@ async function getPortfolioItems(): Promise<PortfolioItem[]> {
       .from('portfolio_library')
       .select('id, project_name, project_year, category, client_name, description, image_url, tags, project_id, proposal_id')
       .eq('organization_id', ctx.organizationId)
+      .is('deleted_at', null)
       .order('project_year', { ascending: false });
 
     return (items ?? []) as PortfolioItem[];

@@ -10,7 +10,7 @@ async function getMyTasks(): Promise<MyTaskRow[]> {
 
     const { data: tasks } = await supabase
       .from('tasks')
-      .select('id, title, status, priority, due_date, start_date, start_time, end_time, estimated_hours, actual_hours, organization_id, project_id, projects(name), creator:users!created_by(first_name, last_name)')
+      .select('id, title, status, priority, due_date, start_date, start_time, end_time, estimated_hours, actual_hours, organization_id, project_id, projects(name), creator:users!created_by(full_name)')
       .eq('assignee_id', user.id)
       .is('parent_task_id', null)
       .is('deleted_at', null)
@@ -36,8 +36,8 @@ async function getMyTasks(): Promise<MyTaskRow[]> {
     }
 
     return tasks.map((t) => {
-      const creator = t.creator as any;
-      const creatorName = creator ? `${creator.first_name} ${creator.last_name}`.trim() : null;
+      const creator = t.creator as { full_name?: string } | null;
+      const creatorName = creator?.full_name ?? null;
 
       return {
         id: t.id,
@@ -51,7 +51,7 @@ async function getMyTasks(): Promise<MyTaskRow[]> {
         estimatedHours: t.estimated_hours ?? null,
         actualHours: t.actual_hours ?? null,
         createdBy: creatorName,
-        projectName: (t.projects as any)?.name ?? null,
+        projectName: (t.projects as { name?: string } | null)?.name ?? null,
         subtaskCount: countMap.get(t.id) ?? 0,
       };
     });

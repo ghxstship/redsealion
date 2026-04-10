@@ -3,7 +3,7 @@ import { Clock } from 'lucide-react';
 import { formatCurrency, statusColor } from '@/lib/utils';
 import { TierGate } from '@/components/shared/TierGate';
 import { createClient } from '@/lib/supabase/server';
-import { notFound } from 'next/navigation';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import EmptyState from '@/components/ui/EmptyState';
 import type { DealStage } from '@/types/database';
 import { castRelation } from '@/lib/supabase/cast-relation';
@@ -63,6 +63,8 @@ interface DealDetail {
 async function getDeal(id: string): Promise<DealDetail | null> {
   try {
     const supabase = await createClient();
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) return null;
     const { data: deal } = await supabase
       .from('deals')
       .select(
@@ -76,6 +78,7 @@ async function getDeal(id: string): Promise<DealDetail | null> {
       `,
       )
       .eq('id', id)
+      .eq('organization_id', ctx.organizationId)
       .single();
 
     if (!deal) return null;
@@ -209,8 +212,9 @@ export default async function DealDetailPage({
     </div>
   );
 
+  const _nowMs = new Date().getTime();
   const aiContent = (() => {
-    const nowMs = Date.now();
+    const nowMs = _nowMs;
     const daysSinceUpdate = Math.floor((nowMs - new Date(deal.updated_at).getTime()) / (1000 * 60 * 60 * 24));
     const daysInPipeline = Math.floor((nowMs - new Date(deal.created_at).getTime()) / (1000 * 60 * 60 * 24));
     return (

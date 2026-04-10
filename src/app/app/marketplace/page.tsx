@@ -46,15 +46,26 @@ async function getOpenWorkOrders(params: MarketplaceSearchParams): Promise<{
     const { data: userAuth } = await supabase.auth.getUser();
     if (!userAuth.user) return { data: [], error: 'Not authenticated', total: 0 };
 
-    // Check if the current user has a crew profile
+    // Fetch user role to determine if crew profile is required
+    const { data: userRecord } = await supabase
+      .from('users')
+      .select('role')
+      .eq('id', userAuth.user.id)
+      .single();
+
+    const adminRoles = ['owner', 'admin', 'manager', 'developer'];
+    const isAdmin = adminRoles.includes(userRecord?.role ?? '');
+
+    // Check if the current user has a crew profile (optional for admins)
     const { data: profile } = await supabase
       .from('crew_profiles')
       .select('id')
       .eq('user_id', userAuth.user.id)
       .eq('organization_id', ctx.organizationId)
-      .single();
+      .maybeSingle();
 
-    if (!profile) return { data: [], error: 'You must have an active crew profile to access the marketplace.', total: 0 };
+    // Non-admin users without a crew profile cannot access the marketplace
+    if (!profile && !isAdmin) return { data: [], error: 'You must have an active crew profile to access the marketplace.', total: 0 };
 
     let query = supabase
       .from('work_orders')
@@ -89,13 +100,14 @@ async function getOpenWorkOrders(params: MarketplaceSearchParams): Promise<{
     if (error) return { data: [], error: error.message, total: 0 };
     
     // Tag each row with current user's bid if they have one
-    const annotatedData = (data ?? []).map((wo: any) => {
-      const myBid = wo.work_order_bids?.find((b: any) => b.crew_profile_id === profile.id);
+    const annotatedData = (data ?? []).map((wo: Record<string, unknown>) => {
+      const bids = wo.work_order_bids as Array<{ crew_profile_id: string }> | undefined;
+      const myBid = profile ? bids?.find((b) => b.crew_profile_id === profile.id) : undefined;
       return { ...wo, myBid };
     });
 
     return { data: annotatedData, error: null, total: count ?? 0 };
-  } catch (err: any) {
+  } catch {
     return { data: [], error: 'Failed to load marketplace jobs.', total: 0 };
   }
 }
@@ -200,6 +212,7 @@ export default async function MarketplacePage({
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
+                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                 {workOrders.map((wo: any) => {
                   return (
                     <tr key={wo.id} className="transition-colors hover:bg-bg-secondary/50">

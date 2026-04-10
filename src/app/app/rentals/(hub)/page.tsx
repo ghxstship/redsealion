@@ -13,14 +13,14 @@ async function getRentalCatalog() {
     if (!ctx) return { orders: [], totalRevenue: 0, activeOrders: 0 };
     const { data } = await supabase
       .from('rental_orders')
-      .select('id, order_number, status, rental_start, rental_end, total_cents, clients(name)')
+      .select('id, order_number, status, rental_start, rental_end, total_cents, clients(company_name)')
       .eq('organization_id', ctx.organizationId)
       .order('rental_start', { ascending: false });
     const orders = (data ?? []).map((r: Record<string, unknown>) => ({
       id: r.id as string, order_number: r.order_number as string, status: r.status as string,
       rental_start: r.rental_start as string, rental_end: r.rental_end as string,
       total_cents: r.total_cents as number,
-      client_name: Array.isArray(r.clients) ? (r.clients as Record<string, unknown>[])[0]?.name as string : (r.clients as Record<string, unknown> | null)?.name as string ?? null,
+      client_name: Array.isArray(r.clients) ? (r.clients as Record<string, unknown>[])[0]?.company_name as string : (r.clients as Record<string, unknown> | null)?.company_name as string ?? null,
     }));
     const totalRevenue = orders.reduce((s: number, o: { total_cents: number }) => s + o.total_cents, 0);
     const activeOrders = orders.filter((o: { status: string }) => ['reserved', 'checked_out', 'on_site'].includes(o.status)).length;

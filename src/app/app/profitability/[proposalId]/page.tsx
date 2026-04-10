@@ -64,7 +64,7 @@ export default async function ProjectProfitabilityPage(props: { params: Promise<
   return (
     <TierGate feature="profitability">
 <PageHeader
-        title="{project.name}"
+        title={project.name}
         subtitle="Detailed profitability breakdown."
       />
 
