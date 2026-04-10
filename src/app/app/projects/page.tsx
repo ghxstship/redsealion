@@ -16,6 +16,8 @@ interface ProjectRow {
   created_at: string;
   venue_name: string | null;
   project_code: string | null;
+  task_count: number;
+  completed_task_count: number;
 }
 
 async function getProjects(): Promise<ProjectRow[]> {
@@ -26,12 +28,28 @@ async function getProjects(): Promise<ProjectRow[]> {
 
     const { data } = await supabase
       .from('projects')
-      .select('id, name, slug, status, visibility, starts_at, ends_at, created_at, venue_name, project_code')
+      .select('id, name, slug, status, visibility, starts_at, ends_at, created_at, venue_name, project_code, tasks(id, status)')
       .eq('organization_id', ctx.organizationId)
       .is('deleted_at', null)
       .order('created_at', { ascending: false });
 
-    return (data ?? []) as ProjectRow[];
+    return (data ?? []).map((p: Record<string, unknown>) => {
+      const tasks = (p.tasks ?? []) as Array<{ id: string; status: string }>;
+      return {
+        id: p.id as string,
+        name: p.name as string,
+        slug: p.slug as string,
+        status: p.status as string,
+        visibility: p.visibility as string,
+        starts_at: p.starts_at as string | null,
+        ends_at: p.ends_at as string | null,
+        created_at: p.created_at as string,
+        venue_name: p.venue_name as string | null,
+        project_code: p.project_code as string | null,
+        task_count: tasks.length,
+        completed_task_count: tasks.filter((t) => t.status === 'done' || t.status === 'completed').length,
+      };
+    });
   } catch {
     return [];
   }

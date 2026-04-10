@@ -51,7 +51,7 @@ export default async function AdvancingPage() {
   );
 
   return (
-    <TierGate feature="work_orders">
+    <TierGate feature="advancing">
       <AdvancingHeader />
 
       <AdvancingHubTabs />

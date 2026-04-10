@@ -6,6 +6,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import EmptyState from '@/components/ui/EmptyState';
 import PageHeader from '@/components/shared/PageHeader';
 import FinanceHubTabs from '../../FinanceHubTabs';
+import { redirect } from 'next/navigation';
 
 interface BudgetSummary {
   id: string;
@@ -50,7 +51,22 @@ async function getBudgets(): Promise<BudgetSummary[]> {
   }
 }
 
+const BUDGET_ALLOWED_ROLES = ['developer', 'owner', 'admin', 'controller', 'manager'];
+
 export default async function BudgetsPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user) {
+    const { data: userRecord } = await supabase
+      .from('users')
+      .select('role')
+      .eq('id', user.id)
+      .maybeSingle();
+    if (userRecord && !BUDGET_ALLOWED_ROLES.includes(userRecord.role)) {
+      redirect('/app/dashboard');
+    }
+  }
+
   const budgets = await getBudgets();
 
   return (

@@ -128,7 +128,7 @@ export default async function DispatchPage() {
                     .filter(Boolean);
                   return (
                     <tr key={wo.id as string} className="transition-colors hover:bg-bg-secondary/50">
-                      <td className="px-6 py-3.5 text-sm font-mono text-text-muted">{wo.wo_number as string}</td>
+                      <td className="px-6 py-3.5 text-sm font-mono text-text-muted">{(wo.wo_number as string) ?? '—'}</td>
                       <td className="px-6 py-3.5">
                         <Link href={`/app/dispatch/${wo.id}`} className="text-sm font-medium text-foreground hover:underline">
                           {wo.title as string}

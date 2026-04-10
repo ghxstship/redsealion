@@ -11,16 +11,18 @@ export async function GET(
 
   try {
     const supabase = await createClient();
-    // Lookup the click token to get the destination URL and campaign id
+    // Look up the campaign by its click_token to get the destination URL
     const { data } = await supabase
-      .from('campaign_click_tokens')
-      .select('destination_url, campaign_id')
-      .eq('token', token)
+      .from('campaigns')
+      .select('id, click_destination_url')
+      .eq('click_token', token)
       .maybeSingle();
 
-    if (data?.destination_url) {
-      redirectUrl = data.destination_url as string;
-      // Increment click_count asynchronously
+    if (data) {
+      if ((data as Record<string, unknown>).click_destination_url) {
+        redirectUrl = (data as Record<string, unknown>).click_destination_url as string;
+      }
+      // Increment click_count via RPC
       await supabase.rpc('increment_campaign_click', { p_token: token });
     }
   } catch {

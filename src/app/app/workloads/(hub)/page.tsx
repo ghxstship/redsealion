@@ -18,7 +18,7 @@ async function getResourceStats(): Promise<ResourceStats> {
     const ctx = await resolveCurrentOrg();
     if (!ctx) throw new Error('No auth');
 
-    const [allocRes, teamRes] = await Promise.all([
+    const [allocRes, teamRes, utilRes] = await Promise.all([
       supabase
         .from('resource_allocations')
         .select('id', { count: 'exact', head: true })
@@ -27,12 +27,22 @@ async function getResourceStats(): Promise<ResourceStats> {
         .from('users')
         .select('id', { count: 'exact', head: true })
         .eq('organization_id', ctx.organizationId),
+      supabase
+        .from('resource_allocations')
+        .select('allocated_hours, available_hours')
+        .eq('organization_id', ctx.organizationId),
     ]);
+
+    const rows = utilRes.data ?? [];
+    const totalAllocated = rows.reduce((s, r) => s + (r.allocated_hours ?? 0), 0);
+    const totalAvailable = rows.reduce((s, r) => s + (r.available_hours ?? 0), 0);
+    const avgUtilization =
+      totalAvailable > 0 ? Math.round((totalAllocated / totalAvailable) * 100) : 0;
 
     return {
       totalAllocations: allocRes.count ?? 0,
       teamMembers: teamRes.count ?? 0,
-      avgUtilization: 72,
+      avgUtilization,
     };
   } catch {
     return fallback;

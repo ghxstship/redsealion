@@ -25,7 +25,7 @@ async function getClients(): Promise<ClientRow[]> {
 
     const { data: clients } = await supabase
       .from('clients')
-      .select('id, company_name, industry, tags, updated_at, proposals(id, total_value)')
+      .select('id, company_name, industry, tags, updated_at, proposals(id, total_value, updated_at), deals(id, updated_at)')
       .eq('organization_id', ctx.organizationId)
       .is('deleted_at', null)
       .order('company_name')
@@ -34,7 +34,13 @@ async function getClients(): Promise<ClientRow[]> {
     if (!clients) return [];
 
     return clients.map((c: Record<string, unknown>) => {
-      const proposals = (c.proposals ?? []) as Array<{ id: string; total_value: number }>;
+      const proposals = (c.proposals ?? []) as Array<{ id: string; total_value: number; updated_at: string }>;
+      const deals = (c.deals ?? []) as Array<{ id: string; updated_at: string }>;
+      const activityDates = [
+        c.updated_at as string,
+        ...proposals.map((p) => p.updated_at),
+        ...deals.map((d) => d.updated_at),
+      ].filter(Boolean).sort().reverse();
       return {
         id: c.id as string,
         company_name: c.company_name as string,
@@ -42,7 +48,7 @@ async function getClients(): Promise<ClientRow[]> {
         tags: (c.tags as string[]) ?? [],
         proposals: proposals.length,
         total_value: proposals.reduce((sum, p) => sum + (p.total_value ?? 0), 0),
-        last_activity: c.updated_at as string,
+        last_activity: activityDates[0] ?? (c.updated_at as string),
       };
     });
   } catch {

@@ -20,6 +20,7 @@ interface Lead {
   assigned_to: string | null;
   assigned_user_name: string | null;
   converted_to_deal_id: string | null;
+  converted_to_client_id: string | null;
   lost_reason: string | null;
   score: number;
   score_tier: string;
@@ -72,6 +73,7 @@ async function getLeads(): Promise<Lead[]> {
         assigned_to: (l.assigned_to as string) ?? null,
         assigned_user_name: (assignedUser?.full_name as string) ?? null,
         converted_to_deal_id: (l.converted_to_deal_id as string) ?? null,
+        converted_to_client_id: (l.converted_to_client_id as string) ?? null,
         lost_reason: (l.lost_reason as string) ?? null,
         score: (l.score as number) ?? 0,
         score_tier: (l.score_tier as string) ?? 'cold',

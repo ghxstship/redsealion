@@ -637,4 +637,377 @@
 
 ---
 
-*End of audit. Total gaps identified: 40 (8 Critical, 20 High, 14 Medium, 11 Low)*
+*End of Session 1 audit. Total gaps identified: 40 (8 Critical, 20 High, 14 Medium, 11 Low)*
+
+---
+
+# Session 2 Gap Audit — Remaining Folders
+
+**Scope:** All folders not exhaustively covered in Session 1: `settings`, `schedule`, `reports`, `proposals`, `procurement`, `projects`, `pipeline`, `people`, `logistics`, `invoices`, `goals`, `finance`, `events`, `equipment`, `expenses`, `dispatch`, `crew`, `compliance`, `clients`, `campaigns`, `automations`, `assets`, `assets`, `advancing`, `ai`, `leads`  
+**Date:** April 2026 (continued)
+
+---
+
+## Critical Severity
+
+---
+
+### GAP-C-09 — Campaigns: `increment_campaign_open` RPC does not exist in schema
+- **Location:** `src/app/api/track/open/[token]/route.ts` line 18, `campaigns` table
+- **Gap type:** Missing workflow
+- **Impact:** The email open-tracking pixel calls `supabase.rpc('increment_campaign_open', { p_token: token })`. This RPC function has never been created in any migration. Additionally, the `campaigns` table has no `open_token` column — there is nothing to match the token against. Every pixel served silently fails to record an open; `open_count` will always be 0. The click-tracking route (`src/app/api/track/click/`) has the same gap.
+- **Recommended fix:**
+  ```sql
+  ALTER TABLE campaigns
+    ADD COLUMN IF NOT EXISTS open_token UUID UNIQUE DEFAULT gen_random_uuid(),
+    ADD COLUMN IF NOT EXISTS click_token UUID UNIQUE DEFAULT gen_random_uuid();
+
+  CREATE OR REPLACE FUNCTION increment_campaign_open(p_token UUID)
+  RETURNS void LANGUAGE plpgsql SECURITY DEFINER AS $$
+  BEGIN
+    UPDATE campaigns SET open_count = open_count + 1 WHERE open_token = p_token;
+  END;
+  $$;
+
+  CREATE OR REPLACE FUNCTION increment_campaign_click(p_token UUID)
+  RETURNS void LANGUAGE plpgsql SECURITY DEFINER AS $$
+  BEGIN
+    UPDATE campaigns SET click_count = click_count + 1 WHERE click_token = p_token;
+  END;
+  $$;
+  ```
+  Embed `open_token` and `click_token` values in outbound email HTML at send time.
+
+---
+
+### GAP-C-10 — API Keys & Webhooks: No `api_keys` or `webhook_endpoints` tables in schema
+- **Location:** `src/app/app/settings/api-keys/page.tsx`, `src/app/api/settings/api-keys/`, `src/app/api/webhooks/endpoints/`
+- **Gap type:** Missing data table
+- **Impact:** The API Keys page reads from `/api/settings/api-keys` and webhook endpoints from `/api/webhooks/endpoints`. No migration creates `api_keys` or `webhook_endpoints` tables in any of the 116 migrations. API key generation, revocation, webhook endpoint CRUD, and the webhook delivery activity log (`WebhookDelivery` interface) all have no backing storage. Every read returns empty arrays; every write silently does nothing or throws a 500.
+- **Recommended fix:**
+  ```sql
+  CREATE TABLE api_keys (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    name TEXT NOT NULL,
+    key_prefix TEXT NOT NULL,
+    key_hash TEXT NOT NULL,
+    scopes TEXT[] NOT NULL DEFAULT '{}',
+    last_used_at TIMESTAMPTZ,
+    revoked_at TIMESTAMPTZ,
+    created_by UUID REFERENCES auth.users(id),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  );
+
+  CREATE TABLE webhook_endpoints (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    name TEXT,
+    url TEXT NOT NULL,
+    events TEXT[] NOT NULL DEFAULT '{}',
+    is_active BOOLEAN NOT NULL DEFAULT true,
+    secret TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  );
+
+  CREATE TABLE webhook_deliveries (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    endpoint_id UUID NOT NULL REFERENCES webhook_endpoints(id) ON DELETE CASCADE,
+    event TEXT NOT NULL,
+    payload JSONB,
+    status_code INTEGER,
+    response_time_ms INTEGER,
+    delivered_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  );
+  ```
+  Apply RLS scoped to `organization_id`.
+
+---
+
+### GAP-C-11 — WIP Report: `time_entries` schema uses `billable`/`approved` but queries expect `is_billable`/`is_approved`
+- **Location:** `src/app/app/reports/(hub)/wip/page.tsx` lines 64, 72; `src/app/app/reports/(hub)/utilization/page.tsx` line 54; `supabase/migrations/00009_time_tracking.sql`
+- **Gap type:** Missing data point
+- **Impact:** `time_entries` was created with columns `billable BOOLEAN` and `approved BOOLEAN`. The WIP report queries `.eq('is_approved', true)` and `.select('... is_billable')`. The Utilization report also reads `entry.is_billable`. These columns do not exist — the schema uses `billable` and `approved`. Both reports return **zero rows** for all queries against approved billable time; WIP and Utilization data are permanently 0.
+- **Recommended fix:**
+  ```sql
+  ALTER TABLE time_entries
+    ADD COLUMN IF NOT EXISTS is_billable BOOLEAN GENERATED ALWAYS AS (billable) STORED,
+    ADD COLUMN IF NOT EXISTS is_approved BOOLEAN GENERATED ALWAYS AS (approved) STORED;
+  ```
+  Or rename the originals: `ALTER TABLE time_entries RENAME COLUMN billable TO is_billable; RENAME COLUMN approved TO is_approved;` (update all dependent RLS policies accordingly).
+
+---
+
+## High Severity
+
+---
+
+### GAP-H-21 — Settings/General: `slug` field mutated without uniqueness enforcement
+- **Location:** `src/app/app/settings/page.tsx` line 97, `organizations` table
+- **Gap type:** Missing workflow
+- **Impact:** The general settings form allows saving an arbitrary `slug` value via `PUT /api/settings/general`. No migration adds a `UNIQUE` constraint on `organizations.slug`. Two organizations can end up with the same slug, breaking any slug-based routing or public portal URLs silently.
+- **Recommended fix:**
+  ```sql
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_organizations_slug ON organizations(slug) WHERE slug IS NOT NULL;
+  ```
+  Add server-side uniqueness check in the PUT handler before persisting.
+
+---
+
+### GAP-H-22 — Proposals: `activity` tab is a permanent placeholder
+- **Location:** `src/app/app/proposals/[id]/page.tsx` line 227
+- **Gap type:** Missing workflow
+- **Impact:** The "Activity" tab renders a static empty-state text. There is no API call, no event-log query, and no table specifically for proposal activity events. Proposal activity — views, status changes, comments, client opens — is never surfaced to the user.
+- **Recommended fix:** Query `audit_logs` filtered by `entity = 'proposal'` and `entity_id = id`. Render a chronological feed. The table and data already exist; only the UI query is missing.
+
+---
+
+### GAP-H-23 — Schedule: No `[id]` detail page implemented
+- **Location:** `src/app/app/schedule/[id]/` (1 item only — directory exists), `production_schedules` table
+- **Gap type:** Missing workflow
+- **Impact:** The schedule hub links each schedule row to `/app/schedule/${s.id}`. That route resolves to a stub or 404 — there is no `page.tsx` inside `schedule/[id]/`. Users clicking any schedule row hit a dead end. Schedule editing, timeline visualization, and run-of-show management are completely blocked.
+- **Recommended fix:** Implement `src/app/app/schedule/[id]/page.tsx` fetching `production_schedules` by id with related `production_schedule_items` and rendering a timeline/edit view.
+
+---
+
+### GAP-H-24 — Procurement: `receiving` sub-page missing receiving workflow
+- **Location:** `src/app/app/procurement/(hub)/receiving/page.tsx`, `po_receipts` table (created in migration 00116)
+- **Gap type:** Missing workflow
+- **Impact:** The Receive Goods card links to `/app/procurement/receiving`. The `po_receipts` and `po_receipt_items` tables exist (created in 00116), but there is no page that queries them. Goods receiving, partial receipt tracking, and PO status reconciliation are entirely invisible from the UI.
+- **Recommended fix:** Implement `src/app/app/procurement/(hub)/receiving/page.tsx` to list `po_receipts` with status, expected vs received quantities, and a form to create new receipts against open POs.
+
+---
+
+### GAP-H-25 — Finance: `revenue_recognition` table queried but `organization_id` column presence unverified
+- **Location:** `src/app/app/finance/(hub)/page.tsx` line 44, migration 00116
+- **Gap type:** Missing data point
+- **Impact:** The Finance hub queries `revenue_recognition` with `.eq('organization_id', ctx.organizationId)`. The `revenue_recognition` table was created in migration 00116 but inspection of that migration shows the table schema — if `organization_id` is missing, the query throws a PostgREST error and the entire Finance stats block silently returns 0 for recognized revenue. Need to confirm `organization_id` exists and has an index.
+- **Recommended fix:**
+  ```sql
+  ALTER TABLE revenue_recognition
+    ADD COLUMN IF NOT EXISTS organization_id UUID REFERENCES organizations(id) ON DELETE CASCADE;
+  CREATE INDEX IF NOT EXISTS idx_rev_rec_org ON revenue_recognition(organization_id);
+  ```
+
+---
+
+### GAP-H-26 — Equipment: `assets` table used for both equipment and warehouse inventory, no discriminator
+- **Location:** `src/app/app/equipment/(hub)/page.tsx`, `src/app/app/logistics/(hub)/page.tsx`, `assets` table
+- **Gap type:** Missing data point
+- **Impact:** Both the Equipment module (`/app/equipment`) and the Logistics/Warehouse module (`/app/logistics`) query the same `assets` table without any filter to distinguish equipment vs inventory items. Equipment statuses include `available`, `deployed`, `maintenance`, `disposed`; the logistics page only handles `available`, `deployed`, `maintenance`. A `disposed` item will appear in both lists with no badge and the logistics page will show raw asset IDs in the context column.
+- **Recommended fix:** Add a `module` or `asset_class` discriminator column:
+  ```sql
+  ALTER TABLE assets ADD COLUMN IF NOT EXISTS asset_class TEXT NOT NULL DEFAULT 'equipment'
+    CHECK (asset_class IN ('equipment', 'inventory', 'prop', 'vehicle'));
+  ```
+  Filter each page by its respective `asset_class`.
+
+---
+
+### GAP-H-27 — Leads: No `converted_to_client_id` in the leads UI — conversion workflow incomplete
+- **Location:** `src/app/app/leads/(hub)/page.tsx`, `leads` table, migration 00116
+- **Gap type:** Missing workflow
+- **Impact:** Migration 00116 adds `converted_to_client_id` to `leads`, but `getLeads()` does not select this column, so the table never shows whether a lead was converted to a client (vs a deal). There is no "Convert to Client" action in the UI. Leads with `converted_to_deal_id` set can be followed up with, but leads that became direct clients (bypassing the deals pipeline) have no visible conversion path.
+- **Recommended fix:** Add `converted_to_client_id` to the `getLeads()` select. Add a "Convert to Client" button in `LeadsTable` that calls `POST /api/leads/[id]/convert-to-client`, creates a `clients` record, and sets `leads.converted_to_client_id`.
+
+---
+
+### GAP-H-28 — Automations: `run_count` and `last_run_at` have no backing update mechanism
+- **Location:** `src/app/app/automations/(hub)/page.tsx` lines 43–45, `automations` table
+- **Gap type:** Missing workflow
+- **Impact:** The automations hub displays `run_count` and `last_run_at` from the `automations` table. No cron job, webhook handler, or automation execution engine updates these columns — they will always show 0 / null. The `automation_runs` table (00116) exists to store individual runs but there is no trigger or function that increments `run_count` on `automations` after a run is inserted.
+- **Recommended fix:** Add a trigger on `automation_runs` INSERT:
+  ```sql
+  CREATE OR REPLACE FUNCTION sync_automation_run_stats()
+  RETURNS TRIGGER AS $$
+  BEGIN
+    UPDATE automations
+    SET run_count = run_count + 1, last_run_at = NEW.started_at
+    WHERE id = NEW.automation_id;
+    RETURN NEW;
+  END;
+  $$ LANGUAGE plpgsql;
+
+  CREATE TRIGGER trg_automation_run_stats
+    AFTER INSERT ON automation_runs
+    FOR EACH ROW EXECUTE FUNCTION sync_automation_run_stats();
+  ```
+
+---
+
+### GAP-H-29 — People / Time-off: `time_off` sub-page exists but no `time_off_requests` table in early migrations
+- **Location:** `src/app/app/people/(hub)/time-off/`, `src/app/api/time-off/`, `time_off_requests` table
+- **Gap type:** Missing data table
+- **Impact:** The People hub has a `time-off` sub-route and there are `time-off` API routes. If `time_off_requests` was not created in a migration, all time-off submission, approval, and calendar-blocking workflows are broken at the database level.
+- **Recommended fix:** Verify `time_off_requests` exists:
+  ```sql
+  CREATE TABLE IF NOT EXISTS time_off_requests (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    type TEXT NOT NULL CHECK (type IN ('vacation','sick','personal','bereavement','unpaid')),
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','approved','rejected','cancelled')),
+    reason TEXT,
+    approved_by UUID REFERENCES users(id),
+    approved_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  );
+  ```
+
+---
+
+## Medium Severity
+
+---
+
+### GAP-M-15 — Settings/Security: MFA status displayed as "Optional" but no enforcement mechanism exists
+- **Location:** `src/app/app/settings/security/page.tsx` lines 60–64
+- **Gap type:** Missing workflow
+- **Impact:** The security page shows "Multi-Factor Authentication — Optional". There is no settings record, no toggle, and no enforcement path. If an admin wants to require MFA org-wide, there is no column, no check in middleware, and no Supabase Auth hook to enforce it. The UI state is purely decorative.
+- **Recommended fix:** Add `require_mfa BOOLEAN DEFAULT false` to `organizations.settings` JSONB. Read it in middleware and redirect non-MFA sessions to an enrollment page if enforcement is active.
+
+---
+
+### GAP-M-16 — Settings/Security: SSO shows "Not configured" with no configuration path
+- **Location:** `src/app/app/settings/security/page.tsx` lines 48–56, `src/app/app/settings/sso/`
+- **Gap type:** Missing workflow
+- **Impact:** The SSO section is visible under a `TierGate feature="sso"` but the link to `/app/settings/sso` is not present in the security nav. The `sso/` folder exists as a settings subsection but is not reachable from the Security page. Enterprise customers on SSO-tier plans cannot configure SAML/OIDC.
+- **Recommended fix:** Add `{ label: 'SSO', href: '/app/settings/sso' }` to the Security section in `settings/layout.tsx`. Implement `settings/sso/page.tsx` with SAML metadata URL input and connection test.
+
+---
+
+### GAP-M-17 — Reports/WIP: `time_entries.hourly_rate` used for billable value but may be NULL for most entries
+- **Location:** `src/app/app/reports/(hub)/wip/page.tsx` line 71
+- **Gap type:** Missing data point
+- **Impact:** WIP calculates unbilled time value as `(duration_minutes / 60) * hourly_rate`. If `hourly_rate` is NULL (no rate set on the time entry), the value contribution is 0. There is no fallback to the user's rate card, the crew member's `hourly_rate`, or an org-level default billing rate. WIP report will systematically understate unbilled value.
+- **Recommended fix:** Implement a rate cascade: `time_entry.hourly_rate ?? crew_profiles.hourly_rate ?? cost_rates.rate ?? 0`. Join `cost_rates` or `crew_profiles` in the WIP query for entries with NULL `hourly_rate`.
+
+---
+
+### GAP-M-18 — Proposals: `payment_terms` stored but never displayed in the proposal detail UI
+- **Location:** `src/app/app/proposals/[id]/page.tsx`, `src/app/app/proposals/[id]/OverviewTab.tsx`
+- **Gap type:** Missing data point
+- **Impact:** `payment_terms` is selected from `proposals` and typed as `ProposalData['payment_terms']`. However, it is never rendered in the OverviewTab or any other tab. Clients and internal users have no visibility into agreed payment schedules (deposit %, milestone schedule, net terms) from the proposal detail view.
+- **Recommended fix:** Add a "Payment Terms" section to `OverviewTab.tsx` rendering the structured `payment_terms` object (deposit percentage, milestone amounts, due dates).
+
+---
+
+### GAP-M-19 — Dispatch/Work Orders: `wo_number` generated client-side or missing sequence
+- **Location:** `src/app/app/dispatch/(hub)/page.tsx` line 131 (`wo.wo_number`), `work_orders` table
+- **Gap type:** Missing data point
+- **Impact:** Work order numbers (`WO-XXXX`) are displayed in the table. If `wo_number` is not set by a DB default or trigger (no migration confirms a sequence), newly created work orders may have NULL `wo_number`, rendering as blank in the list and making them unsearchable.
+- **Recommended fix:**
+  ```sql
+  CREATE SEQUENCE IF NOT EXISTS work_order_number_seq;
+  ALTER TABLE work_orders
+    ALTER COLUMN wo_number SET DEFAULT 'WO-' || LPAD(nextval('work_order_number_seq')::TEXT, 4, '0');
+  ```
+
+---
+
+### GAP-M-20 — Goals: `category` hardcoded to `'Company'` fallback, no category taxonomy enforced
+- **Location:** `src/app/app/goals/page.tsx` line 32
+- **Gap type:** Missing data point
+- **Impact:** `category: g.category || 'Company'` — if `goals.category` is NULL for existing rows, all display as "Company". No CHECK constraint or enum is enforced on the column (added in migration 00115 without a CHECK). Categories are free-text and inconsistent across records.
+- **Recommended fix:**
+  ```sql
+  ALTER TABLE goals ADD CONSTRAINT goals_category_check
+    CHECK (category IN ('Company','Team','Personal','Financial','Product','Customer'));
+  ```
+  Seed valid options and add a select dropdown in `GoalDialog.tsx`.
+
+---
+
+### GAP-M-21 — Projects: No `client_id` on `projects` — client-project linkage is unenforceable
+- **Location:** `src/app/app/projects/page.tsx`, `src/app/app/projects/[id]/ProjectDetailClient.tsx`, `projects` table
+- **Gap type:** Missing data point
+- **Impact:** The projects hub fetches `id, name, slug, status, visibility, starts_at, ends_at, created_at, venue_name, project_code` — no `client_id`. The detail page has no client section. Without a client FK, revenue attribution, client portal access to projects, and WIP rollup per client are all broken or require indirect joins through `proposals`.
+- **Recommended fix:**
+  ```sql
+  ALTER TABLE projects ADD COLUMN IF NOT EXISTS client_id UUID REFERENCES clients(id) ON DELETE SET NULL;
+  CREATE INDEX IF NOT EXISTS idx_projects_client ON projects(client_id);
+  ```
+  Add client selector to project create/edit form.
+
+---
+
+### GAP-M-22 — Compliance: Documents added only from "crew member profiles" — no direct add from Compliance hub
+- **Location:** `src/app/app/compliance/(hub)/page.tsx` lines 76–87
+- **Gap type:** Missing workflow
+- **Impact:** The compliance hub shows stats and an export button but the empty state says "Add documents from individual crew member profiles." There is no "Add Document" CTA on the hub itself. Admins must navigate to each crew member individually to upload compliance docs — there is no bulk upload, no org-wide upload, and no quick-add path for non-crew compliance docs (e.g., business licenses, insurance policies).
+- **Recommended fix:** Add a `PageHeader` `actionLabel="Add Document"` with a `ComplianceDocFormModal` that allows selecting the entity type (crew member, organization, vendor) and document type.
+
+---
+
+### GAP-M-23 — Advancing: `TierGate feature="work_orders"` — wrong feature flag
+- **Location:** `src/app/app/advancing/(hub)/page.tsx` line 54
+- **Gap type:** Missing data point
+- **Impact:** Production advancing is gated behind `feature="work_orders"`, not a dedicated `advancing` or `production` feature flag. Any plan tier that includes Work Orders but not Production Advancing will incorrectly expose the entire advancing module. Conversely, orgs with production advancing access but not work orders will be blocked.
+- **Recommended fix:** Define a dedicated `advancing` feature in the `TierGate` configuration. Gate with `<TierGate feature="advancing">`.
+
+---
+
+### GAP-M-24 — Settings/Webhooks: Duplicate webhook endpoint management — two pages for the same feature
+- **Location:** `src/app/app/settings/api-keys/page.tsx` (manages both API keys AND webhook endpoints), `src/app/app/settings/webhooks/page.tsx` (manages webhook endpoints separately)
+- **Gap type:** Missing workflow
+- **Impact:** Webhook endpoint CRUD exists in two separate pages — the API Keys page (`/app/settings/api-keys`) has a "Webhook Endpoints" section and the Webhooks page (`/app/settings/webhooks`) duplicates the same endpoint list. Users may manage webhooks from either page, creating confusion and potential divergence if the two pages use different API endpoints or display different state.
+- **Recommended fix:** Consolidate to a single source. Remove webhook endpoint management from the API Keys page. Point the Settings nav "Webhooks" entry to `/app/settings/webhooks` exclusively.
+
+---
+
+## Low Severity
+
+---
+
+### GAP-L-12 — Schedule: `schedule_type = 'rehearsal'` has no dedicated sub-route
+- **Location:** `src/app/app/schedule/(hub)/page.tsx` line 30, `ScheduleHubTabs.tsx`
+- **Gap type:** Missing workflow
+- **Impact:** `TYPE_LABELS` maps `rehearsal` to "Rehearsal" but `ScheduleHubTabs` only has tabs for `build-strike`, `run-of-show`, and `milestones`. Rehearsal schedules exist in the database but have no dedicated filtered list or creation UI — they are only visible in the main table.
+- **Recommended fix:** Add a `rehearsals` tab to `ScheduleHubTabs` or merge it under a general "Other" tab with a type filter.
+
+---
+
+### GAP-L-13 — Reports/Forecast: No data source — `forecast` page is stub
+- **Location:** `src/app/app/reports/(hub)/forecast/page.tsx`
+- **Gap type:** Missing workflow
+- **Impact:** The Reports hub links to `/app/reports/forecast`. If this page renders a stub or empty state with no real query, users clicking "Sales Forecast" get no useful data. (File not read — only directory confirmed to exist with 1 item.)
+- **Recommended fix:** Implement forecast logic aggregating `deals.deal_value * deals.probability / 100` grouped by `expected_close_date` month, with committed, best-case, and weighted pipeline columns.
+
+---
+
+### GAP-L-14 — Clients: `last_activity` mapped to `updated_at` — not semantically correct
+- **Location:** `src/app/app/clients/(hub)/page.tsx` line 46
+- **Gap type:** Missing data point
+- **Impact:** `last_activity: c.updated_at` — any update to the client record (even a background system update) will reset the "Last Activity" display. True last activity should come from `client_interactions.occurred_at`. Users will see misleading recency data.
+- **Recommended fix:** Add a subquery or join to get the most recent `client_interactions.occurred_at` for each client, falling back to `updated_at` if no interactions exist.
+
+---
+
+### GAP-L-15 — Equipment: `maintenance` status assets link to `/app/equipment/${asset.id}` but dispatch/logistics shows raw ID in context column
+- **Location:** `src/app/app/logistics/(hub)/page.tsx` line 167
+- **Gap type:** Missing data point
+- **Impact:** The logistics inventory table renders `ID: {asset.id}` in the Context column for all assets — a raw UUID visible to users. No maintenance ticket link, no repair status, no return date is shown. For `maintenance` status assets, users see only a UUID and "Flagged for repair" text with no actionable link.
+- **Recommended fix:** Replace the Context cell with meaningful data: link to `/app/equipment/${asset.id}`, show `expected_return_date` if present, and remove the raw UUID display.
+
+---
+
+### GAP-L-16 — Procurement/Suppliers: `vendors` table queried but no supplier detail or create flow visible in sub-route
+- **Location:** `src/app/app/procurement/(hub)/suppliers/page.tsx` (directory exists, 1 item), `vendors` table
+- **Gap type:** Missing workflow
+- **Impact:** The Procurement hub stat card shows "Suppliers" count from `vendors` table, and the card links to `/app/procurement/suppliers`. If the suppliers sub-page is a stub, supplier creation, rating, and contact management are inaccessible from procurement. (Separate from the Finance > Vendors path at `/app/finance/vendors`.)
+- **Recommended fix:** Implement `procurement/(hub)/suppliers/page.tsx` as a full vendor list with create/edit modal, referencing the same `vendors` table with procurement-specific filters.
+
+---
+
+### GAP-L-17 — AI Assistant: No conversation persistence — `ai_conversations` table unused
+- **Location:** `src/app/app/ai/page.tsx`, `AiChatPanel` component, migration 00116 (`ai_conversations`, `ai_messages` tables)
+- **Gap type:** Missing workflow
+- **Impact:** The AI page renders `AiChatPanel` (component-level). Migration 00116 created `ai_conversations` and `ai_messages` tables explicitly for persistence. If `AiChatPanel` does not write to these tables, conversation history is lost on page reload. Users cannot resume previous AI sessions, search past answers, or share AI insights with team members.
+- **Recommended fix:** On first message, `POST /api/ai/conversations` to create a row in `ai_conversations`. Persist each message to `ai_messages`. Load prior messages on mount via `GET /api/ai/conversations/[id]`.
+
+---
+
+*End of Session 2 audit. New gaps identified: 16 (3 Critical, 9 High, 9 Medium, 6 Low)*  
+*Running total: 56 gaps (11 Critical, 29 High, 23 Medium, 17 Low)*

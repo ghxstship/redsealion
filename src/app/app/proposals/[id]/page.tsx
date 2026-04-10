@@ -35,6 +35,8 @@ export default function ProposalDetailPage({
   const [showShare, setShowShare] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [converting, setConverting] = useState(false);
+  const [activityLogs, setActivityLogs] = useState<Array<{ id: string; action: string; actor_id: string | null; metadata: Record<string, unknown> | null; created_at: string }>>([]);
+  const [activityLoading, setActivityLoading] = useState(false);
 
   async function handleConvertToJob() {
     if (!proposal || proposal.status !== 'approved') return;
@@ -102,6 +104,23 @@ export default function ProposalDetailPage({
     }
     load();
   }, [id]);
+
+  useEffect(() => {
+    if (activeTab !== 'activity') return;
+    setActivityLoading(true);
+    const supabase = createClient();
+    supabase
+      .from('audit_logs')
+      .select('id, action, actor_id, metadata, created_at')
+      .eq('entity', 'proposal')
+      .eq('entity_id', id)
+      .order('created_at', { ascending: false })
+      .limit(50)
+      .then(({ data }) => {
+        setActivityLogs((data ?? []) as typeof activityLogs);
+        setActivityLoading(false);
+      });
+  }, [activeTab, id]);
 
   if (loading) {
     return (
@@ -224,10 +243,30 @@ export default function ProposalDetailPage({
       )}
 
       {activeTab === 'activity' && (
-        <div className="rounded-xl border border-border bg-background px-8 py-12 text-center">
-          <p className="text-sm text-text-secondary">
-            Proposal activity will appear here as your team and clients interact with this proposal.
-          </p>
+        <div className="rounded-xl border border-border bg-background overflow-hidden">
+          {activityLoading ? (
+            <div className="px-8 py-12 text-center"><p className="text-sm text-text-muted">Loading activity…</p></div>
+          ) : activityLogs.length === 0 ? (
+            <div className="px-8 py-12 text-center"><p className="text-sm text-text-secondary">No activity recorded yet for this proposal.</p></div>
+          ) : (
+            <ul className="divide-y divide-border">
+              {activityLogs.map((log) => (
+                <li key={log.id} className="flex items-start gap-3 px-6 py-4">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground capitalize">{log.action.replace(/_/g, ' ')}</p>
+                    {log.metadata && Object.keys(log.metadata).length > 0 && (
+                      <p className="mt-0.5 text-xs text-text-secondary truncate">
+                        {JSON.stringify(log.metadata)}
+                      </p>
+                    )}
+                  </div>
+                  <time className="shrink-0 text-xs text-text-muted tabular-nums">
+                    {new Date(log.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}
+                  </time>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
 

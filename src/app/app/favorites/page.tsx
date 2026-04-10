@@ -16,12 +16,12 @@ const ENTITY_CONFIGS: Record<string, EntityConfig> = {
   proposals: { table: 'proposals', nameField: 'name', hrefBase: '/app/proposals', label: 'Proposals' },
   events: { table: 'events', nameField: 'name', hrefBase: '/app/events', label: 'Events' },
   tasks: { table: 'tasks', nameField: 'title', hrefBase: '/app/tasks', label: 'Tasks' },
-  clients: { table: 'clients', nameField: 'name', hrefBase: '/app/clients', label: 'Clients' },
+  clients: { table: 'clients', nameField: 'company_name', hrefBase: '/app/clients', label: 'Clients' },
   projects: { table: 'projects', nameField: 'name', hrefBase: '/app/projects', label: 'Projects' },
-  equipment: { table: 'equipment', nameField: 'name', hrefBase: '/app/equipment', label: 'Equipment' },
+  equipment: { table: 'assets', nameField: 'name', hrefBase: '/app/equipment', label: 'Equipment' },
   deals: { table: 'deals', nameField: 'title', hrefBase: '/app/pipeline', label: 'Deals' },
   invoices: { table: 'invoices', nameField: 'invoice_number', hrefBase: '/app/finance/invoices', label: 'Invoices' },
-  contacts: { table: 'contacts', nameField: 'name', hrefBase: '/app/clients/contacts', label: 'Contacts' },
+  contacts: { table: 'clients', nameField: 'company_name', hrefBase: '/app/clients', label: 'Contacts' },
 };
 
 async function getFavoritedItems() {
