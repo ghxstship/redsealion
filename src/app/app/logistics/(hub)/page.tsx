@@ -164,9 +164,11 @@ export default async function WarehousePage() {
                 </td>
                 <td className="px-6 py-3.5 text-sm text-text-secondary">
                   <div className="flex flex-col gap-1">
-                     <span className="text-xs text-text-muted break-all">ID: {asset.id}</span>
-                     {asset.status === 'maintenance' && <span className="text-xs text-red-500 font-medium">Flagged for repair</span>}
-                     {asset.status === 'deployed' && <span className="text-xs text-blue-500 font-medium">Currently on assignment</span>}
+                    <Link href={`/app/equipment/${asset.id}`} className="text-xs font-medium text-blue-600 hover:underline">
+                      View asset
+                    </Link>
+                    {asset.status === 'maintenance' && <span className="text-xs text-red-500 font-medium">Flagged for repair</span>}
+                    {asset.status === 'deployed' && <span className="text-xs text-blue-500 font-medium">Currently on assignment</span>}
                   </div>
                 </td>
               </tr>

@@ -35,10 +35,10 @@ async function getRoadmapItems(): Promise<RoadmapItem[]> {
 
     if (!proposals) return [];
 
-    // Get task counts per proposal for progress
+    // Get task counts per proposal for progress (includes subtasks via parent_task_id)
     const { data: tasks } = await supabase
       .from('tasks')
-      .select('id, proposal_id, status')
+      .select('id, proposal_id, parent_task_id, status')
       .eq('organization_id', ctx.organizationId)
       .not('proposal_id', 'is', null);
 

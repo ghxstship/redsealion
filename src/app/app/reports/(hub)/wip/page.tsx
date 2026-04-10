@@ -56,18 +56,38 @@ async function getWipData(): Promise<WipRow[]> {
       billedMap.set(pid, (billedMap.get(pid) ?? 0) + inv.amount_paid);
     }
 
-    // Get time entry costs per proposal
+    // Get time entry costs per proposal (with user_id for rate cascade)
     const { data: timeEntries } = await supabase
       .from('time_entries')
-      .select('proposal_id, duration_minutes, hourly_rate, is_billable')
+      .select('proposal_id, duration_minutes, hourly_rate, is_billable, user_id')
       .in('proposal_id', proposalIds)
       .eq('is_approved', true);
+
+    // Build crew rate map for entries missing hourly_rate
+    const crewUserIds = [...new Set(
+      (timeEntries ?? [])
+        .filter((te) => !te.hourly_rate)
+        .map((te) => (te as Record<string, unknown>).user_id as string)
+        .filter(Boolean)
+    )];
+    const crewRateMap = new Map<string, number>();
+    if (crewUserIds.length > 0) {
+      const { data: crewProfiles } = await supabase
+        .from('crew_profiles')
+        .select('user_id, hourly_rate')
+        .in('user_id', crewUserIds);
+      for (const cp of crewProfiles ?? []) {
+        if (cp.hourly_rate) crewRateMap.set(cp.user_id, cp.hourly_rate);
+      }
+    }
 
     const timeValueMap = new Map<string, { billed: number; unbilled: number }>();
     for (const te of timeEntries ?? []) {
       const pid = te.proposal_id as string;
       const hours = (te.duration_minutes ?? 0) / 60;
-      const value = hours * (te.hourly_rate ?? 0);
+      const userId = (te as Record<string, unknown>).user_id as string | null;
+      const rate = te.hourly_rate ?? (userId ? (crewRateMap.get(userId) ?? 0) : 0);
+      const value = hours * rate;
       const current = timeValueMap.get(pid) ?? { billed: 0, unbilled: 0 };
       if (te.is_billable) {
         current.unbilled += value;

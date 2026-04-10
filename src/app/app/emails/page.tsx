@@ -3,9 +3,8 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import EmptyState from '@/components/ui/EmptyState';
 import PageHeader from '@/components/shared/PageHeader';
-import Button from '@/components/ui/Button';
 import Link from 'next/link';
-import ComposeEmailModal from './ComposeEmailModal';
+import ComposeEmailButton from './ComposeEmailButton';
 
 interface EmailThreadRow {
   id: string;
@@ -99,7 +98,9 @@ export default async function EmailsPage() {
         <PageHeader
           title="Email Inbox"
           subtitle="Email threads linked to your deals and clients."
-        />
+        >
+          <ComposeEmailButton />
+        </PageHeader>
 
       <div className="rounded-xl border border-border bg-background divide-y divide-border">
         {threads.map((thread) => (
@@ -140,7 +141,7 @@ export default async function EmailsPage() {
         <EmptyState
           message="No email threads yet"
           description="Connect your email or integration to see conversations here."
-          action={<Link href="/app/settings/integrations"><Button>Connect Integration</Button></Link>}
+          action={<Link href="/app/settings/integrations" className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity">Connect Integration</Link>}
         />
       )}
     </TierGate>

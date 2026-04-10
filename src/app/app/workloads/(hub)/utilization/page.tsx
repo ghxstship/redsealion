@@ -43,20 +43,26 @@ const { data: members } = await supabase
 
     const { data: allocations } = await supabase
       .from('resource_allocations')
-      .select('user_id, hours_per_day')
+      .select('user_id, hours_per_day, allocated_hours, available_hours')
       .eq('organization_id', ctx.organizationId)
       .gte('end_date', weekStart.toISOString().split('T')[0])
       .lte('start_date', weekEnd.toISOString().split('T')[0]);
 
-    const allocationsByUser = new Map<string, number>();
+    const allocationsByUser = new Map<string, { allocated: number; available: number }>();
     for (const alloc of allocations ?? []) {
-      const current = allocationsByUser.get(alloc.user_id) ?? 0;
-      allocationsByUser.set(alloc.user_id, current + (alloc.hours_per_day ?? 0));
+      const current = allocationsByUser.get(alloc.user_id) ?? { allocated: 0, available: 0 };
+      const allocHours = (alloc as Record<string, unknown>).allocated_hours as number | null;
+      const availHours = (alloc as Record<string, unknown>).available_hours as number | null;
+      allocationsByUser.set(alloc.user_id, {
+        allocated: current.allocated + (allocHours ?? alloc.hours_per_day ?? 0),
+        available: Math.max(current.available, availHours ?? alloc.hours_per_day ?? 8),
+      });
     }
 
     return members.map((m: Record<string, unknown>) => {
-      const available = 8;
-      const allocated = allocationsByUser.get(m.id as string) ?? 0;
+      const userAlloc = allocationsByUser.get(m.id as string);
+      const available = userAlloc?.available ?? 8;
+      const allocated = userAlloc?.allocated ?? 0;
       const utilization = available > 0 ? Math.round((allocated / available) * 100) : 0;
       return {
         name: (m.full_name as string) ?? 'Unknown',

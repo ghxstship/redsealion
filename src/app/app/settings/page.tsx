@@ -69,6 +69,7 @@ export default function GeneralSettingsPage() {
   const [proposalPrefix, setProposalPrefix] = useState('');
   const [saving, setSaving] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   useEffect(() => {
     fetch('/api/settings/general')
@@ -89,8 +90,9 @@ export default function GeneralSettingsPage() {
 
   async function handleSave() {
     setSaving(true);
+    setSaveStatus('idle');
     try {
-      await fetch('/api/settings/general', {
+      const res = await fetch('/api/settings/general', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -99,8 +101,12 @@ export default function GeneralSettingsPage() {
           settings: { timezone, currency, invoicePrefix, proposalPrefix },
         }),
       });
+      setSaveStatus(res.ok ? 'success' : 'error');
+    } catch {
+      setSaveStatus('error');
     } finally {
       setSaving(false);
+      setTimeout(() => setSaveStatus('idle'), 4000);
     }
   }
 
@@ -143,6 +149,16 @@ export default function GeneralSettingsPage() {
           <InputField label="Proposal Prefix" value={proposalPrefix} onChange={setProposalPrefix} />
         </div>
       </Card>
+      {saveStatus === 'success' && (
+        <div className="rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700">
+          Settings saved successfully.
+        </div>
+      )}
+      {saveStatus === 'error' && (
+        <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+          Failed to save settings. Please try again.
+        </div>
+      )}
       <div className="flex justify-end">
         <Button onClick={handleSave} disabled={saving}>
           {saving ? 'Saving...' : 'Save Changes'}

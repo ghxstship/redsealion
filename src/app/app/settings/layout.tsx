@@ -51,6 +51,7 @@ const sections = [
     requiresAdmin: true,
     items: [
       { label: 'Overview', href: '/app/settings/security' },
+      { label: 'SSO', href: '/app/settings/sso' },
       { label: 'Audit Log', href: '/app/settings/security/audit-log' },
     ],
   },
@@ -60,7 +61,8 @@ const sections = [
     items: [
       { label: 'Integrations', href: '/app/settings/integrations' },
       { label: 'Calendar Sync', href: '/app/settings/calendar-sync' },
-      { label: 'API Keys & Webhooks', href: '/app/settings/api-keys' },
+      { label: 'API Keys', href: '/app/settings/api-keys' },
+      { label: 'Webhooks', href: '/app/settings/webhooks' },
       { label: 'Automations', href: '/app/settings/automations-config' },
     ],
   },

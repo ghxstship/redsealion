@@ -35,7 +35,14 @@ export default async function RentalsCatalogPage() {
 
   return (
     <TierGate feature="equipment">
-      <PageHeader title="Rentals" subtitle="Equipment rental orders, reservations, and sub-rentals." />
+      <PageHeader title="Rentals" subtitle="Equipment rental orders, reservations, and sub-rentals.">
+        <Link
+          href="/app/rentals/new"
+          className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity whitespace-nowrap"
+        >
+          New Rental Order
+        </Link>
+      </PageHeader>
       <RentalsHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">
