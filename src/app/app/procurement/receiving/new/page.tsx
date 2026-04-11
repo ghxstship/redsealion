@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import PageHeader from '@/components/shared/PageHeader';
 import { TierGate } from '@/components/shared/TierGate';
+import Alert from '@/components/ui/Alert';
 
 interface PO {
   id: string;
@@ -82,7 +83,7 @@ export default function NewReceiptPage() {
   }
 
   return (
-    <TierGate feature="profitability">
+    <TierGate feature="procurement">
       <PageHeader title="Log Goods Receipt" subtitle="Record an incoming delivery against a purchase order." />
 
       <div className="mb-4">
@@ -92,9 +93,7 @@ export default function NewReceiptPage() {
       </div>
 
       {error && (
-        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
+        <Alert variant="error">{error}</Alert>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">

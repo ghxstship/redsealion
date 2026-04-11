@@ -4,6 +4,7 @@ import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
 import PageHeader from '@/components/shared/PageHeader';
 import EmptyState from '@/components/ui/EmptyState';
+import StatusBadge, { INVOICE_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import InvoiceHubTabs from '../InvoiceHubTabs';
 
 interface InvoiceRow {
@@ -18,16 +19,7 @@ interface InvoiceRow {
   client_name: string;
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  draft: 'bg-bg-secondary text-text-secondary',
-  sent: 'bg-blue-50 text-blue-700',
-  viewed: 'bg-indigo-50 text-indigo-700',
-  paid: 'bg-green-50 text-green-700',
-  partial: 'bg-yellow-50 text-yellow-700',
-  partially_paid: 'bg-yellow-50 text-yellow-700',
-  overdue: 'bg-red-50 text-red-700',
-  void: 'bg-zinc-50 text-zinc-500',
-};
+
 
 async function getInvoices(): Promise<InvoiceRow[]> {
   try {
@@ -131,9 +123,7 @@ export default async function InvoicesPage() {
                     <td className="px-4 py-3 text-right tabular-nums">{formatCurrency(inv.total)}</td>
                     <td className="px-4 py-3 text-right tabular-nums">{formatCurrency(inv.amount_paid)}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[inv.status] ?? 'bg-bg-secondary text-text-secondary'}`}>
-                        {inv.status}
-                      </span>
+                      <StatusBadge status={inv.status} colorMap={INVOICE_STATUS_COLORS} />
                     </td>
                   </tr>
                 ))}

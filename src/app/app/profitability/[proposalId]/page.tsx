@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import { formatCurrency } from '@/lib/utils';
 import MarginChart from '@/components/admin/profitability/MarginChart';
@@ -16,10 +17,14 @@ interface ProjectDetail {
 async function getProjectDetail(proposalId: string): Promise<ProjectDetail | null> {
   try {
     const supabase = await createClient();
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) return null;
+
     const { data: proposal } = await supabase
       .from('proposals')
       .select('name, total_value')
       .eq('id', proposalId)
+      .eq('organization_id', ctx.organizationId)
       .single();
 
     if (!proposal) return null;

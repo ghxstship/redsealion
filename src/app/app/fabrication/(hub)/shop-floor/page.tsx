@@ -3,6 +3,8 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import FabricationHubTabs from '../../FabricationHubTabs';
+import StatusBadge from '@/components/ui/StatusBadge';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getShopFloor() {
   try {
@@ -11,7 +13,8 @@ async function getShopFloor() {
     if (!ctx) return [];
     const { data } = await supabase
       .from('shop_floor_logs')
-      .select('id, action, notes, created_at, fabrication_orders(order_number, name), users(full_name)')
+      .select('id, action, notes, created_at, fabrication_orders!inner(order_number, name, organization_id), users(full_name)')
+      .eq('fabrication_orders.organization_id', ctx.organizationId)
       .order('created_at', { ascending: false })
       .limit(50);
     return (data ?? []).map((r: Record<string, unknown>) => ({
@@ -36,18 +39,9 @@ export default async function ShopFloorPage() {
       <FabricationHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Recent Logs</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{logs.length}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Completions</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-green-600">{logs.filter((l) => l.action === 'completed').length}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">QC Failures</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-red-600">{logs.filter((l) => l.action === 'quality_fail').length}</p>
-        </div>
+        <MetricCard label="Recent Logs" value={logs.length} />
+        <MetricCard label="Completions" value={logs.filter((l) => l.action === 'completed').length} className="[&_.text-foreground]:text-green-600" />
+        <MetricCard label="QC Failures" value={logs.filter((l) => l.action === 'quality_fail').length} className="[&_.text-foreground]:text-red-600" />
       </div>
 
       <div className="rounded-xl border border-border bg-background overflow-hidden">
@@ -60,7 +54,7 @@ export default async function ShopFloorPage() {
                 <span className="text-lg mt-0.5">{ACTION_ICONS[log.action] ?? '📌'}</span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${ACTION_COLORS[log.action]}`}>{log.action.replace('_', ' ')}</span>
+                    <StatusBadge status={log.action} colorMap={ACTION_COLORS} />
                     {log.order_number && <span className="text-xs text-text-muted">• {log.order_number}</span>}
                   </div>
                   {log.order_name && <p className="text-sm text-foreground mt-1">{log.order_name}</p>}

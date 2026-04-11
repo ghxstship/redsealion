@@ -6,6 +6,7 @@ import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
 import ProcurementHubTabs from '../../ProcurementHubTabs';
 import StatusBadge, { PROCUREMENT_REQUISITION_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getRequisitions() {
   try {
@@ -30,7 +31,7 @@ export default async function RequisitionsPage() {
   const reqs = await getRequisitions();
 
   return (
-    <TierGate feature="profitability">
+    <TierGate feature="procurement">
       <PageHeader title="Requisitions" subtitle="Submit and track internal purchase requests." />
       <ProcurementHubTabs />
 
@@ -47,10 +48,7 @@ export default async function RequisitionsPage() {
           { label: 'Approved', value: reqs.filter((r) => r.status === 'approved').length, color: 'text-green-600' },
           { label: 'Total Value', value: formatCurrency(reqs.reduce((s, r) => s + r.total_cents, 0) / 100) },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
-            <p className="text-xs text-text-muted">{stat.label}</p>
-            <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
-          </div>
+          <MetricCard key={stat.label} label={stat.label} value={stat.value} className={stat.color ? `[&_.text-foreground]:${stat.color}` : ''} />
         ))}
       </div>
 

@@ -1,3 +1,4 @@
+import { formatLabel } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
@@ -63,9 +64,6 @@ async function getEquipment(): Promise<EquipmentItem[]> {
   }
 }
 
-function formatLabel(s: string): string {
-  return s.split('_').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-}
 
 export default async function EquipmentPage() {
   const equipment = await getEquipment();

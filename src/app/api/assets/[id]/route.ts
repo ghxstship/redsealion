@@ -43,7 +43,7 @@ export async function PATCH(
   // Fetch current asset for transition validation
   const { data: existing } = await supabase
     .from('assets')
-    .select('status, current_location, current_value')
+    .select('status, current_location, current_value, acquisition_cost, depreciation_method')
     .eq('id', id)
     .eq('organization_id', perm.organizationId)
     .single();
@@ -99,6 +99,15 @@ export async function PATCH(
     if (f in body) updates[f] = body[f];
   }
   if (Object.keys(updates).length === 0) return NextResponse.json({ error: 'No fields to update' }, { status: 400 });
+
+  // ── Validation for required depreciation configuration ──────────
+  const finalCost = 'acquisition_cost' in updates ? updates.acquisition_cost : existing.acquisition_cost;
+  if (Number(finalCost) > 0) {
+    const finalMethod = 'depreciation_method' in updates ? updates.depreciation_method : existing.depreciation_method;
+    if (!finalMethod) {
+      return NextResponse.json({ error: 'Asset is missing required depreciation configuration because acquisition cost is > 0.' }, { status: 400 });
+    }
+  }
 
   // ── Location history ──────────────────────────────────────────
   if ('current_location' in updates) {

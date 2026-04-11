@@ -3,7 +3,7 @@ import TimesheetApprovalCard from '@/components/admin/time/TimesheetApprovalCard
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import TimeHubTabs from '../../TimeHubTabs';
 import PageHeader from '@/components/shared/PageHeader';
-import Card from '@/components/ui/Card';
+import { TierGate } from '@/components/shared/TierGate';
 
 interface PendingTimesheet {
   id: string;
@@ -27,7 +27,7 @@ const { data } = await supabase
       .from('timesheets')
       .select('id, user_id, week_start, total_hours, submitted_at, status')
       .eq('organization_id', ctx.organizationId)
-      .eq('status', 'submitted')
+      .in('status', ['submitted', 'approved', 'rejected'])
       .order('submitted_at', { ascending: false })
       .limit(20);
 
@@ -58,8 +58,8 @@ export default async function TimesheetsApprovalPage() {
   const timesheets = await getPendingTimesheets();
 
   return (
-    <>
-<PageHeader
+    <TierGate feature="time_tracking">
+      <PageHeader
         title="Timesheet Approvals"
         subtitle="Review and approve submitted timesheets."
       />
@@ -86,6 +86,6 @@ export default async function TimesheetsApprovalPage() {
           ))}
         </div>
       )}
-    </>
+    </TierGate>
   );
 }

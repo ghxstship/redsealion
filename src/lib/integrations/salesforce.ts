@@ -79,7 +79,12 @@ export class SalesforceAdapter extends BaseIntegrationAdapter {
     const { access_token, instance_url } = creds;
 
     if (!access_token || !instance_url) {
-      return { entityType: 'client', entityCount: 0, errors: ['Missing Salesforce credentials'] };
+      await supabase
+        .from('integrations')
+        .update({ status: 'error', last_error: 'Re-authorization required: token expired or missing' })
+        .eq('id', integrationId);
+
+      return { entityType: 'client', entityCount: 0, errors: ['auth_required'] };
     }
 
     if (direction === 'inbound') {

@@ -1,29 +1,49 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import Button from '@/components/ui/Button';
+import FormInput from '@/components/ui/FormInput';
+import FormLabel from '@/components/ui/FormLabel';
+import FormSelect from '@/components/ui/FormSelect';
 import { toast } from 'react-hot-toast';
+import { SCHEDULE_TYPES } from '@/lib/constants/schedule';
 
-const SCHEDULE_TYPES = [
-  { value: 'build_strike', label: 'Build & Strike' },
-  { value: 'run_of_show', label: 'Run of Show' },
-  { value: 'rehearsal', label: 'Rehearsal' },
-  { value: 'general', label: 'General' },
-];
+interface FormState {
+  name: string;
+  schedule_type: string;
+  start_date: string;
+  end_date: string;
+  notes: string;
+  event_id: string;
+}
+
+interface EventOption {
+  id: string;
+  name: string;
+}
 
 export default function NewSchedulePage() {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
-  const [form, setForm] = useState({
+  const [events, setEvents] = useState<EventOption[]>([]);
+  const [form, setForm] = useState<FormState>({
     name: '',
     schedule_type: 'general',
     start_date: '',
     end_date: '',
     notes: '',
+    event_id: '',
   });
+
+  useEffect(() => {
+    fetch('/api/events')
+      .then((res) => res.json())
+      .then((data) => setEvents(data))
+      .catch(() => toast.error('Failed to load events'));
+  }, []);
 
   function update(key: string, value: string) {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -46,13 +66,16 @@ export default function NewSchedulePage() {
           start_date: form.start_date || null,
           end_date: form.end_date || null,
           notes: form.notes.trim() || null,
+          event_id: form.event_id || null,
           status: 'draft',
         }),
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error ?? 'Failed to create schedule');
+      const scheduleId = json.schedule?.id ?? json.id;
+      if (!scheduleId) throw new Error('Unexpected API response');
       toast.success('Schedule created');
-      router.push(`/app/schedule/${json.schedule?.id ?? json.id}`);
+      router.push(`/app/schedule/${scheduleId}`);
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : 'Failed to create schedule');
       setSaving(false);
@@ -66,59 +89,68 @@ export default function NewSchedulePage() {
       <form onSubmit={handleSubmit} className="mt-6 max-w-2xl space-y-6">
         <div className="rounded-xl border border-border bg-background p-6 space-y-4">
           <div>
-            <label className="block text-xs font-medium text-text-muted mb-1.5">Schedule Name *</label>
-            <input
+            <FormLabel>Schedule Name *</FormLabel>
+            <FormInput
               type="text"
               value={form.name}
               onChange={(e) => update('name', e.target.value)}
               placeholder="e.g. Main Stage Build & Strike"
-              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-text-muted mb-1.5">Schedule Type</label>
-            <select
+            <FormLabel>Schedule Type</FormLabel>
+            <FormSelect
               value={form.schedule_type}
               onChange={(e) => update('schedule_type', e.target.value)}
-              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               {SCHEDULE_TYPES.map((t) => (
                 <option key={t.value} value={t.value}>{t.label}</option>
               ))}
-            </select>
+            </FormSelect>
+          </div>
+
+          <div>
+            <FormLabel>Event</FormLabel>
+            <FormSelect
+              value={form.event_id}
+              onChange={(e) => update('event_id', e.target.value)}
+            >
+              <option value="">No event (standalone)</option>
+              {events.map((e) => (
+                <option key={e.id} value={e.id}>{e.name}</option>
+              ))}
+            </FormSelect>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-text-muted mb-1.5">Start Date</label>
-              <input
+              <FormLabel>Start Date</FormLabel>
+              <FormInput
                 type="date"
                 value={form.start_date}
                 onChange={(e) => update('start_date', e.target.value)}
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-text-muted mb-1.5">End Date</label>
-              <input
+              <FormLabel>End Date</FormLabel>
+              <FormInput
                 type="date"
                 value={form.end_date}
                 onChange={(e) => update('end_date', e.target.value)}
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-text-muted mb-1.5">Notes</label>
+            <FormLabel>Notes</FormLabel>
             <textarea
               value={form.notes}
               onChange={(e) => update('notes', e.target.value)}
               rows={3}
               placeholder="Optional context or instructions…"
-              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              className="w-full flex rounded-lg border border-border bg-input px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none"
             />
           </div>
         </div>

@@ -5,6 +5,8 @@ import PageHeader from '@/components/shared/PageHeader';
 import { formatCurrency } from '@/lib/utils';
 import RentalsHubTabs from '../../RentalsHubTabs';
 import CreateSubRentalButton from './CreateSubRentalButton';
+import StatusBadge, { SUB_RENTAL_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getSubRentals() {
   try {
@@ -24,7 +26,7 @@ async function getSubRentals() {
   } catch { return []; }
 }
 
-const STATUS_COLORS: Record<string, string> = { requested: 'bg-yellow-50 text-yellow-700', confirmed: 'bg-blue-50 text-blue-700', received: 'bg-green-50 text-green-700', returned: 'bg-bg-secondary text-text-secondary', invoiced: 'bg-green-50 text-green-700' };
+
 
 export default async function SubRentalsPage() {
   const subRentals = await getSubRentals();
@@ -43,10 +45,7 @@ export default async function SubRentalsPage() {
           { label: 'Active', value: subRentals.filter((r) => ['requested', 'confirmed', 'received'].includes(r.status)).length, color: 'text-blue-600' },
           { label: 'Total Cost', value: formatCurrency(totalCost / 100) },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
-            <p className="text-xs text-text-muted">{stat.label}</p>
-            <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
-          </div>
+          <MetricCard key={stat.label} label={stat.label} value={stat.value} className={stat.color ? `[&_.text-foreground]:${stat.color}` : ''} />
         ))}
       </div>
 
@@ -66,7 +65,7 @@ export default async function SubRentalsPage() {
                     <td className="px-4 py-3 text-text-secondary">{r.vendor_name ?? '—'}</td>
                     <td className="px-4 py-3 text-text-secondary">{new Date(r.rental_start).toLocaleDateString()} – {new Date(r.rental_end).toLocaleDateString()}</td>
                     <td className="px-4 py-3 tabular-nums">{formatCurrency(r.total_cost_cents / 100)}</td>
-                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[r.status]}`}>{r.status}</span></td>
+                    <td className="px-4 py-3"><StatusBadge status={r.status} colorMap={SUB_RENTAL_STATUS_COLORS} /></td>
                   </tr>
                 ))}
               </tbody>

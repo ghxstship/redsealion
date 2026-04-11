@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Alert from '@/components/ui/Alert';
 
 interface Props {
   id: string;
@@ -52,9 +53,7 @@ export default function RequisitionActions({ id, status }: Props) {
   return (
     <div className="space-y-4">
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
+        <Alert variant="error">{error}</Alert>
       )}
 
       <div className="flex gap-3 flex-wrap">

@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
+import ConfirmDialog from '@/components/shared/ConfirmDialog';
+import Alert from '@/components/ui/Alert';
 
 interface StatusActionsProps {
   orderId: string;
@@ -29,13 +31,16 @@ const TRANSITIONS: Record<string, { label: string; nextStatus: string; variant: 
 export default function StatusActions({ orderId, currentStatus }: StatusActionsProps) {
   const router = useRouter();
   const [updating, setUpdating] = useState<string | null>(null);
+  const [pendingTransition, setPendingTransition] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const actions = TRANSITIONS[currentStatus] ?? [];
   if (actions.length === 0) return null;
 
   async function handleTransition(nextStatus: string) {
-    if (!confirm(`Change status to "${nextStatus.replace(/_/g, ' ')}"?`)) return;
     setUpdating(nextStatus);
+    setPendingTransition(null);
+    setError(null);
     try {
       const res = await fetch(`/api/fabrication/orders/${orderId}`, {
         method: 'PATCH',
@@ -46,29 +51,45 @@ export default function StatusActions({ orderId, currentStatus }: StatusActionsP
         router.refresh();
       } else {
         const data = await res.json().catch(() => ({}));
-        alert(data.error ?? 'Failed to update status.');
+        setError(data.error ?? 'Failed to update status.');
       }
     } catch {
-      alert('Network error.');
+      setError('Network error.');
     } finally {
       setUpdating(null);
     }
   }
 
   return (
-    <div className="flex items-center gap-2">
-      {actions.map((action) => (
-        <Button
-          key={action.nextStatus}
-          variant={action.variant}
-          size="sm"
-          className={action.className}
-          disabled={updating !== null}
-          onClick={() => handleTransition(action.nextStatus)}
-        >
-          {updating === action.nextStatus ? 'Updating...' : action.label}
-        </Button>
-      ))}
-    </div>
+    <>
+      {error && <Alert variant="error" className="mb-3">{error}</Alert>}
+      <div className="flex items-center gap-2">
+        {actions.map((action) => (
+          <Button
+            key={action.nextStatus}
+            variant={action.variant}
+            size="sm"
+            className={action.className}
+            disabled={updating !== null}
+            onClick={() => setPendingTransition(action.nextStatus)}
+          >
+            {updating === action.nextStatus ? 'Updating...' : action.label}
+          </Button>
+        ))}
+      </div>
+
+      {pendingTransition && (
+        <ConfirmDialog
+          open
+          title="Change Status"
+          message={`Change status to "${pendingTransition.replace(/_/g, ' ')}"?`}
+          confirmLabel="Confirm"
+          variant="default"
+          onConfirm={() => handleTransition(pendingTransition)}
+          onCancel={() => setPendingTransition(null)}
+        />
+      )}
+    </>
   );
 }
+

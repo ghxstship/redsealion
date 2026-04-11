@@ -1,9 +1,11 @@
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
+import { RoleGate } from '@/components/shared/RoleGate';
 import AdvancingHeader from '@/components/admin/advances/AdvancingHeader';
 import AdvancingListClient from '@/components/admin/advances/AdvancingListClient';
 import AdvancingHubTabs from '../AdvancingHubTabs';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getAdvances() {
   try {
@@ -51,6 +53,7 @@ export default async function AdvancingPage() {
   );
 
   return (
+    <RoleGate resource="advances">
     <TierGate feature="advancing">
       <AdvancingHeader />
 
@@ -58,20 +61,14 @@ export default async function AdvancingPage() {
 
       {/* Summary stat cards */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">
-        {[
-          { label: 'Total', value: advances.length },
-          { label: 'Draft', value: statusCounts.draft ?? 0 },
-          { label: 'In Review', value: (statusCounts.submitted ?? 0) + (statusCounts.under_review ?? 0) },
-          { label: 'Approved', value: statusCounts.approved ?? 0 },
-        ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
-            <p className="text-xs text-text-muted">{stat.label}</p>
-            <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{stat.value}</p>
-          </div>
-        ))}
+        <MetricCard label="Total" value={advances.length} />
+        <MetricCard label="Draft" value={statusCounts.draft ?? 0} />
+        <MetricCard label="In Review" value={(statusCounts.submitted ?? 0) + (statusCounts.under_review ?? 0)} />
+        <MetricCard label="Approved" value={statusCounts.approved ?? 0} />
       </div>
 
       <AdvancingListClient advances={advances} />
     </TierGate>
+    </RoleGate>
   );
 }

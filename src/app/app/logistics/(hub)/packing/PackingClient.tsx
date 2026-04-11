@@ -7,6 +7,7 @@ import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
 import LogisticsHubTabs from "../../LogisticsHubTabs";
+import Alert from '@/components/ui/Alert';
 
 interface Proposal {
   id: string;
@@ -27,6 +28,7 @@ export default function PackingClient({ proposals }: { proposals: Proposal[] }) 
   const [selectedProposalId, setSelectedProposalId] = useState<string | null>(
     proposals.length > 0 ? proposals[0].id : null
   );
+  const [error, setError] = useState<string | null>(null);
   const [items, setItems] = useState<PackingItem[]>([]);
   const [loading, startTransition] = useTransition();
   const [exporting, setExporting] = useState(false);
@@ -77,7 +79,7 @@ export default function PackingClient({ proposals }: { proposals: Proposal[] }) 
     setExporting(true);
     // Simulate PDF export for now (since server-side PDF generation isn't required by instructions, just fixing the stub)
     setTimeout(() => {
-      alert('PDF Export simulated. In production, this would download a packing slip.');
+      setError('PDF Export simulated. In production, this would download a packing slip.');
       setExporting(false);
     }, 1000);
   };

@@ -4,7 +4,9 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
+import StatusBadge, { ADVANCE_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import AdvancingHubTabs from '../../AdvancingHubTabs';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getFulfillment() {
   try {
@@ -44,10 +46,7 @@ export default async function AdvancingFulfillmentPage() {
           { label: 'In Progress', value: inProgress.length, color: 'text-blue-600' },
           { label: 'Fulfilled', value: fulfilled.length, color: 'text-green-600' },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
-            <p className="text-xs text-text-muted">{stat.label}</p>
-            <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
-          </div>
+          <MetricCard key={stat.label} label={stat.label} value={stat.value} className={stat.color ? `[&_.text-foreground]:${stat.color}` : ''} />
         ))}
       </div>
 
@@ -80,9 +79,7 @@ export default async function AdvancingFulfillmentPage() {
                     <td className="px-4 py-3 text-text-secondary">{item.service_start_date ? new Date(item.service_start_date).toLocaleDateString() : '—'}</td>
                     <td className="px-4 py-3 text-text-secondary">{item.service_end_date ? new Date(item.service_end_date).toLocaleDateString() : '—'}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${item.status === 'fulfilled' || item.status === 'completed' ? 'bg-green-50 text-green-700' : item.status === 'partially_fulfilled' ? 'bg-amber-50 text-amber-700' : 'bg-blue-50 text-blue-700'}`}>
-                        {item.status.replace('_', ' ')}
-                      </span>
+                      <StatusBadge status={item.status} colorMap={ADVANCE_STATUS_COLORS} />
                     </td>
                   </tr>
                 ))}

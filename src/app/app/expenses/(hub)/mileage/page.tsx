@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
+import StatusBadge, { MILEAGE_STATUS_COLORS } from '@/components/ui/StatusBadge';
 
 interface MileageStats {
   milesThisMonth: number;
@@ -140,13 +141,7 @@ export default async function MileagePage() {
                     <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{entry.distance_miles}</td>
                     <td className="px-6 py-3.5 text-right text-sm tabular-nums font-medium text-foreground">{formatCurrency(entry.amount)}</td>
                     <td className="px-6 py-3.5 text-center">
-                      <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-                        entry.status === 'approved' ? 'bg-green-100 text-green-800' :
-                        entry.status === 'rejected' ? 'bg-red-100 text-red-800' :
-                        'bg-yellow-100 text-yellow-800'
-                      }`}>
-                        {entry.status}
-                      </span>
+                      <StatusBadge status={entry.status} colorMap={MILEAGE_STATUS_COLORS} />
                     </td>
                   </tr>
                 ))}

@@ -2,7 +2,9 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
+import StatusBadge, { FABRICATION_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import FabricationHubTabs from '../../FabricationHubTabs';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getQualityData() {
   try {
@@ -17,7 +19,8 @@ async function getQualityData() {
       .order('created_at', { ascending: false });
     const { data: logs } = await supabase
       .from('shop_floor_logs')
-      .select('id, action, notes, created_at, fabrication_orders(order_number)')
+      .select('id, action, notes, created_at, fabrication_orders!inner(order_number, organization_id)')
+      .eq('fabrication_orders.organization_id', ctx.organizationId)
       .in('action', ['quality_pass', 'quality_fail'])
       .order('created_at', { ascending: false })
       .limit(30);
@@ -43,17 +46,10 @@ export default async function QualityPage() {
       <FabricationHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">
-        {[
-          { label: 'Pending QC', value: orders.length, color: 'text-yellow-600' },
-          { label: 'Recent Passes', value: passes, color: 'text-green-600' },
-          { label: 'Recent Fails', value: fails, color: 'text-red-600' },
-          { label: 'Pass Rate', value: passes + fails > 0 ? `${Math.round((passes / (passes + fails)) * 100)}%` : '—' },
-        ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
-            <p className="text-xs text-text-muted">{stat.label}</p>
-            <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
-          </div>
-        ))}
+        <MetricCard label="Pending QC" value={orders.length} className="[&_.text-foreground]:text-yellow-600" />
+        <MetricCard label="Recent Passes" value={passes} className="[&_.text-foreground]:text-green-600" />
+        <MetricCard label="Recent Fails" value={fails} className="[&_.text-foreground]:text-red-600" />
+        <MetricCard label="Pass Rate" value={passes + fails > 0 ? `${Math.round((passes / (passes + fails)) * 100)}%` : '—'} />
       </div>
 
       {orders.length > 0 && (
@@ -63,7 +59,7 @@ export default async function QualityPage() {
             {orders.map((o) => (
               <div key={o.id} className="px-5 py-3 flex items-center justify-between">
                 <div><p className="text-sm font-medium text-foreground">{o.order_number}</p><p className="text-xs text-text-secondary">{o.name}</p></div>
-                <span className="inline-flex rounded-full px-2 py-0.5 text-xs font-medium bg-purple-50 text-purple-700">quality check</span>
+                <StatusBadge status={o.status} colorMap={FABRICATION_STATUS_COLORS} />
               </div>
             ))}
           </div>

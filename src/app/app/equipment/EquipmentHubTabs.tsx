@@ -6,11 +6,11 @@ import Tabs from '@/components/ui/Tabs';
 type EquipmentTab = 'inventory' | 'check-in-out' | 'bundles' | 'maintenance' | 'assets';
 
 const TABS: Array<{ key: EquipmentTab; label: string }> = [
+  { key: 'assets', label: 'Assets' },
   { key: 'inventory', label: 'Inventory' },
   { key: 'check-in-out', label: 'Check In/Out' },
   { key: 'bundles', label: 'Bundles' },
   { key: 'maintenance', label: 'Maintenance' },
-  { key: 'assets', label: 'Assets' },
 ];
 const TAB_ROUTES: Record<EquipmentTab, string> = {
   assets: '/app/equipment',

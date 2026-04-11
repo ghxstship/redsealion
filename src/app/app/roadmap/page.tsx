@@ -39,7 +39,7 @@ async function getRoadmapItems(): Promise<RoadmapItem[]> {
     // Get task counts per proposal for progress (includes subtasks via parent_task_id)
     const { data: tasks } = await supabase
       .from('tasks')
-      .select('id, proposal_id, parent_task_id, status')
+      .select('id, proposal_id, status')
       .eq('organization_id', ctx.organizationId)
       .not('proposal_id', 'is', null);
 
@@ -65,7 +65,8 @@ async function getRoadmapItems(): Promise<RoadmapItem[]> {
         clientName: client?.company_name ?? null,
         status: p.status,
         startDate: p.event_date as string | null,
-        endDate: (p.project_end_date as string | null) ?? p.event_date as string | null,
+        endDate: (p.project_end_date as string | null)
+          ?? (p.event_date ? new Date(new Date(p.event_date as string).getTime() + 30 * 86400000).toISOString().split('T')[0] : null),
         progress,
       };
     });
@@ -92,7 +93,7 @@ export default async function RoadmapPage() {
   const timeRangeEnd = new Date(quarterStart.getFullYear(), quarterStart.getMonth() + 6, 1).getTime();
 
   return (
-    <TierGate feature="tasks">
+    <TierGate feature="roadmap">
 <PageHeader
         title="Roadmap"
         subtitle="Project timeline across the next two quarters"
@@ -107,7 +108,7 @@ export default async function RoadmapPage() {
 
       <div className="mt-6 text-center">
         <Link
-          href="/app/tasks"
+          href="/app/projects"
           className="text-sm font-medium text-text-muted hover:text-foreground transition-colors"
         >
           ← Back to Projects

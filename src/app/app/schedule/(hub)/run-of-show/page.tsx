@@ -3,7 +3,9 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import Link from 'next/link';
+import StatusBadge, { PRODUCTION_SCHEDULE_STATUS_COLORS, SCHEDULE_BLOCK_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import ScheduleHubTabs from '../../ScheduleHubTabs';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getRunOfShowSchedules() {
   try {
@@ -48,18 +50,9 @@ export default async function RunOfShowPage() {
       <ScheduleHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Run of Show Documents</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{schedules.length}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Total Cues</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{blocks.length}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Live Now</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-green-600">{schedules.filter((s) => s.status === 'live').length}</p>
-        </div>
+        <MetricCard label={"Run of Show Documents"} value={schedules.length} />
+        <MetricCard label={"Total Cues"} value={blocks.length} />
+        <MetricCard label={"Live Now"} value={schedules.filter((s) => s.status === 'live').length} className="[&_.text-foreground]:text-green-600" />
       </div>
 
       {schedules.length === 0 ? (
@@ -77,7 +70,7 @@ export default async function RunOfShowPage() {
                     <Link href={`/app/schedule/${schedule.id}`} className="text-sm font-semibold text-foreground hover:underline">{schedule.name}</Link>
                     {schedule.event_name && <span className="text-xs text-text-muted ml-2">• {schedule.event_name}</span>}
                   </div>
-                  <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${schedule.status === 'live' ? 'bg-green-50 text-green-700' : 'bg-blue-50 text-blue-700'}`}>{schedule.status}</span>
+                  <StatusBadge status={schedule.status} colorMap={PRODUCTION_SCHEDULE_STATUS_COLORS} />
                 </div>
                 {cues.length === 0 ? (
                   <div className="px-5 py-8 text-center text-xs text-text-muted">No cues added yet</div>
@@ -101,7 +94,7 @@ export default async function RunOfShowPage() {
                             <td className="px-4 py-2 font-medium text-foreground">{cue.title}</td>
                             <td className="px-4 py-2 text-text-secondary text-xs line-clamp-1">{cue.notes ?? '—'}</td>
                             <td className="px-4 py-2">
-                              <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${cue.status === 'completed' ? 'bg-green-50 text-green-700' : cue.status === 'in_progress' ? 'bg-blue-50 text-blue-700' : 'bg-bg-secondary text-text-secondary'}`}>{cue.status.replace('_', ' ')}</span>
+                              <StatusBadge status={cue.status} colorMap={SCHEDULE_BLOCK_STATUS_COLORS} />
                             </td>
                           </tr>
                         ))}

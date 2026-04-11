@@ -4,18 +4,12 @@ import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { formatCurrency } from '@/lib/utils';
 import Tabs from '@/components/ui/Tabs';
-import StatusBadge from '@/components/ui/StatusBadge';
+import StatusBadge, { PURCHASE_ORDER_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import EmptyState from '@/components/ui/EmptyState';
 import Button from '@/components/ui/Button';
 import { Plus, FileText } from 'lucide-react';
 
-const PO_STATUS_COLORS: Record<string, string> = {
-  draft: 'bg-bg-secondary text-text-secondary',
-  sent: 'bg-blue-50 text-blue-700',
-  acknowledged: 'bg-indigo-50 text-indigo-700',
-  fulfilled: 'bg-green-50 text-green-700',
-  cancelled: 'bg-red-50 text-red-700',
-};
+
 
 const STATUS_TAB_KEYS = ['all', 'draft', 'sent', 'acknowledged', 'fulfilled', 'cancelled'] as const;
 
@@ -89,7 +83,7 @@ export default function PurchaseOrdersTableClient({ orders }: { orders: PoRow[] 
                     <td className="px-6 py-3.5 text-sm text-foreground">{po.vendorName}</td>
                     <td className="px-6 py-3.5 text-sm text-text-secondary">{po.projectName ?? '—'}</td>
                     <td className="px-6 py-3.5">
-                      <StatusBadge status={po.status} colorMap={PO_STATUS_COLORS} />
+                      <StatusBadge status={po.status} colorMap={PURCHASE_ORDER_STATUS_COLORS} />
                     </td>
                     <td className="px-6 py-3.5 text-right text-sm font-medium tabular-nums text-foreground">
                       {formatCurrency(po.totalAmount)}

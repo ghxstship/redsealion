@@ -2,30 +2,17 @@ import Link from 'next/link';
 import { TierGate } from '@/components/shared/TierGate';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import { formatLabel } from '@/lib/utils';
 
 import EmptyState from '@/components/ui/EmptyState';
+import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
+import StatusBadge, { WORK_ORDER_STATUS_COLORS, PRIORITY_COLORS } from '@/components/ui/StatusBadge';
 import PageHeader from '@/components/shared/PageHeader';
 import DispatchHubTabs from '../DispatchHubTabs';
+import Alert from '@/components/ui/Alert';
 
-const STATUS_COLORS: Record<string, string> = {
-  draft: 'bg-bg-secondary text-text-muted',
-  dispatched: 'bg-blue-50 text-blue-700',
-  accepted: 'bg-indigo-50 text-indigo-700',
-  in_progress: 'bg-amber-50 text-amber-700',
-  completed: 'bg-green-50 text-green-700',
-  cancelled: 'bg-red-50 text-red-600',
-};
 
-const PRIORITY_COLORS: Record<string, string> = {
-  low: 'bg-bg-secondary text-text-muted',
-  medium: 'bg-blue-50 text-blue-700',
-  high: 'bg-orange-50 text-orange-700',
-  urgent: 'bg-red-50 text-red-700',
-};
-
-function formatLabel(s: string): string {
-  return s.split('_').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-}
 
 async function getWorkOrders(): Promise<{ data: Array<Record<string, unknown>>; error: string | null }> {
   try {
@@ -66,29 +53,22 @@ export default async function DispatchPage() {
         title="Dispatch"
         subtitle="Create and dispatch work orders to your crew."
       >
-        <Link
-          href="/app/dispatch/new"
-          className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity"
-        >
-          New Work Order
-        </Link>
+        <Button href="/app/dispatch/new">New Work Order</Button>
       </PageHeader>
 
       <DispatchHubTabs />
 
       {error && (
-        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
+        <Alert variant="error">{error}</Alert>
       )}
 
       {/* Status summary */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
         {Object.entries(statCounts).map(([status, count]) => (
-          <div key={status} className="rounded-xl border border-border bg-background p-4">
+          <Card key={status} padding="sm">
             <p className="text-xs text-text-muted">{formatLabel(status)}</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{count}</p>
-          </div>
+          </Card>
         ))}
       </div>
 
@@ -99,12 +79,7 @@ export default async function DispatchPage() {
             message="No work orders yet"
             description="Create your first to start dispatching crew."
             action={
-              <Link
-                href="/app/dispatch/new"
-                className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity"
-              >
-                Create Work Order
-              </Link>
+              <Button href="/app/dispatch/new">Create Work Order</Button>
             }
           />
         ) : (
@@ -135,14 +110,10 @@ export default async function DispatchPage() {
                         </Link>
                       </td>
                       <td className="px-6 py-3.5">
-                        <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_COLORS[(wo.status as string)] ?? STATUS_COLORS.draft}`}>
-                          {formatLabel(wo.status as string)}
-                        </span>
+                        <StatusBadge status={wo.status as string} colorMap={WORK_ORDER_STATUS_COLORS} />
                       </td>
                       <td className="px-6 py-3.5">
-                        <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${PRIORITY_COLORS[(wo.priority as string)] ?? PRIORITY_COLORS.medium}`}>
-                          {formatLabel(wo.priority as string)}
-                        </span>
+                        <StatusBadge status={wo.priority as string} colorMap={PRIORITY_COLORS} />
                       </td>
                       <td className="px-6 py-3.5 text-sm text-text-secondary">
                         {crewNames.length > 0 ? crewNames.join(', ') : '—'}

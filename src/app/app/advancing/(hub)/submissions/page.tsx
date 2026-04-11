@@ -4,7 +4,9 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import { formatCurrency }  from '@/lib/utils';
 import Link from 'next/link';
+import StatusBadge, { ADVANCE_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import AdvancingHubTabs from '../../AdvancingHubTabs';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getSubmissions() {
   try {
@@ -39,18 +41,9 @@ export default async function AdvancingSubmissionsPage() {
       <AdvancingHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Total</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{submissions.length}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Drafts</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-yellow-600">{drafts.length}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Submitted</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-blue-600">{submitted.length}</p>
-        </div>
+        <MetricCard label={"Total"} value={submissions.length} />
+        <MetricCard label={"Drafts"} value={drafts.length} className="[&_.text-foreground]:text-yellow-600" />
+        <MetricCard label={"Submitted"} value={submitted.length} className="[&_.text-foreground]:text-blue-600" />
       </div>
 
       <div className="rounded-xl border border-border bg-background overflow-hidden">
@@ -80,9 +73,7 @@ export default async function AdvancingSubmissionsPage() {
                     </td>
                     <td className="px-4 py-3 text-text-secondary">{item.event_name ?? '—'}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${item.status === 'draft' ? 'bg-yellow-50 text-yellow-700' : 'bg-blue-50 text-blue-700'}`}>
-                        {item.status}
-                      </span>
+                      <StatusBadge status={item.status} colorMap={ADVANCE_STATUS_COLORS} />
                     </td>
                     <td className="px-4 py-3 tabular-nums">{formatCurrency(item.total_cents / 100)}</td>
                     <td className="px-4 py-3 text-text-secondary">{item.submission_deadline ? new Date(item.submission_deadline).toLocaleDateString() : '—'}</td>

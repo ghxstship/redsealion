@@ -87,12 +87,10 @@ export default async function ReportsPage() {
   const savedReports = await getSavedReports();
 
   return (
-    <>
+    <TierGate feature="reports">
       <PageHeader title="Reports" subtitle="Analytics and insights across your pipeline" />
 
       <ReportsHubTabs />
-
-      <TierGate feature="reports">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {reportTypes.map((report) => (
             <Link
@@ -121,9 +119,10 @@ export default async function ReportsPage() {
             <h2 className="text-base font-semibold text-foreground mb-4">Saved Reports</h2>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {savedReports.map((report) => (
-                <div
+                <Link
                   key={report.id}
-                  className="rounded-xl border border-border bg-background p-5 hover:border-foreground/20 transition-colors"
+                  href={`/app/reports/builder?id=${report.id}`}
+                  className="rounded-xl border border-border bg-background p-5 hover:border-foreground/20 transition-colors cursor-pointer"
                 >
                   <div className="flex items-start gap-3">
                     <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-bg-secondary text-text-muted flex-shrink-0">
@@ -139,12 +138,11 @@ export default async function ReportsPage() {
                       </p>
                     </div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </div>
         )}
-      </TierGate>
-    </>
+    </TierGate>
   );
 }

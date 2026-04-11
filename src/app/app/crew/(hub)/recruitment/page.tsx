@@ -1,6 +1,7 @@
+import { formatLabel } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
-import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
+import StatusBadge from '@/components/ui/StatusBadge';
 
 import Card from '@/components/ui/Card';
 import EmptyState from '@/components/ui/EmptyState';
@@ -22,12 +23,6 @@ const STATUS_COLORS: Record<string, string> = {
   closed: 'bg-red-50 text-red-700',
 };
 
-function formatLabel(s: string): string {
-  return s
-    .split('_')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ');
-}
 
 function formatDate(dateStr: string): string {
   return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', {
@@ -117,18 +112,10 @@ export default async function RecruitmentPage() {
                 <tr key={position.id} className="transition-colors hover:bg-bg-secondary/50">
                   <td className="px-6 py-3.5 text-sm font-medium text-foreground">{position.title}</td>
                   <td className="px-6 py-3.5">
-                    <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">
-                      {position.department}
-                    </span>
+                    <StatusBadge status={position.department} colorMap={{}} className="bg-bg-secondary text-text-secondary" />
                   </td>
                   <td className="px-6 py-3.5">
-                    <span
-                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        STATUS_COLORS[position.status] ?? 'bg-bg-secondary text-text-muted'
-                      }`}
-                    >
-                      {formatLabel(position.status)}
-                    </span>
+                    <StatusBadge status={position.status} colorMap={STATUS_COLORS} />
                   </td>
                   <td className="px-6 py-3.5 text-sm tabular-nums text-foreground">{position.applicants}</td>
                   <td className="px-6 py-3.5 text-sm text-text-muted">{formatDate(position.posted_date)}</td>

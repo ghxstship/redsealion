@@ -8,6 +8,11 @@ import { TriggerSelector } from '@/components/admin/automations/TriggerSelector'
 import { ActionSelector } from '@/components/admin/automations/ActionSelector';
 import PageHeader from '@/components/shared/PageHeader';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
+import Alert from '@/components/ui/Alert';
+import Toggle from '@/components/ui/Toggle';
+import FormInput from '@/components/ui/FormInput';
+import FormLabel from '@/components/ui/FormLabel';
+import Skeleton from '@/components/ui/Skeleton';
 
 export default function EditAutomationPage() {
   const router = useRouter();
@@ -114,19 +119,7 @@ export default function EditAutomationPage() {
   }
 
   if (loading) {
-    return (
-      <div className="animate-pulse space-y-6">
-        <div className="h-7 w-40 rounded bg-zinc-200" />
-        <div className="rounded-xl border border-zinc-200 bg-background p-6 space-y-4">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="space-y-2">
-              <div className="h-4 w-24 rounded bg-zinc-200" />
-              <div className="h-10 w-full rounded-lg bg-zinc-100" />
-            </div>
-          ))}
-        </div>
-      </div>
-    );
+    return <Skeleton className="max-w-4xl" height="h-[600px]" />;
   }
 
   return (
@@ -147,42 +140,35 @@ export default function EditAutomationPage() {
       />
 
       {error && (
-        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
+        <Alert variant="error">{error}</Alert>
       )}
 
       <div className="space-y-6">
         {/* Name + Description + Active toggle */}
         <div className="rounded-xl border border-border bg-background px-5 py-5 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Name</label>
-            <input
+            <FormLabel>Name</FormLabel>
+            <FormInput
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Description</label>
+            <FormLabel>Description</FormLabel>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={2}
-              className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
+              className="w-full rounded-lg border border-border bg-background text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 px-3 py-2"
             />
           </div>
           <div className="flex items-center gap-3">
-            <label className="text-sm font-medium text-foreground">Active</label>
-            <button
-              type="button"
-              onClick={() => setIsActive(!isActive)}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${isActive ? 'bg-green-500' : 'bg-zinc-300'}`}
-            >
-              <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${isActive ? 'translate-x-6' : 'translate-x-1'}`} />
-            </button>
-            <span className="text-sm text-text-secondary">{isActive ? 'Enabled' : 'Disabled'}</span>
+            <Toggle
+              checked={isActive}
+              onChange={setIsActive}
+              label={isActive ? 'Enabled' : 'Disabled'}
+            />
           </div>
         </div>
 

@@ -3,7 +3,9 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import Link from 'next/link';
+import StatusBadge, { ADVANCE_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import AdvancingHubTabs from '../../AdvancingHubTabs';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getAssignments() {
   try {
@@ -43,10 +45,7 @@ export default async function AdvancingAssignmentsPage() {
           { label: 'Awaiting Assignment', value: unassigned.length, color: 'text-yellow-600' },
           { label: 'In Progress', value: inProgress.length, color: 'text-blue-600' },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
-            <p className="text-xs text-text-muted">{stat.label}</p>
-            <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
-          </div>
+          <MetricCard key={stat.label} label={stat.label} value={stat.value} className={stat.color ? `[&_.text-foreground]:${stat.color}` : ''} />
         ))}
       </div>
 
@@ -79,9 +78,7 @@ export default async function AdvancingAssignmentsPage() {
                     <td className="px-4 py-3 tabular-nums">{item.line_item_count}</td>
                     <td className="px-4 py-3 text-text-secondary">{item.service_start_date ? new Date(item.service_start_date).toLocaleDateString() : '—'}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${item.status === 'partially_fulfilled' ? 'bg-blue-50 text-blue-700' : 'bg-yellow-50 text-yellow-700'}`}>
-                        {item.status.replace('_', ' ')}
-                      </span>
+                      <StatusBadge status={item.status} colorMap={ADVANCE_STATUS_COLORS} />
                     </td>
                   </tr>
                 ))}

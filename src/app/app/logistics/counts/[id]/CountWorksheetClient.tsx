@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
 import Alert from '@/components/ui/Alert';
-import StatusBadge from '@/components/ui/StatusBadge';
+import StatusBadge, { COUNT_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import FormInput from '@/components/ui/FormInput';
 import { formatLabel } from '@/lib/utils';
 import PageHeader from '@/components/shared/PageHeader';
@@ -35,13 +35,6 @@ interface CountWorksheetProps {
   };
   lines: CountLine[];
 }
-
-const STATUS_COLORS: Record<string, string> = {
-  planned: 'bg-bg-secondary text-text-secondary',
-  in_progress: 'bg-blue-50 text-blue-700',
-  completed: 'bg-green-50 text-green-700',
-  cancelled: 'bg-red-50 text-red-700',
-};
 
 export default function CountWorksheetClient({ count, lines: initialLines }: CountWorksheetProps) {
   const router = useRouter();
@@ -118,7 +111,7 @@ export default function CountWorksheetClient({ count, lines: initialLines }: Cou
         <div>
           <div className="flex items-center gap-3">
 <PageHeader title={<>{formatLabel(count.count_type)} Count</>} />
-            <StatusBadge status={count.status} colorMap={STATUS_COLORS} />
+            <StatusBadge status={count.status} colorMap={COUNT_STATUS_COLORS} />
           </div>
           <p className="mt-1 text-sm text-text-secondary">
             {count.location ?? 'All locations'} &middot; {countedCount}/{lines.length} counted

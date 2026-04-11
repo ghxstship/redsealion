@@ -4,61 +4,12 @@ import { useState, useEffect } from 'react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import Skeleton from '@/components/ui/Skeleton';
+import FormInput from '@/components/ui/FormInput';
+import FormLabel from '@/components/ui/FormLabel';
+import FormSelect from '@/components/ui/FormSelect';
+import Alert from '@/components/ui/Alert';
 
-function InputField({
-  label,
-  value,
-  onChange,
-  type = 'text',
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  type?: string;
-}) {
-  return (
-    <div>
-      <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
-        {label}
-      </label>
-      <input
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
-      />
-    </div>
-  );
-}
 
-function SelectField({
-  label,
-  options,
-  value,
-  onChange,
-}: {
-  label: string;
-  options: string[];
-  value: string;
-  onChange: (v: string) => void;
-}) {
-  return (
-    <div>
-      <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
-        {label}
-      </label>
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
-      >
-        {options.map((opt) => (
-          <option key={opt} value={opt}>{opt}</option>
-        ))}
-      </select>
-    </div>
-  );
-}
 
 export default function GeneralSettingsPage() {
   const [orgName, setOrgName] = useState('');
@@ -131,33 +82,45 @@ export default function GeneralSettingsPage() {
       <Card>
         <h3 className="text-sm font-semibold text-foreground mb-5">Organization</h3>
         <div className="space-y-5">
-          <InputField label="Organization Name" value={orgName} onChange={setOrgName} />
-          <InputField label="URL Slug" value={slug} onChange={setSlug} />
-          <SelectField
-            label="Timezone"
-            options={['America/Los_Angeles', 'America/New_York', 'America/Chicago', 'America/Denver', 'Europe/London', 'Europe/Berlin', 'Asia/Tokyo', 'Asia/Singapore', 'Australia/Sydney']}
-            value={timezone}
-            onChange={setTimezone}
-          />
-          <SelectField
-            label="Currency"
-            options={['USD', 'EUR', 'GBP', 'CAD', 'AUD', 'NZD', 'SGD', 'JPY']}
-            value={currency}
-            onChange={setCurrency}
-          />
-          <InputField label="Invoice Prefix" value={invoicePrefix} onChange={setInvoicePrefix} />
-          <InputField label="Proposal Prefix" value={proposalPrefix} onChange={setProposalPrefix} />
+          <div>
+            <FormLabel>Organization Name</FormLabel>
+            <FormInput value={orgName} onChange={(e) => setOrgName(e.target.value)} />
+          </div>
+          <div>
+            <FormLabel>URL Slug</FormLabel>
+            <FormInput value={slug} onChange={(e) => setSlug(e.target.value)} />
+          </div>
+          <div>
+            <FormLabel>Timezone</FormLabel>
+            <FormSelect value={timezone} onChange={(e) => setTimezone(e.target.value)}>
+              {['America/Los_Angeles', 'America/New_York', 'America/Chicago', 'America/Denver', 'Europe/London', 'Europe/Berlin', 'Asia/Tokyo', 'Asia/Singapore', 'Australia/Sydney'].map((tz) => (
+                <option key={tz} value={tz}>{tz}</option>
+              ))}
+            </FormSelect>
+          </div>
+          <div>
+            <FormLabel>Currency</FormLabel>
+            <FormSelect value={currency} onChange={(e) => setCurrency(e.target.value)}>
+              {['USD', 'EUR', 'GBP', 'CAD', 'AUD', 'NZD', 'SGD', 'JPY'].map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </FormSelect>
+          </div>
+          <div>
+            <FormLabel>Invoice Prefix</FormLabel>
+            <FormInput value={invoicePrefix} onChange={(e) => setInvoicePrefix(e.target.value)} />
+          </div>
+          <div>
+            <FormLabel>Proposal Prefix</FormLabel>
+            <FormInput value={proposalPrefix} onChange={(e) => setProposalPrefix(e.target.value)} />
+          </div>
         </div>
       </Card>
       {saveStatus === 'success' && (
-        <div className="rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700">
-          Settings saved successfully.
-        </div>
+        <Alert variant="success">Settings saved successfully.</Alert>
       )}
       {saveStatus === 'error' && (
-        <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
-          Failed to save settings. Please try again.
-        </div>
+        <Alert variant="error">Failed to save settings. Please try again.</Alert>
       )}
       <div className="flex justify-end">
         <Button onClick={handleSave} disabled={saving}>

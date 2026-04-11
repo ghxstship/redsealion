@@ -16,6 +16,19 @@ export default function MarginChart({ revenue, costs, categories }: MarginChartP
   const revenueWidth = maxVal > 0 ? (revenue / maxVal) * 100 : 0;
   const costsWidth = maxVal > 0 ? (costs / maxVal) * 100 : 0;
 
+  if (revenue === 0 && costs === 0) {
+    return (
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
+        <div className="px-6 py-4 border-b border-border">
+          <h2 className="text-base font-semibold text-foreground">Margin Analysis</h2>
+        </div>
+        <div className="px-8 py-12 text-center">
+          <p className="text-sm text-text-secondary">No revenue or cost data available yet. Add project costs to see margin analysis.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="rounded-xl border border-border bg-background overflow-hidden">
       <div className="px-6 py-4 border-b border-border">

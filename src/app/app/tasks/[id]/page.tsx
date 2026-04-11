@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { Check } from 'lucide-react';
 import { TierGate } from '@/components/shared/TierGate';
-import { statusColor } from '@/lib/utils';
+import StatusBadge, { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS } from '@/components/ui/StatusBadge';
 import { notFound } from 'next/navigation';
 import EmptyState from '@/components/ui/EmptyState';
 import Link from 'next/link';
@@ -135,15 +135,7 @@ async function getSubtasks(taskId: string): Promise<SubtaskRow[]> {
   }
 }
 
-function priorityColor(priority: string): string {
-  const map: Record<string, string> = {
-    urgent: 'bg-red-50 text-red-700',
-    high: 'bg-orange-50 text-orange-700',
-    medium: 'bg-yellow-50 text-yellow-700',
-    low: 'bg-bg-secondary text-text-muted',
-  };
-  return map[priority] ?? 'bg-bg-secondary text-text-muted';
-}
+
 
 export default async function TaskDetailPage({
   params,
@@ -174,12 +166,10 @@ export default async function TaskDetailPage({
           {/* Header */}
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColor(task.status)}`}>
+              <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${TASK_STATUS_COLORS[task.status] ?? 'bg-bg-secondary text-text-secondary'}`}>
                 {task.status.replace(/_/g, ' ')}
               </span>
-              <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium capitalize ${priorityColor(task.priority)}`}>
-                {task.priority}
-              </span>
+              <StatusBadge status={task.priority} colorMap={TASK_PRIORITY_COLORS} />
             </div>
             <PageHeader
               title={<><FavoriteButton entityType="task" entityId={id} />{task.title}</>}
@@ -237,9 +227,7 @@ export default async function TaskDetailPage({
                     <span className={`flex-1 text-sm ${sub.status === 'done' ? 'text-text-muted line-through' : 'text-foreground'}`}>
                       {sub.title}
                     </span>
-                    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium capitalize ${priorityColor(sub.priority)}`}>
-                      {sub.priority}
-                    </span>
+                    <StatusBadge status={sub.priority} colorMap={TASK_PRIORITY_COLORS} />
                     {sub.assigneeName && (
                       <span className="text-xs text-text-muted">{sub.assigneeName}</span>
                     )}

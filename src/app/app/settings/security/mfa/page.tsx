@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client';
 import { ShieldCheck, Loader2 } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
+import Alert from '@/components/ui/Alert';
 
 type MfaStep = 'loading' | 'enroll' | 'verify' | 'done';
 
@@ -152,9 +153,7 @@ export default function MfaSetupPage() {
       </div>
 
       {error && (
-        <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
+        <Alert variant="error">{error}</Alert>
       )}
 
       {step === 'enroll' && qrUri && (

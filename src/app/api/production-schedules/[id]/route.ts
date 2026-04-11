@@ -51,6 +51,8 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
 
   if (error || !schedule) return NextResponse.json({ error: 'Failed to update schedule', details: error?.message }, { status: 500 });
 
+  logAuditAction({ orgId: perm.organizationId, action: 'schedule.updated', entity: 'production_schedules', entityId: id, metadata: { fields: Object.keys(updates) } }).catch(() => {});
+
   return NextResponse.json({ success: true, schedule });
 }
 
@@ -62,13 +64,16 @@ export async function DELETE(_request: NextRequest, context: RouteContext) {
   const { id } = await context.params;
   const supabase = await createClient();
 
+  // Soft-delete: set deleted_at instead of hard-deleting
   const { error } = await supabase
     .from('production_schedules')
-    .delete()
+    .update({ deleted_at: new Date().toISOString() })
     .eq('id', id)
     .eq('organization_id', perm.organizationId);
 
   if (error) return NextResponse.json({ error: 'Failed to delete schedule', details: error.message }, { status: 500 });
+
+  logAuditAction({ orgId: perm.organizationId, action: 'schedule.deleted', entity: 'production_schedules', entityId: id }).catch(() => {});
 
   return NextResponse.json({ success: true });
 }

@@ -60,10 +60,22 @@ export async function POST(request: NextRequest) {
       description: description || null,
       amount: amount ?? 0,
       cost_date: cost_date || new Date().toISOString().split('T')[0],
+      created_by: perm.userId,
     })
     .select()
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  // Audit log for financial data change
+  await supabase.from('audit_logs').insert({
+    organization_id: perm.organizationId,
+    actor_id: perm.userId,
+    action: 'project_cost_created',
+    entity: 'project_cost',
+    entity_id: data.id,
+    metadata: { category, amount: amount ?? 0, proposal_id, project_id },
+  }).select().single().catch(() => {});
+
   return NextResponse.json({ cost: data }, { status: 201 });
 }

@@ -25,6 +25,7 @@ import { useDroppable, useDraggable } from '@dnd-kit/core';
 import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
 import StatusBadge, { TASK_PRIORITY_COLORS } from '@/components/ui/StatusBadge';
 import { castRelation } from '@/lib/supabase/cast-relation';
+import { mapTaskStatusToColumn } from '@/lib/status-mapper';
 
 /* ──────────────────────────────────────────────────────────────
    Types
@@ -53,16 +54,6 @@ const COLUMN_COLORS: Record<Column, string> = {
   in_progress: 'bg-blue-500',
   review: 'bg-purple-500',
   done: 'bg-green-500',
-};
-
-const STATUS_MAP: Record<string, Column> = {
-  todo: 'todo',
-  not_started: 'todo',
-  in_progress: 'in_progress',
-  review: 'review',
-  in_review: 'review',
-  done: 'done',
-  blocked: 'todo',
 };
 
 /* ──────────────────────────────────────────────────────────────
@@ -222,7 +213,7 @@ export default function KanbanBoard() {
 
         const grouped = emptyBoard();
         for (const row of taskRows) {
-          const col = STATUS_MAP[row.status as string] ?? 'todo';
+          const col = mapTaskStatusToColumn(row.status as string);
           const assigneeUser = castRelation<{
             full_name: string;
           }>(row.users);

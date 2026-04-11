@@ -3,6 +3,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import WorkloadsHubTabs from '../../WorkloadsHubTabs';
 import PageHeader from '@/components/shared/PageHeader';
+import Link from 'next/link';
 
 interface ScheduleAllocation {
   id: string;
@@ -78,7 +79,11 @@ export default async function WorkloadsSchedulePage() {
       <PageHeader
         title="Resource Schedule"
         subtitle="Visual schedule of team allocations across projects."
-      />
+      >
+        <Link href="/app/workloads" className="inline-flex items-center justify-center rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity">
+          New Allocation
+        </Link>
+      </PageHeader>
 
       <WorkloadsHubTabs />
 

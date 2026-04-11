@@ -2,7 +2,10 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
+import Button from '@/components/ui/Button';
 import EventsHubTabs from '../../EventsHubTabs';
+import StatusBadge from '@/components/ui/StatusBadge';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getPunchList() {
   try {
@@ -34,21 +37,14 @@ export default async function PunchListPage() {
   return (
     <TierGate feature="events">
       <PageHeader title="Punch List" subtitle="Post-event close-out items and deficiency tracking.">
-        <button className="btn-primary text-sm whitespace-nowrap hidden sm:inline-flex">+ New Punch List Item</button>
+        <Button size="sm" className="hidden sm:inline-flex">+ New Punch List Item</Button>
       </PageHeader>
       <EventsHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">
-        {[
-          { label: 'Total Items', value: items.length },
-          { label: 'Open', value: open.length, color: 'text-yellow-600' },
-          { label: 'Closed', value: closed.length, color: 'text-green-600' },
-        ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
-            <p className="text-xs text-text-muted">{stat.label}</p>
-            <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
-          </div>
-        ))}
+        <MetricCard label="Total Items" value={items.length} />
+        <MetricCard label="Open" value={open.length} className="[&_.text-foreground]:text-yellow-600" />
+        <MetricCard label="Closed" value={closed.length} className="[&_.text-foreground]:text-green-600" />
       </div>
 
       <div className="rounded-xl border border-border bg-background overflow-hidden">
@@ -67,7 +63,7 @@ export default async function PunchListPage() {
                     <td className="px-4 py-3 text-text-secondary">{item.event_name ?? '—'}</td>
                     <td className="px-4 py-3"><span className={`font-medium capitalize ${PRIORITY_COLORS[item.priority ?? 'medium']}`}>{item.priority ?? 'medium'}</span></td>
                     <td className="px-4 py-3 text-text-secondary">{item.due_date ? new Date(item.due_date).toLocaleDateString() : '—'}</td>
-                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${item.status === 'completed' || item.status === 'done' ? 'bg-green-50 text-green-700' : 'bg-yellow-50 text-yellow-700'}`}>{item.status}</span></td>
+                    <td className="px-4 py-3"><StatusBadge status={item.status} colorMap={{completed: 'bg-green-50 text-green-700', done: 'bg-green-50 text-green-700', pending: 'bg-yellow-50 text-yellow-700', in_progress: 'bg-yellow-50 text-yellow-700'}} /></td>
                   </tr>
                 ))}
               </tbody>

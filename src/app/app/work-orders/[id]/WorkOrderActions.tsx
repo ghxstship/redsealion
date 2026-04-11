@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
+import { toast } from 'react-hot-toast';
 
 interface WorkOrderActionsProps {
   id: string;
@@ -51,10 +52,10 @@ export default function WorkOrderActions({ id, currentStatus }: WorkOrderActions
         router.refresh();
       } else {
         const data = await res.json().catch(() => ({}));
-        alert(data.error ?? 'Failed to update status.');
+        toast.error(data.error ?? 'Failed to update status.');
       }
     } catch {
-      alert('Network error. Please try again.');
+      toast.error('Network error. Please try again.');
     } finally {
       setUpdating(null);
     }

@@ -8,6 +8,10 @@ import { TriggerSelector } from '@/components/admin/automations/TriggerSelector'
 import { ActionSelector } from '@/components/admin/automations/ActionSelector';
 import PageHeader from '@/components/shared/PageHeader';
 import { AUTOMATION_TEMPLATES } from '@/lib/automations/templates';
+import Alert from '@/components/ui/Alert';
+import Button from '@/components/ui/Button';
+import FormInput from '@/components/ui/FormInput';
+import FormLabel from '@/components/ui/FormLabel';
 
 export default function NewAutomationPage() {
   const router = useRouter();
@@ -88,32 +92,29 @@ export default function NewAutomationPage() {
       />
 
       {error && (
-        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
+        <Alert variant="error">{error}</Alert>
       )}
 
       <div className="space-y-6">
         {/* Name + Description */}
         <div className="rounded-xl border border-border bg-background px-5 py-5 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Name</label>
-            <input
+            <FormLabel>Name</FormLabel>
+            <FormInput
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g., Notify team on proposal approval"
-              className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Description</label>
+            <FormLabel>Description</FormLabel>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={2}
               placeholder="What does this automation do?"
-              className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
+              className="w-full rounded-lg border border-border bg-background text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 px-3 py-2"
             />
           </div>
         </div>
@@ -146,19 +147,15 @@ export default function NewAutomationPage() {
 
         {/* Save */}
         <div className="flex justify-end gap-3">
-          <Link
-            href="/app/automations"
-            className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors"
-          >
+          <Button variant="secondary" href="/app/automations">
             Cancel
-          </Link>
-          <button
+          </Button>
+          <Button
             onClick={handleSave}
             disabled={saving || !name || !triggerType || !actionType}
-            className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity disabled:opacity-50"
           >
             {saving ? 'Saving...' : 'Create Automation'}
-          </button>
+          </Button>
         </div>
       </div>
     </TierGate>

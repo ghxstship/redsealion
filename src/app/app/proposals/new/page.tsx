@@ -11,6 +11,8 @@ import ReviewStep from '@/components/admin/builder/ReviewStep';
 import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
 import Skeleton from '@/components/ui/Skeleton';
+import Alert from '@/components/ui/Alert';
+import Button from '@/components/ui/Button';
 
 function createDefaultPhase(number: number): PhaseData {
   const phaseNames: Record<number, { name: string; subtitle: string }> = {
@@ -190,9 +192,7 @@ export default function NewProposalPage() {
 
       {/* Save error */}
       {saveError && (
-        <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {saveError}
-        </div>
+        <Alert variant="error">{saveError}</Alert>
       )}
 
       {/* Saving overlay */}
@@ -205,25 +205,24 @@ export default function NewProposalPage() {
       {/* Navigation */}
       {currentStep !== reviewIndex && (
         <div className="mt-6 flex items-center justify-between">
-          <button
+          <Button
             type="button"
+            variant="secondary"
             disabled={isFirstStep}
             onClick={() => setCurrentStep((s) => s - 1)}
-            className="rounded-lg border border-border px-5 py-2.5 text-sm font-medium text-text-secondary hover:bg-bg-secondary disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
             Previous
-          </button>
+          </Button>
           <span className="text-xs text-text-muted">
             Step {currentStep + 1} of {totalSteps}
           </span>
-          <button
+          <Button
             type="button"
             disabled={isLastStep}
             onClick={() => setCurrentStep((s) => s + 1)}
-            className="rounded-lg bg-org-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-org-primary/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
             Next
-          </button>
+          </Button>
         </div>
       )}
     </>

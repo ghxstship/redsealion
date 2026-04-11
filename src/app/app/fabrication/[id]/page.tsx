@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import PageHeader from '@/components/shared/PageHeader';
 import { TierGate } from '@/components/shared/TierGate';
 import { formatCurrency } from '@/lib/utils';
+import StatusBadge, { FABRICATION_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import BOMEditor from '@/components/fabrication/BOMEditor';
 import StatusActions from '@/components/fabrication/StatusActions';
 import Link from 'next/link';
@@ -44,7 +45,7 @@ export default async function FabricationOrderDetailsPage({ params }: { params: 
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
                 <p className="text-text-muted">Status</p>
-                <p className="font-medium text-foreground capitalize">{order.status.replace('_', ' ')}</p>
+                <StatusBadge status={order.status} colorMap={FABRICATION_STATUS_COLORS} />
               </div>
               <div>
                 <p className="text-text-muted">Priority</p>

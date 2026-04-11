@@ -4,6 +4,8 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import Link from 'next/link';
 import ProcurementHubTabs from '../../ProcurementHubTabs';
+import StatusBadge, { SUPPLIER_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getSuppliers() {
   try {
@@ -27,7 +29,7 @@ export default async function SuppliersPage() {
   const categories = suppliers.reduce((acc, s) => { const k = s.category ?? 'Uncategorized'; acc[k] = (acc[k] ?? 0) + 1; return acc; }, {} as Record<string, number>);
 
   return (
-    <TierGate feature="profitability">
+    <TierGate feature="procurement">
       <PageHeader title="Suppliers" subtitle="Manage vendor relationships for procurement." />
       <ProcurementHubTabs />
 
@@ -38,18 +40,9 @@ export default async function SuppliersPage() {
       </div>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Total Suppliers</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{suppliers.length}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Active</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-green-600">{suppliers.filter((s) => s.status === 'active').length}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Categories</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{Object.keys(categories).length}</p>
-        </div>
+        <MetricCard label={"Total Suppliers"} value={suppliers.length} />
+        <MetricCard label={"Active"} value={suppliers.filter((s) => s.status === 'active').length} className="[&_.text-foreground]:text-green-600" />
+        <MetricCard label={"Categories"} value={Object.keys(categories).length} />
       </div>
 
       <div className="rounded-xl border border-border bg-background overflow-hidden">
@@ -68,7 +61,7 @@ export default async function SuppliersPage() {
                     <td className="px-4 py-3 text-text-secondary">{s.display_name ?? '—'}</td>
                     <td className="px-4 py-3 text-text-secondary">{s.email ?? '—'}</td>
                     <td className="px-4 py-3 text-text-secondary capitalize">{s.category ?? '—'}</td>
-                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${s.status === 'active' ? 'bg-green-50 text-green-700' : 'bg-bg-secondary text-text-secondary'}`}>{s.status}</span></td>
+                    <td className="px-4 py-3"><StatusBadge status={s.status} colorMap={SUPPLIER_STATUS_COLORS} /></td>
                   </tr>
                 ))}
               </tbody>

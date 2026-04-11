@@ -75,6 +75,29 @@ export async function requireAuth(): Promise<
 }
 
 /**
+ * Centralized admin-only guard for API routes — SSOT.
+ * Builds upon requireAuth to enforce admin/owner role requirements.
+ */
+export async function requireAdmin(): Promise<
+  { ctx: AuthContext; denied: null } | { ctx: null; denied: NextResponse }
+> {
+  const authMsg = await requireAuth();
+  if (authMsg.denied) return authMsg;
+  
+  if (authMsg.ctx.role !== 'admin' && authMsg.ctx.role !== 'owner') {
+    return {
+      ctx: null,
+      denied: NextResponse.json(
+        { error: { code: 'FORBIDDEN', message: 'Admin access required' } },
+        { status: 403 },
+      ),
+    };
+  }
+  
+  return authMsg;
+}
+
+/**
  * Centralized webhook secret guard — SSOT.
  *
  * For external webhook endpoints (Zapier, Stripe, etc.) that authenticate

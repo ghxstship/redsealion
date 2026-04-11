@@ -1,12 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { TierGate } from '@/components/shared/TierGate';
 import Button from '@/components/ui/Button';
 import ModalShell from '@/components/ui/ModalShell';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
+import FormTextarea from '@/components/ui/FormTextarea';
 import PageHeader from '@/components/shared/PageHeader';
+import Tabs from '@/components/ui/Tabs';
+import EmptyState from '@/components/ui/EmptyState';
+import Tag from '@/components/ui/Tag';
 import { createClient } from '@/lib/supabase/client';
 import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
@@ -21,7 +25,7 @@ interface EmailTemplate {
 }
 
 export default function EmailTemplatesPage() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [currentOrgId, setCurrentOrgId] = useState<string | null>(null);
   const [templates, setTemplates] = useState<EmailTemplate[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -47,18 +51,19 @@ export default function EmailTemplatesPage() {
     }
   }, [currentOrgId]);
 
-  async function loadTemplates() {
+  const loadTemplates = useCallback(async function loadTemplates() {
     if (!currentOrgId) return;
     const { data } = await supabase
       .from('email_templates')
       .select('*')
       .eq('organization_id', currentOrgId)
+      .is('deleted_at', null)
       .order('created_at', { ascending: false });
     
     if (data) {
       setTemplates(data as unknown as EmailTemplate[]);
     }
-  }
+  }, [currentOrgId, supabase]);
 
   const categories = ['All', ...new Set(templates.map((t) => t.category).filter(Boolean))];
 
@@ -83,7 +88,8 @@ export default function EmailTemplatesPage() {
   }
 
   async function handleDelete(id: string) {
-    await supabase.from('email_templates').delete().eq('id', id);
+    // H-10: Soft-delete instead of permanent delete
+    await supabase.from('email_templates').update({ deleted_at: new Date().toISOString() }).eq('id', id);
     setPreviewTemplate(null);
     setDeletingId(null);
     loadTemplates();
@@ -127,27 +133,21 @@ export default function EmailTemplatesPage() {
         onAction={handleOpenCreate}
       />
 
-      {/* Category filters */}
-      <div className="mb-6 flex flex-wrap items-center gap-2">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setSelectedCategory(cat)}
-            className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
-              selectedCategory === cat
-                ? 'bg-foreground text-white'
-                : 'bg-bg-secondary text-text-muted hover:text-foreground'
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
+      {/* Category filters — L-10: Use canonical Tabs */}
+      {categories.length > 1 && (
+        <Tabs
+          tabs={categories.map((cat) => ({ key: cat, label: cat }))}
+          activeTab={selectedCategory}
+          onTabChange={setSelectedCategory}
+          className="mb-6"
+        />
+      )}
 
       {templates.length === 0 && (
-        <div className="text-center py-12 text-sm text-text-muted border border-dashed rounded-xl">
-          No templates found. Create your first template.
-        </div>
+        <EmptyState
+          message="No templates found"
+          description="Create your first email template to speed up outreach."
+        />
       )}
 
       {/* Template grid */}
@@ -167,12 +167,9 @@ export default function EmailTemplatesPage() {
             <p className="text-xs text-text-secondary line-clamp-2 mb-3 flex-1">{template.subject_template}</p>
             <div className="flex flex-wrap gap-1">
               {(template.merge_fields || []).slice(0, 3).map((field) => (
-                <span
-                  key={field}
-                  className="inline-flex items-center rounded bg-bg-secondary px-1.5 py-0.5 text-[10px] font-mono text-text-muted"
-                >
+                <Tag key={field} variant="mono">
                   {`{{${field}}}`}
-                </span>
+                </Tag>
               ))}
               {(template.merge_fields || []).length > 3 && (
                 <span className="text-[10px] text-text-muted">+{(template.merge_fields || []).length - 3} more</span>
@@ -248,11 +245,11 @@ export default function EmailTemplatesPage() {
           </div>
           <div>
             <FormLabel>Body Template (Use {'{{field}}'} for variables)</FormLabel>
-            <textarea 
+            <FormTextarea
               required
-              className="w-full flex min-h-[200px] rounded-lg border border-border bg-input px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              value={editFormData.body_template || ''} 
-              onChange={e => setEditFormData({...editFormData, body_template: e.target.value})} 
+              rows={10}
+              value={editFormData.body_template || ''}
+              onChange={e => setEditFormData({...editFormData, body_template: e.target.value})}
             />
           </div>
           <div className="flex justify-end gap-3 pt-4">

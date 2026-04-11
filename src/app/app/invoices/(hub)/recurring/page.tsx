@@ -6,6 +6,7 @@ import EmptyState from '@/components/ui/EmptyState';
 import RecurringHeader from '@/components/admin/invoices/RecurringHeader';
 import InvoiceHubTabs from '../../InvoiceHubTabs';
 import PageHeader from '@/components/shared/PageHeader';
+import StatusBadge from '@/components/ui/StatusBadge';
 
 interface RecurringScheduleRow {
   id: string;
@@ -81,13 +82,7 @@ export default async function RecurringInvoicesPage() {
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
                 <h3 className="text-sm font-semibold text-foreground">{schedule.client_name}</h3>
-                <span
-                  className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-                    schedule.is_active ? 'bg-green-100 text-green-800' : 'bg-bg-secondary text-text-muted'
-                  }`}
-                >
-                  {schedule.is_active ? 'Active' : 'Paused'}
-                </span>
+                <StatusBadge status={schedule.is_active ? 'active' : 'paused'} colorMap={{active: 'bg-green-100 text-green-800', paused: 'bg-bg-secondary text-text-muted'}} />
               </div>
               <p className="mt-0.5 text-xs text-text-secondary">{schedule.description}</p>
               <div className="mt-1 flex items-center gap-4 text-xs text-text-muted">

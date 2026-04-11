@@ -39,6 +39,7 @@ function formatDate(d: string | null): string {
 export default function EventsTable({ events }: { events: EventItem[] }) {
   const router = useRouter();
   const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
   const [showColumnConfig, setShowColumnConfig] = useState(false);
 
@@ -65,16 +66,20 @@ export default function EventsTable({ events }: { events: EventItem[] }) {
   });
 
   const filtered = useMemo(() => {
-    if (!search) return events;
+    let result = events;
+    if (statusFilter !== 'all') {
+      result = result.filter((e) => e.status === statusFilter);
+    }
+    if (!search) return result;
     const q = search.toLowerCase();
-    return events.filter(
+    return result.filter(
       (e) =>
         e.name.toLowerCase().includes(q) ||
         e.type.toLowerCase().includes(q) ||
         e.event_code?.toLowerCase().includes(q) ||
         e.presenter?.toLowerCase().includes(q),
     );
-  }, [events, search]);
+  }, [events, search, statusFilter]);
 
   const { sorted, sort, handleSort } = useSort(filtered);
   const allIds = useMemo(() => sorted.map((e) => e.id), [sorted]);
@@ -109,8 +114,18 @@ export default function EventsTable({ events }: { events: EventItem[] }) {
             onDeleteView={deleteView}
             onDuplicateView={duplicateView}
           />
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <SearchInput value={search} onChange={setSearch} placeholder="Search events..." />
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="h-9 rounded-lg border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10"
+            >
+              <option value="all">All Statuses</option>
+              {['draft', 'confirmed', 'in_progress', 'completed', 'cancelled'].map((status) => (
+                <option key={status} value={status}>{formatLabel(status)}</option>
+              ))}
+            </select>
             <Button variant="ghost" size="sm" onClick={() => setShowColumnConfig(true)} title="Column Settings">
               <SlidersHorizontal size={14} />
             </Button>

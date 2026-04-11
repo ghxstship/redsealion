@@ -6,12 +6,15 @@
  */
 
 import { useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { Plus, Search, Calendar, MapPin, Lock, Globe } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import FormInput from '@/components/ui/FormInput';
 import ModalShell from '@/components/ui/ModalShell';
 import FormLabel from '@/components/ui/FormLabel';
 import FormSelect from '@/components/ui/FormSelect';
+import StatusBadge, { PROJECT_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import Link from 'next/link';
 
 interface ProjectRow {
   id: string;
@@ -26,19 +29,13 @@ interface ProjectRow {
   project_code: string | null;
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  draft: 'bg-gray-100 text-gray-600',
-  active: 'bg-green-100 text-green-700',
-  in_progress: 'bg-blue-100 text-blue-700',
-  on_hold: 'bg-amber-100 text-amber-700',
-  completed: 'bg-purple-100 text-purple-700',
-  archived: 'bg-gray-100 text-gray-500',
-};
+
 
 const STATUS_FILTERS = ['all', 'active', 'in_progress', 'draft', 'on_hold', 'completed', 'archived'];
 
 export default function ProjectsHubClient({ projects: initialProjects }: { projects: ProjectRow[] }) {
-  const [projects, setProjects] = useState(initialProjects);
+  const router = useRouter();
+  const projects = initialProjects;
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [showCreate, setShowCreate] = useState(false);
@@ -69,10 +66,9 @@ export default function ProjectsHubClient({ projects: initialProjects }: { proje
         }),
       });
       if (res.ok) {
-        const { data } = await res.json();
-        setProjects((prev) => [data, ...prev]);
         setNewName('');
         setShowCreate(false);
+        router.refresh();
       }
     } catch { /* silent */ }
     finally { setCreating(false); }
@@ -121,7 +117,7 @@ export default function ProjectsHubClient({ projects: initialProjects }: { proje
       {/* Grid */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {filtered.map((project) => (
-          <a
+          <Link
             key={project.id}
             href={`/app/projects/${project.id}`}
             className="group rounded-xl border border-border bg-background p-5 transition-colors hover:border-foreground/20"
@@ -135,9 +131,7 @@ export default function ProjectsHubClient({ projects: initialProjects }: { proje
                   <p className="text-[11px] text-text-muted font-mono mt-0.5">{project.project_code}</p>
                 )}
               </div>
-              <span className={`shrink-0 inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold ${STATUS_COLORS[project.status] ?? 'bg-bg-secondary text-text-muted'}`}>
-                {project.status.replace(/_/g, ' ')}
-              </span>
+              <StatusBadge status={project.status} colorMap={PROJECT_STATUS_COLORS} className="shrink-0" />
             </div>
 
             <div className="space-y-1.5 text-xs text-text-muted">
@@ -163,7 +157,7 @@ export default function ProjectsHubClient({ projects: initialProjects }: { proje
                 )}
               </div>
             </div>
-          </a>
+          </Link>
         ))}
       </div>
 

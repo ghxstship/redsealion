@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
+import { requireAdmin } from '@/lib/api/auth-guard';
 import { serveRateLimit } from '@/lib/api/rate-limit';
 import { logAuditAction } from '@/lib/api/audit-logger';
 
@@ -9,9 +10,9 @@ export async function POST(request: Request) {
   const { success } = await serveRateLimit(`export_${ip}`, 2, 60000 * 5); // 2 exports per 5 minutes
   if (!success) return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
 
-  const perm = await checkPermission('settings', 'edit');
-  if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const authMsg = await requireAdmin();
+  if (authMsg.denied) return authMsg.denied;
+  const perm = { organizationId: authMsg.ctx.organizationId };
 
   const supabase = await createClient();
   const orgId = perm.organizationId;

@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
+import StatusBadge, { GENERIC_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import { TierGate } from '@/components/shared/TierGate';
 import LogisticsHubTabs from '../LogisticsHubTabs';
 
@@ -24,11 +25,7 @@ interface FacilitySummary {
 
 
 
-const STATUS_COLORS: Record<string, string> = {
-  available: 'bg-green-50 text-green-700',
-  deployed: 'bg-blue-50 text-blue-700',
-  maintenance: 'bg-red-50 text-red-700',
-};
+
 
 async function getWarehouseData(): Promise<{
   facilities: FacilitySummary[];
@@ -154,13 +151,7 @@ export default async function WarehousePage() {
                   {asset.quantity}
                 </td>
                 <td className="px-6 py-3.5">
-                  <span
-                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                      STATUS_COLORS[asset.status] ?? 'bg-bg-secondary text-text-muted'
-                    }`}
-                  >
-                    {formatLabel(asset.status)}
-                  </span>
+                  <StatusBadge status={asset.status} colorMap={GENERIC_STATUS_COLORS} />
                 </td>
                 <td className="px-6 py-3.5 text-sm text-text-secondary">
                   <div className="flex flex-col gap-1">

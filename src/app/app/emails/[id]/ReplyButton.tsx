@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import ComposeEmailModal from '../ComposeEmailModal';
 
 export default function ReplyButton({
@@ -17,6 +16,12 @@ export default function ReplyButton({
   toEmail?: string;
 }) {
   return (
-    <ComposeEmailModal open={open} onClose={onClose} onCreated={onCreated} />
+    <ComposeEmailModal
+      open={open}
+      onClose={onClose}
+      onCreated={onCreated}
+      threadId={threadId}
+      prefillTo={toEmail}
+    />
   );
 }

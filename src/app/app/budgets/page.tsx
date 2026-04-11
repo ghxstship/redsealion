@@ -6,6 +6,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import EmptyState from '@/components/ui/EmptyState';
 import PageHeader from '@/components/shared/PageHeader';
 import { RoleGate } from '@/components/shared/RoleGate';
+import Button from '@/components/ui/Button';
 
 /**
  * /app/budgets — Standalone budgets page.
@@ -34,6 +35,7 @@ async function getBudgets(): Promise<BudgetSummary[]> {
       .from('project_budgets')
       .select('id, proposal_id, total_budget, spent')
       .eq('organization_id', ctx.organizationId)
+      .is('deleted_at', null)
       .order('created_at', { ascending: false })
       .limit(20);
 
@@ -69,12 +71,9 @@ export default async function BudgetsPage() {
           title="Project Budgets"
           subtitle="Track spending against project budgets."
         >
-          <Link
-            href="/app/proposals"
-            className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity"
-          >
+          <Button href="/app/proposals">
             New Budget
-          </Link>
+          </Button>
         </PageHeader>
 
         {budgets.length === 0 ? (
@@ -82,12 +81,9 @@ export default async function BudgetsPage() {
             message="No project budgets created yet"
             description="Create a budget from a proposal to start tracking spending."
             action={
-              <Link
-                href="/app/proposals"
-                className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity whitespace-nowrap"
-              >
+              <Button href="/app/proposals">
                 Go to Proposals
-              </Link>
+              </Button>
             }
           />
         ) : (

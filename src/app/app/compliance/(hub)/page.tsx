@@ -2,6 +2,8 @@ import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
+import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
 import ComplianceHubTabs from '../ComplianceHubTabs';
 
 interface ComplianceStats {
@@ -65,26 +67,27 @@ export default async function CompliancePage() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-4 mb-8">
         {cards.map((card) => (
-          <div key={card.label} className="rounded-xl border border-border bg-background px-5 py-5">
+          <Card key={card.label} padding="default">
             <p className="text-xs font-medium uppercase tracking-wider text-text-muted">{card.label}</p>
             <p className={`mt-2 text-3xl font-semibold tracking-tight ${card.color ?? 'text-foreground'}`}>{card.value}</p>
             <p className="mt-1 text-xs text-text-secondary">{card.detail}</p>
-          </div>
+          </Card>
         ))}
       </div>
 
-      <div className="rounded-xl border border-border bg-background px-8 py-16 text-center">
+      <Card className="px-8 py-16 text-center">
         <p className="text-sm text-text-secondary">
           Compliance documents will appear here. Add documents from individual crew member profiles.
         </p>
-        <a
-          href="/api/compliance/export"
-          download
-          className="mt-4 inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-xs font-medium text-foreground hover:bg-bg-secondary transition-colors"
-        >
-          ↓ Export CSV
-        </a>
-      </div>
+        <div className="mt-4 flex items-center justify-center gap-3">
+          <Button variant="secondary" href="/api/compliance/export">
+            ↓ Export CSV
+          </Button>
+          <Button href="/app/crew">
+            Go to Crew Profiles
+          </Button>
+        </div>
+      </Card>
     </TierGate>
   );
 }

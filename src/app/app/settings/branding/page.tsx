@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import Skeleton from '@/components/ui/Skeleton';
+import FormInput from '@/components/ui/FormInput';
+import FormLabel from '@/components/ui/FormLabel';
+import FormSelect from '@/components/ui/FormSelect';
 
 const fontOptions = ['Inter', 'DM Sans', 'Plus Jakarta Sans', 'Manrope', 'Outfit', 'Space Grotesk'];
 
@@ -26,40 +29,7 @@ function ColorField({ label, value, onChange }: { label: string; value: string; 
   );
 }
 
-function InputField({ label, value, onChange, type = 'text' }: { label: string; value: string; onChange: (v: string) => void; type?: string }) {
-  return (
-    <div>
-      <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
-        {label}
-      </label>
-      <input
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
-      />
-    </div>
-  );
-}
 
-function SelectField({ label, options, value, onChange }: { label: string; options: string[]; value: string; onChange: (v: string) => void }) {
-  return (
-    <div>
-      <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
-        {label}
-      </label>
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
-      >
-        {options.map((opt) => (
-          <option key={opt} value={opt}>{opt}</option>
-        ))}
-      </select>
-    </div>
-  );
-}
 
 export default function BrandingSettingsPage() {
   const [primary, setPrimary] = useState('#0f172a');
@@ -158,8 +128,18 @@ export default function BrandingSettingsPage() {
       <Card>
         <h3 className="text-sm font-semibold text-foreground mb-5">Typography</h3>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-          <SelectField label="Heading Font" options={fontOptions} value={headingFont} onChange={setHeadingFont} />
-          <SelectField label="Body Font" options={fontOptions} value={bodyFont} onChange={setBodyFont} />
+          <div>
+            <FormLabel>Heading Font</FormLabel>
+            <FormSelect value={headingFont} onChange={(e) => setHeadingFont(e.target.value)}>
+              {fontOptions.map((f) => <option key={f} value={f}>{f}</option>)}
+            </FormSelect>
+          </div>
+          <div>
+            <FormLabel>Body Font</FormLabel>
+            <FormSelect value={bodyFont} onChange={(e) => setBodyFont(e.target.value)}>
+              {fontOptions.map((f) => <option key={f} value={f}>{f}</option>)}
+            </FormSelect>
+          </div>
         </div>
       </Card>
 
@@ -190,11 +170,11 @@ export default function BrandingSettingsPage() {
       <Card>
         <h3 className="text-sm font-semibold text-foreground mb-5">Portal Copy</h3>
         <div className="space-y-5">
-          <InputField label="Portal Title" value={portalTitle} onChange={setPortalTitle} />
-          <InputField label="Tagline" value={tagline} onChange={setTagline} />
-          <InputField label="Footer Text" value={footer} onChange={setFooter} />
-          <InputField label="Email From Name" value={emailFrom} onChange={setEmailFrom} />
-          <InputField label="Email Reply-To" value={emailReplyTo} onChange={setEmailReplyTo} type="email" />
+          <div><FormLabel>Portal Title</FormLabel><FormInput value={portalTitle} onChange={(e) => setPortalTitle(e.target.value)} /></div>
+          <div><FormLabel>Tagline</FormLabel><FormInput value={tagline} onChange={(e) => setTagline(e.target.value)} /></div>
+          <div><FormLabel>Footer Text</FormLabel><FormInput value={footer} onChange={(e) => setFooter(e.target.value)} /></div>
+          <div><FormLabel>Email From Name</FormLabel><FormInput value={emailFrom} onChange={(e) => setEmailFrom(e.target.value)} /></div>
+          <div><FormLabel>Email Reply-To</FormLabel><FormInput value={emailReplyTo} onChange={(e) => setEmailReplyTo(e.target.value)} type="email" /></div>
         </div>
       </Card>
 

@@ -6,6 +6,7 @@
 
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import { formatLabel } from '@/lib/utils';
 
 /* ─── Types ─────────────────────────────────────────────── */
 
@@ -137,6 +138,17 @@ export async function getClient(id: string): Promise<ClientDetail> {
       activityData = (feed ?? []) as Array<Record<string, unknown>>;
     }
 
+    // #36: Also include client_interactions in activity feed
+    const interactionActivity = (interactions ?? []).map((i: Record<string, unknown>) => ({
+      id: `int-${i.id}`,
+      type: i.type as string,
+      description: i.subject as string,
+      created_at: i.occurred_at as string,
+    }));
+    activityData = [...activityData, ...interactionActivity]
+      .sort((a, b) => new Date(b.created_at as string).getTime() - new Date(a.created_at as string).getTime())
+      .slice(0, 30);
+
     return {
       company_name: client.company_name,
       industry: client.industry,
@@ -193,10 +205,7 @@ export async function getClient(id: string): Promise<ClientDetail> {
 /* ─── Helpers ───────────────────────────────────────────── */
 
 export function formatStatus(status: string): string {
-  return status
-    .split('_')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ');
+  return formatLabel(status);
 }
 
 export function formatDate(dateStr: string): string {

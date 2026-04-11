@@ -3,6 +3,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import TasksHubTabs from '../../TasksHubTabs';
 import PageHeader from '@/components/shared/PageHeader';
+import { Badge } from '@/components/ui/Badge';
 import { castRelation } from '@/lib/supabase/cast-relation';
 
 /**
@@ -168,9 +169,11 @@ export default async function WorkloadPage() {
                     <p className="text-xs text-text-muted">{activeTasks} active · {member.completedTasks} done</p>
                   </div>
                   {member.estimatedHours > 0 && (
-                    <span className={`ml-auto inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${utilizationColor(utilPct)}`}>
+                    <Badge
+                      variant={utilPct > 100 ? 'error' : utilPct > 80 ? 'warning' : utilPct > 50 ? 'info' : 'success'}
+                    >
                       {utilPct}%
-                    </span>
+                    </Badge>
                   )}
                 </div>
 

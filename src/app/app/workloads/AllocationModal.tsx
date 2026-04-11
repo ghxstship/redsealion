@@ -3,6 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
+import Alert from '@/components/ui/Alert';
+import ModalShell from '@/components/ui/ModalShell';
+import FormInput from '@/components/ui/FormInput';
+import FormLabel from '@/components/ui/FormLabel';
+import FormSelect from '@/components/ui/FormSelect';
 
 interface TeamMember { id: string; full_name: string }
 interface ProposalOption { id: string; name: string }
@@ -98,88 +103,68 @@ export default function AllocationModal({ open, onClose }: Props) {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-      <div className="w-full max-w-lg rounded-2xl border border-border bg-background shadow-xl">
-        <div className="px-6 py-5 border-b border-border">
-          <h2 className="text-base font-semibold text-foreground">New Allocation</h2>
-          <p className="text-xs text-text-muted mt-1">Assign a team member to a project for a date range.</p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
+    <ModalShell title="New Allocation" open={open} onClose={onClose}>
+        <form onSubmit={handleSubmit} className="space-y-4 pt-2">
           {error && (
-            <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>
+            <Alert variant="error">{error}</Alert>
           )}
 
           <div>
-            <label htmlFor="alloc-user" className="block text-sm font-medium text-foreground mb-1.5">
-              Team Member <span className="text-red-500">*</span>
-            </label>
-            <select
+            <FormLabel>Team Member *</FormLabel>
+            <FormSelect
               id="alloc-user"
               value={userId}
               onChange={(e) => setUserId(e.target.value)}
               required
-              className="w-full rounded-lg border border-border bg-card px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
             >
               <option value="">Select team member...</option>
               {teamMembers.map((m) => (
                 <option key={m.id} value={m.id}>{m.full_name}</option>
               ))}
-            </select>
+            </FormSelect>
           </div>
 
           <div>
-            <label htmlFor="alloc-proposal" className="block text-sm font-medium text-foreground mb-1.5">
-              Project / Proposal
-            </label>
-            <select
+            <FormLabel>Project / Proposal</FormLabel>
+            <FormSelect
               id="alloc-proposal"
               value={proposalId}
               onChange={(e) => setProposalId(e.target.value)}
-              className="w-full rounded-lg border border-border bg-card px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
             >
               <option value="">None</option>
               {proposals.map((p) => (
                 <option key={p.id} value={p.id}>{p.name}</option>
               ))}
-            </select>
+            </FormSelect>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="alloc-start" className="block text-sm font-medium text-foreground mb-1.5">
-                Start Date <span className="text-red-500">*</span>
-              </label>
-              <input
+              <FormLabel>Start Date *</FormLabel>
+              <FormInput
                 id="alloc-start"
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
                 required
-                className="w-full rounded-lg border border-border bg-card px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
               />
             </div>
             <div>
-              <label htmlFor="alloc-end" className="block text-sm font-medium text-foreground mb-1.5">
-                End Date <span className="text-red-500">*</span>
-              </label>
-              <input
+              <FormLabel>End Date *</FormLabel>
+              <FormInput
                 id="alloc-end"
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
                 required
-                className="w-full rounded-lg border border-border bg-card px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="alloc-hours" className="block text-sm font-medium text-foreground mb-1.5">
-                Hours / Day
-              </label>
-              <input
+              <FormLabel>Hours / Day</FormLabel>
+              <FormInput
                 id="alloc-hours"
                 type="number"
                 step="0.5"
@@ -187,35 +172,29 @@ export default function AllocationModal({ open, onClose }: Props) {
                 max="24"
                 value={hoursPerDay}
                 onChange={(e) => setHoursPerDay(e.target.value)}
-                className="w-full rounded-lg border border-border bg-card px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
               />
             </div>
             <div>
-              <label htmlFor="alloc-role" className="block text-sm font-medium text-foreground mb-1.5">
-                Role
-              </label>
-              <input
+              <FormLabel>Role</FormLabel>
+              <FormInput
                 id="alloc-role"
                 type="text"
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
                 placeholder="e.g. Lead installer"
-                className="w-full rounded-lg border border-border bg-card px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
               />
             </div>
           </div>
 
           <div>
-            <label htmlFor="alloc-notes" className="block text-sm font-medium text-foreground mb-1.5">
-              Notes
-            </label>
+            <FormLabel>Notes</FormLabel>
             <textarea
               id="alloc-notes"
               rows={2}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Optional notes..."
-              className="w-full rounded-lg border border-border bg-card px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20 resize-none"
+              className="w-full flex rounded-lg border border-border bg-input px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none"
             />
           </div>
 
@@ -228,7 +207,6 @@ export default function AllocationModal({ open, onClose }: Props) {
             </Button>
           </div>
         </form>
-      </div>
-    </div>
+    </ModalShell>
   );
 }

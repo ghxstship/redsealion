@@ -5,6 +5,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import Button from '@/components/ui/Button';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
+import StatusBadge from '@/components/ui/StatusBadge';
 
 export default function WebhooksSettingsPage() {
   const [endpoints, setEndpoints] = useState<any[]>([]);
@@ -35,7 +36,7 @@ export default function WebhooksSettingsPage() {
         />
 
         <div className="flex justify-end mb-4">
-          <Button onClick={() => alert('Implementation for creation form is stubbed for brevity')}>
+          <Button onClick={() => { /* TODO: Implement webhook creation form */ }}>
             Add Endpoint
           </Button>
         </div>
@@ -57,9 +58,7 @@ export default function WebhooksSettingsPage() {
                     {ep.description && <p className="text-xs text-text-muted mt-1">{ep.description}</p>}
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className={`inline-flex items-center space-x-1 rounded-full px-2 py-0.5 text-xs font-medium ${ep.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                      {ep.is_active ? 'Active' : 'Inactive'}
-                    </span>
+                    <StatusBadge status={ep.is_active ? 'active' : 'inactive'} colorMap={{active: 'bg-green-100 text-green-800', inactive: 'bg-red-100 text-red-800'}} />
                     <button
                       onClick={() => setDeletingId(ep.id)}
                       className="text-xs font-medium text-red-600 hover:text-red-700"

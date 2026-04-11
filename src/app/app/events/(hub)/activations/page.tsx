@@ -1,8 +1,10 @@
+import { formatLabel } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import ActivationsTable, { type ActivationItem } from '@/components/admin/activations/ActivationsTable';
 import ActivationsHeader from '@/components/admin/activations/ActivationsHeader';
 import PageHeader from '@/components/shared/PageHeader';
+import MetricCard from '@/components/ui/MetricCard';
 import EventsHubTabs from '../../EventsHubTabs';
 
 async function getActivations(): Promise<ActivationItem[]> {
@@ -36,9 +38,6 @@ async function getActivations(): Promise<ActivationItem[]> {
   }
 }
 
-function formatLabel(s: string): string {
-  return s.split('_').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-}
 
 export default async function ActivationsPage() {
   const activations = await getActivations();
@@ -62,10 +61,7 @@ export default async function ActivationsPage() {
       {/* Status summary cards */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-5 mb-8">
         {(['draft', 'confirmed', 'in_progress', 'completed', 'cancelled'] as const).map((status) => (
-          <div key={status} className="rounded-xl border border-border bg-background p-4">
-            <p className="text-xs text-text-muted">{formatLabel(status)}</p>
-            <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{statusCounts[status] ?? 0}</p>
-          </div>
+          <MetricCard key={status} label={formatLabel(status)} value={statusCounts[status] ?? 0} />
         ))}
       </div>
 

@@ -6,6 +6,7 @@ import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
 import ProcurementHubTabs from '../../ProcurementHubTabs';
 import StatusBadge, { PO_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getPOs() {
   try {
@@ -30,23 +31,14 @@ export default async function ProcurementPOPage() {
   const pos = await getPOs();
 
   return (
-    <TierGate feature="profitability">
+    <TierGate feature="procurement">
       <PageHeader title="Purchase Orders" subtitle="Track POs from issuance through delivery." />
       <ProcurementHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Total POs</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{pos.length}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Pending Delivery</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-yellow-600">{pos.filter((p) => p.status === 'sent' || p.status === 'acknowledged').length}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Total Spend</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{formatCurrency(pos.reduce((s, p) => s + (p.total_amount ?? 0), 0))}</p>
-        </div>
+        <MetricCard label={"Total POs"} value={pos.length} />
+        <MetricCard label={"Pending Delivery"} value={pos.filter((p) => p.status === 'sent' || p.status === 'acknowledged').length} className="[&_.text-foreground]:text-yellow-600" />
+        <MetricCard label={"Total Spend"} value={formatCurrency(pos.reduce((s, p) => s + (p.total_amount ?? 0), 0))} />
       </div>
 
       <div className="rounded-xl border border-border bg-background overflow-hidden">

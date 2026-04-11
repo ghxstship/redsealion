@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Clock } from 'lucide-react';
-import { formatCurrency, statusColor } from '@/lib/utils';
+import { formatCurrency, formatDate, statusColor } from '@/lib/utils';
 import { TierGate } from '@/components/shared/TierGate';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
@@ -16,25 +16,10 @@ import DealEditActions from '@/components/admin/pipeline/DealEditActions';
 import DealToInvoiceButton from '@/components/admin/pipeline/DealToInvoiceButton';
 import DealActivityForm from '@/components/admin/pipeline/DealActivityForm';
 import DealDetailTabs from './DealDetailTabs';
+import { STAGE_LABELS } from '@/lib/constants/pipeline';
 
-const STAGE_LABELS: Record<DealStage, string> = {
-  lead: 'Lead',
-  qualified: 'Qualified',
-  proposal_sent: 'Proposal Sent',
-  negotiation: 'Negotiation',
-  verbal_yes: 'Verbal Yes',
-  contract_signed: 'Contract Signed',
-  lost: 'Lost',
-  on_hold: 'On Hold',
-};
 
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
-}
+
 
 interface DealDetail {
   id: string;

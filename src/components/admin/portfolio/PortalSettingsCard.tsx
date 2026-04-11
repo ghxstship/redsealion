@@ -12,8 +12,10 @@ import FormInput from '@/components/ui/FormInput';
 import FormTextarea from '@/components/ui/FormTextarea';
 import Tabs from '@/components/ui/Tabs';
 import Alert from '@/components/ui/Alert';
+import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import { Plus, Trash2 } from 'lucide-react';
 import type { Database } from '@/types/database';
+import { WAYFINDING_PLACEHOLDERS } from '@/lib/constants/placeholders';
 
 type PortalType = Database['public']['Enums']['portal_type'];
 
@@ -68,6 +70,7 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
     amenities: {},
   });
   const [message, setMessage] = useState('');
+  const [showPublishConfirm, setShowPublishConfirm] = useState(false);
 
   const loadPortal = useCallback(async () => {
     setIsLoading(true);
@@ -254,12 +257,9 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
                 checked={data.is_published || false}
                 onChange={(e) => {
                   if (e.target.checked) {
-                    // GAP-PTL-17: Confirm before publishing
-                    const confirmed = window.confirm(
-                      `Are you sure you want to publish the ${activeLabel} portal? ` +
-                      'This will make it publicly accessible via the production site.'
-                    );
-                    if (!confirmed) return;
+                    // Show confirm dialog before publishing
+                    setShowPublishConfirm(true);
+                    return;
                   }
                   setData({ ...data, is_published: e.target.checked });
                 }}
@@ -275,7 +275,7 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
               <FormInput
                 value={data.call_time || ''}
                 onChange={(e) => setData({ ...data, call_time: e.target.value })}
-                placeholder="e.g. 3:00 PM — Saturday, March 28"
+                placeholder={WAYFINDING_PLACEHOLDERS.call_time}
               />
             </div>
             
@@ -286,7 +286,7 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
                 <FormTextarea
                   value={data.parking_instructions || ''}
                   onChange={(e) => setData({ ...data, parking_instructions: e.target.value })}
-                  placeholder="Zone B via E 4th Ave..."
+                  placeholder={WAYFINDING_PLACEHOLDERS.parking}
                   rows={4}
                 />
               </div>
@@ -295,7 +295,7 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
                 <FormTextarea
                   value={data.rideshare_instructions || ''}
                   onChange={(e) => setData({ ...data, rideshare_instructions: e.target.value })}
-                  placeholder="Rideshare loop on E 32nd St..."
+                  placeholder={WAYFINDING_PLACEHOLDERS.rideshare}
                   rows={4}
                 />
               </div>
@@ -304,7 +304,7 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
                 <FormTextarea
                   value={data.transit_instructions || ''}
                   onChange={(e) => setData({ ...data, transit_instructions: e.target.value })}
-                  placeholder="MetroRail Green Line..."
+                  placeholder={WAYFINDING_PLACEHOLDERS.transit}
                   rows={4}
                 />
               </div>
@@ -313,7 +313,7 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
                 <FormTextarea
                   value={data.check_in_instructions || ''}
                   onChange={(e) => setData({ ...data, check_in_instructions: e.target.value })}
-                  placeholder="Proceed to Staff Check-in..."
+                  placeholder={WAYFINDING_PLACEHOLDERS.check_in}
                   rows={4}
                 />
               </div>
@@ -336,7 +336,7 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
                       <FormInput
                         value={item.text}
                         onChange={(e) => updateChecklistItem(idx, e.target.value)}
-                        placeholder="e.g., Bring valid photo ID"
+                        placeholder={WAYFINDING_PLACEHOLDERS.checklist}
                         className="flex-1"
                       />
                       <button onClick={() => removeChecklistItem(idx)} className="text-text-muted hover:text-red-500 p-1">
@@ -367,7 +367,7 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
                           <FormInput
                             value={faq.q}
                             onChange={(e) => updateFaq(idx, 'q', e.target.value)}
-                            placeholder="Question"
+                            placeholder={WAYFINDING_PLACEHOLDERS.faq_q}
                           />
                         </div>
                         <button onClick={() => removeFaq(idx)} className="text-text-muted hover:text-red-500 p-1 mt-1">
@@ -377,7 +377,7 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
                       <FormTextarea
                         value={faq.a}
                         onChange={(e) => updateFaq(idx, 'a', e.target.value)}
-                        placeholder="Answer"
+                        placeholder={WAYFINDING_PLACEHOLDERS.faq_a}
                         rows={2}
                       />
                     </div>
@@ -416,6 +416,18 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
             {message && (
               <Alert variant="info">{message}</Alert>
             )}
+
+            <ConfirmDialog
+              open={showPublishConfirm}
+              title="Publish Portal"
+              message={`Are you sure you want to publish the ${activeLabel} portal? This will make it publicly accessible via the production site.`}
+              confirmLabel="Publish"
+              onConfirm={() => {
+                setData(prev => ({ ...prev, is_published: true }));
+                setShowPublishConfirm(false);
+              }}
+              onCancel={() => setShowPublishConfirm(false)}
+            />
           </>
         )}
       </div>

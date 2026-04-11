@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { formatCurrency, statusColor } from '@/lib/utils';
 import { formatStatus, phaseColorMap, type ProposalData, type PhaseData } from './_detail-types';
 import EmptyState from '@/components/ui/EmptyState';
+import StatusBadge, { GENERIC_STATUS_COLORS } from '@/components/ui/StatusBadge';
 
 /**
  * Overview tab for the proposal detail page.
@@ -155,11 +156,7 @@ export default function OverviewTab({
                   </div>
                 </div>
                 <div className="flex items-center gap-4 shrink-0">
-                  <span
-                    className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${statusColor(phase.status)}`}
-                  >
-                    {formatStatus(phase.status)}
-                  </span>
+                  <StatusBadge status={phase.status} colorMap={GENERIC_STATUS_COLORS} />
                   <span className="text-sm font-medium text-foreground tabular-nums w-20 text-right">
                     {formatCurrency(phase.phase_investment, proposal.currency)}
                   </span>
@@ -181,7 +178,7 @@ export default function OverviewTab({
           </p>
           <Link
             href={`/app/proposals/${proposalId}/builder`}
-            className="mt-3 inline-block text-sm font-medium text-blue-600 hover:text-blue-700"
+            className="mt-3 inline-block text-sm font-medium text-brand-primary hover:text-brand-primary/80"
           >
             Open Builder to add phases →
           </Link>

@@ -4,6 +4,8 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import { formatCurrency } from '@/lib/utils';
 import FabricationHubTabs from '../../FabricationHubTabs';
+import StatusBadge, { BOM_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getBOM() {
   try {
@@ -12,7 +14,8 @@ async function getBOM() {
     if (!ctx) return [];
     const { data } = await supabase
       .from('bill_of_materials')
-      .select('id, material_name, sku, quantity_required, quantity_on_hand, unit, unit_cost_cents, supplier, status, fabrication_orders(order_number, name)')
+      .select('id, material_name, sku, quantity_required, quantity_on_hand, unit, unit_cost_cents, supplier, status, fabrication_orders!inner(order_number, name, organization_id)')
+      .eq('fabrication_orders.organization_id', ctx.organizationId)
       .order('created_at', { ascending: false })
       .limit(100);
     return (data ?? []).map((r: Record<string, unknown>) => ({
@@ -25,7 +28,7 @@ async function getBOM() {
   } catch { return []; }
 }
 
-const STATUS_COLORS: Record<string, string> = { pending: 'bg-yellow-50 text-yellow-700', ordered: 'bg-blue-50 text-blue-700', received: 'bg-green-50 text-green-700', allocated: 'bg-purple-50 text-purple-700' };
+
 
 export default async function BOMPage() {
   const items = await getBOM();
@@ -38,17 +41,10 @@ export default async function BOMPage() {
       <FabricationHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">
-        {[
-          { label: 'Total Materials', value: String(items.length) },
-          { label: 'Material Cost', value: formatCurrency(totalCost / 100) },
-          { label: 'Shortages', value: String(shortages.length), color: 'text-red-600' },
-          { label: 'Suppliers', value: String(new Set(items.map((i) => i.supplier).filter(Boolean)).size) },
-        ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
-            <p className="text-xs text-text-muted">{stat.label}</p>
-            <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
-          </div>
-        ))}
+        <MetricCard label="Total Materials" value={items.length} />
+        <MetricCard label="Material Cost" value={formatCurrency(totalCost / 100)} />
+        <MetricCard label="Shortages" value={shortages.length} className="[&_.text-foreground]:text-red-600" />
+        <MetricCard label="Suppliers" value={new Set(items.map((i) => i.supplier).filter(Boolean)).size} />
       </div>
 
       <div className="rounded-xl border border-border bg-background overflow-hidden">
@@ -77,7 +73,7 @@ export default async function BOMPage() {
                     <td className="px-4 py-3 tabular-nums">{item.quantity_required} {item.unit}</td>
                     <td className="px-4 py-3 tabular-nums">{item.quantity_on_hand} {item.unit}</td>
                     <td className="px-4 py-3 tabular-nums">{formatCurrency((item.unit_cost_cents * item.quantity_required) / 100)}</td>
-                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[item.status]}`}>{item.status}</span></td>
+                    <td className="px-4 py-3"><StatusBadge status={item.status} colorMap={BOM_STATUS_COLORS} /></td>
                   </tr>
                 ))}
               </tbody>

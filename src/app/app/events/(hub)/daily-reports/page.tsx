@@ -2,7 +2,10 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
+import Button from '@/components/ui/Button';
 import EventsHubTabs from '../../EventsHubTabs';
+import StatusBadge from '@/components/ui/StatusBadge';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getDailyReports() {
   try {
@@ -43,22 +46,15 @@ export default async function DailyReportsPage() {
   return (
     <TierGate feature="events">
       <PageHeader title="Daily Reports" subtitle="Field reports for weather, labor, deliveries, and on-site incidents.">
-        <button className="btn-primary text-sm whitespace-nowrap hidden sm:inline-flex">+ New Daily Report</button>
+        <Button size="sm" className="hidden sm:inline-flex">+ New Daily Report</Button>
       </PageHeader>
       <EventsHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">
-        {[
-          { label: 'Total Reports', value: reports.length },
-          { label: 'Today', value: reports.filter((r) => r.report_date === todayStr).length, color: 'text-blue-600' },
-          { label: 'Total Labor Hrs', value: totalLabor.toFixed(1), color: 'text-purple-600' },
-          { label: 'Events Covered', value: new Set(reports.map((r) => r.event_name).filter(Boolean)).size },
-        ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
-            <p className="text-xs text-text-muted">{stat.label}</p>
-            <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
-          </div>
-        ))}
+        <MetricCard label="Total Reports" value={reports.length} />
+        <MetricCard label="Today" value={reports.filter((r) => r.report_date === todayStr).length} className="[&_.text-foreground]:text-blue-600" />
+        <MetricCard label="Total Labor Hrs" value={totalLabor.toFixed(1)} className="[&_.text-foreground]:text-purple-600" />
+        <MetricCard label="Events Covered" value={new Set(reports.map((r) => r.event_name).filter(Boolean)).size} />
       </div>
 
       <div className="rounded-xl border border-border bg-background overflow-hidden">
@@ -85,7 +81,7 @@ export default async function DailyReportsPage() {
                     <td className="px-4 py-3 tabular-nums text-foreground">{r.labor_hours}</td>
                     <td className="px-4 py-3 tabular-nums text-text-secondary">{r.crew_count}</td>
                     <td className="px-4 py-3 tabular-nums text-text-secondary">{r.deliveries_received}</td>
-                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[r.status]}`}>{r.status}</span></td>
+                    <td className="px-4 py-3"><StatusBadge status={r.status} colorMap={STATUS_COLORS} /></td>
                   </tr>
                 ))}
               </tbody>

@@ -30,7 +30,7 @@ async function getPortfolioItem(id: string): Promise<PortfolioDetail | null> {
 
     const { data } = await supabase
       .from('portfolio_library')
-      .select('*')
+      .select('id, project_name, project_year, category, client_name, description, image_url, tags, venue, location, services_provided, results, project_id, proposal_id, created_at')
       .eq('id', id)
       .eq('organization_id', ctx.organizationId)
       .is('deleted_at', null)
@@ -47,13 +47,13 @@ async function getPortfolioItem(id: string): Promise<PortfolioDetail | null> {
       description: data.description,
       image_url: data.image_url,
       tags: data.tags ?? [],
-      venue: (data as Record<string, unknown>).venue as string | null ?? null,
-      location: (data as Record<string, unknown>).location as string | null ?? null,
-      services_provided: ((data as Record<string, unknown>).services_provided as string[]) ?? [],
-      results: (data as Record<string, unknown>).results as string | null ?? null,
+      venue: data.venue ?? null,
+      location: data.location ?? null,
+      services_provided: data.services_provided ?? [],
+      results: data.results ?? null,
       project_id: data.project_id,
       proposal_id: data.proposal_id,
-      created_at: (data as Record<string, unknown>).created_at as string,
+      created_at: data.created_at,
     };
   } catch {
     return null;

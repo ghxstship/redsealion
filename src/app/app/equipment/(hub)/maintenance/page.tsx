@@ -1,9 +1,11 @@
+import { formatLabel } from '@/lib/utils';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
 import EquipmentHubTabs from '../../EquipmentHubTabs';
 import Card from '@/components/ui/Card';
+import StatusBadge from '@/components/ui/StatusBadge';
 
 interface MaintenanceEntry {
   id: string;
@@ -71,12 +73,6 @@ function formatDate(dateStr: string): string {
   });
 }
 
-function formatLabel(s: string): string {
-  return s
-    .split('_')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ');
-}
 
 export default async function MaintenancePage() {
   const maintenance = await getMaintenance();
@@ -115,24 +111,12 @@ export default async function MaintenancePage() {
                     <tr key={entry.id} className="transition-colors hover:bg-bg-secondary/50">
                       <td className="px-6 py-3.5 text-sm font-medium text-foreground">{entry.equipment_name}</td>
                       <td className="px-6 py-3.5">
-                        <span
-                          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                            TYPE_COLORS[entry.type] ?? 'bg-bg-secondary text-text-muted'
-                          }`}
-                        >
-                          {entry.type}
-                        </span>
+                        <StatusBadge status={entry.type} colorMap={TYPE_COLORS} />
                       </td>
                       <td className="px-6 py-3.5 text-sm text-text-secondary max-w-xs truncate">{entry.description}</td>
                       <td className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(entry.scheduled_date)}</td>
                       <td className="px-6 py-3.5">
-                        <span
-                          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                            STATUS_COLORS[entry.status] ?? 'bg-bg-secondary text-text-muted'
-                          }`}
-                        >
-                          {formatLabel(entry.status)}
-                        </span>
+                        <StatusBadge status={entry.status} colorMap={STATUS_COLORS} />
                       </td>
                     </tr>
                   ))}
@@ -166,13 +150,7 @@ export default async function MaintenancePage() {
                     <tr key={entry.id} className="transition-colors hover:bg-bg-secondary/50">
                       <td className="px-6 py-3.5 text-sm font-medium text-foreground">{entry.equipment_name}</td>
                       <td className="px-6 py-3.5">
-                        <span
-                          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                            TYPE_COLORS[entry.type] ?? 'bg-bg-secondary text-text-muted'
-                          }`}
-                        >
-                          {entry.type}
-                        </span>
+                        <StatusBadge status={entry.type} colorMap={TYPE_COLORS} />
                       </td>
                       <td className="px-6 py-3.5 text-sm text-text-secondary max-w-xs truncate">{entry.description}</td>
                       <td className="px-6 py-3.5 text-sm text-text-secondary">

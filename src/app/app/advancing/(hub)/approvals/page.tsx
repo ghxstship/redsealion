@@ -4,7 +4,10 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
+import StatusBadge, { ADVANCE_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import { TASK_PRIORITY_COLORS } from '@/components/ui/StatusBadge';
 import AdvancingHubTabs from '../../AdvancingHubTabs';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getApprovals() {
   try {
@@ -46,10 +49,7 @@ export default async function AdvancingApprovalsPage() {
           { label: 'Approved', value: approved.length, color: 'text-green-600' },
           { label: 'Rejected', value: rejected.length, color: 'text-red-600' },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
-            <p className="text-xs text-text-muted">{stat.label}</p>
-            <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
-          </div>
+          <MetricCard key={stat.label} label={stat.label} value={stat.value} className={stat.color ? `[&_.text-foreground]:${stat.color}` : ''} />
         ))}
       </div>
 
@@ -79,14 +79,10 @@ export default async function AdvancingApprovalsPage() {
                     </td>
                     <td className="px-4 py-3 text-text-secondary">{item.event_name ?? '—'}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${item.priority === 'critical' ? 'bg-red-50 text-red-700' : item.priority === 'high' ? 'bg-orange-50 text-orange-700' : 'bg-bg-secondary text-text-secondary'}`}>
-                        {item.priority}
-                      </span>
+                      <StatusBadge status={item.priority} colorMap={TASK_PRIORITY_COLORS} />
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${item.status === 'approved' ? 'bg-green-50 text-green-700' : item.status === 'rejected' ? 'bg-red-50 text-red-700' : 'bg-yellow-50 text-yellow-700'}`}>
-                        {item.status.replace('_', ' ')}
-                      </span>
+                      <StatusBadge status={item.status} colorMap={ADVANCE_STATUS_COLORS} />
                     </td>
                     <td className="px-4 py-3 tabular-nums">{formatCurrency(item.total_cents / 100)}</td>
                     <td className="px-4 py-3 text-text-secondary">{new Date(item.created_at).toLocaleDateString()}</td>

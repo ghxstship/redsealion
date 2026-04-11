@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
+import Button from '@/components/ui/Button';
 import ViewTypeSwitcher, { getPersistedView } from '@/components/shared/ViewTypeSwitcher';
 import { CalendarDays, CalendarRange } from 'lucide-react';
 import { usePreferencesSafe } from '@/components/shared/PreferencesProvider';
@@ -192,10 +193,7 @@ export default function CalendarPage() {
 
   return (
     <>
-<PageHeader
-        title="Calendar"
-        subtitle="Org-wide view of proposals, activations, and crew bookings."
-      >
+      <PageHeader title="Calendar" subtitle="View and manage event schedules across all locations.">
         <ViewTypeSwitcher
           views={[
             { key: 'month', label: 'Month', icon: <CalendarDays size={13} /> },
@@ -205,6 +203,7 @@ export default function CalendarPage() {
           onSwitch={(key) => setView(key as 'month' | 'week')}
           persistKey={PERSIST_KEY}
         />
+        <Button size="sm" className="hidden sm:inline-flex">+ New Event</Button>
       </PageHeader>
 
       <EventsHubTabs />
@@ -230,7 +229,6 @@ export default function CalendarPage() {
             ? `${monthName} ${year}`
             : `Week of ${weekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`}
         </h2>
-        <button className="btn-primary text-sm whitespace-nowrap hidden sm:inline-flex">+ New Event</button>
       </div>
 
       {/* Month view */}

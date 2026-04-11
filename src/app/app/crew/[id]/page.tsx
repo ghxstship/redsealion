@@ -1,9 +1,11 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
-import { formatCurrency } from '@/lib/utils';
-import StatusBadge from '@/components/ui/StatusBadge';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import { formatCurrency, formatLabel, formatDate } from '@/lib/utils';
+import StatusBadge, { CREW_AVAILABILITY_COLORS, CREW_ONBOARDING_COLORS, BOOKING_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import EmptyState from '@/components/ui/EmptyState';
+import Tag from '@/components/ui/Tag';
 import ComplianceDocumentsPanel from '@/components/admin/crew/ComplianceDocumentsPanel';
 import CrewRatingsPanel from '@/components/admin/crew/CrewRatingsPanel';
 import CrewDetailTabs from './CrewDetailTabs';
@@ -37,6 +39,9 @@ interface CrewDetail {
 async function getCrewMember(id: string): Promise<CrewDetail> {
   try {
     const supabase = await createClient();
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) throw new Error('No valid org context');
+    
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -46,6 +51,7 @@ async function getCrewMember(id: string): Promise<CrewDetail> {
       .from('crew_profiles')
       .select('*, users(full_name, email)')
       .eq('id', id)
+      .eq('organization_id', ctx.organizationId)
       .single();
 
     if (!profile) throw new Error('Not found');
@@ -88,39 +94,7 @@ async function getCrewMember(id: string): Promise<CrewDetail> {
   }
 }
 
-function formatLabel(s: string): string {
-  return s
-    .split('_')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ');
-}
 
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
-}
-
-const AVAILABILITY_COLORS: Record<string, string> = {
-  available: 'bg-green-50 text-green-700',
-  unavailable: 'bg-red-50 text-red-700',
-  tentative: 'bg-yellow-50 text-yellow-700',
-};
-
-const ONBOARDING_COLORS: Record<string, string> = {
-  complete: 'bg-green-50 text-green-700',
-  in_progress: 'bg-blue-50 text-blue-700',
-  not_started: 'bg-bg-secondary text-text-muted',
-  pending: 'bg-bg-secondary text-text-muted',
-};
-
-const BOOKING_STATUS_COLORS: Record<string, string> = {
-  confirmed: 'bg-green-50 text-green-700',
-  tentative: 'bg-yellow-50 text-yellow-700',
-  cancelled: 'bg-red-50 text-red-700',
-};
 
 export default async function CrewMemberPage({
   params,
@@ -147,12 +121,7 @@ export default async function CrewMemberPage({
         <h2 className="text-sm font-semibold text-foreground mb-4">Skills</h2>
         <div className="flex flex-wrap gap-2">
           {member.skills.map((skill) => (
-            <span
-              key={skill}
-              className="inline-flex items-center rounded-full bg-bg-secondary px-3 py-1 text-xs font-medium text-text-secondary"
-            >
-              {skill}
-            </span>
+            <Tag key={skill}>{skill}</Tag>
           ))}
           {member.skills.length === 0 && (
             <p className="text-sm text-text-muted">No skills listed.</p>
@@ -165,12 +134,7 @@ export default async function CrewMemberPage({
         <h2 className="text-sm font-semibold text-foreground mb-4">Certifications</h2>
         <div className="flex flex-wrap gap-2">
           {member.certifications.map((cert) => (
-            <span
-              key={cert}
-              className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700"
-            >
-              {cert}
-            </span>
+            <Tag key={cert} variant="info">{cert}</Tag>
           ))}
           {member.certifications.length === 0 && (
             <p className="text-sm text-text-muted">No certifications listed.</p>
@@ -203,13 +167,7 @@ export default async function CrewMemberPage({
                   <td className="px-6 py-3.5 text-sm text-text-secondary">{booking.venue}</td>
                   <td className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(booking.date)}</td>
                   <td className="px-6 py-3.5">
-                    <span
-                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        BOOKING_STATUS_COLORS[booking.status] ?? 'bg-bg-secondary text-text-muted'
-                      }`}
-                    >
-                      {formatLabel(booking.status)}
-                    </span>
+                    <StatusBadge status={booking.status} colorMap={BOOKING_STATUS_COLORS} />
                   </td>
                 </tr>
               ))}
@@ -243,20 +201,8 @@ export default async function CrewMemberPage({
         subtitle={member.email}
       >
         <div className="flex gap-2">
-          <span
-            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-              AVAILABILITY_COLORS[member.availability_status] ?? 'bg-bg-secondary text-text-muted'
-            }`}
-          >
-            {formatLabel(member.availability_status)}
-          </span>
-          <span
-            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-              ONBOARDING_COLORS[member.onboarding_status] ?? 'bg-bg-secondary text-text-muted'
-            }`}
-          >
-            Onboarding: {formatLabel(member.onboarding_status)}
-          </span>
+          <StatusBadge status={member.availability_status} colorMap={CREW_AVAILABILITY_COLORS} />
+          <StatusBadge status={`Onboarding: ${member.onboarding_status}`} colorMap={CREW_ONBOARDING_COLORS} />
         </div>
         <a href={`/app/crew/${id}/edit`} className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary">
           Edit Profile

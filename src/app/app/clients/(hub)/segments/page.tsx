@@ -3,6 +3,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import ClientsHubTabs from '../../ClientsHubTabs';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getSegments() {
   try {
@@ -38,15 +39,13 @@ export default async function ClientSegmentsPage() {
       <ClientsHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Total Clients</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{clients.length}</p>
-        </div>
+        <MetricCard label={"Total Clients"} value={clients.length} />
         {Object.entries(statuses).slice(0, 3).map(([status, count]) => (
-          <div key={status} className="rounded-xl border border-border bg-background p-4">
-            <p className="text-xs text-text-muted capitalize">{status}</p>
-            <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{count}</p>
-          </div>
+          <MetricCard 
+            key={status} 
+            label={status.charAt(0).toUpperCase() + status.slice(1)} 
+            value={count} 
+          />
         ))}
       </div>
 

@@ -4,6 +4,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import Link from 'next/link';
 import CampaignsHubTabs from '../../CampaignsHubTabs';
+import StatusBadge from '@/components/ui/StatusBadge';
 
 async function getDrafts() {
   try {
@@ -43,7 +44,7 @@ export default async function DraftsPage() {
                     {draft.subject && <p className="text-xs text-text-secondary mt-0.5">Subject: {draft.subject}</p>}
                   </div>
                   <div className="text-right">
-                    <span className="inline-flex rounded-full px-2 py-0.5 text-xs font-medium bg-yellow-50 text-yellow-700">Draft</span>
+                    <StatusBadge status="draft" colorMap={{draft: 'bg-yellow-50 text-yellow-700'}} />
                     <p className="text-xs text-text-muted mt-1">{new Date(draft.updated_at).toLocaleDateString()}</p>
                   </div>
                 </div>

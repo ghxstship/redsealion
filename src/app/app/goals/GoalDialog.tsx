@@ -2,8 +2,10 @@
 
 import { useState } from 'react';
 import { createGoal, updateGoal } from './actions';
+import { GOAL_CATEGORIES, GOAL_STATUSES } from './constants';
 import ModalShell from '@/components/ui/ModalShell';
 import Button from '@/components/ui/Button';
+import Alert from '@/components/ui/Alert';
 
 interface Goal {
   id: string;
@@ -23,6 +25,7 @@ interface GoalDialogProps {
 
 export default function GoalDialog({ goal, isOpen, onClose }: GoalDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const isEditing = !!goal;
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -33,10 +36,11 @@ export default function GoalDialog({ goal, isOpen, onClose }: GoalDialogProps) {
     const title = formData.get('title') as string;
     
     if (!title) {
-        alert('Title is required');
+        setError('Title is required');
         setIsSubmitting(false);
         return;
     }
+    setError(null);
 
     try {
       if (isEditing) {
@@ -47,7 +51,7 @@ export default function GoalDialog({ goal, isOpen, onClose }: GoalDialogProps) {
       onClose();
     } catch (err) {
       console.error(err);
-      alert('Failed to save goal');
+      setError('Failed to save goal');
     } finally {
       setIsSubmitting(false);
     }
@@ -56,6 +60,11 @@ export default function GoalDialog({ goal, isOpen, onClose }: GoalDialogProps) {
   return (
     <ModalShell open={isOpen} onClose={onClose} title={isEditing ? 'Edit Goal' : 'Create Goal'}>
       <form onSubmit={handleSubmit} className="space-y-4 pt-4">
+        {error && (
+          <Alert variant="error">
+            {error}
+          </Alert>
+        )}
         <div>
           <label htmlFor="title" className="block text-sm font-medium text-foreground">
             Title
@@ -96,9 +105,9 @@ export default function GoalDialog({ goal, isOpen, onClose }: GoalDialogProps) {
               defaultValue={goal?.category || 'Company'}
               className="mt-1 block w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
-              <option value="Company">Company</option>
-              <option value="Department">Department</option>
-              <option value="Individual">Individual</option>
+              {GOAL_CATEGORIES.map((cat) => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
             </select>
           </div>
           
@@ -113,10 +122,9 @@ export default function GoalDialog({ goal, isOpen, onClose }: GoalDialogProps) {
                 defaultValue={goal?.status || 'on_track'}
                 className="mt-1 block w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               >
-                <option value="on_track">On Track</option>
-                <option value="at_risk">At Risk</option>
-                <option value="off_track">Off Track</option>
-                <option value="completed">Completed</option>
+              {GOAL_STATUSES.map((s) => (
+                <option key={s.value} value={s.value}>{s.label}</option>
+              ))}
               </select>
             </div>
           )}

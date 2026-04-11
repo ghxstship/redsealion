@@ -7,6 +7,7 @@ import FormLabel from '@/components/ui/FormLabel';
 import FormSelect from '@/components/ui/FormSelect';
 import Button from '@/components/ui/Button';
 import { createClient } from '@/lib/supabase/client';
+import Alert from '@/components/ui/Alert';
 
 interface ProcessReturnButtonProps {
   itemId: string;
@@ -68,7 +69,7 @@ export default function ProcessReturnButton({ itemId, itemName }: ProcessReturnB
       <ModalShell title={`Process Return: ${itemName}`} open={open} onClose={() => setOpen(false)}>
         <form onSubmit={handleSubmit} className="space-y-4 pt-2">
           {error && (
-            <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>
+            <Alert variant="error">{error}</Alert>
           )}
           <div>
             <FormLabel>Return Condition *</FormLabel>

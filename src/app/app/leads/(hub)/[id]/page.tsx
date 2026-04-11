@@ -1,7 +1,10 @@
 import { createClient } from '@/lib/supabase/server';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import StatusBadge, { LEAD_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import Alert from '@/components/ui/Alert';
+import { Badge } from '@/components/ui/Badge';
 import { scoreBarColor, scoreTierClasses } from '@/lib/leads/lead-scoring';
 import PageHeader from '@/components/shared/PageHeader';
 import LeadDetailActions from './LeadDetailActions';
@@ -33,26 +36,14 @@ interface LeadDetail {
 async function getLead(id: string): Promise<LeadDetail | null> {
   try {
     const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return null;
-
-    const { data: membership } = await supabase
-      .from('organization_memberships')
-      .select('organization_id')
-      .eq('user_id', user.id)
-      .eq('status', 'active')
-      .order('created_at', { ascending: true })
-      .limit(1)
-      .single();
-    if (!membership) return null;
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) return null;
 
     const { data: lead } = await supabase
       .from('leads')
       .select('*, users!leads_assigned_to_fkey(id, full_name)')
       .eq('id', id)
-      .eq('organization_id', membership.organization_id)
+      .eq('organization_id', ctx.organizationId)
       .is('deleted_at', null)
       .single();
 
@@ -213,10 +204,10 @@ export default async function LeadDetailPage({
 
           {/* Lost Reason */}
           {lead.status === 'lost' && lead.lost_reason && (
-            <div className="rounded-xl border border-red-200 bg-red-50/50 p-6">
-              <h2 className="text-sm font-semibold text-red-700 uppercase tracking-wider mb-4">Lost Reason</h2>
-              <p className="text-sm text-red-700">{lead.lost_reason}</p>
-            </div>
+            <Alert variant="error">
+              <h2 className="text-sm font-semibold uppercase tracking-wider mb-4">Lost Reason</h2>
+              <p className="text-sm">{lead.lost_reason}</p>
+            </Alert>
           )}
         </div>
 
@@ -237,9 +228,11 @@ export default async function LeadDetailPage({
                     style={{ width: `${score}%` }}
                   />
                 </div>
-                <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold ${scoreTierClasses(tier)}`}>
+                <Badge
+                  variant={tier === 'hot' ? 'error' : tier === 'warm' ? 'warning' : 'muted'}
+                >
                   {score}
-                </span>
+                </Badge>
               </div>
             </div>
             <div>

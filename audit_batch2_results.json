@@ -1,0 +1,702 @@
+[
+  {
+    "Location": "compliance/loading.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Duplicate skeleton loading boilerplate",
+    "Severity": "Medium",
+    "Fix": "Refactor to use canonical TableSkeleton"
+  },
+  {
+    "Location": "compliance/ComplianceHubTabs.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Duplicate HubTabs boilerplate",
+    "Severity": "Medium",
+    "Fix": "Refactor to use generic HubTabs from components/shared"
+  },
+  {
+    "Location": "compliance/(hub)/loading.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Duplicate skeleton loading boilerplate",
+    "Severity": "Medium",
+    "Fix": "Refactor to use canonical TableSkeleton"
+  },
+  {
+    "Location": "compliance/(hub)/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in compliance/(hub)/page.tsx or layout"
+  },
+  {
+    "Location": "compliance/(hub)/licenses/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Inline stat cards duplicate MetricCard",
+    "Severity": "High",
+    "Fix": "Replace with <MetricCard>"
+  },
+  {
+    "Location": "compliance/(hub)/licenses/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in compliance/(hub)/licenses/page.tsx or layout"
+  },
+  {
+    "Location": "compliance/(hub)/permits/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Inline stat cards duplicate MetricCard",
+    "Severity": "High",
+    "Fix": "Replace with <MetricCard>"
+  },
+  {
+    "Location": "compliance/(hub)/permits/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in compliance/(hub)/permits/page.tsx or layout"
+  },
+  {
+    "Location": "compliance/(hub)/contracts/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Inline stat cards duplicate MetricCard",
+    "Severity": "High",
+    "Fix": "Replace with <MetricCard>"
+  },
+  {
+    "Location": "compliance/(hub)/contracts/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in compliance/(hub)/contracts/page.tsx or layout"
+  },
+  {
+    "Location": "compliance/(hub)/cois/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Inline stat cards duplicate MetricCard",
+    "Severity": "High",
+    "Fix": "Replace with <MetricCard>"
+  },
+  {
+    "Location": "compliance/(hub)/cois/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in compliance/(hub)/cois/page.tsx or layout"
+  },
+  {
+    "Location": "compliance/(hub)/certifications/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Inline stat cards duplicate MetricCard",
+    "Severity": "High",
+    "Fix": "Replace with <MetricCard>"
+  },
+  {
+    "Location": "compliance/(hub)/certifications/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in compliance/(hub)/certifications/page.tsx or layout"
+  },
+  {
+    "Location": "crew/loading.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Duplicate skeleton loading boilerplate",
+    "Severity": "Medium",
+    "Fix": "Refactor to use canonical TableSkeleton"
+  },
+  {
+    "Location": "crew/CrewHubTabs.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Duplicate HubTabs boilerplate",
+    "Severity": "Medium",
+    "Fix": "Refactor to use generic HubTabs from components/shared"
+  },
+  {
+    "Location": "crew/(hub)/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in crew/(hub)/page.tsx or layout"
+  },
+  {
+    "Location": "crew/(hub)/schedule/loading.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Duplicate skeleton loading boilerplate",
+    "Severity": "Medium",
+    "Fix": "Refactor to use canonical TableSkeleton"
+  },
+  {
+    "Location": "crew/(hub)/schedule/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in crew/(hub)/schedule/page.tsx or layout"
+  },
+  {
+    "Location": "crew/(hub)/recruitment/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in crew/(hub)/recruitment/page.tsx or layout"
+  },
+  {
+    "Location": "crew/(hub)/availability/loading.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Duplicate skeleton loading boilerplate",
+    "Severity": "Medium",
+    "Fix": "Refactor to use canonical TableSkeleton"
+  },
+  {
+    "Location": "crew/(hub)/availability/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Import and use canonical <Button> component"
+  },
+  {
+    "Location": "crew/(hub)/availability/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in crew/(hub)/availability/page.tsx or layout"
+  },
+  {
+    "Location": "crew/(hub)/onboarding/loading.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Duplicate skeleton loading boilerplate",
+    "Severity": "Medium",
+    "Fix": "Refactor to use canonical TableSkeleton"
+  },
+  {
+    "Location": "crew/(hub)/onboarding/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Inline stat cards duplicate MetricCard",
+    "Severity": "High",
+    "Fix": "Replace with <MetricCard>"
+  },
+  {
+    "Location": "crew/(hub)/onboarding/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in crew/(hub)/onboarding/page.tsx or layout"
+  },
+  {
+    "Location": "crew/[id]/loading.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Duplicate skeleton loading boilerplate",
+    "Severity": "Medium",
+    "Fix": "Refactor to use canonical TableSkeleton"
+  },
+  {
+    "Location": "crew/[id]/page.tsx",
+    "Gap type": "3NF/SSOT violation (Security Data Leak)",
+    "What breaks": "Cross-tenant data exposure - users can view records of other orgs by guessing IDs",
+    "Severity": "Critical",
+    "Fix": "Add .eq(\"organization_id\", ctx.organizationId) to DB queries in crew/[id]/page.tsx"
+  },
+  {
+    "Location": "crew/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in crew/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "crew/[id]/edit/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in crew/[id]/edit/page.tsx or layout"
+  },
+  {
+    "Location": "dispatch/DispatchHubTabs.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Duplicate HubTabs boilerplate",
+    "Severity": "Medium",
+    "Fix": "Refactor to use generic HubTabs from components/shared"
+  },
+  {
+    "Location": "dispatch/loading.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Duplicate skeleton loading boilerplate",
+    "Severity": "Medium",
+    "Fix": "Refactor to use canonical TableSkeleton"
+  },
+  {
+    "Location": "dispatch/(hub)/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Inline stat cards duplicate MetricCard",
+    "Severity": "High",
+    "Fix": "Replace with <MetricCard>"
+  },
+  {
+    "Location": "dispatch/(hub)/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in dispatch/(hub)/page.tsx or layout"
+  },
+  {
+    "Location": "dispatch/(hub)/board/loading.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Duplicate skeleton loading boilerplate",
+    "Severity": "Medium",
+    "Fix": "Refactor to use canonical TableSkeleton"
+  },
+  {
+    "Location": "dispatch/(hub)/board/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in dispatch/(hub)/board/page.tsx or layout"
+  },
+  {
+    "Location": "dispatch/(hub)/history/loading.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Duplicate skeleton loading boilerplate",
+    "Severity": "Medium",
+    "Fix": "Refactor to use canonical TableSkeleton"
+  },
+  {
+    "Location": "dispatch/(hub)/history/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Inline stat cards duplicate MetricCard",
+    "Severity": "High",
+    "Fix": "Replace with <MetricCard>"
+  },
+  {
+    "Location": "dispatch/(hub)/history/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in dispatch/(hub)/history/page.tsx or layout"
+  },
+  {
+    "Location": "dispatch/(hub)/routes/loading.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Duplicate skeleton loading boilerplate",
+    "Severity": "Medium",
+    "Fix": "Refactor to use canonical TableSkeleton"
+  },
+  {
+    "Location": "dispatch/(hub)/routes/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Inline stat cards duplicate MetricCard",
+    "Severity": "High",
+    "Fix": "Replace with <MetricCard>"
+  },
+  {
+    "Location": "dispatch/(hub)/routes/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in dispatch/(hub)/routes/page.tsx or layout"
+  },
+  {
+    "Location": "dispatch/new/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in dispatch/new/page.tsx or layout"
+  },
+  {
+    "Location": "dispatch/[id]/page.tsx",
+    "Gap type": "3NF/SSOT violation (Security Data Leak)",
+    "What breaks": "Cross-tenant data exposure - users can view records of other orgs by guessing IDs",
+    "Severity": "Critical",
+    "Fix": "Add .eq(\"organization_id\", ctx.organizationId) to DB queries in dispatch/[id]/page.tsx"
+  },
+  {
+    "Location": "dispatch/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in dispatch/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "emails/loading.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Duplicate skeleton loading boilerplate",
+    "Severity": "Medium",
+    "Fix": "Refactor to use canonical TableSkeleton"
+  },
+  {
+    "Location": "emails/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in emails/page.tsx or layout"
+  },
+  {
+    "Location": "emails/templates/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in emails/templates/page.tsx or layout"
+  },
+  {
+    "Location": "emails/[id]/loading.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Duplicate skeleton loading boilerplate",
+    "Severity": "Medium",
+    "Fix": "Refactor to use canonical TableSkeleton"
+  },
+  {
+    "Location": "emails/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in emails/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "equipment/loading.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Duplicate skeleton loading boilerplate",
+    "Severity": "Medium",
+    "Fix": "Refactor to use canonical TableSkeleton"
+  },
+  {
+    "Location": "equipment/EquipmentHubTabs.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Duplicate HubTabs boilerplate",
+    "Severity": "Medium",
+    "Fix": "Refactor to use generic HubTabs from components/shared"
+  },
+  {
+    "Location": "equipment/(hub)/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Inline stat cards duplicate MetricCard",
+    "Severity": "High",
+    "Fix": "Replace with <MetricCard>"
+  },
+  {
+    "Location": "equipment/(hub)/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in equipment/(hub)/page.tsx or layout"
+  },
+  {
+    "Location": "equipment/(hub)/inventory/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Inline status badges duplicate core styling and cause drift",
+    "Severity": "High",
+    "Fix": "Replace inline <span> badges with canonical <StatusBadge>"
+  },
+  {
+    "Location": "equipment/(hub)/inventory/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in equipment/(hub)/inventory/page.tsx or layout"
+  },
+  {
+    "Location": "equipment/(hub)/check-in-out/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Inline stat cards duplicate MetricCard",
+    "Severity": "High",
+    "Fix": "Replace with <MetricCard>"
+  },
+  {
+    "Location": "equipment/(hub)/check-in-out/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in equipment/(hub)/check-in-out/page.tsx or layout"
+  },
+  {
+    "Location": "equipment/(hub)/maintenance/loading.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Duplicate skeleton loading boilerplate",
+    "Severity": "Medium",
+    "Fix": "Refactor to use canonical TableSkeleton"
+  },
+  {
+    "Location": "equipment/(hub)/maintenance/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in equipment/(hub)/maintenance/page.tsx or layout"
+  },
+  {
+    "Location": "equipment/(hub)/assets/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in equipment/(hub)/assets/page.tsx or layout"
+  },
+  {
+    "Location": "equipment/(hub)/bundles/loading.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Duplicate skeleton loading boilerplate",
+    "Severity": "Medium",
+    "Fix": "Refactor to use canonical TableSkeleton"
+  },
+  {
+    "Location": "equipment/(hub)/bundles/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in equipment/(hub)/bundles/page.tsx or layout"
+  },
+  {
+    "Location": "equipment/[id]/loading.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Duplicate skeleton loading boilerplate",
+    "Severity": "Medium",
+    "Fix": "Refactor to use canonical TableSkeleton"
+  },
+  {
+    "Location": "equipment/[id]/page.tsx",
+    "Gap type": "3NF/SSOT violation (Security Data Leak)",
+    "What breaks": "Cross-tenant data exposure - users can view records of other orgs by guessing IDs",
+    "Severity": "Critical",
+    "Fix": "Add .eq(\"organization_id\", ctx.organizationId) to DB queries in equipment/[id]/page.tsx"
+  },
+  {
+    "Location": "equipment/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in equipment/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "events/EventsHubTabs.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Duplicate HubTabs boilerplate",
+    "Severity": "Medium",
+    "Fix": "Refactor to use generic HubTabs from components/shared"
+  },
+  {
+    "Location": "events/(hub)/loading.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Duplicate skeleton loading boilerplate",
+    "Severity": "Medium",
+    "Fix": "Refactor to use canonical TableSkeleton"
+  },
+  {
+    "Location": "events/(hub)/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Inline stat cards duplicate MetricCard",
+    "Severity": "High",
+    "Fix": "Replace with <MetricCard>"
+  },
+  {
+    "Location": "events/(hub)/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in events/(hub)/page.tsx or layout"
+  },
+  {
+    "Location": "events/(hub)/activations/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Inline stat cards duplicate MetricCard",
+    "Severity": "High",
+    "Fix": "Replace with <MetricCard>"
+  },
+  {
+    "Location": "events/(hub)/activations/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in events/(hub)/activations/page.tsx or layout"
+  },
+  {
+    "Location": "events/(hub)/calendar/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Import and use canonical <Button> component"
+  },
+  {
+    "Location": "events/(hub)/calendar/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in events/(hub)/calendar/page.tsx or layout"
+  },
+  {
+    "Location": "events/(hub)/locations/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Inline stat cards duplicate MetricCard",
+    "Severity": "High",
+    "Fix": "Replace with <MetricCard>"
+  },
+  {
+    "Location": "events/(hub)/locations/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in events/(hub)/locations/page.tsx or layout"
+  },
+  {
+    "Location": "events/(hub)/daily-reports/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Import and use canonical <Button> component"
+  },
+  {
+    "Location": "events/(hub)/daily-reports/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Inline stat cards duplicate MetricCard",
+    "Severity": "High",
+    "Fix": "Replace with <MetricCard>"
+  },
+  {
+    "Location": "events/(hub)/daily-reports/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in events/(hub)/daily-reports/page.tsx or layout"
+  },
+  {
+    "Location": "events/(hub)/punch-list/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Import and use canonical <Button> component"
+  },
+  {
+    "Location": "events/(hub)/punch-list/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Inline stat cards duplicate MetricCard",
+    "Severity": "High",
+    "Fix": "Replace with <MetricCard>"
+  },
+  {
+    "Location": "events/(hub)/punch-list/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in events/(hub)/punch-list/page.tsx or layout"
+  },
+  {
+    "Location": "events/[id]/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Import and use canonical <Button> component"
+  },
+  {
+    "Location": "events/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in events/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "expenses/ExpensesHubTabs.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Duplicate HubTabs boilerplate",
+    "Severity": "Medium",
+    "Fix": "Refactor to use generic HubTabs from components/shared"
+  },
+  {
+    "Location": "expenses/loading.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Duplicate skeleton loading boilerplate",
+    "Severity": "Medium",
+    "Fix": "Refactor to use canonical TableSkeleton"
+  },
+  {
+    "Location": "expenses/(hub)/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in expenses/(hub)/page.tsx or layout"
+  },
+  {
+    "Location": "expenses/(hub)/receipts/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in expenses/(hub)/receipts/page.tsx or layout"
+  },
+  {
+    "Location": "expenses/(hub)/approvals/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in expenses/(hub)/approvals/page.tsx or layout"
+  },
+  {
+    "Location": "expenses/(hub)/mileage/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in expenses/(hub)/mileage/page.tsx or layout"
+  },
+  {
+    "Location": "expenses/new/loading.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Duplicate skeleton loading boilerplate",
+    "Severity": "Medium",
+    "Fix": "Refactor to use canonical TableSkeleton"
+  },
+  {
+    "Location": "expenses/new/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in expenses/new/page.tsx or layout"
+  },
+  {
+    "Location": "expenses/mileage/new/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in expenses/mileage/new/page.tsx or layout"
+  },
+  {
+    "Location": "fabrication/FabricationHubTabs.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Duplicate HubTabs boilerplate",
+    "Severity": "Medium",
+    "Fix": "Refactor to use generic HubTabs from components/shared"
+  },
+  {
+    "Location": "fabrication/(hub)/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Inline stat cards duplicate MetricCard",
+    "Severity": "High",
+    "Fix": "Replace with <MetricCard>"
+  },
+  {
+    "Location": "fabrication/(hub)/bom/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Inline stat cards duplicate MetricCard",
+    "Severity": "High",
+    "Fix": "Replace with <MetricCard>"
+  },
+  {
+    "Location": "fabrication/(hub)/quality/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Inline stat cards duplicate MetricCard",
+    "Severity": "High",
+    "Fix": "Replace with <MetricCard>"
+  },
+  {
+    "Location": "fabrication/(hub)/shop-floor/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Inline stat cards duplicate MetricCard",
+    "Severity": "High",
+    "Fix": "Replace with <MetricCard>"
+  },
+  {
+    "Location": "fabrication/(hub)/shop-floor/kiosk/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Import and use canonical <Button> component"
+  },
+  {
+    "Location": "fabrication/(hub)/print/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Inline stat cards duplicate MetricCard",
+    "Severity": "High",
+    "Fix": "Replace with <MetricCard>"
+  }
+]

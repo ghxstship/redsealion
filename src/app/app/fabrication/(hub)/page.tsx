@@ -6,6 +6,8 @@ import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
 import FabricationHubTabs from '../FabricationHubTabs';
 import NewOrderButton from '@/components/fabrication/NewOrderButton';
+import StatusBadge, { FABRICATION_STATUS_COLORS, TASK_PRIORITY_COLORS } from '@/components/ui/StatusBadge';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getOrders() {
   try {
@@ -24,8 +26,7 @@ async function getOrders() {
   } catch { return []; }
 }
 
-const STATUS_COLORS: Record<string, string> = { draft: 'bg-bg-secondary text-text-secondary', pending: 'bg-yellow-50 text-yellow-700', in_production: 'bg-blue-50 text-blue-700', quality_check: 'bg-purple-50 text-purple-700', completed: 'bg-green-50 text-green-700', cancelled: 'bg-red-50 text-red-700' };
-const PRIORITY_COLORS: Record<string, string> = { low: 'text-text-muted', medium: 'text-yellow-600', high: 'text-orange-600', urgent: 'text-red-600' };
+
 
 export default async function FabricationOrdersPage() {
   const orders = await getOrders();
@@ -41,17 +42,10 @@ export default async function FabricationOrdersPage() {
       <FabricationHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">
-        {[
-          { label: 'Total Orders', value: String(orders.length) },
-          { label: 'In Production', value: String(inProduction), color: 'text-blue-600' },
-          { label: 'Total Value', value: formatCurrency(totalValue / 100) },
-          { label: 'Pending QC', value: String(orders.filter((o) => o.status === 'quality_check').length), color: 'text-purple-600' },
-        ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
-            <p className="text-xs text-text-muted">{stat.label}</p>
-            <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
-          </div>
-        ))}
+        <MetricCard label="Total Orders" value={orders.length} />
+        <MetricCard label="In Production" value={inProduction} className="[&_.text-foreground]:text-blue-600" />
+        <MetricCard label="Total Value" value={formatCurrency(totalValue / 100)} />
+        <MetricCard label="Pending QC" value={orders.filter((o) => o.status === 'quality_check').length} className="[&_.text-foreground]:text-purple-600" />
       </div>
 
       <div className="rounded-xl border border-border bg-background overflow-hidden">
@@ -80,11 +74,11 @@ export default async function FabricationOrdersPage() {
                     <td className="px-4 py-3"><Link href={`/app/fabrication/${o.id}`} className="font-medium text-foreground hover:underline">{o.order_number}</Link></td>
                     <td className="px-4 py-3 text-text-secondary">{o.name}</td>
                     <td className="px-4 py-3 capitalize">{o.order_type}</td>
-                    <td className="px-4 py-3"><span className={`font-medium capitalize ${PRIORITY_COLORS[o.priority]}`}>{o.priority}</span></td>
+                    <td className="px-4 py-3"><StatusBadge status={o.priority} colorMap={TASK_PRIORITY_COLORS} /></td>
                     <td className="px-4 py-3 tabular-nums">{o.quantity}</td>
                     <td className="px-4 py-3 tabular-nums">{formatCurrency(o.total_cost_cents / 100)}</td>
                     <td className="px-4 py-3 text-text-secondary">{o.due_date ? new Date(o.due_date).toLocaleDateString() : '—'}</td>
-                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[o.status]}`}>{o.status.replace('_', ' ')}</span></td>
+                    <td className="px-4 py-3"><StatusBadge status={o.status} colorMap={FABRICATION_STATUS_COLORS} /></td>
                   </tr>
                 ))}
               </tbody>

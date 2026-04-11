@@ -7,8 +7,7 @@ import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
 import FormSelect from '@/components/ui/FormSelect';
 import Button from '@/components/ui/Button';
-import { createClient } from '@/lib/supabase/client';
-import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
+import Alert from '@/components/ui/Alert';
 
 interface AddMilestoneButtonProps {
   schedules: Array<{ id: string; name: string }>;
@@ -37,16 +36,19 @@ export default function AddMilestoneButton({ schedules }: AddMilestoneButtonProp
     }
 
     try {
-      const supabase = createClient();
-      const { error: insertError } = await supabase.from('schedule_milestones').insert({
-        schedule_id: scheduleId,
-        title,
-        due_at: new Date(dueAt).toISOString(),
-        status: 'pending',
+      const res = await fetch(`/api/production-schedules/${scheduleId}/milestones`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title,
+          due_at: new Date(dueAt).toISOString(),
+          status: 'pending',
+        }),
       });
 
-      if (insertError) {
-        setError(insertError.message);
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setError(data.error ?? 'Failed to create milestone.');
         setSaving(false);
         return;
       }
@@ -66,7 +68,7 @@ export default function AddMilestoneButton({ schedules }: AddMilestoneButtonProp
       <ModalShell title="Add Milestone" open={open} onClose={() => setOpen(false)}>
         <form onSubmit={handleSubmit} className="space-y-4 pt-2">
           {error && (
-            <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>
+            <Alert variant="error">{error}</Alert>
           )}
           <div>
             <FormLabel>Schedule *</FormLabel>

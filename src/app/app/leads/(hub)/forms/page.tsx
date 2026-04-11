@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import EmptyState from '@/components/ui/EmptyState';
+import StatusBadge, { GENERIC_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import LeadFormsHeader from '@/components/admin/leads/LeadFormsHeader';
 import LeadsHubTabs from '../../LeadsHubTabs';
 import PageHeader from '@/components/shared/PageHeader';
@@ -21,21 +22,11 @@ interface LeadForm {
 
 
 
-const STATUS_COLORS: Record<string, string> = {
-  active: 'bg-green-50 text-green-700',
-  draft: 'bg-bg-secondary text-text-muted',
-  archived: 'bg-red-50 text-red-700',
-};
-
 async function getLeadForms(): Promise<LeadForm[]> {
   try {
     const supabase = await createClient();
     const ctx = await resolveCurrentOrg();
     if (!ctx) throw new Error('No auth');
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) throw new Error('No auth');
     const { data: forms } = await supabase
       .from('lead_forms')
       .select()
@@ -129,13 +120,7 @@ export default async function LeadFormsPage() {
               <div className="min-w-0">
                 <div className="flex items-center gap-3">
                   <h3 className="text-sm font-medium text-foreground">{form.name}</h3>
-                  <span
-                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                      STATUS_COLORS[form.status] ?? 'bg-bg-secondary text-text-muted'
-                    }`}
-                  >
-                    {formatLabel(form.status)}
-                  </span>
+                  <StatusBadge status={form.status} colorMap={GENERIC_STATUS_COLORS} />
                 </div>
                 {form.description && (
                   <p className="mt-1 text-sm text-text-secondary">{form.description}</p>

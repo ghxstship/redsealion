@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
+import StatusBadge, { WORK_ORDER_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import WorkOrderActions from './WorkOrderActions';
 
 async function getWorkOrder(id: string) {
@@ -21,15 +22,6 @@ async function getWorkOrder(id: string) {
     return data;
   } catch { return null; }
 }
-
-const STATUS_COLORS: Record<string, string> = {
-  draft: 'bg-yellow-50 text-yellow-700',
-  dispatched: 'bg-blue-50 text-blue-700',
-  accepted: 'bg-indigo-50 text-indigo-700',
-  in_progress: 'bg-purple-50 text-purple-700',
-  completed: 'bg-green-50 text-green-700',
-  cancelled: 'bg-red-50 text-red-700',
-};
 
 const PRIORITY_COLORS: Record<string, string> = {
   low: 'text-green-600',
@@ -62,7 +54,7 @@ export default async function WorkOrderDetailPage({ params }: { params: Promise<
         <div className="rounded-xl border border-border bg-background p-6">
           <h3 className="text-sm font-semibold text-foreground mb-4">Details</h3>
           <dl className="space-y-3 text-sm">
-            <div className="flex justify-between"><dt className="text-text-muted">Status</dt><dd><span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[wo.status as string] ?? ''}`}>{wo.status as string}</span></dd></div>
+            <div className="flex justify-between"><dt className="text-text-muted">Status</dt><dd><StatusBadge status={wo.status as string} colorMap={WORK_ORDER_STATUS_COLORS} /></dd></div>
             <div className="flex justify-between"><dt className="text-text-muted">Priority</dt><dd className={`font-medium capitalize ${PRIORITY_COLORS[wo.priority as string] ?? ''}`}>{wo.priority as string}</dd></div>
             {event && <div className="flex justify-between"><dt className="text-text-muted">Event</dt><dd><Link href={`/app/events/${event.id}`} className="text-foreground hover:underline">{event.name}</Link></dd></div>}
             {proposal && <div className="flex justify-between"><dt className="text-text-muted">Proposal</dt><dd><Link href={`/app/proposals/${proposal.id}`} className="text-foreground hover:underline">{proposal.name}</Link></dd></div>}
@@ -83,7 +75,7 @@ export default async function WorkOrderDetailPage({ params }: { params: Promise<
             <div className="flex justify-between"><dt className="text-text-muted">Actual End</dt><dd className="text-foreground">{wo.actual_end ? new Date(wo.actual_end as string).toLocaleString() : '—'}</dd></div>
             <div className="flex justify-between"><dt className="text-text-muted">Dispatched At</dt><dd className="text-foreground">{wo.dispatched_at ? new Date(wo.dispatched_at as string).toLocaleString() : '—'}</dd></div>
             <div className="flex justify-between"><dt className="text-text-muted">Completed At</dt><dd className="text-foreground">{wo.completed_at ? new Date(wo.completed_at as string).toLocaleString() : '—'}</dd></div>
-            <div className="flex justify-between"><dt className="text-text-muted">Estimated Hours</dt><dd className="text-foreground">{wo.estimated_hours ? `${wo.estimated_hours}h` : '—'}</dd></div>
+            <div className="flex justify-between"><dt className="text-text-muted">Completed At</dt><dd className="text-foreground">{wo.completed_at ? new Date(wo.completed_at as string).toLocaleString() : '—'}</dd></div>
           </dl>
           {wo.completion_notes && <p className="mt-4 text-sm text-text-secondary border-t border-border pt-4"><strong>Completion Notes:</strong> {wo.completion_notes as string}</p>}
         </div>
@@ -108,7 +100,7 @@ export default async function WorkOrderDetailPage({ params }: { params: Promise<
                   <tr key={a.id as string} className="hover:bg-bg-secondary/50">
                     <td className="px-4 py-3 text-foreground">{crew?.full_name ?? '—'}</td>
                     <td className="px-4 py-3 text-text-secondary">{(a.role as string) ?? '—'}</td>
-                    <td className="px-4 py-3"><span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[a.status as string] ?? 'bg-gray-50 text-gray-700'}`}>{a.status as string}</span></td>
+                    <td className="px-4 py-3"><StatusBadge status={a.status as string} colorMap={WORK_ORDER_STATUS_COLORS} /></td>
                     <td className="px-4 py-3 text-text-muted text-xs">{a.assigned_at ? new Date(a.assigned_at as string).toLocaleDateString() : '—'}</td>
                   </tr>
                 );

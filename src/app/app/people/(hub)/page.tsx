@@ -5,7 +5,7 @@ import PeopleGrid from '@/components/admin/people/PeopleGrid';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PeopleHubTabs from '../PeopleHubTabs';
 import PageHeader from '@/components/shared/PageHeader';
-import Card from '@/components/ui/Card';
+import MetricCard from '@/components/ui/MetricCard';
 
 interface TeamMember {
   id: string;
@@ -68,18 +68,9 @@ export default async function PeoplePage() {
 
       {/* Stat cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-8">
-        <Card padding="default" className="px-5 py-5">
-          <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Total People</p>
-          <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground">{members.length}</p>
-        </Card>
-        <Card padding="default" className="px-5 py-5">
-          <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Roles</p>
-          <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground">{roleCount}</p>
-        </Card>
-        <Card padding="default" className="px-5 py-5">
-          <p className="text-xs font-medium uppercase tracking-wider text-text-muted">With Rate Cards</p>
-          <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground">{members.filter((m) => m.rate_card).length}</p>
-        </Card>
+        <MetricCard label="Total People" value={members.length} />
+        <MetricCard label="Roles" value={roleCount} />
+        <MetricCard label="With Rate Cards" value={members.filter((m) => m.rate_card).length} />
       </div>
 
 

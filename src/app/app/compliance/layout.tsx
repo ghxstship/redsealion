@@ -5,6 +5,8 @@ export const metadata: Metadata = {
   description: 'Track and manage compliance documents — COIs, licenses, permits, contracts, and certifications.',
 };
 
+import { RoleGate } from '@/components/shared/RoleGate';
+
 export default function ComplianceLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return <RoleGate resource="compliance">{children}</RoleGate>;
 }

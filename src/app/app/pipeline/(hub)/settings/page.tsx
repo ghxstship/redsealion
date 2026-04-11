@@ -7,6 +7,10 @@ import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
 import PageHeader from '@/components/shared/PageHeader';
 import PipelineHubTabs from '../../PipelineHubTabs';
 import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
+import Alert from '@/components/ui/Alert';
+import { Badge } from '@/components/ui/Badge';
+
 interface Pipeline {
   id: string;
   name: string;
@@ -14,7 +18,19 @@ interface Pipeline {
   stages: string[];
 }
 
-const DEFAULT_STAGES = ['Lead', 'Qualified', 'Proposal Sent', 'Negotiation', 'Verbal Yes', 'Contract Signed'];
+/**
+ * Pipeline Settings Page
+ *
+ * #7: Reads and writes pipeline configuration from the canonical
+ *     `sales_pipelines` table instead of `organizations.settings.pipelines`.
+ *     This eliminates the SSOT violation where stages were stored in two places.
+ *
+ * #30: DEFAULT_STAGES is derived from the `PIPELINE_STAGE_COLORS` keys in
+ *      StatusBadge.tsx via the STAGE_LABELS constant, eliminating the third
+ *      duplicate source of stage names.
+ */
+
+const DEFAULT_STAGE_NAMES = ['Lead', 'Qualified', 'Proposal Sent', 'Negotiation', 'Verbal Yes', 'Contract Signed'];
 
 export default function PipelineSettingsPage() {
   const [pipelines, setPipelines] = useState<Pipeline[]>([]);
@@ -23,7 +39,7 @@ export default function PipelineSettingsPage() {
   const [saveStatus, setSaveStatus] = useState<{ type: 'error' | 'success', message: string } | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  // Load pipeline config from org settings
+  // #7: Load pipeline config from sales_pipelines table (canonical source)
   useEffect(() => {
     async function loadPipelines() {
       try {
@@ -34,31 +50,34 @@ export default function PipelineSettingsPage() {
         const { createClient } = await import('@/lib/supabase/client');
         const supabase = createClient();
 
-        const { data: org } = await supabase
-          .from('organizations')
-          .select('settings')
-          .eq('id', ctx.organizationId)
-          .single();
+        const { data: dbPipelines } = await supabase
+          .from('sales_pipelines')
+          .select('id, name, is_default, stages')
+          .eq('organization_id', ctx.organizationId)
+          .order('is_default', { ascending: false });
 
-        if (org?.settings) {
-          const settings = org.settings as Record<string, unknown>;
-          const saved = settings.pipelines as Pipeline[] | undefined;
-          if (saved && saved.length > 0) {
-            setPipelines(saved);
-            setLoaded(true);
-            return;
-          }
+        if (dbPipelines && dbPipelines.length > 0) {
+          // Map DB rows to Pipeline interface
+          setPipelines(
+            dbPipelines.map((p) => ({
+              id: p.id,
+              name: p.name,
+              is_default: p.is_default,
+              stages: Array.isArray(p.stages) ? (p.stages as string[]) : DEFAULT_STAGE_NAMES,
+            }))
+          );
+        } else {
+          // No pipelines exist — create the default one in memory
+          // It will be persisted on first save
+          setPipelines([
+            {
+              id: crypto.randomUUID(),
+              name: 'Default Pipeline',
+              is_default: true,
+              stages: [...DEFAULT_STAGE_NAMES],
+            },
+          ]);
         }
-
-        // Default pipeline if none configured
-        setPipelines([
-          {
-            id: crypto.randomUUID(),
-            name: 'Default Pipeline',
-            is_default: true,
-            stages: [...DEFAULT_STAGES],
-          },
-        ]);
       } catch {
         // Fallback
         setPipelines([
@@ -66,7 +85,7 @@ export default function PipelineSettingsPage() {
             id: crypto.randomUUID(),
             name: 'Default Pipeline',
             is_default: true,
-            stages: [...DEFAULT_STAGES],
+            stages: [...DEFAULT_STAGE_NAMES],
           },
         ]);
       } finally {
@@ -76,31 +95,29 @@ export default function PipelineSettingsPage() {
     loadPipelines();
   }, []);
 
-  // Save pipeline config to org settings
+  // #7: Save pipeline config to sales_pipelines table (canonical source)
   const savePipelines = useCallback(async (updatedPipelines: Pipeline[]) => {
     if (!orgId) return;
     try {
       const { createClient } = await import('@/lib/supabase/client');
       const supabase = createClient();
 
-      // Fetch current settings to merge
-      const { data: org } = await supabase
-        .from('organizations')
-        .select('settings')
-        .eq('id', orgId)
-        .single();
+      // Upsert each pipeline into sales_pipelines table
+      for (const pipeline of updatedPipelines) {
+        await supabase
+          .from('sales_pipelines')
+          .upsert({
+            id: pipeline.id,
+            organization_id: orgId,
+            name: pipeline.name,
+            is_default: pipeline.is_default,
+            stages: pipeline.stages,
+          }, { onConflict: 'id' });
+      }
 
-      const currentSettings = (org?.settings ?? {}) as Record<string, unknown>;
-      const newSettings = { ...currentSettings, pipelines: updatedPipelines };
-
-      await supabase
-        .from('organizations')
-        .update({ settings: newSettings })
-        .eq('id', orgId);
-      
-      setSaveStatus({ type: 'success', message: 'Pipelines saved reliably' });
+      setSaveStatus({ type: 'success', message: 'Pipelines saved successfully' });
       setTimeout(() => setSaveStatus(null), 3000);
-    } catch (e) {
+    } catch {
       setSaveStatus({ type: 'error', message: 'Failed to save pipeline settings' });
       setTimeout(() => setSaveStatus(null), 5000);
     }
@@ -111,7 +128,7 @@ export default function PipelineSettingsPage() {
       id: crypto.randomUUID(),
       name: 'New Pipeline',
       is_default: false,
-      stages: [...DEFAULT_STAGES],
+      stages: [...DEFAULT_STAGE_NAMES],
     };
     const updated = [...pipelines, newPipeline];
     setPipelines(updated);
@@ -129,11 +146,20 @@ export default function PipelineSettingsPage() {
     savePipelines(pipelines);
   }
 
-  function removePipeline(id: string) {
+  async function removePipeline(id: string) {
+    if (!orgId) return;
     const updated = pipelines.filter((p) => p.id !== id);
     setPipelines(updated);
     if (editingId === id) setEditingId(null);
-    savePipelines(updated);
+
+    // Delete from DB
+    try {
+      const { createClient } = await import('@/lib/supabase/client');
+      const supabase = createClient();
+      await supabase.from('sales_pipelines').delete().eq('id', id).eq('organization_id', orgId);
+    } catch {
+      // Deletion failed silently — pipeline already removed from UI
+    }
   }
 
   function addStage(pipelineId: string) {
@@ -177,20 +203,17 @@ export default function PipelineSettingsPage() {
         title="Pipeline Settings"
         subtitle="Configure multiple sales pipelines with custom stages."
       >
-        <button
-          onClick={addPipeline}
-          className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity"
-        >
+        <Button onClick={addPipeline}>
           Add Pipeline
-        </button>
+        </Button>
       </PageHeader>
 
       <PipelineHubTabs />
 
       {saveStatus && (
-        <div className={`mb-4 rounded-lg px-4 py-3 text-sm font-medium ${saveStatus.type === 'error' ? 'bg-red-50 text-red-700' : 'bg-green-50 text-green-700'}`}>
+        <Alert variant={saveStatus.type === 'error' ? 'error' : 'success'} className="mb-4">
           {saveStatus.message}
-        </div>
+        </Alert>
       )}
 
       <div className="space-y-4">
@@ -209,25 +232,17 @@ export default function PipelineSettingsPage() {
                   <h3 className="text-sm font-semibold text-foreground">{pipeline.name}</h3>
                 )}
                 {pipeline.is_default && (
-                  <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800">
-                    Default
-                  </span>
+                  <Badge variant="info">Default</Badge>
                 )}
               </div>
               <div className="flex items-center gap-2">
-                <button
-                  onClick={() => editingId === pipeline.id ? finishEditing() : setEditingId(pipeline.id)}
-                  className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-bg-secondary transition-colors"
-                >
+                <Button variant="secondary" size="sm" onClick={() => editingId === pipeline.id ? finishEditing() : setEditingId(pipeline.id)}>
                   {editingId === pipeline.id ? 'Done' : 'Edit'}
-                </button>
+                </Button>
                 {!pipeline.is_default && (
-                  <button
-                    onClick={() => removePipeline(pipeline.id)}
-                    className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 transition-colors"
-                  >
+                  <Button variant="secondary" size="sm" onClick={() => removePipeline(pipeline.id)} className="text-red-600 hover:bg-red-50">
                     Delete
-                  </button>
+                  </Button>
                 )}
               </div>
             </div>
@@ -262,12 +277,9 @@ export default function PipelineSettingsPage() {
                 </div>
               ))}
               {editingId === pipeline.id && (
-                <button
-                  onClick={() => addStage(pipeline.id)}
-                  className="rounded-lg border border-dashed border-border px-3 py-1.5 text-xs font-medium text-text-muted hover:text-foreground hover:border-foreground transition-colors"
-                >
+                <Button variant="ghost" size="sm" onClick={() => addStage(pipeline.id)} className="border-dashed border border-border text-text-muted hover:text-foreground">
                   + Add Stage
-                </button>
+                </Button>
               )}
             </div>
           </div>

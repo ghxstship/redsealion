@@ -5,40 +5,11 @@ import { User, Upload } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import Skeleton from '@/components/ui/Skeleton';
+import FormInput from '@/components/ui/FormInput';
+import FormLabel from '@/components/ui/FormLabel';
+import Alert from '@/components/ui/Alert';
 
-function InputField({
-  label,
-  value,
-  onChange,
-  type = 'text',
-  placeholder,
-  readOnly = false,
-}: {
-  label: string;
-  value: string;
-  onChange?: (v: string) => void;
-  type?: string;
-  placeholder?: string;
-  readOnly?: boolean;
-}) {
-  return (
-    <div>
-      <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
-        {label}
-      </label>
-      <input
-        type={type}
-        value={value}
-        onChange={(e) => onChange?.(e.target.value)}
-        placeholder={placeholder}
-        readOnly={readOnly}
-        className={`w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20 ${
-          readOnly ? 'bg-bg-secondary text-text-secondary cursor-not-allowed' : ''
-        }`}
-      />
-    </div>
-  );
-}
+
 
 export default function ProfileSettingsPage() {
   const [fullName, setFullName] = useState('');
@@ -110,10 +81,10 @@ export default function ProfileSettingsPage() {
       <Card>
         <h3 className="text-sm font-semibold text-foreground mb-5">Personal Information</h3>
         <div className="space-y-5">
-          <InputField label="Full Name" value={fullName} onChange={setFullName} placeholder="Your full name" />
-          <InputField label="Email" value={email} readOnly placeholder="Email address (read-only)" />
-          <InputField label="Phone" value={phone} onChange={setPhone} type="tel" placeholder="+1 (555) 000-0000" />
-          <InputField label="Title" value={title} onChange={setTitle} placeholder="e.g. Project Manager" />
+          <div><FormLabel>Full Name</FormLabel><FormInput value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Your full name" /></div>
+          <div><FormLabel>Email</FormLabel><FormInput value={email} readOnly placeholder="Email address (read-only)" className="bg-bg-secondary text-text-secondary cursor-not-allowed" /></div>
+          <div><FormLabel>Phone</FormLabel><FormInput value={phone} onChange={(e) => setPhone(e.target.value)} type="tel" placeholder="+1 (555) 000-0000" /></div>
+          <div><FormLabel>Title</FormLabel><FormInput value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Project Manager" /></div>
         </div>
       </Card>
 
@@ -141,16 +112,16 @@ export default function ProfileSettingsPage() {
       <Card>
         <h3 className="text-sm font-semibold text-foreground mb-5">Password</h3>
         <div className="space-y-5">
-          <InputField label="Current Password" value={currentPassword} onChange={setCurrentPassword} type="password" placeholder="Enter current password" />
-          <InputField label="New Password" value={newPassword} onChange={setNewPassword} type="password" placeholder="Enter new password" />
-          <InputField label="Confirm Password" value={confirmPassword} onChange={setConfirmPassword} type="password" placeholder="Confirm new password" />
+          <div><FormLabel>Current Password</FormLabel><FormInput value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} type="password" placeholder="Enter current password" /></div>
+          <div><FormLabel>New Password</FormLabel><FormInput value={newPassword} onChange={(e) => setNewPassword(e.target.value)} type="password" placeholder="Enter new password" /></div>
+          <div><FormLabel>Confirm Password</FormLabel><FormInput value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} type="password" placeholder="Confirm new password" /></div>
         </div>
       </Card>
 
       {/* Save */}
       <div className="flex items-center justify-end gap-3">
         {saved && (
-          <span className="text-sm text-green-600 font-medium">Profile updated</span>
+          <Alert variant="success">Profile updated</Alert>
         )}
         <Button onClick={handleSave} disabled={saving}>
           {saving ? 'Saving...' : 'Save Changes'}

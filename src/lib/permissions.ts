@@ -23,7 +23,12 @@ export type PermissionResource =
   | 'advances' | 'activations' | 'events' | 'locations'
   | 'work_orders' | 'resources' | 'resource_scheduling'
   | 'ai_drafting' | 'email_campaigns' | 'referral_program'
-  | 'purchase_orders' | 'vendors';
+  | 'purchase_orders' | 'vendors'
+  | 'dispatch' | 'fabrication' | 'rentals' | 'projects' | 'goals'
+  | 'portfolio' | 'compliance' | 'marketplace' | 'files'
+  | 'schedule' | 'calendar' | 'campaigns' | 'templates'
+  | 'terms' | 'profitability' | 'roadmap' | 'workloads'
+  | 'email_inbox';
 
 export const ALL_RESOURCES: PermissionResource[] = [
   'proposals', 'pipeline', 'clients', 'invoices', 'budgets',
@@ -34,6 +39,11 @@ export const ALL_RESOURCES: PermissionResource[] = [
   'work_orders', 'resources', 'resource_scheduling',
   'ai_drafting', 'email_campaigns', 'referral_program',
   'purchase_orders', 'vendors',
+  'dispatch', 'fabrication', 'rentals', 'projects', 'goals',
+  'portfolio', 'compliance', 'marketplace', 'files',
+  'schedule', 'calendar', 'campaigns', 'templates',
+  'email_inbox',
+  'terms', 'profitability', 'roadmap', 'workloads',
 ];
 
 export type PermissionAction = 'view' | 'create' | 'edit' | 'delete';
@@ -191,6 +201,14 @@ export const DEFAULT_PERMISSIONS: Record<OrganizationRole, Record<string, boolea
     ...noPerm(['email_campaigns']),
     // referral program — none
     ...noPerm(['referral_program']),
+    // New resources — controller view access
+    ...viewOnly(['dispatch', 'fabrication', 'rentals', 'projects', 'schedule', 'calendar']),
+    ...viewOnly(['portfolio', 'compliance', 'marketplace', 'files', 'goals']),
+    ...viewOnly(['campaigns', 'templates', 'terms', 'roadmap', 'workloads']),
+    ...allActions(['profitability']),
+    ...viewOnly(['purchase_orders']),
+    ...viewOnly(['vendors']),
+    ...viewOnly(['email_inbox']),
   },
 
   // ── manager — project management (no billing, no org settings) ──
@@ -231,6 +249,13 @@ export const DEFAULT_PERMISSIONS: Record<OrganizationRole, Record<string, boolea
     ...viewCreate(['email_campaigns']),
     // referral program — view only
     ...viewOnly(['referral_program']),
+    // New resources — manager full operational access
+    ...viewCreate(['dispatch', 'fabrication', 'rentals', 'projects', 'goals']),
+    ...viewCreate(['portfolio', 'compliance', 'files', 'schedule', 'calendar']),
+    ...viewCreate(['campaigns', 'templates', 'terms', 'roadmap', 'workloads']),
+    ...viewOnly(['profitability', 'marketplace']),
+    ...viewCreate(['purchase_orders', 'vendors']),
+    ...viewCreate(['email_inbox']),
   },
 
   // ── team_member — standard internal (design, fabrication, general) ──
@@ -298,6 +323,12 @@ export const DEFAULT_PERMISSIONS: Record<OrganizationRole, Record<string, boolea
     ...noPerm(['email_campaigns']),
     // referral program — none
     ...noPerm(['referral_program']),
+    // New resources — team_member limited access
+    ...viewOnly(['dispatch', 'fabrication', 'projects', 'schedule', 'calendar']),
+    ...viewOnly(['portfolio', 'files', 'goals', 'roadmap', 'workloads']),
+    ...noPerm(['rentals', 'compliance', 'marketplace', 'campaigns', 'templates', 'terms', 'profitability']),
+    ...noPerm(['purchase_orders', 'vendors']),
+    ...viewOnly(['email_inbox']),
   },
 
   // ── client — external, portal access for proposals/invoices/approvals ──

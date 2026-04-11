@@ -3,6 +3,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import CampaignsHubTabs from '../../CampaignsHubTabs';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getAudiences() {
   try {
@@ -34,10 +35,7 @@ export default async function AudiencesPage() {
           { label: 'Leads', value: counts.leads, color: 'text-purple-600' },
           { label: 'Crew', value: counts.crew, color: 'text-green-600' },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
-            <p className="text-xs text-text-muted">{stat.label}</p>
-            <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
-          </div>
+          <MetricCard key={stat.label} label={stat.label} value={stat.value} className={stat.color ? `[&_.text-foreground]:${stat.color}` : ''} />
         ))}
       </div>
 

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
+import FormInput from '@/components/ui/FormInput';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -89,14 +90,14 @@ export default function ForgotPasswordPage() {
           >
             Email
           </label>
-          <input
+          <FormInput
             id="email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@company.com"
             required
-            className="w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500"
+            inputSize="default"
           />
         </div>
 

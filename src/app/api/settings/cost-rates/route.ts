@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
+import { requireAdmin } from '@/lib/api/auth-guard';
 
 export async function GET() {
   const perm = await checkPermission('settings', 'view');
@@ -19,9 +20,9 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  const perm = await checkPermission('settings', 'edit');
-  if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const authMsg = await requireAdmin();
+  if (authMsg.denied) return authMsg.denied;
+  const perm = { organizationId: authMsg.ctx.organizationId };
 
   const body = await request.json().catch(() => ({}));
   const { role, hourly_cost, hourly_billable } = body as {

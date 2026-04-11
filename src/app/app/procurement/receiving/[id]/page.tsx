@@ -3,6 +3,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import Link from 'next/link';
+import StatusBadge from '@/components/ui/StatusBadge';
 
 async function getReceipt(id: string) {
   const supabase = await createClient();
@@ -31,7 +32,7 @@ export default async function ReceiptDetailPage({ params }: { params: Promise<{ 
 
   if (!receipt) {
     return (
-      <TierGate feature="profitability">
+      <TierGate feature="procurement">
         <div className="px-8 py-16 text-center">
           <p className="text-sm text-text-secondary">Receipt not found.</p>
           <Link href="/app/procurement/receiving" className="mt-4 text-sm text-brand-primary hover:underline">← Back to Receiving</Link>
@@ -50,7 +51,7 @@ export default async function ReceiptDetailPage({ params }: { params: Promise<{ 
   const poLineItems = po?.purchase_order_line_items ?? [];
 
   return (
-    <TierGate feature="profitability">
+    <TierGate feature="procurement">
       <div className="mb-4">
         <Link href="/app/procurement/receiving" className="text-sm text-brand-primary hover:underline">
           ← Back to Receiving
@@ -66,9 +67,7 @@ export default async function ReceiptDetailPage({ params }: { params: Promise<{ 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">
         <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Status</p>
-          <span className={`mt-1 inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[receipt.status] ?? 'bg-bg-secondary text-text-secondary'}`}>
-            {receipt.status}
-          </span>
+          <StatusBadge status={receipt.status} colorMap={STATUS_COLORS} />
         </div>
         <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">PO Number</p>
@@ -113,9 +112,7 @@ export default async function ReceiptDetailPage({ params }: { params: Promise<{ 
                       <td className="px-4 py-3 tabular-nums">{li.quantity}</td>
                       <td className="px-4 py-3 tabular-nums">{li.received_quantity}</td>
                       <td className="px-4 py-3">
-                        <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${fulfilled ? 'bg-green-50 text-green-700' : 'bg-yellow-50 text-yellow-700'}`}>
-                          {fulfilled ? 'Complete' : 'Pending'}
-                        </span>
+                        <StatusBadge status={fulfilled ? 'complete' : 'pending'} colorMap={{complete: 'bg-green-50 text-green-700', pending: 'bg-yellow-50 text-yellow-700'}} />
                       </td>
                     </tr>
                   );

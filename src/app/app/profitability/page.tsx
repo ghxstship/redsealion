@@ -3,8 +3,10 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import { formatCurrency } from '@/lib/utils';
 import PageHeader from '@/components/shared/PageHeader';
+import { PROFITABILITY_ELIGIBLE_STATUSES } from '@/lib/constants/project';
 import Card from '@/components/ui/Card';
 import Link from 'next/link';
+import ProfitabilityExportButton from './ProfitabilityExportButton';
 
 interface ProfitRow {
   id: string;
@@ -26,7 +28,7 @@ async function getOrgProfitability(): Promise<ProfitRow[]> {
       .from('proposals')
       .select('id, name, total_value, client_id, clients(company_name)')
       .eq('organization_id', ctx.organizationId)
-      .in('status', ['approved', 'in_production', 'active', 'complete'])
+      .in('status', [...PROFITABILITY_ELIGIBLE_STATUSES])
       .order('created_at', { ascending: false });
 
     if (!proposals || proposals.length === 0) return [];
@@ -73,7 +75,9 @@ export default async function ProfitabilityDashboardPage() {
 
   return (
     <TierGate feature="profitability">
-      <PageHeader title="Profitability" subtitle="Org-wide profitability across all projects." />
+      <PageHeader title="Profitability" subtitle="Org-wide profitability across all projects.">
+        <ProfitabilityExportButton projects={projects} />
+      </PageHeader>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-4 mb-8">
         <Card padding="default" className="px-5 py-5">

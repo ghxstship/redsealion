@@ -78,6 +78,10 @@ export default async function TasksPage() {
 
       <TasksHubTabs />
 
+      {tasks.length >= 200 && (
+        <p className="text-xs text-text-muted mb-4">Showing first 200 tasks. Use filters to narrow results.</p>
+      )}
+
       {/* Interactive table with search, filter, bulk actions, export */}
       <TasksTable tasks={tasks} />
     </TierGate>

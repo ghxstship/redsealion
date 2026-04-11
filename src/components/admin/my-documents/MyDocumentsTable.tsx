@@ -5,6 +5,8 @@ import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import { DownloadCloud, Trash2, Upload, File, Loader2 } from 'lucide-react';
 import EmptyState from '@/components/ui/EmptyState';
+import ConfirmDialog from '@/components/shared/ConfirmDialog';
+import Alert from '@/components/ui/Alert';
 
 export interface MyDocumentData {
   id: string;
@@ -24,6 +26,7 @@ export default function MyDocumentsTable({ initialFiles }: MyDocumentsTableProps
   const [files, setFiles] = useState<MyDocumentData[]>(initialFiles);
   const [isUploading, setIsUploading] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
   const [filterCategory, setFilterCategory] = useState<string>('all');
 
   const categories = ['all', ...Array.from(new Set(files.map(f => f.category)))];
@@ -47,11 +50,11 @@ export default function MyDocumentsTable({ initialFiles }: MyDocumentsTableProps
         const { data } = await res.json();
         setFiles(prev => [data, ...prev]);
       } else {
-        alert('Upload failed');
+        setError('Upload failed');
       }
     } catch (err) {
       console.error(err);
-      alert('Upload failed');
+      setError('Upload failed');
     } finally {
       setIsUploading(false);
       e.target.value = '';
@@ -71,17 +74,15 @@ export default function MyDocumentsTable({ initialFiles }: MyDocumentsTableProps
         a.click();
         a.remove();
       } else {
-        alert('Download failed');
+        setError('Download failed');
       }
     } catch (err) {
       console.error(err);
-      alert('Download failed');
+      setError('Download failed');
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this file?')) return;
-    
     setDeletingId(id);
     try {
       // API files route does soft-delete if we patch, or hard delete on delete
@@ -89,13 +90,14 @@ export default function MyDocumentsTable({ initialFiles }: MyDocumentsTableProps
       if (res.ok) {
         setFiles(prev => prev.filter(f => f.id !== id));
       } else {
-        alert('Delete failed');
+        setError('Delete failed');
       }
     } catch (err) {
       console.error(err);
-      alert('Delete failed');
+      setError('Delete failed');
     } finally {
       setDeletingId(null);
+      setShowDeleteConfirm(null);
     }
   };
 
@@ -129,6 +131,7 @@ export default function MyDocumentsTable({ initialFiles }: MyDocumentsTableProps
   }
 
   return (
+    <>
     <Card className="overflow-hidden">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-border bg-bg-secondary/50 px-6 py-4 gap-4">
         <div className="flex items-center space-x-2">
@@ -206,7 +209,7 @@ export default function MyDocumentsTable({ initialFiles }: MyDocumentsTableProps
                       variant="danger" 
                       size="sm" 
                       disabled={deletingId === file.id}
-                      onClick={() => handleDelete(file.id)}
+                      onClick={() => setShowDeleteConfirm(file.id)}
                     >
                       {deletingId === file.id ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
                     </Button>
@@ -218,5 +221,18 @@ export default function MyDocumentsTable({ initialFiles }: MyDocumentsTableProps
         </table>
       </div>
     </Card>
+
+    {showDeleteConfirm && (
+      <ConfirmDialog
+        open
+        title="Delete File"
+        message="Are you sure you want to delete this file? This action cannot be undone."
+        confirmLabel="Delete"
+        variant="danger"
+        onConfirm={() => handleDelete(showDeleteConfirm)}
+        onCancel={() => setShowDeleteConfirm(null)}
+      />
+    )}
+    </>
   );
 }

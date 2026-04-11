@@ -3,6 +3,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { Check } from 'lucide-react';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
+import StatusBadge, { PROJECT_STATUS_UPDATE_COLORS } from '@/components/ui/StatusBadge';
 
 /**
  * Client-facing project dashboard — a read-only view clients see
@@ -91,12 +92,7 @@ async function getPortalProject(projectId: string): Promise<PortalProjectData | 
   }
 }
 
-const statusColors: Record<string, string> = {
-  on_track: 'bg-green-100 text-green-700',
-  at_risk: 'bg-amber-100 text-amber-700',
-  off_track: 'bg-red-100 text-red-700',
-  completed: 'bg-blue-100 text-blue-700',
-};
+
 
 export default async function PortalProjectPage({
   params,
@@ -193,13 +189,7 @@ export default async function PortalProjectPage({
               {project.recentUpdates.map((update, idx) => (
                 <div key={idx} className="border-l-2 border-border pl-4">
                   <div className="flex items-center gap-2 mb-1">
-                    <span
-                      className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-                        statusColors[update.status] ?? 'bg-bg-secondary text-text-muted'
-                      }`}
-                    >
-                      {update.status.replace(/_/g, ' ')}
-                    </span>
+                    <StatusBadge status={update.status} colorMap={PROJECT_STATUS_UPDATE_COLORS} />
                     <span className="text-[11px] text-text-muted">
                       {new Date(update.created_at).toLocaleDateString('en-US', {
                         month: 'short',

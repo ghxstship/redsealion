@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
+import Alert from '@/components/ui/Alert';
 
 const STATUS_TRANSITIONS: Record<string, Array<{ label: string; next: string; variant: 'primary' | 'secondary' | 'danger' }>> = {
   draft: [
@@ -69,7 +70,7 @@ export default function RentalStatusActions({ orderId, currentStatus }: Props) {
   return (
     <div className="space-y-3">
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>
+        <Alert variant="error">{error}</Alert>
       )}
       <p className="text-xs text-text-muted mb-2">
         Transition this order to the next stage:

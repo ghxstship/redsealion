@@ -65,7 +65,7 @@ export default async function ProjectDetailPage({
   if (!project) notFound();
 
   return (
-    <TierGate feature="proposals">
+    <TierGate feature="projects">
       <ProjectDetailClient project={project} />
     </TierGate>
   );

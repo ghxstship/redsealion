@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import FormInput from '@/components/ui/FormInput';
 
 function EyeIcon() {
   return (
@@ -219,7 +220,7 @@ export default function ResetPasswordPage() {
             </label>
             {/* L-02: Password with show/hide toggle */}
             <div className="relative">
-              <input
+              <FormInput
                 id="password"
                 type={showPassword ? 'text' : 'password'}
                 value={password}
@@ -227,7 +228,7 @@ export default function ResetPasswordPage() {
                 placeholder={`At least ${policy.password_min_length} characters`}
                 required
                 minLength={policy.password_min_length}
-                className="w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 pr-10 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500"
+                className="pr-10"
               />
               <button
                 type="button"
@@ -248,7 +249,7 @@ export default function ResetPasswordPage() {
               Confirm password
             </label>
             <div className="relative">
-              <input
+              <FormInput
                 id="confirm"
                 type={showConfirm ? 'text' : 'password'}
                 value={confirm}
@@ -256,7 +257,7 @@ export default function ResetPasswordPage() {
                 placeholder="Re-enter your new password"
                 required
                 minLength={policy.password_min_length}
-                className="w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 pr-10 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500"
+                className="pr-10"
               />
               <button
                 type="button"

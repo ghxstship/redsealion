@@ -7,8 +7,10 @@ import PageHeader from '@/components/shared/PageHeader';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
 import FormSelect from '@/components/ui/FormSelect';
+import { PROJECT_STATUSES, PROJECT_VISIBILITY } from '@/lib/constants/project';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
+import Alert from '@/components/ui/Alert';
 
 export default function NewProjectPage() {
   const router = useRouter();
@@ -55,7 +57,7 @@ export default function NewProjectPage() {
   }
 
   return (
-    <TierGate feature="proposals">
+    <TierGate feature="projects">
       <div className="mb-4">
         <Link href="/app/projects" className="text-sm text-text-muted hover:text-foreground mb-2 inline-block">
           &larr; Back to Projects
@@ -64,7 +66,7 @@ export default function NewProjectPage() {
       </div>
 
       {error && (
-        <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
+        <Alert variant="error">{error}</Alert>
       )}
 
       <div className="max-w-2xl">
@@ -80,25 +82,24 @@ export default function NewProjectPage() {
                 name="description"
                 rows={3}
                 placeholder="Brief project description..."
-                className="w-full flex rounded-lg border border-border bg-input px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="w-full rounded-lg border border-border bg-input px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none"
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <FormLabel>Status</FormLabel>
                 <FormSelect name="status" defaultValue="planning">
-                  <option value="planning">Planning</option>
-                  <option value="active">Active</option>
-                  <option value="on_hold">On Hold</option>
-                  <option value="completed">Completed</option>
+                  {PROJECT_STATUSES.filter(s => !['archived', 'in_progress'].includes(s.value)).map((s) => (
+                    <option key={s.value} value={s.value}>{s.label}</option>
+                  ))}
                 </FormSelect>
               </div>
               <div>
                 <FormLabel>Visibility</FormLabel>
                 <FormSelect name="visibility" defaultValue="internal">
-                  <option value="internal">Internal</option>
-                  <option value="client">Client Visible</option>
-                  <option value="public">Public</option>
+                  {PROJECT_VISIBILITY.map((v) => (
+                    <option key={v.value} value={v.value}>{v.label}</option>
+                  ))}
                 </FormSelect>
               </div>
             </div>

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
+import StatusBadge from '@/components/ui/StatusBadge';
 
 interface AutomationRun {
   id: string;
@@ -159,9 +160,7 @@ export default function AutomationsConfigPage() {
                   <td className="py-3 text-foreground font-medium">{run.name}</td>
                   <td className="py-3 text-text-secondary font-mono text-xs">{run.trigger}</td>
                   <td className="py-3">
-                    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${statusBadge[run.status]}`}>
-                      {run.status}
-                    </span>
+                    <StatusBadge status={run.status} colorMap={statusBadge} />
                   </td>
                   <td className="py-3 text-text-secondary">{run.duration}</td>
                   <td className="py-3 text-text-secondary">{run.timestamp}</td>

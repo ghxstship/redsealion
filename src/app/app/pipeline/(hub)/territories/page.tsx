@@ -4,6 +4,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import { formatCurrency } from '@/lib/utils';
 import PipelineHubTabs from '../../PipelineHubTabs';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getTerritoryData() {
   try {
@@ -47,10 +48,7 @@ export default async function TerritoriesPage() {
           { label: 'Total Deals', value: deals.length },
           { label: 'Pipeline Value', value: formatCurrency(totalValue), color: 'text-green-600' },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
-            <p className="text-xs text-text-muted">{stat.label}</p>
-            <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
-          </div>
+          <MetricCard key={stat.label} label={stat.label} value={stat.value} className={stat.color ? `[&_.text-foreground]:${stat.color}` : ''} />
         ))}
       </div>
 

@@ -6,14 +6,47 @@ import Link from 'next/link';
 import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
+import Alert from '@/components/ui/Alert';
+import FormInput from '@/components/ui/FormInput';
+import FormTextarea from '@/components/ui/FormTextarea';
+import StatusBadge, { TASK_PRIORITY_COLORS, BID_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import { toast } from 'react-hot-toast';
+
+/** Typed interface for the work order detail */
+interface WorkOrderDetail {
+  id: string;
+  title: string;
+  wo_number: string;
+  description: string | null;
+  priority: string;
+  budget_range: string | null;
+  bidding_deadline: string | null;
+  scheduled_start: string | null;
+  scheduled_end: string | null;
+  location_name: string | null;
+  location_address: string | null;
+  is_public_board: boolean;
+  deleted_at: string | null;
+}
+
+/** Typed interface for a bid */
+interface BidRecord {
+  id: string;
+  proposed_amount: number;
+  proposed_start: string | null;
+  proposed_end: string | null;
+  notes: string | null;
+  status: string;
+  crew_profile_id: string;
+  crew_profiles?: { id: string };
+}
 
 export default function MarketplaceJobPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
   
-  const [wo, setWo] = useState<any>(null);
-  const [existingBid, setExistingBid] = useState<any>(null);
+  const [wo, setWo] = useState<WorkOrderDetail | null>(null);
+  const [existingBid, setExistingBid] = useState<BidRecord | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -150,11 +183,11 @@ export default function MarketplaceJobPage({ params }: { params: Promise<{ id: s
   if (loading) {
     return (
       <div className="animate-pulse space-y-6">
-        <div className="h-7 w-48 rounded bg-zinc-200" />
-        <div className="h-4 w-72 rounded bg-zinc-100" />
+        <div className="h-7 w-48 rounded bg-bg-secondary" />
+        <div className="h-4 w-72 rounded bg-bg-tertiary/50" />
         <div className="grid gap-6 md:grid-cols-2">
-          <div className="h-64 rounded-xl bg-zinc-100" />
-          <div className="h-64 rounded-xl bg-zinc-100" />
+          <div className="h-64 rounded-xl bg-bg-tertiary/50" />
+          <div className="h-64 rounded-xl bg-bg-tertiary/50" />
         </div>
       </div>
     );
@@ -163,18 +196,18 @@ export default function MarketplaceJobPage({ params }: { params: Promise<{ id: s
   if (errorMsg && !wo) {
     return (
       <div className="p-8">
-        <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-center max-w-lg mx-auto">
-          <p className="text-red-700 font-medium mb-4">{errorMsg}</p>
+        <Alert variant="error" className="text-center max-w-lg mx-auto">
+          <p className="font-medium mb-4">{errorMsg}</p>
           <Link href="/app/marketplace" className="text-sm font-medium text-blue-600 hover:underline">
             &larr; Back to Marketplace
           </Link>
-        </div>
+        </Alert>
       </div>
     );
   }
 
   const deadlinePassed = wo?.bidding_deadline && new Date() > new Date(wo.bidding_deadline);
-  const inputClass = "w-full rounded-lg border border-border bg-card px-3 py-2 text-sm focus:outline-none focus:border-foreground/30";
+  const inputClass = "w-full"; // FormInput/FormTextarea handle styling canonically
   const canSubmitNewBid = !existingBid || existingBid.status === 'withdrawn';
   const canEditBid = existingBid && existingBid.status === 'pending';
 
@@ -184,43 +217,39 @@ export default function MarketplaceJobPage({ params }: { params: Promise<{ id: s
       <form onSubmit={submitBid} className={`space-y-4 ${isResubmit ? 'border-t border-border pt-4 mt-4' : ''}`}>
         <div>
           <label className="block text-xs font-medium text-text-muted mb-1">Proposed Amount ($)</label>
-          <input 
+          <FormInput 
             type="number" 
             step="0.01"
             required
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            className={inputClass}
             placeholder="e.g. 5000"
           />
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-xs font-medium text-text-muted mb-1">Proposed Start (Optional)</label>
-            <input
+            <FormInput
               type="datetime-local"
               value={proposedStart}
               onChange={(e) => setProposedStart(e.target.value)}
-              className={inputClass}
             />
           </div>
           <div>
             <label className="block text-xs font-medium text-text-muted mb-1">Proposed End (Optional)</label>
-            <input
+            <FormInput
               type="datetime-local"
               value={proposedEnd}
               onChange={(e) => setProposedEnd(e.target.value)}
-              className={inputClass}
             />
           </div>
         </div>
         <div>
           <label className="block text-xs font-medium text-text-muted mb-1">Notes / Terms (Optional)</label>
-          <textarea 
+          <FormTextarea 
             rows={3}
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            className={inputClass + " resize-none"}
             placeholder="Any conditions or timeline constraints..."
           />
         </div>
@@ -275,14 +304,7 @@ export default function MarketplaceJobPage({ params }: { params: Promise<{ id: s
             <div>
               <dt className="text-text-muted mb-1">Priority</dt>
               <dd>
-                <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                  wo.priority === 'urgent' ? 'bg-red-50 text-red-700' :
-                  wo.priority === 'high' ? 'bg-orange-50 text-orange-700' :
-                  wo.priority === 'medium' ? 'bg-blue-50 text-blue-700' :
-                  'bg-bg-secondary text-text-muted'
-                }`}>
-                  {wo.priority?.charAt(0).toUpperCase() + wo.priority?.slice(1)}
-                </span>
+                <StatusBadge status={wo.priority} colorMap={TASK_PRIORITY_COLORS} />
               </dd>
             </div>
             <div>
@@ -313,9 +335,7 @@ export default function MarketplaceJobPage({ params }: { params: Promise<{ id: s
           <h3 className="text-sm font-semibold mb-4">Your Proposal</h3>
           
           {errorMsg && (
-            <div className="mb-6 p-3 rounded-lg bg-red-50 text-red-700 text-sm border border-red-200">
-              {errorMsg}
-            </div>
+            <Alert variant="error" className="mb-6">{errorMsg}</Alert>
           )}
 
           {existingBid && !editingBid ? (
@@ -325,10 +345,7 @@ export default function MarketplaceJobPage({ params }: { params: Promise<{ id: s
                   <div>
                     <p className="text-xs text-text-muted uppercase tracking-wider mb-1">Current Status</p>
                     <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                      existingBid.status === 'accepted' ? 'bg-green-100 text-green-800' : 
-                      existingBid.status === 'rejected' ? 'bg-red-100 text-red-800' : 
-                      existingBid.status === 'withdrawn' ? 'bg-gray-100 text-gray-800' : 
-                      'bg-blue-100 text-blue-800'
+                      BID_STATUS_COLORS[existingBid.status] || 'bg-blue-100 text-blue-800'
                     }`}>
                       {existingBid.status.toUpperCase()}
                     </span>

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
+import { LOCATION_TYPE_ICONS } from '@/components/ui/StatusBadge';
 
 async function getLocation(id: string) {
   try {
@@ -26,20 +27,7 @@ async function getLocation(id: string) {
   } catch { return null; }
 }
 
-const TYPE_ICONS: Record<string, string> = {
-  venue: '🏟️',
-  arena: '🏟️',
-  stadium: '🏟️',
-  convention_center: '🏢',
-  hotel: '🏨',
-  outdoor: '🌳',
-  warehouse: '🏭',
-  office: '🏢',
-  studio: '🎥',
-  restaurant: '🍽️',
-  virtual: '💻',
-  other: '📍',
-};
+
 
 import LocationDetailActions from '@/components/admin/locations/LocationDetailActions';
 
@@ -54,7 +42,7 @@ export default async function LocationDetailPage({ params }: { params: Promise<{
 
   return (
     <TierGate feature="events">
-      <PageHeader title={location.name as string} subtitle={`${TYPE_ICONS[location.type as string] ?? '📍'} ${(location.type as string)?.charAt(0).toUpperCase()}${(location.type as string)?.slice(1)} location`}>
+      <PageHeader title={location.name as string} subtitle={`${LOCATION_TYPE_ICONS[location.type as string] ?? '📍'} ${(location.type as string)?.charAt(0).toUpperCase()}${(location.type as string)?.slice(1)} location`}>
         <div className="flex items-center gap-3">
           <Link href="/app/locations" className="text-sm text-text-secondary hover:text-foreground">← Back to Locations</Link>
           <div className="h-4 w-px bg-border" />

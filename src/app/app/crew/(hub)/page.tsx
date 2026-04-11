@@ -18,6 +18,9 @@ import PageHeader from '@/components/shared/PageHeader';
 import SearchInput from '@/components/ui/SearchInput';
 import Button from '@/components/ui/Button';
 import Tabs from '@/components/ui/Tabs';
+import Alert from '@/components/ui/Alert';
+import Tag from '@/components/ui/Tag';
+import StatusBadge, { CREW_AVAILABILITY_COLORS, CREW_ONBOARDING_COLORS } from '@/components/ui/StatusBadge';
 import { Upload } from 'lucide-react';
 import { TierGate } from '@/components/shared/TierGate';
 
@@ -32,18 +35,7 @@ interface CrewMember {
   onboarding_status: string;
 }
 
-const AVAILABILITY_COLORS: Record<string, string> = {
-  available: 'bg-green-50 text-green-700',
-  unavailable: 'bg-red-50 text-red-700',
-  tentative: 'bg-yellow-50 text-yellow-700',
-};
 
-const ONBOARDING_COLORS: Record<string, string> = {
-  complete: 'bg-green-50 text-green-700',
-  in_progress: 'bg-blue-50 text-blue-700',
-  not_started: 'bg-bg-secondary text-text-muted',
-  pending: 'bg-bg-secondary text-text-muted',
-};
 
 export default function CrewPage() {
   const router = useRouter();
@@ -52,6 +44,7 @@ export default function CrewPage() {
   const [availabilityFilter, setAvailabilityFilter] = useState('all');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
   const [showImport, setShowImport] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadCrew() {
@@ -83,8 +76,8 @@ export default function CrewPage() {
             })
           );
         }
-      } catch (error) {
-        void error;
+      } catch {
+        setLoadError('Failed to load crew members. Please try again.');
       }
     }
     loadCrew();
@@ -206,16 +199,16 @@ export default function CrewPage() {
                 <td className="px-6 py-3.5">
                   <div className="flex flex-wrap gap-1">
                     {member.skills.map((skill) => (
-                      <span key={skill} className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">{skill}</span>
+                      <Tag key={skill}>{skill}</Tag>
                     ))}
                   </div>
                 </td>
                 <td className="px-6 py-3.5 text-sm tabular-nums text-foreground">{member.hourly_rate != null ? `$${member.hourly_rate}/hr` : '\u2014'}</td>
                 <td className="px-6 py-3.5">
-                  <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${AVAILABILITY_COLORS[member.availability_status] ?? 'bg-bg-secondary text-text-muted'}`}>{formatLabel(member.availability_status)}</span>
+                  <StatusBadge status={member.availability_status} colorMap={CREW_AVAILABILITY_COLORS} />
                 </td>
                 <td className="px-6 py-3.5">
-                  <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${ONBOARDING_COLORS[member.onboarding_status] ?? 'bg-bg-secondary text-text-muted'}`}>{formatLabel(member.onboarding_status)}</span>
+                  <StatusBadge status={member.onboarding_status} colorMap={CREW_ONBOARDING_COLORS} />
                 </td>
                 <td className="px-6 py-3.5">
                   <RowActionMenu actions={[

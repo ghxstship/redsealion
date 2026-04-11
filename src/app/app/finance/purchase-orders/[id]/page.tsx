@@ -5,6 +5,7 @@ import { formatCurrency } from '@/lib/utils';
 import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
 import Link from 'next/link';
+import StatusBadge, { PURCHASE_ORDER_STATUS_COLORS } from '@/components/ui/StatusBadge';
 
 interface PODetail {
   id: string;
@@ -54,15 +55,7 @@ async function getPODetail(id: string): Promise<PODetail | null> {
   }
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  draft: 'bg-gray-100 text-gray-800',
-  sent: 'bg-blue-100 text-blue-800',
-  acknowledged: 'bg-purple-100 text-purple-800',
-  approved: 'bg-green-100 text-green-800',
-  received: 'bg-teal-100 text-teal-800',
-  closed: 'bg-gray-200 text-gray-600',
-  cancelled: 'bg-red-100 text-red-800',
-};
+
 
 export default async function PurchaseOrderDetailPage(props: { params: Promise<{ id: string }> }) {
   const { id } = await props.params;
@@ -101,9 +94,7 @@ export default async function PurchaseOrderDetailPage(props: { params: Promise<{
         <Card padding="default" className="px-5 py-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Status</p>
           <p className="mt-2">
-            <span className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${STATUS_COLORS[po.status] ?? 'bg-gray-100 text-gray-800'}`}>
-              {po.status}
-            </span>
+            <StatusBadge status={po.status} colorMap={PURCHASE_ORDER_STATUS_COLORS} />
           </p>
         </Card>
         <Card padding="default" className="px-5 py-5">

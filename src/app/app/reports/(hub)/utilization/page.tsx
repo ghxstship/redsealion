@@ -3,6 +3,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import ReportsHubTabs from '../../ReportsHubTabs';
 import Card from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 interface UtilizationRow {
@@ -181,9 +182,12 @@ export default async function UtilizationReportPage() {
                             style={{ width: `${Math.min(r.utilizationPercent, 100)}%` }}
                           />
                         </div>
-                        <span className={`inline-flex min-w-[3rem] items-center justify-center rounded-full px-2 py-0.5 text-xs font-medium ${utilizationColor(r.utilizationPercent)}`}>
+                        <Badge
+                          variant={r.utilizationPercent >= 90 ? 'error' : r.utilizationPercent >= 70 ? 'success' : r.utilizationPercent >= 50 ? 'warning' : 'muted'}
+                          className="min-w-[3rem] justify-center"
+                        >
                           {r.utilizationPercent}%
-                        </span>
+                        </Badge>
                       </div>
                     </td>
                   </tr>

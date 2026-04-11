@@ -2,26 +2,34 @@ import Link from 'next/link';
 import { TierGate } from '@/components/shared/TierGate';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import { formatLabel } from '@/lib/utils';
 
 import EmptyState from '@/components/ui/EmptyState';
 import PageHeader from '@/components/shared/PageHeader';
+import Alert from '@/components/ui/Alert';
+import Button from '@/components/ui/Button';
+import FormInput from '@/components/ui/FormInput';
+import FormSelect from '@/components/ui/FormSelect';
+import StatusBadge, { TASK_PRIORITY_COLORS, BID_STATUS_COLORS } from '@/components/ui/StatusBadge';
 
-const PRIORITY_COLORS: Record<string, string> = {
-  low: 'bg-bg-secondary text-text-muted',
-  medium: 'bg-blue-50 text-blue-700',
-  high: 'bg-orange-50 text-orange-700',
-  urgent: 'bg-red-50 text-red-700',
-};
-
-const BID_STATUS_COLORS: Record<string, string> = {
-  accepted: 'bg-green-100 text-green-800',
-  rejected: 'bg-red-100 text-red-800',
-  withdrawn: 'bg-gray-100 text-gray-800',
-  pending: 'bg-blue-100 text-blue-800',
-};
-
-function formatLabel(s: string): string {
-  return s.split('_').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+// #38: Typed interface for work order rows
+interface WorkOrderRow {
+  id: string;
+  wo_number: string;
+  title: string;
+  priority: string;
+  location_name: string | null;
+  scheduled_start: string | null;
+  scheduled_end: string | null;
+  budget_range: string | null;
+  bidding_deadline: string | null;
+  is_public_board: boolean;
+  myBid?: {
+    id: string;
+    amount: number;
+    status: string;
+    crew_profile_id: string;
+  };
 }
 
 interface MarketplaceSearchParams {
@@ -34,7 +42,7 @@ interface MarketplaceSearchParams {
 const PAGE_SIZE = 25;
 
 async function getOpenWorkOrders(params: MarketplaceSearchParams): Promise<{
-  data: Array<Record<string, unknown>>;
+  data: WorkOrderRow[];
   error: string | null;
   total: number;
 }> {
@@ -100,10 +108,22 @@ async function getOpenWorkOrders(params: MarketplaceSearchParams): Promise<{
     if (error) return { data: [], error: error.message, total: 0 };
     
     // Tag each row with current user's bid if they have one
-    const annotatedData = (data ?? []).map((wo: Record<string, unknown>) => {
-      const bids = wo.work_order_bids as Array<{ crew_profile_id: string }> | undefined;
+    const annotatedData: WorkOrderRow[] = (data ?? []).map((wo: Record<string, unknown>) => {
+      const bids = wo.work_order_bids as Array<{ crew_profile_id: string; id: string; amount: number; status: string }> | undefined;
       const myBid = profile ? bids?.find((b) => b.crew_profile_id === profile.id) : undefined;
-      return { ...wo, myBid };
+      return {
+        id: wo.id as string,
+        wo_number: wo.wo_number as string,
+        title: wo.title as string,
+        priority: wo.priority as string,
+        location_name: (wo.location_name as string) ?? null,
+        scheduled_start: (wo.scheduled_start as string) ?? null,
+        scheduled_end: (wo.scheduled_end as string) ?? null,
+        budget_range: (wo.budget_range as string) ?? null,
+        bidding_deadline: (wo.bidding_deadline as string) ?? null,
+        is_public_board: wo.is_public_board as boolean,
+        myBid: myBid ? { id: myBid.id, amount: myBid.amount, status: myBid.status, crew_profile_id: myBid.crew_profile_id } : undefined,
+      };
     });
 
     return { data: annotatedData, error: null, total: count ?? 0 };
@@ -141,45 +161,40 @@ export default async function MarketplacePage({
       />
 
       {error && (
-        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
+        <Alert variant="error">{error}</Alert>
       )}
 
-      {/* Filters Bar */}
+      {/* Filters Bar — #29: Use canonical form components */}
       <form method="GET" action="/app/marketplace" className="flex flex-wrap items-center gap-3 mb-6">
-        <input
+        <FormInput
           type="text"
           name="search"
           defaultValue={params.search || ''}
           placeholder="Search jobs..."
-          className="rounded-lg border border-border bg-card px-3 py-2 text-sm w-64 focus:outline-none focus:border-foreground/30"
+          className="w-64"
         />
-        <select
+        <FormSelect
           name="priority"
           defaultValue={params.priority || ''}
-          className="rounded-lg border border-border bg-card px-3 py-2 text-sm focus:outline-none focus:border-foreground/30"
+          className="w-auto"
         >
           <option value="">All Priorities</option>
           <option value="low">Low</option>
           <option value="medium">Medium</option>
           <option value="high">High</option>
           <option value="urgent">Urgent</option>
-        </select>
-        <select
+        </FormSelect>
+        <FormSelect
           name="sort"
           defaultValue={params.sort || ''}
-          className="rounded-lg border border-border bg-card px-3 py-2 text-sm focus:outline-none focus:border-foreground/30"
+          className="w-auto"
         >
           <option value="">Sort: Deadline</option>
           <option value="priority">Sort: Priority</option>
-        </select>
-        <button
-          type="submit"
-          className="rounded-lg bg-foreground text-background px-4 py-2 text-sm font-medium hover:opacity-90 transition-opacity"
-        >
+        </FormSelect>
+        <Button type="submit">
           Search
-        </button>
+        </Button>
         {(params.search || params.priority || params.sort) && (
           <Link
             href="/app/marketplace"
@@ -212,8 +227,7 @@ export default async function MarketplacePage({
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                {workOrders.map((wo: any) => {
+                {workOrders.map((wo) => {
                   return (
                     <tr key={wo.id} className="transition-colors hover:bg-bg-secondary/50">
                       <td className="px-6 py-3.5 text-sm font-mono text-text-muted">{wo.wo_number}</td>
@@ -223,9 +237,7 @@ export default async function MarketplacePage({
                         </Link>
                       </td>
                       <td className="px-6 py-3.5">
-                        <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${PRIORITY_COLORS[wo.priority] || ''}`}>
-                          {formatLabel(wo.priority)}
-                        </span>
+                        <StatusBadge status={wo.priority} colorMap={TASK_PRIORITY_COLORS} />
                       </td>
                       <td className="px-6 py-3.5 text-sm text-text-secondary">
                         {wo.location_name || 'TBD'}
@@ -240,9 +252,7 @@ export default async function MarketplacePage({
                       </td>
                       <td className="px-6 py-3.5 text-sm">
                         {wo.myBid ? (
-                          <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${BID_STATUS_COLORS[wo.myBid.status] || 'bg-blue-100 text-blue-800'}`}>
-                            {formatLabel(wo.myBid.status)} (${wo.myBid.amount})
-                          </span>
+                          <StatusBadge status={wo.myBid.status} colorMap={BID_STATUS_COLORS} className="" />
                         ) : (
                           <Link href={`/app/marketplace/${wo.id}`} className="text-blue-600 hover:underline">
                             Submit Bid &rarr;

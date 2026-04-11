@@ -1,12 +1,13 @@
 import Link from 'next/link';
-import { formatCurrency, statusColor } from '@/lib/utils';
+import { formatCurrency } from '@/lib/utils';
 import ClientInteractions from '@/components/admin/clients/ClientInteractions';
 import ClientHealthCard from '@/components/admin/clients/ClientHealthCard';
 import ClientDetailActions from './ClientDetailActions';
 import ClientDetailTabs from './ClientDetailTabs';
 import EmptyState from '@/components/ui/EmptyState';
-import { getClient, formatStatus, formatDate, roleLabel } from './_data';
+import { getClient, formatDate, roleLabel } from './_data';
 import PageHeader from '@/components/shared/PageHeader';
+import StatusBadge, { GENERIC_STATUS_COLORS, PIPELINE_STAGE_COLORS } from '@/components/ui/StatusBadge';
 
 
 
@@ -102,9 +103,7 @@ export default async function ClientDetailPage({
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium text-foreground">{contact.name}</span>
                     {contact.is_decision_maker && (
-                      <span className="inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700">
-                        Decision Maker
-                      </span>
+                      <StatusBadge status="overdue" colorMap={{overdue: 'bg-amber-50 text-amber-700'}} />
                     )}
                   </div>
                 </td>
@@ -140,9 +139,7 @@ export default async function ClientDetailPage({
                   <p className="text-sm font-medium text-foreground truncate">{proposal.name}</p>
                   <p className="mt-1 text-xs text-text-muted">Prepared {formatDate(proposal.prepared_date)}</p>
                 </div>
-                <span className={`inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColor(proposal.status)}`}>
-                  {formatStatus(proposal.status)}
-                </span>
+                <StatusBadge status={proposal.status} colorMap={GENERIC_STATUS_COLORS} />
               </div>
               <p className="mt-3 text-lg font-semibold tabular-nums text-foreground">{formatCurrency(proposal.total_value)}</p>
             </Link>
@@ -167,9 +164,7 @@ export default async function ClientDetailPage({
               >
                 <div className="flex items-start justify-between gap-3">
                   <p className="text-sm font-medium text-foreground truncate">{deal.title}</p>
-                  <span className={`inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColor(deal.stage)}`}>
-                    {formatStatus(deal.stage)}
-                  </span>
+                  <StatusBadge status={deal.stage} colorMap={PIPELINE_STAGE_COLORS} />
                 </div>
                 <p className="mt-2 text-lg font-semibold tabular-nums text-foreground">{formatCurrency(deal.value)}</p>
               </Link>
@@ -213,13 +208,10 @@ export default async function ClientDetailPage({
 <PageHeader title={client.company_name} />
           <p className="mt-1 text-sm text-text-secondary">
             {client.industry} &middot; Source: {client.source ?? 'Unknown'}
-            <span className={`ml-2 inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-              client.status === 'active' ? 'bg-green-50 text-green-700' :
-              client.status === 'churned' ? 'bg-red-50 text-red-700' :
-              'bg-zinc-100 text-zinc-600'
-            }`}>
-              {client.status.charAt(0).toUpperCase() + client.status.slice(1)}
-            </span>
+            <StatusBadge
+              status={client.status}
+              colorMap={{ active: 'bg-green-50 text-green-700', churned: 'bg-red-50 text-red-700', inactive: 'bg-zinc-100 text-zinc-600' }}
+            />
           </p>
           <div className="mt-3 flex flex-wrap gap-1.5">
             {client.tags.map((tag) => (

@@ -6,6 +6,7 @@ import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
 import RentalsHubTabs from '../RentalsHubTabs';
 import StatusBadge, { RENTAL_ORDER_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getRentalCatalog() {
   try {
@@ -53,10 +54,7 @@ export default async function RentalsCatalogPage() {
           { label: 'Revenue', value: formatCurrency(totalRevenue / 100), color: 'text-green-600' },
           { label: 'Returned', value: String(orders.filter((o) => o.status === 'returned').length) },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
-            <p className="text-xs text-text-muted">{stat.label}</p>
-            <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
-          </div>
+          <MetricCard key={stat.label} label={stat.label} value={stat.value} className={stat.color ? `[&_.text-foreground]:${stat.color}` : ''} />
         ))}
       </div>
 

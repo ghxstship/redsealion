@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
+import CanonicalStatusBadge, { COMPLIANCE_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import ComplianceHubTabs from './ComplianceHubTabs';
 
 async function getDocsByType(docType: string) {
@@ -23,18 +24,9 @@ async function getDocsByType(docType: string) {
   } catch { return []; }
 }
 
-function StatusBadge({ status }: { status: string }) {
-  const colors = status === 'verified' ? 'bg-green-50 text-green-700'
-    : status === 'expired' ? 'bg-red-50 text-red-700'
-    : status === 'rejected' ? 'bg-zinc-100 text-zinc-500'
-    : status === 'uploaded' ? 'bg-blue-50 text-blue-700'
-    : 'bg-yellow-50 text-yellow-700';
-  const label = status === 'verified' ? 'Verified'
-    : status === 'expired' ? 'Expired'
-    : status === 'rejected' ? 'Rejected'
-    : status === 'uploaded' ? 'Uploaded'
-    : 'Pending';
-  return <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${colors}`}>{label}</span>;
+/** Compliance-scoped StatusBadge — thin wrapper over canonical component. */
+function ComplianceStatusBadge({ status }: { status: string }) {
+  return <CanonicalStatusBadge status={status} colorMap={COMPLIANCE_STATUS_COLORS} />;
 }
 
 function ComplianceTable({ docs, emptyMsg }: { docs: Awaited<ReturnType<typeof getDocsByType>>; emptyMsg: string }) {
@@ -62,7 +54,7 @@ function ComplianceTable({ docs, emptyMsg }: { docs: Awaited<ReturnType<typeof g
               <tr key={doc.id} className="hover:bg-bg-secondary/50 transition-colors">
                 <td className="px-4 py-3 font-medium text-foreground">{doc.document_name}</td>
                 <td className="px-4 py-3 text-text-secondary">{doc.issued_to ?? '—'}</td>
-                <td className="px-4 py-3"><StatusBadge status={doc.status} /></td>
+                <td className="px-4 py-3"><ComplianceStatusBadge status={doc.status} /></td>
                 <td className="px-4 py-3 text-text-secondary">{doc.expiry_date ? new Date(doc.expiry_date).toLocaleDateString() : 'N/A'}</td>
               </tr>
             ))}
@@ -73,4 +65,4 @@ function ComplianceTable({ docs, emptyMsg }: { docs: Awaited<ReturnType<typeof g
   );
 }
 
-export { getDocsByType, StatusBadge, ComplianceTable };
+export { getDocsByType, ComplianceStatusBadge as StatusBadge, ComplianceTable };

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
+import StatusBadge, { TRANSFER_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import TransfersHeader from '@/components/admin/warehouse/TransfersHeader';
 import LogisticsHubTabs from "../../LogisticsHubTabs";
 
@@ -16,15 +17,6 @@ interface Transfer {
   completed_date: string | null;
   notes: string | null;
 }
-
-
-
-const STATUS_COLORS: Record<string, string> = {
-  pending: 'bg-yellow-50 text-yellow-700',
-  in_transit: 'bg-blue-50 text-blue-700',
-  received: 'bg-green-50 text-green-700',
-  cancelled: 'bg-red-50 text-red-700',
-};
 
 async function getTransfers(): Promise<Transfer[]> {
   try {
@@ -138,13 +130,7 @@ export default async function TransfersPage() {
                   <td className="px-6 py-3.5 text-sm font-medium text-foreground relative z-10">{transfer.to_location}</td>
                   <td className="px-6 py-3.5 text-sm tabular-nums text-foreground relative z-10">{transfer.items_count}</td>
                   <td className="px-6 py-3.5 relative z-10">
-                    <span
-                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        STATUS_COLORS[transfer.status] ?? 'bg-bg-secondary text-text-muted'
-                      }`}
-                    >
-                      {formatLabel(transfer.status)}
-                    </span>
+                    <StatusBadge status={transfer.status} colorMap={TRANSFER_STATUS_COLORS} />
                   </td>
                   <td className="px-6 py-3.5 text-sm text-text-secondary relative z-10">{transfer.requested_by}</td>
                   <td className="px-6 py-3.5 text-sm text-text-secondary relative z-10">{formatDate(transfer.requested_date)}</td>

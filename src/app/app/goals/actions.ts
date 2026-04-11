@@ -119,6 +119,16 @@ export async function deleteKeyResult(id: string) {
   const ctx = await resolveCurrentOrg();
   if (!ctx) return { error: 'Not authorized' };
 
+  // Verify the key result belongs to a goal owned by this org
+  const { data: kr } = await supabase
+    .from('goal_key_results')
+    .select('id, goal_id, goals!inner(organization_id)')
+    .eq('id', id)
+    .eq('goals.organization_id', ctx.organizationId)
+    .single();
+
+  if (!kr) return { error: 'Key result not found' };
+
   const { error } = await supabase
     .from('goal_key_results')
     .update({ deleted_at: new Date().toISOString() })
@@ -135,13 +145,12 @@ export async function createCheckIn(goalId: string, formData: FormData) {
   const ctx = await resolveCurrentOrg();
   if (!ctx) return { error: 'Not authorized' };
 
-  // Note: the progress UI might submit the old and new progress.
   const new_progress = parseInt(formData.get('new_progress') as string) || 0;
   const previous_progress = parseInt(formData.get('previous_progress') as string) || 0;
   const status = formData.get('status') as string;
   const notes = formData.get('notes') as string;
 
-  // Insert checkin
+  // Insert checkin (source of truth for progress history)
   const { error: checkinError } = await supabase.from('goal_check_ins').insert({
     goal_id: goalId,
     new_progress,
@@ -155,7 +164,9 @@ export async function createCheckIn(goalId: string, formData: FormData) {
     return { error: 'Failed to insert check-in' };
   }
 
-  // Update Goal
+  // Denormalized update: sync goals.progress & goals.status from the latest check-in.
+  // This is intentional for query performance — the check-ins table is the SSOT.
+  // If a check-in is deleted, the caller must re-derive progress from the latest remaining check-in.
   await supabase
     .from('goals')
     .update({ progress: new_progress, status })
@@ -164,4 +175,30 @@ export async function createCheckIn(goalId: string, formData: FormData) {
 
   revalidatePath('/app/goals');
   return { success: true };
+}
+
+/** Re-derive goal progress from the latest check-in. Called after check-in deletion. */
+export async function recalculateGoalProgress(goalId: string) {
+  const supabase = await createClient();
+  const ctx = await resolveCurrentOrg();
+  if (!ctx) return;
+
+  const { data: latestCheckIn } = await supabase
+    .from('goal_check_ins')
+    .select('new_progress, status')
+    .eq('goal_id', goalId)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single();
+
+  await supabase
+    .from('goals')
+    .update({
+      progress: latestCheckIn?.new_progress ?? 0,
+      status: latestCheckIn?.status ?? 'not_started',
+    })
+    .eq('id', goalId)
+    .eq('organization_id', ctx.organizationId);
+
+  revalidatePath('/app/goals');
 }

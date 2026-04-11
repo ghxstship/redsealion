@@ -1,7 +1,9 @@
 import Link from 'next/link';
-import { formatCurrency, formatCurrencyDetailed, statusColor } from '@/lib/utils';
+import { formatCurrency, formatCurrencyDetailed, formatLabel } from '@/lib/utils';
+import StatusBadge, { INVOICE_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import { TierGate } from '@/components/shared/TierGate';
 import { createClient } from '@/lib/supabase/server';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PaymentRecorder from '@/components/admin/invoices/PaymentRecorder';
 import InvoiceActions from '@/components/admin/invoices/InvoiceActions';
 import PageHeader from '@/components/shared/PageHeader';
@@ -54,16 +56,14 @@ interface InvoiceDetail {
 async function getInvoice(id: string): Promise<InvoiceDetail | null> {
   try {
     const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) throw new Error('No auth');
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) return null;
 
     const { data: invoice } = await supabase
       .from('invoices')
       .select('*, clients(company_name)')
       .eq('id', id)
+      .eq('organization_id', ctx.organizationId)
       .single();
 
     if (!invoice) return null;
@@ -146,12 +146,7 @@ function formatDate(dateStr: string): string {
   });
 }
 
-function formatStatus(status: string): string {
-  return status
-    .split('_')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ');
-}
+
 
 export default async function InvoiceDetailPage({
   params,
@@ -195,17 +190,13 @@ export default async function InvoiceDetailPage({
         title={invoice.invoice_number}
 
 
-        subtitle={`${invoice.client_name} · ${formatStatus(invoice.type)}`}
+        subtitle={`${invoice.client_name} · ${formatLabel(invoice.type)}`}
 
 
       >
 
 
-        <span
-            className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${statusColor(invoice.status)}`}
-          >
-            {formatStatus(invoice.status)}
-          </span>
+        <StatusBadge status={invoice.status} colorMap={INVOICE_STATUS_COLORS} />
           <InvoiceActions
             invoiceId={invoice.id}
             invoiceNumber={invoice.invoice_number}
@@ -355,7 +346,7 @@ export default async function InvoiceDetailPage({
             <dl className="space-y-3 text-sm">
               <div>
                 <dt className="text-text-muted">Status</dt>
-                <dd className="font-medium text-foreground">{formatStatus(invoice.status)}</dd>
+                <dd className="font-medium text-foreground">{formatLabel(invoice.status)}</dd>
               </div>
               <div>
                 <dt className="text-text-muted">Type</dt>

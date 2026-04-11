@@ -165,26 +165,17 @@ export default function ProposalDetailPage({
         >
           Edit in Builder
         </Link>
-        <button
-          onClick={() => setShowShare(true)}
-          className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
-        >
+        <Button variant="secondary" onClick={() => setShowShare(true)}>
           Share
-        </button>
-        <button
-          onClick={() => setShowDelete(true)}
-          className="rounded-lg border border-red-200 bg-background px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
-        >
+        </Button>
+        <Button variant="danger_ghost" onClick={() => setShowDelete(true)}>
           Delete
-        </button>
+        </Button>
         {proposal.status === 'approved' && (
           <Button onClick={handleConvertToJob} disabled={converting}>
             {converting ? 'Converting...' : 'Convert to Job'}
           </Button>
         )}
-        <Button onClick={() => setShowShare(true)}>
-          Send to Client
-        </Button>
       </PageHeader>
 
       {/* Tabs */}

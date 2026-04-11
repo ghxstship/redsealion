@@ -1,17 +1,20 @@
 import { createClient } from '@/lib/supabase/server';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import MyTasksTable, { type MyTaskRow } from '@/components/admin/my-tasks/MyTasksTable';
 import MyTasksHeader from '@/components/admin/my-tasks/MyTasksHeader';
 
 async function getMyTasks(): Promise<MyTaskRow[]> {
   try {
     const supabase = await createClient();
+    const ctx = await resolveCurrentOrg();
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return [];
+    if (!user || !ctx) return [];
 
     const { data: tasks } = await supabase
       .from('tasks')
       .select('id, title, status, priority, due_date, start_date, start_time, end_time, estimated_hours, actual_hours, organization_id, project_id, projects(name), creator:users!created_by(full_name)')
       .eq('assignee_id', user.id)
+      .eq('organization_id', ctx.organizationId)
       .is('parent_task_id', null)
       .is('deleted_at', null)
       .order('sort_order', { ascending: true })

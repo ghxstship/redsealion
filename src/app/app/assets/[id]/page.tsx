@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import AssetDetailClient from '@/components/admin/assets/AssetDetailClient';
 
 export default async function AssetDetailPage({
@@ -9,12 +10,15 @@ export default async function AssetDetailPage({
 }) {
   const { id } = await params;
   const supabase = await createClient();
+  const ctx = await resolveCurrentOrg();
+  if (!ctx) notFound();
 
-  // Fetch asset — C-6: filter soft-deleted
+  // Fetch asset — C-6: filter soft-deleted, scope to org
   const { data: asset } = await supabase
     .from('assets')
     .select('*')
     .eq('id', id)
+    .eq('organization_id', ctx.organizationId)
     .is('deleted_at', null)
     .single();
 

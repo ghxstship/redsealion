@@ -5,6 +5,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
 import RequisitionActions from './RequisitionActions';
+import StatusBadge from '@/components/ui/StatusBadge';
 
 async function getRequisition(id: string) {
   const supabase = await createClient();
@@ -35,7 +36,7 @@ export default async function RequisitionDetailPage({ params }: { params: Promis
 
   if (!req) {
     return (
-      <TierGate feature="profitability">
+      <TierGate feature="procurement">
         <div className="px-8 py-16 text-center">
           <p className="text-sm text-text-secondary">Requisition not found.</p>
           <Link href="/app/procurement/requisitions" className="mt-4 text-sm text-brand-primary hover:underline">← Back to Requisitions</Link>
@@ -52,7 +53,7 @@ export default async function RequisitionDetailPage({ params }: { params: Promis
   const requester = (req.users as { full_name: string } | null)?.full_name ?? 'Unknown';
 
   return (
-    <TierGate feature="profitability">
+    <TierGate feature="procurement">
       <div className="mb-4">
         <Link href="/app/procurement/requisitions" className="text-sm text-brand-primary hover:underline">
           ← Back to Requisitions
@@ -68,9 +69,7 @@ export default async function RequisitionDetailPage({ params }: { params: Promis
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-5 mb-8">
         <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Status</p>
-          <span className={`mt-1 inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[req.status]}`}>
-            {req.status}
-          </span>
+          <StatusBadge status={req.status} colorMap={STATUS_COLORS} />
         </div>
         <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Priority</p>
@@ -133,9 +132,7 @@ export default async function RequisitionDetailPage({ params }: { params: Promis
                     <td className="px-4 py-3 tabular-nums">{formatCurrency(li.unit_cost_cents / 100)}</td>
                     <td className="px-4 py-3 tabular-nums font-medium">{formatCurrency((li.quantity * li.unit_cost_cents) / 100)}</td>
                     <td className="px-4 py-3">
-                      <span className="inline-flex rounded-full px-2 py-0.5 text-xs font-medium bg-bg-secondary text-text-secondary capitalize">
-                        {li.status}
-                      </span>
+                      <StatusBadge status={li.status} colorMap={{}} />
                     </td>
                   </tr>
                 ))}

@@ -17,6 +17,7 @@ async function getCampaigns() {
       .from('campaigns')
       .select()
       .eq('organization_id', ctx.organizationId)
+      .is('deleted_at', null)
       .order('created_at', { ascending: false });
     return data ?? [];
   } catch {

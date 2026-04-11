@@ -8,10 +8,13 @@
 
 import { useState } from 'react';
 import { ArrowLeft, Archive, Users, Settings, Shield, Activity } from 'lucide-react';
+import Link from 'next/link';
 import Button from '@/components/ui/Button';
 import PageHeader from '@/components/shared/PageHeader';
 import { PortalSettingsCard } from '@/components/admin/portfolio/PortalSettingsCard';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
+import Alert from '@/components/ui/Alert';
+import StatusBadge, { PROJECT_STATUS_COLORS, GENERIC_STATUS_COLORS } from '@/components/ui/StatusBadge';
 
 interface Member {
   id: string;
@@ -63,10 +66,10 @@ const TABS = [
 ];
 
 const STATUS_COLORS: Record<string, string> = {
-  on_track: 'bg-green-100 text-green-700',
-  at_risk: 'bg-amber-100 text-amber-700',
-  off_track: 'bg-red-100 text-red-700',
-  completed: 'bg-blue-100 text-blue-700',
+  on_track: 'bg-green-50 text-green-700',
+  at_risk: 'bg-amber-50 text-amber-700',
+  off_track: 'bg-red-50 text-red-700',
+  completed: 'bg-blue-50 text-blue-700',
 };
 
 const SEAT_LABELS: Record<string, string> = {
@@ -97,18 +100,12 @@ export default function ProjectDetailClient({ project }: ProjectDetailProps) {
     <div className="space-y-6">
       {/* Back link + header */}
       <div>
-        <a href="/app/projects" className="inline-flex items-center gap-1 text-xs text-text-muted hover:text-foreground mb-3">
+        <Link href="/app/projects" className="inline-flex items-center gap-1 text-xs text-text-muted hover:text-foreground mb-3">
           <ArrowLeft size={12} /> Back to Projects
-        </a>
+        </Link>
         <PageHeader title={project.name}>
           <div className="flex items-center gap-2">
-            <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-              project.status === 'active' ? 'bg-green-100 text-green-700' :
-              project.status === 'archived' ? 'bg-gray-100 text-gray-500' :
-              'bg-blue-100 text-blue-700'
-            }`}>
-              {project.status.replace(/_/g, ' ')}
-            </span>
+            <StatusBadge status={project.status} colorMap={PROJECT_STATUS_COLORS} />
           </div>
         </PageHeader>
       </div>
@@ -174,11 +171,7 @@ export default function ProjectDetailClient({ project }: ProjectDetailProps) {
                 {project.portals.map((p) => (
                   <div key={p.id} className="flex items-center justify-between text-sm">
                     <span className="text-foreground capitalize">{p.portal_type.replace(/_/g, ' ')}</span>
-                    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${
-                      p.is_published ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
-                    }`}>
-                      {p.is_published ? 'Published' : 'Draft'}
-                    </span>
+                    <StatusBadge status={p.is_published ? 'published' : 'draft'} colorMap={{published: 'bg-green-100 text-green-700', draft: 'bg-gray-100 text-gray-500'}} />
                   </div>
                 ))}
                 {project.portals.length === 0 && <p className="text-xs text-text-muted italic">No portals configured</p>}
@@ -194,9 +187,7 @@ export default function ProjectDetailClient({ project }: ProjectDetailProps) {
                 {project.statusUpdates.map((u) => (
                   <div key={u.id} className="border-l-2 border-border pl-3">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${STATUS_COLORS[u.status] ?? 'bg-bg-secondary text-text-muted'}`}>
-                        {u.status.replace(/_/g, ' ')}
-                      </span>
+                      <StatusBadge status={u.status} colorMap={STATUS_COLORS} />
                       <span className="text-[10px] text-text-muted">
                         {new Date(u.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                       </span>
@@ -231,11 +222,7 @@ export default function ProjectDetailClient({ project }: ProjectDetailProps) {
                   <span className="rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">
                     {SEAT_LABELS[m.seat_type] ?? m.seat_type}
                   </span>
-                  <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${
-                    m.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
-                  }`}>
-                    {m.status}
-                  </span>
+                  <StatusBadge status={m.status} colorMap={GENERIC_STATUS_COLORS} />
                 </div>
               ))
             )}
@@ -255,14 +242,14 @@ export default function ProjectDetailClient({ project }: ProjectDetailProps) {
               <div className="flex justify-between"><dt className="text-text-muted">Slug</dt><dd className="font-mono text-foreground">{project.slug}</dd></div>
               <div className="flex justify-between"><dt className="text-text-muted">Status</dt><dd className="text-foreground capitalize">{project.status}</dd></div>
               <div className="flex justify-between"><dt className="text-text-muted">Visibility</dt><dd className="text-foreground capitalize">{project.visibility}</dd></div>
-              <div className="flex justify-between"><dt className="text-text-muted">Created</dt><dd className="text-foreground tabular-nums">{new Date(project.id ? (project as Record<string, unknown>).created_at as string : '').toLocaleDateString()}</dd></div>
+              <div className="flex justify-between"><dt className="text-text-muted">Created</dt><dd className="text-foreground tabular-nums">{new Date('created_at' in project ? (project.created_at as string) : '').toLocaleDateString()}</dd></div>
             </dl>
           </div>
 
           {/* Danger zone — GAP-P19 Archive */}
-          <div className="rounded-xl border border-red-200 bg-red-50/30 p-6">
-            <h3 className="text-sm font-semibold text-red-700 mb-2">Danger Zone</h3>
-            <p className="text-sm text-text-secondary mb-4">
+          <Alert variant="warning">
+            <h3 className="text-sm font-semibold mb-2">Danger Zone</h3>
+            <p className="text-sm mb-4">
               Archiving this project will soft-delete it and remove it from all active views. This can be undone by an administrator.
             </p>
             <Button
@@ -274,7 +261,7 @@ export default function ProjectDetailClient({ project }: ProjectDetailProps) {
             >
               <Archive size={14} className="mr-1" /> Archive Project
             </Button>
-          </div>
+          </Alert>
         </div>
       )}
     </div>

@@ -5,12 +5,14 @@ import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
 import { createClient } from '@/lib/supabase/client';
 import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
+import Alert from '@/components/ui/Alert';
 
 interface CreateSubRentalButtonProps {}
 
 export default function CreateSubRentalButton({}: CreateSubRentalButtonProps) {
   const router = useRouter();
   const [creating, setCreating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleCreate() {
     setCreating(true);
@@ -35,7 +37,7 @@ export default function CreateSubRentalButton({}: CreateSubRentalButtonProps) {
         router.refresh();
       }
     } catch {
-      alert('Failed to create sub-rental.');
+      setError('Failed to create sub-rental.');
     } finally {
       setCreating(false);
     }

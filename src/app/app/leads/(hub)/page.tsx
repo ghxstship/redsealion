@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import LeadsHeader from '@/components/admin/leads/LeadsHeader';
 import LeadsTable from '@/components/admin/leads/LeadsTable';
 import LeadsHubTabs from '../LeadsHubTabs';
@@ -30,25 +31,13 @@ interface Lead {
 async function getLeads(): Promise<Lead[]> {
   try {
     const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) throw new Error('No auth');
-
-    const { data: membership } = await supabase
-      .from('organization_memberships')
-      .select('organization_id')
-      .eq('user_id', user.id)
-      .eq('status', 'active')
-      .order('created_at', { ascending: true })
-      .limit(1)
-      .single();
-    if (!membership) throw new Error('No org membership');
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) return [];
 
     const { data: leads } = await supabase
       .from('leads')
       .select('*, users!leads_assigned_to_fkey(id, full_name)')
-      .eq('organization_id', membership.organization_id)
+      .eq('organization_id', ctx.organizationId)
       .is('deleted_at', null)
       .order('created_at', { ascending: false })
       .range(0, 99);

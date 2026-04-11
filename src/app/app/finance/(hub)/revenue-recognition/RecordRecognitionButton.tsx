@@ -9,6 +9,7 @@ import FormSelect from '@/components/ui/FormSelect';
 import Button from '@/components/ui/Button';
 import { createClient } from '@/lib/supabase/client';
 import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
+import Alert from '@/components/ui/Alert';
 
 export default function RecordRecognitionButton() {
   const router = useRouter();
@@ -63,7 +64,7 @@ export default function RecordRecognitionButton() {
       <ModalShell title="Record Revenue Recognition" open={open} onClose={() => setOpen(false)}>
         <form onSubmit={handleSubmit} className="space-y-4 pt-2">
           {error && (
-            <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>
+            <Alert variant="error">{error}</Alert>
           )}
           <div>
             <FormLabel>Proposal ID *</FormLabel>

@@ -3,6 +3,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import PageHeader from '@/components/shared/PageHeader';
+import StatusBadge, { TRANSFER_STATUS_COLORS } from '@/components/ui/StatusBadge';
 
 interface TransferDetail {
   id: string;
@@ -44,12 +45,7 @@ async function getTransfer(id: string): Promise<TransferDetail | null> {
   }
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  pending: 'bg-yellow-50 text-yellow-700',
-  in_transit: 'bg-blue-50 text-blue-700',
-  received: 'bg-green-50 text-green-700',
-  cancelled: 'bg-red-50 text-red-700',
-};
+
 
 function formatLabel(s: string): string {
   return s.split('_').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
@@ -86,9 +82,7 @@ export default async function TransferDetailPage({ params }: { params: Promise<{
             <div className="flex justify-between">
               <dt className="text-text-muted">Status</dt>
               <dd>
-                <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_COLORS[transfer.status] ?? ''}`}>
-                  {formatLabel(transfer.status)}
-                </span>
+                <StatusBadge status={transfer.status} colorMap={TRANSFER_STATUS_COLORS} />
               </dd>
             </div>
           </dl>

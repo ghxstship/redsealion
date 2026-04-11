@@ -5,6 +5,8 @@ import PageHeader from '@/components/shared/PageHeader';
 import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
 import RentalsHubTabs from '../../RentalsHubTabs';
+import StatusBadge, { RENTAL_ORDER_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getReservations() {
   try {
@@ -42,10 +44,7 @@ export default async function ReservationsPage() {
           { label: 'Current', value: current.length, color: 'text-green-600' },
           { label: 'Upcoming', value: upcoming.length, color: 'text-blue-600' },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
-            <p className="text-xs text-text-muted">{stat.label}</p>
-            <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
-          </div>
+          <MetricCard key={stat.label} label={stat.label} value={stat.value} className={stat.color ? `[&_.text-foreground]:${stat.color}` : ''} />
         ))}
       </div>
 
@@ -66,7 +65,7 @@ export default async function ReservationsPage() {
                     <td className="px-4 py-3 text-text-secondary">{new Date(r.rental_start).toLocaleDateString()}</td>
                     <td className="px-4 py-3 text-text-secondary">{new Date(r.rental_end).toLocaleDateString()}</td>
                     <td className="px-4 py-3 tabular-nums">{formatCurrency(r.total_cents / 100)}</td>
-                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${r.status === 'on_site' ? 'bg-green-50 text-green-700' : r.status === 'checked_out' ? 'bg-purple-50 text-purple-700' : 'bg-blue-50 text-blue-700'}`}>{r.status.replace('_', ' ')}</span></td>
+                    <td className="px-4 py-3"><StatusBadge status={r.status} colorMap={RENTAL_ORDER_STATUS_COLORS} /></td>
                   </tr>
                 ))}
               </tbody>

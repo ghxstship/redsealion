@@ -1,7 +1,9 @@
+import { formatLabel } from '@/lib/utils';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
+import StatusBadge from '@/components/ui/StatusBadge';
 
 
 interface ScheduleEntry {
@@ -64,12 +66,6 @@ function formatDate(dateStr: string): string {
   });
 }
 
-function formatLabel(s: string): string {
-  return s
-    .split('_')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ');
-}
 
 const STATUS_COLORS: Record<string, string> = {
   confirmed: 'bg-green-50 text-green-700',
@@ -120,13 +116,7 @@ export default async function CrewSchedulePage() {
                   {entry.start_time} &ndash; {entry.end_time}
                 </td>
                 <td className="px-6 py-3.5">
-                  <span
-                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                      STATUS_COLORS[entry.status] ?? 'bg-bg-secondary text-text-muted'
-                    }`}
-                  >
-                    {formatLabel(entry.status)}
-                  </span>
+                  <StatusBadge status={entry.status} colorMap={STATUS_COLORS} />
                 </td>
               </tr>
             ))}

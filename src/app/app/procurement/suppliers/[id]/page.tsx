@@ -4,6 +4,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
+import StatusBadge from '@/components/ui/StatusBadge';
 
 async function getVendor(id: string) {
   const supabase = await createClient();
@@ -47,7 +48,7 @@ export default async function SupplierDetailPage({ params }: { params: Promise<{
 
   if (!vendor) {
     return (
-      <TierGate feature="profitability">
+      <TierGate feature="procurement">
         <div className="px-8 py-16 text-center">
           <p className="text-sm text-text-secondary">Supplier not found.</p>
           <Link href="/app/procurement/suppliers" className="mt-4 text-sm text-brand-primary hover:underline">← Back to Suppliers</Link>
@@ -60,7 +61,7 @@ export default async function SupplierDetailPage({ params }: { params: Promise<{
   const totalSpend = pos.reduce((s: number, p: { total_amount: number }) => s + (p.total_amount ?? 0), 0);
 
   return (
-    <TierGate feature="profitability">
+    <TierGate feature="procurement">
       <div className="mb-4">
         <Link href="/app/procurement/suppliers" className="text-sm text-brand-primary hover:underline">
           ← Back to Suppliers
@@ -73,9 +74,7 @@ export default async function SupplierDetailPage({ params }: { params: Promise<{
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-5 mb-8">
         <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Status</p>
-          <span className={`mt-1 inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[vendor.status] ?? 'bg-bg-secondary text-text-secondary'}`}>
-            {vendor.status}
-          </span>
+          <StatusBadge status={vendor.status} colorMap={STATUS_COLORS} />
         </div>
         <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Category</p>
@@ -166,9 +165,7 @@ export default async function SupplierDetailPage({ params }: { params: Promise<{
                     <td className="px-4 py-3 tabular-nums">{formatCurrency(p.total_amount ?? 0)}</td>
                     <td className="px-4 py-3 text-text-secondary">{p.issued_date ? new Date(p.issued_date).toLocaleDateString() : '—'}</td>
                     <td className="px-4 py-3">
-                      <span className="inline-flex rounded-full px-2 py-0.5 text-xs font-medium bg-bg-secondary text-text-secondary capitalize">
-                        {p.status?.replace('_', ' ')}
-                      </span>
+                      <StatusBadge status={p.status ?? 'unknown'} colorMap={{}} />
                     </td>
                   </tr>
                 ))}

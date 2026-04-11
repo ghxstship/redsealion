@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
+import StatusBadge, { GOAL_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import Link from 'next/link';
 import GoalDialog from './GoalDialog';
 import KeyResultForm from './KeyResultForm';
@@ -35,15 +36,7 @@ interface GoalsPageClientProps {
   goals: Goal[];
 }
 
-function statusBadge(status: string): string {
-  const map: Record<string, string> = {
-    on_track: 'bg-green-100 text-green-700',
-    at_risk: 'bg-amber-100 text-amber-700',
-    off_track: 'bg-red-100 text-red-700',
-    completed: 'bg-blue-100 text-blue-700',
-  };
-  return map[status] ?? 'bg-bg-secondary text-text-muted';
-}
+
 
 export default function GoalsPageClient({ goals }: GoalsPageClientProps) {
   const [isGoalDialogOpen, setIsGoalDialogOpen] = useState(false);
@@ -95,10 +88,8 @@ export default function GoalsPageClient({ goals }: GoalsPageClientProps) {
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <h3 className="text-sm font-semibold text-foreground">{goal.title}</h3>
-                  <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium capitalize ${statusBadge(goal.status)}`}>
-                    {goal.status.replace(/_/g, ' ')}
-                  </span>
-                  <span className="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-700">
+                  <StatusBadge status={goal.status} colorMap={GOAL_STATUS_COLORS} />
+                  <span className="inline-flex items-center rounded-full bg-bg-secondary px-2 py-0.5 text-xs text-text-secondary">
                     {goal.category}
                   </span>
                 </div>

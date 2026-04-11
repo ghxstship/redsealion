@@ -2,14 +2,17 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Alert from '@/components/ui/Alert';
 
 export default function CreateOrderModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
+    setError(null);
     const fd = new FormData(e.currentTarget);
     const payload = {
       name: fd.get('name'),
@@ -31,10 +34,10 @@ export default function CreateOrderModal({ isOpen, onClose }: { isOpen: boolean;
         onClose();
         router.refresh();
       } else {
-        alert('Failed to create order');
+        setError('Failed to create order');
       }
     } catch {
-      alert('Error creating order');
+      setError('Error creating order');
     } finally {
       setLoading(false);
     }
@@ -50,6 +53,7 @@ export default function CreateOrderModal({ isOpen, onClose }: { isOpen: boolean;
           <button onClick={onClose} className="text-text-muted hover:text-foreground text-xl">&times;</button>
         </div>
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          {error && <Alert variant="error">{error}</Alert>}
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">Order Name / Description</label>
             <input required name="name" className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. Main Stage Backdrop" />

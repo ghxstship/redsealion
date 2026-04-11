@@ -5,18 +5,12 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
 import Button from '@/components/ui/Button';
+import { formatLabel } from '@/lib/utils';
+import StatusBadge, { AUTOMATION_RUN_STATUS_COLORS } from '@/components/ui/StatusBadge';
 
-function formatLabel(type: string): string {
-  return type.split('_').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-}
 
-const STATUS_COLORS: Record<string, string> = {
-  completed: 'bg-green-50 text-green-700',
-  running: 'bg-blue-50 text-blue-700',
-  failed: 'bg-red-50 text-red-700',
-  pending: 'bg-yellow-50 text-yellow-700',
-  cancelled: 'bg-bg-secondary text-text-secondary',
-};
+
+
 
 async function getAutomation(id: string) {
   const supabase = await createClient();
@@ -75,9 +69,7 @@ export default async function AutomationDetailPage({
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-text-muted">Status</span>
-              <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${automation.is_active ? 'bg-green-100 text-green-800' : 'bg-bg-secondary text-text-muted'}`}>
-                {automation.is_active ? 'Active' : 'Inactive'}
-              </span>
+              <StatusBadge status={automation.is_active ? 'active' : 'inactive'} colorMap={{active: 'bg-green-100 text-green-800', inactive: 'bg-bg-secondary text-text-muted'}} />
             </div>
             <div className="flex justify-between">
               <span className="text-text-muted">Trigger</span>
@@ -161,9 +153,7 @@ export default async function AutomationDetailPage({
                 {runs.map((run) => (
                   <tr key={run.id as string} className="hover:bg-bg-secondary/50 transition-colors">
                     <td className="px-4 py-3">
-                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[run.status as string] ?? 'bg-bg-secondary text-text-secondary'}`}>
-                        {run.status as string}
-                      </span>
+                      <StatusBadge status={run.status as string} colorMap={AUTOMATION_RUN_STATUS_COLORS} />
                     </td>
                     <td className="px-4 py-3 text-text-secondary">{new Date(run.started_at as string).toLocaleString()}</td>
                     <td className="px-4 py-3 text-text-secondary">{run.completed_at ? new Date(run.completed_at as string).toLocaleString() : '—'}</td>

@@ -5,6 +5,8 @@ import PageHeader from '@/components/shared/PageHeader';
 import ShipmentsHeader from '@/components/admin/warehouse/ShipmentsHeader';
 import Link from 'next/link';
 import LogisticsHubTabs from "../../LogisticsHubTabs";
+import StatusBadge, { RECEIPT_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getInboundShipments(page: number, limit: number, statusFilter?: string) {
   try {
@@ -42,12 +44,6 @@ async function getInboundShipments(page: number, limit: number, statusFilter?: s
   } catch { return { data: [], count: 0 }; }
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  pending: 'bg-bg-secondary text-text-secondary', shipped: 'bg-purple-50 text-purple-700',
-  in_transit: 'bg-indigo-50 text-indigo-700', received: 'bg-green-50 text-green-700',
-  cancelled: 'bg-red-50 text-red-700',
-};
-
 export default async function ReceivingPage({ searchParams }: { searchParams: Promise<{ page?: string; status?: string }> }) {
   const params = await searchParams;
   const page = Math.max(1, parseInt(params.page ?? '1', 10));
@@ -77,10 +73,7 @@ export default async function ReceivingPage({ searchParams }: { searchParams: Pr
           { label: 'Expected', value: expected.length, color: 'text-blue-600' },
           { label: 'Received', value: received.length, color: 'text-green-600' },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
-            <p className="text-xs text-text-muted">{stat.label}</p>
-            <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
-          </div>
+          <MetricCard key={stat.label} label={stat.label} value={stat.value} className={stat.color ? `[&_.text-foreground]:${stat.color}` : ''} />
         ))}
       </div>
 
@@ -126,7 +119,7 @@ export default async function ReceivingPage({ searchParams }: { searchParams: Pr
                       <td className="px-4 py-3 font-mono text-xs text-text-muted">{s.tracking_number ?? '—'}</td>
                       <td className="px-4 py-3 text-text-secondary">{s.estimated_arrival ? new Date(s.estimated_arrival).toLocaleDateString() : '—'}</td>
                       <td className="px-4 py-3 text-text-secondary">{s.actual_arrival ? new Date(s.actual_arrival).toLocaleDateString() : '—'}</td>
-                      <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[s.status]}`}>{s.status.replace('_', ' ')}</span></td>
+                      <td className="px-4 py-3"><StatusBadge status={s.status} colorMap={RECEIPT_STATUS_COLORS} /></td>
                     </tr>
                   ))}
                 </tbody>

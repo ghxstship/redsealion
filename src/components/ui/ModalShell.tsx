@@ -1,6 +1,6 @@
 'use client';
 
-import { type ReactNode, useSyncExternalStore } from 'react';
+import { type ReactNode, useId, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 import { IconX } from '@/components/ui/Icons';
 
@@ -52,6 +52,7 @@ export default function ModalShell({
   children,
 }: ModalShellProps) {
   const mounted = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const titleId = useId();
 
   if (!open || !mounted) return null;
 
@@ -66,12 +67,12 @@ export default function ModalShell({
       <div 
         role="dialog" 
         aria-modal="true" 
-        aria-labelledby="modal-title" 
+        aria-labelledby={titleId} 
         className={`relative w-full ${SIZE_MAP[size]} rounded-xl border border-border bg-background ${panelPadding} shadow-xl animate-modal-content my-auto ${className}`}
       >
         <div className={headerClass}>
           <div>
-            <h2 id="modal-title" className={`${sectioned ? 'text-base' : 'text-lg'} font-semibold text-foreground`}>{title}</h2>
+            <h2 id={titleId} className={`${sectioned ? 'text-base' : 'text-lg'} font-semibold text-foreground`}>{title}</h2>
             {subtitle && (
               <p className="mt-0.5 text-xs text-text-muted">{subtitle}</p>
             )}

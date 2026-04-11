@@ -6,6 +6,7 @@ import FormLabel from '@/components/ui/FormLabel';
 import FormInput from '@/components/ui/FormInput';
 import Button from '@/components/ui/Button';
 import Alert from '@/components/ui/Alert';
+import ConfirmDialog from '@/components/shared/ConfirmDialog';
 
 interface OrgChartPosition {
   id: string;
@@ -29,6 +30,7 @@ export default function OrgChartPositionModal({ open, onClose, position, allPosi
   const [reportsTo, setReportsTo] = useState(position?.reports_to || '');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const isEdit = !!position;
 
@@ -66,7 +68,7 @@ export default function OrgChartPositionModal({ open, onClose, position, allPosi
   }
 
   async function handleDelete() {
-    if (!isEdit || !confirm('Are you sure you want to delete this position?')) return;
+    if (!isEdit) return;
     setSubmitting(true);
     setError(null);
 
@@ -82,6 +84,7 @@ export default function OrgChartPositionModal({ open, onClose, position, allPosi
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setSubmitting(false);
+      setShowDeleteConfirm(false);
     }
   }
 
@@ -119,7 +122,7 @@ export default function OrgChartPositionModal({ open, onClose, position, allPosi
 
         <div className="flex items-center justify-between pt-2">
           {isEdit ? (
-            <Button type="button" variant="danger" onClick={handleDelete} disabled={submitting}>Delete Position</Button>
+            <Button type="button" variant="danger" onClick={() => setShowDeleteConfirm(true)} disabled={submitting}>Delete Position</Button>
           ) : <div></div>}
           <div className="flex gap-3">
             <Button type="button" variant="secondary" onClick={onClose} disabled={submitting}>Cancel</Button>
@@ -127,6 +130,18 @@ export default function OrgChartPositionModal({ open, onClose, position, allPosi
           </div>
         </div>
       </form>
+
+      {isEdit && (
+        <ConfirmDialog
+          open={showDeleteConfirm}
+          title="Delete Position"
+          message="Are you sure you want to delete this position? This action cannot be undone."
+          confirmLabel="Delete"
+          variant="danger"
+          onConfirm={handleDelete}
+          onCancel={() => setShowDeleteConfirm(false)}
+        />
+      )}
     </ModalShell>
   );
 }

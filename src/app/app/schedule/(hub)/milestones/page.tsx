@@ -2,8 +2,10 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
+import StatusBadge, { MILESTONE_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import ScheduleHubTabs from '../../ScheduleHubTabs';
 import AddMilestoneButton from './AddMilestoneButton';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getMilestones() {
   try {
@@ -58,10 +60,7 @@ export default async function MilestonesPage() {
           { label: 'Completed', value: completed.length, color: 'text-green-600' },
           { label: 'Missed', value: missed.length, color: 'text-red-600' },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
-            <p className="text-xs text-text-muted">{stat.label}</p>
-            <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
-          </div>
+          <MetricCard key={stat.label} label={stat.label} value={stat.value} className={stat.color ? `[&_.text-foreground]:${stat.color}` : ''} />
         ))}
       </div>
 
@@ -90,7 +89,7 @@ export default async function MilestonesPage() {
                     <td className="px-4 py-3 text-text-secondary">{new Date(m.due_at).toLocaleDateString()}</td>
                     <td className="px-4 py-3 text-text-secondary">{m.completed_at ? new Date(m.completed_at).toLocaleDateString() : '—'}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${m.status === 'completed' ? 'bg-green-50 text-green-700' : m.status === 'missed' ? 'bg-red-50 text-red-700' : 'bg-yellow-50 text-yellow-700'}`}>{m.status}</span>
+                      <StatusBadge status={m.status} colorMap={MILESTONE_STATUS_COLORS} />
                     </td>
                   </tr>
                 ))}

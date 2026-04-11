@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
+import Skeleton from '@/components/ui/Skeleton';
 
 interface InvitationInfo {
   id: string;
@@ -102,13 +103,7 @@ export default function InviteAcceptPage() {
   }
 
   if (loading) {
-    return (
-      <div className="rounded-2xl border border-zinc-200 bg-white px-8 py-12 shadow-sm text-center animate-pulse">
-        <div className="h-8 w-8 mx-auto rounded-lg bg-zinc-200 mb-4" />
-        <div className="h-6 w-48 mx-auto rounded bg-zinc-200 mb-2" />
-        <div className="h-4 w-64 mx-auto rounded bg-zinc-100" />
-      </div>
-    );
+    return <Skeleton height="h-[300px]" className="rounded-2xl border border-zinc-200" />;
   }
 
   if (error && !invitation) {

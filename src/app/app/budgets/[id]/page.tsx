@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import { formatCurrency } from '@/lib/utils';
 import BurnChart from '@/components/admin/budgets/BurnChart';
@@ -21,10 +22,13 @@ interface BudgetDetail {
 async function getBudgetDetail(id: string): Promise<BudgetDetail | null> {
   try {
     const supabase = await createClient();
+    const ctx = await resolveCurrentOrg();
+    if (!ctx) return null;
     const { data: budget } = await supabase
       .from('project_budgets')
       .select('id, proposal_id, total_budget, spent')
       .eq('id', id)
+      .eq('organization_id', ctx.organizationId)
       .single();
 
     if (!budget) return null;

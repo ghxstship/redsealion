@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { createKeyResult } from './actions';
 import ModalShell from '@/components/ui/ModalShell';
 import Button from '@/components/ui/Button';
+import Alert from '@/components/ui/Alert';
 
 interface KeyResultFormProps {
   goalId: string;
@@ -13,6 +14,7 @@ interface KeyResultFormProps {
 
 export default function KeyResultForm({ goalId, isOpen, onClose }: KeyResultFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -22,17 +24,18 @@ export default function KeyResultForm({ goalId, isOpen, onClose }: KeyResultForm
     const title = formData.get('title') as string;
     
     if (!title) {
-        alert('Title is required');
+        setError('Title is required');
         setIsSubmitting(false);
         return;
     }
+    setError(null);
 
     try {
       await createKeyResult(goalId, formData);
       onClose();
     } catch (err) {
       console.error(err);
-      alert('Failed to save key result');
+      setError('Failed to save key result');
     } finally {
       setIsSubmitting(false);
     }
@@ -41,6 +44,11 @@ export default function KeyResultForm({ goalId, isOpen, onClose }: KeyResultForm
   return (
     <ModalShell open={isOpen} onClose={onClose} title="Add Key Result">
       <form onSubmit={handleSubmit} className="space-y-4 pt-4">
+        {error && (
+          <Alert variant="error">
+            {error}
+          </Alert>
+        )}
         <div>
           <label htmlFor="title" className="block text-sm font-medium text-foreground">
             Title

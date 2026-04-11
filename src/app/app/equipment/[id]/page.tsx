@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { notFound } from 'next/navigation';
 import StatusBadge, { EQUIPMENT_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import MaintenanceKPIs from '@/components/admin/equipment/MaintenanceKPIs';
@@ -23,12 +24,15 @@ export default async function EquipmentDetailPage({
 }) {
   const { id } = await params;
   const supabase = await createClient();
+  const ctx = await resolveCurrentOrg();
+  if (!ctx) notFound();
 
   // Fetch asset
   const { data: item } = await supabase
     .from('assets')
     .select('*')
     .eq('id', id)
+    .eq('organization_id', ctx.organizationId)
     .single();
 
   if (!item) notFound();
@@ -39,16 +43,19 @@ export default async function EquipmentDetailPage({
       .from('equipment_reservations')
       .select('id, proposal_id, reserved_from, reserved_until, status')
       .eq('asset_id', id)
+      .eq('organization_id', ctx.organizationId)
       .order('reserved_from', { ascending: true }),
     supabase
       .from('maintenance_records')
       .select('id, type, description, scheduled_date, completed_date, performed_by, cost, status')
       .eq('asset_id', id)
+      .eq('organization_id', ctx.organizationId)
       .order('scheduled_date', { ascending: false }),
     supabase
       .from('maintenance_schedules')
       .select('*')
       .eq('asset_id', id)
+      .eq('organization_id', ctx.organizationId)
       .eq('is_active', true)
       .order('next_due_at', { ascending: true }),
   ]);
@@ -199,11 +206,10 @@ export default async function EquipmentDetailPage({
                           {s.next_due_at ? formatDate(s.next_due_at) : '—'}
                         </td>
                         <td className="px-6 py-3.5">
-                          <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                            isOverdue ? 'bg-red-50 text-red-700' : 'bg-green-50 text-green-700'
-                          }`}>
-                            {isOverdue ? 'Overdue' : 'On Track'}
-                          </span>
+                          <StatusBadge 
+                            status={isOverdue ? 'Overdue' : 'On Track'} 
+                            colorMap={{'Overdue': 'bg-red-50 text-red-700', 'On Track': 'bg-green-50 text-green-700'}} 
+                          />
                         </td>
                       </tr>
                     );
@@ -270,9 +276,7 @@ export default async function EquipmentDetailPage({
                   {maintenanceRecords.map((record) => (
                     <tr key={record.id} className="transition-colors hover:bg-bg-secondary/50">
                       <td className="px-6 py-3.5">
-                        <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">
-                          {record.type}
-                        </span>
+                        <StatusBadge status={record.type} colorMap={{}} className="bg-bg-secondary text-text-secondary" />
                       </td>
                       <td className="px-6 py-3.5 text-sm text-text-secondary max-w-xs truncate">{record.description}</td>
                       <td className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(record.scheduled_date)}</td>

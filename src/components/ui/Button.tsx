@@ -1,7 +1,7 @@
 import type { ButtonHTMLAttributes, ReactNode, AnchorHTMLAttributes } from 'react';
 import Link from 'next/link';
 
-type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost';
+type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost' | 'danger_ghost' | 'default' | 'warning' | 'success';
 type ButtonSize = 'sm' | 'default' | 'lg';
 
 interface ButtonBaseProps {
@@ -20,8 +20,12 @@ type ButtonProps = ButtonAsButtonProps | ButtonAsLinkProps;
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   primary: 'bg-foreground text-background hover:bg-foreground/90',
   secondary: 'border border-border bg-background text-foreground hover:bg-bg-secondary',
+  default: 'border border-border bg-background text-foreground hover:bg-bg-secondary',
   danger: 'bg-red-600 text-white hover:bg-red-700',
+  danger_ghost: 'text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200',
   ghost: 'text-text-muted hover:text-foreground hover:bg-bg-secondary',
+  warning: 'bg-yellow-500 text-white hover:bg-yellow-600',
+  success: 'bg-green-600 text-white hover:bg-green-700',
 };
 
 const SIZE_CLASSES: Record<ButtonSize, string> = {

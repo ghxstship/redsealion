@@ -1,9 +1,11 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PersonDetailTabs from './PersonDetailTabs';
 import PageHeader from '@/components/shared/PageHeader';
 import PersonDetailClient from '@/components/admin/people/PersonDetailClient';
+import { formatLabel } from '@/lib/utils';
 
 interface PersonDetail {
   id: string;
@@ -22,12 +24,15 @@ interface PersonDetail {
 
 async function getPersonData(id: string) {
   const supabase = await createClient();
+  const ctx = await resolveCurrentOrg();
+  if (!ctx) return null;
   
-  // 1. Get Person
+  // 1. Get Person — scoped to current organization
   const { data: person } = await supabase
     .from('users')
-    .select('*')
+    .select('id, full_name, email, role, title, phone, department, employment_type, start_date, hourly_cost, facility_id, avatar_url, created_at, updated_at, organization_id')
     .eq('id', id)
+    .eq('organization_id', ctx.organizationId)
     .single();
 
   if (!person) return null;
@@ -40,11 +45,12 @@ async function getPersonData(id: string) {
     .order('created_at', { ascending: false })
     .limit(10);
 
-  // 3. Get Memberships & Permissions
+  // 3. Get Memberships & Permissions — scoped to current org
   const { data: membership } = await supabase
     .from('organization_memberships')
     .select('roles(name, permission_grants(permissions(name)))')
     .eq('user_id', id)
+    .eq('organization_id', ctx.organizationId)
     .single();
 
   let permissions: string[] = [];
@@ -57,11 +63,12 @@ async function getPersonData(id: string) {
     permissions = rMap?.permission_grants?.map((g: any) => g.permissions?.name) || [];
   }
 
-  // 4. Crew Profile
+  // 4. Crew Profile — scoped to current org
   const { data: crew } = await supabase
     .from('crew_profiles')
     .select('id')
     .eq('user_id', id)
+    .eq('organization_id', ctx.organizationId)
     .single();
 
   // 5. Time Off Balances
@@ -74,7 +81,7 @@ async function getPersonData(id: string) {
   return { person, audits: audits || [], permissions, hasCrewProfile: !!crew, balances: balances || [] };
 }
 
-function formatDate(dateStr: string): string {
+function formatDateStr(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
@@ -82,12 +89,7 @@ function formatDate(dateStr: string): string {
   });
 }
 
-function formatRole(role: string): string {
-  return role
-    .split('_')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ');
-}
+// #36: Use canonical formatLabel from @/lib/utils instead of local formatRole
 
 export default async function PersonDetailPage(props: { params: Promise<{ id: string }> }) {
   const { id } = await props.params;
@@ -117,12 +119,12 @@ export default async function PersonDetailPage(props: { params: Promise<{ id: st
         {[
           { label: 'Full Name', value: person.full_name },
           { label: 'Email', value: person.email },
-          { label: 'Role', value: formatRole(person.role) },
+          { label: 'Role', value: formatLabel(person.role) },
           { label: 'Title', value: person.title ?? '—' },
           { label: 'Phone', value: person.phone ?? '—' },
           { label: 'Department', value: person.department ?? '—' },
-          { label: 'Employment Type', value: person.employment_type ? formatRole(person.employment_type) : '—' },
-          { label: 'Joined', value: formatDate(person.created_at) },
+          { label: 'Employment Type', value: person.employment_type ? formatLabel(person.employment_type) : '—' },
+          { label: 'Joined', value: formatDateStr(person.created_at) },
         ].map((field) => (
           <div key={field.label} className="flex items-center justify-between px-6 py-4">
             <span className="text-sm text-text-secondary">{field.label}</span>
@@ -169,8 +171,8 @@ export default async function PersonDetailPage(props: { params: Promise<{ id: st
               {index !== audits.length - 1 && <div className="absolute left-[7px] top-5 bottom-0 w-px bg-border" />}
               <div className="relative mt-1.5 h-3.5 w-3.5 shrink-0 rounded-full border-2 border-border bg-background" />
               <div>
-                <p className="text-sm font-medium text-foreground">{formatRole(audit.action.replace(/\./g, ' '))} by {(audit.actor as any)?.full_name || 'System'}</p>
-                <p className="text-xs text-text-muted mt-0.5">{formatDate(audit.created_at)}</p>
+                <p className="text-sm font-medium text-foreground">{formatLabel(audit.action.replace(/\./g, ' '))} by {(audit.actor as any)?.full_name || 'System'}</p>
+                <p className="text-xs text-text-muted mt-0.5">{formatDateStr(audit.created_at)}</p>
               </div>
             </div>
           ))
@@ -185,7 +187,7 @@ export default async function PersonDetailPage(props: { params: Promise<{ id: st
       <div className="space-y-4">
         <div>
           <p className="text-xs text-text-muted">Current Role</p>
-          <p className="mt-1 text-sm font-medium text-foreground">{formatRole(person.role)}</p>
+          <p className="mt-1 text-sm font-medium text-foreground">{formatLabel(person.role)}</p>
         </div>
         <div className="pt-4 border-t border-border">
           <p className="text-xs text-text-muted mb-3">Access Level (Harbor Master Array)</p>
@@ -213,7 +215,7 @@ export default async function PersonDetailPage(props: { params: Promise<{ id: st
       
       <PageHeader
         title={person.full_name}
-        subtitle={person.title ?? formatRole(person.role)}
+        subtitle={person.title ?? formatLabel(person.role)}
       />
 
       <PersonDetailClient person={person} />

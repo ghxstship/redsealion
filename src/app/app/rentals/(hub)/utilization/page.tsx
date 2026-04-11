@@ -4,6 +4,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import { formatCurrency } from '@/lib/utils';
 import RentalsHubTabs from '../../RentalsHubTabs';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getUtilization() {
   try {
@@ -11,7 +12,7 @@ async function getUtilization() {
     const ctx = await resolveCurrentOrg();
     if (!ctx) return { totalEquip: 0, rented: 0, revenue: 0, avgDays: 0 };
     const [equipRes, rentalRes] = await Promise.all([
-      supabase.from('assets').select('id', { count: 'exact', head: true }).eq('organization_id', ctx.organizationId),
+      supabase.from('assets').select('id', { count: 'exact', head: true }).eq('organization_id', ctx.organizationId).eq('category', 'equipment'),
       supabase.from('rental_orders').select('id, total_cents, rental_start, rental_end').eq('organization_id', ctx.organizationId).in('status', ['checked_out', 'on_site', 'returned', 'invoiced']),
     ]);
     const rentals = (rentalRes.data ?? []) as Array<{ id: string; total_cents: number; rental_start: string; rental_end: string }>;
@@ -41,10 +42,7 @@ export default async function UtilizationPage() {
           { label: 'Rental Revenue', value: formatCurrency(stats.revenue / 100), color: 'text-green-600' },
           { label: 'Avg Rental Duration', value: `${stats.avgDays}d` },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
-            <p className="text-xs text-text-muted">{stat.label}</p>
-            <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
-          </div>
+          <MetricCard key={stat.label} label={stat.label} value={stat.value} className={stat.color ? `[&_.text-foreground]:${stat.color}` : ''} />
         ))}
       </div>
 

@@ -3,6 +3,8 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import EmptyState from '@/components/ui/EmptyState';
+import StatusBadge, { GENERIC_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import { Badge } from '@/components/ui/Badge';
 import Link from 'next/link';
 
 /**
@@ -87,30 +89,18 @@ export default async function PortalIndexPage() {
                     <h3 className="text-sm font-semibold text-foreground leading-snug pr-3">
                       {project.name}
                     </h3>
-                    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${
-                      project.status === 'active'
-                        ? 'bg-green-100 text-green-700'
-                        : project.status === 'archived'
-                          ? 'bg-gray-100 text-gray-500'
-                          : 'bg-blue-100 text-blue-700'
-                    }`}>
-                      {project.status}
-                    </span>
+                    <StatusBadge status={project.status} colorMap={GENERIC_STATUS_COLORS} />
                   </div>
 
                   <div className="space-y-2">
                     <div className="flex flex-wrap gap-1.5">
                       {projectPortals.map((p) => (
-                        <span
+                        <Badge
                           key={p.id}
-                          className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${
-                            p.is_published
-                              ? 'bg-green-100 text-green-700'
-                              : 'bg-gray-100 text-gray-500'
-                          }`}
+                          variant={p.is_published ? 'success' : 'muted'}
                         >
                           {p.portal_type.replace(/_/g, ' ')}
-                        </span>
+                        </Badge>
                       ))}
                     </div>
 

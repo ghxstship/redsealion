@@ -66,10 +66,19 @@ export const AVAILABILITY_STATUS_COLORS: Record<string, string> = {
 };
 
 export const PIPELINE_STAGE_COLORS: Record<string, string> = {
+  // DB enum values (canonical)
+  lead: 'bg-blue-50 text-blue-700',
+  qualified: 'bg-indigo-50 text-indigo-700',
+  proposal_sent: 'bg-purple-50 text-purple-700',
+  negotiation: 'bg-amber-50 text-amber-700',
+  verbal_yes: 'bg-emerald-50 text-emerald-700',
+  contract_signed: 'bg-green-50 text-green-700',
+  lost: 'bg-red-50 text-red-700',
+  on_hold: 'bg-bg-secondary text-text-muted',
+  // UI display aliases
   discovery: 'bg-blue-50 text-blue-700',
   qualification: 'bg-indigo-50 text-indigo-700',
   proposal: 'bg-purple-50 text-purple-700',
-  negotiation: 'bg-amber-50 text-amber-700',
   closed_won: 'bg-green-50 text-green-700',
   closed_lost: 'bg-red-50 text-red-700',
 };
@@ -118,6 +127,21 @@ export const LOCATION_TYPE_COLORS: Record<string, string> = {
   restaurant: 'bg-orange-50 text-orange-700',
   virtual: 'bg-cyan-50 text-cyan-700',
   other: 'bg-bg-secondary text-text-muted',
+};
+
+export const LOCATION_TYPE_ICONS: Record<string, string> = {
+  venue: '🏟️',
+  arena: '🏟️',
+  stadium: '🏟️',
+  convention_center: '🏢',
+  hotel: '🏨',
+  outdoor: '🌳',
+  warehouse: '🏭',
+  office: '🏢',
+  studio: '🎥',
+  restaurant: '🍽️',
+  virtual: '💻',
+  other: '📍',
 };
 
 export const ROLE_BADGE_COLORS: Record<string, string> = {
@@ -226,6 +250,17 @@ export const INVOICE_STATUS_COLORS: Record<string, string> = {
   cancelled: 'bg-red-50 text-red-700',
 };
 
+export const PURCHASE_ORDER_STATUS_COLORS: Record<string, string> = {
+  draft: 'bg-bg-secondary text-text-muted',
+  sent: 'bg-blue-50 text-blue-700',
+  acknowledged: 'bg-purple-50 text-purple-700',
+  approved: 'bg-green-50 text-green-700',
+  fulfilled: 'bg-green-50 text-green-700',
+  received: 'bg-teal-50 text-teal-700',
+  closed: 'bg-bg-secondary text-text-secondary',
+  cancelled: 'bg-red-50 text-red-700',
+};
+
 export const SUPPLIER_STATUS_COLORS: Record<string, string> = {
   active: 'bg-green-50 text-green-700',
   inactive: 'bg-bg-secondary text-text-muted',
@@ -243,6 +278,52 @@ export const RENTAL_ORDER_STATUS_COLORS: Record<string, string> = {
   cancelled: 'bg-red-50 text-red-700',
 };
 
+export const RETURN_CONDITION_COLORS: Record<string, string> = {
+  good: 'bg-green-50 text-green-700',
+  fair: 'bg-yellow-50 text-yellow-700',
+  damaged: 'bg-red-50 text-red-700',
+  missing: 'bg-red-100 text-red-800',
+};
+
+export const SUB_RENTAL_STATUS_COLORS: Record<string, string> = {
+  draft: 'bg-bg-secondary text-text-secondary',
+  requested: 'bg-yellow-50 text-yellow-700',
+  confirmed: 'bg-blue-50 text-blue-700',
+  checked_out: 'bg-purple-50 text-purple-700',
+  returned: 'bg-green-50 text-green-700',
+  cancelled: 'bg-red-50 text-red-700',
+};
+
+
+
+
+export const PROJECT_STATUS_COLORS: Record<string, string> = {
+  draft: 'bg-gray-100 text-gray-600',
+  planning: 'bg-bg-secondary text-text-secondary',
+  active: 'bg-green-100 text-green-700',
+  in_progress: 'bg-blue-100 text-blue-700',
+  on_hold: 'bg-amber-100 text-amber-700',
+  completed: 'bg-purple-100 text-purple-700',
+  archived: 'bg-gray-100 text-gray-500',
+};
+
+export const PHASE_STATUS_COLORS: Record<string, string> = {
+  complete: 'bg-green-50 text-green-700',
+  in_progress: 'bg-blue-50 text-blue-700',
+  pending_approval: 'bg-amber-50 text-amber-700',
+  approved: 'bg-green-50 text-green-600',
+  not_started: 'bg-gray-100 text-gray-500',
+  skipped: 'bg-gray-50 text-gray-400',
+};
+
+/** Bar colors for roadmap timeline — solid bg-* classes for progress bars, not text badges */
+export const ROADMAP_BAR_COLORS: Record<string, string> = {
+  approved: 'bg-green-500',
+  sent: 'bg-blue-500',
+  active: 'bg-blue-500',
+  completed: 'bg-text-muted',
+  cancelled: 'bg-red-400',
+};
 export const WORK_ORDER_STATUS_COLORS: Record<string, string> = {
   draft: 'bg-bg-secondary text-text-secondary',
   dispatched: 'bg-blue-50 text-blue-700',
@@ -250,6 +331,48 @@ export const WORK_ORDER_STATUS_COLORS: Record<string, string> = {
   in_progress: 'bg-amber-50 text-amber-700',
   completed: 'bg-green-50 text-green-700',
   cancelled: 'bg-red-50 text-red-700',
+  assigned: 'bg-sky-50 text-sky-700',
+  declined: 'bg-gray-50 text-gray-600',
+};
+
+export const CREW_AVAILABILITY_COLORS: Record<string, string> = {
+  available: 'bg-green-50 text-green-700',
+  unavailable: 'bg-red-50 text-red-700',
+  tentative: 'bg-yellow-50 text-yellow-700',
+};
+
+export const CREW_ONBOARDING_COLORS: Record<string, string> = {
+  complete: 'bg-green-50 text-green-700',
+  in_progress: 'bg-blue-50 text-blue-700',
+  not_started: 'bg-bg-secondary text-text-muted',
+  pending: 'bg-bg-secondary text-text-muted',
+};
+
+export const BOOKING_STATUS_COLORS: Record<string, string> = {
+  confirmed: 'bg-green-50 text-green-700',
+  tentative: 'bg-yellow-50 text-yellow-700',
+  cancelled: 'bg-red-50 text-red-700',
+};
+
+export const PRIORITY_COLORS: Record<string, string> = {
+  low: 'bg-green-50 text-green-700',
+  medium: 'bg-yellow-50 text-yellow-700',
+  high: 'bg-orange-50 text-orange-700',
+  urgent: 'bg-red-50 text-red-700',
+};
+
+export const BID_STATUS_COLORS: Record<string, string> = {
+  pending: 'bg-blue-100 text-blue-800',
+  accepted: 'bg-green-100 text-green-800',
+  rejected: 'bg-red-100 text-red-800',
+  withdrawn: 'bg-gray-100 text-gray-800',
+};
+
+export const PROJECT_STATUS_UPDATE_COLORS: Record<string, string> = {
+  on_track: 'bg-green-100 text-green-700',
+  at_risk: 'bg-amber-100 text-amber-700',
+  off_track: 'bg-red-100 text-red-700',
+  completed: 'bg-blue-100 text-blue-700',
 };
 
 export const DISPATCH_STATUS_COLORS: Record<string, string> = {
@@ -262,11 +385,134 @@ export const DISPATCH_STATUS_COLORS: Record<string, string> = {
 };
 
 export const FABRICATION_STATUS_COLORS: Record<string, string> = {
+  draft: 'bg-bg-secondary text-text-secondary',
   pending: 'bg-yellow-50 text-yellow-700',
   in_production: 'bg-blue-50 text-blue-700',
   quality_check: 'bg-amber-50 text-amber-700',
   completed: 'bg-green-50 text-green-700',
   on_hold: 'bg-bg-secondary text-text-muted',
+  cancelled: 'bg-red-50 text-red-700',
+};
+
+export const BOM_STATUS_COLORS: Record<string, string> = {
+  pending: 'bg-yellow-50 text-yellow-700',
+  ordered: 'bg-blue-50 text-blue-700',
+  received: 'bg-green-50 text-green-700',
+  allocated: 'bg-purple-50 text-purple-700',
+};
+
+export const PRODUCTION_SCHEDULE_STATUS_COLORS: Record<string, string> = {
+  draft: 'bg-yellow-50 text-yellow-700',
+  published: 'bg-blue-50 text-blue-700',
+  live: 'bg-green-50 text-green-700',
+  active: 'bg-green-50 text-green-700',
+  completed: 'bg-bg-secondary text-text-secondary',
+  cancelled: 'bg-red-50 text-red-700',
+};
+
+export const SCHEDULE_BLOCK_STATUS_COLORS: Record<string, string> = {
+  pending: 'bg-bg-secondary text-text-secondary',
+  in_progress: 'bg-blue-50 text-blue-700',
+  completed: 'bg-green-50 text-green-700',
+  cancelled: 'bg-red-50 text-red-700',
+};
+
+export const MILESTONE_STATUS_COLORS: Record<string, string> = {
+  pending: 'bg-yellow-50 text-yellow-700',
+  completed: 'bg-green-50 text-green-700',
+  missed: 'bg-red-50 text-red-700',
+};
+
+export const TERMS_STATUS_COLORS: Record<string, string> = {
+  active: 'bg-green-50 text-green-700',
+  draft: 'bg-bg-secondary text-text-secondary',
+  archived: 'bg-bg-secondary text-text-muted',
+};
+
+export const SCHEDULE_TYPE_COLORS: Record<string, string> = {
+  build_strike: 'bg-purple-50 text-purple-700',
+  run_of_show: 'bg-purple-50 text-purple-700',
+  rehearsal: 'bg-purple-50 text-purple-700',
+  general: 'bg-purple-50 text-purple-700',
+};
+
+export const SCHEDULE_STATUS_COLORS: Record<string, string> = {
+  draft: 'bg-bg-secondary text-text-secondary',
+  confirmed: 'bg-blue-50 text-blue-700',
+  in_progress: 'bg-amber-50 text-amber-700',
+  completed: 'bg-green-50 text-green-700',
+  delayed: 'bg-red-50 text-red-700',
+  on_hold: 'bg-bg-secondary text-text-muted',
+  cancelled: 'bg-red-50 text-red-700',
+};
+
+export const GOAL_STATUS_COLORS: Record<string, string> = {
+  not_started: 'bg-bg-secondary text-text-secondary',
+  in_progress: 'bg-blue-50 text-blue-700',
+  at_risk: 'bg-red-50 text-red-700',
+  on_track: 'bg-green-50 text-green-700',
+  completed: 'bg-green-50 text-green-700',
+  deferred: 'bg-bg-secondary text-text-muted',
+};
+
+export const ADVANCE_STATUS_COLORS: Record<string, string> = {
+  draft: 'bg-bg-secondary text-text-secondary',
+  pending: 'bg-yellow-50 text-yellow-700',
+  submitted: 'bg-amber-50 text-amber-700',
+  approved: 'bg-green-50 text-green-700',
+  rejected: 'bg-red-50 text-red-700',
+  fulfilled: 'bg-green-100 text-green-800',
+  cancelled: 'bg-red-50 text-red-700',
+};
+
+export const COMPLIANCE_STATUS_COLORS: Record<string, string> = {
+  compliant: 'bg-green-50 text-green-700',
+  verified: 'bg-green-50 text-green-700',
+  non_compliant: 'bg-red-50 text-red-700',
+  pending_review: 'bg-yellow-50 text-yellow-700',
+  pending: 'bg-yellow-50 text-yellow-700',
+  expired: 'bg-red-50 text-red-700',
+  rejected: 'bg-zinc-100 text-zinc-500',
+  uploaded: 'bg-blue-50 text-blue-700',
+  not_applicable: 'bg-bg-secondary text-text-muted',
+};
+
+export const MILEAGE_STATUS_COLORS: Record<string, string> = {
+  draft: 'bg-bg-secondary text-text-secondary',
+  submitted: 'bg-amber-50 text-amber-700',
+  approved: 'bg-green-50 text-green-700',
+  rejected: 'bg-red-50 text-red-700',
+  reimbursed: 'bg-green-100 text-green-800',
+};
+
+export const SYNC_STATUS_COLORS: Record<string, string> = {
+  pending: 'bg-yellow-50 text-yellow-700',
+  syncing: 'bg-blue-50 text-blue-700',
+  synced: 'bg-green-50 text-green-700',
+  error: 'bg-red-50 text-red-700',
+  warning: 'bg-amber-50 text-amber-700',
+};
+
+/** Generic fallback — covers the most common status vocabulary. */
+export const GENERIC_STATUS_COLORS: Record<string, string> = {
+  draft: 'bg-bg-secondary text-text-secondary',
+  active: 'bg-green-50 text-green-700',
+  inactive: 'bg-bg-secondary text-text-muted',
+  pending: 'bg-yellow-50 text-yellow-700',
+  submitted: 'bg-amber-50 text-amber-700',
+  approved: 'bg-green-50 text-green-700',
+  rejected: 'bg-red-50 text-red-700',
+  completed: 'bg-green-50 text-green-700',
+  cancelled: 'bg-red-50 text-red-700',
+  in_progress: 'bg-blue-50 text-blue-700',
+  on_hold: 'bg-bg-secondary text-text-muted',
+  overdue: 'bg-red-50 text-red-700',
+  scheduled: 'bg-blue-50 text-blue-700',
+  sent: 'bg-blue-50 text-blue-700',
+  paid: 'bg-green-50 text-green-700',
+  failed: 'bg-red-50 text-red-700',
+  open: 'bg-blue-50 text-blue-700',
+  closed: 'bg-bg-secondary text-text-muted',
 };
 
 /* ────────────────────────────────────────────

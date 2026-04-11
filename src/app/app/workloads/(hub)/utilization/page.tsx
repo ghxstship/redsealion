@@ -4,6 +4,14 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import WorkloadsHubTabs from '../../WorkloadsHubTabs';
 import PageHeader from '@/components/shared/PageHeader';
 
+/** Color map for utilization percentage thresholds. */
+function utilizationColor(pct: number): string {
+  if (pct > 100) return 'bg-red-50 text-red-700';
+  if (pct >= 80) return 'bg-green-50 text-green-700';
+  if (pct >= 50) return 'bg-yellow-50 text-yellow-700';
+  return 'bg-bg-secondary text-text-secondary';
+}
+
 interface CapacityRow {
   name: string;
   role: string;
@@ -61,7 +69,7 @@ const { data: members } = await supabase
 
     return members.map((m: Record<string, unknown>) => {
       const userAlloc = allocationsByUser.get(m.id as string);
-      const available = userAlloc?.available ?? 8;
+      const available = userAlloc?.available ?? 40; // Default 8h * 5 days = 40h/week
       const allocated = userAlloc?.allocated ?? 0;
       const utilization = available > 0 ? Math.round((allocated / available) * 100) : 0;
       return {
@@ -110,13 +118,7 @@ export default async function UtilizationPage() {
                   <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{member.allocated}h</td>
                   <td className="px-6 py-3.5 text-right">
                     <span
-                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        member.utilization > 100
-                          ? 'bg-red-50 text-red-700'
-                          : member.utilization >= 80
-                            ? 'bg-green-50 text-green-700'
-                            : 'bg-yellow-50 text-yellow-700'
-                      }`}
+                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${utilizationColor(member.utilization)}`}
                     >
                       {member.utilization}%
                     </span>

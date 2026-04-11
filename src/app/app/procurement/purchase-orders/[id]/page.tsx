@@ -4,6 +4,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
+import StatusBadge from '@/components/ui/StatusBadge';
 
 async function getPurchaseOrder(id: string) {
   const supabase = await createClient();
@@ -38,7 +39,7 @@ export default async function PurchaseOrderDetailPage({ params }: { params: Prom
 
   if (!po) {
     return (
-      <TierGate feature="profitability">
+      <TierGate feature="procurement">
         <div className="px-8 py-16 text-center">
           <p className="text-sm text-text-secondary">Purchase order not found.</p>
           <Link href="/app/procurement/purchase-orders" className="mt-4 text-sm text-brand-primary hover:underline">← Back to Purchase Orders</Link>
@@ -55,7 +56,7 @@ export default async function PurchaseOrderDetailPage({ params }: { params: Prom
   const vendor = po.vendors as { id: string; name: string; email: string | null; phone: string | null } | null;
 
   return (
-    <TierGate feature="profitability">
+    <TierGate feature="procurement">
       <div className="mb-4">
         <Link href="/app/procurement/purchase-orders" className="text-sm text-brand-primary hover:underline">
           ← Back to Purchase Orders
@@ -68,9 +69,7 @@ export default async function PurchaseOrderDetailPage({ params }: { params: Prom
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-5 mb-8">
         <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Status</p>
-          <span className={`mt-1 inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[po.status] ?? 'bg-bg-secondary text-text-secondary'}`}>
-            {po.status?.replace('_', ' ')}
-          </span>
+          <StatusBadge status={po.status} colorMap={STATUS_COLORS} />
         </div>
         <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Vendor</p>

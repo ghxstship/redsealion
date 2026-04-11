@@ -2,7 +2,9 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
+import StatusBadge, { GENERIC_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import Link from 'next/link';
+import MetricCard from '@/components/ui/MetricCard';
 
 interface SyncError {
   id: string;
@@ -63,20 +65,11 @@ export default async function SyncErrorsPage() {
       </div>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Total Errors</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{errors.length}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Unresolved</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-red-600">{unresolved.length}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Platforms Affected</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">
+        <MetricCard label={"Total Errors"} value={errors.length} />
+        <MetricCard label={"Unresolved"} value={unresolved.length} className="[&_.text-foreground]:text-red-600" />
+        <MetricCard label={"Platforms Affected"} value={"
             {new Set(unresolved.map((e) => e.platform)).size}
-          </p>
-        </div>
+          "} />
       </div>
 
       <div className="rounded-xl border border-border bg-background overflow-hidden">
@@ -104,11 +97,10 @@ export default async function SyncErrorsPage() {
                     <td className="px-4 py-3 text-text-secondary max-w-[300px] truncate">{err.error_message}</td>
                     <td className="px-4 py-3 text-text-muted text-xs whitespace-nowrap">{new Date(err.occurred_at).toLocaleString()}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
-                        err.resolved ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
-                      }`}>
-                        {err.resolved ? 'Resolved' : 'Unresolved'}
-                      </span>
+                      <StatusBadge
+                        status={err.resolved ? 'resolved' : 'unresolved'}
+                        colorMap={{ resolved: 'bg-green-50 text-green-700', unresolved: 'bg-red-50 text-red-700' }}
+                      />
                     </td>
                   </tr>
                 ))}

@@ -4,6 +4,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import DispatchHubTabs from '../../DispatchHubTabs';
 import DispatchKanban, { BoardItem } from '@/components/admin/work-orders/DispatchKanban';
+import Alert from '@/components/ui/Alert';
 
 async function getDispatchBoard() {
   try {
@@ -42,9 +43,7 @@ export default async function DispatchBoardPage() {
       <DispatchHubTabs />
 
       {error && (
-        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
+        <Alert variant="error">{error}</Alert>
       )}
 
       {!error && <DispatchKanban initialColumns={columns} statuses={statuses} />}

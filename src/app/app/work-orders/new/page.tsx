@@ -9,6 +9,7 @@ import FormLabel from '@/components/ui/FormLabel';
 import FormSelect from '@/components/ui/FormSelect';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
+import Alert from '@/components/ui/Alert';
 
 export default function NewWorkOrderPage() {
   const router = useRouter();
@@ -63,7 +64,7 @@ export default function NewWorkOrderPage() {
       </div>
 
       {error && (
-        <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
+        <Alert variant="error">{error}</Alert>
       )}
 
       <div className="max-w-2xl">

@@ -39,6 +39,14 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
   }
   if (Object.keys(updates).length === 0) return NextResponse.json({ error: 'No fields to update' }, { status: 400 });
 
+  if (updates.is_default) {
+    // Unset default on other templates for this org
+    await supabase.from('phase_templates')
+      .update({ is_default: false })
+      .eq('organization_id', perm.organizationId)
+      .neq('id', id);
+  }
+
   const { data, error } = await supabase
     .from('phase_templates')
     .update(updates)

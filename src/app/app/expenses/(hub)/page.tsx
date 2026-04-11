@@ -1,10 +1,10 @@
 import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import { formatCurrency } from '@/lib/utils';
-import Link from 'next/link';
 import ExpensesTable from '@/components/admin/expenses/ExpensesTable';
 import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
 import ExpensesHubTabs from '../ExpensesHubTabs';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
@@ -49,12 +49,7 @@ export default async function ExpensesPage() {
         title="Expenses"
         subtitle="Submit and track expense reports."
       >
-        <Link
-          href="/app/expenses/new"
-          className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90"
-        >
-          New Expense
-        </Link>
+        <Button href="/app/expenses/new">New Expense</Button>
       </PageHeader>
 
       <ExpensesHubTabs />

@@ -4,6 +4,10 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronDown } from 'lucide-react';
 import Button from '@/components/ui/Button';
+import StatusBadge, { TERMS_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import ConfirmDialog from '@/components/shared/ConfirmDialog';
+import { formatDate } from '@/lib/utils';
+import { toast } from 'react-hot-toast';
 
 interface TermsSection {
   number: string;
@@ -32,6 +36,9 @@ export default function TermsDocumentView({ activeDocument, allDocuments }: Prop
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
   const [creating, setCreating] = useState(false);
   const [showVersions, setShowVersions] = useState(false);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [editing, setEditing] = useState(false);
+  const [editingSections, setEditingSections] = useState<TermsSection[]>([]);
 
   function toggleSection(number: string) {
     setExpandedSections((prev) => {
@@ -39,14 +46,6 @@ export default function TermsDocumentView({ activeDocument, allDocuments }: Prop
       if (next.has(number)) next.delete(number);
       else next.add(number);
       return next;
-    });
-  }
-
-  function formatDate(dateStr: string): string {
-    return new Date(dateStr).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
     });
   }
 
@@ -65,6 +64,74 @@ export default function TermsDocumentView({ activeDocument, allDocuments }: Prop
       if (res.ok) router.refresh();
     } finally {
       setCreating(false);
+    }
+  }
+
+  async function handleSetActive(docId: string) {
+    try {
+      // Deactivate all first
+      for (const doc of allDocuments) {
+        if (doc.is_active && doc.id !== docId) {
+          await fetch(`/api/terms/${doc.id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ is_active: false }),
+          });
+        }
+      }
+      // Activate the selected
+      const res = await fetch(`/api/terms/${docId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_active: true, status: 'active' }),
+      });
+      if (res.ok) {
+        toast.success('Version set as active');
+        router.refresh();
+      } else {
+        toast.error('Failed to set active version');
+      }
+    } catch {
+      toast.error('Network error');
+    }
+  }
+
+  async function handleArchive(docId: string) {
+    setDeleteConfirmId(null);
+    try {
+      const res = await fetch(`/api/terms/${docId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'archived', is_active: false }),
+      });
+      if (res.ok) {
+        toast.success('Document archived');
+        router.refresh();
+      } else {
+        toast.error('Failed to archive document');
+      }
+    } catch {
+      toast.error('Network error');
+    }
+  }
+
+  async function handleSaveSections() {
+    if (!activeDocument) return;
+    try {
+      const res = await fetch(`/api/terms/${activeDocument.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sections: editingSections }),
+      });
+      if (res.ok) {
+        toast.success('Sections updated');
+        setEditing(false);
+        router.refresh();
+      } else {
+        toast.error('Failed to update');
+      }
+    } catch {
+      toast.error('Network error');
     }
   }
 
@@ -113,6 +180,15 @@ export default function TermsDocumentView({ activeDocument, allDocuments }: Prop
           </Button>
         )}
         <div className="flex-1" />
+        {!editing ? (
+          <Button variant="ghost" size="sm" onClick={() => { setEditing(true); setEditingSections([...(activeDocument.sections ?? [])]); }}>Edit Sections</Button>
+        ) : (
+          <>
+            <Button variant="ghost" size="sm" onClick={() => setEditing(false)}>Cancel</Button>
+            <Button size="sm" onClick={handleSaveSections}>Save Changes</Button>
+          </>
+        )}
+        <Button variant="secondary" size="sm" onClick={() => setDeleteConfirmId(activeDocument.id)} className="text-red-600 hover:bg-red-50">Archive</Button>
         <Button
           variant="secondary"
           disabled={creating}
@@ -131,11 +207,7 @@ export default function TermsDocumentView({ activeDocument, allDocuments }: Prop
               Version {activeDocument.version} &middot; Updated {formatDate(activeDocument.updated_at)}
             </p>
           </div>
-          <span className={`inline-flex self-start items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-            activeDocument.is_active ? 'bg-green-50 text-green-700' : 'bg-bg-secondary text-text-secondary'
-          }`}>
-            {activeDocument.is_active ? 'Active' : activeDocument.status}
-          </span>
+          <StatusBadge status={activeDocument.is_active ? 'active' : activeDocument.status} colorMap={TERMS_STATUS_COLORS} className="self-start" />
         </div>
       </div>
 
@@ -150,14 +222,26 @@ export default function TermsDocumentView({ activeDocument, allDocuments }: Prop
                   <p className="text-sm text-foreground">{doc.title}</p>
                   <p className="text-xs text-text-muted">{formatDate(doc.created_at)}</p>
                 </div>
-                <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${doc.is_active ? 'bg-green-50 text-green-700' : 'bg-bg-secondary text-text-secondary'}`}>
-                  {doc.is_active ? 'Active' : doc.status}
-                </span>
+                <div className="flex items-center gap-2">
+                  {!doc.is_active && (
+                    <Button variant="ghost" size="sm" onClick={() => handleSetActive(doc.id)}>Set Active</Button>
+                  )}
+                  <StatusBadge status={doc.is_active ? 'active' : doc.status} colorMap={TERMS_STATUS_COLORS} />
+                </div>
               </div>
             ))}
           </div>
         </div>
       )}
+
+      <ConfirmDialog
+        open={deleteConfirmId !== null}
+        title="Archive Document"
+        description="This will archive this terms document version. It will no longer be available for new proposals."
+        confirmLabel="Archive"
+        onConfirm={() => deleteConfirmId && handleArchive(deleteConfirmId)}
+        onCancel={() => setDeleteConfirmId(null)}
+      />
 
       {/* Sections */}
       <div className="space-y-3">

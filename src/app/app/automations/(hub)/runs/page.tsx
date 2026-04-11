@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import StatusBadge, { AUTOMATION_RUN_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import MetricCard from '@/components/ui/MetricCard';
 
 interface RunRow {
   id: string;
@@ -56,24 +57,12 @@ export default async function AutomationRunsPage() {
   return (
     <TierGate feature="automations">
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Total Runs</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{totalRuns}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Completed</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-green-600">{completedRuns}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Failed</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-red-600">{failedRuns}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Success Rate</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">
+        <MetricCard label={"Total Runs"} value={totalRuns} />
+        <MetricCard label={"Completed"} value={completedRuns} className="[&_.text-foreground]:text-green-600" />
+        <MetricCard label={"Failed"} value={failedRuns} className="[&_.text-foreground]:text-red-600" />
+        <MetricCard label={"Success Rate"} value={"
             {totalRuns > 0 ? Math.round((completedRuns / totalRuns) * 100) : 0}%
-          </p>
-        </div>
+          "} />
       </div>
 
       <div className="rounded-xl border border-border bg-background overflow-hidden">

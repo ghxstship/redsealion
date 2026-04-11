@@ -4,7 +4,7 @@ import WeeklyTimesheet from '@/components/admin/time/WeeklyTimesheet';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import TimeHubTabs from '../TimeHubTabs';
 import PageHeader from '@/components/shared/PageHeader';
-import Card from '@/components/ui/Card';
+import MetricCard from '@/components/ui/MetricCard';
 
 interface TimeStats {
   hoursThisWeek: number;
@@ -83,8 +83,8 @@ export default async function TimePage() {
   ];
 
   return (
-    <>
-<PageHeader
+    <TierGate feature="time_tracking">
+      <PageHeader
         title="Time Tracking"
         subtitle="Log hours and manage weekly timesheets."
       />
@@ -93,23 +93,11 @@ export default async function TimePage() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
         {cards.map((card) => (
-          <div
-            key={card.label}
-            className="rounded-xl border border-border bg-background px-5 py-5"
-          >
-            <p className="text-xs font-medium uppercase tracking-wider text-text-muted">
-              {card.label}
-            </p>
-            <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground">
-              {card.value}
-            </p>
-            <p className="mt-1 text-xs text-text-secondary">{card.detail}</p>
-          </div>
+          <MetricCard key={card.label} label={card.label} value={card.value} />
         ))}
       </div>
 
       <WeeklyTimesheet />
-    </>
+    </TierGate>
   );
 }
-

@@ -7,6 +7,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
+import Alert from '@/components/ui/Alert';
 
 const PRIORITIES = ['low', 'medium', 'high', 'urgent'] as const;
 
@@ -149,9 +150,7 @@ export default function NewWorkOrderPage() {
       />
 
       {error && (
-        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
+        <Alert variant="error">{error}</Alert>
       )}
 
       <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">

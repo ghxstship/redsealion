@@ -3,6 +3,8 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import TemplatesHeader from '@/components/admin/templates/TemplatesHeader';
 import TemplateActions from '@/components/admin/templates/TemplateActions';
 import PageHeader from '@/components/shared/PageHeader';
+import StatusBadge, { GENERIC_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import { formatDate } from '@/lib/utils';
 
 interface TemplateRow {
   id: string;
@@ -14,14 +16,6 @@ interface TemplateRow {
 }
 
 
-
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
-}
 
 async function getTemplates(): Promise<TemplateRow[]> {
   try {
@@ -82,9 +76,7 @@ export default async function TemplatesPage() {
                     {template.name}
                   </h3>
                   {template.is_default && (
-                    <span className="inline-flex items-center rounded-full bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-700">
-                      Default
-                    </span>
+                    <StatusBadge status="active" colorMap={{ active: 'bg-green-50 text-green-700' }} />
                   )}
                 </div>
                 <p className="mt-1.5 text-sm text-text-secondary leading-relaxed">

@@ -3,6 +3,8 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import Link from 'next/link';
+import StatusBadge, { WORK_ORDER_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import MetricCard from '@/components/ui/MetricCard';
 
 interface WorkOrderRow {
   id: string;
@@ -15,15 +17,6 @@ interface WorkOrderRow {
   crew_count: number;
   created_at: string;
 }
-
-const STATUS_COLORS: Record<string, string> = {
-  draft: 'bg-yellow-50 text-yellow-700',
-  dispatched: 'bg-blue-50 text-blue-700',
-  accepted: 'bg-indigo-50 text-indigo-700',
-  in_progress: 'bg-purple-50 text-purple-700',
-  completed: 'bg-green-50 text-green-700',
-  cancelled: 'bg-red-50 text-red-700',
-};
 
 const PRIORITY_COLORS: Record<string, string> = {
   low: 'text-green-600',
@@ -70,27 +63,21 @@ export default async function WorkOrdersListPage() {
   return (
     <TierGate feature="work_orders">
       <PageHeader title="Work Orders" subtitle={`${workOrders.length} work orders`}>
-        <Link
-          href="/app/work-orders/new"
-          className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity whitespace-nowrap"
-        >
+        <Link href="/app/work-orders/new" className="inline-flex items-center justify-center rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity whitespace-nowrap">
           New Work Order
         </Link>
       </PageHeader>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">
-        {[
-          { label: 'Total', value: workOrders.length },
-          { label: 'Active', value: active, color: 'text-blue-600' },
-          { label: 'Completed', value: completed, color: 'text-green-600' },
-          { label: 'Draft', value: workOrders.filter((wo) => wo.status === 'draft').length },
-        ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
-            <p className="text-xs text-text-muted">{stat.label}</p>
-            <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
-          </div>
-        ))}
+        <MetricCard label="Total" value={workOrders.length} />
+        <MetricCard label="Active" value={active} className="[&_.text-foreground]:text-blue-600" />
+        <MetricCard label="Completed" value={completed} className="[&_.text-foreground]:text-green-600" />
+        <MetricCard label="Draft" value={workOrders.filter((wo) => wo.status === 'draft').length} />
       </div>
+
+      {workOrders.length >= 200 && (
+        <p className="text-xs text-text-muted mb-4">Showing first 200 of {workOrders.length}+ work orders.</p>
+      )}
 
       <div className="rounded-xl border border-border bg-background overflow-hidden">
         {workOrders.length === 0 ? (
@@ -120,11 +107,7 @@ export default async function WorkOrdersListPage() {
                       </Link>
                     </td>
                     <td className="px-4 py-3 text-foreground max-w-[200px] truncate">{wo.title}</td>
-                    <td className="px-4 py-3">
-                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[wo.status] ?? ''}`}>
-                        {wo.status.replace(/_/g, ' ')}
-                      </span>
-                    </td>
+                    <td className="px-4 py-3"><StatusBadge status={wo.status} colorMap={WORK_ORDER_STATUS_COLORS} /></td>
                     <td className="px-4 py-3">
                       <span className={`font-medium capitalize ${PRIORITY_COLORS[wo.priority] ?? ''}`}>{wo.priority}</span>
                     </td>

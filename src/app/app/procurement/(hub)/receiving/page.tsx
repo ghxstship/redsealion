@@ -5,6 +5,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import Link from 'next/link';
 import ProcurementHubTabs from '../../ProcurementHubTabs';
 import StatusBadge, { RECEIPT_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getReceipts() {
   try {
@@ -31,7 +32,7 @@ export default async function ReceivingPage() {
   const receipts = await getReceipts();
 
   return (
-    <TierGate feature="profitability">
+    <TierGate feature="procurement">
       <PageHeader title="Receiving" subtitle="Log and inspect incoming goods against purchase orders." />
       <ProcurementHubTabs />
 
@@ -47,10 +48,7 @@ export default async function ReceivingPage() {
           { label: 'Complete', value: receipts.filter((r) => r.status === 'complete').length, color: 'text-green-600' },
           { label: 'Partial', value: receipts.filter((r) => r.status === 'partial').length, color: 'text-yellow-600' },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
-            <p className="text-xs text-text-muted">{stat.label}</p>
-            <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
-          </div>
+          <MetricCard key={stat.label} label={stat.label} value={stat.value} className={stat.color ? `[&_.text-foreground]:${stat.color}` : ''} />
         ))}
       </div>
 

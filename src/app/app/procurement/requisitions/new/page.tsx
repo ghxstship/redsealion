@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import PageHeader from '@/components/shared/PageHeader';
 import { TierGate } from '@/components/shared/TierGate';
+import Alert from '@/components/ui/Alert';
 
 interface LineItem {
   id: string;
@@ -76,7 +77,7 @@ export default function NewRequisitionPage() {
   }
 
   return (
-    <TierGate feature="profitability">
+    <TierGate feature="procurement">
       <PageHeader title="New Requisition" subtitle="Submit a purchase request for approval." />
 
       <div className="mb-4">
@@ -86,9 +87,7 @@ export default function NewRequisitionPage() {
       </div>
 
       {error && (
-        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
+        <Alert variant="error">{error}</Alert>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-8 max-w-3xl">

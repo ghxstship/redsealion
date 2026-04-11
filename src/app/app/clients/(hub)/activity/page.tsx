@@ -3,6 +3,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import ClientsHubTabs from '../../ClientsHubTabs';
+import StatusBadge from '@/components/ui/StatusBadge';
 
 async function getActivity() {
   try {
@@ -45,7 +46,7 @@ export default async function ClientActivityPage() {
                 <span className="text-lg mt-0.5">{typeIcons[activity.type] ?? '📌'}</span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="inline-flex rounded-full px-2 py-0.5 text-xs font-medium bg-bg-secondary text-text-secondary capitalize">{activity.type}</span>
+                    <StatusBadge status={activity.type} colorMap={{}} />
                     {activity.deals?.clients?.company_name && (
                       <span className="text-xs text-text-muted">• {activity.deals.clients.company_name}</span>
                     )}

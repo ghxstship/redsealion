@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
+import { requireAdmin } from '@/lib/api/auth-guard';
 
 const VALID_ENTITY_TYPES = ['equipment', 'crew', 'project', 'lead', 'client'] as const;
 
@@ -37,9 +38,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const perm = await checkPermission('settings', 'edit');
-  if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const authMsg = await requireAdmin();
+  if (authMsg.denied) return authMsg.denied;
+  const perm = { organizationId: authMsg.ctx.organizationId };
 
   const body = await request.json().catch(() => ({}));
   const { entity_type, name, color } = body as {
@@ -84,9 +85,9 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  const perm = await checkPermission('settings', 'edit');
-  if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const authMsg = await requireAdmin();
+  if (authMsg.denied) return authMsg.denied;
+  const perm = { organizationId: authMsg.ctx.organizationId };
 
   const { searchParams } = request.nextUrl;
   const id = searchParams.get('id');

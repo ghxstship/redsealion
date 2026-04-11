@@ -3,6 +3,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import ClientsHubTabs from '../../ClientsHubTabs';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getClientLocations() {
   try {
@@ -44,14 +45,8 @@ export default async function ClientMapPage() {
       <ClientsHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Clients with Location</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{clients.length}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">States/Provinces</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{sortedStates.length}</p>
-        </div>
+        <MetricCard label={"Clients with Location"} value={clients.length} />
+        <MetricCard label={"States/Provinces"} value={sortedStates.length} />
         <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Top Region</p>
           <p className="mt-1 text-lg font-semibold text-foreground">{sortedStates[0]?.[0] ?? '—'}</p>

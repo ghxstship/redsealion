@@ -4,6 +4,19 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
 import { notFound } from 'next/navigation';
 import ReplyButton from './ReplyButton';
+import SanitizedHtml from '@/components/ui/SanitizedHtml';
+
+interface EmailMessage {
+  id: string;
+  from_name: string | null;
+  from_email: string | null;
+  to_emails: string[] | null;
+  subject: string | null;
+  body_html: string | null;
+  body_text: string | null;
+  direction: string;
+  sent_at: string;
+}
 
 export default async function EmailThreadPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
@@ -45,7 +58,18 @@ export default async function EmailThreadPage({ params }: { params: Promise<{ id
     .eq('thread_id', threadId)
     .order('sent_at', { ascending: true });
 
-  const finalMessages = messages || [];
+  const finalMessages: EmailMessage[] = (messages || []).map((msg: Record<string, unknown>) => ({
+    id: msg.id as string,
+    from_name: (msg.from_name as string) ?? null,
+    from_email: (msg.from_email as string) ?? null,
+    to_emails: (msg.to_emails as string[]) ?? null,
+    subject: (msg.subject as string) ?? null,
+    body_html: (msg.body_html as string) ?? null,
+    body_text: (msg.body_text as string) ?? null,
+    direction: (msg.direction as string) ?? 'inbound',
+    sent_at: (msg.sent_at as string) ?? '',
+  }));
+
   const subject = thread?.subject || finalMessages[0]?.subject || 'No Subject';
 
   return (
@@ -58,7 +82,7 @@ export default async function EmailThreadPage({ params }: { params: Promise<{ id
       />
 
       <div className="space-y-4 max-w-4xl">
-        {finalMessages.map((msg: any) => (
+        {finalMessages.map((msg) => (
           <div key={msg.id} className={`rounded-xl border p-4 ${msg.direction === 'outbound' ? 'bg-bg-secondary border-border ml-12' : 'bg-background border-border mr-12'}`}>
             <div className="flex justify-between items-start mb-2">
               <div>
@@ -69,7 +93,7 @@ export default async function EmailThreadPage({ params }: { params: Promise<{ id
             </div>
             <div className="text-sm text-foreground prose prose-sm dark:prose-invert max-w-none">
               {msg.body_html ? (
-                <div dangerouslySetInnerHTML={{ __html: msg.body_html }} />
+                <SanitizedHtml html={msg.body_html} />
               ) : (
                 <pre className="font-sans whitespace-pre-wrap">{msg.body_text}</pre>
               )}

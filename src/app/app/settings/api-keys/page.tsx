@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
+import ModalShell from '@/components/ui/ModalShell';
 
 interface ApiKeyRow {
   id: string;
@@ -32,6 +33,8 @@ export default function ApiKeysPage() {
   const [newKeyRevealed, setNewKeyRevealed] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [revokeConfirm, setRevokeConfirm] = useState<string | null>(null);
+  const [showNameModal, setShowNameModal] = useState(false);
+  const [keyName, setKeyName] = useState('');
 
   useEffect(() => {
     fetch('/api/settings/api-keys')
@@ -46,8 +49,10 @@ export default function ApiKeysPage() {
   }, []);
 
   async function handleGenerateKey() {
-    const name = prompt('Enter a name for the new API key:');
-    if (!name) return;
+    if (!keyName.trim()) return;
+    const name = keyName.trim();
+    setShowNameModal(false);
+    setKeyName('');
 
     try {
       const res = await fetch('/api/settings/api-keys', {
@@ -115,7 +120,7 @@ export default function ApiKeysPage() {
             <KeyIcon />
             <h3 className="text-sm font-semibold text-foreground">API Keys</h3>
           </div>
-          <Button onClick={handleGenerateKey}>Generate Key</Button>
+          <Button onClick={() => setShowNameModal(true)}>Generate Key</Button>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -175,6 +180,33 @@ export default function ApiKeysPage() {
           onCancel={() => setRevokeConfirm(null)}
         />
       )}
+
+      <ModalShell
+        open={showNameModal}
+        onClose={() => { setShowNameModal(false); setKeyName(''); }}
+        title="Create API Key"
+      >
+        <form
+          onSubmit={(e) => { e.preventDefault(); handleGenerateKey(); }}
+          className="space-y-4 pt-4"
+        >
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-1">Key Name</label>
+            <input
+              type="text"
+              value={keyName}
+              onChange={(e) => setKeyName(e.target.value)}
+              placeholder="e.g., CI/CD Pipeline"
+              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-foreground/10"
+              autoFocus
+            />
+          </div>
+          <div className="flex justify-end gap-3">
+            <Button type="button" variant="secondary" onClick={() => { setShowNameModal(false); setKeyName(''); }}>Cancel</Button>
+            <Button type="submit" disabled={!keyName.trim()}>Create Key</Button>
+          </div>
+        </form>
+      </ModalShell>
     </div>
   );
 }

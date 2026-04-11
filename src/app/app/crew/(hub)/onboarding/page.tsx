@@ -1,7 +1,10 @@
+import { formatLabel } from '@/lib/utils';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
+import StatusBadge from '@/components/ui/StatusBadge';
+import MetricCard from '@/components/ui/MetricCard';
 
 
 interface OnboardingMember {
@@ -57,12 +60,6 @@ const { data: profiles } = await supabase
   }
 }
 
-function formatLabel(s: string): string {
-  return s
-    .split('_')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ');
-}
 
 function formatDate(dateStr: string): string {
   return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', {
@@ -89,18 +86,9 @@ export default async function OnboardingPage() {
 
       {/* Summary cards */}
       <div className="grid grid-cols-3 gap-4 mb-8">
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Complete</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-green-700">{completeCount}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">In Progress</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-blue-700">{inProgressCount}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Pending</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-text-muted">{pendingCount}</p>
-        </div>
+        <MetricCard label={"Complete"} value={completeCount} className="[&_.text-foreground]:text-green-700" />
+        <MetricCard label={"In Progress"} value={inProgressCount} className="[&_.text-foreground]:text-blue-700" />
+        <MetricCard label={"Pending"} value={pendingCount} className="[&_.text-foreground]:text-text-muted" />
       </div>
 
       {/* Table */}
@@ -134,13 +122,7 @@ export default async function OnboardingPage() {
                   </td>
                   <td className="px-6 py-3.5 text-sm text-text-secondary">{member.email}</td>
                   <td className="px-6 py-3.5">
-                    <span
-                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        STATUS_COLORS[member.onboarding_status] ?? 'bg-bg-secondary text-text-muted'
-                      }`}
-                    >
-                      {formatLabel(member.onboarding_status)}
-                    </span>
+                    <StatusBadge status={member.onboarding_status} colorMap={STATUS_COLORS} />
                   </td>
                   <td className="px-6 py-3.5">
                     <div className="flex items-center gap-3">

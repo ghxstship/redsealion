@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
+import { requireAdmin } from '@/lib/api/auth-guard';
 import { SYSTEM_ROLE_IDS } from '@/types/harbor-master';
 import type { OrganizationRole } from '@/types/database';
 
@@ -34,13 +35,9 @@ const VALID_ROLES: OrganizationRole[] = [
 ];
 
 export async function POST(request: NextRequest) {
-  const perm = await checkPermission('settings', 'edit');
-  if (!perm) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-  if (!perm.allowed) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-  }
+  const authMsg = await requireAdmin();
+  if (authMsg.denied) return authMsg.denied;
+  const perm = { organizationId: authMsg.ctx.organizationId, userId: authMsg.ctx.userId };
 
   const body = await request.json();
   const { email, role, personal_message } = body;

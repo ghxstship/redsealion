@@ -4,6 +4,8 @@
  * @module app/app/proposals/[id]/_detail-types
  */
 
+import { formatLabel } from '@/lib/utils';
+
 /* ─── Types ─────────────────────────────────────────────── */
 
 export type DetailTab = 'overview' | 'builder' | 'preview' | 'export' | 'analytics' | 'versions' | 'activity';
@@ -52,10 +54,7 @@ export interface PhaseData {
 /* ─── Helpers ───────────────────────────────────────────── */
 
 export function formatStatus(status: string): string {
-  return status
-    .split('_')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ');
+  return formatLabel(status);
 }
 
 export const phaseColorMap: Record<string, string> = {

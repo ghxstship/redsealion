@@ -4,6 +4,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import { formatCurrency } from '@/lib/utils';
 import PipelineHubTabs from '../../PipelineHubTabs';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getForecast() {
   try {
@@ -15,7 +16,7 @@ async function getForecast() {
       .select('stage, deal_value, probability')
       .eq('organization_id', ctx.organizationId)
       .is('deleted_at', null)
-      .not('stage', 'eq', 'closed_lost');
+      .not('stage', 'in', '(lost,on_hold)');
 
     const deals = (data ?? []) as Array<{ stage: string; deal_value: number; probability: number }>;
     const stageMap = deals.reduce((acc, d) => {
@@ -43,18 +44,9 @@ export default async function PipelineForecastPage() {
       <PipelineHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Pipeline Value</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{formatCurrency(totalPipeline)}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Weighted Forecast</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-green-600">{formatCurrency(totalWeighted)}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Active Stages</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{stages.length}</p>
-        </div>
+        <MetricCard label={"Pipeline Value"} value={formatCurrency(totalPipeline)} />
+        <MetricCard label={"Weighted Forecast"} value={formatCurrency(totalWeighted)} className="[&_.text-foreground]:text-green-600" />
+        <MetricCard label={"Active Stages"} value={stages.length} />
       </div>
 
       <div className="rounded-xl border border-border bg-background overflow-hidden">

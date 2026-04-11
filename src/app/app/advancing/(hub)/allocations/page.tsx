@@ -4,7 +4,9 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
+import StatusBadge, { ADVANCE_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import AdvancingHubTabs from '../../AdvancingHubTabs';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getAllocations() {
   try {
@@ -39,18 +41,9 @@ export default async function AdvancingAllocationsPage() {
       <AdvancingHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Active Advances</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{advances.length}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Total Allocated</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{formatCurrency(totalAllocated / 100)}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Total Line Items</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{advances.reduce((sum, a) => sum + a.line_item_count, 0)}</p>
-        </div>
+        <MetricCard label={"Active Advances"} value={advances.length} />
+        <MetricCard label={"Total Allocated"} value={formatCurrency(totalAllocated / 100)} />
+        <MetricCard label={"Total Line Items"} value={advances.reduce((sum, a) => sum + a.line_item_count, 0)} />
       </div>
 
       <div className="rounded-xl border border-border bg-background overflow-hidden">
@@ -80,9 +73,7 @@ export default async function AdvancingAllocationsPage() {
                     <td className="px-4 py-3 tabular-nums">{item.line_item_count}</td>
                     <td className="px-4 py-3 tabular-nums">{formatCurrency(item.total_cents / 100)}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${item.status === 'fulfilled' ? 'bg-green-50 text-green-700' : 'bg-blue-50 text-blue-700'}`}>
-                        {item.status.replace('_', ' ')}
-                      </span>
+                      <StatusBadge status={item.status} colorMap={ADVANCE_STATUS_COLORS} />
                     </td>
                   </tr>
                 ))}

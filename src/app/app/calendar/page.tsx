@@ -15,6 +15,11 @@ import ViewTypeSwitcher, { getPersistedView } from '@/components/shared/ViewType
 import { CalendarDays, CalendarRange } from 'lucide-react';
 import { usePreferencesSafe } from '@/components/shared/PreferencesProvider';
 import PageHeader from '@/components/shared/PageHeader';
+import { RoleGate } from '@/components/shared/RoleGate';
+import { TierGate } from '@/components/shared/TierGate';
+import Button from '@/components/ui/Button';
+import Skeleton from '@/components/ui/Skeleton';
+import { CALENDAR_EVENT_COLORS, CALENDAR_EVENT_LABELS } from '@/lib/constants/calendar-events';
 
 const PERSIST_KEY = 'flytedeck:view:calendar-standalone';
 
@@ -27,21 +32,9 @@ interface CalendarEvent {
   href?: string;
 }
 
-const EVENT_COLORS: Record<string, string> = {
-  event: 'bg-rose-100 text-rose-800 border-rose-200',
-  proposal: 'bg-blue-100 text-blue-800 border-blue-200',
-  venue_activation: 'bg-purple-100 text-purple-800 border-purple-200',
-  crew_booking: 'bg-green-100 text-green-800 border-green-200',
-  task: 'bg-amber-100 text-amber-800 border-amber-200',
-};
+const EVENT_COLORS = CALENDAR_EVENT_COLORS;
 
-const EVENT_LABELS: Record<string, string> = {
-  event: 'Event',
-  proposal: 'Proposal',
-  venue_activation: 'Activation',
-  crew_booking: 'Crew',
-  task: 'Task',
-};
+const EVENT_LABELS = CALENDAR_EVENT_LABELS;
 
 function getCalendarDays(year: number, month: number): (number | null)[] {
   const firstDay = new Date(year, month, 1).getDay();
@@ -60,9 +53,11 @@ export default function CalendarPage() {
     getPersistedView(PERSIST_KEY, ['month', 'week'], defaultView === 'day' ? 'month' : defaultView) as 'month' | 'week',
   );
   const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadEvents() {
+      setLoading(true);
       try {
         const ctx = await resolveClientOrg();
         if (!ctx) return;
@@ -71,11 +66,17 @@ export default function CalendarPage() {
         const { createClient } = await import('@/lib/supabase/client');
         const supabase = createClient();
 
+        // Date-range filter: current month ± 1 month buffer
+        const rangeStart = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1).toISOString().slice(0, 10);
+        const rangeEnd = new Date(currentDate.getFullYear(), currentDate.getMonth() + 2, 0).toISOString().slice(0, 10);
+
         const { data: proposals } = await supabase
           .from('proposals')
           .select('id, name, event_start_date, event_end_date')
           .eq('organization_id', orgId)
-          .not('event_start_date', 'is', null);
+          .not('event_start_date', 'is', null)
+          .gte('event_start_date', rangeStart)
+          .lte('event_start_date', rangeEnd);
 
         const proposalEvents: CalendarEvent[] = (proposals ?? [])
           .filter((p: Record<string, unknown>) => p.event_start_date)
@@ -90,7 +91,9 @@ export default function CalendarPage() {
         const { data: allocations } = await supabase
           .from('resource_allocations')
           .select('id, user_id, start_date, end_date, users(full_name)')
-          .eq('organization_id', orgId);
+          .eq('organization_id', orgId)
+          .gte('start_date', rangeStart)
+          .lte('start_date', rangeEnd);
 
         const crewEvents: CalendarEvent[] = (allocations ?? []).map((a: Record<string, unknown>) => ({
           id: a.id as string,
@@ -105,7 +108,9 @@ export default function CalendarPage() {
           .select('id, title, due_date, status, priority')
           .eq('organization_id', orgId)
           .not('due_date', 'is', null)
-          .neq('status', 'done');
+          .neq('status', 'done')
+          .gte('due_date', rangeStart)
+          .lte('due_date', rangeEnd);
 
         const taskEvents: CalendarEvent[] = (taskRows ?? [])
           .filter((t: Record<string, unknown>) => t.due_date)
@@ -122,7 +127,9 @@ export default function CalendarPage() {
           .select('id, name, starts_at, ends_at')
           .eq('organization_id', orgId)
           .is('deleted_at', null)
-          .not('starts_at', 'is', null);
+          .not('starts_at', 'is', null)
+          .gte('starts_at', rangeStart)
+          .lte('starts_at', rangeEnd);
 
         const eventEntries: CalendarEvent[] = (eventRows ?? [])
           .filter((e: Record<string, unknown>) => e.starts_at)
@@ -137,10 +144,12 @@ export default function CalendarPage() {
         setEvents([...eventEntries, ...proposalEvents, ...crewEvents, ...taskEvents]);
       } catch {
         // Silently fail — calendar shows empty
+      } finally {
+        setLoading(false);
       }
     }
     loadEvents();
-  }, []);
+  }, [currentDate]);
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -188,7 +197,8 @@ export default function CalendarPage() {
   }
 
   return (
-    <>
+    <RoleGate resource="calendar">
+    <TierGate feature="calendar">
       <PageHeader
         title="Calendar"
         subtitle="Org-wide view of events, proposals, crew bookings, and tasks."
@@ -207,25 +217,21 @@ export default function CalendarPage() {
       {/* Navigation */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <button
-            onClick={goToPrev}
-            className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
-          >
+          <Button variant="secondary" onClick={goToPrev}>
             &larr; Previous
-          </button>
-          <button
-            onClick={goToNext}
-            className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
-          >
+          </Button>
+          <Button variant="secondary" onClick={goToNext}>
             Next &rarr;
-          </button>
+          </Button>
         </div>
         <h2 className="text-lg font-semibold text-foreground">
           {view === 'month'
             ? `${monthName} ${year}`
             : `Week of ${weekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`}
         </h2>
-        <button className="btn-primary text-sm whitespace-nowrap hidden sm:inline-flex">+ New Event</button>
+        <Button href="/app/events/new" size="sm" className="hidden sm:inline-flex">
+          + New Event
+        </Button>
       </div>
 
       {/* Month view */}
@@ -366,6 +372,7 @@ export default function CalendarPage() {
           Tasks Due
         </div>
       </div>
-    </>
+    </TierGate>
+    </RoleGate>
   );
 }

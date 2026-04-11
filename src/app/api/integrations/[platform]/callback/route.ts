@@ -42,13 +42,13 @@ export async function GET(
 
   if (error) {
     return NextResponse.redirect(
-      new URL(`/app/integrations?error=${encodeURIComponent(error)}`, request.url),
+      new URL(`/app/settings/integrations?error=${encodeURIComponent(error)}`, request.url),
     );
   }
 
   if (!code) {
     return NextResponse.redirect(
-      new URL('/app/integrations?error=missing_code', request.url),
+      new URL('/app/settings/integrations?error=missing_code', request.url),
     );
   }
 
@@ -56,7 +56,7 @@ export async function GET(
   const storedState = request.cookies.get(`oauth_state_${platform}`)?.value;
   if (!state || !storedState || state !== storedState) {
     return NextResponse.redirect(
-      new URL('/app/integrations?error=invalid_state', request.url),
+      new URL('/app/settings/integrations?error=invalid_state', request.url),
     );
   }
 
@@ -80,7 +80,7 @@ export async function GET(
 
     if (!userData) {
       return NextResponse.redirect(
-        new URL('/app/integrations?error=no_org', request.url),
+        new URL('/app/settings/integrations?error=no_org', request.url),
       );
     }
 
@@ -95,7 +95,7 @@ export async function GET(
     const tokenUrl = TOKEN_ENDPOINTS[platform];
     if (!tokenUrl) {
       return NextResponse.redirect(
-        new URL(`/app/integrations?error=unsupported_platform`, request.url),
+        new URL(`/app/settings/integrations?error=unsupported_platform`, request.url),
       );
     }
 
@@ -119,7 +119,7 @@ export async function GET(
       const { createLogger } = await import('@/lib/logger');
       createLogger('integrations').error(`Token exchange failed [${platform}]`, { platform }, new Error(errorBody));
       return NextResponse.redirect(
-        new URL('/app/integrations?error=token_exchange_failed', request.url),
+        new URL('/app/settings/integrations?error=token_exchange_failed', request.url),
       );
     }
 
@@ -149,7 +149,7 @@ export async function GET(
 
     // Clear the state cookie
     const response = NextResponse.redirect(
-      new URL(`/app/integrations/${platform}?connected=true`, request.url),
+      new URL(`/app/settings/integrations?connected=true`, request.url),
     );
     response.cookies.delete(`oauth_state_${platform}`);
     return response;
@@ -157,7 +157,7 @@ export async function GET(
     const { createLogger } = await import('@/lib/logger');
     createLogger('integrations').error(`OAuth callback error [${platform}]`, { platform }, err);
     return NextResponse.redirect(
-      new URL('/app/integrations?error=callback_failed', request.url),
+      new URL('/app/settings/integrations?error=callback_failed', request.url),
     );
   }
 }

@@ -4,6 +4,9 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import Link from 'next/link';
 import DispatchHubTabs from '../../DispatchHubTabs';
+import Alert from '@/components/ui/Alert';
+import StatusBadge from '@/components/ui/StatusBadge';
+import MetricCard from '@/components/ui/MetricCard';
 
 interface RouteItem {
   id: string;
@@ -55,24 +58,13 @@ export default async function DispatchRoutesPage() {
       <DispatchHubTabs />
 
       {error && (
-        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
+        <Alert variant="error">{error}</Alert>
       )}
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Active Dispatches</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{routes.length}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Unique Locations</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{uniqueLocations}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">In Progress</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-green-600">{routes.filter((r) => r.status === 'in_progress').length}</p>
-        </div>
+        <MetricCard label={"Active Dispatches"} value={routes.length} />
+        <MetricCard label={"Unique Locations"} value={uniqueLocations} />
+        <MetricCard label={"In Progress"} value={routes.filter((r) => r.status === 'in_progress').length} className="[&_.text-foreground]:text-green-600" />
       </div>
 
       <div className="rounded-xl border border-border bg-background overflow-hidden">
@@ -102,9 +94,7 @@ export default async function DispatchRoutesPage() {
                     <td className="px-4 py-3 text-text-secondary">{crewNames(r)}</td>
                     <td className="px-4 py-3 text-text-secondary">{r.scheduled_start ? new Date(r.scheduled_start).toLocaleDateString() : '—'}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${r.status === 'in_progress' ? 'bg-purple-50 text-purple-700' : 'bg-blue-50 text-blue-700'}`}>
-                        {r.status === 'in_progress' ? 'In Progress' : 'Dispatched'}
-                      </span>
+                      <StatusBadge status={r.status} colorMap={{in_progress: 'bg-purple-50 text-purple-700', dispatched: 'bg-blue-50 text-blue-700', draft: 'bg-blue-50 text-blue-700'}} />
                     </td>
                   </tr>
                 ))}

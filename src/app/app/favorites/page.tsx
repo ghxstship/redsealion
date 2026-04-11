@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
+import StatusBadge, { GENERIC_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import { Star } from 'lucide-react';
 import Link from 'next/link';
 import FavoriteButton from '@/components/shared/FavoriteButton';
@@ -20,8 +21,7 @@ const ENTITY_CONFIGS: Record<string, EntityConfig> = {
   projects: { table: 'projects', nameField: 'name', hrefBase: '/app/projects', label: 'Projects' },
   equipment: { table: 'assets', nameField: 'name', hrefBase: '/app/equipment', label: 'Equipment' },
   deals: { table: 'deals', nameField: 'title', hrefBase: '/app/pipeline', label: 'Deals' },
-  invoices: { table: 'invoices', nameField: 'invoice_number', hrefBase: '/app/finance/invoices', label: 'Invoices' },
-  contacts: { table: 'clients', nameField: 'company_name', hrefBase: '/app/clients', label: 'Contacts' },
+  invoices: { table: 'invoices', nameField: 'invoice_number', hrefBase: '/app/invoices', label: 'Invoices' },
 };
 
 async function getFavoritedItems() {
@@ -106,9 +106,9 @@ export default async function FavoritesPage() {
                       <Link href={`${config.hrefBase}/${item.id}`} className="flex-1 px-5 py-3 block">
                         <div className="flex items-center justify-between">
                           <p className="text-sm font-medium text-foreground">{item[config.nameField] as string}</p>
-                          <span className="inline-flex rounded-full px-2 py-0.5 text-xs font-medium bg-bg-secondary text-text-secondary capitalize">
-                            {(item.status as string)?.replace('_', ' ')}
-                          </span>
+                          {(item.status as string) && (
+                            <StatusBadge status={item.status as string} colorMap={GENERIC_STATUS_COLORS} />
+                          )}
                         </div>
                       </Link>
                       <div className="px-5">

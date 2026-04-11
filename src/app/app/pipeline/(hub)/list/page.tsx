@@ -5,20 +5,44 @@ import PageHeader from '@/components/shared/PageHeader';
 import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
 import PipelineHubTabs from '../../PipelineHubTabs';
+import StatusBadge, { PIPELINE_STAGE_COLORS } from '@/components/ui/StatusBadge';
+import MetricCard from '@/components/ui/MetricCard';
 
-async function getDeals() {
+const PAGE_SIZE = 50;
+
+interface DealRow {
+  id: string;
+  title: string;
+  stage: string;
+  value: number;
+  probability: number;
+  expected_close_date: string | null;
+  clients: { name: string } | null;
+}
+
+/**
+ * Pipeline List Page
+ *
+ * #41: Server-side pagination via searchParams.page
+ */
+
+async function getDeals(page: number): Promise<{ deals: DealRow[]; total: number }> {
   try {
     const supabase = await createClient();
     const ctx = await resolveCurrentOrg();
-    if (!ctx) return [];
-    const { data } = await supabase
+    if (!ctx) return { deals: [], total: 0 };
+
+    const offset = (page - 1) * PAGE_SIZE;
+
+    const { data, count } = await supabase
       .from('deals')
-      .select('id, title, stage, deal_value, probability, expected_close_date, clients(company_name)')
+      .select('id, title, stage, deal_value, probability, expected_close_date, clients(company_name)', { count: 'exact' })
       .eq('organization_id', ctx.organizationId)
       .is('deleted_at', null)
       .order('deal_value', { ascending: false })
-      .limit(1000);
-    return (data ?? []).map((d: Record<string, unknown>) => ({
+      .range(offset, offset + PAGE_SIZE - 1);
+
+    const deals = (data ?? []).map((d: Record<string, unknown>) => ({
       id: d.id as string,
       title: d.title as string,
       stage: d.stage as string,
@@ -27,11 +51,20 @@ async function getDeals() {
       expected_close_date: d.expected_close_date as string | null,
       clients: d.clients ? { name: (Array.isArray(d.clients) ? (d.clients as Record<string, unknown>[])[0]?.company_name as string : (d.clients as Record<string, unknown>).company_name as string) ?? '' } : null,
     }));
-  } catch { return []; }
+
+    return { deals, total: count ?? 0 };
+  } catch { return { deals: [], total: 0 }; }
 }
 
-export default async function PipelineListPage() {
-  const deals = await getDeals();
+export default async function PipelineListPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const params = await searchParams;
+  const currentPage = Math.max(1, parseInt(params.page || '1', 10) || 1);
+  const { deals, total } = await getDeals(currentPage);
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const totalValue = deals.reduce((s, d) => s + (d.value ?? 0), 0);
   const weightedValue = deals.reduce((s, d) => s + (d.value ?? 0) * ((d.probability ?? 0) / 100), 0);
 
@@ -40,19 +73,11 @@ export default async function PipelineListPage() {
       <PageHeader title="Pipeline List" subtitle="All deals in a sortable table view." />
       <PipelineHubTabs />
 
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Total Deals</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{deals.length}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Pipeline Value</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{formatCurrency(totalValue)}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Weighted Value</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-green-600">{formatCurrency(weightedValue)}</p>
-        </div>
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">
+        <MetricCard label="Total Deals" value={total} />
+        <MetricCard label="Pipeline Value" value={formatCurrency(totalValue)} />
+        <MetricCard label="Weighted Value" value={formatCurrency(weightedValue)} className="[&_.text-foreground]:text-green-600" />
+        <MetricCard label="Page" value={`${currentPage} / ${totalPages}`} />
       </div>
 
       <div className="rounded-xl border border-border bg-background overflow-hidden">
@@ -80,7 +105,7 @@ export default async function PipelineListPage() {
                       <Link href={`/app/pipeline/${deal.id}`} className="font-medium text-foreground hover:underline">{deal.title}</Link>
                     </td>
                     <td className="px-4 py-3 text-text-secondary">{deal.clients?.name ?? '—'}</td>
-                    <td className="px-4 py-3"><span className="inline-flex rounded-full px-2 py-0.5 text-xs font-medium bg-blue-50 text-blue-700 capitalize">{deal.stage?.replace('_', ' ')}</span></td>
+                    <td className="px-4 py-3"><StatusBadge status={deal.stage} colorMap={PIPELINE_STAGE_COLORS} /></td>
                     <td className="px-4 py-3 tabular-nums">{formatCurrency(deal.value)}</td>
                     <td className="px-4 py-3 tabular-nums">{deal.probability}%</td>
                     <td className="px-4 py-3 text-text-secondary">{deal.expected_close_date ? new Date(deal.expected_close_date).toLocaleDateString() : '—'}</td>
@@ -91,6 +116,33 @@ export default async function PipelineListPage() {
           </div>
         )}
       </div>
+
+      {/* #41: Server-side pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between mt-4 text-sm text-text-muted">
+          <span>
+            Showing {((currentPage - 1) * PAGE_SIZE) + 1}–{Math.min(currentPage * PAGE_SIZE, total)} of {total} deals
+          </span>
+          <div className="flex gap-2">
+            {currentPage > 1 && (
+              <Link
+                href={`/app/pipeline/list?page=${currentPage - 1}`}
+                className="rounded-lg border border-border px-3 py-1.5 hover:bg-bg-secondary transition-colors"
+              >
+                ← Previous
+              </Link>
+            )}
+            {currentPage < totalPages && (
+              <Link
+                href={`/app/pipeline/list?page=${currentPage + 1}`}
+                className="rounded-lg border border-border px-3 py-1.5 hover:bg-bg-secondary transition-colors"
+              >
+                Next →
+              </Link>
+            )}
+          </div>
+        </div>
+      )}
     </TierGate>
   );
 }

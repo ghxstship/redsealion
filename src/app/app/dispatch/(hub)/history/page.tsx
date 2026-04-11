@@ -4,6 +4,8 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import Link from 'next/link';
 import DispatchHubTabs from '../../DispatchHubTabs';
+import Alert from '@/components/ui/Alert';
+import MetricCard from '@/components/ui/MetricCard';
 
 interface HistoryItem {
   id: string;
@@ -54,20 +56,12 @@ export default async function DispatchHistoryPage() {
       <DispatchHubTabs />
 
       {error && (
-        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
+        <Alert variant="error">{error}</Alert>
       )}
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 mb-8">
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Completed Dispatches</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{history.length}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Unique Locations Served</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{new Set(history.map((h) => h.location_name).filter(Boolean)).size}</p>
-        </div>
+        <MetricCard label={"Completed Dispatches"} value={history.length} />
+        <MetricCard label={"Unique Locations Served"} value={new Set(history.map((h) => h.location_name).filter(Boolean)).size} />
       </div>
 
       <div className="rounded-xl border border-border bg-background overflow-hidden">

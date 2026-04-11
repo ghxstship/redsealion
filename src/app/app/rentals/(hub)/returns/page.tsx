@@ -3,6 +3,8 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import RentalsHubTabs from '../../RentalsHubTabs';
+import StatusBadge, { RETURN_CONDITION_COLORS } from '@/components/ui/StatusBadge';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getReturns() {
   try {
@@ -11,10 +13,11 @@ async function getReturns() {
     if (!ctx) return [];
     const { data } = await supabase
       .from('rental_line_items')
-      .select('id, name, quantity, status, rental_orders(order_number, rental_end)')
+      .select('id, name, quantity, status, rental_orders!inner(order_number, rental_end, organization_id)')
+      .eq('rental_orders.organization_id', ctx.organizationId)
       .in('status', ['returned', 'damaged', 'lost'])
       .order('created_at', { ascending: false })
-      .limit(50);
+      .limit(100);
     return (data ?? []).map((r: Record<string, unknown>) => ({
       id: r.id as string, name: r.name as string, quantity: r.quantity as number, status: r.status as string,
       order_number: Array.isArray(r.rental_orders) ? (r.rental_orders as Record<string, unknown>[])[0]?.order_number as string : (r.rental_orders as Record<string, unknown> | null)?.order_number as string ?? null,
@@ -40,10 +43,7 @@ export default async function ReturnsPage() {
           { label: 'Damaged', value: damaged, color: 'text-orange-600' },
           { label: 'Lost', value: lost, color: 'text-red-600' },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
-            <p className="text-xs text-text-muted">{stat.label}</p>
-            <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
-          </div>
+          <MetricCard key={stat.label} label={stat.label} value={stat.value} className={stat.color ? `[&_.text-foreground]:${stat.color}` : ''} />
         ))}
       </div>
 
@@ -63,7 +63,7 @@ export default async function ReturnsPage() {
                     <td className="px-4 py-3 text-text-secondary">{r.order_number ?? '—'}</td>
                     <td className="px-4 py-3 tabular-nums">{r.quantity}</td>
                     <td className="px-4 py-3 text-text-secondary">{r.rental_end ? new Date(r.rental_end).toLocaleDateString() : '—'}</td>
-                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${r.status === 'returned' ? 'bg-green-50 text-green-700' : r.status === 'damaged' ? 'bg-orange-50 text-orange-700' : 'bg-red-50 text-red-700'}`}>{r.status}</span></td>
+                    <td className="px-4 py-3"><StatusBadge status={r.status} colorMap={RETURN_CONDITION_COLORS} /></td>
                   </tr>
                 ))}
               </tbody>

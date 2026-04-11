@@ -3,6 +3,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import PageHeader from '@/components/shared/PageHeader';
+import Alert from '@/components/ui/Alert';
+import Button from '@/components/ui/Button';
+import FormInput from '@/components/ui/FormInput';
+import FormLabel from '@/components/ui/FormLabel';
 
 export default function NewCampaignPage() {
   const router = useRouter();
@@ -61,21 +65,21 @@ export default function NewCampaignPage() {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {error && (
-          <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
+          <Alert variant="error">{error}</Alert>
         )}
 
         <div className="rounded-xl border border-border bg-background p-6 space-y-4">
           <h2 className="text-sm font-semibold text-foreground">Campaign Details</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label htmlFor="c-name" className="block text-xs font-medium text-text-secondary mb-1">Name</label>
-              <input id="c-name" name="name" required value={form.name} onChange={handleChange}
-                className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground" placeholder="Q2 Product Announcement" />
+              <FormLabel htmlFor="c-name">Name</FormLabel>
+              <FormInput id="c-name" name="name" required value={form.name} onChange={handleChange}
+                placeholder="Q2 Product Announcement" />
             </div>
             <div>
-              <label htmlFor="c-subject" className="block text-xs font-medium text-text-secondary mb-1">Subject Line</label>
-              <input id="c-subject" name="subject" required value={form.subject} onChange={handleChange}
-                className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground" placeholder="Exciting updates from our team" />
+              <FormLabel htmlFor="c-subject">Subject Line</FormLabel>
+              <FormInput id="c-subject" name="subject" required value={form.subject} onChange={handleChange}
+                placeholder="Exciting updates from our team" />
             </div>
           </div>
         </div>
@@ -105,22 +109,20 @@ export default function NewCampaignPage() {
           </label>
           {!form.target_all_clients && (
             <div>
-              <label htmlFor="c-tags" className="block text-xs font-medium text-text-secondary mb-1">Filter by Tags (comma-separated)</label>
-              <input id="c-tags" name="target_tags" value={form.target_tags} onChange={handleChange}
-                className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground" placeholder="vip, returning, enterprise" />
+              <FormLabel htmlFor="c-tags">Filter by Tags (comma-separated)</FormLabel>
+              <FormInput id="c-tags" name="target_tags" value={form.target_tags} onChange={handleChange}
+                placeholder="vip, returning, enterprise" />
             </div>
           )}
         </div>
 
         <div className="flex justify-end gap-3">
-          <button type="button" onClick={() => router.back()}
-            className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
+          <Button variant="secondary" type="button" onClick={() => router.back()}>
             Cancel
-          </button>
-          <button type="submit" disabled={saving || !form.name || !form.subject}
-            className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50">
+          </Button>
+          <Button type="submit" disabled={saving || !form.name || !form.subject}>
             {saving ? 'Creating…' : 'Create Campaign'}
-          </button>
+          </Button>
         </div>
       </form>
     </div>

@@ -3,7 +3,9 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import Link from 'next/link';
+import StatusBadge, { PRODUCTION_SCHEDULE_STATUS_COLORS, SCHEDULE_BLOCK_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import ScheduleHubTabs from '../../ScheduleHubTabs';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getBuildStrikeSchedules() {
   try {
@@ -56,18 +58,9 @@ export default async function BuildStrikePage() {
       <ScheduleHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Build & Strike Schedules</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{schedules.length}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Total Blocks</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{blocks.length}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">In Progress</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-blue-600">{blocks.filter((b) => b.status === 'in_progress').length}</p>
-        </div>
+        <MetricCard label={"Build & Strike Schedules"} value={schedules.length} />
+        <MetricCard label={"Total Blocks"} value={blocks.length} />
+        <MetricCard label={"In Progress"} value={blocks.filter((b) => b.status === 'in_progress').length} className="[&_.text-foreground]:text-blue-600" />
       </div>
 
       {schedules.length === 0 ? (
@@ -85,7 +78,7 @@ export default async function BuildStrikePage() {
                     <Link href={`/app/schedule/${schedule.id}`} className="text-sm font-semibold text-foreground hover:underline">{schedule.name}</Link>
                     {schedule.event_name && <span className="text-xs text-text-muted ml-2">• {schedule.event_name}</span>}
                   </div>
-                  <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${schedule.status === 'live' ? 'bg-green-50 text-green-700' : 'bg-yellow-50 text-yellow-700'}`}>{schedule.status}</span>
+                  <StatusBadge status={schedule.status} colorMap={PRODUCTION_SCHEDULE_STATUS_COLORS} />
                 </div>
                 {scheduleBlocks.length === 0 ? (
                   <div className="px-5 py-8 text-center text-xs text-text-muted">No blocks defined yet</div>
@@ -101,7 +94,7 @@ export default async function BuildStrikePage() {
                           </div>
                           <div className="text-right">
                             <p className="text-xs text-text-secondary">{new Date(block.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} – {new Date(block.end_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
-                            <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium mt-1 ${block.status === 'completed' ? 'bg-green-50 text-green-700' : block.status === 'in_progress' ? 'bg-blue-50 text-blue-700' : 'bg-bg-secondary text-text-secondary'}`}>{block.status.replace('_', ' ')}</span>
+                            <StatusBadge status={block.status} colorMap={SCHEDULE_BLOCK_STATUS_COLORS} className="mt-1" />
                           </div>
                         </div>
                       </div>

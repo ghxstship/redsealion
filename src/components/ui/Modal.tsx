@@ -1,7 +1,7 @@
 /**
- * Modal — thin alias for ModalShell.
- * Prefer importing ModalShell directly. This file exists only to satisfy
- * import paths that reference 'Modal' from the ui barrel.
+ * @deprecated Use `ModalShell` directly instead.
+ * This file exists only as a compatibility alias for older imports.
+ * All new code should import from `@/components/ui/ModalShell`.
  */
 export { default } from './ModalShell';
 export type { default as ModalProps } from './ModalShell';

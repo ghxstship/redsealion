@@ -3,6 +3,8 @@ import { TierGate } from '@/components/shared/TierGate';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import EmptyState from '@/components/ui/EmptyState';
+import { formatLabel } from '@/lib/utils';
+import StatusBadge, { GENERIC_STATUS_COLORS } from '@/components/ui/StatusBadge';
 
 interface AutomationRow {
   id: string;
@@ -15,9 +17,7 @@ interface AutomationRow {
   last_run_at: string | null;
 }
 
-function formatLabel(type: string): string {
-  return type.split('_').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-}
+
 
 async function getAutomations(): Promise<AutomationRow[]> {
   try {
@@ -63,7 +63,7 @@ export default async function AutomationsPage() {
                   {automation.name}
                 </h3>
                 <span
-                  className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
+                  className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${
                     automation.is_active
                       ? 'bg-green-100 text-green-800'
                       : 'bg-bg-secondary text-text-muted'

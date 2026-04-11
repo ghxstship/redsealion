@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import PageHeader from '@/components/shared/PageHeader';
 import { TierGate } from '@/components/shared/TierGate';
+import Alert from '@/components/ui/Alert';
 
 export default function NewSupplierPage() {
   const router = useRouter();
@@ -67,7 +68,7 @@ export default function NewSupplierPage() {
   }
 
   return (
-    <TierGate feature="profitability">
+    <TierGate feature="procurement">
       <PageHeader title="Add Supplier" subtitle="Register a new vendor for procurement." />
 
       <div className="mb-4">
@@ -77,9 +78,7 @@ export default function NewSupplierPage() {
       </div>
 
       {error && (
-        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
+        <Alert variant="error">{error}</Alert>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">

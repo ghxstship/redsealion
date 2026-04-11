@@ -7,6 +7,8 @@ import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
 import FormSelect from '@/components/ui/FormSelect';
 import Button from '@/components/ui/Button';
+import Alert from '@/components/ui/Alert';
+import { COST_CATEGORIES } from '@/lib/constants/project';
 
 interface AddCostButtonProps {
   proposalId: string;
@@ -59,21 +61,15 @@ export default function AddCostButton({ proposalId }: AddCostButtonProps) {
       <ModalShell title="Add Project Cost" open={open} onClose={() => setOpen(false)}>
         <form onSubmit={handleSubmit} className="space-y-4 pt-2">
           {error && (
-            <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>
+            <Alert variant="error">{error}</Alert>
           )}
           <div>
             <FormLabel>Category *</FormLabel>
             <FormSelect name="category" required>
               <option value="">Select category...</option>
-              <option value="labor">Labor</option>
-              <option value="materials">Materials</option>
-              <option value="equipment">Equipment</option>
-              <option value="subcontractor">Subcontractor</option>
-              <option value="travel">Travel</option>
-              <option value="venue">Venue</option>
-              <option value="catering">Catering</option>
-              <option value="permits">Permits & Insurance</option>
-              <option value="other">Other</option>
+              {COST_CATEGORIES.map((cat) => (
+                <option key={cat.value} value={cat.value}>{cat.label}</option>
+              ))}
             </FormSelect>
           </div>
           <div>

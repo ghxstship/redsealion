@@ -4,7 +4,9 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
+import StatusBadge, { FABRICATION_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import FabricationHubTabs from '../../FabricationHubTabs';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getPrintJobs() {
   try {
@@ -33,18 +35,9 @@ export default async function PrintPage() {
       <FabricationHubTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Print Jobs</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{jobs.length}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">In Production</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-blue-600">{jobs.filter((j) => j.status === 'in_production').length}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-background p-4">
-          <p className="text-xs text-text-muted">Total Cost</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{formatCurrency(jobs.reduce((s, j) => s + j.total_cost_cents, 0) / 100)}</p>
-        </div>
+        <MetricCard label="Print Jobs" value={jobs.length} />
+        <MetricCard label="In Production" value={jobs.filter((j) => j.status === 'in_production').length} className="[&_.text-foreground]:text-blue-600" />
+        <MetricCard label="Total Cost" value={formatCurrency(jobs.reduce((s, j) => s + j.total_cost_cents, 0) / 100)} />
       </div>
 
       <div className="rounded-xl border border-border bg-background overflow-hidden">
@@ -64,7 +57,7 @@ export default async function PrintPage() {
                     <td className="px-4 py-3 tabular-nums">{j.quantity}</td>
                     <td className="px-4 py-3 tabular-nums">{formatCurrency(j.total_cost_cents / 100)}</td>
                     <td className="px-4 py-3 text-text-secondary">{j.due_date ? new Date(j.due_date).toLocaleDateString() : '—'}</td>
-                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${j.status === 'completed' ? 'bg-green-50 text-green-700' : j.status === 'in_production' ? 'bg-blue-50 text-blue-700' : 'bg-yellow-50 text-yellow-700'}`}>{j.status.replace('_', ' ')}</span></td>
+                    <td className="px-4 py-3"><StatusBadge status={j.status} colorMap={FABRICATION_STATUS_COLORS} /></td>
                   </tr>
                 ))}
               </tbody>

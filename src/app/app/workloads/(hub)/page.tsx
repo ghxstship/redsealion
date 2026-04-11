@@ -3,7 +3,8 @@ import { TierGate } from '@/components/shared/TierGate';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import WorkloadsHubTabs from '../WorkloadsHubTabs';
 import PageHeader from '@/components/shared/PageHeader';
-import Card from '@/components/ui/Card';
+import MetricCard from '@/components/ui/MetricCard';
+import WorkloadsActions from './WorkloadsActions';
 
 interface ResourceStats {
   totalAllocations: number;
@@ -100,17 +101,15 @@ export default async function WorkloadsPage() {
       <PageHeader
         title="Workload Management"
         subtitle="Plan workloads and allocate team members to projects."
-      />
+      >
+        <WorkloadsActions />
+      </PageHeader>
 
       <WorkloadsHubTabs />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-8">
         {cards.map((card) => (
-          <div key={card.label} className="rounded-xl border border-border bg-background px-5 py-5">
-            <p className="text-xs font-medium uppercase tracking-wider text-text-muted">{card.label}</p>
-            <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground">{card.value}</p>
-            <p className="mt-1 text-xs text-text-secondary">{card.detail}</p>
-          </div>
+          <MetricCard key={card.label} label={card.label} value={card.value} detail={card.detail} />
         ))}
       </div>
 

@@ -1,9 +1,11 @@
+import { formatLabel } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import LocationsTable, { type LocationItem } from '@/components/admin/locations/LocationsTable';
 import LocationsHeader from '@/components/admin/locations/LocationsHeader';
 import PageHeader from '@/components/shared/PageHeader';
 import EventsHubTabs from '../../EventsHubTabs';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getLocations(): Promise<LocationItem[]> {
   try {
@@ -39,9 +41,6 @@ async function getLocations(): Promise<LocationItem[]> {
   }
 }
 
-function formatLabel(s: string): string {
-  return s.split('_').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-}
 
 export default async function LocationsPage() {
   const locations = await getLocations();
@@ -76,9 +75,8 @@ export default async function LocationsPage() {
       {topTypes.length > 0 && (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">
           {topTypes.map(([typeStr, count]) => (
-            <Link key={typeStr} href={`/app/events/locations?type=${typeStr}`} className="rounded-xl border border-border bg-background p-4 hover:bg-bg-secondary transition-colors block">
-              <p className="text-xs text-text-muted">{formatLabel(typeStr)}</p>
-              <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{count}</p>
+            <Link key={typeStr} href={`/app/events/locations?type=${typeStr}`} className="block">
+              <MetricCard label={formatLabel(typeStr)} value={count} className="hover:bg-bg-secondary transition-colors" />
             </Link>
           ))}
         </div>

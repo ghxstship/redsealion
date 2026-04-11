@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
+import Alert from '@/components/ui/Alert';
 
 interface ConvertToRentalButtonProps {
   orderId: string;
@@ -14,6 +15,7 @@ interface ConvertToRentalButtonProps {
 export default function ConvertToRentalButton({ orderId, orderNumber, currentStatus }: ConvertToRentalButtonProps) {
   const router = useRouter();
   const [converting, setConverting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [showConfirm, setShowConfirm] = useState(false);
 
   // Only show for reserved orders
@@ -34,10 +36,10 @@ export default function ConvertToRentalButton({ orderId, orderNumber, currentSta
         router.refresh();
       } else {
         const data = await res.json().catch(() => ({}));
-        alert(data.error ?? 'Failed to convert reservation.');
+        setError(data.error ?? 'Failed to convert reservation.');
       }
     } catch {
-      alert('Network error.');
+      setError('Network error.');
     } finally {
       setConverting(false);
     }

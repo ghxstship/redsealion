@@ -52,7 +52,7 @@ export default async function FilesPage() {
   const stats = await getFileStats();
 
   return (
-    <TierGate feature="proposals">
+    <TierGate feature="files">
 <PageHeader
         title="Files"
         subtitle="All documents and attachments across your organization."

@@ -4,6 +4,8 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import EquipmentHubTabs from '../../EquipmentHubTabs';
 import CheckInOutHeader from '@/components/admin/equipment/CheckInOutHeader';
+import StatusBadge from '@/components/ui/StatusBadge';
+import MetricCard from '@/components/ui/MetricCard';
 
 async function getCheckouts() {
   try {
@@ -99,10 +101,7 @@ export default async function CheckInOutPage() {
           { label: 'Returned', value: returned.length },
           { label: 'Issues', value: issues.length, color: issues.length > 0 ? 'text-red-600' : 'text-foreground' },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
-            <p className="text-xs text-text-muted">{stat.label}</p>
-            <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
-          </div>
+          <MetricCard key={stat.label} label={stat.label} value={stat.value} className={stat.color ? `[&_.text-foreground]:${stat.color}` : ''} />
         ))}
       </div>
 
@@ -137,9 +136,7 @@ export default async function CheckInOutPage() {
                   </div>
                 </div>
                 <div className="text-right shrink-0">
-                  <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[c.status]}`}>
-                    {c.status.replace('_', ' ')}
-                  </span>
+                  <StatusBadge status={c.status} colorMap={STATUS_COLORS} />
                   <p className="text-xs text-text-muted mt-1">{new Date(c.checked_out_at).toLocaleDateString()}</p>
                   <p className={`text-xs mt-0.5 ${CONDITION_COLORS[c.condition_out]}`}>
                     Condition: {c.condition_out}
@@ -190,7 +187,7 @@ export default async function CheckInOutPage() {
                     <td className="px-4 py-3"><span className={`text-xs font-medium capitalize ${CONDITION_COLORS[c.condition_out]}`}>{c.condition_out}</span></td>
                     <td className="px-4 py-3">{c.condition_in ? <span className={`text-xs font-medium capitalize ${CONDITION_COLORS[c.condition_in]}`}>{c.condition_in}</span> : '—'}</td>
                     <td className="px-4 py-3 text-text-muted text-xs">{c.checked_out_by_name ?? '—'}</td>
-                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[c.status]}`}>{c.status.replace('_', ' ')}</span></td>
+                    <td className="px-4 py-3"><StatusBadge status={c.status} colorMap={STATUS_COLORS} /></td>
                   </tr>
                 ))}
               </tbody>

@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
+import StatusBadge, { PRODUCTION_SCHEDULE_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import ScheduleDetailActions from './ScheduleDetailActions';
 
 async function getSchedule(id: string) {
   try {
@@ -20,12 +22,7 @@ async function getSchedule(id: string) {
   } catch { return null; }
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  draft: 'bg-yellow-50 text-yellow-700',
-  active: 'bg-green-50 text-green-700',
-  completed: 'bg-blue-50 text-blue-700',
-  cancelled: 'bg-red-50 text-red-700',
-};
+
 
 export default async function ScheduleDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -39,14 +36,17 @@ export default async function ScheduleDetailPage({ params }: { params: Promise<{
   return (
     <TierGate feature="events">
       <PageHeader title={schedule.name as string} subtitle={`${schedule.schedule_type} schedule — ${schedule.status}`}>
-        <Link href="/app/schedule" className="btn-secondary text-sm">← Back to Schedules</Link>
+        <div className="flex items-center gap-3">
+          <ScheduleDetailActions id={id} currentStatus={schedule.status as string} />
+          <Link href="/app/schedule" className="inline-flex items-center justify-center rounded-lg border border-border bg-background px-3 py-1.5 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">← Back</Link>
+        </div>
       </PageHeader>
 
       <div className="grid gap-6 md:grid-cols-2 mb-8">
         <div className="rounded-xl border border-border bg-background p-6">
           <h3 className="text-sm font-semibold text-foreground mb-4">Schedule Info</h3>
           <dl className="space-y-3 text-sm">
-            <div className="flex justify-between"><dt className="text-text-muted">Status</dt><dd><span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[schedule.status as string] ?? ''}`}>{schedule.status as string}</span></dd></div>
+            <div className="flex justify-between"><dt className="text-text-muted">Status</dt><dd><StatusBadge status={schedule.status as string} colorMap={PRODUCTION_SCHEDULE_STATUS_COLORS} /></dd></div>
             <div className="flex justify-between"><dt className="text-text-muted">Type</dt><dd className="text-foreground capitalize">{(schedule.schedule_type as string)?.replace('_', ' ')}</dd></div>
             <div className="flex justify-between"><dt className="text-text-muted">Event</dt><dd className="text-foreground">{event ? <Link href={`/app/events/${event.id}`} className="hover:underline">{event.name}</Link> : '—'}</dd></div>
             <div className="flex justify-between"><dt className="text-text-muted">Start</dt><dd className="text-foreground">{schedule.start_date ? new Date(schedule.start_date as string).toLocaleDateString() : '—'}</dd></div>

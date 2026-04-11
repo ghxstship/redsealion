@@ -60,7 +60,7 @@ export default async function ProjectsPage() {
   const projects = await getProjects();
 
   return (
-    <TierGate feature="proposals">
+    <TierGate feature="projects">
       <PageHeader
         title="Projects"
         subtitle={`${projects.length} project${projects.length !== 1 ? 's' : ''}`}

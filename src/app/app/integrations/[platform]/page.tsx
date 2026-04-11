@@ -8,23 +8,8 @@ import Tabs from '@/components/ui/Tabs';
 import EmptyState from '@/components/ui/EmptyState';
 import PageHeader from '@/components/shared/PageHeader';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
-
-const PLATFORM_META: Record<string, { displayName: string; category: string }> = {
-  salesforce: { displayName: 'Salesforce', category: 'crm' },
-  hubspot: { displayName: 'HubSpot', category: 'crm' },
-  pipedrive: { displayName: 'Pipedrive', category: 'crm' },
-  quickbooks: { displayName: 'QuickBooks', category: 'accounting' },
-  xero: { displayName: 'Xero', category: 'accounting' },
-  clickup: { displayName: 'ClickUp', category: 'pm' },
-  asana: { displayName: 'Asana', category: 'pm' },
-  monday: { displayName: 'Monday.com', category: 'pm' },
-  slack: { displayName: 'Slack', category: 'messaging' },
-  google_calendar: { displayName: 'Google Calendar', category: 'calendar' },
-  zapier: { displayName: 'Zapier', category: 'automation' },
-};
-
-const CRM_SOURCE_FIELDS = ['Contact Name', 'Email', 'Phone', 'Company', 'Title', 'Deal Value', 'Deal Stage'];
-const CRM_TARGET_FIELDS = ['company_name', 'email', 'phone', 'industry', 'title', 'total_value', 'deal_stage'];
+import Button from '@/components/ui/Button';
+import { PLATFORM_MAP, CATEGORY_FIELD_MAPPINGS } from '@/lib/integrations/platforms';
 
 type ConfigTab = 'settings' | 'mappings' | 'sync_log';
 
@@ -50,7 +35,7 @@ export default function IntegrationConfigPage({
   const [syncLogs, setSyncLogs] = useState<any[]>([]);
   const [showDisconnectConfirm, setShowDisconnectConfirm] = useState(false);
 
-  const meta = PLATFORM_META[platform] ?? { displayName: platform, category: 'unknown' };
+  const meta = PLATFORM_MAP[platform] ?? { displayName: platform, category: 'unknown' };
 
   useEffect(() => {
     async function fetchData() {
@@ -139,12 +124,13 @@ export default function IntegrationConfigPage({
           </span>
         </div>
         {isConnected ? (
-          <button
+          <Button
+            variant="danger"
+            size="sm"
             onClick={() => setShowDisconnectConfirm(true)}
-            className="rounded-lg border border-red-200 bg-red-50 text-red-600 px-4 py-1.5 text-xs font-medium hover:bg-red-100 transition-colors"
           >
             Disconnect
-          </button>
+          </Button>
         ) : (
           <button
             onClick={async () => {
@@ -210,8 +196,8 @@ export default function IntegrationConfigPage({
         <div className="rounded-xl border border-border bg-background px-5 py-5">
           <MappingEditor
             platform={platform}
-            sourceFields={CRM_SOURCE_FIELDS}
-            targetFields={CRM_TARGET_FIELDS}
+            sourceFields={CATEGORY_FIELD_MAPPINGS[meta.category]?.sourceFields ?? []}
+            targetFields={CATEGORY_FIELD_MAPPINGS[meta.category]?.targetFields ?? []}
             onSave={handleSaveMappings}
           />
         </div>

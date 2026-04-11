@@ -2,8 +2,10 @@
 
 import { useState } from 'react';
 import { createCheckIn } from './actions';
+import { GOAL_STATUSES } from './constants';
 import ModalShell from '@/components/ui/ModalShell';
 import Button from '@/components/ui/Button';
+import Alert from '@/components/ui/Alert';
 
 interface GoalRef {
   id: string;
@@ -19,6 +21,7 @@ interface CheckInDialogProps {
 
 export default function CheckInDialog({ goal, isOpen, onClose }: CheckInDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -28,11 +31,12 @@ export default function CheckInDialog({ goal, isOpen, onClose }: CheckInDialogPr
     formData.append('previous_progress', goal.progress.toString());
 
     try {
+      setError(null);
       await createCheckIn(goal.id, formData);
       onClose();
     } catch (err) {
       console.error(err);
-      alert('Failed to submit check-in');
+      setError('Failed to submit check-in');
     } finally {
       setIsSubmitting(false);
     }
@@ -41,6 +45,11 @@ export default function CheckInDialog({ goal, isOpen, onClose }: CheckInDialogPr
   return (
     <ModalShell open={isOpen} onClose={onClose} title="Update Progress">
       <form onSubmit={handleSubmit} className="space-y-4 pt-4">
+        {error && (
+          <Alert variant="error">
+            {error}
+          </Alert>
+        )}
         <div>
           <label className="block text-sm font-medium text-foreground mb-1">
              Goal: {goal.title}
@@ -81,10 +90,9 @@ export default function CheckInDialog({ goal, isOpen, onClose }: CheckInDialogPr
             defaultValue="on_track"
             className="mt-1 block w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           >
-            <option value="on_track">On Track</option>
-            <option value="at_risk">At Risk</option>
-            <option value="off_track">Off Track</option>
-            <option value="completed">Completed</option>
+              {GOAL_STATUSES.map((s) => (
+                <option key={s.value} value={s.value}>{s.label}</option>
+              ))}
           </select>
         </div>
 

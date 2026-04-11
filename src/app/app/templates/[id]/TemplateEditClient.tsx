@@ -7,7 +7,7 @@ import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
-import { createClient } from '@/lib/supabase/client';
+import Alert from '@/components/ui/Alert';
 
 interface TemplateEditClientProps {
   template: {
@@ -54,19 +54,24 @@ export default function TemplateEditClient({ template }: TemplateEditClientProps
     const formData = new FormData(e.currentTarget);
 
     try {
-      const supabase = createClient();
-      const { error: updateError } = await supabase
-        .from('phase_templates')
-        .update({
-          name: formData.get('name') as string,
-          description: (formData.get('description') as string) || null,
-          is_default: formData.get('is_default') === 'on',
-          phases,
-        })
-        .eq('id', template.id);
+      const isDefault = formData.get('is_default') === 'on';
+      const name = formData.get('name') as string;
+      const description = (formData.get('description') as string) || null;
 
-      if (updateError) {
-        setError(updateError.message);
+      const res = await fetch(`/api/templates/${template.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          description,
+          is_default: isDefault,
+          phases,
+        }),
+      });
+
+      if (!res.ok) {
+        const json = await res.json().catch(() => ({}));
+        setError(json.error ?? 'Failed to update template.');
         setSaving(false);
         return;
       }
@@ -89,7 +94,7 @@ export default function TemplateEditClient({ template }: TemplateEditClientProps
       </div>
 
       {error && (
-        <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
+        <Alert variant="error">{error}</Alert>
       )}
 
       <div className="max-w-2xl">

@@ -3,6 +3,9 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import Link from 'next/link';
+import StatusBadge, { PRODUCTION_SCHEDULE_STATUS_COLORS, SCHEDULE_TYPE_COLORS } from '@/components/ui/StatusBadge';
+import MetricCard from '@/components/ui/MetricCard';
+import { SCHEDULE_TYPE_LABELS } from '@/lib/constants/schedule';
 import ScheduleHubTabs from '../ScheduleHubTabs';
 
 async function getSchedules() {
@@ -27,8 +30,7 @@ async function getSchedules() {
   } catch { return []; }
 }
 
-const TYPE_LABELS: Record<string, string> = { build_strike: 'Build & Strike', run_of_show: 'Run of Show', rehearsal: 'Rehearsal', general: 'General' };
-const STATUS_COLORS: Record<string, string> = { draft: 'bg-yellow-50 text-yellow-700', published: 'bg-blue-50 text-blue-700', live: 'bg-green-50 text-green-700', completed: 'bg-bg-secondary text-text-secondary' };
+
 
 export default async function ScheduleTimelinePage() {
   const schedules = await getSchedules();
@@ -37,7 +39,7 @@ export default async function ScheduleTimelinePage() {
   return (
     <TierGate feature="events">
       <PageHeader title="Production Schedule" subtitle="Manage build & strike timelines, run of show documents, and milestones across all events.">
-        <Link href="/app/schedule/new" className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity">
+        <Link href="/app/schedule/new" className="inline-flex items-center justify-center rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity">
           New Schedule
         </Link>
       </PageHeader>
@@ -45,15 +47,12 @@ export default async function ScheduleTimelinePage() {
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">
         {[
-          { label: 'Total Schedules', value: schedules.length },
-          { label: 'Draft', value: byStatus['draft'] ?? 0, color: 'text-yellow-600' },
+          { label: 'Total', value: schedules.length },
+          { label: 'Draft', value: byStatus['draft'] ?? 0 },
           { label: 'Published', value: byStatus['published'] ?? 0, color: 'text-blue-600' },
           { label: 'Live', value: byStatus['live'] ?? 0, color: 'text-green-600' },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-background p-4">
-            <p className="text-xs text-text-muted">{stat.label}</p>
-            <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
-          </div>
+          <MetricCard key={stat.label} label={stat.label} value={stat.value} className={stat.color ? `[&_.text-foreground]:${stat.color}` : ''} />
         ))}
       </div>
 
@@ -81,9 +80,9 @@ export default async function ScheduleTimelinePage() {
                       <Link href={`/app/schedule/${s.id}`} className="font-medium text-foreground hover:underline">{s.name}</Link>
                     </td>
                     <td className="px-4 py-3 text-text-secondary">{s.event_name ?? '—'}</td>
-                    <td className="px-4 py-3"><span className="inline-flex rounded-full px-2 py-0.5 text-xs font-medium bg-purple-50 text-purple-700">{TYPE_LABELS[s.schedule_type] ?? s.schedule_type}</span></td>
+                    <td className="px-4 py-3"><StatusBadge status={s.schedule_type} colorMap={SCHEDULE_TYPE_COLORS} fallback="bg-purple-50 text-purple-700" /></td>
                     <td className="px-4 py-3 text-text-secondary">{s.start_date ? `${new Date(s.start_date).toLocaleDateString()} – ${s.end_date ? new Date(s.end_date).toLocaleDateString() : ''}` : '—'}</td>
-                    <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[s.status]}`}>{s.status}</span></td>
+                    <td className="px-4 py-3"><StatusBadge status={s.status} colorMap={PRODUCTION_SCHEDULE_STATUS_COLORS} /></td>
                   </tr>
                 ))}
               </tbody>

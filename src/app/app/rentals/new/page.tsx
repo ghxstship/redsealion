@@ -6,6 +6,10 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
+import Alert from '@/components/ui/Alert';
+import FormLabel from '@/components/ui/FormLabel';
+import FormSelect from '@/components/ui/FormSelect';
+import FormInput from '@/components/ui/FormInput';
 
 interface ClientOption { id: string; company_name: string }
 interface EventOption { id: string; name: string }
@@ -86,9 +90,7 @@ export default function NewRentalOrderPage() {
       />
 
       {error && (
-        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
+        <Alert variant="error">{error}</Alert>
       )}
 
       <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
@@ -97,39 +99,33 @@ export default function NewRentalOrderPage() {
           <div className="space-y-4">
             {clientOptions.length > 0 && (
               <div>
-                <label htmlFor="rnt-client" className="block text-sm font-medium text-foreground mb-1.5">
-                  Client
-                </label>
-                <select
+                <FormLabel htmlFor="rnt-client">Client</FormLabel>
+                <FormSelect
                   id="rnt-client"
                   value={clientId}
-                  onChange={(e) => setClientId(e.target.value)}
-                  className="w-full rounded-lg border border-border bg-card px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setClientId(e.target.value)}
                 >
                   <option value="">Select a client...</option>
                   {clientOptions.map((c) => (
                     <option key={c.id} value={c.id}>{c.company_name}</option>
                   ))}
-                </select>
+                </FormSelect>
               </div>
             )}
 
             {eventOptions.length > 0 && (
               <div>
-                <label htmlFor="rnt-event" className="block text-sm font-medium text-foreground mb-1.5">
-                  Event
-                </label>
-                <select
+                <FormLabel htmlFor="rnt-event">Event</FormLabel>
+                <FormSelect
                   id="rnt-event"
                   value={eventId}
-                  onChange={(e) => setEventId(e.target.value)}
-                  className="w-full rounded-lg border border-border bg-card px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setEventId(e.target.value)}
                 >
                   <option value="">Select an event...</option>
                   {eventOptions.map((ev) => (
                     <option key={ev.id} value={ev.id}>{ev.name}</option>
                   ))}
-                </select>
+                </FormSelect>
               </div>
             )}
           </div>
@@ -139,29 +135,27 @@ export default function NewRentalOrderPage() {
           <h2 className="text-sm font-semibold text-foreground mb-5">Rental Period</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="rnt-start" className="block text-sm font-medium text-foreground mb-1.5">
+              <FormLabel htmlFor="rnt-start">
                 Start Date <span className="text-red-500">*</span>
-              </label>
-              <input
+              </FormLabel>
+              <FormInput
                 id="rnt-start"
                 type="date"
                 value={rentalStart}
-                onChange={(e) => setRentalStart(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRentalStart(e.target.value)}
                 required
-                className="w-full rounded-lg border border-border bg-card px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
               />
             </div>
             <div>
-              <label htmlFor="rnt-end" className="block text-sm font-medium text-foreground mb-1.5">
+              <FormLabel htmlFor="rnt-end">
                 End Date <span className="text-red-500">*</span>
-              </label>
-              <input
+              </FormLabel>
+              <FormInput
                 id="rnt-end"
                 type="date"
                 value={rentalEnd}
-                onChange={(e) => setRentalEnd(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRentalEnd(e.target.value)}
                 required
-                className="w-full rounded-lg border border-border bg-card px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
               />
             </div>
           </div>
@@ -170,18 +164,15 @@ export default function NewRentalOrderPage() {
         <Card>
           <h2 className="text-sm font-semibold text-foreground mb-5">Financial</h2>
           <div>
-            <label htmlFor="rnt-deposit" className="block text-sm font-medium text-foreground mb-1.5">
-              Deposit Amount ($)
-            </label>
-            <input
+            <FormLabel htmlFor="rnt-deposit">Deposit Amount ($)</FormLabel>
+            <FormInput
               id="rnt-deposit"
               type="number"
               step="0.01"
               min="0"
               value={depositCents}
-              onChange={(e) => setDepositCents(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDepositCents(e.target.value)}
               placeholder="0.00"
-              className="w-full rounded-lg border border-border bg-card px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
             />
           </div>
         </Card>
@@ -194,7 +185,7 @@ export default function NewRentalOrderPage() {
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Any special instructions or notes..."
-            className="w-full rounded-lg border border-border bg-card px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20 resize-none"
+            className="w-full rounded-lg border border-border bg-input px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none"
           />
         </Card>
 

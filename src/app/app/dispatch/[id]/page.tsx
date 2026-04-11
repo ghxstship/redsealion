@@ -7,7 +7,14 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
+import Alert from '@/components/ui/Alert';
+import FormInput from '@/components/ui/FormInput';
+import FormLabel from '@/components/ui/FormLabel';
+import FormTextarea from '@/components/ui/FormTextarea';
+import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import BiddingPanel from '@/components/admin/work-orders/BiddingPanel';
+import StatusBadge, { WORK_ORDER_STATUS_COLORS, PRIORITY_COLORS } from '@/components/ui/StatusBadge';
+import { formatLabel } from '@/lib/utils';
 
 interface WorkOrder {
   id: string;
@@ -46,23 +53,6 @@ interface WorkOrder {
   }>;
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  draft: 'bg-yellow-50 text-yellow-700',
-  dispatched: 'bg-blue-50 text-blue-700',
-  accepted: 'bg-indigo-50 text-indigo-700',
-  in_progress: 'bg-purple-50 text-purple-700',
-  completed: 'bg-green-50 text-green-700',
-  cancelled: 'bg-red-50 text-red-700',
-  assigned: 'bg-sky-50 text-sky-700',
-  declined: 'bg-gray-50 text-gray-600',
-};
-
-const PRIORITY_COLORS: Record<string, string> = {
-  low: 'text-green-600',
-  medium: 'text-yellow-600',
-  high: 'text-orange-600',
-  urgent: 'text-red-600',
-};
 
 const PRIORITIES = ['low', 'medium', 'high', 'urgent'] as const;
 
@@ -86,10 +76,6 @@ const STATUS_TRANSITIONS: Record<string, Array<{ to: string; label: string; vari
   completed: [],
   cancelled: [],
 };
-
-function formatLabel(s: string): string {
-  return s.split('_').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-}
 
 function formatDateTime(s: string | null): string {
   if (!s) return '—';
@@ -335,12 +321,12 @@ export default function DispatchDetailPage({ params }: { params: Promise<{ id: s
   if (error && !wo) {
     return (
       <TierGate feature="work_orders">
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-8 text-center">
-          <p className="text-sm text-red-700">{error}</p>
+        <Alert variant="error" className="text-center">
+          <p>{error}</p>
           <Link href="/app/dispatch" className="mt-4 inline-block text-sm font-medium text-foreground hover:underline">
             ← Back to Dispatch
           </Link>
-        </div>
+        </Alert>
       </TierGate>
     );
   }
@@ -361,32 +347,23 @@ export default function DispatchDetailPage({ params }: { params: Promise<{ id: s
       <PageHeader title={wo.wo_number} subtitle={wo.title}>
         <div className="flex items-center gap-2">
           {isEditable && !editMode && (
-            <button
-              onClick={enterEditMode}
-              className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors"
-            >
-              Edit
-            </button>
+            <Button variant="secondary" onClick={enterEditMode}>Edit</Button>
           )}
-          <Link href="/app/dispatch" className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
-            ← Back
-          </Link>
+          <Button variant="secondary" href="/app/dispatch">← Back</Button>
         </div>
       </PageHeader>
 
       {error && (
-        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <Alert variant="error" className="mb-6">
           {error}
-          <button onClick={() => setError(null)} className="ml-2 text-red-800 font-medium hover:underline">Dismiss</button>
-        </div>
+          <button onClick={() => setError(null)} className="ml-2 font-medium hover:underline">Dismiss</button>
+        </Alert>
       )}
 
       {/* Status Actions Bar */}
       {!editMode && (transitions.length > 0 || (isEditable)) && (
         <div className="flex flex-wrap items-center gap-3 mb-6 p-4 rounded-xl border border-border bg-bg-secondary/50">
-          <span className={`rounded-full px-3 py-1 text-xs font-semibold ${STATUS_COLORS[wo.status] ?? ''}`}>
-            {formatLabel(wo.status)}
-          </span>
+          <StatusBadge status={wo.status} colorMap={WORK_ORDER_STATUS_COLORS} className="px-3 py-1" />
           <div className="flex-1" />
           {transitions.map((t) => (
             <Button
@@ -421,22 +398,15 @@ export default function DispatchDetailPage({ params }: { params: Promise<{ id: s
       )}
 
       {/* Delete Confirmation */}
-      {showDeleteConfirm && (
-        <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4">
-          <p className="text-sm text-red-800 font-medium">Are you sure you want to delete this work order?</p>
-          <p className="text-xs text-red-600 mt-1">This action cannot be undone.</p>
-          <div className="flex gap-3 mt-3">
-            <Button variant="secondary" onClick={() => setShowDeleteConfirm(false)}>Cancel</Button>
-            <button
-              onClick={handleDelete}
-              disabled={actionLoading}
-              className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition-colors disabled:opacity-50"
-            >
-              {actionLoading ? 'Deleting...' : 'Delete Work Order'}
-            </button>
-          </div>
-        </div>
-      )}
+      <ConfirmDialog
+        open={showDeleteConfirm}
+        title="Delete Work Order"
+        message="Are you sure you want to delete this work order? This action cannot be undone."
+        confirmLabel={actionLoading ? 'Deleting...' : 'Delete Work Order'}
+        variant="danger"
+        onConfirm={handleDelete}
+        onCancel={() => setShowDeleteConfirm(false)}
+      />
 
       {/* Edit Form */}
       {editMode && (
@@ -444,47 +414,47 @@ export default function DispatchDetailPage({ params }: { params: Promise<{ id: s
           <h3 className="text-sm font-semibold text-foreground mb-4">Edit Work Order</h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-medium text-text-muted mb-1">Title</label>
-              <input type="text" value={editFields.title} onChange={(e) => setEditFields({ ...editFields, title: e.target.value })} className={inputClass} />
+            <FormLabel>Title</FormLabel>
+            <FormInput type="text" value={editFields.title} onChange={(e) => setEditFields({ ...editFields, title: e.target.value })} />
             </div>
             <div>
-              <label className="block text-xs font-medium text-text-muted mb-1">Description</label>
-              <textarea rows={3} value={editFields.description} onChange={(e) => setEditFields({ ...editFields, description: e.target.value })} className={inputClass + ' resize-none'} />
+            <FormLabel>Description</FormLabel>
+            <FormTextarea rows={3} value={editFields.description} onChange={(e) => setEditFields({ ...editFields, description: e.target.value })} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-text-muted mb-1">Priority</label>
+                <FormLabel>Priority</FormLabel>
                 <select value={editFields.priority} onChange={(e) => setEditFields({ ...editFields, priority: e.target.value })} className={inputClass}>
                   {PRIORITIES.map((p) => <option key={p} value={p}>{p.charAt(0).toUpperCase() + p.slice(1)}</option>)}
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-medium text-text-muted mb-1">Location Name</label>
-                <input type="text" value={editFields.location_name} onChange={(e) => setEditFields({ ...editFields, location_name: e.target.value })} className={inputClass} />
+                <FormLabel>Location Name</FormLabel>
+                <FormInput type="text" value={editFields.location_name} onChange={(e) => setEditFields({ ...editFields, location_name: e.target.value })} />
               </div>
             </div>
             <div>
-              <label className="block text-xs font-medium text-text-muted mb-1">Location Address</label>
-              <input type="text" value={editFields.location_address} onChange={(e) => setEditFields({ ...editFields, location_address: e.target.value })} className={inputClass} />
+              <FormLabel>Location Address</FormLabel>
+              <FormInput type="text" value={editFields.location_address} onChange={(e) => setEditFields({ ...editFields, location_address: e.target.value })} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-text-muted mb-1">Scheduled Start</label>
-                <input type="datetime-local" value={editFields.scheduled_start} onChange={(e) => setEditFields({ ...editFields, scheduled_start: e.target.value })} className={inputClass} />
+                <FormLabel>Scheduled Start</FormLabel>
+                <FormInput type="datetime-local" value={editFields.scheduled_start} onChange={(e) => setEditFields({ ...editFields, scheduled_start: e.target.value })} />
               </div>
               <div>
-                <label className="block text-xs font-medium text-text-muted mb-1">Scheduled End</label>
-                <input type="datetime-local" value={editFields.scheduled_end} onChange={(e) => setEditFields({ ...editFields, scheduled_end: e.target.value })} className={inputClass} />
+                <FormLabel>Scheduled End</FormLabel>
+                <FormInput type="datetime-local" value={editFields.scheduled_end} onChange={(e) => setEditFields({ ...editFields, scheduled_end: e.target.value })} />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4 border-t border-border pt-4 mt-2">
               <div>
-                <label className="block text-xs font-medium text-text-muted mb-1">Budget Range</label>
-                <input type="text" placeholder="e.g. $500 - $800" value={editFields.budget_range} onChange={(e) => setEditFields({ ...editFields, budget_range: e.target.value })} className={inputClass} />
+                <FormLabel>Budget Range</FormLabel>
+                <FormInput type="text" placeholder="e.g. $500 - $800" value={editFields.budget_range} onChange={(e) => setEditFields({ ...editFields, budget_range: e.target.value })} />
               </div>
               <div>
-                <label className="block text-xs font-medium text-text-muted mb-1">Bidding Deadline</label>
-                <input type="datetime-local" value={editFields.bidding_deadline} onChange={(e) => setEditFields({ ...editFields, bidding_deadline: e.target.value })} className={inputClass} />
+                <FormLabel>Bidding Deadline</FormLabel>
+                <FormInput type="datetime-local" value={editFields.bidding_deadline} onChange={(e) => setEditFields({ ...editFields, bidding_deadline: e.target.value })} />
               </div>
             </div>
           </div>
@@ -505,11 +475,11 @@ export default function DispatchDetailPage({ params }: { params: Promise<{ id: s
             <dl className="space-y-3 text-sm">
               <div className="flex justify-between">
                 <dt className="text-text-muted">Status</dt>
-                <dd><span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[wo.status] ?? ''}`}>{formatLabel(wo.status)}</span></dd>
+                <dd><StatusBadge status={wo.status} colorMap={STATUS_COLORS} /></dd>
               </div>
               <div className="flex justify-between">
                 <dt className="text-text-muted">Priority</dt>
-                <dd className={`font-medium capitalize ${PRIORITY_COLORS[wo.priority] ?? ''}`}>{wo.priority}</dd>
+                <dd><StatusBadge status={wo.priority} colorMap={PRIORITY_COLORS} /></dd>
               </div>
               <div className="flex justify-between">
                 <dt className="text-text-muted">Location</dt>
@@ -582,9 +552,7 @@ export default function DispatchDetailPage({ params }: { params: Promise<{ id: s
                     <td className="px-6 py-3 text-text-secondary">{a.crew_profiles?.phone ?? '—'}</td>
                     <td className="px-6 py-3 text-text-secondary">{a.role ?? '—'}</td>
                     <td className="px-6 py-3">
-                      <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[a.status] ?? 'bg-gray-50 text-gray-700'}`}>
-                        {formatLabel(a.status)}
-                      </span>
+                      <StatusBadge status={a.status} colorMap={STATUS_COLORS} />
                     </td>
                     <td className="px-6 py-3 text-text-muted text-xs">{new Date(a.assigned_at).toLocaleDateString()}</td>
                     {isEditable && (

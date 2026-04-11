@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
+import { ROADMAP_BAR_COLORS } from '@/components/ui/StatusBadge';
 
 interface RoadmapItem {
   id: string;
@@ -21,14 +22,7 @@ interface RoadmapClientProps {
 }
 
 function statusColor(status: string): string {
-  const map: Record<string, string> = {
-    approved: 'bg-green-500',
-    sent: 'bg-blue-500',
-    active: 'bg-blue-500',
-    completed: 'bg-text-muted',
-    cancelled: 'bg-red-400',
-  };
-  return map[status] ?? 'bg-purple-500';
+  return ROADMAP_BAR_COLORS[status] ?? 'bg-purple-500';
 }
 
 const STATUSES = ['all', 'sent', 'approved', 'active', 'completed', 'cancelled'];

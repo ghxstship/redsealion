@@ -96,7 +96,13 @@ export class QuickBooksAdapter extends BaseIntegrationAdapter {
     const accessToken = creds.access_token;
 
     if (!realmId || !accessToken) {
-      return { entityType: 'invoice', entityCount: 0, errors: ['Missing QuickBooks realm or token'] };
+      // Flag the DB entry as needing re-authorization
+      await supabase
+        .from('integrations')
+        .update({ status: 'error', last_error: 'Re-authorization required: token expired or missing' })
+        .eq('id', integrationId);
+
+      return { entityType: 'invoice', entityCount: 0, errors: ['auth_required'] };
     }
 
     if (direction === 'outbound') {

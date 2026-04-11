@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
+import FormInput from '@/components/ui/FormInput';
 
 function GoogleIcon() {
   return (
@@ -278,14 +279,13 @@ export default function SignupPage() {
               >
                 Full name
               </label>
-              <input
+              <FormInput
                 id="fullName"
                 type="text"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="Jane Smith"
                 required
-                className="w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500"
               />
             </div>
             <div>
@@ -295,14 +295,13 @@ export default function SignupPage() {
               >
                 Email
               </label>
-              <input
+              <FormInput
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@company.com"
                 required
-                className="w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500"
               />
             </div>
             <div>
@@ -314,7 +313,7 @@ export default function SignupPage() {
               </label>
               {/* L-02: Password field with show/hide toggle */}
               <div className="relative">
-                <input
+                <FormInput
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
@@ -322,7 +321,7 @@ export default function SignupPage() {
                   placeholder="At least 8 characters"
                   required
                   minLength={8}
-                  className="w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 pr-10 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500"
+                  className="pr-10"
                 />
                 <button
                   type="button"
@@ -369,14 +368,13 @@ export default function SignupPage() {
             >
               Company name
             </label>
-            <input
+            <FormInput
               id="companyName"
               type="text"
               value={companyName}
               onChange={(e) => handleCompanyNameChange(e.target.value)}
               placeholder="Acme Productions"
               required
-              className="w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500"
             />
           </div>
           <div>

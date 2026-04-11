@@ -12,6 +12,7 @@ async function getAdvanceDetail(id: string) {
     .from('production_advances')
     .select('*, projects(name)')
     .eq('id', id)
+    .eq('organization_id', ctx.organizationId)
     .single();
 
   if (!advance) return null;

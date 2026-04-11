@@ -6,6 +6,8 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import { formatCurrency } from '@/lib/utils';
 import RentalStatusActions from './RentalStatusActions';
+import StatusBadge, { RENTAL_ORDER_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import RentalEditForm from './RentalEditForm';
 
 async function getRentalOrder(id: string) {
   try {
@@ -26,15 +28,7 @@ async function getRentalOrder(id: string) {
   }
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  draft: 'bg-bg-secondary text-text-secondary',
-  reserved: 'bg-blue-50 text-blue-700',
-  checked_out: 'bg-purple-50 text-purple-700',
-  on_site: 'bg-green-50 text-green-700',
-  returned: 'bg-bg-secondary text-text-secondary',
-  invoiced: 'bg-green-50 text-green-700',
-  cancelled: 'bg-red-50 text-red-700',
-};
+
 
 export default async function RentalDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -68,9 +62,7 @@ export default async function RentalDetailPage({ params }: { params: Promise<{ i
             <div className="flex justify-between">
               <dt className="text-text-muted">Status</dt>
               <dd>
-                <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[order.status as string] ?? ''}`}>
-                  {(order.status as string).replace('_', ' ')}
-                </span>
+                <StatusBadge status={order.status as string} colorMap={RENTAL_ORDER_STATUS_COLORS} />
               </dd>
             </div>
             {client && (
@@ -117,10 +109,15 @@ export default async function RentalDetailPage({ params }: { params: Promise<{ i
           )}
         </div>
 
-        {/* Status Actions */}
+        {/* Edit Form */}
         <div className="rounded-xl border border-border bg-background p-6">
-          <h3 className="text-sm font-semibold text-foreground mb-4">Actions</h3>
-          <RentalStatusActions orderId={id} currentStatus={order.status as string} />
+          <h3 className="text-sm font-semibold text-foreground mb-4">Edit Order</h3>
+          <RentalEditForm
+            orderId={id}
+            currentDates={{ start: order.rental_start as string, end: order.rental_end as string }}
+            currentDeposit={(order.deposit_cents as number) ?? 0}
+            currentNotes={(order.notes as string) ?? ''}
+          />
         </div>
       </div>
 
@@ -174,9 +171,7 @@ export default async function RentalDetailPage({ params }: { params: Promise<{ i
                 <tr key={sr.id as string} className="hover:bg-bg-secondary/50 transition-colors">
                   <td className="px-4 py-3 text-foreground">{(sr.vendor_name as string) ?? '—'}</td>
                   <td className="px-4 py-3">
-                    <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[sr.status as string] ?? 'bg-bg-secondary text-text-secondary'}`}>
-                      {(sr.status as string) ?? '—'}
-                    </span>
+                    <StatusBadge status={sr.status as string} colorMap={RENTAL_ORDER_STATUS_COLORS} />
                   </td>
                   <td className="px-4 py-3 text-foreground tabular-nums">{sr.total_cost_cents ? formatCurrency((sr.total_cost_cents as number) / 100) : '—'}</td>
                 </tr>

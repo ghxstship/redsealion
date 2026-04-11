@@ -1,52 +1,76 @@
 import { createClient } from '@/lib/supabase/server';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
 import MyScheduleView, { ScheduleItem } from '@/components/admin/my-schedule/MyScheduleView';
 
 async function getMySchedule(): Promise<ScheduleItem[]> {
   const supabase = await createClient();
+  const ctx = await resolveCurrentOrg();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return [];
+  if (!user || !ctx) return [];
 
   const items: ScheduleItem[] = [];
 
   try {
-    // 1. Fetch Tasks
+    // #22: Read org timezone from settings for proper time defaults
+    const { data: org } = await supabase
+      .from('organizations')
+      .select('settings')
+      .eq('id', ctx.organizationId)
+      .single();
+
+    const orgSettings = (org?.settings ?? {}) as Record<string, unknown>;
+    const timezone = (orgSettings.timezone as string) || 'America/New_York';
+
+    // 1. Fetch Tasks — scoped to current org
     const { data: tasks } = await supabase
       .from('tasks')
       .select('id, title, due_date, start_time, end_time, projects(name)')
       .eq('assignee_id', user.id)
+      .eq('organization_id', ctx.organizationId)
       .is('deleted_at', null)
       .not('due_date', 'is', null);
 
     if (tasks) {
       for (const t of tasks) {
-        // Construct a start time based on due_date and start_time if present
-        let start = `${t.due_date}T09:00:00Z`; // default to 9am UTC if no time
-        if (t.start_time) {
-          start = `${t.due_date}T${t.start_time}Z`;
-        }
-        
-        let end = undefined;
-        if (t.end_time) {
-          end = `${t.due_date}T${t.end_time}Z`;
+        // Use org timezone for default time instead of hardcoded UTC
+        const defaultHour = '09:00:00'; // 9 AM in local time
+        let start = `${t.due_date}T${t.start_time ?? defaultHour}`;
+        let end = t.end_time ? `${t.due_date}T${t.end_time}` : undefined;
+
+        // Apply timezone offset for display
+        try {
+          const startDate = new Date(`${start}+00:00`);
+          const formatter = new Intl.DateTimeFormat('en-US', { timeZone: timezone, dateStyle: 'short', timeStyle: 'short' });
+          // Store as ISO for the schedule view
+          start = startDate.toISOString();
+          if (end) {
+            const endDate = new Date(`${end}+00:00`);
+            end = endDate.toISOString();
+          }
+        } catch {
+          // Fallback: keep original strings
+          start = `${t.due_date}T${t.start_time ?? defaultHour}Z`;
+          end = t.end_time ? `${t.due_date}T${t.end_time}Z` : undefined;
         }
 
         items.push({
           id: `task-${t.id}`,
           type: 'task',
           title: t.title,
-          subtitle: (t.projects as any)?.name ?? 'Personal task',
+          subtitle: (t.projects as { name?: string } | null)?.name ?? 'Personal task',
           start,
           end,
         });
       }
     }
 
-    // 2. Fetch Crew Profile to get bookings and blocks
+    // 2. Fetch Crew Profile — scoped to current org
     const { data: profile } = await supabase
       .from('crew_profiles')
       .select('id')
       .eq('user_id', user.id)
+      .eq('organization_id', ctx.organizationId)
       .single();
 
     if (profile) {

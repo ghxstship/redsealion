@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { TierGate } from '@/components/shared/TierGate';
 import { AUTOMATION_TEMPLATES, getTemplateCategories } from '@/lib/automations/templates';
+import StatusBadge from '@/components/ui/StatusBadge';
 
 const CATEGORY_COLORS: Record<string, string> = {
   'Project Setup': 'bg-indigo-50 text-indigo-700',
@@ -32,9 +33,7 @@ export default function AutomationTemplatesPage() {
                 >
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${CATEGORY_COLORS[template.category] ?? 'bg-bg-secondary text-text-secondary'}`}>
-                        {template.category}
-                      </span>
+                      <StatusBadge status={template.category} colorMap={CATEGORY_COLORS} />
                     </div>
                     <h3 className="text-sm font-semibold text-foreground">{template.name}</h3>
                     <p className="text-xs text-text-secondary mt-1">{template.description}</p>
