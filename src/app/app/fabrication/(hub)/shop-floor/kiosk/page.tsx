@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
+import Button from '@/components/ui/Button';
 
 async function getActiveOrders() {
   try {
@@ -43,9 +44,9 @@ export default async function KioskPage() {
                 <h3 className="font-semibold text-lg text-foreground mb-4">{o.name}</h3>
                 
                 <div className="flex flex-wrap gap-2 mt-auto">
-                  <button className="flex-1 bg-blue-50 text-blue-700 hover:bg-blue-100 px-3 py-2 rounded-lg text-sm font-semibold">Start</button>
-                  <button className="flex-1 bg-yellow-50 text-yellow-700 hover:bg-yellow-100 px-3 py-2 rounded-lg text-sm font-semibold">Pause</button>
-                  <button className="flex-1 bg-green-50 text-green-700 hover:bg-green-100 px-3 py-2 rounded-lg text-sm font-semibold">QC / Finish</button>
+                  <Button variant="outline" className="flex-1 bg-blue-50 text-blue-700 border-transparent hover:bg-blue-100 font-semibold" size="sm">Start</Button>
+                  <Button variant="outline" className="flex-1 bg-yellow-50 text-yellow-700 border-transparent hover:bg-yellow-100 font-semibold" size="sm">Pause</Button>
+                  <Button variant="outline" className="flex-1 bg-green-50 text-green-700 border-transparent hover:bg-green-100 font-semibold" size="sm">QC / Finish</Button>
                 </div>
               </div>
             ))}

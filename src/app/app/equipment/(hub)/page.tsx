@@ -7,6 +7,7 @@ import EquipmentHeader from '@/components/admin/equipment/EquipmentHeader';
 import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
 import EquipmentHubTabs from '../EquipmentHubTabs';
+import MetricCard from '@/components/ui/MetricCard';
 
 interface EquipmentItem {
   id: string;
@@ -88,10 +89,7 @@ export default async function EquipmentPage() {
       {/* Status summary cards */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">
         {(['available', 'deployed', 'maintenance', 'disposed'] as const).map((status) => (
-          <Card key={status} padding="sm">
-            <p className="text-xs text-text-muted">{formatLabel(status)}</p>
-            <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{statusCounts[status] ?? 0}</p>
-          </Card>
+          <MetricCard key={status} label={formatLabel(status)} value={statusCounts[status] ?? 0} />
         ))}
       </div>
 

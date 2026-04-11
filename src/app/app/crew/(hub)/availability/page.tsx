@@ -7,6 +7,7 @@ import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
 import PageHeader from '@/components/shared/PageHeader';
 
 import EmptyState from '@/components/ui/EmptyState';
+import Button from '@/components/ui/Button';
 
 interface CrewAvailability {
   id: string;
@@ -117,21 +118,15 @@ export default function CrewAvailabilityPage() {
 
       {/* Month navigation */}
       <div className="mb-6 flex items-center justify-between">
-        <button
-          onClick={goToPrevMonth}
-          className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
-        >
+        <Button variant="outline" onClick={goToPrevMonth}>
           &larr; Previous
-        </button>
+        </Button>
         <h2 className="text-lg font-semibold text-foreground">
           {monthName} {year}
         </h2>
-        <button
-          onClick={goToNextMonth}
-          className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
-        >
+        <Button variant="outline" onClick={goToNextMonth}>
           Next &rarr;
-        </button>
+        </Button>
       </div>
 
       {!loaded ? (

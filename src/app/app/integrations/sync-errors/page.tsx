@@ -67,9 +67,7 @@ export default async function SyncErrorsPage() {
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">
         <MetricCard label={"Total Errors"} value={errors.length} />
         <MetricCard label={"Unresolved"} value={unresolved.length} className="[&_.text-foreground]:text-red-600" />
-        <MetricCard label={"Platforms Affected"} value={"
-            {new Set(unresolved.map((e) => e.platform)).size}
-          "} />
+        <MetricCard label={"Platforms Affected"} value={new Set(unresolved.map((e) => e.platform)).size} />
       </div>
 
       <div className="rounded-xl border border-border bg-background overflow-hidden">

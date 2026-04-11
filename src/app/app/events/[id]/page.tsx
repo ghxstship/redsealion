@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import Link from 'next/link';
+import Button from '@/components/ui/Button';
 import { notFound } from 'next/navigation';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
@@ -60,7 +61,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
         <div className="rounded-xl border border-border bg-background p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-semibold text-foreground">Locations ({eventLocations.length})</h3>
-            <button className="text-xs font-medium text-blue-600 hover:underline">+ Add</button>
+            <Button variant="ghost" size="sm" className="text-blue-600">+ Add</Button>
           </div>
           {eventLocations.length === 0 ? (
             <p className="text-sm text-text-secondary">No locations linked.</p>
@@ -84,7 +85,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
       <div className="rounded-xl border border-border bg-background overflow-hidden mb-6">
         <div className="px-6 py-4 border-b border-border flex items-center justify-between">
           <h3 className="text-sm font-semibold text-foreground">Activations ({activations.length})</h3>
-          <button className="text-xs font-medium text-blue-600 hover:underline">+ Add Activation</button>
+          <Button variant="ghost" size="sm" className="text-blue-600">+ Add Activation</Button>
         </div>
         {activations.length === 0 ? (
           <div className="px-8 py-12 text-center text-sm text-text-secondary">No activations for this event.</div>

@@ -4,6 +4,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import EquipmentHubTabs from '../../EquipmentHubTabs';
 import Button from '@/components/ui/Button';
+import StatusBadge from '@/components/ui/StatusBadge';
 
 interface InventoryCount {
   id: string;
@@ -68,7 +69,7 @@ export default async function InventoryPage() {
                       <td className="px-6 py-4 text-sm capitalize">{c.count_type}</td>
                       <td className="px-6 py-4 text-sm text-text-secondary">{c.location || 'All Locations'}</td>
                       <td className="px-6 py-4 text-sm">
-                        <span className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full text-xs font-medium">{c.status.replace('_', ' ')}</span>
+                        <StatusBadge status={c.status} />
                       </td>
                       <td className="px-6 py-4 text-sm text-text-secondary">
                         {c.started_at ? new Date(c.started_at).toLocaleDateString() : '—'}

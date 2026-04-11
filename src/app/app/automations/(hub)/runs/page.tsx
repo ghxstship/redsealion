@@ -60,9 +60,7 @@ export default async function AutomationRunsPage() {
         <MetricCard label={"Total Runs"} value={totalRuns} />
         <MetricCard label={"Completed"} value={completedRuns} className="[&_.text-foreground]:text-green-600" />
         <MetricCard label={"Failed"} value={failedRuns} className="[&_.text-foreground]:text-red-600" />
-        <MetricCard label={"Success Rate"} value={"
-            {totalRuns > 0 ? Math.round((completedRuns / totalRuns) * 100) : 0}%
-          "} />
+        <MetricCard label={"Success Rate"} value={`${totalRuns > 0 ? Math.round((completedRuns / totalRuns) * 100) : 0}%`} />
       </div>
 
       <div className="rounded-xl border border-border bg-background overflow-hidden">

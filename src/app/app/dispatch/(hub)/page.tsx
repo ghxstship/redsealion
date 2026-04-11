@@ -11,6 +11,7 @@ import StatusBadge, { WORK_ORDER_STATUS_COLORS, PRIORITY_COLORS } from '@/compon
 import PageHeader from '@/components/shared/PageHeader';
 import DispatchHubTabs from '../DispatchHubTabs';
 import Alert from '@/components/ui/Alert';
+import MetricCard from '@/components/ui/MetricCard';
 
 
 
@@ -65,10 +66,7 @@ export default async function DispatchPage() {
       {/* Status summary */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
         {Object.entries(statCounts).map(([status, count]) => (
-          <Card key={status} padding="sm">
-            <p className="text-xs text-text-muted">{formatLabel(status)}</p>
-            <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">{count}</p>
-          </Card>
+          <MetricCard key={status} label={formatLabel(status)} value={count} />
         ))}
       </div>
 
