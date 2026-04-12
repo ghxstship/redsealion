@@ -29,7 +29,7 @@ export async function GET(
   let records: Record<string, unknown>[] = [];
   try {
     const { data } = await supabase
-      .from('equipment_maintenance_records')
+      .from('maintenance_records')
       .select('*')
       .eq('asset_id', id)
       .order('performed_at', { ascending: false })

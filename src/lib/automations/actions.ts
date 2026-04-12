@@ -381,7 +381,7 @@ async function executeCreateCalendarEvent(
   const supabase = await createClient();
   const orgId = payload.org_id as string;
 
-  await supabase.from('calendar_events').insert({
+  await supabase.from('events').insert({
     organization_id: orgId,
     title: interpolateTemplate((config.title as string) ?? 'New Event', payload),
     description: interpolateTemplate((config.description as string) ?? '', payload),

@@ -14,7 +14,7 @@ export async function POST(request: Request) {
   staleTime.setHours(staleTime.getHours() - 72);
 
   const { data: staleSignatures, error: fetchErr } = await supabase
-    .from('esign_requests')
+    .from('esignature_requests')
     .select('id, proposal_id')
     .eq('status', 'in_progress')
     .lte('created_at', staleTime.toISOString());
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
   // Update status to 'timeout'
   const ids = staleSignatures.map(req => req.id);
   const { error: updateErr } = await supabase
-    .from('esign_requests')
+    .from('esignature_requests')
     .update({ status: 'timeout' })
     .in('id', ids);
 

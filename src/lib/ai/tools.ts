@@ -473,7 +473,7 @@ export function buildCopilotTools(
       execute: async ({ limit }: { limit: number }) => {
         try {
           const { data, error } = await supabase
-            .from('budgets')
+            .from('project_budgets')
             .select('name, total_budget, spent, remaining, status, proposal_id')
             .eq('organization_id', orgId)
             .order('created_at', { ascending: false })
@@ -517,7 +517,7 @@ export function buildCopilotTools(
       execute: async ({ status, limit }: { status?: string; limit: number }) => {
         try {
           let query = supabase
-            .from('crew_members')
+            .from('crew_profiles')
             .select('name, role, status, daily_rate, phone, email')
             .eq('organization_id', orgId)
             .order('name', { ascending: true })
@@ -562,7 +562,7 @@ export function buildCopilotTools(
       execute: async ({ status, limit }: { status?: string; limit: number }) => {
         try {
           let query = supabase
-            .from('equipment')
+            .from('assets')
             .select('name, category, status, serial_number, purchase_cost, location')
             .eq('organization_id', orgId)
             .order('name', { ascending: true })
