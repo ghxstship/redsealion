@@ -1,3 +1,4 @@
+import FormInput from '@/components/ui/FormInput';
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -108,7 +109,7 @@ export default function TagsSettingsPage() {
       {/* Entity type tabs */}
       <div className="flex gap-1 rounded-lg bg-bg-secondary p-1">
         {entityTypes.map((et) => (
-          <button
+          <Button
             key={et.key}
             onClick={() => { setActiveType(et.key); setShowAdd(false); }}
             className={`flex-1 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
@@ -118,7 +119,7 @@ export default function TagsSettingsPage() {
             }`}
           >
             {et.label}
-          </button>
+          </Button>
         ))}
       </div>
 
@@ -140,7 +141,7 @@ export default function TagsSettingsPage() {
               <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
                 Tag Name
               </label>
-              <input
+              <FormInput
                 type="text"
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
@@ -155,7 +156,7 @@ export default function TagsSettingsPage() {
               </label>
               <div className="flex gap-2">
                 {presetColors.map((c) => (
-                  <button
+                  <Button
                     key={c}
                     onClick={() => setNewColor(c)}
                     className={`h-7 w-7 rounded-full border-2 transition-[color,background-color,border-color,opacity,box-shadow] ${
@@ -170,12 +171,12 @@ export default function TagsSettingsPage() {
                 <Button size="sm" onClick={handleAdd}>
                 Add
                 </Button>
-              <button
+              <Button
                 onClick={() => setShowAdd(false)}
                 className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-text-secondary hover:bg-bg-secondary transition-colors"
               >
                 Cancel
-              </button>
+              </Button>
             </div>
           </div>
         )}
@@ -198,12 +199,12 @@ export default function TagsSettingsPage() {
                   style={{ backgroundColor: tag.color }}
                 />
                 {tag.name}
-                <button
+                <Button
                   onClick={() => handleRemove(tag.id)}
                   className="ml-0.5 text-text-muted hover:text-red-500 transition-colors"
                 >
                   <X className="h-3.5 w-3.5" />
-                </button>
+                </Button>
               </span>
             ))
           )}

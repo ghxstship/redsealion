@@ -1,3 +1,4 @@
+import Button from '@/components/ui/Button';
 import { TierGate } from '@/components/shared/TierGate';
 import { formatCurrency } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
@@ -91,9 +92,9 @@ export default async function RecurringInvoicesPage() {
                 <span>Next: {schedule.next_issue_date}</span>
               </div>
             </div>
-            <button className="shrink-0 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-bg-secondary transition-colors">
+            <Button className="shrink-0 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-bg-secondary transition-colors">
               Edit
-            </button>
+            </Button>
           </div>
         ))}
       </div>

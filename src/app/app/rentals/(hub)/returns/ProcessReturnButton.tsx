@@ -8,6 +8,7 @@ import FormSelect from '@/components/ui/FormSelect';
 import Button from '@/components/ui/Button';
 import { createClient } from '@/lib/supabase/client';
 import Alert from '@/components/ui/Alert';
+import FormTextarea from '@/components/ui/FormTextarea';
 
 interface ProcessReturnButtonProps {
   itemId: string;
@@ -59,12 +60,12 @@ export default function ProcessReturnButton({ itemId, itemName }: ProcessReturnB
 
   return (
     <>
-      <button
+      <Button
         onClick={() => setOpen(true)}
         className="text-xs text-blue-600 hover:underline"
       >
         Process Return
-      </button>
+      </Button>
 
       <ModalShell title={`Process Return: ${itemName}`} open={open} onClose={() => setOpen(false)}>
         <form onSubmit={handleSubmit} className="space-y-4 pt-2">
@@ -82,7 +83,7 @@ export default function ProcessReturnButton({ itemId, itemName }: ProcessReturnB
           </div>
           <div>
             <FormLabel>Damage Notes</FormLabel>
-            <textarea
+            <FormTextarea
               name="damage_notes"
               rows={3}
               placeholder="Describe any damage or issues..."

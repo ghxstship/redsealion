@@ -95,10 +95,12 @@ export default function MarketplaceJobPage({ params }: { params: Promise<{ id: s
           const { data: userAuth } = await supabase.auth.getUser();
           
           if (userAuth.user) {
+            const { data: userMeta } = await supabase.from('users').select('organization_id').eq('id', userAuth.user.id).single();
             const { data: crew } = await supabase
               .from('crew_profiles')
               .select('id')
               .eq('user_id', userAuth.user.id)
+              .eq('organization_id', userMeta?.organization_id)
               .single();
             
             if (crew) {

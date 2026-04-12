@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { clsx } from '@/lib/clsx';
 import { IconMenu, IconX } from '@/components/ui/Icons';
 import { createBrowserClient } from '@supabase/ssr';
+import Button from '@/components/ui/Button';
 
 interface PortalHeaderProps {
   orgName: string;
@@ -88,17 +89,17 @@ export default function PortalHeader({ orgName, logoUrl }: PortalHeaderProps) {
               );
             })}
             {/* GAP-PTL-04: Sign out button */}
-            <button
+            <Button
               onClick={handleSignOut}
               disabled={isSigningOut}
               className="text-sm font-medium text-text-secondary hover:text-foreground transition-colors disabled:opacity-50"
             >
               {isSigningOut ? 'Signing out…' : 'Sign Out'}
-            </button>
+            </Button>
           </nav>
 
           {/* Mobile menu button */}
-          <button
+          <Button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden p-2 -mr-2 text-text-secondary hover:text-foreground transition-colors"
@@ -109,7 +110,7 @@ export default function PortalHeader({ orgName, logoUrl }: PortalHeaderProps) {
               ) : (
                 <IconMenu className="h-5 w-5" strokeWidth={1.5} />
               )}
-          </button>
+          </Button>
         </div>
 
         {/* Mobile navigation */}
@@ -145,13 +146,13 @@ export default function PortalHeader({ orgName, logoUrl }: PortalHeaderProps) {
               Account
             </Link>
             {/* GAP-PTL-04: Mobile sign out */}
-            <button
+            <Button
               onClick={handleSignOut}
               disabled={isSigningOut}
               className="text-sm font-medium text-text-secondary hover:text-foreground transition-colors text-left disabled:opacity-50"
             >
               {isSigningOut ? 'Signing out…' : 'Sign Out'}
-            </button>
+            </Button>
           </nav>
         </div>
       </div>

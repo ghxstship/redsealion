@@ -15,6 +15,7 @@ import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import BiddingPanel from '@/components/admin/work-orders/BiddingPanel';
 import StatusBadge, { WORK_ORDER_STATUS_COLORS, PRIORITY_COLORS } from '@/components/ui/StatusBadge';
 import { formatLabel } from '@/lib/utils';
+import FormSelect from '@/components/ui/FormSelect';
 
 interface WorkOrder {
   id: string;
@@ -356,7 +357,7 @@ export default function DispatchDetailPage({ params }: { params: Promise<{ id: s
       {error && (
         <Alert variant="error" className="mb-6">
           {error}
-          <button onClick={() => setError(null)} className="ml-2 font-medium hover:underline">Dismiss</button>
+          <Button onClick={() => setError(null)} className="ml-2 font-medium hover:underline">Dismiss</Button>
         </Alert>
       )}
 
@@ -386,13 +387,13 @@ export default function DispatchDetailPage({ params }: { params: Promise<{ id: s
             </Button>
           )}
           {isEditable && (
-            <button
+            <Button
               onClick={() => setShowDeleteConfirm(true)}
               disabled={actionLoading}
               className="text-xs text-text-muted hover:text-red-600 transition-colors"
             >
               Delete
-            </button>
+            </Button>
           )}
         </div>
       )}
@@ -424,9 +425,9 @@ export default function DispatchDetailPage({ params }: { params: Promise<{ id: s
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <FormLabel>Priority</FormLabel>
-                <select value={editFields.priority} onChange={(e) => setEditFields({ ...editFields, priority: e.target.value })} className={inputClass}>
+                <FormSelect value={editFields.priority} onChange={(e) => setEditFields({ ...editFields, priority: e.target.value })} className={inputClass}>
                   {PRIORITIES.map((p) => <option key={p} value={p}>{p.charAt(0).toUpperCase() + p.slice(1)}</option>)}
-                </select>
+                </FormSelect>
               </div>
               <div>
                 <FormLabel>Location Name</FormLabel>
@@ -557,19 +558,19 @@ export default function DispatchDetailPage({ params }: { params: Promise<{ id: s
                     <td className="px-6 py-3 text-text-muted text-xs">{new Date(a.assigned_at).toLocaleDateString()}</td>
                     {isEditable && (
                       <td className="px-6 py-3">
-                        <button onClick={() => handleRemoveAssignment(a.id)} className="text-xs text-text-muted hover:text-red-600 transition-colors">
+                        <Button onClick={() => handleRemoveAssignment(a.id)} className="text-xs text-text-muted hover:text-red-600 transition-colors">
                           Remove
-                        </button>
+                        </Button>
                       </td>
                     )}
                     {showRatingPrompt && (
                       <td className="px-6 py-3">
-                        <button
+                        <Button
                           onClick={() => { setRatingCrewId(a.crew_profiles?.id ?? null); setRatingScore(5); setRatingComment(''); }}
                           className="text-xs text-blue-600 hover:underline"
                         >
                           Rate
-                        </button>
+                        </Button>
                       </td>
                     )}
                   </tr>
@@ -589,7 +590,7 @@ export default function DispatchDetailPage({ params }: { params: Promise<{ id: s
               <label className="block text-xs font-medium text-text-muted mb-1">Score</label>
               <div className="flex gap-1">
                 {[1, 2, 3, 4, 5].map((s) => (
-                  <button
+                  <Button
                     key={s}
                     onClick={() => setRatingScore(s)}
                     className={`h-8 w-8 rounded-lg text-sm font-semibold transition-colors ${
@@ -597,7 +598,7 @@ export default function DispatchDetailPage({ params }: { params: Promise<{ id: s
                     }`}
                   >
                     {s}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -628,7 +629,7 @@ export default function DispatchDetailPage({ params }: { params: Promise<{ id: s
           <ul className="space-y-2">
             {checklist.map((item, i) => (
               <li key={i} className="flex items-center gap-2 text-sm">
-                <button
+                <Button
                   onClick={() => handleChecklistToggle(i)}
                   className={`h-5 w-5 rounded border flex items-center justify-center text-xs transition-colors ${
                     item.done
@@ -637,7 +638,7 @@ export default function DispatchDetailPage({ params }: { params: Promise<{ id: s
                   }`}
                 >
                   {item.done ? '✓' : ''}
-                </button>
+                </Button>
                 <span className={item.done ? 'line-through text-text-muted' : 'text-foreground'}>{item.text}</span>
               </li>
             ))}

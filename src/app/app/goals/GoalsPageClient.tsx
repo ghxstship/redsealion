@@ -100,8 +100,8 @@ export default function GoalsPageClient({ goals }: GoalsPageClientProps) {
                 <span className="text-xs text-text-muted flex-shrink-0">
                   {goal.start_date || '?'} to {goal.due_date || '?'}
                 </span>
-                <button onClick={() => openEditGoal(goal)} className="text-xs text-blue-600 hover:underline">Edit</button>
-                <button onClick={() => handleDeleteGoal(goal.id)} className="text-xs text-red-600 hover:underline">Delete</button>
+                <Button onClick={() => openEditGoal(goal)} className="text-xs text-blue-600 hover:underline">Edit</Button>
+                <Button onClick={() => handleDeleteGoal(goal.id)} className="text-xs text-red-600 hover:underline">Delete</Button>
               </div>
             </div>
 
@@ -128,9 +128,9 @@ export default function GoalsPageClient({ goals }: GoalsPageClientProps) {
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <h4 className="text-xs font-medium uppercase tracking-wider text-text-muted">Key Results</h4>
-                <button onClick={() => setActiveKrGoalId(goal.id)} className="text-xs text-blue-600 hover:underline">
+                <Button onClick={() => setActiveKrGoalId(goal.id)} className="text-xs text-blue-600 hover:underline">
                   + Add Key Result
-                </button>
+                </Button>
               </div>
 
               {goal.key_results.map((kr) => {
@@ -151,7 +151,7 @@ export default function GoalsPageClient({ goals }: GoalsPageClientProps) {
                     <span className="text-xs tabular-nums text-text-secondary w-32 text-right flex-shrink-0">
                       {kr.current}{kr.unit} / {kr.target}{kr.unit} ({pct}%)
                     </span>
-                    <button onClick={() => handleDeleteKr(kr.id)} className="text-xs text-text-muted hover:text-red-500">×</button>
+                    <Button onClick={() => handleDeleteKr(kr.id)} className="text-xs text-text-muted hover:text-red-500">×</Button>
                   </div>
                 );
               })}

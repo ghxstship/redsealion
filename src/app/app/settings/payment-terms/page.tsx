@@ -1,9 +1,12 @@
+import FormInput from '@/components/ui/FormInput';
 'use client';
 
 import { useState, useEffect } from 'react';
 import Card from '@/components/ui/Card';
 import Skeleton from '@/components/ui/Skeleton';
 import Button from '@/components/ui/Button';
+import FormSelect from '@/components/ui/FormSelect';
+import FormTextarea from '@/components/ui/FormTextarea';
 
 function SelectField({
   label,
@@ -21,7 +24,7 @@ function SelectField({
       <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
         {label}
       </label>
-      <select
+      <FormSelect
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
@@ -29,7 +32,7 @@ function SelectField({
         {options.map((opt) => (
           <option key={opt} value={opt}>{opt}</option>
         ))}
-      </select>
+      </FormSelect>
     </div>
   );
 }
@@ -51,7 +54,7 @@ function PercentField({
         {label}
       </label>
       <div className="relative">
-        <input
+        <FormInput
           type="number"
           value={value}
           onChange={(e) => onChange(e.target.value)}
@@ -163,7 +166,7 @@ export default function PaymentTermsSettingsPage() {
           <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
             Default Instructions (shown on invoices)
           </label>
-          <textarea
+          <FormTextarea
             rows={3}
             value={instructions}
             onChange={(e) => setInstructions(e.target.value)}

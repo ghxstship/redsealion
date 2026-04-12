@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import Alert from '@/components/ui/Alert';
 import FormTextarea from '@/components/ui/FormTextarea';
+import Button from '@/components/ui/Button';
 
 interface CommentFormProps {
   proposalId: string;
@@ -73,14 +74,14 @@ export default function CommentForm({ proposalId, orgSlug }: CommentFormProps) {
           placeholder="Write your comment..."
           style={{ '--tw-ring-color': 'var(--org-primary)' } as React.CSSProperties} />
         <div className="mt-3 flex justify-end">
-          <button
+          <Button
             type="submit"
             disabled={isPending || !body.trim()}
             className="inline-flex items-center rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             style={{ backgroundColor: 'var(--org-primary)' }}
           >
             {isPending ? 'Posting…' : 'Post Comment'}
-          </button>
+          </Button>
         </div>
       </form>
     </div>

@@ -4,6 +4,9 @@ import { createClient } from '@/lib/supabase/server';
 import { hasLocale, normalizeBareCode } from '@/lib/i18n/config';
 
 export async function GET() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const perm = await checkPermission('settings', 'view');
   if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });

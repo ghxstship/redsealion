@@ -5,6 +5,7 @@ import FormSelect from '@/components/ui/FormSelect';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
 import { TRIGGER_TYPES } from '@/lib/automations/constants';
+import Button from '@/components/ui/Button';
 
 interface TriggerSelectorProps {
   value: string;
@@ -27,7 +28,7 @@ export function TriggerSelector({ value, config, onChange }: TriggerSelectorProp
       </FormLabel>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
         {TRIGGER_TYPES.map((trigger) => (
-          <button
+          <Button
             key={trigger.value}
             type="button"
             onClick={() => handleTypeChange(trigger.value)}
@@ -39,7 +40,7 @@ export function TriggerSelector({ value, config, onChange }: TriggerSelectorProp
           >
             <p className="text-sm font-medium text-foreground">{trigger.label}</p>
             <p className="mt-0.5 text-xs text-text-muted">{trigger.description}</p>
-          </button>
+          </Button>
         ))}
       </div>
 
@@ -70,7 +71,7 @@ export function TriggerSelector({ value, config, onChange }: TriggerSelectorProp
             </FormLabel>
             <div className="flex gap-2">
               {[1, 3, 7, 14].map((days) => (
-                <button
+                <Button
                   key={days}
                   type="button"
                   onClick={() => onChange(selectedType, { ...config, delayDays: days })}
@@ -81,7 +82,7 @@ export function TriggerSelector({ value, config, onChange }: TriggerSelectorProp
                   }`}
                 >
                   {days} {days === 1 ? 'day' : 'days'}
-                </button>
+                </Button>
               ))}
             </div>
           </div>

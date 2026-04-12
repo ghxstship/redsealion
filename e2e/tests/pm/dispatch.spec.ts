@@ -24,7 +24,7 @@ test.describe('Dispatch @dispatch', () => {
     const page = await authenticatedPage('crew');
     await page.goto('/app/dispatch');
     await page.waitForLoadState('networkidle');
-    // TODO: expectAccessDenied once server-side role gating is enforced
+    await expect(page.locator("text=Access Denied")).toBeVisible();
     await expectPageRendered(page);
   });
 });

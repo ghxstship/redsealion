@@ -17,6 +17,7 @@ import Card from '@/components/ui/Card';
 import { createClient } from '@/lib/supabase/client';
 import { formatCurrency } from '@/lib/utils';
 import { GitCompare, Plus, Minus, Edit2, Clock, ArrowRight } from 'lucide-react';
+import FormSelect from '@/components/ui/FormSelect';
 
 /* ─── Types ──────────────────────────────────────────────── */
 
@@ -121,7 +122,7 @@ export default function VersionComparison({
             <label className="block text-[10px] font-medium text-text-muted uppercase tracking-wider mb-1">
               From Version
             </label>
-            <select
+            <FormSelect
               value={selectedFromVersion ?? ''}
               onChange={(e) => setSelectedFromVersion(e.target.value ? Number(e.target.value) : null)}
               className="rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground"
@@ -133,7 +134,7 @@ export default function VersionComparison({
                   v{v.version} — {new Date(v.createdAt).toLocaleDateString()}
                 </option>
               ))}
-            </select>
+            </FormSelect>
           </div>
 
           <ArrowRight size={16} className="text-text-muted mt-4" />
@@ -142,7 +143,7 @@ export default function VersionComparison({
             <label className="block text-[10px] font-medium text-text-muted uppercase tracking-wider mb-1">
               To Version
             </label>
-            <select
+            <FormSelect
               value={selectedToVersion ?? ''}
               onChange={(e) => setSelectedToVersion(e.target.value ? Number(e.target.value) : null)}
               className="rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground"
@@ -153,7 +154,7 @@ export default function VersionComparison({
                   v{v.version} — {new Date(v.createdAt).toLocaleDateString()} (Current)
                 </option>
               ))}
-            </select>
+            </FormSelect>
           </div>
         </div>
       </div>

@@ -5,6 +5,7 @@ import Alert from '@/components/ui/Alert';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
 import { Mail } from 'lucide-react';
+import Button from '@/components/ui/Button';
 
 interface PortalMagicLinkFormProps {
   orgSlug: string;
@@ -57,12 +58,12 @@ export default function PortalMagicLinkForm({ orgSlug, orgName }: PortalMagicLin
         </p>
         <p className="mt-4 text-xs text-text-muted">
           Didn&apos;t receive it? Check your spam folder or{' '}
-          <button
+          <Button
             onClick={() => { setSent(false); setEmail(''); }}
             className="underline hover:text-foreground transition-colors"
           >
             try again
-          </button>
+          </Button>
           .
         </p>
       </div>
@@ -98,14 +99,14 @@ export default function PortalMagicLinkForm({ orgSlug, orgName }: PortalMagicLin
             />
           </div>
 
-          <button
+          <Button
             type="submit"
             disabled={submitting || !email}
             className="w-full rounded-lg px-4 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50"
             style={{ backgroundColor: 'var(--org-primary, var(--color-foreground))' }}
           >
             {submitting ? 'Sending…' : 'Send Login Link'}
-          </button>
+          </Button>
         </form>
 
         <div className="relative">

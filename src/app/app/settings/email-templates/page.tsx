@@ -1,3 +1,4 @@
+import FormInput from '@/components/ui/FormInput';
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -35,6 +36,7 @@ const variableHints: Record<string, string[]> = {
 import { Mail } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
+import FormTextarea from '@/components/ui/FormTextarea';
 
 function MailIcon() {
   return <Mail className="h-5 w-5 text-text-secondary" />;
@@ -168,7 +170,7 @@ export default function EmailTemplatesPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <button
+                  <Button
                     type="button"
                     role="switch"
                     aria-checked={tpl.enabled}
@@ -182,13 +184,13 @@ export default function EmailTemplatesPage() {
                         tpl.enabled ? 'translate-x-5' : 'translate-x-0'
                       }`}
                     />
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={() => handleExpand(meta.event_type)}
                     className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-bg-secondary transition-colors"
                   >
                     {isExpanded ? 'Cancel' : 'Edit'}
-                  </button>
+                  </Button>
                 </div>
               </div>
 
@@ -198,7 +200,7 @@ export default function EmailTemplatesPage() {
                     <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
                       Subject
                     </label>
-                    <input
+                    <FormInput
                       type="text"
                       value={editSubject}
                       onChange={(e) => setEditSubject(e.target.value)}
@@ -210,7 +212,7 @@ export default function EmailTemplatesPage() {
                     <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
                       Body
                     </label>
-                    <textarea
+                    <FormTextarea
                       rows={6}
                       value={editBody}
                       onChange={(e) => setEditBody(e.target.value)}

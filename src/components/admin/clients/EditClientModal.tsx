@@ -8,6 +8,7 @@ import FormInput from '@/components/ui/FormInput';
 import FormSelect from '@/components/ui/FormSelect';
 import Button from '@/components/ui/Button';
 import Alert from '@/components/ui/Alert';
+import FormTextarea from '@/components/ui/FormTextarea';
 
 interface EditClientModalProps {
   open: boolean;
@@ -135,7 +136,7 @@ export default function EditClientModal({ open, onClose, clientId, initialData }
 
         <div>
           <FormLabel>Notes</FormLabel>
-          <textarea
+          <FormTextarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={3}

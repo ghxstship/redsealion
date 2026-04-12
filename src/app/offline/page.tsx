@@ -1,3 +1,4 @@
+import Button from '@/components/ui/Button';
 'use client';
 
 export default function OfflinePage() {
@@ -17,12 +18,12 @@ export default function OfflinePage() {
           Please check your connection and try again.
         </p>
 
-        <button
+        <Button
           onClick={() => window.location.reload()}
           className="px-4 py-2 text-sm rounded-lg bg-foreground text-white hover:opacity-90 transition-opacity"
         >
           Retry
-        </button>
+        </Button>
       </div>
     </div>
   );

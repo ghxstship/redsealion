@@ -12,6 +12,7 @@ import Alert from '@/components/ui/Alert';
 import Button from '@/components/ui/Button';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
+import FormTextarea from '@/components/ui/FormTextarea';
 
 export default function NewAutomationPage() {
   const router = useRouter();
@@ -109,7 +110,7 @@ export default function NewAutomationPage() {
           </div>
           <div>
             <FormLabel>Description</FormLabel>
-            <textarea
+            <FormTextarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={2}

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { fmTransition } from '@/lib/motion';
 import { formatCurrency } from '@/lib/utils';
 import type { PhaseAddon } from '@/types/database';
+import Button from '@/components/ui/Button';
 
 interface AddOnSelectorProps {
   addon: PhaseAddon;
@@ -19,7 +20,7 @@ export default function AddOnSelector({
   disabled,
 }: AddOnSelectorProps) {
   return (
-    <button
+    <Button
       type="button"
       onClick={onToggle}
       disabled={disabled}
@@ -96,6 +97,6 @@ export default function AddOnSelector({
           </div>
         </div>
       </div>
-    </button>
+    </Button>
   );
 }

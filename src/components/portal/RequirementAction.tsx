@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
+import Button from '@/components/ui/Button';
 
 interface RequirementActionProps {
   proposalId: string;
@@ -62,7 +63,7 @@ export default function RequirementAction({
 
   return (
     <>
-      <button
+      <Button
         type="button"
         onClick={handleClick}
         disabled={isPending}
@@ -70,7 +71,7 @@ export default function RequirementAction({
         style={{ backgroundColor: 'var(--org-primary)' }}
       >
         {isPending ? 'Updating…' : showApprove ? 'Approve' : 'Mark Complete'}
-      </button>
+      </Button>
       {error && (
         <span className="text-xs text-red-600">{error}</span>
       )}

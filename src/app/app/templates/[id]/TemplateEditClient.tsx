@@ -128,9 +128,9 @@ export default function TemplateEditClient({ template }: TemplateEditClientProps
                 <div key={`${phase}-${idx}`} className="flex items-center gap-2 bg-bg-secondary rounded-lg px-3 py-2">
                   <span className="text-xs font-mono text-text-muted w-6">{String(idx + 1).padStart(2, '0')}</span>
                   <span className="text-sm text-foreground flex-1">{phase}</span>
-                  <button type="button" onClick={() => movePhase(idx, -1)} disabled={idx === 0} className="text-xs text-text-muted hover:text-foreground disabled:opacity-30">↑</button>
-                  <button type="button" onClick={() => movePhase(idx, 1)} disabled={idx === phases.length - 1} className="text-xs text-text-muted hover:text-foreground disabled:opacity-30">↓</button>
-                  <button type="button" onClick={() => removePhase(idx)} className="text-xs text-red-500 hover:text-red-700">×</button>
+                  <Button type="button" onClick={() => movePhase(idx, -1)} disabled={idx === 0} className="text-xs text-text-muted hover:text-foreground disabled:opacity-30">↑</Button>
+                  <Button type="button" onClick={() => movePhase(idx, 1)} disabled={idx === phases.length - 1} className="text-xs text-text-muted hover:text-foreground disabled:opacity-30">↓</Button>
+                  <Button type="button" onClick={() => removePhase(idx)} className="text-xs text-red-500 hover:text-red-700">×</Button>
                 </div>
               ))}
             </div>

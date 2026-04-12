@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
+import Button from '@/components/ui/Button';
 
 interface BookingRespondButtonsProps {
   bookingId: string;
@@ -53,22 +54,22 @@ export default function BookingRespondButtons({ bookingId, orgSlug }: BookingRes
   return (
     <div className="w-full max-w-lg space-y-3">
       <div className="flex gap-3">
-        <button
+        <Button
           type="button"
           onClick={() => handleRespond('accepted')}
           disabled={isPending}
           className="flex-1 rounded-lg bg-foreground px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-foreground/90 disabled:opacity-50"
         >
           {isPending ? 'Processing…' : 'Accept Booking'}
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
           onClick={() => handleRespond('declined')}
           disabled={isPending}
           className="flex-1 rounded-lg border border-border bg-card px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary disabled:opacity-50"
         >
           {isPending ? 'Processing…' : 'Decline'}
-        </button>
+        </Button>
       </div>
       {error && (
         <p className="text-xs text-red-600 text-center">{error}</p>

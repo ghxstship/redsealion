@@ -1,3 +1,5 @@
+import FormInput from '@/components/ui/FormInput';
+import Button from '@/components/ui/Button';
 'use client';
 
 import { useState } from 'react';
@@ -100,7 +102,7 @@ export default function CalendarSyncPage() {
 
   function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
     return (
-      <button
+      <Button
         type="button"
         onClick={() => onChange(!checked)}
         className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors ${
@@ -112,7 +114,7 @@ export default function CalendarSyncPage() {
             checked ? 'translate-x-[18px]' : 'translate-x-[3px]'
           }`}
         />
-      </button>
+      </Button>
     );
   }
 
@@ -146,12 +148,12 @@ export default function CalendarSyncPage() {
                     <span className="h-2 w-2 rounded-full bg-green-500" />
                     Last synced {provider.lastSynced}
                   </span>
-                  <button
+                  <Button
                     onClick={() => handleDisconnect(provider.key)}
                     className="rounded-lg border border-red-200 bg-background px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
                   >
                     Disconnect
-                  </button>
+                  </Button>
                 </>
               ) : (
                 <>
@@ -159,12 +161,12 @@ export default function CalendarSyncPage() {
                     <span className="h-2 w-2 rounded-full bg-text-muted" />
                     Not Connected
                   </span>
-                  <button
+                  <Button
                     onClick={() => handleConnect(provider.key)}
                     className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:bg-foreground/90 transition-colors"
                   >
                     Connect
-                  </button>
+                  </Button>
                 </>
               )}
             </div>
@@ -177,7 +179,7 @@ export default function CalendarSyncPage() {
                   Sync Direction
                 </label>
                 <div className="flex gap-2">
-                  <button
+                  <Button
                     onClick={() => handleSyncDirection(provider.key, 'one-way')}
                     className={`rounded-lg border px-3.5 py-2 text-sm font-medium transition-colors ${
                       provider.syncDirection === 'one-way'
@@ -186,8 +188,8 @@ export default function CalendarSyncPage() {
                     }`}
                   >
                     One-way: FlyteDeck to Calendar
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={() => handleSyncDirection(provider.key, 'two-way')}
                     className={`rounded-lg border px-3.5 py-2 text-sm font-medium transition-colors ${
                       provider.syncDirection === 'two-way'
@@ -196,14 +198,14 @@ export default function CalendarSyncPage() {
                     }`}
                   >
                     Two-way
-                  </button>
+                  </Button>
                 </div>
               </div>
               <div>
                 <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
                   Calendar ID
                 </label>
-                <input
+                <FormInput
                   type="text"
                   value={provider.calendarId}
                   onChange={(e) => handleCalendarId(provider.key, e.target.value)}
@@ -223,18 +225,18 @@ export default function CalendarSyncPage() {
           Use this URL to subscribe to your FlyteDeck calendar from any calendar app.
         </p>
         <div className="flex gap-2">
-          <input
+          <FormInput
             type="text"
             value={feedUrl}
             readOnly
             className="flex-1 rounded-lg border border-border bg-bg-secondary px-3.5 py-2 text-sm text-text-secondary cursor-not-allowed"
           />
-          <button
+          <Button
             onClick={handleCopyFeed}
             className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors"
           >
             {feedCopied ? 'Copied!' : 'Copy'}
-          </button>
+          </Button>
         </div>
       </Card>
 

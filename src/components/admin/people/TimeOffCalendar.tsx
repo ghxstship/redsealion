@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Button from '@/components/ui/Button';
 
 const MONTH_NAMES = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -66,15 +67,15 @@ export default function TimeOffCalendar({ requests = [] }: TimeOffCalendarProps)
   return (
     <div className="rounded-xl border border-border bg-background overflow-hidden overflow-x-auto">
       <div className="flex items-center justify-between px-6 py-4 border-b border-border min-w-[600px]">
-        <button onClick={prevMonth} className="text-sm text-text-secondary hover:text-foreground transition-colors">
+        <Button onClick={prevMonth} className="text-sm text-text-secondary hover:text-foreground transition-colors">
           &larr; Prev
-        </button>
+        </Button>
         <h2 className="text-base font-semibold text-foreground">
           {MONTH_NAMES[month]} {year}
         </h2>
-        <button onClick={nextMonth} className="text-sm text-text-secondary hover:text-foreground transition-colors">
+        <Button onClick={nextMonth} className="text-sm text-text-secondary hover:text-foreground transition-colors">
           Next &rarr;
-        </button>
+        </Button>
       </div>
 
       <div className="grid grid-cols-7 min-w-[600px]">

@@ -6,6 +6,7 @@ import FormTextarea from '@/components/ui/FormTextarea';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
 import { ACTION_TYPES } from '@/lib/automations/constants';
+import Button from '@/components/ui/Button';
 
 interface ActionSelectorProps {
   value: string;
@@ -28,7 +29,7 @@ export function ActionSelector({ value, config, onChange }: ActionSelectorProps)
       </FormLabel>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
         {ACTION_TYPES.map((action) => (
-          <button
+          <Button
             key={action.value}
             type="button"
             onClick={() => handleTypeChange(action.value)}
@@ -40,7 +41,7 @@ export function ActionSelector({ value, config, onChange }: ActionSelectorProps)
           >
             <p className="text-sm font-medium text-foreground">{action.label}</p>
             <p className="mt-0.5 text-xs text-text-muted">{action.description}</p>
-          </button>
+          </Button>
         ))}
       </div>
 

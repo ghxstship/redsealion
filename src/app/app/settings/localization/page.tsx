@@ -5,6 +5,7 @@ import { SUPPORTED_LOCALES, LOCALE_COOKIE, LOCALE_STORAGE_KEY, type SupportedLoc
 import { useTranslation } from '@/lib/i18n/client';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
+import FormSelect from '@/components/ui/FormSelect';
 
 const dateFormatOptions = [
   { value: 'MM/DD/YYYY', label: 'MM/DD/YYYY' },
@@ -142,7 +143,7 @@ export default function LocalizationSettingsPage() {
             <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
               {t('settings.dateFormat')}
             </label>
-            <select
+            <FormSelect
               value={dateFormat}
               onChange={(e) => setDateFormat(e.target.value)}
               className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
@@ -150,13 +151,13 @@ export default function LocalizationSettingsPage() {
               {dateFormatOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
-            </select>
+            </FormSelect>
           </div>
           <div>
             <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
               {t('settings.timeFormat')}
             </label>
-            <select
+            <FormSelect
               value={timeFormat}
               onChange={(e) => setTimeFormat(e.target.value)}
               className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
@@ -164,13 +165,13 @@ export default function LocalizationSettingsPage() {
               {timeFormatOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
-            </select>
+            </FormSelect>
           </div>
           <div>
             <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
               {t('settings.firstDayOfWeek')}
             </label>
-            <select
+            <FormSelect
               value={firstDayOfWeek}
               onChange={(e) => setFirstDayOfWeek(Number(e.target.value))}
               className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
@@ -178,7 +179,7 @@ export default function LocalizationSettingsPage() {
               {firstDayOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
-            </select>
+            </FormSelect>
           </div>
         </div>
         <div className="mt-4 rounded-lg bg-bg-secondary px-4 py-3">
@@ -195,7 +196,7 @@ export default function LocalizationSettingsPage() {
             <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
               {t('settings.numberFormat')}
             </label>
-            <select
+            <FormSelect
               value={numberFormat}
               onChange={(e) => setNumberFormat(e.target.value)}
               className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
@@ -203,7 +204,7 @@ export default function LocalizationSettingsPage() {
               {numberFormatOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
-            </select>
+            </FormSelect>
           </div>
           <div>
             <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
@@ -227,7 +228,7 @@ export default function LocalizationSettingsPage() {
           <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
             {t('settings.language')}
           </label>
-          <select
+          <FormSelect
             value={language}
             onChange={(e) => setLanguage(e.target.value as SupportedLocale)}
             className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
@@ -235,7 +236,7 @@ export default function LocalizationSettingsPage() {
             {SUPPORTED_LOCALES.map((opt) => (
               <option key={opt.value} value={opt.value}>{opt.label}</option>
             ))}
-          </select>
+          </FormSelect>
         </div>
         <p className="mt-3 text-xs text-text-secondary">
           {t('settings.languageDesc')}

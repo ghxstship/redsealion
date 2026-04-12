@@ -59,12 +59,12 @@ export default function WebhooksSettingsPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <StatusBadge status={ep.is_active ? 'active' : 'inactive'} colorMap={{active: 'bg-green-100 text-green-800', inactive: 'bg-red-100 text-red-800'}} />
-                    <button
+                    <Button
                       onClick={() => setDeletingId(ep.id)}
                       className="text-xs font-medium text-red-600 hover:text-red-700"
                     >
                       Delete
-                    </button>
+                    </Button>
                   </div>
                 </div>
                 <div className="mt-3">

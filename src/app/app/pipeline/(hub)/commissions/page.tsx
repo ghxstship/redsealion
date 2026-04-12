@@ -4,7 +4,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import { formatCurrency } from '@/lib/utils';
 import PipelineHubTabs from '../../PipelineHubTabs';
-import Card from '@/components/ui/Card';
+import MetricCard from '@/components/ui/MetricCard';
 
 const DEFAULT_COMMISSION_RATE = 0.1; // 10% fallback
 
@@ -84,10 +84,12 @@ export default async function CommissionsPage() {
           { label: `Commission (${Math.round(commissionRate * 100)}%)`, value: formatCurrency(totalCommissions) },
           { label: 'Sales Reps', value: String(repList.length) },
         ].map((stat) => (
-          <Card key={stat.label} padding="default" className="px-4 py-4">
-            <p className="text-xs text-text-muted">{stat.label}</p>
-            <p className={`mt-1 text-2xl font-semibold tabular-nums ${stat.color ?? 'text-foreground'}`}>{stat.value}</p>
-          </Card>
+          <MetricCard
+            key={stat.label}
+            title={stat.label}
+            value={stat.value}
+            valueClassName={stat.color}
+          />
         ))}
       </div>
 

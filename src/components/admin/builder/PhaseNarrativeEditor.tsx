@@ -22,6 +22,7 @@ import {
   Undo2,
   Redo2,
 } from 'lucide-react';
+import Button from '@/components/ui/Button';
 
 interface PhaseNarrativeEditorProps {
   value: string;
@@ -43,7 +44,7 @@ function ToolbarButton({
   title: string;
 }) {
   return (
-    <button
+    <Button
       type="button"
       onClick={onClick}
       disabled={disabled}
@@ -58,7 +59,7 @@ function ToolbarButton({
       `}
     >
       {children}
-    </button>
+    </Button>
   );
 }
 

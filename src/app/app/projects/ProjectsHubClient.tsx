@@ -95,7 +95,7 @@ export default function ProjectsHubClient({ projects: initialProjects }: { proje
           </div>
           <div className="flex gap-1">
             {STATUS_FILTERS.map((s) => (
-              <button
+              <Button
                 key={s}
                 onClick={() => setStatusFilter(s)}
                 className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
@@ -105,7 +105,7 @@ export default function ProjectsHubClient({ projects: initialProjects }: { proje
                 }`}
               >
                 {s === 'all' ? 'All' : s.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
-              </button>
+              </Button>
             ))}
           </div>
         </div>

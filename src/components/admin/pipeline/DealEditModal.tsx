@@ -15,6 +15,7 @@ import FormInput from '@/components/ui/FormInput';
 import FormSelect from '@/components/ui/FormSelect';
 import Button from '@/components/ui/Button';
 import Alert from '@/components/ui/Alert';
+import FormTextarea from '@/components/ui/FormTextarea';
 
 interface DealEditModalProps {
   open: boolean;
@@ -135,7 +136,7 @@ export default function DealEditModal({ open, onClose, onSaved, deal }: DealEdit
 
         <div>
           <FormLabel>Notes</FormLabel>
-          <textarea
+          <FormTextarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={3}

@@ -18,6 +18,7 @@ import { useEntityViews } from '@/hooks/useEntityViews';
 import { useStoredColumnConfig } from '@/hooks/useStoredColumnConfig';
 import ViewBar from '@/components/shared/ViewBar';
 import ColumnConfigPanel from '@/components/shared/ColumnConfigPanel';
+import FormSelect from '@/components/ui/FormSelect';
 
 export interface EventItem {
   id: string;
@@ -116,7 +117,7 @@ export default function EventsTable({ events }: { events: EventItem[] }) {
           />
           <div className="flex flex-wrap items-center gap-3">
             <SearchInput value={search} onChange={setSearch} placeholder="Search events..." />
-            <select
+            <FormSelect
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
               className="h-9 rounded-lg border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10"
@@ -125,7 +126,7 @@ export default function EventsTable({ events }: { events: EventItem[] }) {
               {['draft', 'confirmed', 'in_progress', 'completed', 'cancelled'].map((status) => (
                 <option key={status} value={status}>{formatLabel(status)}</option>
               ))}
-            </select>
+            </FormSelect>
             <Button variant="ghost" size="sm" onClick={() => setShowColumnConfig(true)} title="Column Settings">
               <SlidersHorizontal size={14} />
             </Button>

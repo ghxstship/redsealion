@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import Button from '@/components/ui/Button';
+import FormInput from '@/components/ui/FormInput';
+import FormTextarea from '@/components/ui/FormTextarea';
 
 interface LeadForm {
   id: string;
@@ -103,48 +105,48 @@ export default function PublicFormClient({ form }: { form: LeadForm }) {
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
-          <input required name="first_name" type="text" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-opacity-50" style={{ '--tw-ring-color': form.brand_config?.primaryColor || '#3b82f6' } as React.CSSProperties} />
+          <FormInput required name="first_name" type="text" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-opacity-50" style={{ '--tw-ring-color': form.brand_config?.primaryColor || '#3b82f6' } as React.CSSProperties} />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-          <input name="last_name" type="text" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-opacity-50" style={{ '--tw-ring-color': form.brand_config?.primaryColor || '#3b82f6' } as React.CSSProperties} />
+          <FormInput name="last_name" type="text" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-opacity-50" style={{ '--tw-ring-color': form.brand_config?.primaryColor || '#3b82f6' } as React.CSSProperties} />
         </div>
       </div>
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
-        <input required name="email" type="email" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-opacity-50" style={{ '--tw-ring-color': form.brand_config?.primaryColor || '#3b82f6' } as React.CSSProperties} />
+        <FormInput required name="email" type="email" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-opacity-50" style={{ '--tw-ring-color': form.brand_config?.primaryColor || '#3b82f6' } as React.CSSProperties} />
       </div>
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-        <input name="phone" type="tel" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-opacity-50" style={{ '--tw-ring-color': form.brand_config?.primaryColor || '#3b82f6' } as React.CSSProperties} />
+        <FormInput name="phone" type="tel" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-opacity-50" style={{ '--tw-ring-color': form.brand_config?.primaryColor || '#3b82f6' } as React.CSSProperties} />
       </div>
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
-        <input name="company" type="text" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-opacity-50" style={{ '--tw-ring-color': form.brand_config?.primaryColor || '#3b82f6' } as React.CSSProperties} />
+        <FormInput name="company" type="text" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-opacity-50" style={{ '--tw-ring-color': form.brand_config?.primaryColor || '#3b82f6' } as React.CSSProperties} />
       </div>
       
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Event Type</label>
-          <input name="event_type" type="text" placeholder="e.g. Corporate, Wedding" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-opacity-50" style={{ '--tw-ring-color': form.brand_config?.primaryColor || '#3b82f6' } as React.CSSProperties} />
+          <FormInput name="event_type" type="text" placeholder="e.g. Corporate, Wedding" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-opacity-50" style={{ '--tw-ring-color': form.brand_config?.primaryColor || '#3b82f6' } as React.CSSProperties} />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Event Date</label>
-          <input name="event_date" type="date" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-opacity-50" style={{ '--tw-ring-color': form.brand_config?.primaryColor || '#3b82f6' } as React.CSSProperties} />
+          <FormInput name="event_date" type="date" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-opacity-50" style={{ '--tw-ring-color': form.brand_config?.primaryColor || '#3b82f6' } as React.CSSProperties} />
         </div>
       </div>
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Estimated Budget</label>
-        <input name="budget" type="number" step="100" min="0" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-opacity-50" style={{ '--tw-ring-color': form.brand_config?.primaryColor || '#3b82f6' } as React.CSSProperties} />
+        <FormInput name="budget" type="number" step="100" min="0" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-opacity-50" style={{ '--tw-ring-color': form.brand_config?.primaryColor || '#3b82f6' } as React.CSSProperties} />
       </div>
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">How can we help you?</label>
-        <textarea name="message" rows={4} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-opacity-50" style={{ '--tw-ring-color': form.brand_config?.primaryColor || '#3b82f6' } as React.CSSProperties}></textarea>
+        <FormTextarea name="message" rows={4} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-opacity-50" style={{ '--tw-ring-color': form.brand_config?.primaryColor || '#3b82f6' } as React.CSSProperties}></FormTextarea>
       </div>
 
       <div className="pt-2">

@@ -6,6 +6,7 @@ import type { Address, VenueActivationDates, VenueLoadInStrike } from '@/types/d
 import FormTextarea from '@/components/ui/FormTextarea';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
+import Button from '@/components/ui/Button';
 
 export interface VenueData {
   id: string;
@@ -63,7 +64,7 @@ export default function VenueCard({
     <div className="rounded-xl border border-border bg-background">
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-3 border-b border-border">
-        <button
+        <Button
           type="button"
           className="flex items-center gap-2 text-sm font-medium text-foreground"
           onClick={() => setExpanded(!expanded)}
@@ -73,14 +74,14 @@ export default function VenueCard({
             className={`text-text-muted transition-transform ${expanded ? 'rotate-90' : ''}`}
           />
           Venue {index + 1}{venue.name ? `: ${venue.name}` : ''}
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
           onClick={onRemove}
           className="text-xs text-text-muted hover:text-error"
         >
           Remove
-        </button>
+        </Button>
       </div>
 
       {/* Body */}
@@ -116,7 +117,7 @@ export default function VenueCard({
                 <ul className="absolute z-10 mt-1 w-full rounded-lg border border-border bg-background shadow-sm max-h-32 overflow-y-auto">
                   {filteredSuggestions.map((s) => (
                     <li key={s}>
-                      <button
+                      <Button
                         type="button"
                         className="w-full px-3 py-1.5 text-left text-sm hover:bg-bg-secondary"
                         onMouseDown={() => {
@@ -125,7 +126,7 @@ export default function VenueCard({
                         }}
                       >
                         {s}
-                      </button>
+                      </Button>
                     </li>
                   ))}
                 </ul>

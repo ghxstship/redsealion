@@ -1,3 +1,4 @@
+import Button from '@/components/ui/Button';
 'use client';
 
 import { useState } from 'react';
@@ -19,9 +20,9 @@ export default function FacilitiesSettingsPage() {
           <h2 className="text-lg font-semibold text-foreground">Facilities</h2>
           <p className="mt-1 text-sm text-text-secondary">Manage warehouses, offices, and production spaces.</p>
         </div>
-        <button onClick={() => setShowCreate(true)} className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90">
+        <Button onClick={() => setShowCreate(true)} className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90">
           Add Facility
-        </button>
+        </Button>
         <FacilityFormModal open={showCreate} onClose={() => setShowCreate(false)} onCreated={() => router.refresh()} />
       </div>
 
@@ -43,12 +44,12 @@ export default function FacilitiesSettingsPage() {
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <button className="rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary">
+                <Button className="rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary">
                   Edit
-                </button>
-                <button className="rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-50">
+                </Button>
+                <Button className="rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-50">
                   Remove
-                </button>
+                </Button>
               </div>
             </div>
           ))}

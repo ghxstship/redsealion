@@ -5,6 +5,9 @@ import { checkPermission } from '@/lib/api/permission-guard';
 interface RouteContext { params: Promise<{ id: string }> }
 
 export async function GET(_request: NextRequest, context: RouteContext) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const perm = await checkPermission('budgets', 'view');
   if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });

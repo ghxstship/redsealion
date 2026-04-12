@@ -1,3 +1,5 @@
+import FormInput from '@/components/ui/FormInput';
+import Button from '@/components/ui/Button';
 'use client';
 
 import { useState } from 'react';
@@ -6,6 +8,8 @@ import Link from 'next/link';
 import PageHeader from '@/components/shared/PageHeader';
 import { TierGate } from '@/components/shared/TierGate';
 import Alert from '@/components/ui/Alert';
+import FormSelect from '@/components/ui/FormSelect';
+import FormTextarea from '@/components/ui/FormTextarea';
 
 interface LineItem {
   id: string;
@@ -98,7 +102,7 @@ export default function NewRequisitionPage() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className="block text-xs font-medium text-text-secondary mb-1">Priority</label>
-              <select
+              <FormSelect
                 value={priority}
                 onChange={(e) => setPriority(e.target.value)}
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground"
@@ -107,12 +111,12 @@ export default function NewRequisitionPage() {
                 <option value="medium">Medium</option>
                 <option value="high">High</option>
                 <option value="urgent">Urgent</option>
-              </select>
+              </FormSelect>
             </div>
 
             <div>
               <label className="block text-xs font-medium text-text-secondary mb-1">Needed By</label>
-              <input
+              <FormInput
                 type="date"
                 value={neededBy}
                 onChange={(e) => setNeededBy(e.target.value)}
@@ -123,7 +127,7 @@ export default function NewRequisitionPage() {
 
           <div>
             <label className="block text-xs font-medium text-text-secondary mb-1">Notes</label>
-            <textarea
+            <FormTextarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={3}
@@ -157,7 +161,7 @@ export default function NewRequisitionPage() {
                       <td className="px-3 py-2 tabular-nums">${(l.unit_cost_cents / 100).toFixed(2)}</td>
                       <td className="px-3 py-2 tabular-nums font-medium">${((l.quantity * l.unit_cost_cents) / 100).toFixed(2)}</td>
                       <td className="px-3 py-2">
-                        <button type="button" onClick={() => removeLine(l.id)} className="text-red-500 hover:text-red-700 text-xs">✕</button>
+                        <Button type="button" onClick={() => removeLine(l.id)} className="text-red-500 hover:text-red-700 text-xs">✕</Button>
                       </td>
                     </tr>
                   ))}
@@ -176,7 +180,7 @@ export default function NewRequisitionPage() {
           <div className="flex gap-2 items-end">
             <div className="flex-1">
               <label className="block text-xs font-medium text-text-secondary mb-1">Description</label>
-              <input
+              <FormInput
                 type="text"
                 value={newLine.description}
                 onChange={(e) => setNewLine({ ...newLine, description: e.target.value })}
@@ -186,7 +190,7 @@ export default function NewRequisitionPage() {
             </div>
             <div className="w-20">
               <label className="block text-xs font-medium text-text-secondary mb-1">Qty</label>
-              <input
+              <FormInput
                 type="number"
                 min={1}
                 value={newLine.quantity}
@@ -196,7 +200,7 @@ export default function NewRequisitionPage() {
             </div>
             <div className="w-28">
               <label className="block text-xs font-medium text-text-secondary mb-1">Unit ($)</label>
-              <input
+              <FormInput
                 type="number"
                 min={0}
                 step="0.01"
@@ -205,13 +209,13 @@ export default function NewRequisitionPage() {
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
               />
             </div>
-            <button
+            <Button
               type="button"
               onClick={addLine}
               className="rounded-lg bg-bg-secondary px-4 py-2 text-sm font-medium text-foreground hover:bg-border transition-colors"
             >
               Add
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -223,13 +227,13 @@ export default function NewRequisitionPage() {
           >
             Cancel
           </Link>
-          <button
+          <Button
             type="submit"
             disabled={saving || lineItems.length === 0}
             className="rounded-lg bg-brand-primary px-6 py-2 text-sm font-medium text-white hover:bg-brand-primary/90 transition-colors disabled:opacity-50"
           >
             {saving ? 'Creating...' : 'Create Requisition'}
-          </button>
+          </Button>
         </div>
       </form>
     </TierGate>

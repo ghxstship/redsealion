@@ -26,7 +26,7 @@ test.describe('Workloads Hub @workloads', () => {
     const page = await authenticatedPage('team_member');
     await page.goto('/app/workloads');
     await page.waitForLoadState('networkidle');
-    // TODO: expectAccessDenied once server-side role gating is enforced
+    await expect(page.locator("text=Access Denied")).toBeVisible();
     await expectPageRendered(page);
   });
 });

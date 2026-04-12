@@ -6,6 +6,8 @@ import EmptyState from '@/components/ui/EmptyState';
 import { Calendar, Clock, MapPin, Search } from 'lucide-react';
 import StatusBadge from '@/components/ui/StatusBadge';
 import FilterPills from '@/components/ui/FilterPills';
+import FormInput from '@/components/ui/FormInput';
+import Button from '@/components/ui/Button';
 
 export type ScheduleItemType = 'shift' | 'task' | 'block';
 
@@ -88,7 +90,7 @@ export default function MyScheduleView({ items }: MyScheduleViewProps) {
         />
         <div className="relative w-full sm:w-64">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
-          <input
+          <FormInput
             type="text"
             placeholder="Search schedule..."
             value={search}
@@ -141,7 +143,7 @@ export default function MyScheduleView({ items }: MyScheduleViewProps) {
                       )}
                       {item.type === 'shift' && item.status === 'offered' && (
                         <div className="flex items-center gap-2 mt-2 pt-2 border-t border-border sm:justify-end">
-                          <button
+                          <Button
                             onClick={async () => {
                               const id = item.id.replace('booking-', '');
                               await fetch(`/api/crew-bookings/${id}/respond`, { method: 'POST', body: JSON.stringify({ response: 'declined' }), headers: { 'Content-Type': 'application/json' } });
@@ -150,8 +152,8 @@ export default function MyScheduleView({ items }: MyScheduleViewProps) {
                             className="px-3 py-1 text-xs font-medium text-red-600 hover:bg-red-50 rounded"
                           >
                             Decline
-                          </button>
-                          <button
+                          </Button>
+                          <Button
                             onClick={async () => {
                               const id = item.id.replace('booking-', '');
                               await fetch(`/api/crew-bookings/${id}/respond`, { method: 'POST', body: JSON.stringify({ response: 'accepted' }), headers: { 'Content-Type': 'application/json' } });
@@ -160,7 +162,7 @@ export default function MyScheduleView({ items }: MyScheduleViewProps) {
                             className="px-3 py-1 text-xs font-medium bg-green-600 text-white hover:bg-green-700 rounded"
                           >
                             Accept Shift
-                          </button>
+                          </Button>
                         </div>
                       )}
                     </div>

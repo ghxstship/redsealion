@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import Skeleton from '@/components/ui/Skeleton';
+import Button from '@/components/ui/Button';
 
 interface InvitationInfo {
   id: string;
@@ -167,13 +168,13 @@ export default function InviteAcceptPage() {
             </div>
           )}
 
-          <button
+          <Button
             onClick={handleAccept}
             disabled={accepting}
             className="w-full rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {accepting ? 'Accepting...' : 'Accept Invitation'}
-          </button>
+          </Button>
 
           <Link
             href="/app"

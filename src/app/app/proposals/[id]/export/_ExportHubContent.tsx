@@ -1,3 +1,4 @@
+import Button from '@/components/ui/Button';
 'use client';
 
 import { useState, useCallback } from 'react';
@@ -66,9 +67,9 @@ function DocxOptions({ onExport }: { onExport: (opts: Record<string, boolean>) =
         </div>
 
         <div className="mt-4 pl-[3.375rem]">
-          <button onClick={() => onExport({ includeTerms, includePortfolio, includePlaceholders })} className="rounded-lg bg-foreground px-3.5 py-1.5 text-xs font-medium text-white transition-colors hover:bg-foreground/90">
+          <Button onClick={() => onExport({ includeTerms, includePortfolio, includePlaceholders })} className="rounded-lg bg-foreground px-3.5 py-1.5 text-xs font-medium text-white transition-colors hover:bg-foreground/90">
             Download .docx
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -271,7 +272,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
                 <h2 className="text-sm font-semibold text-foreground">Asset Inventory</h2>
                 <p className="mt-0.5 text-xs text-text-muted">{assetInventory.length} assets</p>
               </div>
-              <button onClick={() => downloadCsv(assetInventory, 'asset-inventory')} className="rounded-lg border border-border bg-background px-3.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary">Download CSV</button>
+              <Button onClick={() => downloadCsv(assetInventory, 'asset-inventory')} className="rounded-lg border border-border bg-background px-3.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary">Download CSV</Button>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -343,7 +344,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
                 <h2 className="text-sm font-semibold text-foreground">Personnel Allocation</h2>
                 <p className="mt-0.5 text-xs text-text-muted">Headcount by role across project phases</p>
               </div>
-              <button onClick={() => downloadCsv(personnelTable, 'personnel-allocation')} className="rounded-lg border border-border bg-background px-3.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary">Download CSV</button>
+              <Button onClick={() => downloadCsv(personnelTable, 'personnel-allocation')} className="rounded-lg border border-border bg-background px-3.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary">Download CSV</Button>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -378,7 +379,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
               <div>
                 <h2 className="text-sm font-semibold text-foreground">Equipment &amp; Vehicle Requirements</h2>
               </div>
-              <button onClick={() => downloadCsv(equipmentList, 'equipment-requirements')} className="rounded-lg border border-border bg-background px-3.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary">Download CSV</button>
+              <Button onClick={() => downloadCsv(equipmentList, 'equipment-requirements')} className="rounded-lg border border-border bg-background px-3.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary">Download CSV</Button>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -414,7 +415,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
               <h2 className="text-sm font-semibold text-foreground">Complete CSV Pack</h2>
               <p className="mt-0.5 text-xs text-text-muted">Download all {csvFiles.length} CSV files as a single ZIP archive.</p>
             </div>
-            <button onClick={() => csvFiles.forEach((f) => downloadCsv([], f.name))} className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90">Download All as ZIP</button>
+            <Button onClick={() => csvFiles.forEach((f) => downloadCsv([], f.name))} className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90">Download All as ZIP</Button>
           </div>
 
           <div className="rounded-xl border border-border bg-background overflow-hidden">
@@ -433,7 +434,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
                       <p className="text-xs text-text-muted">{file.description} — {file.rows} rows</p>
                     </div>
                   </div>
-                  <button onClick={() => downloadCsv([], file.name)} className="rounded-lg border border-border bg-background px-3.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary shrink-0">Download</button>
+                  <Button onClick={() => downloadCsv([], file.name)} className="rounded-lg border border-border bg-background px-3.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary shrink-0">Download</Button>
                 </div>
               ))}
             </div>

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Button from '@/components/ui/Button';
 
 export default function ReactivatePage() {
   const [requesting, setRequesting] = useState(false);
@@ -73,13 +74,13 @@ export default function ReactivatePage() {
         <div className="mt-8 space-y-3">
           {/* M-09: Self-service reactivation request */}
           {!requested && (
-            <button
+            <Button
               onClick={handleRequestReactivation}
               disabled={requesting}
               className="block w-full rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {requesting ? 'Submitting...' : 'Request Reactivation'}
-            </button>
+            </Button>
           )}
 
           <Link

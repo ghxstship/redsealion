@@ -1,3 +1,4 @@
+import Button from '@/components/ui/Button';
 'use client';
 
 export default function AuthError({
@@ -14,12 +15,12 @@ export default function AuthError({
         <p className="mt-2 text-sm text-red-700">
           {error.message || 'An unexpected error occurred. Please try again.'}
         </p>
-        <button
+        <Button
           onClick={reset}
           className="mt-4 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700"
         >
           Try again
-        </button>
+        </Button>
       </div>
     </div>
   );

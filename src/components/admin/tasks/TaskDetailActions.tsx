@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ShareDialog from '@/components/shared/ShareDialog';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
+import Button from '@/components/ui/Button';
 
 interface TaskDetailActionsProps {
   taskId: string;
@@ -25,18 +26,18 @@ export default function TaskDetailActions({ taskId, taskTitle }: TaskDetailActio
   return (
     <>
       <div className="flex items-center gap-2">
-        <button
+        <Button
           onClick={() => setShowShare(true)}
           className="rounded-lg border border-border bg-background px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
         >
           Share
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => setShowDelete(true)}
           className="rounded-lg border border-red-200 bg-background px-3 py-1.5 text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
         >
           Delete
-        </button>
+        </Button>
       </div>
 
       <ShareDialog open={showShare} onClose={() => setShowShare(false)} entityType="tasks" entityId={taskId} entityName={taskTitle} />

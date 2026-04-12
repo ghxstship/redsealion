@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
-import { LOCATION_TYPE_ICONS } from '@/components/ui/StatusBadge';
+import StatusBadge, { LOCATION_TYPE_ICONS } from '@/components/ui/StatusBadge';
 
 async function getLocation(id: string) {
   try {
@@ -87,7 +87,7 @@ export default async function LocationDetailPage({ params }: { params: Promise<{
                   return (
                     <li key={el.event_id as string} className="flex items-center justify-between text-sm py-1 border-b border-border/50 last:border-0">
                       <Link href={`/app/events/${ev?.id}`} className="text-foreground hover:underline">{ev?.name ?? '—'}</Link>
-                      {(el.is_primary as boolean) && <span className="text-xs bg-blue-50 text-blue-700 rounded-full px-1.5 py-0.5">Primary</span>}
+                      {(el.is_primary as boolean) && <StatusBadge status="Primary" />}
                     </li>
                   );
                 })}

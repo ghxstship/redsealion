@@ -8,6 +8,7 @@ import ModalShell from '@/components/ui/ModalShell';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
 import FormSelect from '@/components/ui/FormSelect';
+import FormTextarea from '@/components/ui/FormTextarea';
 
 interface TeamMember { id: string; full_name: string }
 interface ProposalOption { id: string; name: string }
@@ -188,7 +189,7 @@ export default function AllocationModal({ open, onClose }: Props) {
 
           <div>
             <FormLabel>Notes</FormLabel>
-            <textarea
+            <FormTextarea
               id="alloc-notes"
               rows={2}
               value={notes}

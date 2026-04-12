@@ -179,15 +179,15 @@ export default function ScanPageClient() {
     <div className="space-y-6">
       {/* Tab bar */}
       <div className="flex border-b border-border">
-        <button
+        <Button
           onClick={() => setTab('scan')}
           className={`flex-1 px-4 py-2.5 text-sm font-medium transition-colors ${
             tab === 'scan' ? 'text-foreground border-b-2 border-foreground' : 'text-text-muted hover:text-foreground'
           }`}
         >
           Scan
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => setTab('recent')}
           className={`flex-1 px-4 py-2.5 text-sm font-medium transition-colors relative ${
             tab === 'recent' ? 'text-foreground border-b-2 border-foreground' : 'text-text-muted hover:text-foreground'
@@ -199,7 +199,7 @@ export default function ScanPageClient() {
               {recentScans.length}
             </span>
           )}
-        </button>
+        </Button>
       </div>
 
       {/* Scan tab */}
@@ -309,14 +309,14 @@ export default function ScanPageClient() {
                     <p className="text-sm font-medium text-foreground mb-3">Set Condition</p>
                     <div className="flex flex-wrap gap-2">
                       {CONDITION_OPTIONS.map((c) => (
-                        <button
+                        <Button
                           key={c}
                           disabled={actionLoading}
                           onClick={() => handleQuickAction('condition', { condition: c })}
                           className="px-3 py-1.5 text-xs rounded-lg border border-border bg-background text-foreground hover:bg-bg-secondary transition-colors disabled:opacity-50"
                         >
                           {formatLabel(c)}
-                        </button>
+                        </Button>
                       ))}
                     </div>
                   </div>
@@ -327,14 +327,14 @@ export default function ScanPageClient() {
                     <p className="text-sm font-medium text-foreground mb-3">Move to Location</p>
                     <div className="flex flex-wrap gap-2">
                       {['Warehouse A', 'Warehouse B', 'Field', 'Client Site', 'In Transit', 'Shop'].map((loc) => (
-                        <button
+                        <Button
                           key={loc}
                           disabled={actionLoading}
                           onClick={() => handleQuickAction('location', { location: loc })}
                           className="px-3 py-1.5 text-xs rounded-lg border border-border bg-background text-foreground hover:bg-bg-secondary transition-colors disabled:opacity-50"
                         >
                           {loc}
-                        </button>
+                        </Button>
                       ))}
                     </div>
                   </div>
@@ -345,14 +345,14 @@ export default function ScanPageClient() {
                     <p className="text-sm font-medium text-foreground mb-3">Log Maintenance Type</p>
                     <div className="flex flex-wrap gap-2">
                       {['inspection', 'preventive', 'repair', 'calibration'].map((t) => (
-                        <button
+                        <Button
                           key={t}
                           disabled={actionLoading}
                           onClick={() => handleQuickAction('maintenance', { type: t, description: `${formatLabel(t)} logged via QR scan` })}
                           className="px-3 py-1.5 text-xs rounded-lg border border-border bg-background text-foreground hover:bg-bg-secondary transition-colors disabled:opacity-50"
                         >
                           {formatLabel(t)}
-                        </button>
+                        </Button>
                       ))}
                     </div>
                   </div>

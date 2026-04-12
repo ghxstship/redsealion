@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import FormInput from '@/components/ui/FormInput';
+import Button from '@/components/ui/Button';
 
 function generateSlug(name: string): string {
   return name
@@ -149,7 +151,7 @@ export default function SetupOrgPage() {
               >
                 First name
               </label>
-              <input
+              <FormInput
                 id="firstName"
                 type="text"
                 value={firstName}
@@ -166,7 +168,7 @@ export default function SetupOrgPage() {
               >
                 Last name
               </label>
-              <input
+              <FormInput
                 id="lastName"
                 type="text"
                 value={lastName}
@@ -186,7 +188,7 @@ export default function SetupOrgPage() {
           >
             Company name
           </label>
-          <input
+          <FormInput
             id="companyName"
             type="text"
             value={companyName}
@@ -211,7 +213,7 @@ export default function SetupOrgPage() {
                 : 'border-zinc-300 focus-within:border-zinc-500 focus-within:ring-zinc-500'
           }`}>
             <span className="pl-3.5 text-sm text-zinc-400">flytedeck.app/</span>
-            <input
+            <FormInput
               id="slug"
               type="text"
               value={slug}
@@ -238,13 +240,13 @@ export default function SetupOrgPage() {
             <p className="mt-1 text-xs text-red-600">This slug is already in use. Please choose another.</p>
           )}
         </div>
-        <button
+        <Button
           type="submit"
           disabled={loading || slugStatus === 'taken'}
           className="w-full rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {loading ? 'Setting up...' : 'Continue to Dashboard'}
-        </button>
+        </Button>
       </form>
     </div>
   );

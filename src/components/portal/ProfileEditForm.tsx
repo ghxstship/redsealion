@@ -2,6 +2,8 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
+import FormInput from '@/components/ui/FormInput';
+import Button from '@/components/ui/Button';
 
 interface ProfileEditFormProps {
   firstName: string;
@@ -81,25 +83,25 @@ export default function ProfileEditForm({
       <div className="flex items-center justify-between mb-4">
         <div />
         {!editing ? (
-          <button
+          <Button
             type="button"
             onClick={() => setEditing(true)}
             className="text-xs font-medium transition-colors hover:opacity-80"
             style={{ color: 'var(--org-primary)' }}
           >
             Edit Profile
-          </button>
+          </Button>
         ) : (
           <div className="flex items-center gap-2">
-            <button
+            <Button
               type="button"
               onClick={handleCancel}
               disabled={isPending}
               className="rounded-md border border-border px-3 py-1 text-xs font-medium text-foreground hover:bg-gray-50 transition-colors disabled:opacity-50"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               onClick={handleSave}
               disabled={isPending}
@@ -107,7 +109,7 @@ export default function ProfileEditForm({
               style={{ backgroundColor: 'var(--org-primary)' }}
             >
               {isPending ? 'Saving…' : 'Save'}
-            </button>
+            </Button>
           </div>
         )}
       </div>
@@ -126,7 +128,7 @@ export default function ProfileEditForm({
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
           <label className="block text-xs font-medium text-text-muted mb-1">First Name</label>
-          <input
+          <FormInput
             type="text"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
@@ -136,7 +138,7 @@ export default function ProfileEditForm({
         </div>
         <div>
           <label className="block text-xs font-medium text-text-muted mb-1">Last Name</label>
-          <input
+          <FormInput
             type="text"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
@@ -146,7 +148,7 @@ export default function ProfileEditForm({
         </div>
         <div>
           <label className="block text-xs font-medium text-text-muted mb-1">Email</label>
-          <input
+          <FormInput
             type="email"
             defaultValue={email}
             readOnly
@@ -155,7 +157,7 @@ export default function ProfileEditForm({
         </div>
         <div>
           <label className="block text-xs font-medium text-text-muted mb-1">Phone</label>
-          <input
+          <FormInput
             type="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
@@ -165,7 +167,7 @@ export default function ProfileEditForm({
         </div>
         <div>
           <label className="block text-xs font-medium text-text-muted mb-1">Title</label>
-          <input
+          <FormInput
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}

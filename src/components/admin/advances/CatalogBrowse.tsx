@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import FormInput from '@/components/ui/FormInput';
 import EmptyState from '@/components/ui/EmptyState';
 import type { AdvanceCatalogItem, AdvanceCatalogVariant, AdvanceSubcategory, AdvanceCategory, AdvanceCategoryGroup, AdvanceModifierList, AdvanceModifierOption } from '@/types/database';
+import Button from '@/components/ui/Button';
 
 /* ═══════════════ Types ═══════════════ */
 
@@ -115,14 +116,14 @@ export default function CatalogBrowse({ groups, categories, subcategories, items
         </div>
         <ul className="py-1">
           <li>
-            <button
+            <Button
               onClick={() => { setActiveGroupId(null); setActiveCategoryId(null); }}
               className={`w-full text-left px-3 py-1.5 text-sm transition-colors ${
                 !activeGroupId ? 'bg-brand-50 text-brand-700 font-medium' : 'text-text-secondary hover:bg-bg-secondary'
               }`}
             >
               All Items ({items.length})
-            </button>
+            </Button>
           </li>
           {tree.map((node) => {
             const groupItemCount = node.categories.reduce(
@@ -130,7 +131,7 @@ export default function CatalogBrowse({ groups, categories, subcategories, items
             );
             return (
               <li key={node.group.id}>
-                <button
+                <Button
                   onClick={() => { setActiveGroupId(node.group.id); setActiveCategoryId(null); }}
                   className={`w-full text-left px-3 py-1.5 text-sm font-medium transition-colors ${
                     activeGroupId === node.group.id ? 'bg-brand-50 text-brand-700' : 'text-foreground hover:bg-bg-secondary'
@@ -138,14 +139,14 @@ export default function CatalogBrowse({ groups, categories, subcategories, items
                 >
                   {node.group.name}
                   <span className="ml-1.5 text-xs text-text-muted">({groupItemCount})</span>
-                </button>
+                </Button>
                 {activeGroupId === node.group.id && (
                   <ul className="ml-3 border-l border-border">
                     {node.categories.map((cn) => {
                       const catCount = cn.subcategories.reduce((s, sub) => s + sub.items.length, 0);
                       return (
                         <li key={cn.category.id}>
-                          <button
+                          <Button
                             onClick={() => setActiveCategoryId(cn.category.id)}
                             className={`w-full text-left pl-3 pr-2 py-1 text-xs transition-colors ${
                               activeCategoryId === cn.category.id ? 'text-brand-700 font-medium' : 'text-text-secondary hover:text-foreground'
@@ -153,7 +154,7 @@ export default function CatalogBrowse({ groups, categories, subcategories, items
                           >
                             {cn.category.name}
                             <span className="ml-1 text-text-muted">({catCount})</span>
-                          </button>
+                          </Button>
                         </li>
                       );
                     })}
@@ -182,7 +183,7 @@ export default function CatalogBrowse({ groups, categories, subcategories, items
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
             {visibleItems.map((item) => (
-              <button
+              <Button
                 key={item.id}
                 onClick={() => onSelectItem(item)}
                 className="group text-left rounded-xl border border-border bg-background p-4 transition-all hover:border-brand-300 hover:shadow-md hover:shadow-brand-50/50 focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
@@ -219,7 +220,7 @@ export default function CatalogBrowse({ groups, categories, subcategories, items
                     </span>
                   )}
                 </div>
-              </button>
+              </Button>
             ))}
           </div>
         )}

@@ -7,6 +7,7 @@ import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
 import Alert from '@/components/ui/Alert';
 import RentalStatusActions from './RentalStatusActions';
+import FormTextarea from '@/components/ui/FormTextarea';
 
 interface RentalEditFormProps {
   orderId: string;
@@ -112,7 +113,7 @@ export default function RentalEditForm({ orderId, currentDates, currentDeposit, 
           </div>
           <div>
             <FormLabel>Notes</FormLabel>
-            <textarea
+            <FormTextarea
               name="notes"
               rows={2}
               defaultValue={currentNotes}

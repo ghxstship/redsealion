@@ -1,3 +1,4 @@
+import { RoleGate } from '@/components/shared/RoleGate';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import AppHeader from '@/components/shared/AppHeader';
 import PageTransition from '@/components/shared/PageTransition';
@@ -137,7 +138,7 @@ export default async function AppLayout({
                     <AppHeader user={ctx.user} orgName={ctx.orgName} />
                     <div className="px-6 py-8 md:px-10 md:py-10 max-w-7xl mx-auto">
                       <PageTransition>
-                        {children}
+                        <RoleGate>{children}</RoleGate>
                       </PageTransition>
                     </div>
                   </main>

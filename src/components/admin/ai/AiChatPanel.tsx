@@ -15,6 +15,8 @@ import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Sparkles, Send, Trash2, Plus, History, ChevronLeft } from 'lucide-react';
 import { useCopilot } from '@/components/shared/CopilotProvider';
 import type { UIMessage } from '@ai-sdk/react';
+import FormTextarea from '@/components/ui/FormTextarea';
+import Button from '@/components/ui/Button';
 
 /* ─────────────────────────────────────────────────────────
    Helpers
@@ -100,42 +102,42 @@ export default function AiChatPanel() {
             <Sparkles size={14} className="text-amber-600" />
           </div>
           <span className="text-sm font-medium text-foreground flex-1">AI Copilot Chat</span>
-          <button
+          <Button
             onClick={() => setShowHistory((p) => !p)}
             className="flex items-center justify-center w-7 h-7 rounded-lg transition-colors hover:bg-bg-secondary"
             aria-label="Conversation history"
             title="Conversation history"
           >
             <History size={13} className="text-text-muted" />
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={startNewConversation}
             className="flex items-center justify-center w-7 h-7 rounded-lg transition-colors hover:bg-bg-secondary"
             aria-label="New conversation"
             title="New conversation"
           >
             <Plus size={13} className="text-text-muted" />
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={clearMessages}
             className="flex items-center justify-center w-7 h-7 rounded-lg transition-colors hover:bg-bg-secondary"
             aria-label="Clear conversation"
             title="Clear conversation"
           >
             <Trash2 size={13} className="text-text-muted" />
-          </button>
+          </Button>
         </div>
 
         {/* Conversation history sidebar */}
         {showHistory ? (
           <div className="h-[520px] overflow-y-auto">
             <div className="px-4 py-3 border-b border-border flex items-center gap-2">
-              <button
+              <Button
                 onClick={() => setShowHistory(false)}
                 className="flex items-center justify-center w-6 h-6 rounded-lg transition-colors hover:bg-bg-secondary"
               >
                 <ChevronLeft size={14} className="text-text-muted" />
-              </button>
+              </Button>
               <span className="text-xs font-semibold uppercase tracking-wider text-text-muted">History</span>
             </div>
             {isHistoryLoading ? (
@@ -151,7 +153,7 @@ export default function AiChatPanel() {
                       conv.id === activeConversationId ? 'bg-amber-50/30 border-l-2 border-l-amber-500' : ''
                     }`}
                   >
-                    <button
+                    <Button
                       className="flex-1 text-left min-w-0"
                       onClick={() => { loadConversation(conv.id); setShowHistory(false); }}
                     >
@@ -159,15 +161,15 @@ export default function AiChatPanel() {
                       <p className="text-[10px] text-text-muted mt-0.5">
                         {new Date(conv.updated_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                       </p>
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       onClick={(e) => { e.stopPropagation(); deleteConversation(conv.id); }}
                       className="opacity-0 group-hover:opacity-100 flex items-center justify-center w-6 h-6 rounded-lg transition-all hover:bg-red-50 shrink-0 ml-2"
                       aria-label="Delete conversation"
                       title="Delete conversation"
                     >
                       <Trash2 size={12} className="text-red-500" />
-                    </button>
+                    </Button>
                   </div>
                 ))}
               </div>
@@ -219,12 +221,12 @@ export default function AiChatPanel() {
                         <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-bounce [animation-delay:300ms]" />
                       </div>
                       <span className="text-xs text-text-muted">Analyzing your data…</span>
-                      <button
+                      <Button
                         onClick={stop}
                         className="ml-2 text-[10px] text-text-muted hover:text-foreground transition-colors underline"
                       >
                         Stop
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -239,7 +241,7 @@ export default function AiChatPanel() {
               className="shrink-0 border-t border-border px-4 py-3"
             >
               <div className="flex items-end gap-2">
-                <textarea
+                <FormTextarea
                   ref={inputRef}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
@@ -250,14 +252,14 @@ export default function AiChatPanel() {
                   className="flex-1 resize-none rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/20 disabled:opacity-50 transition-colors max-h-32"
                   style={{ fieldSizing: 'content' } as React.CSSProperties}
                 />
-                <button
+                <Button
                   type="submit"
                   disabled={isLoading || !input.trim()}
                   className="flex items-center justify-center w-9 h-9 rounded-lg bg-foreground text-white transition-all duration-fast hover:bg-foreground/90 disabled:opacity-30 disabled:cursor-not-allowed press-scale shrink-0"
                   aria-label="Send message"
                 >
                   <Send size={16} />
-                </button>
+                </Button>
               </div>
               <p className="mt-1.5 text-[10px] text-text-muted text-center">
                 ⏎ to send · Shift+⏎ for new line · ⌘J to toggle panel

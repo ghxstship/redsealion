@@ -1,3 +1,4 @@
+import Button from '@/components/ui/Button';
 'use client';
 
 import { useState } from 'react';
@@ -45,32 +46,32 @@ export default function ClientDetailActions({ clientId, clientName, clientData }
   return (
     <>
       <div className="flex items-center gap-3 shrink-0">
-        <button
+        <Button
           onClick={() => setShowInteraction(true)}
           className="rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
         >
           Log Interaction
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => setShowAddContact(true)}
           className="rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
         >
           + Add Contact
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => setShowEdit(true)}
           className="rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
         >
           <Pencil size={14} className="inline mr-1" />
           Edit
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => setShowDelete(true)}
           className="rounded-lg border border-red-200 bg-background px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
         >
           <Trash2 size={14} className="inline mr-1" />
           Delete
-        </button>
+        </Button>
         <Link
           href={`/app/proposals/new?client_id=${clientId}`}
           className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90"

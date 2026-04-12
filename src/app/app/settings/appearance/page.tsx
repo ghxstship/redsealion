@@ -3,6 +3,7 @@
 import { Sun, Moon, Monitor } from 'lucide-react';
 import { usePreferences } from '@/components/shared/PreferencesProvider';
 import Button from '@/components/ui/Button';
+import FormSelect from '@/components/ui/FormSelect';
 
 type Theme = 'light' | 'dark' | 'system';
 type CalendarView = 'month' | 'week' | 'day';
@@ -47,7 +48,7 @@ export default function AppearanceSettingsPage() {
         <h3 className="text-sm font-semibold text-foreground mb-5">Theme</h3>
         <div className="grid grid-cols-3 gap-4">
           {themeOptions.map((opt) => (
-            <button
+            <Button
               key={opt.value}
               type="button"
               onClick={() => prefs.setTheme(opt.value)}
@@ -59,7 +60,7 @@ export default function AppearanceSettingsPage() {
             >
               <span className="text-foreground">{opt.icon}</span>
               <span className="text-sm font-medium text-foreground">{opt.label}</span>
-            </button>
+            </Button>
           ))}
         </div>
       </div>
@@ -69,7 +70,7 @@ export default function AppearanceSettingsPage() {
         <h3 className="text-sm font-semibold text-foreground mb-5">Sidebar</h3>
         <label className="flex items-center justify-between cursor-pointer">
           <span className="text-sm text-foreground">Collapse sidebar by default</span>
-          <button
+          <Button
             type="button"
             role="switch"
             aria-checked={prefs.sidebarCollapsed}
@@ -83,7 +84,7 @@ export default function AppearanceSettingsPage() {
                 prefs.sidebarCollapsed ? 'translate-x-5' : 'translate-x-0'
               }`}
             />
-          </button>
+          </Button>
         </label>
       </div>
 
@@ -94,7 +95,7 @@ export default function AppearanceSettingsPage() {
           <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
             Default View
           </label>
-          <select
+          <FormSelect
             value={prefs.defaultCalendarView}
             onChange={(e) => prefs.setDefaultCalendarView(e.target.value as CalendarView)}
             className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
@@ -102,7 +103,7 @@ export default function AppearanceSettingsPage() {
             <option value="month">Month</option>
             <option value="week">Week</option>
             <option value="day">Day</option>
-          </select>
+          </FormSelect>
         </div>
       </div>
 

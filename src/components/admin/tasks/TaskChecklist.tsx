@@ -12,6 +12,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import FormInput from '@/components/ui/FormInput';
 import { GripVertical, Plus, Trash2, Check } from 'lucide-react';
+import Button from '@/components/ui/Button';
 
 interface ChecklistItem {
   id: string;
@@ -150,7 +151,7 @@ export default function TaskChecklist({ taskId }: TaskChecklistProps) {
                 size={12}
                 className="text-text-muted/40 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab"
               />
-              <button
+              <Button
                 onClick={() => handleToggle(item)}
                 className={`h-4 w-4 rounded border-2 flex-shrink-0 flex items-center justify-center transition-colors ${
                   item.done
@@ -161,7 +162,7 @@ export default function TaskChecklist({ taskId }: TaskChecklistProps) {
                 {item.done && (
                   <Check size={12} className="text-white" />
                 )}
-              </button>
+              </Button>
               <span
                 className={`flex-1 text-sm ${
                   item.done
@@ -171,12 +172,12 @@ export default function TaskChecklist({ taskId }: TaskChecklistProps) {
               >
                 {item.text}
               </span>
-              <button
+              <Button
                 onClick={() => handleDelete(item.id)}
                 className="opacity-0 group-hover:opacity-100 text-text-muted hover:text-red-600 transition-all"
               >
                 <Trash2 size={13} />
-              </button>
+              </Button>
             </div>
           ))
         )}

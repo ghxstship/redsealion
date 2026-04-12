@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
+import FormTextarea from '@/components/ui/FormTextarea';
 
 type DocumentType = 'proposal' | 'invoice' | 'contract' | 'sow' | 'crew_call_sheet';
 type Section = 'terms_and_conditions' | 'disclaimer' | 'notes' | 'scope_header' | 'scope_footer' | 'payment_instructions';
@@ -119,7 +120,7 @@ export default function DocumentDefaultsPage() {
       {/* Document type tabs */}
       <div className="flex gap-1 rounded-lg bg-bg-secondary p-1">
         {documentTypes.map((dt) => (
-          <button
+          <Button
             key={dt.key}
             onClick={() => setActiveType(dt.key)}
             className={`flex-1 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
@@ -129,7 +130,7 @@ export default function DocumentDefaultsPage() {
             }`}
           >
             {dt.label}
-          </button>
+          </Button>
         ))}
       </div>
 
@@ -139,7 +140,7 @@ export default function DocumentDefaultsPage() {
           <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-2">
             {s.label}
           </label>
-          <textarea
+          <FormTextarea
             rows={4}
             value={values[`${activeType}:${s.key}`] || ''}
             onChange={(e) => handleChange(s.key, e.target.value)}

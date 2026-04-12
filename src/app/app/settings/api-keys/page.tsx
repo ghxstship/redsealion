@@ -1,3 +1,4 @@
+import FormInput from '@/components/ui/FormInput';
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -105,12 +106,12 @@ export default function ApiKeysPage() {
           <code className="block rounded-lg bg-background border border-green-200 px-3.5 py-2 text-sm font-mono text-green-900 break-all">
             {newKeyRevealed}
           </code>
-          <button
+          <Button
             onClick={() => setNewKeyRevealed(null)}
             className="mt-3 text-xs font-medium text-green-700 hover:text-green-900"
           >
             Dismiss
-          </button>
+          </Button>
         </div>
       )}
 
@@ -192,7 +193,7 @@ export default function ApiKeysPage() {
         >
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">Key Name</label>
-            <input
+            <FormInput
               type="text"
               value={keyName}
               onChange={(e) => setKeyName(e.target.value)}

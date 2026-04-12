@@ -1,3 +1,4 @@
+import FormInput from '@/components/ui/FormInput';
 'use client';
 
 import { useState } from 'react';
@@ -6,6 +7,8 @@ import { GOAL_CATEGORIES, GOAL_STATUSES } from './constants';
 import ModalShell from '@/components/ui/ModalShell';
 import Button from '@/components/ui/Button';
 import Alert from '@/components/ui/Alert';
+import FormSelect from '@/components/ui/FormSelect';
+import FormTextarea from '@/components/ui/FormTextarea';
 
 interface Goal {
   id: string;
@@ -69,7 +72,7 @@ export default function GoalDialog({ goal, isOpen, onClose }: GoalDialogProps) {
           <label htmlFor="title" className="block text-sm font-medium text-foreground">
             Title
           </label>
-          <input
+          <FormInput
             type="text"
             name="title"
             id="title"
@@ -84,7 +87,7 @@ export default function GoalDialog({ goal, isOpen, onClose }: GoalDialogProps) {
           <label htmlFor="description" className="block text-sm font-medium text-foreground">
             Description
           </label>
-          <textarea
+          <FormTextarea
             name="description"
             id="description"
             rows={3}
@@ -99,7 +102,7 @@ export default function GoalDialog({ goal, isOpen, onClose }: GoalDialogProps) {
             <label htmlFor="category" className="block text-sm font-medium text-foreground">
               Category
             </label>
-            <select
+            <FormSelect
               name="category"
               id="category"
               defaultValue={goal?.category || 'Company'}
@@ -108,7 +111,7 @@ export default function GoalDialog({ goal, isOpen, onClose }: GoalDialogProps) {
               {GOAL_CATEGORIES.map((cat) => (
                 <option key={cat} value={cat}>{cat}</option>
               ))}
-            </select>
+            </FormSelect>
           </div>
           
           {isEditing && (
@@ -116,7 +119,7 @@ export default function GoalDialog({ goal, isOpen, onClose }: GoalDialogProps) {
               <label htmlFor="status" className="block text-sm font-medium text-foreground">
                 Status
               </label>
-              <select
+              <FormSelect
                 name="status"
                 id="status"
                 defaultValue={goal?.status || 'on_track'}
@@ -125,7 +128,7 @@ export default function GoalDialog({ goal, isOpen, onClose }: GoalDialogProps) {
               {GOAL_STATUSES.map((s) => (
                 <option key={s.value} value={s.value}>{s.label}</option>
               ))}
-              </select>
+              </FormSelect>
             </div>
           )}
         </div>
@@ -135,7 +138,7 @@ export default function GoalDialog({ goal, isOpen, onClose }: GoalDialogProps) {
             <label htmlFor="start_date" className="block text-sm font-medium text-foreground">
               Start Date
             </label>
-            <input
+            <FormInput
               type="date"
               name="start_date"
               id="start_date"
@@ -147,7 +150,7 @@ export default function GoalDialog({ goal, isOpen, onClose }: GoalDialogProps) {
             <label htmlFor="due_date" className="block text-sm font-medium text-foreground">
               Due Date
             </label>
-            <input
+            <FormInput
               type="date"
               name="due_date"
               id="due_date"

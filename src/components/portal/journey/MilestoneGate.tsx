@@ -7,6 +7,7 @@ import type {
 } from '@/types/database';
 import { CheckCircle } from 'lucide-react';
 import { IconCheck } from '@/components/ui/Icons';
+import Button from '@/components/ui/Button';
 
 interface MilestoneGateProps {
   milestone: MilestoneGate;
@@ -100,13 +101,13 @@ export default function MilestoneGateComponent({
 
                 {/* Approve button */}
                 {canApprove && onApprove && (
-                  <button
+                  <Button
                     type="button"
                     onClick={() => onApprove(milestone.id, req.id)}
                     className="shrink-0 text-xs font-medium text-milestone hover:text-milestone/80 underline underline-offset-2 transition-colors"
                   >
                     Approve
-                  </button>
+                  </Button>
                 )}
               </div>
             );

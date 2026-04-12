@@ -4,6 +4,7 @@ import { Check } from 'lucide-react';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import StatusBadge, { PROJECT_STATUS_UPDATE_COLORS } from '@/components/ui/StatusBadge';
+import MetricCard from '@/components/ui/MetricCard';
 
 /**
  * Client-facing project dashboard — a read-only view clients see
@@ -124,23 +125,18 @@ export default async function PortalProjectPage({
         </div>
 
         {/* Progress card */}
-        <div className="rounded-xl border border-border bg-background p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-semibold text-foreground">Progress</h2>
-            <span className="text-2xl font-semibold tabular-nums text-foreground">
-              {pct}%
-            </span>
-          </div>
-          <div className="h-3 w-full rounded-full bg-bg-secondary overflow-hidden">
+        <MetricCard
+          title="Progress"
+          value={`${pct}%`}
+          description={`${project.completedTasks} of ${project.totalTasks} tasks completed`}
+        >
+          <div className="mt-4 h-3 w-full rounded-full bg-bg-secondary overflow-hidden">
             <div
               className="h-full rounded-full bg-green-500 transition-all duration-700"
               style={{ width: `${pct}%` }}
             />
           </div>
-          <p className="mt-2 text-xs text-text-muted">
-            {project.completedTasks} of {project.totalTasks} tasks completed
-          </p>
-        </div>
+        </MetricCard>
 
         {/* Milestones */}
         {project.milestones.length > 0 && (

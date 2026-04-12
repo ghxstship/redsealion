@@ -50,10 +50,14 @@ async function getTask(taskId: string): Promise<TaskDetail | null> {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return null;
 
+    const { data: userMeta } = await supabase.from('users').select('organization_id').eq('id', user.id).single();
+    if (!userMeta?.organization_id) return null;
+
     const { data } = await supabase
       .from('tasks')
       .select('*, assignee:users!tasks_assignee_id_fkey(id, full_name, avatar_url)')
       .eq('id', taskId)
+      .eq('organization_id', userMeta.organization_id)
       .single();
 
     if (!data) return null;

@@ -15,6 +15,7 @@ import { motion } from 'framer-motion';
 import { fmTransition } from '@/lib/motion';
 import Card from '@/components/ui/Card';
 import { Eye, Clock, BarChart3, MousePointer, TrendingUp, Users } from 'lucide-react';
+import Button from '@/components/ui/Button';
 
 /* ─── Types ──────────────────────────────────────────────── */
 
@@ -95,7 +96,7 @@ export default function ProposalAnalytics({
         <h2 className="text-sm font-semibold text-foreground">Engagement Analytics</h2>
         <div className="flex rounded-lg border border-border overflow-hidden">
           {(['7d', '30d', 'all'] as const).map((range) => (
-            <button
+            <Button
               key={range}
               type="button"
               onClick={() => setTimeRange(range)}
@@ -106,7 +107,7 @@ export default function ProposalAnalytics({
               }`}
             >
               {range === '7d' ? '7 Days' : range === '30d' ? '30 Days' : 'All Time'}
-            </button>
+            </Button>
           ))}
         </div>
       </div>

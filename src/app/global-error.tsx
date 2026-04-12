@@ -1,3 +1,4 @@
+import Button from '@/components/ui/Button';
 'use client';
 
 /**
@@ -41,7 +42,7 @@ export default function GlobalError({
               </span>
             )}
           </p>
-          <button
+          <Button
             onClick={reset}
             style={{
               padding: '0.5rem 1.5rem',
@@ -57,7 +58,7 @@ export default function GlobalError({
             onMouseOut={(e) => ((e.target as HTMLElement).style.background = '#18181b')}
           >
             Try again
-          </button>
+          </Button>
         </div>
       </body>
     </html>

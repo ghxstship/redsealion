@@ -1,3 +1,4 @@
+import Button from '@/components/ui/Button';
 'use client';
 
 import { useState, useMemo, use, useEffect, useCallback } from 'react';
@@ -605,25 +606,25 @@ export default function EditProposalBuilderPage({
       {/* Navigation */}
       {currentStep !== reviewIndex && (
         <div className="mt-6 flex items-center justify-between">
-          <button
+          <Button
             type="button"
             disabled={isFirstStep}
             onClick={() => setCurrentStep((s) => s - 1)}
             className="rounded-lg border border-border px-5 py-2.5 text-sm font-medium text-text-secondary hover:bg-bg-secondary disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
             Previous
-          </button>
+          </Button>
           <span className="text-xs text-text-muted">
             Step {currentStep + 1} of {totalSteps}
           </span>
-          <button
+          <Button
             type="button"
             disabled={isLastStep}
             onClick={() => setCurrentStep((s) => s + 1)}
             className="rounded-lg bg-org-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-org-primary/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
             Next
-          </button>
+          </Button>
         </div>
       )}
     </>

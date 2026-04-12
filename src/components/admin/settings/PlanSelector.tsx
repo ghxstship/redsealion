@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useSubscription } from '@/components/shared/SubscriptionProvider';
 import type { SubscriptionTier } from '@/types/database';
 import Alert from '@/components/ui/Alert';
+import Button from '@/components/ui/Button';
 
 interface Plan {
   name: string;
@@ -130,7 +131,7 @@ export default function PlanSelector() {
                 ))}
               </ul>
 
-              <button
+              <Button
                 className={`mt-6 w-full rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${
                   isCurrent
                     ? 'border border-border bg-bg-secondary text-text-secondary cursor-default'
@@ -146,7 +147,7 @@ export default function PlanSelector() {
                   : isLoading
                     ? 'Redirecting…'
                     : 'Upgrade'}
-              </button>
+              </Button>
             </div>
           );
         })}

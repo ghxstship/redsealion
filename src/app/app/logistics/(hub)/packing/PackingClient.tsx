@@ -98,7 +98,7 @@ export default function PackingClient({ proposals }: { proposals: Proposal[] }) 
         {proposals.length > 0 ? (
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {proposals.map((proposal) => (
-              <button
+              <Button
                 key={proposal.id}
                 onClick={() => setSelectedProposalId(proposal.id)}
                 className={`rounded-lg border px-4 py-3 text-left transition-colors ${
@@ -109,7 +109,7 @@ export default function PackingClient({ proposals }: { proposals: Proposal[] }) 
               >
                 <p className="text-sm font-medium text-foreground truncate">{proposal.name}</p>
                 <p className="text-xs text-text-muted mt-0.5">{proposal.client_name}</p>
-              </button>
+              </Button>
             ))}
           </div>
         ) : (

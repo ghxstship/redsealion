@@ -2,6 +2,7 @@
 
 import { useGlobalModals } from '@/components/shared/GlobalModalProvider';
 import { useTranslation } from '@/lib/i18n/client';
+import Button from '@/components/ui/Button';
 
 interface MyTasksHeaderProps {
   taskCount: number;
@@ -19,12 +20,12 @@ export default function MyTasksHeader({ taskCount }: MyTasksHeaderProps) {
           {t('myTasks.subtitle', { count: taskCount })}
         </p>
       </div>
-      <button
+      <Button
         onClick={() => openModal('task')}
         className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90"
       >
         {t('myTasks.newTask')}
-      </button>
+      </Button>
     </div>
   );
 }

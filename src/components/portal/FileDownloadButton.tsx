@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Button from '@/components/ui/Button';
 
 interface FileDownloadButtonProps {
   fileId: string;
@@ -35,7 +36,7 @@ export default function FileDownloadButton({ fileId, fileName }: FileDownloadBut
 
   return (
     <div className="flex items-center gap-2">
-      <button
+      <Button
         type="button"
         onClick={handleDownload}
         disabled={loading}
@@ -43,7 +44,7 @@ export default function FileDownloadButton({ fileId, fileName }: FileDownloadBut
         style={{ color: 'var(--org-primary)' }}
       >
         {loading ? 'Loading…' : 'Open →'}
-      </button>
+      </Button>
       {error && <span className="text-xs text-red-600">{error}</span>}
     </div>
   );

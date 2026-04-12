@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { IconCheck } from '@/components/ui/Icons';
+import Button from '@/components/ui/Button';
 
 interface Tier {
   name: string;
@@ -26,7 +27,7 @@ export default function PricingCards({ tiers }: { tiers: Tier[] }) {
         <span className={`text-sm font-medium ${!isAnnual ? 'text-zinc-900' : 'text-zinc-400'}`}>
           Monthly
         </span>
-        <button
+        <Button
           type="button"
           role="switch"
           aria-checked={isAnnual}
@@ -40,7 +41,7 @@ export default function PricingCards({ tiers }: { tiers: Tier[] }) {
               isAnnual ? 'translate-x-5' : 'translate-x-0'
             }`}
           />
-        </button>
+        </Button>
         <span className={`text-sm font-medium ${isAnnual ? 'text-zinc-900' : 'text-zinc-400'}`}>
           Annual
         </span>

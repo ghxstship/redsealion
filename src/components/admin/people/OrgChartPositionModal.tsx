@@ -7,6 +7,7 @@ import FormInput from '@/components/ui/FormInput';
 import Button from '@/components/ui/Button';
 import Alert from '@/components/ui/Alert';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
+import FormSelect from '@/components/ui/FormSelect';
 
 interface OrgChartPosition {
   id: string;
@@ -108,7 +109,7 @@ export default function OrgChartPositionModal({ open, onClose, position, allPosi
 
         <div>
           <FormLabel>Reports To</FormLabel>
-          <select 
+          <FormSelect 
             value={reportsTo} 
             onChange={(e) => setReportsTo(e.target.value)}
             className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
@@ -117,7 +118,7 @@ export default function OrgChartPositionModal({ open, onClose, position, allPosi
             {validManagers.map(p => (
               <option key={p.id} value={p.id}>{p.title}</option>
             ))}
-          </select>
+          </FormSelect>
         </div>
 
         <div className="flex items-center justify-between pt-2">

@@ -10,6 +10,7 @@ import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
 import { IconPlus } from '@/components/ui/Icons';
 import { X } from 'lucide-react';
+import Button from '@/components/ui/Button';
 export interface ProjectSetupData {
   clientId: string;
   clientSearch: string;
@@ -119,7 +120,7 @@ export default function ProjectSetupStep({
             <ul className="mt-1 rounded-lg border border-border bg-background shadow-sm max-h-40 overflow-y-auto">
               {filteredClients.map((client) => (
                 <li key={client.id}>
-                  <button
+                  <Button
                     type="button"
                     className="w-full px-3 py-2 text-left text-sm hover:bg-bg-secondary"
                     onClick={() =>
@@ -130,7 +131,7 @@ export default function ProjectSetupStep({
                     }
                   >
                     {client.name}
-                  </button>
+                  </Button>
                 </li>
               ))}
               {filteredClients.length === 0 && (
@@ -139,13 +140,13 @@ export default function ProjectSetupStep({
             </ul>
           )}
           {data.clientId && (
-            <button
+            <Button
               type="button"
               className="mt-1 text-xs text-text-muted hover:text-foreground"
               onClick={() => update({ clientId: '', clientSearch: '' })}
             >
               Clear selection
-            </button>
+            </Button>
           )}
         </div>
       </fieldset>
@@ -273,7 +274,7 @@ export default function ProjectSetupStep({
                 update({ assumptions: updated });
               }}
               placeholder="e.g., All pricing assumes standard working hours (Monday–Friday, 8AM–6PM)" />
-            <button
+            <Button
               type="button"
               onClick={() => {
                 const updated = (data.assumptions ?? []).filter((_, i) => i !== index);
@@ -282,18 +283,18 @@ export default function ProjectSetupStep({
               className="p-0.5 text-text-muted hover:text-error shrink-0"
             >
               <X size={14} />
-            </button>
+            </Button>
           </div>
         ))}
 
-        <button
+        <Button
           type="button"
           onClick={() => update({ assumptions: [...(data.assumptions ?? []), ''] })}
           className="inline-flex items-center gap-1.5 text-xs font-medium text-text-secondary hover:text-org-primary transition-colors"
         >
           <IconPlus size={14} />
           Add Assumption
-        </button>
+        </Button>
       </fieldset>
 
       {/* Phase Template */}

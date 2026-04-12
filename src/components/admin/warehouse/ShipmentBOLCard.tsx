@@ -5,6 +5,7 @@ import Button from '@/components/ui/Button';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
 import Alert from '@/components/ui/Alert';
+import FormTextarea from '@/components/ui/FormTextarea';
 
 interface ShipmentBOLCardProps {
   shipmentId: string;
@@ -123,7 +124,7 @@ export default function ShipmentBOLCard({ shipmentId, initialData }: ShipmentBOL
         </div>
         <div className="col-span-2">
           <FormLabel>Special Handling Instructions</FormLabel>
-          <textarea
+          <FormTextarea
             value={formData.bol_special_instructions}
             onChange={(e) => handleChange('bol_special_instructions', e.target.value)}
             className="w-full rounded-md border border-border bg-transparent px-3 py-2 text-sm focus:border-foreground focus:outline-none"

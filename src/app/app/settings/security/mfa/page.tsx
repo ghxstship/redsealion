@@ -1,3 +1,4 @@
+import FormInput from '@/components/ui/FormInput';
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -194,7 +195,7 @@ export default function MfaSetupPage() {
           }}
           className="space-y-4"
         >
-          <input
+          <FormInput
             type="text"
             inputMode="numeric"
             pattern="[0-9]{6}"

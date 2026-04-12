@@ -9,6 +9,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Bookmark, Plus, Trash2 } from 'lucide-react';
 import FormInput from '@/components/ui/FormInput';
+import Button from '@/components/ui/Button';
 
 interface SavedFilter {
   id: string;
@@ -72,30 +73,30 @@ export default function SavedFilters({ currentFilters, onApply }: SavedFiltersPr
       {/* Saved filter pills */}
       {saved.map((filter) => (
         <div key={filter.id} className="group relative">
-          <button
+          <Button
             onClick={() => onApply(filter.filters)}
             className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1 text-xs font-medium text-text-secondary hover:bg-bg-secondary transition-colors"
           >
             <Bookmark size={11} />
             {filter.name}
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => handleDelete(filter.id)}
             className="absolute -top-1 -right-1 hidden group-hover:flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-white"
           >
             <Trash2 size={8} />
-          </button>
+          </Button>
         </div>
       ))}
 
       {/* Save current filter */}
       {hasActiveFilters && !showSave && (
-        <button
+        <Button
           onClick={() => setShowSave(true)}
           className="inline-flex items-center gap-1 rounded-full border border-dashed border-border px-3 py-1 text-xs text-text-muted hover:text-foreground hover:border-text-muted transition-colors"
         >
           <Plus size={11} /> Save filter
-        </button>
+        </Button>
       )}
 
       {showSave && (
@@ -109,19 +110,19 @@ export default function SavedFilters({ currentFilters, onApply }: SavedFiltersPr
             className="!py-1 !text-xs w-32"
             autoFocus
           />
-          <button
+          <Button
             onClick={handleSave}
             className="text-xs font-medium text-foreground"
             disabled={!newName.trim()}
           >
             Save
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setShowSave(false)}
             className="text-xs text-text-muted"
           >
             Cancel
-          </button>
+          </Button>
         </div>
       )}
     </div>

@@ -8,6 +8,7 @@ import FormInput from '@/components/ui/FormInput';
 import FormSelect from '@/components/ui/FormSelect';
 import Button from '@/components/ui/Button';
 import Alert from '@/components/ui/Alert';
+import FormTextarea from '@/components/ui/FormTextarea';
 
 interface AddInteractionModalProps {
   open: boolean;
@@ -100,7 +101,7 @@ export default function AddInteractionModal({ open, onClose, clientId }: AddInte
 
         <div>
           <FormLabel>Notes</FormLabel>
-          <textarea
+          <FormTextarea
             value={body}
             onChange={(e) => setBody(e.target.value)}
             rows={4}

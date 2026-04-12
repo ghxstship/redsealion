@@ -12,6 +12,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
+import Button from '@/components/ui/Button';
 
 interface Member {
   id: string;
@@ -157,7 +158,7 @@ export default function MentionPicker({ inputRef, onSelect }: MentionPickerProps
       className="absolute left-0 right-0 bottom-full mb-1 rounded-lg border border-border bg-background shadow-lg z-50 max-h-48 overflow-y-auto"
     >
       {filtered.map((member, idx) => (
-        <button
+        <Button
           key={member.id}
           onClick={() => selectMember(member)}
           className={`w-full flex items-center gap-2 px-3 py-2 text-left text-sm transition-colors ${
@@ -172,7 +173,7 @@ export default function MentionPicker({ inputRef, onSelect }: MentionPickerProps
             </div>
           )}
           <span className="text-foreground">{member.full_name}</span>
-        </button>
+        </Button>
       ))}
     </div>
   );

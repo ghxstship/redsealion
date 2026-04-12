@@ -58,10 +58,15 @@ export default function ProposalDetailPage({
       try {
         const supabase = createClient();
 
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+        const { data: userMeta } = await supabase.from('users').select('organization_id').eq('id', user.id).single();
+
         const { data: prop } = await supabase
           .from('proposals')
           .select('*, clients(company_name)')
           .eq('id', id)
+          .eq('organization_id', userMeta?.organization_id)
           .single();
 
         if (prop) {

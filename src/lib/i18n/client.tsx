@@ -3,6 +3,7 @@
 import { createContext, useContext, useCallback, useMemo, type ReactNode } from 'react';
 import type { SupportedLocale } from './config';
 import { DEFAULT_LOCALE } from './config';
+import Button from '@/components/ui/Button';
 
 /**
  * i18n Client Provider — provides translation and formatting to client components.
@@ -98,7 +99,7 @@ export function I18nProvider({ locale, dictionary, children }: I18nProviderProps
  * Usage:
  * ```tsx
  * const { t } = useTranslation();
- * return <button>{t('common.save')}</button>;
+ * return <Button>{t('common.save')}</Button>;
  * ```
  */
 export function useTranslation() {

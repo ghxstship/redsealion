@@ -6,6 +6,8 @@ import { fmTransition } from '@/lib/motion';
 import { formatCurrency } from '@/lib/utils';
 import type { PaymentTerms } from '@/types/database';
 import { ChevronDown, AlertCircle, PenLine } from 'lucide-react';
+import FormInput from '@/components/ui/FormInput';
+import Button from '@/components/ui/Button';
 
 interface InvestmentSummaryBarProps {
   coreTotal: number;
@@ -87,7 +89,7 @@ export default function InvestmentSummaryBar({
               <PenLine size={14} className="text-text-muted" />
               <span className="text-xs font-medium text-text-secondary">Type your legal name to sign</span>
             </div>
-            <input
+            <FormInput
               type="text"
               value={typedSignature}
               onChange={(e) => setTypedSignature(e.target.value)}
@@ -123,7 +125,7 @@ export default function InvestmentSummaryBar({
 
   const assumptionsContent = assumptions.length > 0 && (
     <div className="mt-4">
-      <button
+      <Button
         type="button"
         onClick={() => setShowAssumptions(!showAssumptions)}
         className="flex items-center gap-1.5 text-[10px] font-medium text-text-muted hover:text-text-secondary transition-colors"
@@ -134,7 +136,7 @@ export default function InvestmentSummaryBar({
           size={11}
           className={`transition-transform ${showAssumptions ? 'rotate-180' : ''}`}
         />
-      </button>
+      </Button>
       <AnimatePresence>
         {showAssumptions && (
           <motion.ul
@@ -214,7 +216,7 @@ export default function InvestmentSummaryBar({
             {signatureContent}
 
             {canApprove && (
-              <button
+              <Button
                 type="button"
                 onClick={handleAccept}
                 disabled={showSignatureFlow && !canSign}
@@ -224,7 +226,7 @@ export default function InvestmentSummaryBar({
                 style={{ backgroundColor: 'var(--org-primary)' }}
               >
                 {showSignatureFlow ? 'Sign & Accept' : 'Accept & Proceed'}
-              </button>
+              </Button>
             )}
           </motion.div>
         </div>
@@ -259,7 +261,7 @@ export default function InvestmentSummaryBar({
           {signatureContent}
 
           {canApprove && (
-            <button
+            <Button
               type="button"
               onClick={handleAccept}
               disabled={showSignatureFlow && !canSign}
@@ -269,7 +271,7 @@ export default function InvestmentSummaryBar({
               style={{ backgroundColor: 'var(--org-primary)' }}
             >
               {showSignatureFlow ? 'Sign & Accept' : 'Accept & Proceed'}
-            </button>
+            </Button>
           )}
         </div>
       </motion.div>

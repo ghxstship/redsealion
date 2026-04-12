@@ -3,6 +3,7 @@ import { getInitials } from '@/lib/utils';
 import ProfileEditForm from '@/components/portal/ProfileEditForm';
 import NotificationToggles from '@/components/portal/NotificationToggles';
 import type { Metadata } from 'next';
+import FormInput from '@/components/ui/FormInput';
 
 interface PageProps {
   params: Promise<{ orgSlug: string }>;
@@ -151,7 +152,7 @@ export default async function AccountPage({ params }: PageProps) {
           <div className="grid gap-5 sm:grid-cols-2">
             <div>
               <label className="block text-xs font-medium text-text-muted mb-1">Company Name</label>
-              <input
+              <FormInput
                 type="text"
                 defaultValue={clientProfile.company}
                 readOnly
@@ -160,7 +161,7 @@ export default async function AccountPage({ params }: PageProps) {
             </div>
             <div>
               <label className="block text-xs font-medium text-text-muted mb-1">Address</label>
-              <input
+              <FormInput
                 type="text"
                 defaultValue={clientProfile.companyAddress}
                 readOnly

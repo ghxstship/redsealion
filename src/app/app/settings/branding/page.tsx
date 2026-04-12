@@ -18,7 +18,7 @@ function ColorField({ label, value, onChange }: { label: string; value: string; 
       </label>
       <div className="flex items-center gap-3">
         <div className="h-9 w-9 shrink-0 rounded-lg border border-border" style={{ backgroundColor: value }} />
-        <input
+        <FormInput
           type="text"
           value={value}
           onChange={(e) => onChange(e.target.value)}

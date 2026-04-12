@@ -1,3 +1,4 @@
+import FormInput from '@/components/ui/FormInput';
 'use client';
 
 import { useState } from 'react';
@@ -6,6 +7,8 @@ import { GOAL_STATUSES } from './constants';
 import ModalShell from '@/components/ui/ModalShell';
 import Button from '@/components/ui/Button';
 import Alert from '@/components/ui/Alert';
+import FormSelect from '@/components/ui/FormSelect';
+import FormTextarea from '@/components/ui/FormTextarea';
 
 interface GoalRef {
   id: string;
@@ -67,7 +70,7 @@ export default function CheckInDialog({ goal, isOpen, onClose }: CheckInDialogPr
             <label htmlFor="new_progress" className="block text-sm font-medium text-foreground">
               New Progress (%)
             </label>
-            <input
+            <FormInput
               type="number"
               min="0"
               max="100"
@@ -84,7 +87,7 @@ export default function CheckInDialog({ goal, isOpen, onClose }: CheckInDialogPr
           <label htmlFor="status" className="block text-sm font-medium text-foreground">
             Current Status
           </label>
-          <select
+          <FormSelect
             name="status"
             id="status"
             defaultValue="on_track"
@@ -93,14 +96,14 @@ export default function CheckInDialog({ goal, isOpen, onClose }: CheckInDialogPr
               {GOAL_STATUSES.map((s) => (
                 <option key={s.value} value={s.value}>{s.label}</option>
               ))}
-          </select>
+          </FormSelect>
         </div>
 
         <div>
           <label htmlFor="notes" className="block text-sm font-medium text-foreground">
             Check-In Notes
           </label>
-          <textarea
+          <FormTextarea
             name="notes"
             id="notes"
             rows={3}

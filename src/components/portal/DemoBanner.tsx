@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePortalContext } from './PortalContext';
 import { Sparkles } from 'lucide-react';
 import { IconChevronRight, IconX } from '@/components/ui/Icons';
+import Button from '@/components/ui/Button';
 
 /**
  * Persistent banner at the top of the portal demo shell.
@@ -41,14 +42,14 @@ export default function DemoBanner() {
         Start your 14-day free trial
         <IconChevronRight size={12} strokeWidth={1.5} />
       </Link>
-      <button
+      <Button
         type="button"
         onClick={handleDismiss}
         className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-white/60 hover:text-white hover:bg-white/10 transition-colors"
         aria-label="Dismiss banner"
       >
         <IconX size={14} strokeWidth={2} />
-      </button>
+      </Button>
     </div>
   );
 }

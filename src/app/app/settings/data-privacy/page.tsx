@@ -1,8 +1,10 @@
+import FormInput from '@/components/ui/FormInput';
 'use client';
 
 import { useState } from 'react';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
+import FormSelect from '@/components/ui/FormSelect';
 
 // Demo sessions mock removed
 
@@ -78,7 +80,7 @@ export default function DataPrivacyPage() {
             <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
               Keep Audit Logs
             </label>
-            <select
+            <FormSelect
               value={auditRetention}
               onChange={(e) => setAuditRetention(e.target.value)}
               className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
@@ -87,13 +89,13 @@ export default function DataPrivacyPage() {
               <option value="90">90 days</option>
               <option value="365">1 year</option>
               <option value="forever">Forever</option>
-            </select>
+            </FormSelect>
           </div>
           <div>
             <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
               Keep Deleted Records
             </label>
-            <select
+            <FormSelect
               value={deletedRetention}
               onChange={(e) => setDeletedRetention(e.target.value)}
               className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
@@ -101,7 +103,7 @@ export default function DataPrivacyPage() {
               <option value="30">30 days</option>
               <option value="90">90 days</option>
               <option value="never">Never</option>
-            </select>
+            </FormSelect>
           </div>
         </div>
       </Card>
@@ -134,12 +136,12 @@ export default function DataPrivacyPage() {
                   <td className="py-3 text-text-secondary">{s.lastActive}</td>
                   <td className="py-3 text-right">
                     {!s.current && (
-                      <button
+                      <Button
                         onClick={() => handleRevoke(s.id)}
                         className="rounded-lg border border-red-200 bg-background px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
                       >
                         Revoke
-                      </button>
+                      </Button>
                     )}
                   </td>
                 </tr>
@@ -169,7 +171,7 @@ export default function DataPrivacyPage() {
                 <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
                   Confirm Password
                 </label>
-                <input
+                <FormInput
                   type="password"
                   value={deletePassword}
                   onChange={(e) => setDeletePassword(e.target.value)}
@@ -177,12 +179,12 @@ export default function DataPrivacyPage() {
                   className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
                 />
               </div>
-              <button
+              <Button
                 disabled={!deletePassword}
                 className="rounded-lg border border-red-200 bg-background px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
               >
                 Delete Account
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -199,7 +201,7 @@ export default function DataPrivacyPage() {
                 <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
                   Type Organization Name to Confirm
                 </label>
-                <input
+                <FormInput
                   type="text"
                   value={orgConfirm}
                   onChange={(e) => setOrgConfirm(e.target.value)}
@@ -207,12 +209,12 @@ export default function DataPrivacyPage() {
                   className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 focus:border-foreground/20"
                 />
               </div>
-              <button
+              <Button
                 disabled={!orgConfirm}
                 className="rounded-lg border border-red-200 bg-background px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
               >
                 Delete Organization
-              </button>
+              </Button>
             </div>
           </div>
         </div>

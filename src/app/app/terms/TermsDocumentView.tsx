@@ -257,7 +257,7 @@ export default function TermsDocumentView({ activeDocument, allDocuments }: Prop
                 key={section.number}
                 className="rounded-xl border border-border bg-background overflow-hidden"
               >
-                <button
+                <Button
                   onClick={() => toggleSection(section.number)}
                   className="w-full flex items-center justify-between px-6 py-4 text-left transition-colors hover:bg-bg-secondary/50"
                 >
@@ -273,7 +273,7 @@ export default function TermsDocumentView({ activeDocument, allDocuments }: Prop
                     size={16}
                     className={`shrink-0 text-text-muted transition-transform ${isExpanded ? 'rotate-180' : ''}`}
                   />
-                </button>
+                </Button>
                 {!isExpanded && (
                   <div className="px-6 pb-4 -mt-1">
                     <p className="text-xs text-text-muted line-clamp-2 pl-8">

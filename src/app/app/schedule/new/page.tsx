@@ -10,6 +10,7 @@ import FormLabel from '@/components/ui/FormLabel';
 import FormSelect from '@/components/ui/FormSelect';
 import { toast } from 'react-hot-toast';
 import { SCHEDULE_TYPES } from '@/lib/constants/schedule';
+import FormTextarea from '@/components/ui/FormTextarea';
 
 interface FormState {
   name: string;
@@ -145,7 +146,7 @@ export default function NewSchedulePage() {
 
           <div>
             <FormLabel>Notes</FormLabel>
-            <textarea
+            <FormTextarea
               value={form.notes}
               onChange={(e) => update('notes', e.target.value)}
               rows={3}

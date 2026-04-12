@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
-import Card from '@/components/ui/Card';
+import MetricCard from '@/components/ui/MetricCard';
 import StatusBadge, { GENERIC_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import { TierGate } from '@/components/shared/TierGate';
 import LogisticsHubTabs from '../LogisticsHubTabs';
@@ -100,17 +100,17 @@ export default async function WarehousePage() {
       {/* Facility summary cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-8">
         {facilities.map((facility) => (
-          <Card key={facility.name} padding="default" className="p-5">
-            <h3 className="text-sm font-medium text-foreground">{facility.name}</h3>
-            <p className="mt-2 text-2xl font-semibold tabular-nums text-foreground">
-              {facility.total_items}
-            </p>
-            <p className="text-xs text-text-muted">total items</p>
-            <div className="mt-3 flex gap-4 text-xs">
+          <MetricCard
+            key={facility.name}
+            title={facility.name}
+            value={facility.total_items}
+            description="total items"
+          >
+            <div className="mt-3 flex gap-4 text-xs font-normal">
               <span className="text-green-700">{facility.available} available</span>
               <span className="text-blue-700">{facility.deployed} deployed</span>
             </div>
-          </Card>
+          </MetricCard>
         ))}
       </div>
 

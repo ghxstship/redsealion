@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
+import Button from '@/components/ui/Button';
 
 interface FieldMapping {
   flyteDeckField: string;
@@ -50,7 +51,7 @@ export default function ExportPreview({
           const isExpanded = expandedCategories.has(category.name);
           return (
             <div key={category.name}>
-              <button
+              <Button
                 onClick={() => toggleCategory(category.name)}
                 className="flex w-full items-center justify-between px-5 py-3 text-left hover:bg-bg-secondary/50 transition-colors"
               >
@@ -68,7 +69,7 @@ export default function ExportPreview({
                     }`}
                   />
                 </div>
-              </button>
+              </Button>
               {isExpanded && (
                 <div className="px-5 pb-4">
                   <div className="rounded-lg border border-border overflow-hidden">

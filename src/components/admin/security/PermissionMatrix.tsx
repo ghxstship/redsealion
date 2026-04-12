@@ -14,6 +14,7 @@ import {
   type PermissionResource,
   type PermissionAction,
 } from '@/lib/permissions';
+import Button from '@/components/ui/Button';
 
 interface PermissionMatrixProps {
   organizationId: string;
@@ -236,7 +237,7 @@ export default function PermissionMatrix({ organizationId, overrides }: Permissi
 
                         return (
                           <td key={action} className="px-4 py-2.5 text-center">
-                            <button
+                            <Button
                               type="button"
                               disabled={!editable || isSaving}
                               onClick={() => togglePermission(role, resource, action)}

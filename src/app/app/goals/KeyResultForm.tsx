@@ -1,3 +1,4 @@
+import FormInput from '@/components/ui/FormInput';
 'use client';
 
 import { useState } from 'react';
@@ -53,7 +54,7 @@ export default function KeyResultForm({ goalId, isOpen, onClose }: KeyResultForm
           <label htmlFor="title" className="block text-sm font-medium text-foreground">
             Title
           </label>
-          <input
+          <FormInput
             type="text"
             name="title"
             id="title"
@@ -68,7 +69,7 @@ export default function KeyResultForm({ goalId, isOpen, onClose }: KeyResultForm
             <label htmlFor="start_value" className="block text-sm font-medium text-foreground">
               Start Value
             </label>
-            <input
+            <FormInput
               type="number"
               step="any"
               name="start_value"
@@ -82,7 +83,7 @@ export default function KeyResultForm({ goalId, isOpen, onClose }: KeyResultForm
             <label htmlFor="target" className="block text-sm font-medium text-foreground">
               Target Value
             </label>
-            <input
+            <FormInput
               type="number"
               step="any"
               name="target"
@@ -95,7 +96,7 @@ export default function KeyResultForm({ goalId, isOpen, onClose }: KeyResultForm
             <label htmlFor="unit" className="block text-sm font-medium text-foreground">
               Unit
             </label>
-            <input
+            <FormInput
               type="text"
               name="unit"
               id="unit"

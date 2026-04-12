@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
+import Button from '@/components/ui/Button';
 
 interface NotificationItem {
   id: string;
@@ -86,7 +87,7 @@ export default function NotificationToggles({
             <p className="text-sm font-medium text-foreground">{notif.label}</p>
             <p className="text-xs text-text-muted">{notif.description}</p>
           </div>
-          <button
+          <Button
             type="button"
             onClick={() => handleToggle(notif.id)}
             disabled={pendingId === notif.id}
@@ -102,7 +103,7 @@ export default function NotificationToggles({
                 notif.enabled ? 'translate-x-4' : 'translate-x-0'
               }`}
             />
-          </button>
+          </Button>
         </div>
       ))}
     </div>

@@ -1,3 +1,4 @@
+import Button from '@/components/ui/Button';
 'use client';
 
 import { useState } from 'react';
@@ -58,42 +59,42 @@ export default function RequisitionActions({ id, status }: Props) {
 
       <div className="flex gap-3 flex-wrap">
         {status === 'draft' && (
-          <button
+          <Button
             onClick={() => updateStatus('submitted')}
             disabled={!!loading}
             className="rounded-lg bg-yellow-500 px-4 py-2 text-sm font-medium text-white hover:bg-yellow-600 transition-colors disabled:opacity-50"
           >
             {loading === 'submitted' ? 'Submitting...' : 'Submit for Approval'}
-          </button>
+          </Button>
         )}
 
         {status === 'submitted' && (
           <>
-            <button
+            <Button
               onClick={() => updateStatus('approved')}
               disabled={!!loading}
               className="rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 transition-colors disabled:opacity-50"
             >
               {loading === 'approved' ? 'Approving...' : 'Approve'}
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => updateStatus('rejected')}
               disabled={!!loading}
               className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition-colors disabled:opacity-50"
             >
               {loading === 'rejected' ? 'Rejecting...' : 'Reject'}
-            </button>
+            </Button>
           </>
         )}
 
         {status === 'approved' && (
-          <button
+          <Button
             onClick={convertToPO}
             disabled={!!loading}
             className="rounded-lg bg-brand-primary px-4 py-2 text-sm font-medium text-white hover:bg-brand-primary/90 transition-colors disabled:opacity-50"
           >
             {loading === 'convert' ? 'Converting...' : 'Convert to Purchase Order'}
-          </button>
+          </Button>
         )}
       </div>
     </div>

@@ -14,6 +14,7 @@
  */
 
 import { useMemo, useState } from 'react';
+import Button from '@/components/ui/Button';
 
 interface GanttTask {
   id: string;
@@ -137,7 +138,7 @@ export default function GanttChart({ tasks, dependencies }: GanttChartProps) {
         <span className="text-xs font-medium text-text-muted uppercase tracking-wider">Timeline</span>
         <div className="flex gap-1">
           {(['day', 'week', 'month'] as ZoomLevel[]).map((z) => (
-            <button
+            <Button
               key={z}
               onClick={() => setZoom(z)}
               className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
@@ -147,7 +148,7 @@ export default function GanttChart({ tasks, dependencies }: GanttChartProps) {
               }`}
             >
               {z.charAt(0).toUpperCase() + z.slice(1)}
-            </button>
+            </Button>
           ))}
         </div>
       </div>

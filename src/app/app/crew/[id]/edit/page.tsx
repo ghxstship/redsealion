@@ -7,6 +7,8 @@ import Button from '@/components/ui/Button';
 import Alert from '@/components/ui/Alert';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
+import FormSelect from '@/components/ui/FormSelect';
+import FormTextarea from '@/components/ui/FormTextarea';
 
 interface EditCrewProfileProps {
   params: Promise<{ id: string }>;
@@ -101,12 +103,12 @@ export default function EditCrewProfilePage({ params }: EditCrewProfileProps) {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <button
+      <Button
         onClick={() => router.back()}
         className="text-xs font-medium text-text-muted hover:text-foreground transition-colors mb-4 inline-block"
       >
         &larr; Back
-      </button>
+      </Button>
 
       <h1 className="text-lg font-semibold text-foreground mb-6">Edit Crew Profile</h1>
 
@@ -119,7 +121,7 @@ export default function EditCrewProfilePage({ params }: EditCrewProfileProps) {
         </div>
         <div>
           <FormLabel>Bio</FormLabel>
-          <textarea
+          <FormTextarea
             className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-blue-500"
             rows={3}
             value={bio}
@@ -146,7 +148,7 @@ export default function EditCrewProfilePage({ params }: EditCrewProfileProps) {
         </div>
         <div>
           <FormLabel>Default Availability</FormLabel>
-          <select
+          <FormSelect
             className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground"
             value={availabilityDefault}
             onChange={(e) => setAvailabilityDefault(e.target.value)}
@@ -154,7 +156,7 @@ export default function EditCrewProfilePage({ params }: EditCrewProfileProps) {
             <option value="available">Available</option>
             <option value="tentative">Tentative</option>
             <option value="unavailable">Unavailable</option>
-          </select>
+          </FormSelect>
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
@@ -168,12 +170,12 @@ export default function EditCrewProfilePage({ params }: EditCrewProfileProps) {
         </div>
 
         <div className="flex justify-end gap-3 pt-4 border-t border-border">
-          <button
+          <Button
             onClick={() => router.back()}
             className="px-4 py-2 text-sm font-medium text-text-secondary hover:text-foreground transition-colors"
           >
             Cancel
-          </button>
+          </Button>
           <Button onClick={handleSave} disabled={saving}>
             {saving ? 'Saving...' : 'Save Changes'}
           </Button>

@@ -1,3 +1,4 @@
+import Button from '@/components/ui/Button';
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -13,6 +14,7 @@ import Toggle from '@/components/ui/Toggle';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
 import Skeleton from '@/components/ui/Skeleton';
+import FormTextarea from '@/components/ui/FormTextarea';
 
 export default function EditAutomationPage() {
   const router = useRouter();
@@ -156,7 +158,7 @@ export default function EditAutomationPage() {
           </div>
           <div>
             <FormLabel>Description</FormLabel>
-            <textarea
+            <FormTextarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={2}
@@ -200,13 +202,13 @@ export default function EditAutomationPage() {
 
         {/* Save / Delete */}
         <div className="flex justify-between">
-          <button
+          <Button
             onClick={() => setShowDeleteConfirm(true)}
             disabled={deleting}
             className="rounded-lg border border-red-200 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
           >
             {deleting ? 'Deleting...' : 'Delete Automation'}
-          </button>
+          </Button>
           <div className="flex gap-3">
             <Link
               href={`/app/automations/${automationId}`}
@@ -214,13 +216,13 @@ export default function EditAutomationPage() {
             >
               Cancel
             </Link>
-            <button
+            <Button
               onClick={handleSave}
               disabled={saving || !name || !triggerType || !actionType}
               className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity disabled:opacity-50"
             >
               {saving ? 'Saving...' : 'Save Changes'}
-            </button>
+            </Button>
           </div>
         </div>
       </div>

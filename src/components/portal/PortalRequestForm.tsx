@@ -7,6 +7,7 @@ import FormTextarea from '@/components/ui/FormTextarea';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
 import { IconCheck } from '@/components/ui/Icons';
+import Button from '@/components/ui/Button';
 
 interface PortalRequestFormProps {
   orgSlug: string;
@@ -212,14 +213,14 @@ export default function PortalRequestForm({ orgSlug, orgId, orgName }: PortalReq
 
       {/* Submit */}
       <div className="flex justify-end">
-        <button
+        <Button
           type="submit"
           disabled={submitting || !formState.contact_name || !formState.contact_email}
           className="rounded-lg px-6 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50"
           style={{ backgroundColor: 'var(--org-primary, var(--color-foreground))' }}
         >
           {submitting ? 'Submitting…' : 'Submit Request'}
-        </button>
+        </Button>
       </div>
     </form>
   );

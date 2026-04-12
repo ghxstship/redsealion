@@ -7,6 +7,7 @@ import { DownloadCloud, Trash2, Upload, File, Loader2 } from 'lucide-react';
 import EmptyState from '@/components/ui/EmptyState';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import Alert from '@/components/ui/Alert';
+import FormSelect from '@/components/ui/FormSelect';
 
 export interface MyDocumentData {
   id: string;
@@ -135,7 +136,7 @@ export default function MyDocumentsTable({ initialFiles }: MyDocumentsTableProps
     <Card className="overflow-hidden">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-border bg-bg-secondary/50 px-6 py-4 gap-4">
         <div className="flex items-center space-x-2">
-          <select 
+          <FormSelect 
             value={filterCategory} 
             onChange={(e) => setFilterCategory(e.target.value)}
             className="text-sm rounded-md border border-border bg-background px-2 py-1"
@@ -145,7 +146,7 @@ export default function MyDocumentsTable({ initialFiles }: MyDocumentsTableProps
                 {cat === 'all' ? 'All Categories' : cat}
               </option>
             ))}
-          </select>
+          </FormSelect>
         </div>
         <div className="relative">
           <Button variant="primary" disabled={isUploading}>

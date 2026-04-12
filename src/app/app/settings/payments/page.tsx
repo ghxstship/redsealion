@@ -5,6 +5,7 @@ import StripeConnectSetup from '@/components/admin/payments/StripeConnectSetup';
 import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
+import FormTextarea from '@/components/ui/FormTextarea';
 
 export default function PaymentSettingsPage() {
   const [instructions, setInstructions] = useState('');
@@ -51,7 +52,7 @@ export default function PaymentSettingsPage() {
           <p className="text-sm text-text-muted mb-3">
             Custom instructions shown to clients on invoices (e.g. wire transfer details, check mailing address).
           </p>
-          <textarea
+          <FormTextarea
             rows={4}
             value={loaded ? instructions : ''}
             onChange={(e) => setInstructions(e.target.value)}

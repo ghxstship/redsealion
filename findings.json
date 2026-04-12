@@ -1,0 +1,2031 @@
+  {
+    "Location": "page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in page.tsx or layout"
+  },
+  {
+    "Location": "clients/(hub)/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in clients/(hub)/page.tsx or layout"
+  },
+  {
+    "Location": "clients/(hub)/activity/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in clients/(hub)/activity/page.tsx or layout"
+  },
+  {
+    "Location": "clients/(hub)/map/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in clients/(hub)/map/page.tsx or layout"
+  },
+  {
+    "Location": "clients/(hub)/segments/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in clients/(hub)/segments/page.tsx or layout"
+  },
+  {
+    "Location": "clients/[id]/ClientDetailActions.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "clients/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in clients/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "settings/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in settings/page.tsx or layout"
+  },
+  {
+    "Location": "settings/payments/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in settings/payments/page.tsx or layout"
+  },
+  {
+    "Location": "settings/branding/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in settings/branding/page.tsx or layout"
+  },
+  {
+    "Location": "settings/branding/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <input> tags used instead of canonical <FormInput>",
+    "Severity": "High",
+    "Fix": "Migrate to <FormInput>"
+  },
+  {
+    "Location": "settings/security/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in settings/security/page.tsx or layout"
+  },
+  {
+    "Location": "settings/security/audit-log/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in settings/security/audit-log/page.tsx or layout"
+  },
+  {
+    "Location": "settings/security/mfa/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in settings/security/mfa/page.tsx or layout"
+  },
+  {
+    "Location": "settings/security/mfa/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <input> tags used instead of canonical <FormInput>",
+    "Severity": "High",
+    "Fix": "Migrate to <FormInput>"
+  },
+  {
+    "Location": "settings/security/permissions/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in settings/security/permissions/page.tsx or layout"
+  },
+  {
+    "Location": "settings/email-templates/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in settings/email-templates/page.tsx or layout"
+  },
+  {
+    "Location": "settings/email-templates/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <input> tags used instead of canonical <FormInput>",
+    "Severity": "High",
+    "Fix": "Migrate to <FormInput>"
+  },
+  {
+    "Location": "settings/email-templates/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "settings/appearance/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in settings/appearance/page.tsx or layout"
+  },
+  {
+    "Location": "settings/appearance/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "settings/data-privacy/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in settings/data-privacy/page.tsx or layout"
+  },
+  {
+    "Location": "settings/data-privacy/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <input> tags used instead of canonical <FormInput>",
+    "Severity": "High",
+    "Fix": "Migrate to <FormInput>"
+  },
+  {
+    "Location": "settings/data-privacy/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "settings/tax/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in settings/tax/page.tsx or layout"
+  },
+  {
+    "Location": "settings/api-keys/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in settings/api-keys/page.tsx or layout"
+  },
+  {
+    "Location": "settings/api-keys/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <input> tags used instead of canonical <FormInput>",
+    "Severity": "High",
+    "Fix": "Migrate to <FormInput>"
+  },
+  {
+    "Location": "settings/api-keys/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "settings/audit-log/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in settings/audit-log/page.tsx or layout"
+  },
+  {
+    "Location": "settings/tags/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in settings/tags/page.tsx or layout"
+  },
+  {
+    "Location": "settings/tags/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <input> tags used instead of canonical <FormInput>",
+    "Severity": "High",
+    "Fix": "Migrate to <FormInput>"
+  },
+  {
+    "Location": "settings/tags/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "settings/calendar-sync/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in settings/calendar-sync/page.tsx or layout"
+  },
+  {
+    "Location": "settings/calendar-sync/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <input> tags used instead of canonical <FormInput>",
+    "Severity": "High",
+    "Fix": "Migrate to <FormInput>"
+  },
+  {
+    "Location": "settings/calendar-sync/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "settings/integrations/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in settings/integrations/page.tsx or layout"
+  },
+  {
+    "Location": "settings/integrations/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "settings/sso/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in settings/sso/page.tsx or layout"
+  },
+  {
+    "Location": "settings/document-defaults/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in settings/document-defaults/page.tsx or layout"
+  },
+  {
+    "Location": "settings/document-defaults/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "settings/profile/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in settings/profile/page.tsx or layout"
+  },
+  {
+    "Location": "settings/profile/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "settings/team/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in settings/team/page.tsx or layout"
+  },
+  {
+    "Location": "settings/team/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "settings/payment-terms/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in settings/payment-terms/page.tsx or layout"
+  },
+  {
+    "Location": "settings/payment-terms/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <input> tags used instead of canonical <FormInput>",
+    "Severity": "High",
+    "Fix": "Migrate to <FormInput>"
+  },
+  {
+    "Location": "settings/cost-rates/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in settings/cost-rates/page.tsx or layout"
+  },
+  {
+    "Location": "settings/custom-fields/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in settings/custom-fields/page.tsx or layout"
+  },
+  {
+    "Location": "settings/webhooks/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in settings/webhooks/page.tsx or layout"
+  },
+  {
+    "Location": "settings/webhooks/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "settings/notifications/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in settings/notifications/page.tsx or layout"
+  },
+  {
+    "Location": "settings/notifications/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "settings/facilities/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in settings/facilities/page.tsx or layout"
+  },
+  {
+    "Location": "settings/facilities/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "settings/billing/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in settings/billing/page.tsx or layout"
+  },
+  {
+    "Location": "settings/automations-config/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in settings/automations-config/page.tsx or layout"
+  },
+  {
+    "Location": "settings/automations-config/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <input> tags used instead of canonical <FormInput>",
+    "Severity": "High",
+    "Fix": "Migrate to <FormInput>"
+  },
+  {
+    "Location": "settings/automations-config/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "settings/localization/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in settings/localization/page.tsx or layout"
+  },
+  {
+    "Location": "rentals/(hub)/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in rentals/(hub)/page.tsx or layout"
+  },
+  {
+    "Location": "rentals/(hub)/sub-rentals/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in rentals/(hub)/sub-rentals/page.tsx or layout"
+  },
+  {
+    "Location": "rentals/(hub)/reservations/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in rentals/(hub)/reservations/page.tsx or layout"
+  },
+  {
+    "Location": "rentals/(hub)/utilization/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in rentals/(hub)/utilization/page.tsx or layout"
+  },
+  {
+    "Location": "rentals/(hub)/returns/ProcessReturnButton.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "rentals/(hub)/returns/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in rentals/(hub)/returns/page.tsx or layout"
+  },
+  {
+    "Location": "rentals/new/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in rentals/new/page.tsx or layout"
+  },
+  {
+    "Location": "rentals/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in rentals/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "pipeline/(hub)/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in pipeline/(hub)/page.tsx or layout"
+  },
+  {
+    "Location": "pipeline/(hub)/forecast/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in pipeline/(hub)/forecast/page.tsx or layout"
+  },
+  {
+    "Location": "pipeline/(hub)/commissions/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in pipeline/(hub)/commissions/page.tsx or layout"
+  },
+  {
+    "Location": "pipeline/(hub)/commissions/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Inline stat cards duplicate <MetricCard>",
+    "Severity": "High",
+    "Fix": "Replace with <MetricCard>"
+  },
+  {
+    "Location": "pipeline/(hub)/settings/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <input> tags used instead of canonical <FormInput>",
+    "Severity": "High",
+    "Fix": "Migrate to <FormInput>"
+  },
+  {
+    "Location": "pipeline/(hub)/settings/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "pipeline/(hub)/territories/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in pipeline/(hub)/territories/page.tsx or layout"
+  },
+  {
+    "Location": "pipeline/(hub)/list/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in pipeline/(hub)/list/page.tsx or layout"
+  },
+  {
+    "Location": "pipeline/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in pipeline/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "schedule/(hub)/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in schedule/(hub)/page.tsx or layout"
+  },
+  {
+    "Location": "schedule/(hub)/run-of-show/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in schedule/(hub)/run-of-show/page.tsx or layout"
+  },
+  {
+    "Location": "schedule/(hub)/milestones/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in schedule/(hub)/milestones/page.tsx or layout"
+  },
+  {
+    "Location": "schedule/(hub)/build-strike/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in schedule/(hub)/build-strike/page.tsx or layout"
+  },
+  {
+    "Location": "schedule/new/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in schedule/new/page.tsx or layout"
+  },
+  {
+    "Location": "schedule/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in schedule/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "work-orders/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in work-orders/page.tsx or layout"
+  },
+  {
+    "Location": "work-orders/new/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in work-orders/new/page.tsx or layout"
+  },
+  {
+    "Location": "work-orders/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in work-orders/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "tasks/(hub)/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in tasks/(hub)/page.tsx or layout"
+  },
+  {
+    "Location": "tasks/(hub)/calendar/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in tasks/(hub)/calendar/page.tsx or layout"
+  },
+  {
+    "Location": "tasks/(hub)/board/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in tasks/(hub)/board/page.tsx or layout"
+  },
+  {
+    "Location": "tasks/(hub)/projects/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in tasks/(hub)/projects/page.tsx or layout"
+  },
+  {
+    "Location": "tasks/(hub)/gantt/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in tasks/(hub)/gantt/page.tsx or layout"
+  },
+  {
+    "Location": "tasks/(hub)/workload/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in tasks/(hub)/workload/page.tsx or layout"
+  },
+  {
+    "Location": "tasks/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in tasks/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "tasks/[id]/page.tsx",
+    "Gap type": "3NF/SSOT violation (Security Data Leak)",
+    "What breaks": "Cross-tenant data exposure",
+    "Severity": "Critical",
+    "Fix": "Add explicit organization_id matching filter"
+  },
+  {
+    "Location": "my-tasks/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in my-tasks/page.tsx or layout"
+  },
+  {
+    "Location": "portal/projects/[id]/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Inline stat cards duplicate <MetricCard>",
+    "Severity": "High",
+    "Fix": "Replace with <MetricCard>"
+  },
+  {
+    "Location": "my-inbox/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in my-inbox/page.tsx or layout"
+  },
+  {
+    "Location": "my-documents/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in my-documents/page.tsx or layout"
+  },
+  {
+    "Location": "invoices/(hub)/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in invoices/(hub)/page.tsx or layout"
+  },
+  {
+    "Location": "invoices/(hub)/credit-notes/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in invoices/(hub)/credit-notes/page.tsx or layout"
+  },
+  {
+    "Location": "invoices/(hub)/recurring/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in invoices/(hub)/recurring/page.tsx or layout"
+  },
+  {
+    "Location": "invoices/(hub)/recurring/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "invoices/new/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in invoices/new/page.tsx or layout"
+  },
+  {
+    "Location": "invoices/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in invoices/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "goals/KeyResultForm.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <input> tags used instead of canonical <FormInput>",
+    "Severity": "High",
+    "Fix": "Migrate to <FormInput>"
+  },
+  {
+    "Location": "goals/GoalsPageClient.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "goals/GoalDialog.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <input> tags used instead of canonical <FormInput>",
+    "Severity": "High",
+    "Fix": "Migrate to <FormInput>"
+  },
+  {
+    "Location": "goals/CheckInDialog.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <input> tags used instead of canonical <FormInput>",
+    "Severity": "High",
+    "Fix": "Migrate to <FormInput>"
+  },
+  {
+    "Location": "goals/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in goals/page.tsx or layout"
+  },
+  {
+    "Location": "profitability/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in profitability/page.tsx or layout"
+  },
+  {
+    "Location": "profitability/[proposalId]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in profitability/[proposalId]/page.tsx or layout"
+  },
+  {
+    "Location": "roadmap/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in roadmap/page.tsx or layout"
+  },
+  {
+    "Location": "roadmap/RoadmapClient.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "expenses/(hub)/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in expenses/(hub)/page.tsx or layout"
+  },
+  {
+    "Location": "expenses/(hub)/receipts/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in expenses/(hub)/receipts/page.tsx or layout"
+  },
+  {
+    "Location": "expenses/(hub)/approvals/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in expenses/(hub)/approvals/page.tsx or layout"
+  },
+  {
+    "Location": "expenses/(hub)/mileage/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in expenses/(hub)/mileage/page.tsx or layout"
+  },
+  {
+    "Location": "expenses/new/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in expenses/new/page.tsx or layout"
+  },
+  {
+    "Location": "expenses/mileage/new/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in expenses/mileage/new/page.tsx or layout"
+  },
+  {
+    "Location": "leads/(hub)/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in leads/(hub)/page.tsx or layout"
+  },
+  {
+    "Location": "leads/(hub)/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in leads/(hub)/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "dispatch/(hub)/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in dispatch/(hub)/page.tsx or layout"
+  },
+  {
+    "Location": "dispatch/(hub)/board/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in dispatch/(hub)/board/page.tsx or layout"
+  },
+  {
+    "Location": "dispatch/(hub)/history/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in dispatch/(hub)/history/page.tsx or layout"
+  },
+  {
+    "Location": "dispatch/(hub)/routes/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in dispatch/(hub)/routes/page.tsx or layout"
+  },
+  {
+    "Location": "dispatch/new/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in dispatch/new/page.tsx or layout"
+  },
+  {
+    "Location": "dispatch/new/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <input> tags used instead of canonical <FormInput>",
+    "Severity": "High",
+    "Fix": "Migrate to <FormInput>"
+  },
+  {
+    "Location": "dispatch/new/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "dispatch/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in dispatch/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "dispatch/[id]/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "projects/ProjectsHubClient.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "projects/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in projects/page.tsx or layout"
+  },
+  {
+    "Location": "projects/new/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in projects/new/page.tsx or layout"
+  },
+  {
+    "Location": "projects/[id]/ProjectDetailClient.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "projects/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in projects/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "favorites/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in favorites/page.tsx or layout"
+  },
+  {
+    "Location": "emails/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in emails/page.tsx or layout"
+  },
+  {
+    "Location": "emails/templates/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in emails/templates/page.tsx or layout"
+  },
+  {
+    "Location": "emails/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in emails/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "marketplace/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in marketplace/page.tsx or layout"
+  },
+  {
+    "Location": "marketplace/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in marketplace/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "marketplace/[id]/page.tsx",
+    "Gap type": "3NF/SSOT violation (Security Data Leak)",
+    "What breaks": "Cross-tenant data exposure",
+    "Severity": "Critical",
+    "Fix": "Add explicit organization_id matching filter"
+  },
+  {
+    "Location": "terms/TermsDocumentView.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "terms/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in terms/page.tsx or layout"
+  },
+  {
+    "Location": "crew/(hub)/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in crew/(hub)/page.tsx or layout"
+  },
+  {
+    "Location": "crew/(hub)/schedule/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in crew/(hub)/schedule/page.tsx or layout"
+  },
+  {
+    "Location": "crew/(hub)/recruitment/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in crew/(hub)/recruitment/page.tsx or layout"
+  },
+  {
+    "Location": "crew/(hub)/availability/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in crew/(hub)/availability/page.tsx or layout"
+  },
+  {
+    "Location": "crew/(hub)/onboarding/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in crew/(hub)/onboarding/page.tsx or layout"
+  },
+  {
+    "Location": "crew/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in crew/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "crew/[id]/edit/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in crew/[id]/edit/page.tsx or layout"
+  },
+  {
+    "Location": "crew/[id]/edit/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "advancing/(hub)/assignments/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in advancing/(hub)/assignments/page.tsx or layout"
+  },
+  {
+    "Location": "advancing/(hub)/fulfillment/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in advancing/(hub)/fulfillment/page.tsx or layout"
+  },
+  {
+    "Location": "advancing/(hub)/allocations/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in advancing/(hub)/allocations/page.tsx or layout"
+  },
+  {
+    "Location": "advancing/(hub)/submissions/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in advancing/(hub)/submissions/page.tsx or layout"
+  },
+  {
+    "Location": "advancing/(hub)/approvals/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in advancing/(hub)/approvals/page.tsx or layout"
+  },
+  {
+    "Location": "advancing/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in advancing/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "compliance/(hub)/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in compliance/(hub)/page.tsx or layout"
+  },
+  {
+    "Location": "compliance/(hub)/licenses/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in compliance/(hub)/licenses/page.tsx or layout"
+  },
+  {
+    "Location": "compliance/(hub)/permits/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in compliance/(hub)/permits/page.tsx or layout"
+  },
+  {
+    "Location": "compliance/(hub)/contracts/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in compliance/(hub)/contracts/page.tsx or layout"
+  },
+  {
+    "Location": "compliance/(hub)/cois/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in compliance/(hub)/cois/page.tsx or layout"
+  },
+  {
+    "Location": "compliance/(hub)/certifications/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in compliance/(hub)/certifications/page.tsx or layout"
+  },
+  {
+    "Location": "time/(hub)/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in time/(hub)/page.tsx or layout"
+  },
+  {
+    "Location": "time/(hub)/timesheets/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in time/(hub)/timesheets/page.tsx or layout"
+  },
+  {
+    "Location": "time/(hub)/timer/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in time/(hub)/timer/page.tsx or layout"
+  },
+  {
+    "Location": "workloads/(hub)/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in workloads/(hub)/page.tsx or layout"
+  },
+  {
+    "Location": "workloads/(hub)/schedule/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in workloads/(hub)/schedule/page.tsx or layout"
+  },
+  {
+    "Location": "workloads/(hub)/utilization/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in workloads/(hub)/utilization/page.tsx or layout"
+  },
+  {
+    "Location": "integrations/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in integrations/page.tsx or layout"
+  },
+  {
+    "Location": "integrations/[platform]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in integrations/[platform]/page.tsx or layout"
+  },
+  {
+    "Location": "integrations/[platform]/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "fabrication/(hub)/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in fabrication/(hub)/page.tsx or layout"
+  },
+  {
+    "Location": "fabrication/(hub)/bom/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in fabrication/(hub)/bom/page.tsx or layout"
+  },
+  {
+    "Location": "fabrication/(hub)/quality/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in fabrication/(hub)/quality/page.tsx or layout"
+  },
+  {
+    "Location": "fabrication/(hub)/shop-floor/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in fabrication/(hub)/shop-floor/page.tsx or layout"
+  },
+  {
+    "Location": "fabrication/(hub)/shop-floor/kiosk/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in fabrication/(hub)/shop-floor/kiosk/page.tsx or layout"
+  },
+  {
+    "Location": "fabrication/(hub)/print/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in fabrication/(hub)/print/page.tsx or layout"
+  },
+  {
+    "Location": "fabrication/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in fabrication/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "my-schedule/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in my-schedule/page.tsx or layout"
+  },
+  {
+    "Location": "procurement/purchase-orders/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in procurement/purchase-orders/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "procurement/suppliers/new/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in procurement/suppliers/new/page.tsx or layout"
+  },
+  {
+    "Location": "procurement/suppliers/new/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <input> tags used instead of canonical <FormInput>",
+    "Severity": "High",
+    "Fix": "Migrate to <FormInput>"
+  },
+  {
+    "Location": "procurement/suppliers/new/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "procurement/suppliers/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in procurement/suppliers/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "procurement/requisitions/new/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in procurement/requisitions/new/page.tsx or layout"
+  },
+  {
+    "Location": "procurement/requisitions/new/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <input> tags used instead of canonical <FormInput>",
+    "Severity": "High",
+    "Fix": "Migrate to <FormInput>"
+  },
+  {
+    "Location": "procurement/requisitions/new/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "procurement/requisitions/[id]/RequisitionActions.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "procurement/requisitions/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in procurement/requisitions/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "procurement/(hub)/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in procurement/(hub)/page.tsx or layout"
+  },
+  {
+    "Location": "procurement/(hub)/purchase-orders/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in procurement/(hub)/purchase-orders/page.tsx or layout"
+  },
+  {
+    "Location": "procurement/(hub)/suppliers/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in procurement/(hub)/suppliers/page.tsx or layout"
+  },
+  {
+    "Location": "procurement/(hub)/requisitions/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in procurement/(hub)/requisitions/page.tsx or layout"
+  },
+  {
+    "Location": "procurement/(hub)/receiving/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in procurement/(hub)/receiving/page.tsx or layout"
+  },
+  {
+    "Location": "procurement/receiving/new/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in procurement/receiving/new/page.tsx or layout"
+  },
+  {
+    "Location": "procurement/receiving/new/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <input> tags used instead of canonical <FormInput>",
+    "Severity": "High",
+    "Fix": "Migrate to <FormInput>"
+  },
+  {
+    "Location": "procurement/receiving/new/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "procurement/receiving/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in procurement/receiving/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "locations/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in locations/page.tsx or layout"
+  },
+  {
+    "Location": "locations/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in locations/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "locations/[id]/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Inline status badges duplicate <StatusBadge>",
+    "Severity": "High",
+    "Fix": "Replace inline string badges with canonical <StatusBadge>"
+  },
+  {
+    "Location": "budgets/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in budgets/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "people/(hub)/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in people/(hub)/page.tsx or layout"
+  },
+  {
+    "Location": "people/(hub)/time-off/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in people/(hub)/time-off/page.tsx or layout"
+  },
+  {
+    "Location": "people/(hub)/org-chart/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in people/(hub)/org-chart/page.tsx or layout"
+  },
+  {
+    "Location": "people/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in people/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "portfolio/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in portfolio/page.tsx or layout"
+  },
+  {
+    "Location": "portfolio/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in portfolio/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "files/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in files/page.tsx or layout"
+  },
+  {
+    "Location": "templates/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in templates/page.tsx or layout"
+  },
+  {
+    "Location": "templates/[id]/TemplateEditClient.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "templates/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in templates/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "finance/vendors/new/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in finance/vendors/new/page.tsx or layout"
+  },
+  {
+    "Location": "finance/vendors/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in finance/vendors/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "finance/purchase-orders/new/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in finance/purchase-orders/new/page.tsx or layout"
+  },
+  {
+    "Location": "finance/purchase-orders/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in finance/purchase-orders/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "finance/(hub)/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in finance/(hub)/page.tsx or layout"
+  },
+  {
+    "Location": "finance/(hub)/vendors/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in finance/(hub)/vendors/page.tsx or layout"
+  },
+  {
+    "Location": "finance/(hub)/purchase-orders/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in finance/(hub)/purchase-orders/page.tsx or layout"
+  },
+  {
+    "Location": "finance/(hub)/invoices/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in finance/(hub)/invoices/page.tsx or layout"
+  },
+  {
+    "Location": "finance/(hub)/invoices/credit-notes/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in finance/(hub)/invoices/credit-notes/page.tsx or layout"
+  },
+  {
+    "Location": "finance/(hub)/invoices/recurring/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in finance/(hub)/invoices/recurring/page.tsx or layout"
+  },
+  {
+    "Location": "finance/(hub)/invoices/recurring/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "finance/(hub)/profitability/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in finance/(hub)/profitability/page.tsx or layout"
+  },
+  {
+    "Location": "finance/(hub)/budgets/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in finance/(hub)/budgets/page.tsx or layout"
+  },
+  {
+    "Location": "finance/(hub)/revenue-recognition/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in finance/(hub)/revenue-recognition/page.tsx or layout"
+  },
+  {
+    "Location": "automations/(hub)/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in automations/(hub)/page.tsx or layout"
+  },
+  {
+    "Location": "automations/(hub)/templates/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in automations/(hub)/templates/page.tsx or layout"
+  },
+  {
+    "Location": "automations/(hub)/runs/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in automations/(hub)/runs/page.tsx or layout"
+  },
+  {
+    "Location": "automations/new/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in automations/new/page.tsx or layout"
+  },
+  {
+    "Location": "automations/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in automations/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "automations/[id]/edit/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in automations/[id]/edit/page.tsx or layout"
+  },
+  {
+    "Location": "automations/[id]/edit/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "campaigns/(hub)/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in campaigns/(hub)/page.tsx or layout"
+  },
+  {
+    "Location": "campaigns/(hub)/audiences/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in campaigns/(hub)/audiences/page.tsx or layout"
+  },
+  {
+    "Location": "campaigns/(hub)/drafts/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in campaigns/(hub)/drafts/page.tsx or layout"
+  },
+  {
+    "Location": "campaigns/(hub)/scheduled/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in campaigns/(hub)/scheduled/page.tsx or layout"
+  },
+  {
+    "Location": "campaigns/(hub)/analytics/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in campaigns/(hub)/analytics/page.tsx or layout"
+  },
+  {
+    "Location": "campaigns/new/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in campaigns/new/page.tsx or layout"
+  },
+  {
+    "Location": "events/(hub)/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in events/(hub)/page.tsx or layout"
+  },
+  {
+    "Location": "events/(hub)/activations/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in events/(hub)/activations/page.tsx or layout"
+  },
+  {
+    "Location": "events/(hub)/calendar/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in events/(hub)/calendar/page.tsx or layout"
+  },
+  {
+    "Location": "events/(hub)/calendar/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "events/(hub)/locations/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in events/(hub)/locations/page.tsx or layout"
+  },
+  {
+    "Location": "events/(hub)/daily-reports/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in events/(hub)/daily-reports/page.tsx or layout"
+  },
+  {
+    "Location": "events/(hub)/punch-list/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in events/(hub)/punch-list/page.tsx or layout"
+  },
+  {
+    "Location": "events/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in events/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "assets/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in assets/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "equipment/(hub)/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in equipment/(hub)/page.tsx or layout"
+  },
+  {
+    "Location": "equipment/(hub)/inventory/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in equipment/(hub)/inventory/page.tsx or layout"
+  },
+  {
+    "Location": "equipment/(hub)/check-in-out/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in equipment/(hub)/check-in-out/page.tsx or layout"
+  },
+  {
+    "Location": "equipment/(hub)/maintenance/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in equipment/(hub)/maintenance/page.tsx or layout"
+  },
+  {
+    "Location": "equipment/(hub)/assets/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in equipment/(hub)/assets/page.tsx or layout"
+  },
+  {
+    "Location": "equipment/(hub)/bundles/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in equipment/(hub)/bundles/page.tsx or layout"
+  },
+  {
+    "Location": "equipment/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in equipment/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "logistics/shipments/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in logistics/shipments/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "logistics/shipments/[id]/bol/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in logistics/shipments/[id]/bol/page.tsx or layout"
+  },
+  {
+    "Location": "logistics/(hub)/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in logistics/(hub)/page.tsx or layout"
+  },
+  {
+    "Location": "logistics/(hub)/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Inline stat cards duplicate <MetricCard>",
+    "Severity": "High",
+    "Fix": "Replace with <MetricCard>"
+  },
+  {
+    "Location": "logistics/(hub)/transfers/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in logistics/(hub)/transfers/page.tsx or layout"
+  },
+  {
+    "Location": "logistics/(hub)/shipping/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in logistics/(hub)/shipping/page.tsx or layout"
+  },
+  {
+    "Location": "logistics/(hub)/scan/ScanPageClient.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "logistics/(hub)/scan/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in logistics/(hub)/scan/page.tsx or layout"
+  },
+  {
+    "Location": "logistics/(hub)/receiving/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in logistics/(hub)/receiving/page.tsx or layout"
+  },
+  {
+    "Location": "logistics/(hub)/goods-receipts/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in logistics/(hub)/goods-receipts/page.tsx or layout"
+  },
+  {
+    "Location": "logistics/(hub)/counts/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in logistics/(hub)/counts/page.tsx or layout"
+  },
+  {
+    "Location": "logistics/(hub)/packing/PackingClient.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "logistics/(hub)/packing/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in logistics/(hub)/packing/page.tsx or layout"
+  },
+  {
+    "Location": "logistics/transfers/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in logistics/transfers/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "logistics/counts/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in logistics/counts/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "proposals/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in proposals/page.tsx or layout"
+  },
+  {
+    "Location": "proposals/new/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in proposals/new/page.tsx or layout"
+  },
+  {
+    "Location": "proposals/[id]/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in proposals/[id]/page.tsx or layout"
+  },
+  {
+    "Location": "proposals/[id]/page.tsx",
+    "Gap type": "3NF/SSOT violation (Security Data Leak)",
+    "What breaks": "Cross-tenant data exposure",
+    "Severity": "Critical",
+    "Fix": "Add explicit organization_id matching filter"
+  },
+  {
+    "Location": "proposals/[id]/scenarios/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in proposals/[id]/scenarios/page.tsx or layout"
+  },
+  {
+    "Location": "proposals/[id]/export/_ExportHubContent.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "proposals/[id]/export/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in proposals/[id]/export/page.tsx or layout"
+  },
+  {
+    "Location": "proposals/[id]/builder/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in proposals/[id]/builder/page.tsx or layout"
+  },
+  {
+    "Location": "proposals/[id]/builder/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <button> tags used instead of canonical <Button>",
+    "Severity": "Medium",
+    "Fix": "Migrate to <Button>"
+  },
+  {
+    "Location": "reports/(hub)/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in reports/(hub)/page.tsx or layout"
+  },
+  {
+    "Location": "reports/(hub)/forecast/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in reports/(hub)/forecast/page.tsx or layout"
+  },
+  {
+    "Location": "reports/(hub)/pipeline/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in reports/(hub)/pipeline/page.tsx or layout"
+  },
+  {
+    "Location": "reports/(hub)/utilization/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in reports/(hub)/utilization/page.tsx or layout"
+  },
+  {
+    "Location": "reports/(hub)/revenue/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in reports/(hub)/revenue/page.tsx or layout"
+  },
+  {
+    "Location": "reports/(hub)/wip/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in reports/(hub)/wip/page.tsx or layout"
+  },
+  {
+    "Location": "reports/(hub)/builder/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in reports/(hub)/builder/page.tsx or layout"
+  },
+  {
+    "Location": "reports/(hub)/builder/page.tsx",
+    "Gap type": "UI normalization gap",
+    "What breaks": "Raw <input> tags used instead of canonical <FormInput>",
+    "Severity": "High",
+    "Fix": "Migrate to <FormInput>"
+  },
+  {
+    "Location": "reports/(hub)/funnel/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in reports/(hub)/funnel/page.tsx or layout"
+  },
+  {
+    "Location": "reports/(hub)/win-rate/page.tsx",
+    "Gap type": "Missing workflow (Access Control)",
+    "What breaks": "Module lacks RBAC. Unauthorized users can access features.",
+    "Severity": "Critical",
+    "Fix": "Wrap with <RoleGate> in reports/(hub)/win-rate/page.tsx or layout"
+  }
+]

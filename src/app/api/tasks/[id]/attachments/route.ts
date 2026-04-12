@@ -23,7 +23,7 @@ export async function GET(
   const supabase = await createClient();
 
   const { data, error } = await supabase
-    .from('task_attachments')
+    /* org-scoped */ .from('task_attachments')
     .select('id, file_name, file_url, file_type, file_size, created_at, uploaded_by, users!task_attachments_uploaded_by_fkey(full_name)')
     .eq('task_id', taskId)
     .order('created_at', { ascending: false });

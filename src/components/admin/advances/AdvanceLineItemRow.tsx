@@ -4,6 +4,7 @@ import StatusBadge from '@/components/ui/StatusBadge';
 import { FULFILLMENT_STATUS_COLORS, ADVANCE_PRIORITY_COLORS } from './AdvanceStatusBadge';
 import { formatCents, formatUnitOfMeasure } from '@/lib/advances/utils';
 import type { AdvanceLineItem } from '@/types/database';
+import Button from '@/components/ui/Button';
 
 interface AdvanceLineItemRowProps {
   item: AdvanceLineItem;
@@ -35,9 +36,9 @@ export default function AdvanceLineItemRow({ item, showApproval, onApprove, onRe
         <td className="px-4 py-3">
           {item.approval_status === 'pending' && onApprove && onReject ? (
             <div className="flex gap-1">
-              <button onClick={() => onApprove(item.id)} className="text-xs text-green-600 hover:text-green-700 font-medium">Approve</button>
+              <Button onClick={() => onApprove(item.id)} className="text-xs text-green-600 hover:text-green-700 font-medium">Approve</Button>
               <span className="text-text-muted">·</span>
-              <button onClick={() => onReject(item.id)} className="text-xs text-red-600 hover:text-red-700 font-medium">Reject</button>
+              <Button onClick={() => onReject(item.id)} className="text-xs text-red-600 hover:text-red-700 font-medium">Reject</Button>
             </div>
           ) : (
             <StatusBadge status={item.approval_status ?? 'pending'} colorMap={{ pending: 'bg-amber-50 text-amber-700', approved: 'bg-green-50 text-green-700', rejected: 'bg-red-50 text-red-700', modified: 'bg-blue-50 text-blue-700' }} />

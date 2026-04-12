@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Alert from '@/components/ui/Alert';
+import Button from '@/components/ui/Button';
 
 interface Document {
   id: string;
@@ -97,13 +98,13 @@ export default function OnboardingChecklist({ userId, documents }: OnboardingChe
                 <p className="text-xs text-text-muted">{doc.type} &mdash; {config.label}</p>
               </div>
               {(doc.status === 'pending' || doc.status === 'rejected') && (
-                <button
+                <Button
                   onClick={() => triggerFileInput(doc.id)}
                   disabled={uploading === doc.id}
                   className="px-3 py-1 text-xs rounded-lg bg-bg-secondary text-foreground hover:bg-bg-tertiary disabled:opacity-50"
                 >
                   {uploading === doc.id ? 'Uploading...' : 'Upload'}
-                </button>
+                </Button>
               )}
               {doc.file_url && doc.status !== 'pending' && (
                 <a

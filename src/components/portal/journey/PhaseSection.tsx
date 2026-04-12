@@ -17,6 +17,8 @@ import type {
 import AddOnSelector from './AddOnSelector';
 import MilestoneGateComponent from './MilestoneGate';
 import { ChevronDown, MessageSquare, ExternalLink, BookOpen } from 'lucide-react';
+import FormInput from '@/components/ui/FormInput';
+import Button from '@/components/ui/Button';
 
 interface PhaseSectionProps {
   phase: Phase;
@@ -178,7 +180,7 @@ export default function PhaseSection({
                           {deliverable.name}
                         </h4>
                         {(deliverable.details as string[] ?? []).length > 0 && (
-                          <button
+                          <Button
                             type="button"
                             onClick={() => setExpandedDeliverable(
                               expandedDeliverable === deliverable.id ? null : deliverable.id,
@@ -189,7 +191,7 @@ export default function PhaseSection({
                               size={14}
                               className={`transition-transform ${expandedDeliverable === deliverable.id ? 'rotate-180' : ''}`}
                             />
-                          </button>
+                          </Button>
                         )}
                       </div>
                       {deliverable.description && (
@@ -294,17 +296,17 @@ export default function PhaseSection({
         {/* Inline comment */}
         <div className="mt-8 pt-6 border-t border-border/50">
           {!showCommentInput ? (
-            <button
+            <Button
               type="button"
               onClick={() => setShowCommentInput(true)}
               className="flex items-center gap-2 text-xs text-text-muted hover:text-text-secondary transition-colors"
             >
               <MessageSquare size={13} />
               Add a comment on this phase
-            </button>
+            </Button>
           ) : (
             <div className="flex gap-3">
-              <input
+              <FormInput
                 type="text"
                 value={commentText}
                 onChange={(e) => setCommentText(e.target.value)}
@@ -312,7 +314,7 @@ export default function PhaseSection({
                 className="flex-1 rounded-lg border border-border bg-bg-secondary/30 px-3 py-2 text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-1 focus:ring-org-primary/30"
                 autoFocus
               />
-              <button
+              <Button
                 type="button"
                 disabled
                 className="rounded-lg px-4 py-2 text-xs font-medium text-white opacity-50 cursor-not-allowed"
@@ -320,8 +322,8 @@ export default function PhaseSection({
                 title="Client commenting coming soon"
               >
                 Send
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
                 onClick={() => {
                   setCommentText('');
@@ -330,7 +332,7 @@ export default function PhaseSection({
                 className="text-xs text-text-muted hover:text-text-secondary transition-colors"
               >
                 Cancel
-              </button>
+              </Button>
             </div>
           )}
         </div>

@@ -10,6 +10,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import Button from '@/components/ui/Button';
 import { PLATFORM_MAP, CATEGORY_FIELD_MAPPINGS } from '@/lib/integrations/platforms';
+import FormSelect from '@/components/ui/FormSelect';
 
 type ConfigTab = 'settings' | 'mappings' | 'sync_log';
 
@@ -132,7 +133,7 @@ export default function IntegrationConfigPage({
             Disconnect
           </Button>
         ) : (
-          <button
+          <Button
             onClick={async () => {
               const res = await fetch(`/api/integrations/${platform}/connect`, { method: 'POST' });
               const data = await res.json();
@@ -142,7 +143,7 @@ export default function IntegrationConfigPage({
             className="rounded-lg bg-foreground px-4 py-1.5 text-xs font-medium text-white hover:opacity-90 transition-opacity disabled:opacity-50"
           >
             Connect
-          </button>
+          </Button>
         )}
       </div>
 
@@ -156,7 +157,7 @@ export default function IntegrationConfigPage({
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className="block text-xs font-medium text-text-secondary mb-1">Sync Direction</label>
-              <select
+              <FormSelect
                 value={syncDirection}
                 onChange={(e) => setSyncDirection(e.target.value)}
                 className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
@@ -164,11 +165,11 @@ export default function IntegrationConfigPage({
                 <option value="bidirectional">Bidirectional</option>
                 <option value="inbound">Inbound Only</option>
                 <option value="outbound">Outbound Only</option>
-              </select>
+              </FormSelect>
             </div>
             <div>
               <label className="block text-xs font-medium text-text-secondary mb-1">Sync Frequency</label>
-              <select
+              <FormSelect
                 value={syncFrequency}
                 onChange={(e) => setSyncFrequency(e.target.value)}
                 className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
@@ -177,17 +178,17 @@ export default function IntegrationConfigPage({
                 <option value="hourly">Every hour</option>
                 <option value="daily">Daily</option>
                 <option value="manual">Manual only</option>
-              </select>
+              </FormSelect>
             </div>
           </div>
           <div className="flex justify-end pt-2">
-            <button
+            <Button
               onClick={handleSaveSettings}
               disabled={saving}
               className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity disabled:opacity-50"
             >
               {saving ? 'Saving...' : 'Save Settings'}
-            </button>
+            </Button>
           </div>
         </div>
       )}

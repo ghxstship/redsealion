@@ -1,3 +1,4 @@
+import FormInput from '@/components/ui/FormInput';
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
@@ -222,7 +223,7 @@ export default function PipelineSettingsPage() {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 {editingId === pipeline.id ? (
-                  <input
+                  <FormInput
                     type="text"
                     value={pipeline.name}
                     onChange={(e) => updatePipeline(pipeline.id, { name: e.target.value })}
@@ -255,18 +256,18 @@ export default function PipelineSettingsPage() {
                 >
                   {editingId === pipeline.id ? (
                     <>
-                      <input
+                      <FormInput
                         type="text"
                         value={stage}
                         onChange={(e) => updateStage(pipeline.id, index, e.target.value)}
                         className="w-28 rounded-md border border-border bg-background px-2 py-0.5 text-xs text-foreground"
                       />
-                      <button
+                      <Button
                         onClick={() => removeStage(pipeline.id, index)}
                         className="text-xs text-text-muted hover:text-red-600 ml-1"
                       >
                         x
-                      </button>
+                      </Button>
                     </>
                   ) : (
                     <span className="text-xs font-medium text-text-secondary">{stage}</span>

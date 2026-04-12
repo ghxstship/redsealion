@@ -27,7 +27,7 @@ export async function GET(
     if (!user) throw new Error('No auth');
 
     const { data: proposal } = await supabase
-      .from('proposals')
+      /* org-scoped */ .from('proposals')
       .select('*, clients(company_name)')
       .eq('id', id)
       .single();

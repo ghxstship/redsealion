@@ -100,7 +100,7 @@ export default function ProfileSettingsPage() {
               <Upload className="mx-auto h-8 w-8 text-text-muted mb-2" />
               <p className="text-sm text-text-secondary">
                 Drop an image here or{' '}
-                <button className="text-foreground font-medium underline underline-offset-2">browse</button>
+                <Button className="text-foreground font-medium underline underline-offset-2">browse</Button>
               </p>
               <p className="text-xs text-text-muted mt-1">PNG, JPG up to 2 MB</p>
             </div>

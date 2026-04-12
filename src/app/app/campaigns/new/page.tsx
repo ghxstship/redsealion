@@ -7,6 +7,7 @@ import Alert from '@/components/ui/Alert';
 import Button from '@/components/ui/Button';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
+import FormTextarea from '@/components/ui/FormTextarea';
 
 export default function NewCampaignPage() {
   const router = useRouter();
@@ -86,7 +87,7 @@ export default function NewCampaignPage() {
 
         <div className="rounded-xl border border-border bg-background p-6 space-y-4">
           <h2 className="text-sm font-semibold text-foreground">Email Body</h2>
-          <textarea
+          <FormTextarea
             name="body_html"
             value={form.body_html}
             onChange={handleChange}

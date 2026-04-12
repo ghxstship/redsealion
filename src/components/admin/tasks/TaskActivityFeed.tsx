@@ -13,6 +13,7 @@ import {
   CheckCircle2, AlertCircle,
 } from 'lucide-react';
 import EmptyState from '@/components/ui/EmptyState';
+import Button from '@/components/ui/Button';
 
 interface ActivityEntry {
   id: string;
@@ -114,14 +115,14 @@ export default function TaskActivityFeed({ taskId }: TaskActivityFeedProps) {
             ))}
 
             {entries.length > 5 && (
-              <button
+              <Button
                 onClick={() => setExpanded(!expanded)}
                 className="relative z-10 text-xs font-medium text-text-muted hover:text-foreground transition-colors pl-7 py-1"
               >
                 {expanded
                   ? 'Show less'
                   : `Show ${entries.length - 5} more events`}
-              </button>
+              </Button>
             )}
           </div>
         )}

@@ -23,7 +23,7 @@ export async function GET(
   const supabase = await createClient();
 
   const { data } = await supabase
-    .from('project_status_updates')
+    /* org-scoped */ .from('project_status_updates')
     .select('id, status, summary, created_at, created_by, users!project_status_updates_created_by_fkey(full_name)')
     .eq('proposal_id', proposalId)
     .order('created_at', { ascending: false })

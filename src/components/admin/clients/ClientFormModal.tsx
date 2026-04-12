@@ -7,6 +7,7 @@ import FormInput from '@/components/ui/FormInput';
 import FormSelect from '@/components/ui/FormSelect';
 import Button from '@/components/ui/Button';
 import Alert from '@/components/ui/Alert';
+import FormTextarea from '@/components/ui/FormTextarea';
 
 const INDUSTRY_OPTIONS = [
   'Technology',
@@ -141,7 +142,7 @@ export default function ClientFormModal({ open, onClose, onCreated }: ClientForm
         {showMore && (
           <div>
             <FormLabel>Notes</FormLabel>
-            <textarea
+            <FormTextarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={3}

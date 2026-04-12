@@ -29,6 +29,7 @@ import { X, ChevronDown, ChevronUp, Palette, Image, FileText, BookOpen } from 'l
 import PhaseNarrativeEditor from './PhaseNarrativeEditor';
 
 export type { DeliverableData, AddonData, MilestoneRequirementData, PhaseData } from './types';
+import Button from '@/components/ui/Button';
 
 interface PhaseEditorStepProps {
   phase: PhaseData;
@@ -55,7 +56,7 @@ function Section({
   const [open, setOpen] = useState(defaultOpen);
   return (
     <div className="border border-border rounded-lg overflow-hidden">
-      <button
+      <Button
         type="button"
         onClick={() => setOpen(!open)}
         className="flex items-center justify-between w-full px-4 py-3 bg-bg-secondary/50 hover:bg-bg-secondary transition-colors text-left"
@@ -70,7 +71,7 @@ function Section({
           )}
         </span>
         {open ? <ChevronUp size={14} className="text-text-muted" /> : <ChevronDown size={14} className="text-text-muted" />}
-      </button>
+      </Button>
       {open && <div className="px-4 py-4 space-y-3">{children}</div>}
     </div>
   );
@@ -296,16 +297,16 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
                 onChange={(e) => updateCreativeRef(index, { description: e.target.value })}
                 placeholder="Description — e.g., The key visual from the brand's current campaign that sets the tone" />
             </div>
-            <button type="button" onClick={() => removeCreativeRef(index)} className="mt-1 p-0.5 text-text-muted hover:text-error">
+            <Button type="button" onClick={() => removeCreativeRef(index)} className="mt-1 p-0.5 text-text-muted hover:text-error">
               <X size={14} />
-            </button>
+            </Button>
           </div>
         ))}
 
-        <button type="button" onClick={addCreativeRef} className="inline-flex items-center gap-1.5 text-xs font-medium text-blue-600 hover:text-blue-700 transition-colors">
+        <Button type="button" onClick={addCreativeRef} className="inline-flex items-center gap-1.5 text-xs font-medium text-blue-600 hover:text-blue-700 transition-colors">
           <IconPlus size={14} />
           Add Creative Reference
-        </button>
+        </Button>
       </Section>
 
       {/* Portfolio / Precedent Work */}
@@ -333,16 +334,16 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
                 onChange={(e) => updatePortfolioLink(index, { description: e.target.value })}
                 placeholder="Description — e.g., Ornate scenic concept with layered environmental storytelling" />
             </div>
-            <button type="button" onClick={() => removePortfolioLink(index)} className="mt-1 p-0.5 text-text-muted hover:text-error">
+            <Button type="button" onClick={() => removePortfolioLink(index)} className="mt-1 p-0.5 text-text-muted hover:text-error">
               <X size={14} />
-            </button>
+            </Button>
           </div>
         ))}
 
-        <button type="button" onClick={addPortfolioLink} className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-600 hover:text-amber-700 transition-colors">
+        <Button type="button" onClick={addPortfolioLink} className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-600 hover:text-amber-700 transition-colors">
           <IconPlus size={14} />
           Add Portfolio Reference
-        </button>
+        </Button>
       </Section>
 
       {/* Deliverables Table */}
@@ -370,14 +371,14 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
                   <>
                     <tr key={d.id} className="hover:bg-bg-secondary/50">
                       <td className="px-3 py-2">
-                        <button
+                        <Button
                           type="button"
                           onClick={() => setExpandedDeliverable(expandedDeliverable === d.id ? null : d.id)}
                           className="p-0.5 text-text-muted hover:text-foreground"
                           title="Toggle details"
                         >
                           {expandedDeliverable === d.id ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
-                        </button>
+                        </Button>
                       </td>
                       <td className="px-3 py-2">
                         <FormInput
@@ -433,13 +434,13 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
                         {formatCurrency(d.totalCost)}
                       </td>
                       <td className="px-3 py-2">
-                        <button
+                        <Button
                           type="button"
                           onClick={() => removeDeliverable(index)}
                           className="p-0.5 text-text-muted hover:text-error"
                         >
                           <X size={14} />
-                        </button>
+                        </Button>
                       </td>
                     </tr>
                     {/* Expandable details sub-rows */}
@@ -456,19 +457,19 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
                                   value={detail}
                                   onChange={(e) => updateDetail(index, dIdx, e.target.value)}
                                   placeholder="Detail / specification" />
-                                <button type="button" onClick={() => removeDetail(index, dIdx)} className="p-0.5 text-text-muted hover:text-error">
+                                <Button type="button" onClick={() => removeDetail(index, dIdx)} className="p-0.5 text-text-muted hover:text-error">
                                   <X size={12} />
-                                </button>
+                                </Button>
                               </div>
                             ))}
-                            <button
+                            <Button
                               type="button"
                               onClick={() => addDetail(index)}
                               className="inline-flex items-center gap-1 text-[11px] font-medium text-text-secondary hover:text-org-primary transition-colors"
                             >
                               <IconPlus size={12} />
                               Add Detail
-                            </button>
+                            </Button>
                           </div>
                         </td>
                       </tr>
@@ -491,14 +492,14 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
           </div>
         )}
 
-        <button
+        <Button
           type="button"
           onClick={addDeliverable}
           className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-text-secondary hover:text-org-primary transition-colors"
         >
           <IconPlus size={14} />
           Add Deliverable
-        </button>
+        </Button>
       </div>
 
       {/* Add-ons Table */}
@@ -584,13 +585,13 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
                         placeholder="Group" />
                     </td>
                     <td className="px-3 py-2">
-                      <button
+                      <Button
                         type="button"
                         onClick={() => removeAddon(index)}
                         className="p-0.5 text-text-muted hover:text-error"
                       >
                         <X size={14} />
-                      </button>
+                      </Button>
                     </td>
                   </tr>
                 ))}
@@ -599,14 +600,14 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
           </div>
         )}
 
-        <button
+        <Button
           type="button"
           onClick={addAddon}
           className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-text-secondary hover:text-addon transition-colors"
         >
           <IconPlus size={14} />
           Add Add-on
-        </button>
+        </Button>
       </div>
 
       {/* Contractual Framework / Terms Sections */}
@@ -628,16 +629,16 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
               value={section}
               onChange={(e) => updateTermsSection(index, e.target.value)}
               placeholder="e.g., 2.1 (Creative Design), 9.3 (Artwork Approval)" />
-            <button type="button" onClick={() => removeTermsSection(index)} className="p-0.5 text-text-muted hover:text-error">
+            <Button type="button" onClick={() => removeTermsSection(index)} className="p-0.5 text-text-muted hover:text-error">
               <X size={12} />
-            </button>
+            </Button>
           </div>
         ))}
 
-        <button type="button" onClick={addTermsSection} className="inline-flex items-center gap-1.5 text-xs font-medium text-purple-600 hover:text-purple-700 transition-colors">
+        <Button type="button" onClick={addTermsSection} className="inline-flex items-center gap-1.5 text-xs font-medium text-purple-600 hover:text-purple-700 transition-colors">
           <IconPlus size={14} />
           Add Terms Reference
-        </button>
+        </Button>
       </Section>
 
       {/* Milestone Gate */}
@@ -692,26 +693,26 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
                       </option>
                     ))}
                   </FormSelect>
-                  <button
+                  <Button
                     type="button"
                     onClick={() => removeRequirement(index)}
                     className="p-0.5 text-text-muted hover:text-error"
                   >
                     <X size={14} />
-                  </button>
+                  </Button>
                 </div>
               ))}
             </div>
           )}
 
-          <button
+          <Button
             type="button"
             onClick={addRequirement}
             className="inline-flex items-center gap-1.5 text-xs font-medium text-milestone hover:text-milestone/80 transition-colors"
           >
             <IconPlus size={14} />
             Add Requirement
-          </button>
+          </Button>
         </div>
       </div>
 

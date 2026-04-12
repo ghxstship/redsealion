@@ -4,6 +4,7 @@ import FormSelect from '@/components/ui/FormSelect';
 import { IconPlus } from '@/components/ui/Icons';
 import { X } from 'lucide-react';
 import EmptyState from '@/components/ui/EmptyState';
+import Button from '@/components/ui/Button';
 
 export interface TeamAssignmentData {
   id: string;
@@ -143,14 +144,14 @@ export default function TeamStep({ assignments, onChange }: TeamStepProps) {
                     </FormSelect>
                   </td>
                   <td className="py-3">
-                    <button
+                    <Button
                       type="button"
                       onClick={() => removeAssignment(index)}
                       className="p-1 text-text-muted hover:text-error"
                       title="Remove"
                     >
                       <X size={16} />
-                    </button>
+                    </Button>
                   </td>
                 </tr>
               ))}
@@ -159,14 +160,14 @@ export default function TeamStep({ assignments, onChange }: TeamStepProps) {
         </div>
       )}
 
-      <button
+      <Button
         type="button"
         onClick={addAssignment}
         className="inline-flex items-center gap-2 rounded-lg border border-dashed border-border px-4 py-2 text-sm font-medium text-text-secondary hover:border-org-primary hover:text-org-primary transition-colors"
       >
         <IconPlus size={16} />
         Add Assignment
-      </button>
+      </Button>
     </div>
   );
 }

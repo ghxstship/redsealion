@@ -13,6 +13,7 @@ import { fmTransition } from '@/lib/motion';
 import FormInput from '@/components/ui/FormInput';
 import { X, Search, FileText, Package, Sparkles, ChevronRight } from 'lucide-react';
 import type { DeliverableData, AddonData } from './types';
+import Button from '@/components/ui/Button';
 
 /* ─── Types ──────────────────────────────────────────────── */
 
@@ -195,13 +196,13 @@ export default function ContentLibrary({
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-border">
               <h2 className="text-sm font-semibold text-foreground">Content Library</h2>
-              <button
+              <Button
                 type="button"
                 onClick={onClose}
                 className="p-1 text-text-muted hover:text-foreground transition-colors"
               >
                 <X size={16} />
-              </button>
+              </Button>
             </div>
 
             {/* Search */}
@@ -221,7 +222,7 @@ export default function ContentLibrary({
             {/* Tabs */}
             <div className="flex border-b border-border">
               {tabs.map((t) => (
-                <button
+                <Button
                   key={t.key}
                   type="button"
                   onClick={() => setTab(t.key)}
@@ -233,7 +234,7 @@ export default function ContentLibrary({
                 >
                   {t.icon}
                   {t.label}
-                </button>
+                </Button>
               ))}
             </div>
 
@@ -242,7 +243,7 @@ export default function ContentLibrary({
               {tab === 'narratives' && (
                 <div className="space-y-3">
                   {filteredNarratives.map((snippet) => (
-                    <button
+                    <Button
                       key={snippet.id}
                       type="button"
                       onClick={() => {
@@ -261,7 +262,7 @@ export default function ContentLibrary({
                       <p className="text-xs text-text-secondary line-clamp-3 leading-relaxed">
                         {snippet.content}
                       </p>
-                    </button>
+                    </Button>
                   ))}
 
                   {filteredNarratives.length === 0 && (

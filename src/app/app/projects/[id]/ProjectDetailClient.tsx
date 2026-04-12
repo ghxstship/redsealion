@@ -115,7 +115,7 @@ export default function ProjectDetailClient({ project }: ProjectDetailProps) {
         {TABS.map((tab) => {
           const Icon = tab.icon;
           return (
-            <button
+            <Button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
               className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
@@ -128,7 +128,7 @@ export default function ProjectDetailClient({ project }: ProjectDetailProps) {
               {tab.label}
               {tab.key === 'members' && <span className="ml-1 text-[10px] opacity-60">{project.members.length}</span>}
               {tab.key === 'portals' && <span className="ml-1 text-[10px] opacity-60">{project.portals.filter(p => p.is_published).length}</span>}
-            </button>
+            </Button>
           );
         })}
       </div>

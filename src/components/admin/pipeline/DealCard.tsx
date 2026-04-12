@@ -8,6 +8,7 @@ import { formatCurrency } from '@/lib/utils';
 import type { DealStage } from '@/types/database';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import Tooltip from '@/components/ui/Tooltip';
+import Button from '@/components/ui/Button';
 
 interface DealCardProps {
   id: string;
@@ -114,13 +115,13 @@ export default function DealCard({
           </div>
         )}
       </Link>
-      <button
+      <Button
         onClick={(e) => { e.stopPropagation(); setShowDelete(true); }}
         className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity rounded p-1 text-text-muted hover:text-red-600 hover:bg-red-50"
         title="Delete deal"
       >
         <Trash2 size={12} />
-      </button>
+      </Button>
     </div>
   );
 

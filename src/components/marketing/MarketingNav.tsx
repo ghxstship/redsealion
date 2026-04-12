@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import Button from '@/components/ui/Button';
 
 /**
  * MarketingNav — Shared navigation bar used by both the root landing page
@@ -52,7 +53,7 @@ export default function MarketingNav() {
           Get Started
         </Link>
         {/* Mobile hamburger */}
-        <button
+        <Button
           type="button"
           onClick={() => setMobileOpen(!mobileOpen)}
           className="inline-flex items-center justify-center rounded-md p-2 text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 sm:hidden"
@@ -68,7 +69,7 @@ export default function MarketingNav() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
             </svg>
           )}
-        </button>
+        </Button>
       </div>
 
       {/* Mobile menu overlay */}

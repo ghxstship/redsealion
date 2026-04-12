@@ -1,3 +1,4 @@
+import FormInput from '@/components/ui/FormInput';
 'use client';
 
 import { useState } from 'react';
@@ -45,7 +46,7 @@ export default function AutomationsConfigPage() {
 
   function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
     return (
-      <button
+      <Button
         type="button"
         onClick={() => onChange(!checked)}
         className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors ${
@@ -57,7 +58,7 @@ export default function AutomationsConfigPage() {
             checked ? 'translate-x-[18px]' : 'translate-x-[3px]'
           }`}
         />
-      </button>
+      </Button>
     );
   }
 
@@ -78,7 +79,7 @@ export default function AutomationsConfigPage() {
             <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
               Max Runs Per Hour
             </label>
-            <input
+            <FormInput
               type="number"
               value={maxRunsPerHour}
               onChange={(e) => setMaxRunsPerHour(Number(e.target.value))}
@@ -89,7 +90,7 @@ export default function AutomationsConfigPage() {
             <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
               Max Runs Per Day
             </label>
-            <input
+            <FormInput
               type="number"
               value={maxRunsPerDay}
               onChange={(e) => setMaxRunsPerDay(Number(e.target.value))}
@@ -100,7 +101,7 @@ export default function AutomationsConfigPage() {
             <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
               Max Retry Attempts
             </label>
-            <input
+            <FormInput
               type="number"
               value={maxRetries}
               onChange={(e) => setMaxRetries(Number(e.target.value))}
@@ -111,7 +112,7 @@ export default function AutomationsConfigPage() {
             <label className="block text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5">
               Retry Delay (seconds)
             </label>
-            <input
+            <FormInput
               type="number"
               value={retryDelay}
               onChange={(e) => setRetryDelay(Number(e.target.value))}

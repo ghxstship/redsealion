@@ -1,3 +1,4 @@
+import FormInput from '@/components/ui/FormInput';
 'use client';
 
 import { useState, useRef } from 'react';
@@ -10,6 +11,8 @@ import Card from '@/components/ui/Card';
 import Alert from '@/components/ui/Alert';
 import { createClient } from '@/lib/supabase/client';
 import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
+import FormSelect from '@/components/ui/FormSelect';
+import FormTextarea from '@/components/ui/FormTextarea';
 
 const FREQUENCY_OPTIONS = [
   { value: '', label: 'No schedule (manual only)' },
@@ -143,7 +146,7 @@ export default function ReportBuilderPage() {
             <label className="block text-sm font-medium text-foreground mb-1">
               Report Name
             </label>
-            <input
+            <FormInput
               ref={nameRef}
               type="text"
               placeholder="e.g., Monthly revenue by client"
@@ -154,7 +157,7 @@ export default function ReportBuilderPage() {
             <label className="block text-sm font-medium text-foreground mb-1">
               Description
             </label>
-            <input
+            <FormInput
               ref={descriptionRef}
               type="text"
               placeholder="Brief description of this report"
@@ -180,7 +183,7 @@ export default function ReportBuilderPage() {
             {/* Frequency */}
             <div>
               <label className="block text-xs font-medium text-text-muted mb-1.5">Frequency</label>
-              <select
+              <FormSelect
                 value={frequency}
                 onChange={(e) => setFrequency(e.target.value)}
                 className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
@@ -188,14 +191,14 @@ export default function ReportBuilderPage() {
                 {FREQUENCY_OPTIONS.map((opt) => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
                 ))}
-              </select>
+              </FormSelect>
             </div>
 
             {/* Weekly: day selector */}
             {frequency === 'weekly' && (
               <div>
                 <label className="block text-xs font-medium text-text-muted mb-1.5">Day</label>
-                <select
+                <FormSelect
                   value={day}
                   onChange={(e) => setDay(e.target.value)}
                   className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
@@ -203,7 +206,7 @@ export default function ReportBuilderPage() {
                   {DAY_OPTIONS.map((opt) => (
                     <option key={opt.value} value={opt.value}>{opt.label}</option>
                   ))}
-                </select>
+                </FormSelect>
               </div>
             )}
 
@@ -211,7 +214,7 @@ export default function ReportBuilderPage() {
             {frequency === 'monthly' && (
               <div>
                 <label className="block text-xs font-medium text-text-muted mb-1.5">Day of Month</label>
-                <select
+                <FormSelect
                   value={dayOfMonth}
                   onChange={(e) => setDayOfMonth(parseInt(e.target.value, 10))}
                   className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
@@ -219,7 +222,7 @@ export default function ReportBuilderPage() {
                   {Array.from({ length: 28 }, (_, i) => i + 1).map((d) => (
                     <option key={d} value={d}>{d}</option>
                   ))}
-                </select>
+                </FormSelect>
               </div>
             )}
           </div>
@@ -230,7 +233,7 @@ export default function ReportBuilderPage() {
               <label className="block text-xs font-medium text-text-muted mb-1.5">
                 Recipients (email addresses, comma-separated)
               </label>
-              <textarea
+              <FormTextarea
                 value={recipientsInput}
                 onChange={(e) => setRecipientsInput(e.target.value)}
                 placeholder="e.g., cfo@company.com, manager@company.com"

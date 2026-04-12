@@ -1,6 +1,7 @@
 'use client';
 
 import { Check } from 'lucide-react';
+import Button from '@/components/ui/Button';
 
 interface BuilderStepIndicatorProps {
   steps: string[];
@@ -23,7 +24,7 @@ export default function BuilderStepIndicator({
 
           return (
             <li key={index} className="flex items-center">
-              <button
+              <Button
                 type="button"
                 onClick={() => onStepClick(index)}
                 className="flex items-center gap-2 group"
@@ -55,7 +56,7 @@ export default function BuilderStepIndicator({
                 >
                   {step}
                 </span>
-              </button>
+              </Button>
 
               {/* Connecting line */}
               {index < steps.length - 1 && (

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import FormLabel from '@/components/ui/FormLabel';
 import { IconAlert } from '@/components/ui/Icons';
+import Button from '@/components/ui/Button';
 
 /**
  * @status DEFERRED - Pending integration in Phase 2
@@ -85,12 +86,12 @@ export default function DepositGate({
       </FormLabel>
 
       <div className="flex justify-end">
-        <button
+        <Button
           disabled={!acknowledged}
           style={{ backgroundColor: 'var(--org-primary, #d97706)' }}
         >
           Approve & Pay Deposit
-        </button>
+        </Button>
       </div>
     </div>
   );

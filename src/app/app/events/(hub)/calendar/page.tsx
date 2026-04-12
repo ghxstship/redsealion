@@ -211,18 +211,18 @@ export default function CalendarPage() {
       {/* Navigation */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <button
+          <Button
             onClick={goToPrev}
             className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
           >
             &larr; Previous
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={goToNext}
             className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
           >
             Next &rarr;
-          </button>
+          </Button>
         </div>
         <h2 className="text-lg font-semibold text-foreground">
           {view === 'month'

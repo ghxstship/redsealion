@@ -1,3 +1,4 @@
+import Button from '@/components/ui/Button';
 'use client';
 
 const integrations = [
@@ -40,7 +41,7 @@ export default function IntegrationsSettingsPage() {
                     <p className="text-sm font-medium text-foreground">{integration.platform}</p>
                     <p className="mt-0.5 text-xs text-text-muted">{integration.description}</p>
                   </div>
-                  <button
+                  <Button
                     className={`relative ml-4 inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors ${
                       integration.enabled ? 'bg-green-500' : 'bg-border'
                     }`}
@@ -50,7 +51,7 @@ export default function IntegrationsSettingsPage() {
                         integration.enabled ? 'translate-x-6' : 'translate-x-1'
                       }`}
                     />
-                  </button>
+                  </Button>
                 </div>
               ))}
             </div>

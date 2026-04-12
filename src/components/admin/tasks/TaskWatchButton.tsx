@@ -8,6 +8,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
+import Button from '@/components/ui/Button';
 
 interface TaskWatchButtonProps {
   taskId: string;
@@ -47,7 +48,7 @@ export default function TaskWatchButton({ taskId }: TaskWatchButtonProps) {
   if (loading) return null;
 
   return (
-    <button
+    <Button
       onClick={toggle}
       className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
         watching
@@ -58,6 +59,6 @@ export default function TaskWatchButton({ taskId }: TaskWatchButtonProps) {
     >
       {watching ? <EyeOff size={13} /> : <Eye size={13} />}
       {watching ? 'Watching' : 'Watch'}
-    </button>
+    </Button>
   );
 }

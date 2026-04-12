@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useRef } from 'react';
+import Button from '@/components/ui/Button';
 
 // ─── Code 128B Barcode Encoder ────────────────────────────────────────────────
 // Code 128B covers ASCII 32–127 which is sufficient for asset IDs and barcodes.
@@ -150,12 +151,12 @@ export default function QRGenerator({ assetId, barcode, name }: QRGeneratorProps
         </p>
       </div>
 
-      <button
+      <Button
         onClick={handlePrint}
         className="mt-3 w-full px-3 py-1.5 text-xs rounded-lg border border-border text-foreground hover:bg-bg-secondary transition-colors"
       >
         Print Label
-      </button>
+      </Button>
     </div>
   );
 }

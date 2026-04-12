@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import FormInput from '@/components/ui/FormInput';
+import Button from '@/components/ui/Button';
 
 function GoogleIcon() {
   return (
@@ -244,7 +245,7 @@ export default function SignupPage() {
         <>
           {/* Social signup */}
           <div className="mb-6 space-y-3">
-            <button
+            <Button
               type="button"
               onClick={handleGoogleSignup}
               disabled={loading}
@@ -252,7 +253,7 @@ export default function SignupPage() {
             >
               <GoogleIcon />
               Continue with Google
-            </button>
+            </Button>
           </div>
 
           {/* Divider */}
@@ -323,14 +324,14 @@ export default function SignupPage() {
                   minLength={8}
                   className="pr-10"
                 />
-                <button
+                <Button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 transition-colors hover:text-zinc-600"
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? <EyeOffIcon /> : <EyeIcon />}
-                </button>
+                </Button>
               </div>
               {/* L-03: Password strength indicator */}
               {password && (
@@ -349,12 +350,12 @@ export default function SignupPage() {
                 </div>
               )}
             </div>
-            <button
+            <Button
               type="submit"
               className="w-full rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
             >
               Continue
-            </button>
+            </Button>
           </form>
         </>
       )}
@@ -398,20 +399,20 @@ export default function SignupPage() {
             </div>
           </div>
           <div className="flex gap-3">
-            <button
+            <Button
               type="button"
               onClick={() => setStep(1)}
               className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50"
             >
               Back
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
               disabled={loading}
               className="w-full rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading ? 'Creating account...' : 'Create account'}
-            </button>
+            </Button>
           </div>
         </form>
       )}

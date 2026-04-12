@@ -1,3 +1,5 @@
+import FormInput from '@/components/ui/FormInput';
+import Button from '@/components/ui/Button';
 'use client';
 
 import { useState } from 'react';
@@ -6,6 +8,8 @@ import Link from 'next/link';
 import PageHeader from '@/components/shared/PageHeader';
 import { TierGate } from '@/components/shared/TierGate';
 import Alert from '@/components/ui/Alert';
+import FormSelect from '@/components/ui/FormSelect';
+import FormTextarea from '@/components/ui/FormTextarea';
 
 export default function NewSupplierPage() {
   const router = useRouter();
@@ -88,7 +92,7 @@ export default function NewSupplierPage() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className="block text-xs font-medium text-text-secondary mb-1">Vendor Name *</label>
-              <input
+              <FormInput
                 type="text"
                 value={form.name}
                 onChange={(e) => update('name', e.target.value)}
@@ -99,7 +103,7 @@ export default function NewSupplierPage() {
             </div>
             <div>
               <label className="block text-xs font-medium text-text-secondary mb-1">Display Name</label>
-              <input
+              <FormInput
                 type="text"
                 value={form.display_name}
                 onChange={(e) => update('display_name', e.target.value)}
@@ -109,7 +113,7 @@ export default function NewSupplierPage() {
             </div>
             <div>
               <label className="block text-xs font-medium text-text-secondary mb-1">Email</label>
-              <input
+              <FormInput
                 type="email"
                 value={form.email}
                 onChange={(e) => update('email', e.target.value)}
@@ -119,7 +123,7 @@ export default function NewSupplierPage() {
             </div>
             <div>
               <label className="block text-xs font-medium text-text-secondary mb-1">Phone</label>
-              <input
+              <FormInput
                 type="tel"
                 value={form.phone}
                 onChange={(e) => update('phone', e.target.value)}
@@ -129,7 +133,7 @@ export default function NewSupplierPage() {
             </div>
             <div>
               <label className="block text-xs font-medium text-text-secondary mb-1">Website</label>
-              <input
+              <FormInput
                 type="url"
                 value={form.website}
                 onChange={(e) => update('website', e.target.value)}
@@ -139,7 +143,7 @@ export default function NewSupplierPage() {
             </div>
             <div>
               <label className="block text-xs font-medium text-text-secondary mb-1">Category</label>
-              <input
+              <FormInput
                 type="text"
                 value={form.category}
                 onChange={(e) => update('category', e.target.value)}
@@ -156,7 +160,7 @@ export default function NewSupplierPage() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className="block text-xs font-medium text-text-secondary mb-1">Payment Terms</label>
-              <select
+              <FormSelect
                 value={form.payment_terms}
                 onChange={(e) => update('payment_terms', e.target.value)}
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground"
@@ -166,11 +170,11 @@ export default function NewSupplierPage() {
                 <option value="net_30">Net 30</option>
                 <option value="net_45">Net 45</option>
                 <option value="net_60">Net 60</option>
-              </select>
+              </FormSelect>
             </div>
             <div>
               <label className="block text-xs font-medium text-text-secondary mb-1">Tax ID / EIN</label>
-              <input
+              <FormInput
                 type="text"
                 value={form.tax_id}
                 onChange={(e) => update('tax_id', e.target.value)}
@@ -183,7 +187,7 @@ export default function NewSupplierPage() {
 
         <div className="rounded-xl border border-border bg-background p-6 space-y-4">
           <label className="block text-xs font-medium text-text-secondary mb-1">Notes</label>
-          <textarea
+          <FormTextarea
             value={form.notes}
             onChange={(e) => update('notes', e.target.value)}
             rows={3}
@@ -199,13 +203,13 @@ export default function NewSupplierPage() {
           >
             Cancel
           </Link>
-          <button
+          <Button
             type="submit"
             disabled={saving}
             className="rounded-lg bg-brand-primary px-6 py-2 text-sm font-medium text-white hover:bg-brand-primary/90 transition-colors disabled:opacity-50"
           >
             {saving ? 'Creating...' : 'Add Supplier'}
-          </button>
+          </Button>
         </div>
       </form>
     </TierGate>

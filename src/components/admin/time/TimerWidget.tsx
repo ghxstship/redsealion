@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import FormSelect from '@/components/ui/FormSelect';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
+import Button from '@/components/ui/Button';
 
 const TIMER_STORAGE_KEY = 'flytedeck_active_timer';
 
@@ -167,7 +168,7 @@ export default function TimerWidget() {
 
         {/* Controls */}
         <div className="mt-6 flex items-center justify-center gap-3">
-          <button
+          <Button
             onClick={handleToggle}
             disabled={saving}
             className={`rounded-lg px-6 py-2.5 text-sm font-medium text-white transition-colors disabled:opacity-50 ${
@@ -177,14 +178,14 @@ export default function TimerWidget() {
             }`}
           >
             {saving ? 'Saving...' : running ? 'Stop' : 'Start'}
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={handleReset}
             disabled={saving}
             className="rounded-lg border border-border bg-background px-6 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary disabled:opacity-50"
           >
             Reset
-          </button>
+          </Button>
         </div>
 
         {/* Description */}
@@ -216,7 +217,7 @@ export default function TimerWidget() {
         {/* Billable toggle */}
         <div className="mt-4 flex items-center justify-between text-left">
           <span className="text-sm font-medium text-foreground">Billable</span>
-          <button
+          <Button
             onClick={() => setBillable(!billable)}
             className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
               billable ? 'bg-foreground' : 'bg-bg-tertiary'
@@ -227,7 +228,7 @@ export default function TimerWidget() {
                 billable ? 'translate-x-6' : 'translate-x-1'
               }`}
             />
-          </button>
+          </Button>
         </div>
       </div>
     </div>

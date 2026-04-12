@@ -10,6 +10,7 @@ import Alert from '@/components/ui/Alert';
 import FormLabel from '@/components/ui/FormLabel';
 import FormSelect from '@/components/ui/FormSelect';
 import FormInput from '@/components/ui/FormInput';
+import FormTextarea from '@/components/ui/FormTextarea';
 
 interface ClientOption { id: string; company_name: string }
 interface EventOption { id: string; name: string }
@@ -179,7 +180,7 @@ export default function NewRentalOrderPage() {
 
         <Card>
           <h2 className="text-sm font-semibold text-foreground mb-5">Notes</h2>
-          <textarea
+          <FormTextarea
             id="rnt-notes"
             rows={3}
             value={notes}

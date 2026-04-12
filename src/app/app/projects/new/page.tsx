@@ -11,6 +11,7 @@ import { PROJECT_STATUSES, PROJECT_VISIBILITY } from '@/lib/constants/project';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
 import Alert from '@/components/ui/Alert';
+import FormTextarea from '@/components/ui/FormTextarea';
 
 export default function NewProjectPage() {
   const router = useRouter();
@@ -78,7 +79,7 @@ export default function NewProjectPage() {
             </div>
             <div>
               <FormLabel>Description</FormLabel>
-              <textarea
+              <FormTextarea
                 name="description"
                 rows={3}
                 placeholder="Brief project description..."

@@ -10,6 +10,7 @@ import FormSelect from '@/components/ui/FormSelect';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
 import Alert from '@/components/ui/Alert';
+import FormTextarea from '@/components/ui/FormTextarea';
 
 export default function NewWorkOrderPage() {
   const router = useRouter();
@@ -76,7 +77,7 @@ export default function NewWorkOrderPage() {
             </div>
             <div>
               <FormLabel>Description</FormLabel>
-              <textarea
+              <FormTextarea
                 name="description"
                 rows={3}
                 placeholder="Work order details and instructions..."

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import FormSelect from '@/components/ui/FormSelect';
 import EmptyState from '@/components/ui/EmptyState';
+import Button from '@/components/ui/Button';
 
 interface Interaction {
   id: string;
@@ -64,9 +65,9 @@ export default function ClientInteractions({
             <option value="email">Emails</option>
             <option value="note">Notes</option>
           </FormSelect>
-          <button className="text-xs font-medium text-text-muted hover:text-foreground transition-colors">
+          <Button className="text-xs font-medium text-text-muted hover:text-foreground transition-colors">
             + Add
-          </button>
+          </Button>
         </div>
       </div>
       <div className="px-6 py-4">

@@ -9,6 +9,7 @@ import { useState, useMemo } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import PortfolioFormModal from './PortfolioFormModal';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
+import Button from '@/components/ui/Button';
 
 /** Canonical portfolio categories — shared between form and filter. */
 export const PORTFOLIO_CATEGORIES = [
@@ -75,7 +76,7 @@ export default function PortfolioGrid({ items: initialItems }: PortfolioGridProp
       {/* Category filters */}
       <div className="mb-6 flex flex-wrap gap-2">
         {categories.map((cat) => (
-          <button
+          <Button
             key={cat}
             onClick={() => setActiveCategory(cat)}
             className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
@@ -90,7 +91,7 @@ export default function PortfolioGrid({ items: initialItems }: PortfolioGridProp
                 {items.filter((i) => i.category === cat).length}
               </span>
             )}
-          </button>
+          </Button>
         ))}
       </div>
 
@@ -103,21 +104,21 @@ export default function PortfolioGrid({ items: initialItems }: PortfolioGridProp
           >
             {/* Action buttons — visible on hover */}
             <div className="absolute top-2 right-2 z-10 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-              <button
+              <Button
                 onClick={() => setItemToEdit(item)}
                 className="rounded-lg bg-background/80 backdrop-blur p-1.5 text-text-muted hover:text-foreground shadow-sm border border-border/50"
                 title="Edit"
               >
                 <Pencil size={14} />
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => setShowDeleteConfirm(item.id)}
                 disabled={deletingId === item.id}
                 className="rounded-lg bg-background/80 backdrop-blur p-1.5 text-text-muted hover:text-red-500 shadow-sm border border-border/50 disabled:opacity-50"
                 title="Delete"
               >
                 <Trash2 size={14} />
-              </button>
+              </Button>
             </div>
 
             {/* Image */}
@@ -162,12 +163,12 @@ export default function PortfolioGrid({ items: initialItems }: PortfolioGridProp
       {filteredItems.length === 0 && activeCategory !== 'All' && (
         <div className="rounded-xl border border-border bg-background px-8 py-12 text-center">
           <p className="text-sm text-text-secondary">No projects in the &quot;{activeCategory}&quot; category.</p>
-          <button
+          <Button
             onClick={() => setActiveCategory('All')}
             className="mt-2 text-xs font-medium text-accent hover:underline"
           >
             Show all projects
-          </button>
+          </Button>
         </div>
       )}
 

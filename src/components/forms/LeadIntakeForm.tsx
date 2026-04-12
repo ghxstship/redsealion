@@ -6,6 +6,7 @@ import FormTextarea from '@/components/ui/FormTextarea';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
 import { IconCheck } from '@/components/ui/Icons';
+import Button from '@/components/ui/Button';
 
 /**
  * LeadIntakeForm
@@ -185,7 +186,7 @@ export function LeadIntakeForm({ organizationId }: { organizationId: string }) {
           </div>
 
           <div className="pt-2">
-            <button
+            <Button
               type="submit"
               disabled={isSubmitting}
               className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-background px-6 py-3.5 text-base font-semibold text-zinc-900 transition-all hover:bg-background/90 hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
@@ -201,7 +202,7 @@ export function LeadIntakeForm({ organizationId }: { organizationId: string }) {
               ) : (
                 'Submit Inquiry'
               )}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

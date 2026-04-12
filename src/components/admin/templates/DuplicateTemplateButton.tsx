@@ -12,6 +12,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Copy } from 'lucide-react';
+import Button from '@/components/ui/Button';
 
 interface Props {
   templateId: string;
@@ -52,7 +53,7 @@ export default function DuplicateTemplateButton({ templateId, templateName }: Pr
   }
 
   return (
-    <button
+    <Button
       onClick={handleDuplicate}
       disabled={loading}
       className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs font-medium text-text-secondary transition-colors hover:bg-bg-secondary hover:text-foreground disabled:opacity-50"
@@ -60,6 +61,6 @@ export default function DuplicateTemplateButton({ templateId, templateName }: Pr
     >
       <Copy size={12} />
       {loading ? 'Duplicating…' : 'Duplicate'}
-    </button>
+    </Button>
   );
 }

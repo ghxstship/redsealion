@@ -4,6 +4,7 @@ import type { ProjectSetupData } from './ProjectSetupStep';
 import type { VenueData } from './VenueStep';
 import type { TeamAssignmentData } from './TeamStep';
 import type { PhaseData } from './PhaseEditorStep';
+import Button from '@/components/ui/Button';
 
 interface ReviewStepProps {
   projectSetup: ProjectSetupData;
@@ -312,20 +313,20 @@ export default function ReviewStep({
 
       {/* Actions */}
       <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
-        <button
+        <Button
           type="button"
           onClick={onSaveAsDraft}
           className="rounded-lg border border-border px-5 py-2.5 text-sm font-medium text-text-secondary hover:bg-bg-secondary transition-colors"
         >
           Save as Draft
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
           onClick={onSendToClient}
           className="rounded-lg bg-org-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-org-primary/90 transition-colors"
         >
           Send to Client
-        </button>
+        </Button>
       </div>
     </div>
   );

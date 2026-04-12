@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { formatCurrency } from '@/lib/utils';
 import { Trash, Plus } from 'lucide-react';
+import Button from '@/components/ui/Button';
 
 interface BOMItem {
   id: string;
@@ -32,9 +33,9 @@ export default function BOMEditor({ orderId, initialItems }: { orderId: string, 
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-semibold text-foreground">Bill of Materials</h3>
-        <button className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-700">
+        <Button className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-700">
           <Plus className="w-4 h-4 mr-1" /> Add Material
-        </button>
+        </Button>
       </div>
 
       <div className="rounded-xl border border-border bg-background overflow-hidden">
@@ -67,9 +68,9 @@ export default function BOMEditor({ orderId, initialItems }: { orderId: string, 
                     </span>
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <button className="text-text-muted hover:text-red-600 transition-colors">
+                    <Button className="text-text-muted hover:text-red-600 transition-colors">
                       <Trash className="w-4 h-4" />
-                    </button>
+                    </Button>
                   </td>
                 </tr>
               ))}

@@ -1,3 +1,4 @@
+import FormInput from '@/components/ui/FormInput';
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -8,6 +9,8 @@ import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Alert from '@/components/ui/Alert';
+import FormSelect from '@/components/ui/FormSelect';
+import FormTextarea from '@/components/ui/FormTextarea';
 
 const PRIORITIES = ['low', 'medium', 'high', 'urgent'] as const;
 
@@ -161,7 +164,7 @@ export default function NewWorkOrderPage() {
               <label htmlFor="wo-title" className="block text-sm font-medium text-foreground mb-1.5">
                 Title <span className="text-red-500">*</span>
               </label>
-              <input
+              <FormInput
                 id="wo-title"
                 type="text"
                 value={title}
@@ -176,7 +179,7 @@ export default function NewWorkOrderPage() {
               <label htmlFor="wo-desc" className="block text-sm font-medium text-foreground mb-1.5">
                 Description
               </label>
-              <textarea
+              <FormTextarea
                 id="wo-desc"
                 rows={3}
                 value={description}
@@ -190,7 +193,7 @@ export default function NewWorkOrderPage() {
               <label htmlFor="wo-priority" className="block text-sm font-medium text-foreground mb-1.5">
                 Priority
               </label>
-              <select
+              <FormSelect
                 id="wo-priority"
                 value={priority}
                 onChange={(e) => setPriority(e.target.value)}
@@ -201,7 +204,7 @@ export default function NewWorkOrderPage() {
                     {p.charAt(0).toUpperCase() + p.slice(1)}
                   </option>
                 ))}
-              </select>
+              </FormSelect>
             </div>
           </div>
         </Card>
@@ -250,7 +253,7 @@ export default function NewWorkOrderPage() {
               <label htmlFor="wo-loc-name" className="block text-sm font-medium text-foreground mb-1.5">
                 Venue / Site Name
               </label>
-              <input
+              <FormInput
                 id="wo-loc-name"
                 type="text"
                 value={locationName}
@@ -263,7 +266,7 @@ export default function NewWorkOrderPage() {
               <label htmlFor="wo-loc-addr" className="block text-sm font-medium text-foreground mb-1.5">
                 Address
               </label>
-              <input
+              <FormInput
                 id="wo-loc-addr"
                 type="text"
                 value={locationAddress}
@@ -283,7 +286,7 @@ export default function NewWorkOrderPage() {
               <label htmlFor="wo-start" className="block text-sm font-medium text-foreground mb-1.5">
                 Start
               </label>
-              <input
+              <FormInput
                 id="wo-start"
                 type="datetime-local"
                 value={scheduledStart}
@@ -295,7 +298,7 @@ export default function NewWorkOrderPage() {
               <label htmlFor="wo-end" className="block text-sm font-medium text-foreground mb-1.5">
                 End
               </label>
-              <input
+              <FormInput
                 id="wo-end"
                 type="datetime-local"
                 value={scheduledEnd}
@@ -314,7 +317,7 @@ export default function NewWorkOrderPage() {
               {eventOptions.length > 0 && (
                 <div>
                   <label htmlFor="wo-event" className="block text-sm font-medium text-foreground mb-1.5">Event</label>
-                  <select
+                  <FormSelect
                     id="wo-event"
                     value={selectedEvent}
                     onChange={(e) => setSelectedEvent(e.target.value)}
@@ -324,13 +327,13 @@ export default function NewWorkOrderPage() {
                     {eventOptions.map((ev) => (
                       <option key={ev.id} value={ev.id}>{ev.name}</option>
                     ))}
-                  </select>
+                  </FormSelect>
                 </div>
               )}
               {proposalOptions.length > 0 && (
                 <div>
                   <label htmlFor="wo-proposal" className="block text-sm font-medium text-foreground mb-1.5">Proposal</label>
-                  <select
+                  <FormSelect
                     id="wo-proposal"
                     value={selectedProposal}
                     onChange={(e) => setSelectedProposal(e.target.value)}
@@ -340,7 +343,7 @@ export default function NewWorkOrderPage() {
                     {proposalOptions.map((p) => (
                       <option key={p.id} value={p.id}>{p.name}</option>
                     ))}
-                  </select>
+                  </FormSelect>
                 </div>
               )}
             </div>
@@ -356,19 +359,19 @@ export default function NewWorkOrderPage() {
                 <li key={i} className="flex items-center gap-2 rounded-lg border border-border px-3 py-2">
                   <span className="h-4 w-4 rounded border border-border flex items-center justify-center text-xs text-text-muted" />
                   <span className="flex-1 text-sm text-foreground">{item}</span>
-                  <button
+                  <Button
                     type="button"
                     onClick={() => removeChecklistItem(i)}
                     className="text-xs text-text-muted hover:text-red-600 transition-colors"
                   >
                     ✕
-                  </button>
+                  </Button>
                 </li>
               ))}
             </ul>
           )}
           <div className="flex gap-2">
-            <input
+            <FormInput
               type="text"
               value={newChecklistItem}
               onChange={(e) => setNewChecklistItem(e.target.value)}

@@ -13,6 +13,9 @@ interface RouteContext { params: Promise<{ id: string; bookingId: string }> }
  * Update booking status, shift times, or rate.
  */
 export async function PATCH(request: Request, context: RouteContext) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const perm = await checkPermission('crew', 'edit');
   if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });

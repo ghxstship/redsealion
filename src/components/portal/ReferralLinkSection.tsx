@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import FormInput from '@/components/ui/FormInput';
+import Button from '@/components/ui/Button';
 
 interface ReferralLinkSectionProps {
   referralCode: string | null;
@@ -58,7 +60,7 @@ export default function ReferralLinkSection({
     <div className="border-t border-border pt-6">
       <h2 className="text-sm font-semibold text-foreground mb-3">Your Referral Link</h2>
       <div className="flex items-center gap-2">
-        <input
+        <FormInput
           id="referral-link-input"
           type="text"
           readOnly
@@ -66,14 +68,14 @@ export default function ReferralLinkSection({
           className="flex-1 rounded-md border border-border bg-bg-secondary px-3 py-2 text-sm text-text-muted"
           onClick={(e) => (e.target as HTMLInputElement).select()}
         />
-        <button
+        <Button
           type="button"
           onClick={handleCopy}
           className="rounded-lg px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
           style={{ backgroundColor: 'var(--org-primary, var(--color-foreground))' }}
         >
           {copied ? 'Copied!' : 'Copy'}
-        </button>
+        </Button>
       </div>
       <p className="mt-2 text-xs text-text-muted">
         Share this link with friends and colleagues.

@@ -1,8 +1,10 @@
+import Button from '@/components/ui/Button';
 'use client';
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { ROADMAP_BAR_COLORS } from '@/components/ui/StatusBadge';
+import FormSelect from '@/components/ui/FormSelect';
 
 interface RoadmapItem {
   id: string;
@@ -71,7 +73,7 @@ export default function RoadmapClient({ items, months, timeRangeStart, timeRange
           <span className="text-xs text-text-muted">Status:</span>
           <div className="flex gap-1">
             {STATUSES.map((s) => (
-              <button
+              <Button
                 key={s}
                 onClick={() => setStatusFilter(s)}
                 className={`px-2.5 py-1 rounded-full text-xs font-medium transition-colors ${
@@ -81,7 +83,7 @@ export default function RoadmapClient({ items, months, timeRangeStart, timeRange
                 }`}
               >
                 {s === 'all' ? 'All' : s.charAt(0).toUpperCase() + s.slice(1)}
-              </button>
+              </Button>
             ))}
           </div>
         </div>
@@ -89,7 +91,7 @@ export default function RoadmapClient({ items, months, timeRangeStart, timeRange
         {clients.length > 0 && (
           <div className="flex items-center gap-2">
             <span className="text-xs text-text-muted">Client:</span>
-            <select
+            <FormSelect
               value={clientFilter}
               onChange={(e) => setClientFilter(e.target.value)}
               className="rounded-md border border-border bg-background px-2 py-1 text-xs text-foreground"
@@ -98,7 +100,7 @@ export default function RoadmapClient({ items, months, timeRangeStart, timeRange
               {clients.map((c) => (
                 <option key={c} value={c}>{c}</option>
               ))}
-            </select>
+            </FormSelect>
           </div>
         )}
 

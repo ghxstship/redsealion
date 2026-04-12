@@ -1,3 +1,5 @@
+import FormInput from '@/components/ui/FormInput';
+import Button from '@/components/ui/Button';
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -6,6 +8,8 @@ import Link from 'next/link';
 import PageHeader from '@/components/shared/PageHeader';
 import { TierGate } from '@/components/shared/TierGate';
 import Alert from '@/components/ui/Alert';
+import FormSelect from '@/components/ui/FormSelect';
+import FormTextarea from '@/components/ui/FormTextarea';
 
 interface PO {
   id: string;
@@ -102,7 +106,7 @@ export default function NewReceiptPage() {
 
           <div>
             <label className="block text-xs font-medium text-text-secondary mb-1">Purchase Order *</label>
-            <select
+            <FormSelect
               value={selectedPO}
               onChange={(e) => setSelectedPO(e.target.value)}
               className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground"
@@ -114,7 +118,7 @@ export default function NewReceiptPage() {
                   {po.po_number} — {po.vendor_name} (${po.total_amount?.toFixed(2)})
                 </option>
               ))}
-            </select>
+            </FormSelect>
             {pos.length === 0 && (
               <p className="mt-1 text-xs text-text-muted">No eligible POs found. POs must be sent/acknowledged/approved.</p>
             )}
@@ -122,7 +126,7 @@ export default function NewReceiptPage() {
 
           <div>
             <label className="block text-xs font-medium text-text-secondary mb-1">Received Date</label>
-            <input
+            <FormInput
               type="date"
               value={receivedDate}
               onChange={(e) => setReceivedDate(e.target.value)}
@@ -132,7 +136,7 @@ export default function NewReceiptPage() {
 
           <div>
             <label className="block text-xs font-medium text-text-secondary mb-1">Notes</label>
-            <textarea
+            <FormTextarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={3}
@@ -149,13 +153,13 @@ export default function NewReceiptPage() {
           >
             Cancel
           </Link>
-          <button
+          <Button
             type="submit"
             disabled={saving || !selectedPO}
             className="rounded-lg bg-brand-primary px-6 py-2 text-sm font-medium text-white hover:bg-brand-primary/90 transition-colors disabled:opacity-50"
           >
             {saving ? 'Logging...' : 'Log Receipt'}
-          </button>
+          </Button>
         </div>
       </form>
     </TierGate>

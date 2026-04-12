@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Button from '@/components/ui/Button';
 
 interface CalendarEvent {
   id: string;
@@ -69,21 +70,21 @@ export default function EventCalendar({ events }: EventCalendarProps) {
   return (
     <div className="bg-background border border-border rounded-lg shadow-sm p-4">
       <div className="flex items-center justify-between mb-4">
-        <button
+        <Button
           onClick={handlePrev}
           className="px-3 py-1 text-sm rounded bg-bg-secondary text-foreground hover:bg-bg-tertiary"
         >
           Prev
-        </button>
+        </Button>
         <h2 className="text-sm font-semibold text-foreground">
           {monthName} {currentYear}
         </h2>
-        <button
+        <Button
           onClick={handleNext}
           className="px-3 py-1 text-sm rounded bg-bg-secondary text-foreground hover:bg-bg-tertiary"
         >
           Next
-        </button>
+        </Button>
       </div>
 
       <div className="overflow-x-auto">
