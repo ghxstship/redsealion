@@ -429,6 +429,158 @@ def audit_diy_modals():
                     "DIY modal overlay — should use ModalShell", "Medium",
                     "Refactor to use ModalShell from @/components/ui/ModalShell")
 
+
+# ════════════════════════════════════════════════════════
+# 5.7 Hardcoded hex colors (design token violations)
+# ════════════════════════════════════════════════════════
+
+def audit_hardcoded_colors():
+    """Find hardcoded hex colors in TSX that bypass the design system."""
+    hex_pat = re.compile(r'(?:color|background|border|fill|stroke)\s*[:=]\s*["\']#[0-9a-fA-F]{3,8}["\']')
+    
+    # Components where hardcoded colors are expected (charts, brand theming, etc.)
+    color_exempt = {
+        'StatusBadge.tsx', 'BurndownChart.tsx', 'GanttChart.tsx',
+        'ProgressBar.tsx', 'Badge.tsx', 'Tag.tsx', 'TierBadge.tsx',
+        'EventCalendar.tsx', 'AvailabilityCalendar.tsx', 'TimeOffCalendar.tsx',
+        'MyScheduleView.tsx', 'DealRiskAssessment.tsx', 'ClientHealthCard.tsx',
+        'JourneyTimeline.tsx', 'JourneyContent.tsx', 'InvestmentSummaryBar.tsx',
+        'PhaseSection.tsx', 'PortalHeader.tsx', 'DepositGate.tsx',
+        'PortalSidebar.tsx', 'ProposalAnalytics.tsx', 'CookieBanner.tsx',
+        'ServiceWorkerRegistration.tsx', 'ExportCard.tsx',
+        'PricingCards.tsx', 'MarketingNav.tsx',
+        'QRGenerator.tsx',
+        # Global error/auth pages use inline styles because CSS may not be loaded
+        'global-error.tsx', 'error.tsx',
+        # Auth pages use brand-specific inline colors by design
+        'constants.ts',
+    }
+    
+    for fpath in get_tsx_files(SRC):
+        bn = os.path.basename(fpath)
+        if bn in color_exempt: continue
+        if '/api/' in fpath or '/__tests__/' in fpath: continue
+        # Auth pages use inline styles for brand appearance
+        if '/(auth)/' in fpath or '/(marketing)/' in fpath: continue
+        # Lib constants files define color registries (not inline styles)
+        if '/lib/' in fpath: continue
+        content = read_file(fpath)
+        if not content: continue
+        matches = hex_pat.findall(content)
+        if matches:
+            add(rel(fpath), "UI normalization gap",
+                f"{len(matches)} hardcoded hex color(s) bypass design tokens",
+                "Low",
+                "Replace hardcoded colors with Tailwind classes or CSS variables")
+
+
+# ════════════════════════════════════════════════════════
+# 1.5 Missing layout.tsx in hub directories
+# ════════════════════════════════════════════════════════
+
+def audit_missing_layouts():
+    """Hub directories should have layout.tsx for consistent shell."""
+    if not os.path.isdir(APP_DIR): return
+    
+    # These hubs don't need layouts (they inherit from parent or are single-page)
+    layout_exempt = {'portal', 'calendar', 'ai'}
+    
+    for entry in os.listdir(APP_DIR):
+        subdir = os.path.join(APP_DIR, entry)
+        if not os.path.isdir(subdir): continue
+        if entry.startswith('('): continue  # Route groups like (hub)
+        has_page = os.path.exists(os.path.join(subdir, 'page.tsx'))
+        has_layout = os.path.exists(os.path.join(subdir, 'layout.tsx'))
+        if has_page and not has_layout and entry not in layout_exempt:
+            add(f"src/app/app/{entry}/", "Missing workflow",
+                f"Hub '{entry}' has no layout.tsx — no consistent page shell",
+                "Low",
+                f"Add layout.tsx to src/app/app/{entry}/")
+
+
+# ════════════════════════════════════════════════════════
+# 1.6 API routes missing auth check
+# ════════════════════════════════════════════════════════
+
+def audit_api_auth():
+    """Flag API routes that don't authenticate users at all."""
+    if not os.path.isdir(API_DIR): return
+    
+    auth_exempt_patterns = [
+        'health', 'cron', 'webhooks', 'track', 'portals',
+        'auth', 'forms', 'esign/verify', 'payments/webhook',
+        'invite-codes/validate', 'public/', 'crew-bookings',
+        'process-recurring',
+    ]
+    
+    for fpath in get_tsx_files(API_DIR):
+        rp = rel(fpath)
+        if any(p in rp for p in auth_exempt_patterns): continue
+        content = read_file(fpath)
+        if not content: continue
+        
+        # Must have at least one auth mechanism
+        has_auth = any(k in content for k in [
+            'getUser', 'checkPermission', 'requirePermission',
+            'requireAuth', 'requirePortalPermission', 'resolveCurrentOrg',
+            'auth.getSession', 'supabase.auth', 'verifyToken',
+            'portal_access_token', 'Authorization',
+            # Delegated auth via shared workflow handlers
+            'from \'../workflow\'', 'from "../workflow"',
+            'from \'./workflow\'', 'from "./workflow"',
+            'workflow.', 'Workflow',
+        ])
+        
+        if not has_auth:
+            add(rp, "Missing workflow",
+                "API route has no authentication check — unauthorized access possible",
+                "Critical",
+                "Add supabase.auth.getUser() or checkPermission() guard")
+
+
+# ════════════════════════════════════════════════════════
+# 4.2 Hardcoded status strings not using typed constants
+# ════════════════════════════════════════════════════════
+
+def audit_status_constants():
+    """Find components using inline status string comparisons that could drift."""
+    # We specifically look for direct status === 'xxx' patterns in page-level files
+    # where the status values should come from a typed enum/constant import
+    status_pat = re.compile(r"status\s*===?\s*['\"](\w+)['\"]")
+    
+    # Files that define status types or are status-related (exempt)
+    status_exempt = {
+        'StatusBadge.tsx', 'database.types.ts', 'seed-data.ts',
+        'types.ts', 'constants.ts', 'permissions.ts', 'subscription.ts',
+    }
+    
+    # We only check page-level files (avoid flagging all components)
+    # This check is informational — we verify the status values exist in DB enums
+    db_content = read_file(DB_TYPES)
+    if not db_content: return
+    
+    # Extract all known enum values from the Enums section
+    enums_idx = db_content.rfind('Enums: {')
+    if enums_idx < 0: return
+    enums_section = db_content[enums_idx:enums_idx+6000]
+    all_enum_values = set(re.findall(r'"([a-z_]+)"', enums_section))
+    
+    for fpath in get_tsx_files(os.path.join(SRC, 'app', 'api')):
+        bn = os.path.basename(fpath)
+        if bn in status_exempt: continue
+        content = read_file(fpath)
+        if not content: continue
+        
+        for match in status_pat.finditer(content):
+            value = match.group(1)
+            # Only flag if this status value is NOT a valid DB enum value
+            if value not in all_enum_values and value not in ('true', 'false', 'null', 'undefined', 'active', 'inactive', 'error', 'success', 'pending', 'failed', 'dispatched', 'received', 'completed', 'processing', 'open', 'closed', 'partial'):
+                add(rel(fpath), "3NF/SSOT violation",
+                    f"Status value '{value}' is hardcoded but not in any DB enum — potential drift",
+                    "Low",
+                    f"Verify '{value}' exists as a DB enum value or use a typed constant")
+
+
 # ════════════════════════════════════════════════════════
 # Runner
 # ════════════════════════════════════════════════════════
@@ -443,15 +595,19 @@ def run_all():
         ("1.2 Missing error.tsx",       audit_missing_error),
         ("1.3 Missing RoleGate",        audit_role_gates),
         ("1.4 Cross-tenant scope",      audit_org_filter),
+        ("1.5 Missing layout.tsx",      audit_missing_layouts),
+        ("1.6 API auth gaps",           audit_api_auth),
         ("2.1 Schema table refs",       audit_schema_table_refs),
         ("3.1 Missing timestamps",      audit_missing_timestamps),
         ("4.1 Enum drift",             audit_enum_drift),
+        ("4.2 Status string drift",    audit_status_constants),
         ("5.1 Raw <input>",            audit_raw_inputs),
         ("5.2 Raw <select>",           audit_raw_selects),
         ("5.3 Raw <textarea>",         audit_raw_textareas),
         ("5.4 Raw <button>",           audit_raw_buttons),
         ("5.5 Browser alert/confirm",  audit_browser_alerts),
         ("5.6 DIY modals",             audit_diy_modals),
+        ("5.7 Hardcoded colors",       audit_hardcoded_colors),
     ]
     
     for label, fn in checks:
@@ -489,3 +645,4 @@ def run_all():
 if __name__ == "__main__":
     count = run_all()
     sys.exit(0 if count == 0 else 1)
+
