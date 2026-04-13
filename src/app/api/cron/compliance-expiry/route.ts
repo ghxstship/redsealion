@@ -75,7 +75,7 @@ export async function POST(request: Request) {
       .select('user_id')
       .eq('organization_id', doc.organization_id)
       .eq('status', 'active')
-      .in('role', ['owner', 'admin', 'manager']);
+      .in('role', ['owner', 'admin', 'collaborator']);
 
     for (const admin of admins ?? []) {
       await supabase.from('notifications').insert({

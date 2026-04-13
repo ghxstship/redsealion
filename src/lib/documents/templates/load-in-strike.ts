@@ -98,7 +98,7 @@ export async function generateLoadInStrike(data: LoadInStrikeData): Promise<Buff
   // ------------------------------------------------------------------
   // 3. Per-venue sections
   // ------------------------------------------------------------------
-  const sortedVenues = [...venues].sort((a, b) => a.sequence - b.sequence);
+  const sortedVenues = [...venues].sort((a, b) => (a.sequence ?? 0) - (b.sequence ?? 0));
 
   for (let vi = 0; vi < sortedVenues.length; vi++) {
     const venue = sortedVenues[vi];
@@ -112,7 +112,7 @@ export async function generateLoadInStrike(data: LoadInStrikeData): Promise<Buff
 
     const venueInfo: Array<[string, string]> = [
       ['Address', formatAddress(castDocAddress(venue.address))],
-      ['Venue Type', venue.type],
+      ['Venue Type', venue.type ?? ''],
     ];
 
     const siteContact = castDocContact(venue.contact_on_site);
@@ -210,7 +210,7 @@ export async function generateLoadInStrike(data: LoadInStrikeData): Promise<Buff
       children.push(heading(`${venue.name}`, 3));
 
       if (venue.notes) {
-        children.push(body(venue.notes));
+        children.push(body(venue.notes as string));
       }
 
       if (venue.site_constraints && Object.keys(venue.site_constraints).length > 0) {

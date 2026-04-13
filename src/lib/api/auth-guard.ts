@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { resolveUserMembership } from '@/lib/api/permission-guard';
-import type { OrganizationRole, SubscriptionTier } from '@/types/database';
+import type { PlatformRole } from '@/lib/permissions';
+import type { SubscriptionTier } from '@/types/database';
 
 type SupabaseClient = Awaited<ReturnType<typeof createClient>>;
 
@@ -11,7 +12,7 @@ type SupabaseClient = Awaited<ReturnType<typeof createClient>>;
 export interface AuthContext {
   userId: string;
   organizationId: string;
-  role: OrganizationRole;
+  role: PlatformRole;
   tier: SubscriptionTier;
   /** Reusable Supabase client scoped to the authenticated user's session. */
   supabase: SupabaseClient;
@@ -84,7 +85,7 @@ export async function requireAdmin(): Promise<
   const authMsg = await requireAuth();
   if (authMsg.denied) return authMsg;
   
-  if (authMsg.ctx.role !== 'admin' && authMsg.ctx.role !== 'owner') {
+  if (authMsg.ctx.role !== 'admin' && authMsg.ctx.role !== 'owner' && authMsg.ctx.role !== 'developer') {
     return {
       ctx: null,
       denied: NextResponse.json(

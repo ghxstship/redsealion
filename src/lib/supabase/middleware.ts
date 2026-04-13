@@ -72,7 +72,7 @@ export async function updateSession(request: NextRequest) {
   }
 
   // ---------------------------------------------------------------------------
-  // Harbor Master: User status + session enforcement on every authenticated request
+  // RBAC: User status + session enforcement on every authenticated request
   // Performance: check cookie cache first (set for 60s), fall back to DB
   // ---------------------------------------------------------------------------
   if (user && (isAppRoute || isApiRoute)) {

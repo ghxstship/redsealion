@@ -2,36 +2,38 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { requireAdmin } from '@/lib/api/auth-guard';
-import { SYSTEM_ROLE_IDS } from '@/types/harbor-master';
-import type { OrganizationRole } from '@/types/database';
+import { SYSTEM_ROLE_IDS } from '@/types/rbac';
+import type { PlatformRole } from '@/lib/permissions';
+import { getInvitationEmailConfig, renderInvitationEmail } from '@/lib/email/invitation-templates';
+import { sendEmail } from '@/lib/email/send';
 
 /**
- * Team invitation — delegates to Harbor Master invitations table.
- * Maps legacy role names to Harbor Master role IDs.
+ * Team invitation — delegates to RBAC invitations table.
+ * Maps legacy role names to RBAC role IDs.
  */
 
 const ROLE_MAP: Record<string, string> = {
   owner: SYSTEM_ROLE_IDS.ADMIN,
   admin: SYSTEM_ROLE_IDS.ADMIN,
-  controller: SYSTEM_ROLE_IDS.ADMIN,
-  manager: SYSTEM_ROLE_IDS.MANAGER,
-  team_member: SYSTEM_ROLE_IDS.MEMBER,
-  client: SYSTEM_ROLE_IDS.GUEST,
-  contractor: SYSTEM_ROLE_IDS.GUEST,
-  crew: SYSTEM_ROLE_IDS.GUEST,
-  viewer: SYSTEM_ROLE_IDS.GUEST,
+  controller: SYSTEM_ROLE_IDS.CONTROLLER,
+  collaborator: SYSTEM_ROLE_IDS.COLLABORATOR,
+  client: SYSTEM_ROLE_IDS.CLIENT,
+  contractor: SYSTEM_ROLE_IDS.CONTRACTOR,
+  crew: SYSTEM_ROLE_IDS.CREW,
+  viewer: SYSTEM_ROLE_IDS.VIEWER,
+  community: SYSTEM_ROLE_IDS.COMMUNITY,
 };
 
-const VALID_ROLES: OrganizationRole[] = [
+const VALID_ROLES: PlatformRole[] = [
   'owner',
   'admin',
   'controller',
-  'manager',
-  'team_member',
+  'collaborator',
   'client',
   'contractor',
   'crew',
   'viewer',
+  'community',
 ];
 
 export async function POST(request: NextRequest) {
@@ -51,7 +53,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });
   }
 
-  if (!role || !VALID_ROLES.includes(role as OrganizationRole)) {
+  if (!role || !VALID_ROLES.includes(role as PlatformRole)) {
     return NextResponse.json(
       { error: `Invalid role. Must be one of: ${VALID_ROLES.join(', ')}` },
       { status: 400 },
@@ -88,8 +90,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'This user is already a member of your organization' }, { status: 409 });
   }
 
-  // Map legacy role to Harbor Master role_id
-  const roleId = ROLE_MAP[role] ?? SYSTEM_ROLE_IDS.MEMBER;
+  // Map legacy role to RBAC role_id
+  const roleId = ROLE_MAP[role] ?? SYSTEM_ROLE_IDS.COLLABORATOR;
 
   // Generate token and create invitation
   const token = crypto.randomUUID() + crypto.randomUUID().replace(/-/g, '');
@@ -103,7 +105,7 @@ export async function POST(request: NextRequest) {
       scope_id: orgId,
       invited_email: normalizedEmail,
       role_id: roleId,
-      seat_type: ['client', 'contractor', 'crew', 'viewer'].includes(role) ? 'external' : 'internal',
+      seat_type: ['client', 'contractor', 'crew', 'viewer', 'community'].includes(role) ? 'external' : 'internal',
       invited_by: perm.userId,
       status: 'pending',
       token,
@@ -133,6 +135,41 @@ export async function POST(request: NextRequest) {
     metadata: { invited_email: normalizedEmail, role, role_id: roleId },
   }).then(() => {});
 
+  // ── Send personalized invitation email ──
+  // Resolve org name + logo + inviter name for email personalization
+  const { data: org } = await supabase
+    .from('organizations')
+    .select('name, logo_url')
+    .eq('id', orgId)
+    .single();
+
+  const { data: inviter } = await supabase
+    .from('users')
+    .select('full_name')
+    .eq('id', perm.userId)
+    .single();
+
+  const orgName = org?.name ?? 'Our Organization';
+  const inviterName = inviter?.full_name ?? undefined;
+  const acceptUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.redsealion.com'}/invite/${token}`;
+
+  const emailConfig = getInvitationEmailConfig(role as PlatformRole, orgName, inviterName);
+  const htmlBody = renderInvitationEmail(emailConfig, acceptUrl, orgName, org?.logo_url);
+
+  // Fire-and-forget — don't block the response on email delivery
+  sendEmail({
+    to: normalizedEmail,
+    subject: emailConfig.subject,
+    html: htmlBody,
+    replyTo: inviterName ? undefined : undefined, // Could add inviter email here
+    tags: [
+      { name: 'type', value: 'invitation' },
+      { name: 'role', value: role },
+    ],
+  }).catch((err) => {
+    console.error('[invite] Email send failed:', err);
+  });
+
   return NextResponse.json({
     success: true,
     invitation: {
@@ -143,6 +180,7 @@ export async function POST(request: NextRequest) {
       invited_by: perm.userId,
       status: 'pending',
       expires_at: expiresAt,
+      email_sent: true,
     },
   }, { status: 201 });
 }

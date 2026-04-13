@@ -70,11 +70,10 @@ export default async function ProposalJourneyPage({ params }: PageProps) {
       .single();
 
     if (membership) {
-      const rawRole = castRelation<{ name: string }>(membership.roles)?.name ?? 'viewer';
-      const { mapDBRoleToEnum } = await import('@/lib/permissions');
-      const role = mapDBRoleToEnum(rawRole);
+      const rawRole = castRelation<{ name: string }>(membership.roles)?.name ?? 'community';
+      const role = rawRole;
 
-      if (role === 'developer' || role === 'owner' || role === 'admin' || role === 'manager') {
+      if (role === 'developer' || role === 'owner' || role === 'admin' || role === 'collaborator') {
         canApprove = true;
       } else if (role === 'client') {
         const { getPortalPermission } = await import('@/lib/permissions');

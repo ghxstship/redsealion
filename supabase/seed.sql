@@ -76,7 +76,7 @@ BEGIN
         ELSIF v_role.scope = 'team' THEN
             -- Team users also need an org membership to access the tenant (use standard member '...0040')
             INSERT INTO public.organization_memberships (organization_id, user_id, role_id, joined_via)
-            VALUES (v_org_id, v_user_id, '00000000-0000-0000-0000-000000000040', 'manual_add')
+            VALUES (v_org_id, v_user_id, '00000000-0000-0000-0000-000000000030', 'manual_add')
             ON CONFLICT DO NOTHING;
 
             INSERT INTO public.team_memberships (team_id, user_id, role_id, joined_via, organization_id)
@@ -86,7 +86,7 @@ BEGIN
         ELSIF v_role.scope = 'project' THEN
             -- Project users also need org membership (use standard member)
             INSERT INTO public.organization_memberships (organization_id, user_id, role_id, joined_via)
-            VALUES (v_org_id, v_user_id, '00000000-0000-0000-0000-000000000040', 'manual_add')
+            VALUES (v_org_id, v_user_id, '00000000-0000-0000-0000-000000000030', 'manual_add')
             ON CONFLICT DO NOTHING;
 
             INSERT INTO public.project_memberships (project_id, user_id, role_id, joined_via, organization_id)

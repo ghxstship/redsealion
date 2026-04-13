@@ -3,6 +3,7 @@
 import { useSubscription } from '@/components/shared/SubscriptionProvider';
 import { UpgradePrompt } from '@/components/shared/UpgradePrompt';
 import { getRequiredTier, type FeatureKey } from '@/lib/subscription';
+import type { SubscriptionTier } from '@/types/database';
 
 export function TierGate({
   feature,
@@ -22,6 +23,6 @@ export function TierGate({
   return fallback !== undefined ? (
     <>{fallback}</>
   ) : (
-    <UpgradePrompt feature={feature} requiredTier={getRequiredTier(feature)} />
+    <UpgradePrompt feature={feature} requiredTier={getRequiredTier(feature) as SubscriptionTier} />
   );
 }

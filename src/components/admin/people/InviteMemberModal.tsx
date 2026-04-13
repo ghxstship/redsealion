@@ -18,23 +18,23 @@ interface InviteMemberModalProps {
 const ROLES = [
   { value: 'admin', label: 'Admin' },
   { value: 'controller', label: 'Controller' },
-  { value: 'manager', label: 'Manager' },
-  { value: 'team_member', label: 'Team Member' },
+  { value: 'collaborator', label: 'Collaborator' },
   { value: 'client', label: 'Client' },
   { value: 'contractor', label: 'Contractor' },
   { value: 'crew', label: 'Crew' },
   { value: 'viewer', label: 'Viewer' },
+  { value: 'community', label: 'Community' },
 ] as const;
 
 export default function InviteMemberModal({ open, onClose, onCreated }: InviteMemberModalProps) {
   const [email, setEmail] = useState('');
-  const [role, setRole] = useState('team_member');
+  const [role, setRole] = useState('collaborator');
   const [personalMessage, setPersonalMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   function resetForm() {
-    setEmail(''); setRole('team_member'); setPersonalMessage(''); setError(null);
+    setEmail(''); setRole('collaborator'); setPersonalMessage(''); setError(null);
   }
 
   async function handleSubmit(e: FormEvent) {

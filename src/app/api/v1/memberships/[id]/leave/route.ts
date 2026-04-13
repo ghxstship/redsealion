@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/api/auth-guard';
-import { SYSTEM_ROLE_IDS } from '@/types/harbor-master';
+import { SYSTEM_ROLE_IDS } from '@/types/rbac';
 
 /**
  * POST /api/v1/memberships/:id/leave — Self-removal with sole-owner guard

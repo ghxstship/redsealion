@@ -149,12 +149,12 @@ export const ROLE_BADGE_COLORS: Record<string, string> = {
   owner: 'bg-indigo-500/10 text-indigo-600',
   admin: 'bg-indigo-500/10 text-indigo-600',
   controller: 'bg-emerald-500/10 text-emerald-600',
-  manager: 'bg-blue-500/10 text-blue-600',
-  team_member: 'bg-purple-500/10 text-purple-600',
-  client: 'bg-bg-secondary text-text-secondary',
+  collaborator: 'bg-blue-500/10 text-blue-600',
   contractor: 'bg-amber-500/10 text-amber-600',
   crew: 'bg-orange-500/10 text-orange-600',
-  viewer: 'bg-bg-secondary text-text-muted',
+  client: 'bg-bg-secondary text-text-secondary',
+  viewer: 'bg-purple-500/10 text-purple-600',
+  community: 'bg-bg-secondary text-text-muted',
 };
 
 export const SHIPMENT_STATUS_COLORS: Record<string, string> = {

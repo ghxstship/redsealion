@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 
 /**
  * Resolves the current authenticated user's active organization ID.
- * Reads from Harbor Master's organization_memberships table (SSOT).
+ * Reads from the RBAC organization_memberships table (SSOT).
  *
  * @returns { userId, organizationId } or null if not authenticated / no membership
  */

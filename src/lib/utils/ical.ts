@@ -157,3 +157,31 @@ export function generateGoogleCalendarUrl(event: ICalEvent): string {
 
   return `https://calendar.google.com/calendar/render?${params.toString()}`;
 }
+
+/**
+ * Generate a valid iCalendar (.ics) feed from simple event objects.
+ * Accepts string dates for convenience in API routes.
+ *
+ * For richer iCalendar generation (all-day events, categories, status),
+ * use `generateICalendar()` with `ICalEvent` objects instead.
+ */
+export function generateICalFeed(
+  events: Array<{
+    uid: string;
+    summary: string;
+    dtstart: string;
+    dtend: string;
+    location?: string;
+    description?: string;
+  }>,
+): string {
+  const icalEvents: ICalEvent[] = events.map((e) => ({
+    uid: e.uid,
+    summary: e.summary,
+    dtstart: new Date(e.dtstart),
+    dtend: new Date(e.dtend),
+    location: e.location,
+    description: e.description,
+  }));
+  return generateICalendar(icalEvents, 'FlyteDeck Calendar');
+}

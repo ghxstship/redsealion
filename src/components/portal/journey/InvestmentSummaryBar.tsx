@@ -53,7 +53,7 @@ export default function InvestmentSummaryBar({
   canApprove = true,
 }: InvestmentSummaryBarProps) {
   const total = coreTotal + addonTotal;
-  const depositPercent = paymentTerms?.depositPercent ?? 50;
+  const depositPercent = Number(paymentTerms?.depositPercent ?? paymentTerms?.deposit_percent ?? 50);
   const deposit = Math.round(total * (depositPercent / 100));
   const balance = total - deposit;
 

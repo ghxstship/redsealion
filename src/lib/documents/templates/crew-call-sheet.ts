@@ -88,9 +88,9 @@ export async function generateCrewCallSheet(data: CrewCallSheetData): Promise<Bu
 
   const projectInfo: Array<[string, string]> = [
     ['Project', proposal.name],
-    ['Venue', venue.name],
+    ['Venue', venue.name ?? ''],
     ['Address', formatAddress(castDocAddress(venue.address))],
-    ['Venue Type', venue.type],
+    ['Venue Type', venue.type ?? ''],
   ];
 
   children.push(kvTable(projectInfo, brand));

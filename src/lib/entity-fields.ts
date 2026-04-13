@@ -66,7 +66,7 @@ export const ENTITY_FIELDS: Record<string, EntityField[]> = {
   people: [
     { key: 'full_name', label: 'Full Name', required: true, type: 'text', example: 'Alex Rivera', aliases: ['name', 'full_name'] },
     { key: 'email', label: 'Email', required: true, type: 'email', example: 'alex@example.com', aliases: ['email_address', 'e-mail'] },
-    { key: 'role', label: 'Role', type: 'enum', enumValues: ['developer', 'owner', 'admin', 'controller', 'manager', 'team_member', 'client', 'contractor', 'crew', 'viewer'], example: 'team_member', aliases: ['position', 'job_role'] },
+    { key: 'role', label: 'Role', type: 'enum', enumValues: ['developer', 'owner', 'admin', 'controller', 'collaborator', 'client', 'contractor', 'crew', 'viewer', 'community'], example: 'collaborator', aliases: ['position', 'job_role'] },
     { key: 'title', label: 'Title', type: 'text', example: 'Senior PM', aliases: ['job_title', 'position'] },
     { key: 'rate_card', label: 'Rate Card', type: 'text', exportOnly: true, example: 'Standard' },
   ],

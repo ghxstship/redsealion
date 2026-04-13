@@ -229,7 +229,7 @@ export async function generateProductionSchedule(data: ProductionScheduleData): 
     ];
 
     const venueRows = venues
-      .sort((a, b) => a.sequence - b.sequence)
+      .sort((a, b) => (a.sequence ?? 0) - (b.sequence ?? 0))
       .map((v) => {
         const act = castActivationDates(v.activation_dates);
         const activationStr = act
@@ -244,7 +244,7 @@ export async function generateProductionSchedule(data: ProductionScheduleData): 
           ? `${formatDate(st.date ?? '')} ${st.startTime ?? ''}\u2013${st.endTime ?? ''}`
           : '\u2014';
 
-        return [v.name, formatAddress(castDocAddress(v.address)), activationStr, loadInStr, strikeStr];
+        return [v.name ?? '', formatAddress(castDocAddress(v.address)), activationStr, loadInStr, strikeStr];
       });
 
     children.push(dataTable(venueCols, venueRows, brand));
@@ -265,7 +265,7 @@ export async function generateProductionSchedule(data: ProductionScheduleData): 
   }
 
   // Venue activation dates
-  for (const v of venues.sort((a, b) => a.sequence - b.sequence)) {
+  for (const v of venues.sort((a, b) => (a.sequence ?? 0) - (b.sequence ?? 0))) {
     const vAct = castActivationDates(v.activation_dates);
     if (vAct) {
       children.push(bullet(`${v.name} Activation: ${formatDate(vAct.start ?? '')} \u2013 ${formatDate(vAct.end ?? '')}`));

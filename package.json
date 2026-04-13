@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev --port 3001",
     "build": "next build",
-    "start": "next start",
+    "start": "next start --port 3001",
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -44,6 +44,7 @@
     "react-markdown": "^10.1.0",
     "read-excel-file": "^8.0.3",
     "remark-gfm": "^4.0.1",
+    "resend": "^6.11.0",
     "uuid": "^13.0.0",
     "write-excel-file": "^3.0.8",
     "zod": "^4.3.6"

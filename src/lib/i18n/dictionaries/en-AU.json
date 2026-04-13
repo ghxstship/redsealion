@@ -110,7 +110,8 @@
     "fabrication": "Fabrication",
     "procurement": "Procurement",
     "rentals": "Rentals",
-    "marketplace": "Marketplace"
+    "marketplace": "Marketplace",
+    "equipment": "Equipment"
   },
   "header": {
     "search": "Search\u2026",

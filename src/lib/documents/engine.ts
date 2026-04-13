@@ -95,9 +95,9 @@ export function brandFromOrg(org: Organization, logoBuffer?: Buffer): DocBrand {
     footerText: bc.footerText,
     logoBuffer,
     facilities: facs.map((f) => ({
-      name: f.name,
-      city: f.city,
-      state: f.state,
+      name: f.name ?? '',
+      city: f.city ?? '',
+      state: f.state ?? '',
     })),
   };
 }

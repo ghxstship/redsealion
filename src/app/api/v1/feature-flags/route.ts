@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/api/auth-guard';
-import { evaluateAllFlags } from '@/lib/harbor-master/feature-flags';
+import { evaluateAllFlags } from '@/lib/rbac/feature-flags';
 
 export async function GET(request: NextRequest) {
   const { ctx, denied } = await requireAuth();

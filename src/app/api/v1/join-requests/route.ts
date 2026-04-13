@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/api/auth-guard';
-import { checkHarborPermission } from '@/lib/harbor-master/permissions';
-import { checkSeatAvailability, incrementSeatUsage } from '@/lib/harbor-master/seats';
-import { writeAuditLog, extractIpAddress, extractUserAgent } from '@/lib/harbor-master/audit';
-import type { InvitationScopeType } from '@/types/harbor-master';
+import { checkPermission } from '@/lib/rbac/permissions';
+import { checkSeatAvailability, incrementSeatUsage } from '@/lib/rbac/seats';
+import { writeAuditLog, extractIpAddress, extractUserAgent } from '@/lib/rbac/audit';
+import type { InvitationScopeType } from '@/types/rbac';
 
 export async function POST(request: NextRequest) {
   const { ctx, denied } = await requireAuth();

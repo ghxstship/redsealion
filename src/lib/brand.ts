@@ -8,12 +8,12 @@ export function getBrandCSSVariables(
   brandConfig: BrandConfig
 ): Record<string, string> {
   return {
-    '--org-primary': brandConfig.primaryColor,
-    '--org-secondary': brandConfig.secondaryColor,
-    '--org-accent': brandConfig.accentColor,
-    '--background': brandConfig.backgroundColor,
-    '--font-heading': brandConfig.fontHeading,
-    '--font-body': brandConfig.fontBody,
+    '--org-primary': brandConfig.primaryColor ?? '#1A1A1A',
+    '--org-secondary': brandConfig.secondaryColor ?? '#555555',
+    '--org-accent': brandConfig.accentColor ?? '#1A1A1A',
+    '--background': brandConfig.backgroundColor ?? '#FFFFFF',
+    '--font-heading': brandConfig.fontHeading ?? 'Inter, system-ui, sans-serif',
+    '--font-body': brandConfig.fontBody ?? 'Inter, system-ui, sans-serif',
   };
 }
 

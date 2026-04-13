@@ -1,6 +1,6 @@
+'use client';
 import Checkbox from '@/components/ui/Checkbox';
 import { Badge } from '@/components/ui/Badge';
-'use client';
 
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';

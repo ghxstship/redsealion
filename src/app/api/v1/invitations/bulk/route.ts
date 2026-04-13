@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/api/auth-guard';
+import type { PlatformRole } from '@/lib/permissions';
+import { getInvitationEmailConfig, renderInvitationEmail } from '@/lib/email/invitation-templates';
+import { sendEmail } from '@/lib/email/send';
 
 /**
  * POST /api/v1/invitations/bulk — Bulk send invitations
@@ -69,6 +72,23 @@ export async function POST(request: NextRequest) {
 
   const expiryHours = (org?.invite_expiry_hours as number) ?? 168;
 
+  // Pre-resolve org details and inviter name for email personalization
+  const { data: orgInfo } = await ctx.supabase
+    .from('organizations')
+    .select('name, logo_url')
+    .eq('id', orgId)
+    .single();
+
+  const { data: inviterInfo } = await ctx.supabase
+    .from('users')
+    .select('full_name')
+    .eq('id', ctx.userId)
+    .single();
+
+  const orgName = orgInfo?.name ?? 'Our Organization';
+  const inviterName = inviterInfo?.full_name ?? undefined;
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.redsealion.com';
+
   const results: Array<{ email: string; status: string; id?: string }> = [];
 
   for (const inv of invitations) {
@@ -96,6 +116,31 @@ export async function POST(request: NextRequest) {
       results.push({ email: inv.invited_email, status: 'failed' });
     } else {
       results.push({ email: inv.invited_email, status: 'sent', id: created.id });
+
+      // Send personalized email (fire-and-forget per invitation)
+      const { data: roleRow } = await ctx.supabase
+        .from('roles')
+        .select('name')
+        .eq('id', inv.role_id)
+        .single();
+
+      const roleName = (roleRow?.name ?? 'collaborator') as PlatformRole;
+      const acceptUrl = `${appUrl}/invite/${token}`;
+      const emailConfig = getInvitationEmailConfig(roleName, orgName, inviterName);
+      const htmlBody = renderInvitationEmail(emailConfig, acceptUrl, orgName, orgInfo?.logo_url);
+
+      sendEmail({
+        to: inv.invited_email,
+        subject: emailConfig.subject,
+        html: htmlBody,
+        tags: [
+          { name: 'type', value: 'invitation' },
+          { name: 'role', value: roleName },
+          { name: 'source', value: 'bulk_api' },
+        ],
+      }).catch((err) => {
+        console.error(`[bulk-invite] Email to ${inv.invited_email} failed:`, err);
+      });
     }
   }
 

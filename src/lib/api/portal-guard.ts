@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import type { OrganizationRole } from '@/types/database';
-import { getPortalPermission, mapDBRoleToEnum } from '@/lib/permissions';
+import type { PlatformRole } from '@/lib/permissions';
+import { getPortalPermission } from '@/lib/permissions';
 
 /**
  * Guard a portal-facing API route. Verifies the user is a client role
- * (client or viewer) and checks the portal permission.
+ * (client or community) and checks the portal permission.
  *
  * Permission keys follow the pattern: "resource.action"
  * e.g., "proposals.approve", "invoices.pay", "files.upload"
@@ -24,7 +24,7 @@ export async function requirePortalPermission(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  // Resolve role via organization_memberships (SSOT — users.role was dropped in 00033)
+  // Resolve role via organization_memberships (SSOT)
   const { data: membership } = await supabase
     .from('organization_memberships')
     .select('roles(name)')
@@ -39,18 +39,17 @@ export async function requirePortalPermission(
   }
 
   const roleData = membership.roles as { name?: string | null } | null | undefined;
-  const rawRole = roleData?.name ?? 'viewer';
-  const role = mapDBRoleToEnum(rawRole) as OrganizationRole;
+  const role = (roleData?.name ?? 'community') as PlatformRole;
 
   // Admin roles always have access (they can view the portal too)
-  if (role === 'developer' || role === 'owner' || role === 'admin' || role === 'manager') {
+  if (role === 'developer' || role === 'owner' || role === 'admin' || role === 'collaborator') {
     return null;
   }
 
-  // Must be a client role
-  if (role !== 'client' && role !== 'viewer') {
+  // Must be a client, viewer, or community role for portal access
+  if (role !== 'client' && role !== 'viewer' && role !== 'community') {
     return NextResponse.json(
-      { error: 'Forbidden', message: 'This endpoint is for client portal users.' },
+      { error: 'Forbidden', message: 'This endpoint is for portal users.' },
       { status: 403 },
     );
   }
@@ -61,7 +60,7 @@ export async function requirePortalPermission(
     return NextResponse.json(
       {
         error: 'Forbidden',
-        message: `Your role (${role === 'client' ? 'Client' : 'Viewer'}) does not have permission for this action.`,
+        message: `Your role (${role === 'client' ? 'Client' : role === 'viewer' ? 'Viewer' : 'Community'}) does not have permission for this action.`,
       },
       { status: 403 },
     );

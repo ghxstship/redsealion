@@ -1,3 +1,19 @@
+/**
+ * RBAC Audit Logger — SOC2 Compliance
+ *
+ * Writes to the `audit_logs` table (RBAC layer, migration 00062).
+ * This is the identity/security audit trail used for SOC2 compliance.
+ *
+ * For application-level audit events (CRUD on proposals, tasks, etc.),
+ * use `@/lib/audit` which writes to the `audit_log` table (migration 00014).
+ *
+ * Both modules are intentional — they serve different compliance scopes:
+ *   - `audit_log`  → app-level operations (create/update/delete entities)
+ *   - `audit_logs` → identity/security (login, role changes, permission grants)
+ *
+ * @module lib/api/audit-logger
+ * @see {@link @/lib/audit} for application-level audit events
+ */
 import { createClient } from '@/lib/supabase/server';
 import { headers } from 'next/headers';
 import { createLogger } from '@/lib/logger';

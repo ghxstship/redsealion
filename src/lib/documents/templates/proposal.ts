@@ -400,9 +400,9 @@ function phaseSection(
     children.push(
       ...referenceCards(
         data.creativeRefs.map((ref) => ({
-          label: ref.label,
+          label: ref.title ?? '',
           description: ref.description ?? '',
-          type: creativeRefLabel(ref.type),
+          type: creativeRefLabel(ref.type ?? ''),
         })),
         'Creative Direction & Reference Imagery',
         brand,
@@ -665,7 +665,7 @@ function venueScheduleSection(
         ? `${formatDate(st.date)} ${st.startTime}\u2013${st.endTime}`
         : '\u2014';
 
-      return [v.name, addrStr, activationStr, loadInStr, strikeStr];
+      return [v.name ?? '', addrStr, activationStr, loadInStr, strikeStr];
     });
 
   children.push(dataTable(cols, rows, brand));

@@ -1,11 +1,10 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import type { OrganizationRole, SubscriptionTier } from '@/types/database';
+import type { PlatformRole } from '@/lib/permissions';
 import {
   type PermissionResource,
   type PermissionAction,
   getDefaultPermission,
-  mapDBRoleToEnum,
 } from '@/lib/permissions';
 import {
   canAccessFeature,
@@ -13,10 +12,11 @@ import {
   getTierLabel,
   type FeatureKey,
 } from '@/lib/subscription';
+import type { SubscriptionTier } from '@/types/database';
 
 interface PermissionCheckResult {
   allowed: boolean;
-  role: OrganizationRole;
+  role: PlatformRole;
   userId: string;
   organizationId: string;
   /** True when access was denied due to subscription tier, not role */
@@ -26,7 +26,9 @@ interface PermissionCheckResult {
 /**
  * Resolves the current user's active organization membership.
  * This is the canonical way to look up a user's org + role — reads exclusively
- * from Harbor Master's organization_memberships + roles tables.
+ * from the RBAC organization_memberships + roles tables.
+ *
+ * Returns the role name directly as a PlatformRole. No legacy mapping.
  */
 export async function resolveUserMembership(supabase: Awaited<ReturnType<typeof createClient>>, userId: string) {
   const { data: membership } = await supabase
@@ -42,13 +44,13 @@ export async function resolveUserMembership(supabase: Awaited<ReturnType<typeof 
 
   const roleName = (membership as Record<string, unknown>).roles
     ? ((membership as Record<string, unknown>).roles as Record<string, unknown>).name as string
-    : 'member';
+    : 'collaborator';
   const hierarchyLevel = (membership as Record<string, unknown>).roles
     ? ((membership as Record<string, unknown>).roles as Record<string, unknown>).hierarchy_level as number
     : 99;
 
-  // Map Harbor Master role names to legacy OrganizationRole enum
-  const role: OrganizationRole = mapDBRoleToEnum(roleName);
+  // Direct cast — role names in DB are canonical PlatformRole values
+  const role = roleName as PlatformRole;
 
   return {
     organizationId: membership.organization_id as string,
@@ -60,12 +62,12 @@ export async function resolveUserMembership(supabase: Awaited<ReturnType<typeof 
 }
 
 /**
- * Unified permission check — reads exclusively from Harbor Master RBAC.
+ * Unified permission check — reads from RBAC tables exclusively.
  *
  * Resolution order:
  * 1. Resolve user's active organization_membership.
  * 2. If `requireFeature`, verify org's subscription tier.
- * 3. Try Harbor Master check_permission() RPC.
+ * 3. Try RBAC check_permission() RPC.
  * 4. Fall back to the in-code default permission matrix.
  */
 export async function checkPermission(
@@ -111,7 +113,7 @@ export async function checkPermission(
     return { allowed: true, role, userId: user.id, organizationId };
   }
 
-  // --- Harbor Master RPC path ---
+  // --- RBAC RPC path ---
   const hmAction = action === 'view' ? 'read'
     : action === 'create' ? 'create'
     : action === 'edit' ? 'update'

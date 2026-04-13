@@ -1,15 +1,27 @@
 /**
  * FlyteDeck — Role-Based Access Control (RBAC) Permission Matrix
  *
- * Canonical 10-role architecture:
- *   INTERNAL: developer, owner, admin, controller, manager, team_member
- *   EXTERNAL: client, contractor, crew, viewer
+ * Two-Tier Architecture:
+ *   PLATFORM (org_role): developer, owner, admin, controller, collaborator,
+ *                        contractor, crew, client, community
+ *   PROJECT  (project_role): creator, collaborator, viewer, vendor
  *
  * This module defines the static permission matrix, helper functions,
  * and role group constants used throughout the application.
  */
 
-import type { OrganizationRole } from '@/types/database';
+/**
+ * Platform role type — directly mirrors the `org_role` Postgres enum.
+ * This is the SSOT for all platform-level role checks.
+ */
+export type PlatformRole =
+  | 'developer' | 'owner' | 'admin' | 'controller' | 'collaborator'
+  | 'contractor' | 'crew' | 'client' | 'viewer' | 'community';
+
+/**
+ * Project role type — directly mirrors the `project_role` Postgres enum.
+ */
+export type ProjectRole = 'creator' | 'collaborator' | 'viewer' | 'vendor';
 
 // ---------------------------------------------------------------------------
 // Resources & Actions
@@ -29,7 +41,9 @@ export type PermissionResource =
   | 'project_portals' | 'webhooks' | 'schedule' | 'portals'
   | 'profitability' | 'templates' | 'terms' | 'workloads'
   | 'roadmap' | 'finance' | 'calendar' | 'campaigns'
-  | 'email_inbox';
+  | 'email_inbox'
+  | 'spaces' | 'zones' | 'components' | 'component_items'
+  | 'hierarchy_tasks' | 'manifest';
 
 export const ALL_RESOURCES: PermissionResource[] = [
   'proposals', 'pipeline', 'clients', 'invoices', 'budgets',
@@ -46,60 +60,36 @@ export const ALL_RESOURCES: PermissionResource[] = [
   'profitability', 'templates', 'terms', 'workloads',
   'roadmap', 'finance', 'calendar', 'campaigns',
   'email_inbox',
+  'spaces', 'zones', 'components', 'component_items',
+  'hierarchy_tasks', 'manifest',
 ];
 
 export type PermissionAction = 'view' | 'create' | 'edit' | 'delete';
 export const ALL_ACTIONS: PermissionAction[] = ['view', 'create', 'edit', 'delete'];
 
 // ---------------------------------------------------------------------------
-// Role groups — no legacy aliases
+// Role groups — Two-Tier Architecture
 // ---------------------------------------------------------------------------
 
-export const INTERNAL_ROLES: OrganizationRole[] = [
-  'developer', 'owner', 'admin', 'controller', 'manager', 'team_member',
+export const INTERNAL_ROLES: PlatformRole[] = [
+  'developer', 'owner', 'admin', 'controller', 'collaborator',
 ];
 
-export const EXTERNAL_ROLES: OrganizationRole[] = [
+export const EXTERNAL_ROLES: PlatformRole[] = [
   'client', 'contractor', 'crew', 'viewer',
 ];
 
-// ---------------------------------------------------------------------------
-// Role resolver — maps DB role name → OrganizationRole
-//
-// The roles table stores the canonical name directly. No translation needed
-// for new data. This handles ONLY the roles.name values that exist in the
-// Harbor Master roles table after migration 00070.
-// ---------------------------------------------------------------------------
+export const PUBLIC_ROLES: PlatformRole[] = [
+  'community',
+];
 
-export function mapDBRoleToEnum(roleName: string): OrganizationRole {
-  switch (roleName) {
-    case 'developer':
-    case 'developer_ops':
-    case 'platform_superadmin':
-    case 'platform_admin':
-      return 'developer';
-    case 'owner':
-      return 'owner';
-    case 'admin':
-      return 'admin';
-    case 'controller':
-      return 'controller';
-    case 'manager':
-      return 'manager';
-    case 'team_member':
-      return 'team_member';
-    case 'client':
-      return 'client';
-    case 'contractor':
-      return 'contractor';
-    case 'crew':
-      return 'crew';
-    case 'viewer':
-      return 'viewer';
-    default:
-      return 'team_member'; // safe fallback for unknown roles
-  }
-}
+export const ALL_PLATFORM_ROLES: PlatformRole[] = [
+  ...INTERNAL_ROLES, ...EXTERNAL_ROLES, ...PUBLIC_ROLES,
+];
+
+export const ALL_PROJECT_ROLES: ProjectRole[] = [
+  'creator', 'collaborator', 'viewer', 'vendor',
+];
 
 // ---------------------------------------------------------------------------
 // Permission key helper
@@ -148,10 +138,10 @@ function viewCreate(resources: PermissionResource[]): Record<string, boolean> {
 }
 
 // ---------------------------------------------------------------------------
-// DEFAULT_PERMISSIONS — canonical permission matrix
+// DEFAULT_PERMISSIONS — Two-Tier Platform Permission Matrix
 // ---------------------------------------------------------------------------
 
-export const DEFAULT_PERMISSIONS: Record<OrganizationRole, Record<string, boolean>> = {
+export const DEFAULT_PERMISSIONS: Record<PlatformRole, Record<string, boolean>> = {
   // ── developer — god pass (platform operators) ──
   developer: allActions(ALL_RESOURCES),
 
@@ -161,7 +151,6 @@ export const DEFAULT_PERMISSIONS: Record<OrganizationRole, Record<string, boolea
   // ── admin — full org management (cannot delete org or transfer ownership) ──
   admin: {
     ...allActions(ALL_RESOURCES),
-    // Admin cannot delete critical org-level resources
     [permKey('settings', 'delete')]: false,
   },
 
@@ -171,39 +160,25 @@ export const DEFAULT_PERMISSIONS: Record<OrganizationRole, Record<string, boolea
     ...viewCreate(['reports']),
     ...viewOnly(['proposals', 'pipeline', 'clients', 'tasks', 'assets']),
     ...noPerm(['integrations', 'automations', 'settings', 'team']),
-    // time tracking — view (for payroll)
     ...viewOnly(['time_tracking']),
-    // ai — use
     [permKey('ai_assistant', 'view')]: true,
     [permKey('ai_assistant', 'create')]: false,
     [permKey('ai_assistant', 'edit')]: false,
     [permKey('ai_assistant', 'delete')]: false,
-    // crew — view (for payroll)
     ...viewOnly(['crew']),
-    // equipment — view
     ...viewOnly(['equipment']),
-    // leads — view (revenue forecasting)
     ...viewOnly(['leads']),
-    // warehouse — none
     ...noPerm(['warehouse']),
-    // advances — view + edit (approve POs)
     [permKey('advances', 'view')]: true,
     [permKey('advances', 'create')]: false,
     [permKey('advances', 'edit')]: true,
     [permKey('advances', 'delete')]: false,
-    // activations, events, locations — view (revenue context)
     ...viewOnly(['activations', 'events', 'locations']),
-    // work orders — view (dispatch oversight)
     ...viewOnly(['work_orders']),
-    // resources / scheduling — view
     ...viewOnly(['resources', 'resource_scheduling']),
-    // ai drafting — none
     ...noPerm(['ai_drafting']),
-    // email campaigns — none (marketing-scoped)
     ...noPerm(['email_campaigns']),
-    // referral program — none
     ...noPerm(['referral_program']),
-    // New resources — controller view access
     ...viewOnly(['dispatch', 'fabrication', 'rentals', 'projects', 'schedule', 'calendar']),
     ...viewOnly(['portfolio', 'compliance', 'marketplace', 'files', 'goals']),
     ...viewOnly(['campaigns', 'templates', 'terms', 'roadmap', 'workloads']),
@@ -211,160 +186,105 @@ export const DEFAULT_PERMISSIONS: Record<OrganizationRole, Record<string, boolea
     ...viewOnly(['purchase_orders']),
     ...viewOnly(['vendors']),
     ...viewOnly(['email_inbox']),
-    // portals / project_portals — view (client-facing content oversight)
     ...viewOnly(['portals', 'project_portals']),
-    // webhooks — none (admin-only config)
     ...noPerm(['webhooks']),
-    // finance — view + approve (financial dashboard)
     ...viewOnly(['finance']),
   },
 
-  // ── manager — project management (no billing, no org settings) ──
-  manager: {
-    ...viewCreate(['proposals', 'pipeline', 'clients', 'invoices', 'budgets', 'automations']),
-    ...viewCreate(['expenses', 'time_tracking', 'tasks']),
+  // ── collaborator — standard internal ──
+  collaborator: {
+    // Proposals: view + edit (no create/delete — managed by project creators)
+    [permKey('proposals', 'view')]: true,
+    [permKey('proposals', 'create')]: true,
+    [permKey('proposals', 'edit')]: true,
+    [permKey('proposals', 'delete')]: false,
+    // Pipeline & clients
+    ...viewCreate(['pipeline', 'clients']),
+    // Finance: view invoices/budgets (no create/edit — controller domain)
+    ...viewOnly(['invoices', 'budgets']),
     ...viewCreate(['reports']),
-    ...viewCreate(['assets']),
+    // Expenses & time — own entries
+    ...viewCreate(['expenses', 'time_tracking']),
+    // Tasks — assigned
+    [permKey('tasks', 'view')]: true,
+    [permKey('tasks', 'create')]: true,
+    [permKey('tasks', 'edit')]: true,
+    [permKey('tasks', 'delete')]: false,
+    // Assets — create + edit
+    [permKey('assets', 'view')]: true,
+    [permKey('assets', 'create')]: true,
+    [permKey('assets', 'edit')]: true,
+    [permKey('assets', 'delete')]: false,
+    // Team — view
     ...viewOnly(['team']),
+    // No integrations/automations/settings access
     ...noPerm(['integrations', 'settings']),
-    // ai — use
+    ...viewCreate(['automations']),
+    // AI — use
     [permKey('ai_assistant', 'view')]: true,
     [permKey('ai_assistant', 'create')]: false,
     [permKey('ai_assistant', 'edit')]: false,
     [permKey('ai_assistant', 'delete')]: false,
-    // crew — manage (no delete)
+    // Crew — manage (no delete)
     ...viewCreate(['crew']),
-    // equipment — manage (no delete)
+    // Equipment — manage (no delete)
     ...viewCreate(['equipment']),
-    // leads — manage (no delete)
+    // Leads — manage (no delete)
     ...viewCreate(['leads']),
-    // warehouse — manage (no delete)
+    // Warehouse — manage (no delete)
     ...viewCreate(['warehouse']),
-    // advances — manage (no delete)
+    // Advances — manage (no delete)
     ...viewCreate(['advances']),
-    // activations, events, locations — manage (no delete)
+    // Events, activations, locations — manage (no delete)
     ...viewCreate(['activations', 'events', 'locations']),
-    // work orders — manage (no delete)
+    // Work orders — manage (no delete)
     ...viewCreate(['work_orders']),
-    // resources / scheduling — manage (no delete)
+    // Resources / scheduling — manage (no delete)
     ...viewCreate(['resources', 'resource_scheduling']),
-    // ai drafting — use
+    // AI drafting — use
     [permKey('ai_drafting', 'view')]: true,
     [permKey('ai_drafting', 'create')]: true,
     [permKey('ai_drafting', 'edit')]: false,
     [permKey('ai_drafting', 'delete')]: false,
-    // email campaigns — manage (no delete)
+    // Email campaigns — manage (no delete)
     ...viewCreate(['email_campaigns']),
-    // referral program — view only
+    // Referral program — view only
     ...viewOnly(['referral_program']),
-    // New resources — manager full operational access
+    // New resources — full operational access
     ...viewCreate(['dispatch', 'fabrication', 'rentals', 'projects', 'goals']),
     ...viewCreate(['portfolio', 'compliance', 'files', 'schedule', 'calendar']),
     ...viewCreate(['campaigns', 'templates', 'terms', 'roadmap', 'workloads']),
     ...viewOnly(['profitability', 'marketplace']),
     ...viewCreate(['purchase_orders', 'vendors']),
     ...viewCreate(['email_inbox']),
-    // portals / project_portals — manage (no delete)
+    // Portals / project_portals — manage (no delete)
     ...viewCreate(['portals', 'project_portals']),
-    // webhooks — view only (configuration visibility)
+    // Webhooks — view only
     ...viewOnly(['webhooks']),
-    // finance — view (financial dashboard access)
+    // Finance — view only
     ...viewOnly(['finance']),
   },
 
-  // ── team_member — standard internal (design, fabrication, general) ──
-  team_member: {
-    [permKey('proposals', 'view')]: true,
-    [permKey('proposals', 'create')]: false,
-    [permKey('proposals', 'edit')]: true,
-    [permKey('proposals', 'delete')]: false,
-    ...noPerm(['pipeline', 'invoices', 'budgets', 'reports', 'integrations', 'automations', 'settings']),
-    [permKey('clients', 'view')]: true,
-    [permKey('clients', 'create')]: false,
-    [permKey('clients', 'edit')]: false,
-    [permKey('clients', 'delete')]: false,
-    // expenses — own
-    ...viewCreate(['expenses']),
-    // time tracking — own
-    ...viewCreate(['time_tracking']),
-    // tasks — assigned
-    [permKey('tasks', 'view')]: true,
-    [permKey('tasks', 'create')]: false,
-    [permKey('tasks', 'edit')]: true,
-    [permKey('tasks', 'delete')]: false,
-    // assets — create + edit
-    [permKey('assets', 'view')]: true,
-    [permKey('assets', 'create')]: true,
-    [permKey('assets', 'edit')]: true,
-    [permKey('assets', 'delete')]: false,
-    // team — view
-    ...viewOnly(['team']),
-    // ai — use
-    [permKey('ai_assistant', 'view')]: true,
-    [permKey('ai_assistant', 'create')]: false,
-    [permKey('ai_assistant', 'edit')]: false,
-    [permKey('ai_assistant', 'delete')]: false,
-    // crew — view
-    ...viewOnly(['crew']),
-    // equipment — view + edit
-    [permKey('equipment', 'view')]: true,
-    [permKey('equipment', 'create')]: true,
-    [permKey('equipment', 'edit')]: true,
-    [permKey('equipment', 'delete')]: false,
-    // leads — view
-    ...viewOnly(['leads']),
-    // warehouse — view + edit
-    [permKey('warehouse', 'view')]: true,
-    [permKey('warehouse', 'create')]: true,
-    [permKey('warehouse', 'edit')]: true,
-    [permKey('warehouse', 'delete')]: false,
-    // advances — view + create + edit
-    [permKey('advances', 'view')]: true,
-    [permKey('advances', 'create')]: true,
-    [permKey('advances', 'edit')]: true,
-    [permKey('advances', 'delete')]: false,
-    // activations, events — view
-    ...viewOnly(['activations', 'events']),
-    // locations — view
-    ...viewOnly(['locations']),
-    // work orders — view (field visibility)
-    ...viewOnly(['work_orders']),
-    // resources / scheduling — view own
-    ...viewOnly(['resources', 'resource_scheduling']),
-    // ai drafting — none
-    ...noPerm(['ai_drafting']),
-    // email campaigns — none
-    ...noPerm(['email_campaigns']),
-    // referral program — none
-    ...noPerm(['referral_program']),
-    // New resources — team_member limited access
-    ...viewOnly(['dispatch', 'fabrication', 'projects', 'schedule', 'calendar']),
-    ...viewOnly(['portfolio', 'files', 'goals', 'roadmap', 'workloads']),
-    ...noPerm(['rentals', 'compliance', 'marketplace', 'campaigns', 'templates', 'terms', 'profitability']),
-    ...noPerm(['purchase_orders', 'vendors']),
-    ...viewOnly(['email_inbox']),
-    // portals / project_portals — view only
-    ...viewOnly(['portals', 'project_portals']),
-    // webhooks — none (admin-only)
-    ...noPerm(['webhooks']),
-    // finance — none (restricted to controller+)
-    ...noPerm(['finance']),
-  },
 
-  // ── client — external, portal access for proposals/invoices/approvals ──
-  client: noPerm(ALL_RESOURCES),
-
-  // ── contractor — scoped external contributor ──
+  // ── contractor — scoped external contributor (portal access) ──
   contractor: noPerm(ALL_RESOURCES),
 
-  // ── crew — external, timesheets/work orders/field ops ──
+  // ── crew — external field ops (portal access) ──
   crew: noPerm(ALL_RESOURCES),
 
-  // ── viewer — external, read-only ──
-  viewer: noPerm(ALL_RESOURCES),
+  // ── client — external customer (portal access) ──
+  client: noPerm(ALL_RESOURCES),
 
-  // ── fabricator — deprecated (kept in enum, maps to team_member at runtime) ──
-  fabricator: noPerm(ALL_RESOURCES),
+  // ── viewer — authenticated read-only (investors, auditors, board members) ──
+  viewer: {
+    ...noPerm(ALL_RESOURCES),
+    ...viewOnly(['proposals', 'reports', 'portfolio', 'budgets', 'roadmap',
+                  'projects', 'goals', 'profitability',
+                  'spaces', 'zones', 'components', 'component_items']),
+  },
+
+  // ── community — unauthenticated public (no permissions) ──
+  community: noPerm(ALL_RESOURCES),
 };
 
 // ---------------------------------------------------------------------------
@@ -373,7 +293,7 @@ export const DEFAULT_PERMISSIONS: Record<OrganizationRole, Record<string, boolea
 
 export type PortalAction = 'view' | 'comment' | 'approve' | 'pay' | 'upload';
 
-export const PORTAL_PERMISSIONS: Record<'client' | 'viewer', Record<string, boolean>> = {
+export const PORTAL_PERMISSIONS: Record<'client' | 'viewer' | 'community', Record<string, boolean>> = {
   client: {
     'proposals.view': true,
     'proposals.comment': true,
@@ -390,6 +310,21 @@ export const PORTAL_PERMISSIONS: Record<'client' | 'viewer', Record<string, bool
     'proposals.comment': false,
     'proposals.approve': false,
     'invoices.view': true,
+    'invoices.pay': false,
+    'files.view': true,
+    'files.upload': false,
+    'milestones.view': true,
+    'progress.view': true,
+    'reports.view': true,
+    'portfolio.view': true,
+    'budgets.view': true,
+    'roadmap.view': true,
+  },
+  community: {
+    'proposals.view': true,
+    'proposals.comment': false,
+    'proposals.approve': false,
+    'invoices.view': false,
     'invoices.pay': false,
     'files.view': true,
     'files.upload': false,
@@ -440,7 +375,7 @@ export const CONTRACTOR_PORTAL_PERMISSIONS: Record<'contractor' | 'crew', Record
 // ---------------------------------------------------------------------------
 
 export function getDefaultPermission(
-  role: OrganizationRole,
+  role: PlatformRole,
   resource: PermissionResource,
   action: PermissionAction
 ): boolean {
@@ -449,7 +384,7 @@ export function getDefaultPermission(
 }
 
 export function getPortalPermission(
-  role: 'client' | 'viewer',
+  role: 'client' | 'viewer' | 'community',
   key: string
 ): boolean {
   return PORTAL_PERMISSIONS[role]?.[key] ?? false;

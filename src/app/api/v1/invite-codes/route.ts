@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/api/auth-guard';
-import { checkHarborPermission } from '@/lib/harbor-master/permissions';
-import { isFeatureEnabled } from '@/lib/harbor-master/feature-flags';
-import { writeAuditLog, extractIpAddress, extractUserAgent } from '@/lib/harbor-master/audit';
-import type { InvitationScopeType, SeatType } from '@/types/harbor-master';
+import { checkPermission } from '@/lib/rbac/permissions';
+import { isFeatureEnabled } from '@/lib/rbac/feature-flags';
+import { writeAuditLog, extractIpAddress, extractUserAgent } from '@/lib/rbac/audit';
+import type { InvitationScopeType, SeatType } from '@/types/rbac';
 
 function generateCode(orgSlug: string, scopeType: string): string {
   const scopeAbbrev = scopeType === 'organization' ? 'ORG' : scopeType === 'team' ? 'TM' : 'PRJ';
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
   }
 
   // Permission check
-  const perm = await checkHarborPermission('manage', 'invite_code', 'organization', scope_id);
+  const perm = await checkPermission('manage', 'invite_code', 'organization', scope_id);
   if (!perm || !perm.allowed) {
     return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 });
   }

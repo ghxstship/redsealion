@@ -1,5 +1,5 @@
-import Button from '@/components/ui/Button';
 'use client';
+import Button from '@/components/ui/Button';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';

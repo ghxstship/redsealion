@@ -1,5 +1,5 @@
-import Button from '@/components/ui/Button';
 'use client';
+import Button from '@/components/ui/Button';
 
 import { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';

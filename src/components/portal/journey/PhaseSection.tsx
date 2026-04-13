@@ -105,10 +105,10 @@ export default function PhaseSection({
               {creativeReferences.map((ref) => (
                 <div key={ref.id} className="group">
                   <div className="aspect-[4/3] rounded-lg overflow-hidden bg-bg-secondary mb-2">
-                    {ref.image_url ? (
+                    {ref.thumbnail_url ? (
                       <img
-                        src={ref.image_url}
-                        alt={ref.label}
+                        src={ref.thumbnail_url}
+                        alt={ref.title ?? ''}
                         className="w-full h-full object-cover transition-transform duration-decorative group-hover:scale-105"
                       />
                     ) : (
@@ -117,12 +117,12 @@ export default function PhaseSection({
                           className="text-xs font-medium tracking-wider uppercase"
                           style={{ color: 'var(--org-primary)' }}
                         >
-                          {ref.type}
+                          {ref.type ?? ''}
                         </span>
                       </div>
                     )}
                   </div>
-                  <p className="text-sm font-medium text-foreground">{ref.label}</p>
+                  <p className="text-sm font-medium text-foreground">{ref.title ?? ''}</p>
                   {ref.description && (
                     <p className="text-xs text-text-muted mt-0.5">{ref.description}</p>
                   )}

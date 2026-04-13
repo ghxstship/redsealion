@@ -124,6 +124,7 @@ export {
   MapPin as IconNavLocations,
   ListChecks as IconNavTasks,
   ClipboardCheck as IconNavAdvancing,
+  ClipboardList as IconNavManifest,
   ShieldCheck as IconNavCompliance,
   FolderOpen as IconNavFiles,
   Layers as IconNavTemplates,
@@ -133,6 +134,7 @@ export {
   Hammer as IconNavFabrication,
   ShoppingCart as IconNavProcurement,
   Package as IconNavRentals,
+  Send as IconNavWorkOrders,
 
   /* ─── Navigation: Operations Items ────────────────────── */
   UserRound as IconNavPeople,

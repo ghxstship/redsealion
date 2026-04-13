@@ -35,12 +35,12 @@ export default defineConfig({
   ],
 
   /* Optionally start the dev server before tests */
-  webServer: (process.env.CI && !process.env.MANUAL_SERVER)
+  /* webServer: (process.env.CI && !process.env.MANUAL_SERVER)
     ? {
-        command: 'npm run dev',
+        command: 'npm run start',
         url: BASE_URL,
         reuseExistingServer: true,
         timeout: 120_000,
       }
-    : undefined,
+    : undefined, */
 });

@@ -71,7 +71,7 @@ export default async function TimeOffPage() {
 
     const roleMap: Record<string, any> = membership?.roles || {};
     const roleName = roleMap.name?.toLowerCase() || '';
-    isAdmin = ['owner', 'admin', 'manager'].includes(roleName);
+    isAdmin = ['owner', 'admin', 'collaborator'].includes(roleName);
   }
 
   return (

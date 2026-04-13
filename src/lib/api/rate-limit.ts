@@ -1,3 +1,21 @@
+/**
+ * Route-Level Rate Limiter (Upstash Redis + In-Memory Fallback)
+ *
+ * Simple IP-based rate limiting for individual API routes.
+ * Uses Upstash Redis in production, falls back to in-memory for dev.
+ *
+ * Usage: `const { success } = await serveRateLimit(\`prefix_\${ip}\`, 10, 60000);`
+ *
+ * For Next.js handler wrapping with standard rate-limit headers,
+ * see `@/lib/middleware/rate-limit` which provides `withRateLimit()`.
+ *
+ * Both modules are intentional — they serve different integration patterns:
+ *   - `serveRateLimit` → inline check within route handlers (simple)
+ *   - `withRateLimit`  → HOC wrapper for handler functions (headers + 429)
+ *
+ * @module lib/api/rate-limit
+ * @see {@link @/lib/middleware/rate-limit} for HOC wrapper pattern
+ */
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 

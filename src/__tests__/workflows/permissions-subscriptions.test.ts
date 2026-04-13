@@ -1,8 +1,8 @@
 /**
  * Permissions & Subscription Tiers — End-to-End Workflow Validation
  *
- * 10-role architecture:
- *   INTERNAL: developer, owner, admin, controller, manager, team_member
+ * 10-role platform architecture:
+ *   INTERNAL: developer, owner, admin, controller, collaborator
  *   EXTERNAL: client, contractor, crew, viewer
  *
  * RBAC:
@@ -37,7 +37,7 @@ import {
   tierMeetsMinimum,
   getTierLabel,
 } from '@/lib/subscription';
-import type { OrganizationRole } from '@/types/database';
+import type { PlatformRole } from '@/lib/permissions';
 
 describe('Permission System', () => {
   // -----------------------------------------------------------------------
@@ -45,14 +45,13 @@ describe('Permission System', () => {
   // -----------------------------------------------------------------------
 
   describe('Role definitions', () => {
-    it('defines 6 internal roles', () => {
-      expect(INTERNAL_ROLES).toHaveLength(6);
+    it('defines 5 internal roles', () => {
+      expect(INTERNAL_ROLES).toHaveLength(5);
       expect(INTERNAL_ROLES).toContain('developer');
       expect(INTERNAL_ROLES).toContain('owner');
       expect(INTERNAL_ROLES).toContain('admin');
       expect(INTERNAL_ROLES).toContain('controller');
-      expect(INTERNAL_ROLES).toContain('manager');
-      expect(INTERNAL_ROLES).toContain('team_member');
+      expect(INTERNAL_ROLES).toContain('collaborator');
     });
 
     it('defines 4 external roles', () => {
@@ -132,77 +131,55 @@ describe('Permission System', () => {
   });
 
   // -----------------------------------------------------------------------
-  // Manager permissions
+  // Collaborator permissions
   // -----------------------------------------------------------------------
 
-  describe('Manager permissions', () => {
+  describe('Collaborator permissions', () => {
     it('can CRUD proposals (no delete)', () => {
-      expect(getDefaultPermission('manager', 'proposals', 'view')).toBe(true);
-      expect(getDefaultPermission('manager', 'proposals', 'create')).toBe(true);
-      expect(getDefaultPermission('manager', 'proposals', 'edit')).toBe(true);
-      expect(getDefaultPermission('manager', 'proposals', 'delete')).toBe(false);
+      expect(getDefaultPermission('collaborator', 'proposals', 'view')).toBe(true);
+      expect(getDefaultPermission('collaborator', 'proposals', 'create')).toBe(true);
+      expect(getDefaultPermission('collaborator', 'proposals', 'edit')).toBe(true);
+      expect(getDefaultPermission('collaborator', 'proposals', 'delete')).toBe(false);
     });
 
-    it('can CRUD pipeline (no delete)', () => {
-      expect(getDefaultPermission('manager', 'pipeline', 'view')).toBe(true);
-      expect(getDefaultPermission('manager', 'pipeline', 'create')).toBe(true);
-      expect(getDefaultPermission('manager', 'pipeline', 'delete')).toBe(false);
+    it('can view pipeline and create (no delete)', () => {
+      expect(getDefaultPermission('collaborator', 'pipeline', 'view')).toBe(true);
+      expect(getDefaultPermission('collaborator', 'pipeline', 'create')).toBe(true);
+      expect(getDefaultPermission('collaborator', 'pipeline', 'delete')).toBe(false);
     });
 
     it('has no access to settings or integrations', () => {
-      expect(getDefaultPermission('manager', 'settings', 'view')).toBe(false);
-      expect(getDefaultPermission('manager', 'integrations', 'view')).toBe(false);
+      expect(getDefaultPermission('collaborator', 'settings', 'view')).toBe(false);
+      expect(getDefaultPermission('collaborator', 'integrations', 'view')).toBe(false);
     });
 
     it('can view but not edit team', () => {
-      expect(getDefaultPermission('manager', 'team', 'view')).toBe(true);
-      expect(getDefaultPermission('manager', 'team', 'create')).toBe(false);
-      expect(getDefaultPermission('manager', 'team', 'edit')).toBe(false);
-    });
-  });
-
-  // -----------------------------------------------------------------------
-  // Team member permissions
-  // -----------------------------------------------------------------------
-
-  describe('Team member permissions', () => {
-    it('can view and edit proposals (no create/delete)', () => {
-      expect(getDefaultPermission('team_member', 'proposals', 'view')).toBe(true);
-      expect(getDefaultPermission('team_member', 'proposals', 'edit')).toBe(true);
-      expect(getDefaultPermission('team_member', 'proposals', 'create')).toBe(false);
-      expect(getDefaultPermission('team_member', 'proposals', 'delete')).toBe(false);
-    });
-
-    it('can view clients but not modify', () => {
-      expect(getDefaultPermission('team_member', 'clients', 'view')).toBe(true);
-      expect(getDefaultPermission('team_member', 'clients', 'edit')).toBe(false);
-    });
-
-    it('has no access to pipeline, invoices, settings', () => {
-      expect(getDefaultPermission('team_member', 'pipeline', 'view')).toBe(false);
-      expect(getDefaultPermission('team_member', 'invoices', 'view')).toBe(false);
-      expect(getDefaultPermission('team_member', 'settings', 'view')).toBe(false);
+      expect(getDefaultPermission('collaborator', 'team', 'view')).toBe(true);
+      expect(getDefaultPermission('collaborator', 'team', 'create')).toBe(false);
+      expect(getDefaultPermission('collaborator', 'team', 'edit')).toBe(false);
     });
 
     it('can manage own time and expenses', () => {
-      expect(getDefaultPermission('team_member', 'time_tracking', 'view')).toBe(true);
-      expect(getDefaultPermission('team_member', 'time_tracking', 'create')).toBe(true);
-      expect(getDefaultPermission('team_member', 'expenses', 'create')).toBe(true);
+      expect(getDefaultPermission('collaborator', 'time_tracking', 'view')).toBe(true);
+      expect(getDefaultPermission('collaborator', 'time_tracking', 'create')).toBe(true);
+      expect(getDefaultPermission('collaborator', 'expenses', 'create')).toBe(true);
     });
 
     it('can create and edit assets', () => {
-      expect(getDefaultPermission('team_member', 'assets', 'view')).toBe(true);
-      expect(getDefaultPermission('team_member', 'assets', 'create')).toBe(true);
-      expect(getDefaultPermission('team_member', 'assets', 'edit')).toBe(true);
+      expect(getDefaultPermission('collaborator', 'assets', 'view')).toBe(true);
+      expect(getDefaultPermission('collaborator', 'assets', 'create')).toBe(true);
+      expect(getDefaultPermission('collaborator', 'assets', 'edit')).toBe(true);
     });
   });
+
+
 
   // -----------------------------------------------------------------------
   // External role permissions (admin app — no access)
   // -----------------------------------------------------------------------
 
   describe('External role admin permissions', () => {
-    const externalRoles: OrganizationRole[] = ['client', 'contractor', 'crew', 'viewer'];
+    const externalRoles: PlatformRole[] = ['client', 'contractor', 'crew'];
 
     for (const role of externalRoles) {
       it(`${role} has no admin app access`, () => {
@@ -213,6 +190,17 @@ describe('Permission System', () => {
         }
       });
     }
+
+    it('viewer has read-only access to select resources', () => {
+      // Viewer can view reports, portfolio, proposals, etc.
+      expect(getDefaultPermission('viewer', 'reports', 'view')).toBe(true);
+      expect(getDefaultPermission('viewer', 'portfolio', 'view')).toBe(true);
+      expect(getDefaultPermission('viewer', 'proposals', 'view')).toBe(true);
+      // But cannot create/edit/delete
+      expect(getDefaultPermission('viewer', 'proposals', 'create')).toBe(false);
+      expect(getDefaultPermission('viewer', 'proposals', 'edit')).toBe(false);
+      expect(getDefaultPermission('viewer', 'proposals', 'delete')).toBe(false);
+    });
   });
 
   // -----------------------------------------------------------------------
@@ -221,7 +209,7 @@ describe('Permission System', () => {
 
   describe('Permission lookup', () => {
     it('returns false for unknown role/resource/action combinations', () => {
-      expect(getDefaultPermission('team_member', 'warehouse', 'delete')).toBe(false);
+      expect(getDefaultPermission('collaborator', 'warehouse', 'delete')).toBe(false);
     });
 
     it('covers all internal role × resource × action combinations', () => {

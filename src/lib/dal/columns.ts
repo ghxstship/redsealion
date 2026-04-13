@@ -143,7 +143,7 @@ export const AUTOMATION_RUN_COLUMNS = [
   'trigger_data', 'result', 'completed_at', 'created_at',
 ].join(', ');
 
-// ─── Harbor Master ─────────────────────────────────────────────────────────
+// ─── RBAC ─────────────────────────────────────────────────────────
 
 export const INVITATION_COLUMNS = [
   'id', 'organization_id', 'email', 'role_id', 'status',

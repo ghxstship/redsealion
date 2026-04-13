@@ -47,21 +47,19 @@ next-env.d.ts
 /test-results/
 /e2e/.auth/
 
-# temp logs and artifacts
+# temp logs, artifacts, and ephemeral output
 *.log
 *.pid
-e2e_run.txt
-clean-report.json
-e2e-report.json
-get_policies.sql
-parse_report.js
-test_script.js
+*.txt
+!README.txt
 
-# ad-hoc scripts
-run-stress.sh
-run_e2e_stress.sh
-run_stress.sh
-run_test.sh
-stress_test.sh
-stress_test_fabrication.sh
-test.sh
+# one-off root-level scripts (keep scripts/ dir clean)
+/*.py
+/*.sh
+/*.sql
+
+# ephemeral JSON reports
+/findings.json
+/plan.json
+/*-report.json
+/*_results.json

@@ -58,5 +58,5 @@ export async function requireTier(
 export async function requireFeature(
   feature: FeatureKey
 ): Promise<NextResponse | null> {
-  return requireTier(getRequiredTier(feature));
+  return requireTier(getRequiredTier(feature) as SubscriptionTier);
 }

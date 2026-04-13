@@ -27,10 +27,10 @@ import {
   IconNavTasks, IconNavGoals, IconNavRoadmap, IconNavFiles, IconNavTemplates,
   IconNavLeads, IconNavPipeline, IconNavClients, IconNavProposals,
   IconNavCampaigns, IconNavEmails, IconNavPortfolio,
-  IconNavEvents, IconNavAdvancing, IconNavSchedule,
-  IconNavPeople, IconNavCrew, IconNavWorkloads, IconNavTime, IconNavDispatch,
+  IconNavEvents, IconNavLocations, IconNavAdvancing, IconNavManifest, IconNavSchedule,
+  IconNavWorkOrders,
+  IconNavPeople, IconNavCrew, IconNavWorkloads, IconNavTime,
   IconNavMarketplace, IconNavInventory, IconNavLogistics, IconNavCompliance,
-  IconNavFabrication, IconNavProcurement, IconNavRentals,
   IconNavFinance as IconNavFinanceItem, IconNavExpenses,
   IconNavReports, IconNavAutomations, IconNavIntegrations, IconNavTerms,
 } from '@/components/ui/Icons';
@@ -103,6 +103,7 @@ export const navSections: NavSection[] = [
   },
 
   // ─── 4. PRODUCTIONS ────────────────────────────────────────
+  // Live event execution: hierarchy, advancing, manifest, scheduling
   {
     id: 'productions',
     label: 'Productions',
@@ -110,15 +111,16 @@ export const navSections: NavSection[] = [
     icon: <IconNavProduction size={16} />,
     items: [
       { label: 'Events', labelKey: 'nav.events', href: '/app/events', feature: 'events', icon: <IconNavEvents size={18} /> },
-      { label: 'Schedule', labelKey: 'nav.schedule', href: '/app/schedule', feature: 'events', icon: <IconNavSchedule size={18} /> },
+      { label: 'Locations', labelKey: 'nav.locations', href: '/app/locations', feature: 'events', icon: <IconNavLocations size={18} /> },
       { label: 'Advancing', labelKey: 'nav.advancing', href: '/app/advancing', feature: 'advancing', icon: <IconNavAdvancing size={18} /> },
-      { label: 'Fabrication', labelKey: 'nav.fabrication', href: '/app/fabrication', feature: 'equipment', icon: <IconNavFabrication size={18} /> },
-      { label: 'Procurement', labelKey: 'nav.procurement', href: '/app/procurement', feature: 'procurement', icon: <IconNavProcurement size={18} /> },
-      { label: 'Rentals', labelKey: 'nav.rentals', href: '/app/rentals', feature: 'equipment', icon: <IconNavRentals size={18} /> },
+      { label: 'Manifest', labelKey: 'nav.manifest', href: '/app/manifest', feature: 'advancing', icon: <IconNavManifest size={18} /> },
+      { label: 'Schedule', labelKey: 'nav.schedule', href: '/app/schedule', feature: 'events', icon: <IconNavSchedule size={18} /> },
+      { label: 'Work Orders', labelKey: 'nav.workOrders', href: '/app/work-orders', feature: 'work_orders', icon: <IconNavWorkOrders size={18} /> },
     ],
   },
 
   // ─── 5. OPERATIONS ─────────────────────────────────────────
+  // Org-level resources: people, equipment, logistics, compliance
   {
     id: 'operations',
     label: 'Operations',
@@ -127,12 +129,11 @@ export const navSections: NavSection[] = [
     items: [
       { label: 'People', labelKey: 'nav.people', href: '/app/people', feature: 'people_hr', icon: <IconNavPeople size={18} /> },
       { label: 'Crew', labelKey: 'nav.crew', href: '/app/crew', feature: 'crew', icon: <IconNavCrew size={18} /> },
-      { label: 'Workloads', labelKey: 'nav.workloads', href: '/app/workloads', feature: 'resource_scheduling', icon: <IconNavWorkloads size={18} /> },
-      { label: 'Time', labelKey: 'nav.time', href: '/app/time', feature: 'time_tracking', icon: <IconNavTime size={18} /> },
-      { label: 'Dispatch', labelKey: 'nav.dispatch', href: '/app/dispatch', feature: 'work_orders', icon: <IconNavDispatch size={18} /> },
-      { label: 'Marketplace', labelKey: 'nav.marketplace', href: '/app/marketplace', feature: 'marketplace', icon: <IconNavMarketplace size={18} /> },
       { label: 'Equipment', labelKey: 'nav.equipment', href: '/app/equipment', feature: 'equipment', icon: <IconNavInventory size={18} /> },
       { label: 'Logistics', labelKey: 'nav.logistics', href: '/app/logistics', feature: 'warehouse', icon: <IconNavLogistics size={18} /> },
+      { label: 'Workloads', labelKey: 'nav.workloads', href: '/app/workloads', feature: 'resource_scheduling', icon: <IconNavWorkloads size={18} /> },
+      { label: 'Time', labelKey: 'nav.time', href: '/app/time', feature: 'time_tracking', icon: <IconNavTime size={18} /> },
+      { label: 'Marketplace', labelKey: 'nav.marketplace', href: '/app/marketplace', feature: 'marketplace', icon: <IconNavMarketplace size={18} /> },
       { label: 'Compliance', labelKey: 'nav.compliance', href: '/app/compliance', feature: 'compliance', icon: <IconNavCompliance size={18} /> },
     ],
   },

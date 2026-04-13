@@ -130,7 +130,7 @@ export default function AccessCodeManager({ advanceId, codes, onRefresh }: Acces
                     {code.code}
                   </button>
                   <StatusBadge status={code.code_type ?? 'single_use'} colorMap={CODE_TYPE_COLORS} />
-                  <StatusBadge status={code.collaborator_role ?? 'contributor'} colorMap={ROLE_COLORS} />
+                  <StatusBadge status={(code as Record<string, unknown>).collaborator_role as string ?? 'contributor'} colorMap={ROLE_COLORS} />
                 </div>
                 <div className="flex items-center gap-3 text-[11px] text-text-muted">
                   {code.max_uses !== null && (

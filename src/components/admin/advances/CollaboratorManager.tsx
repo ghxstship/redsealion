@@ -41,7 +41,7 @@ interface CollaboratorManagerProps {
 export default function CollaboratorManager({ advanceId, collaborators, onRefresh }: CollaboratorManagerProps) {
   const [showInvite, setShowInvite] = useState(false);
   const [email, setEmail] = useState('');
-  const [role, setRole] = useState<CollaboratorRole>('contributor');
+  const [role, setRole] = useState<CollaboratorRole>('collaborator');
   const [instructions, setInstructions] = useState('');
   const [loading, setLoading] = useState(false);
 

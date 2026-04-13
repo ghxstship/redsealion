@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/api/auth-guard';
-import { isFeatureEnabled } from '@/lib/harbor-master/feature-flags';
-import { checkSeatAvailability, incrementSeatUsage } from '@/lib/harbor-master/seats';
-import { writeAuditLog, extractIpAddress, extractUserAgent } from '@/lib/harbor-master/audit';
+import { isFeatureEnabled } from '@/lib/rbac/feature-flags';
+import { checkSeatAvailability, incrementSeatUsage } from '@/lib/rbac/seats';
+import { writeAuditLog, extractIpAddress, extractUserAgent } from '@/lib/rbac/audit';
 
 export async function POST(request: NextRequest) {
   const { ctx, denied } = await requireAuth();

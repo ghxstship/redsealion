@@ -1,14 +1,14 @@
 'use client';
 
 import { usePermissions } from '@/components/shared/PermissionsProvider';
-import type { OrganizationRole } from '@/types/database';
+import type { PlatformRole } from '@/lib/permissions';
 import type { PermissionResource } from '@/lib/permissions';
 
 interface RoleGateProps {
   /** Block unless user has `view` on this resource */
   resource?: PermissionResource;
   /** Block unless user's role is in this list */
-  allowedRoles?: OrganizationRole[];
+  allowedRoles?: PlatformRole[];
   children: React.ReactNode;
 }
 
@@ -24,7 +24,7 @@ export function RoleGate({ resource, allowedRoles, children }: RoleGateProps) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-center">
         <div className="text-4xl">🔒</div>
-        <h2 className="text-lg font-semibold text-foreground">Access Restricted</h2>
+        <h2 className="text-lg font-semibold text-foreground">Access Denied</h2>
         <p className="text-sm text-text-muted max-w-md">
           Your role ({role}) does not have permission to view this section.
         </p>
@@ -37,7 +37,7 @@ export function RoleGate({ resource, allowedRoles, children }: RoleGateProps) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-center">
         <div className="text-4xl">🔒</div>
-        <h2 className="text-lg font-semibold text-foreground">Access Restricted</h2>
+        <h2 className="text-lg font-semibold text-foreground">Access Denied</h2>
         <p className="text-sm text-text-muted max-w-md">
           Your role ({role}) does not have permission to view this section.
         </p>

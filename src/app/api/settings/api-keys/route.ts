@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/server';
 import { randomBytes, createHash } from 'crypto';
 
 /**
- * Legacy settings API keys endpoint — now enriched with Harbor Master fields
+ * Legacy settings API keys endpoint — now enriched with RBAC fields
  * (role_id, is_active, rate_limit_rpm, allowed_ips).
  * Shares the same api_keys table as /api/v1/api-keys.
  */

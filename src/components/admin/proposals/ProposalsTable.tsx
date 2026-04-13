@@ -1,5 +1,5 @@
-import Checkbox from '@/components/ui/Checkbox';
 'use client';
+import Checkbox from '@/components/ui/Checkbox';
 
 import { useState, useMemo, useCallback } from 'react';
 import Link from 'next/link';

@@ -137,7 +137,7 @@ function buildPaymentTermsSection(data: InvoiceDocumentData, brand: DocBrand): (
 
   const parts: (Paragraph | Table)[] = [heading('Payment Terms', 2)];
 
-  parts.push(labelValue('Structure', terms.structure, brand));
+  parts.push(labelValue('Structure', terms.structure ?? '', brand));
   parts.push(
     labelValue(
       'Deposit / Balance',
@@ -146,11 +146,11 @@ function buildPaymentTermsSection(data: InvoiceDocumentData, brand: DocBrand): (
     )
   );
 
-  if (terms.lateFeeRate != null && terms.lateFeeRate > 0) {
+  if (terms.lateFeeRate != null && Number(terms.lateFeeRate) > 0) {
     parts.push(labelValue('Late Fee', `${terms.lateFeeRate}% per month on overdue balances`, brand));
   }
 
-  if (terms.creditCardSurcharge != null && terms.creditCardSurcharge > 0) {
+  if (terms.creditCardSurcharge != null && Number(terms.creditCardSurcharge) > 0) {
     parts.push(labelValue('Credit Card Surcharge', `${terms.creditCardSurcharge}%`, brand));
   }
 

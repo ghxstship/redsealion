@@ -19,18 +19,18 @@ const ROLES = [
   { value: 'owner', label: 'Owner' },
   { value: 'admin', label: 'Admin' },
   { value: 'controller', label: 'Controller' },
-  { value: 'manager', label: 'Manager' },
-  { value: 'team_member', label: 'Team Member' },
+  { value: 'collaborator', label: 'Collaborator' },
   { value: 'client', label: 'Client' },
   { value: 'contractor', label: 'Contractor' },
   { value: 'crew', label: 'Crew' },
   { value: 'viewer', label: 'Viewer' },
+  { value: 'community', label: 'Community' },
 ] as const;
 
 export default function PersonEditModal({ open, onClose, onSaved, person }: PersonEditModalProps) {
   const [fullName, setFullName] = useState(person?.full_name || '');
   const [title, setTitle] = useState(person?.title || '');
-  const [role, setRole] = useState(person?.role || 'team_member');
+  const [role, setRole] = useState(person?.role || 'collaborator');
   const [rateCard, setRateCard] = useState(person?.rate_card || '');
   const [phone, setPhone] = useState(person?.phone || '');
   const [department, setDepartment] = useState(person?.department || '');

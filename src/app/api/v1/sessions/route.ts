@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/api/auth-guard';
-import { writeAuditLog, extractIpAddress, extractUserAgent } from '@/lib/harbor-master/audit';
+import { writeAuditLog, extractIpAddress, extractUserAgent } from '@/lib/rbac/audit';
 
 export async function GET() {
   const { ctx, denied } = await requireAuth();

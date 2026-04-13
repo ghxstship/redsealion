@@ -27,12 +27,12 @@ const ROLE_LABELS: Record<string, string> = {
   owner: 'Owner',
   admin: 'Admin',
   controller: 'Controller',
-  manager: 'Manager',
-  team_member: 'Team Member',
-  client: 'Client',
+  collaborator: 'Collaborator',
   contractor: 'Contractor',
   crew: 'Crew',
+  client: 'Client',
   viewer: 'Viewer',
+  community: 'Community',
 };
 
 function getInitials(name: string): string {

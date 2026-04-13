@@ -1,8 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
+import { SYSTEM_ROLE_IDS } from '@/types/rbac';
+import type { ProjectRole } from '@/lib/permissions';
 
 interface RouteContext { params: Promise<{ id: string }> }
+
+const VALID_PROJECT_ROLES: ProjectRole[] = ['creator', 'collaborator', 'viewer', 'vendor'];
+
+const PROJECT_ROLE_MAP: Record<ProjectRole, string> = {
+  creator: SYSTEM_ROLE_IDS.PROJECT_CREATOR,
+  collaborator: SYSTEM_ROLE_IDS.PROJECT_COLLABORATOR,
+  viewer: SYSTEM_ROLE_IDS.PROJECT_VIEWER,
+  vendor: SYSTEM_ROLE_IDS.PROJECT_VENDOR,
+};
 
 /**
  * GET /api/projects/[id]/members — List members of a project.
@@ -17,7 +28,7 @@ export async function GET(_request: NextRequest, context: RouteContext) {
 
   const { data, error } = await supabase
     .from('project_memberships')
-    .select('id, user_id, seat_type, status, created_at, users(full_name, email, avatar_url)')
+    .select('id, user_id, role_id, created_at, users(full_name, email, avatar_url), roles:role_id(name)')
     .eq('project_id', id)
     .eq('organization_id', perm.organizationId)
     .order('created_at', { ascending: true });
@@ -26,7 +37,17 @@ export async function GET(_request: NextRequest, context: RouteContext) {
     return NextResponse.json({ error: 'Failed to fetch members', details: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ data: data ?? [] });
+  const members = (data ?? []).map((m) => ({
+    id: m.id,
+    user_id: m.user_id,
+    full_name: (m.users as unknown as { full_name: string })?.full_name ?? '',
+    email: (m.users as unknown as { email: string })?.email ?? '',
+    avatar_url: (m.users as unknown as { avatar_url: string | null })?.avatar_url ?? null,
+    role: ((m.roles as unknown as { name: string })?.name ?? 'collaborator') as ProjectRole,
+    added_at: m.created_at,
+  }));
+
+  return NextResponse.json({ members });
 }
 
 /**
@@ -39,50 +60,67 @@ export async function POST(request: NextRequest, context: RouteContext) {
 
   const { id } = await context.params;
   const body = await request.json().catch(() => ({}));
-  const { user_id, seat_type } = body as { user_id?: string; seat_type?: string };
+  const { email, role, user_id } = body as { email?: string; role?: string; user_id?: string };
 
-  if (!user_id) {
-    return NextResponse.json({ error: 'user_id is required' }, { status: 400 });
+  if (!email && !user_id) {
+    return NextResponse.json({ error: 'email or user_id is required' }, { status: 400 });
   }
 
-  const validSeatTypes = ['project_admin', 'project_manager', 'project_member', 'project_viewer', 'project_guest'];
-  const seatType = seat_type && validSeatTypes.includes(seat_type) ? seat_type : 'project_member';
+  const projectRole = (role && VALID_PROJECT_ROLES.includes(role as ProjectRole))
+    ? role as ProjectRole
+    : 'collaborator';
 
+  const roleId = PROJECT_ROLE_MAP[projectRole];
   const supabase = await createClient();
 
+  // Resolve user
+  let targetUserId = user_id;
+  if (!targetUserId && email) {
+    const { data: foundUser } = await supabase
+      .from('users')
+      .select('id')
+      .eq('email', email.trim().toLowerCase())
+      .maybeSingle();
+    targetUserId = foundUser?.id;
+  }
+
+  if (!targetUserId) {
+    return NextResponse.json({ error: 'User not found' }, { status: 404 });
+  }
+
   // Verify user is in the same org
-  const { data: targetUser } = await supabase
+  const { data: orgMember } = await supabase
     .from('organization_memberships')
     .select('user_id')
-    .eq('user_id', user_id)
+    .eq('user_id', targetUserId)
     .eq('organization_id', perm.organizationId)
     .eq('status', 'active')
-    .single();
+    .maybeSingle();
 
-  if (!targetUser) {
+  if (!orgMember) {
     return NextResponse.json({ error: 'User not found in this organization' }, { status: 404 });
   }
 
-  const { data: membership, error } = await supabase
+  const { data: membership, error: insertError } = await supabase
     .from('project_memberships')
     .insert({
       project_id: id,
-      user_id,
+      user_id: targetUserId,
       organization_id: perm.organizationId,
-      seat_type: seatType,
-      status: 'active',
+      role_id: roleId,
+      joined_via: 'manual_add',
     })
-    .select('id, user_id, seat_type, status, created_at')
+    .select('id, user_id, role_id, created_at')
     .single();
 
-  if (error) {
-    if (error.code === '23505') {
+  if (insertError) {
+    if (insertError.code === '23505') {
       return NextResponse.json({ error: 'User is already a member of this project' }, { status: 409 });
     }
-    return NextResponse.json({ error: 'Failed to add member', details: error.message }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to add member', details: insertError.message }, { status: 500 });
   }
 
-  return NextResponse.json({ data: membership }, { status: 201 });
+  return NextResponse.json({ success: true, data: membership }, { status: 201 });
 }
 
 /**

@@ -147,14 +147,14 @@ export async function generateWrapReport(data: WrapReportData): Promise<Buffer> 
     { header: 'Activation Dates', width: Math.floor(CONTENT_WIDTH * 0.6) },
   ];
 
-  const sortedVenues = [...venues].sort((a, b) => a.sequence - b.sequence);
+  const sortedVenues = [...venues].sort((a, b) => (a.sequence ?? 0) - (b.sequence ?? 0));
 
   const venueRows = sortedVenues.map((v) => {
     const act = castActivationDates(v.activation_dates);
     const activationStr = act
       ? `${formatDate(act.start ?? '')} \u2013 ${formatDate(act.end ?? '')}`
       : '\u2014';
-    return [v.name, activationStr];
+    return [v.name ?? '', activationStr];
   });
 
   children.push(dataTable(venueCols, venueRows, brand));

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/api/auth-guard';
-import { checkHarborPermission, enforceHierarchyCeiling, isSoleOwner } from '@/lib/harbor-master/permissions';
-import { checkSeatAvailability, incrementSeatUsage, decrementSeatUsage } from '@/lib/harbor-master/seats';
-import { writeAuditLog, extractIpAddress, extractUserAgent } from '@/lib/harbor-master/audit';
-import type { SeatType } from '@/types/harbor-master';
+import { checkPermission, enforceHierarchyCeiling, isSoleOwner } from '@/lib/rbac/permissions';
+import { checkSeatAvailability, incrementSeatUsage, decrementSeatUsage } from '@/lib/rbac/seats';
+import { writeAuditLog, extractIpAddress, extractUserAgent } from '@/lib/rbac/audit';
+import type { SeatType } from '@/types/rbac';
 
 export async function POST(request: NextRequest) {
   const { ctx, denied } = await requireAuth();
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
   }
 
   // Permission check
-  const perm = await checkHarborPermission('manage', 'member', 'organization', organization_id);
+  const perm = await checkPermission('manage', 'member', 'organization', organization_id);
   if (!perm || !perm.allowed) {
     return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 });
   }

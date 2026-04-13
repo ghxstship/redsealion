@@ -1,5 +1,5 @@
-import Checkbox from '@/components/ui/Checkbox';
 'use client';
+import Checkbox from '@/components/ui/Checkbox';
 
 import { useState } from 'react';
 import ModalShell from '@/components/ui/ModalShell';

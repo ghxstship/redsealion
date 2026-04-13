@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/api/auth-guard';
-import { checkHarborPermission, enforceHierarchyCeiling } from '@/lib/harbor-master/permissions';
-import { checkSeatAvailability } from '@/lib/harbor-master/seats';
-import { writeAuditLog, extractIpAddress, extractUserAgent } from '@/lib/harbor-master/audit';
-import { validateInvitation } from '@/lib/harbor-master/validators';
-import type { InvitationScopeType, SeatType } from '@/types/harbor-master';
+import { checkPermission, enforceHierarchyCeiling } from '@/lib/rbac/permissions';
+import { checkSeatAvailability } from '@/lib/rbac/seats';
+import { writeAuditLog, extractIpAddress, extractUserAgent } from '@/lib/rbac/audit';
+import { validateInvitation } from '@/lib/rbac/validators';
+import type { InvitationScopeType, SeatType } from '@/types/rbac';
+import type { PlatformRole } from '@/lib/permissions';
+import { getInvitationEmailConfig, renderInvitationEmail } from '@/lib/email/invitation-templates';
+import { sendEmail } from '@/lib/email/send';
 
 export async function POST(request: NextRequest) {
   const { ctx, denied } = await requireAuth();
@@ -35,7 +38,7 @@ export async function POST(request: NextRequest) {
   }
 
   // Permission check
-  const perm = await checkHarborPermission('invite', 'member', scope_type, scope_id);
+  const perm = await checkPermission('invite', 'member', scope_type, scope_id);
   if (!perm || !perm.allowed) {
     return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 });
   }
@@ -156,7 +159,48 @@ export async function POST(request: NextRequest) {
     userAgent: extractUserAgent(request),
   }).catch(() => {});
 
-  return NextResponse.json({ success: true, invitation }, { status: 201 });
+  // ── Send personalized invitation email ──
+  // Resolve role name from role_id
+  const { data: roleRow } = await ctx.supabase
+    .from('roles')
+    .select('name')
+    .eq('id', role_id)
+    .single();
+
+  const roleName = (roleRow?.name ?? 'collaborator') as PlatformRole;
+
+  // Resolve org details + inviter name
+  const { data: orgDetails } = await ctx.supabase
+    .from('organizations')
+    .select('name, logo_url')
+    .eq('id', orgId)
+    .single();
+
+  const { data: inviterUser } = await ctx.supabase
+    .from('users')
+    .select('full_name')
+    .eq('id', ctx.userId)
+    .single();
+
+  const orgName = orgDetails?.name ?? 'Our Organization';
+  const acceptUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.redsealion.com'}/invite/${token}`;
+  const emailConfig = getInvitationEmailConfig(roleName, orgName, inviterUser?.full_name ?? undefined);
+  const htmlBody = renderInvitationEmail(emailConfig, acceptUrl, orgName, orgDetails?.logo_url);
+
+  sendEmail({
+    to: invited_email,
+    subject: emailConfig.subject,
+    html: htmlBody,
+    tags: [
+      { name: 'type', value: 'invitation' },
+      { name: 'role', value: roleName },
+      { name: 'source', value: 'v1_api' },
+    ],
+  }).catch((err) => {
+    console.error('[v1/invitations] Email send failed:', err);
+  });
+
+  return NextResponse.json({ success: true, invitation, email_sent: true }, { status: 201 });
 }
 
 export async function GET(request: NextRequest) {

@@ -106,7 +106,7 @@ export async function generatePunchList(data: PunchListData): Promise<Buffer> {
   // ------------------------------------------------------------------
   // 3. Per-venue sections
   // ------------------------------------------------------------------
-  const sortedVenues = [...venues].sort((a, b) => a.sequence - b.sequence);
+  const sortedVenues = [...venues].sort((a, b) => (a.sequence ?? 0) - (b.sequence ?? 0));
 
   for (let vi = 0; vi < sortedVenues.length; vi++) {
     const venue = sortedVenues[vi];
@@ -118,7 +118,7 @@ export async function generatePunchList(data: PunchListData): Promise<Buffer> {
     // Venue header
     children.push(heading(`Venue: ${venue.name}`, 2));
     children.push(labelValue('Address', formatAddress(castDocAddress(venue.address)), brand));
-    children.push(labelValue('Type', venue.type, brand));
+    children.push(labelValue('Type', venue.type ?? '', brand));
 
     const actDates = castActivationDates(venue.activation_dates);
     if (actDates) {

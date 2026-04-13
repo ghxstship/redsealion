@@ -62,7 +62,7 @@ async function getOpenWorkOrders(params: MarketplaceSearchParams): Promise<{
       .eq('id', userAuth.user.id)
       .single();
 
-    const adminRoles = ['owner', 'admin', 'manager', 'developer'];
+    const adminRoles = ['owner', 'admin', 'collaborator', 'developer'];
     const isAdmin = adminRoles.includes(userRecord?.role ?? '');
 
     // Check if the current user has a crew profile (optional for admins)

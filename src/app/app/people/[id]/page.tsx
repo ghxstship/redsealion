@@ -190,7 +190,7 @@ export default async function PersonDetailPage(props: { params: Promise<{ id: st
           <p className="mt-1 text-sm font-medium text-foreground">{formatLabel(person.role)}</p>
         </div>
         <div className="pt-4 border-t border-border">
-          <p className="text-xs text-text-muted mb-3">Access Level (Harbor Master Array)</p>
+          <p className="text-xs text-text-muted mb-3">Access Level</p>
           <div className="flex flex-wrap gap-2">
             {permissions.length === 0 ? (
               <span className="text-xs text-text-muted">Using default legacy role grants.</span>

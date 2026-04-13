@@ -1,11 +1,11 @@
-import Button from '@/components/ui/Button';
 'use client';
+import Button from '@/components/ui/Button';
 
 import { useState, useCallback } from 'react';
 import Alert from '@/components/ui/Alert';
 import { createClient } from '@/lib/supabase/client';
 import { useSubscription } from '@/components/shared/SubscriptionProvider';
-import type { OrganizationRole } from '@/types/database';
+import type { PlatformRole } from '@/lib/permissions';
 import {
   ALL_RESOURCES,
   ALL_ACTIONS,
@@ -81,6 +81,12 @@ const RESOURCE_LABELS: Record<PermissionResource, string> = {
   calendar: 'Calendar',
   campaigns: 'Campaigns',
   email_inbox: 'Email Inbox',
+  spaces: 'Spaces',
+  zones: 'Zones',
+  components: 'Components',
+  component_items: 'Component Items',
+  hierarchy_tasks: 'Hierarchy Tasks',
+  manifest: 'Manifest',
 };
 
 const ROLE_LABELS: Record<string, string> = {
@@ -88,8 +94,7 @@ const ROLE_LABELS: Record<string, string> = {
   owner: 'Owner',
   admin: 'Admin',
   controller: 'Controller',
-  manager: 'Manager',
-  team_member: 'Team Member',
+  collaborator: 'Collaborator',
 };
 
 export default function PermissionMatrix({ organizationId, overrides }: PermissionMatrixProps) {
@@ -116,7 +121,7 @@ export default function PermissionMatrix({ organizationId, overrides }: Permissi
   const [error, setError] = useState<string | null>(null);
 
   const togglePermission = useCallback(
-    async (role: OrganizationRole, resource: PermissionResource, action: PermissionAction) => {
+    async (role: PlatformRole, resource: PermissionResource, action: PermissionAction) => {
       if (!isEnterprise) return;
       // developer and owner are always full access — not editable
       if (role === 'developer' || role === 'owner') return;

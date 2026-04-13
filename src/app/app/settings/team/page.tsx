@@ -1,6 +1,6 @@
 import Button from '@/components/ui/Button';
 import { createClient } from '@/lib/supabase/server';
-import type { OrganizationRole } from '@/types/database';
+import type { PlatformRole } from '@/lib/permissions';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import TeamHeader from '@/components/admin/settings/TeamHeader';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
@@ -10,7 +10,7 @@ interface TeamMember {
   id: string;
   full_name: string | null;
   email: string;
-  role: OrganizationRole;
+  role: PlatformRole;
   created_at: string;
   avatar_url: string | null;
 }
@@ -20,12 +20,12 @@ const ROLE_BADGE_COLORS: Record<string, string> = {
   owner: 'bg-blue-50 text-blue-700 border-blue-200',
   admin: 'bg-blue-50 text-blue-700 border-blue-200',
   controller: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-  manager: 'bg-purple-50 text-purple-700 border-purple-200',
-  team_member: 'bg-green-50 text-green-700 border-green-200',
+  collaborator: 'bg-purple-50 text-purple-700 border-purple-200',
   client: 'bg-bg-secondary text-text-muted border-border',
   contractor: 'bg-amber-50 text-amber-700 border-amber-200',
   crew: 'bg-orange-50 text-orange-700 border-orange-200',
-  viewer: 'bg-bg-secondary text-text-muted border-border',
+  viewer: 'bg-sky-50 text-sky-700 border-sky-200',
+  community: 'bg-bg-secondary text-text-muted border-border',
 };
 
 function formatRole(role: string): string {

@@ -23,12 +23,12 @@ const ROLE_LABELS: Record<string, string> = {
   owner: 'Owner',
   admin: 'Admin',
   controller: 'Controller',
-  manager: 'Manager',
-  team_member: 'Team Member',
-  client: 'Client',
+  collaborator: 'Collaborator',
   contractor: 'Contractor',
   crew: 'Crew',
+  client: 'Client',
   viewer: 'Viewer',
+  community: 'Community',
 };
 
 function getInitials(name: string): string {
@@ -77,12 +77,12 @@ export default function UserMenu({ fullName, email, role, avatarUrl }: UserMenuP
     owner: 'user.owner',
     admin: 'user.admin',
     controller: 'user.controller',
-    manager: 'user.manager',
-    team_member: 'user.teamMember',
-    client: 'user.client',
+    collaborator: 'user.collaborator',
     contractor: 'user.contractor',
     crew: 'user.crew',
+    client: 'user.client',
     viewer: 'user.viewer',
+    community: 'user.community',
   };
   const roleLabel = ROLE_KEY_MAP[role] ? t(ROLE_KEY_MAP[role]) : (ROLE_LABELS[role] ?? role);
 

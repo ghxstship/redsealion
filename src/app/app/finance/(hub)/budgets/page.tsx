@@ -51,7 +51,7 @@ async function getBudgets(): Promise<BudgetSummary[]> {
   }
 }
 
-const BUDGET_ALLOWED_ROLES = ['developer', 'owner', 'admin', 'controller', 'manager'];
+const BUDGET_ALLOWED_ROLES = ['developer', 'owner', 'admin', 'controller', 'collaborator'];
 
 export default async function BudgetsPage() {
   const supabase = await createClient();

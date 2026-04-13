@@ -7,7 +7,6 @@ import { expectPageRendered, expectNoRawI18nKeys, expectAccessDenied } from '../
 const LEAD_ROUTES = [
   '/app/leads',
   '/app/leads/forms',
-  '/app/leads/scoring',
 ];
 
 test.describe('Leads Hub @leads', () => {

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { generateICalFeed } from '@/lib/calendar/ical';
+import { generateICalFeed } from '@/lib/utils/ical';
 import { requireAuth } from '@/lib/api/auth-guard';
 import { castRelation } from '@/lib/supabase/cast-relation';
 

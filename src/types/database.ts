@@ -7,11 +7,6 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "14.4"
-  }
   graphql_public: {
     Tables: {
       [_ in never]: never
@@ -112,104 +107,102 @@ export type Database = {
           },
         ]
       }
-      activation_assignments: {
-        Row: {
-          activation_id: string
-          created_at: string
-          id: string
-          notes: string | null
-          project_id: string
-        }
-        Insert: {
-          activation_id: string
-          created_at?: string
-          id?: string
-          notes?: string | null
-          project_id: string
-        }
-        Update: {
-          activation_id?: string
-          created_at?: string
-          id?: string
-          notes?: string | null
-          project_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "activation_assignments_activation_id_fkey"
-            columns: ["activation_id"]
-            isOneToOne: false
-            referencedRelation: "activations"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "activation_assignments_project_id_fkey"
-            columns: ["project_id"]
-            isOneToOne: false
-            referencedRelation: "projects"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       activations: {
         Row: {
           created_at: string
           created_by: string | null
           deleted_at: string | null
+          deleted_by: string | null
           ends_at: string | null
           event_id: string
+          hierarchy_status:
+            | Database["public"]["Enums"]["hierarchy_status"]
+            | null
           id: string
           load_in: Json | null
           location_id: string
+          markup_pct: number | null
           name: string
           notes: string | null
           organization_id: string
+          overhead_cents: number | null
           slug: string | null
+          space_id: string | null
           starts_at: string | null
           status: string
+          status_changed_at: string | null
+          status_changed_by: string | null
           strike: Json | null
           type: Database["public"]["Enums"]["activation_type"]
           updated_at: string
+          zone_id: string | null
         }
         Insert: {
           created_at?: string
           created_by?: string | null
           deleted_at?: string | null
+          deleted_by?: string | null
           ends_at?: string | null
           event_id: string
+          hierarchy_status?:
+            | Database["public"]["Enums"]["hierarchy_status"]
+            | null
           id?: string
           load_in?: Json | null
           location_id: string
+          markup_pct?: number | null
           name: string
           notes?: string | null
           organization_id: string
+          overhead_cents?: number | null
           slug?: string | null
+          space_id?: string | null
           starts_at?: string | null
           status?: string
+          status_changed_at?: string | null
+          status_changed_by?: string | null
           strike?: Json | null
           type?: Database["public"]["Enums"]["activation_type"]
           updated_at?: string
+          zone_id?: string | null
         }
         Update: {
           created_at?: string
           created_by?: string | null
           deleted_at?: string | null
+          deleted_by?: string | null
           ends_at?: string | null
           event_id?: string
+          hierarchy_status?:
+            | Database["public"]["Enums"]["hierarchy_status"]
+            | null
           id?: string
           load_in?: Json | null
           location_id?: string
+          markup_pct?: number | null
           name?: string
           notes?: string | null
           organization_id?: string
+          overhead_cents?: number | null
           slug?: string | null
+          space_id?: string | null
           starts_at?: string | null
           status?: string
+          status_changed_at?: string | null
+          status_changed_by?: string | null
           strike?: Json | null
           type?: Database["public"]["Enums"]["activation_type"]
           updated_at?: string
+          zone_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "activations_deleted_by_fkey"
+            columns: ["deleted_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "activations_event_id_fkey"
             columns: ["event_id"]
@@ -229,6 +222,27 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "activations_space_id_fkey"
+            columns: ["space_id"]
+            isOneToOne: false
+            referencedRelation: "spaces"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "activations_status_changed_by_fkey"
+            columns: ["status_changed_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "activations_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "zones"
             referencedColumns: ["id"]
           },
         ]
@@ -304,7 +318,6 @@ export type Database = {
           allowed_domains: string[] | null
           code: string
           code_type: Database["public"]["Enums"]["access_code_type"]
-          collaborator_role: Database["public"]["Enums"]["collaborator_role"]
           created_at: string | null
           created_by: string | null
           current_uses: number | null
@@ -323,7 +336,6 @@ export type Database = {
           allowed_domains?: string[] | null
           code: string
           code_type?: Database["public"]["Enums"]["access_code_type"]
-          collaborator_role?: Database["public"]["Enums"]["collaborator_role"]
           created_at?: string | null
           created_by?: string | null
           current_uses?: number | null
@@ -342,7 +354,6 @@ export type Database = {
           allowed_domains?: string[] | null
           code?: string
           code_type?: Database["public"]["Enums"]["access_code_type"]
-          collaborator_role?: Database["public"]["Enums"]["collaborator_role"]
           created_at?: string | null
           created_by?: string | null
           current_uses?: number | null
@@ -949,7 +960,7 @@ export type Database = {
             | Database["public"]["Enums"]["advance_type"][]
             | null
           allowed_category_groups: string[] | null
-          collaborator_role: Database["public"]["Enums"]["collaborator_role"]
+          collaborator_role: Database["public"]["Enums"]["project_role"]
           created_at: string | null
           custom_instructions: string | null
           declined_at: string | null
@@ -977,7 +988,7 @@ export type Database = {
             | Database["public"]["Enums"]["advance_type"][]
             | null
           allowed_category_groups?: string[] | null
-          collaborator_role?: Database["public"]["Enums"]["collaborator_role"]
+          collaborator_role?: Database["public"]["Enums"]["project_role"]
           created_at?: string | null
           custom_instructions?: string | null
           declined_at?: string | null
@@ -1005,7 +1016,7 @@ export type Database = {
             | Database["public"]["Enums"]["advance_type"][]
             | null
           allowed_category_groups?: string[] | null
-          collaborator_role?: Database["public"]["Enums"]["collaborator_role"]
+          collaborator_role?: Database["public"]["Enums"]["project_role"]
           created_at?: string | null
           custom_instructions?: string | null
           declined_at?: string | null
@@ -1380,6 +1391,7 @@ export type Database = {
           category_group_slug: string | null
           category_slug: string | null
           collaborator_id: string | null
+          component_id: string | null
           created_at: string | null
           damage_report: Json | null
           deleted_at: string | null
@@ -1453,6 +1465,7 @@ export type Database = {
           category_group_slug?: string | null
           category_slug?: string | null
           collaborator_id?: string | null
+          component_id?: string | null
           created_at?: string | null
           damage_report?: Json | null
           deleted_at?: string | null
@@ -1528,6 +1541,7 @@ export type Database = {
           category_group_slug?: string | null
           category_slug?: string | null
           collaborator_id?: string | null
+          component_id?: string | null
           created_at?: string | null
           damage_report?: Json | null
           deleted_at?: string | null
@@ -1643,6 +1657,13 @@ export type Database = {
             columns: ["collaborator_id"]
             isOneToOne: false
             referencedRelation: "advance_collaborators"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "advance_line_items_component_id_fkey"
+            columns: ["component_id"]
+            isOneToOne: false
+            referencedRelation: "components"
             referencedColumns: ["id"]
           },
           {
@@ -4426,6 +4447,215 @@ export type Database = {
           },
         ]
       }
+      component_items: {
+        Row: {
+          advance_line_item_id: string | null
+          catalog_item_id: string
+          catalog_variant_id: string | null
+          component_id: string
+          created_at: string
+          created_by: string | null
+          deleted_at: string | null
+          duration_days: number | null
+          fulfillment_method: Database["public"]["Enums"]["fulfillment_method"]
+          id: string
+          line_total_cents: number | null
+          notes: string | null
+          organization_id: string
+          quantity: number
+          sort_order: number
+          unit_of_measure: Database["public"]["Enums"]["unit_of_measure"] | null
+          unit_price_cents: number | null
+          updated_at: string
+        }
+        Insert: {
+          advance_line_item_id?: string | null
+          catalog_item_id: string
+          catalog_variant_id?: string | null
+          component_id: string
+          created_at?: string
+          created_by?: string | null
+          deleted_at?: string | null
+          duration_days?: number | null
+          fulfillment_method?: Database["public"]["Enums"]["fulfillment_method"]
+          id?: string
+          line_total_cents?: number | null
+          notes?: string | null
+          organization_id: string
+          quantity?: number
+          sort_order?: number
+          unit_of_measure?:
+            | Database["public"]["Enums"]["unit_of_measure"]
+            | null
+          unit_price_cents?: number | null
+          updated_at?: string
+        }
+        Update: {
+          advance_line_item_id?: string | null
+          catalog_item_id?: string
+          catalog_variant_id?: string | null
+          component_id?: string
+          created_at?: string
+          created_by?: string | null
+          deleted_at?: string | null
+          duration_days?: number | null
+          fulfillment_method?: Database["public"]["Enums"]["fulfillment_method"]
+          id?: string
+          line_total_cents?: number | null
+          notes?: string | null
+          organization_id?: string
+          quantity?: number
+          sort_order?: number
+          unit_of_measure?:
+            | Database["public"]["Enums"]["unit_of_measure"]
+            | null
+          unit_price_cents?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "component_items_advance_line_item_id_fkey"
+            columns: ["advance_line_item_id"]
+            isOneToOne: false
+            referencedRelation: "advance_line_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "component_items_catalog_item_id_fkey"
+            columns: ["catalog_item_id"]
+            isOneToOne: false
+            referencedRelation: "advance_catalog_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "component_items_catalog_variant_id_fkey"
+            columns: ["catalog_variant_id"]
+            isOneToOne: false
+            referencedRelation: "advance_catalog_variants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "component_items_component_id_fkey"
+            columns: ["component_id"]
+            isOneToOne: false
+            referencedRelation: "components"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "component_items_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "component_items_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      components: {
+        Row: {
+          activation_id: string
+          created_at: string
+          created_by: string | null
+          deleted_at: string | null
+          deleted_by: string | null
+          description: string | null
+          id: string
+          markup_pct: number | null
+          name: string
+          organization_id: string
+          overhead_cents: number | null
+          slug: string
+          sort_order: number
+          status: Database["public"]["Enums"]["hierarchy_status"]
+          status_changed_at: string | null
+          status_changed_by: string | null
+          type: Database["public"]["Enums"]["component_type"]
+          updated_at: string
+        }
+        Insert: {
+          activation_id: string
+          created_at?: string
+          created_by?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
+          description?: string | null
+          id?: string
+          markup_pct?: number | null
+          name: string
+          organization_id: string
+          overhead_cents?: number | null
+          slug: string
+          sort_order?: number
+          status?: Database["public"]["Enums"]["hierarchy_status"]
+          status_changed_at?: string | null
+          status_changed_by?: string | null
+          type?: Database["public"]["Enums"]["component_type"]
+          updated_at?: string
+        }
+        Update: {
+          activation_id?: string
+          created_at?: string
+          created_by?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
+          description?: string | null
+          id?: string
+          markup_pct?: number | null
+          name?: string
+          organization_id?: string
+          overhead_cents?: number | null
+          slug?: string
+          sort_order?: number
+          status?: Database["public"]["Enums"]["hierarchy_status"]
+          status_changed_at?: string | null
+          status_changed_by?: string | null
+          type?: Database["public"]["Enums"]["component_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "components_activation_id_fkey"
+            columns: ["activation_id"]
+            isOneToOne: false
+            referencedRelation: "activations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "components_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "components_deleted_by_fkey"
+            columns: ["deleted_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "components_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "components_status_changed_by_fkey"
+            columns: ["status_changed_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cost_rates: {
         Row: {
           created_at: string
@@ -6453,18 +6683,26 @@ export type Database = {
           created_by: string | null
           daily_hours: string | null
           deleted_at: string | null
+          deleted_by: string | null
           doors_time: string | null
           ends_at: string | null
           event_code: string | null
           general_email: string | null
+          hierarchy_status:
+            | Database["public"]["Enums"]["hierarchy_status"]
+            | null
           id: string
+          markup_pct: number | null
           name: string
           notes: string | null
           organization_id: string
+          overhead_cents: number | null
           presenter: string | null
           slug: string
           starts_at: string | null
           status: string
+          status_changed_at: string | null
+          status_changed_by: string | null
           subtitle: string | null
           type: Database["public"]["Enums"]["event_type"]
           updated_at: string
@@ -6474,18 +6712,26 @@ export type Database = {
           created_by?: string | null
           daily_hours?: string | null
           deleted_at?: string | null
+          deleted_by?: string | null
           doors_time?: string | null
           ends_at?: string | null
           event_code?: string | null
           general_email?: string | null
+          hierarchy_status?:
+            | Database["public"]["Enums"]["hierarchy_status"]
+            | null
           id?: string
+          markup_pct?: number | null
           name: string
           notes?: string | null
           organization_id: string
+          overhead_cents?: number | null
           presenter?: string | null
           slug: string
           starts_at?: string | null
           status?: string
+          status_changed_at?: string | null
+          status_changed_by?: string | null
           subtitle?: string | null
           type?: Database["public"]["Enums"]["event_type"]
           updated_at?: string
@@ -6495,28 +6741,50 @@ export type Database = {
           created_by?: string | null
           daily_hours?: string | null
           deleted_at?: string | null
+          deleted_by?: string | null
           doors_time?: string | null
           ends_at?: string | null
           event_code?: string | null
           general_email?: string | null
+          hierarchy_status?:
+            | Database["public"]["Enums"]["hierarchy_status"]
+            | null
           id?: string
+          markup_pct?: number | null
           name?: string
           notes?: string | null
           organization_id?: string
+          overhead_cents?: number | null
           presenter?: string | null
           slug?: string
           starts_at?: string | null
           status?: string
+          status_changed_at?: string | null
+          status_changed_by?: string | null
           subtitle?: string | null
           type?: Database["public"]["Enums"]["event_type"]
           updated_at?: string
         }
         Relationships: [
           {
+            foreignKeyName: "events_deleted_by_fkey"
+            columns: ["deleted_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "events_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "events_status_changed_by_fkey"
+            columns: ["status_changed_by"]
+            isOneToOne: false
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
@@ -7493,6 +7761,155 @@ export type Database = {
             columns: ["received_by"]
             isOneToOne: false
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hierarchy_status_log: {
+        Row: {
+          changed_by: string
+          created_at: string
+          entity_id: string
+          entity_type: string
+          from_status: Database["public"]["Enums"]["hierarchy_status"] | null
+          id: string
+          organization_id: string
+          reason: string | null
+          to_status: Database["public"]["Enums"]["hierarchy_status"]
+        }
+        Insert: {
+          changed_by: string
+          created_at?: string
+          entity_id: string
+          entity_type: string
+          from_status?: Database["public"]["Enums"]["hierarchy_status"] | null
+          id?: string
+          organization_id: string
+          reason?: string | null
+          to_status: Database["public"]["Enums"]["hierarchy_status"]
+        }
+        Update: {
+          changed_by?: string
+          created_at?: string
+          entity_id?: string
+          entity_type?: string
+          from_status?: Database["public"]["Enums"]["hierarchy_status"] | null
+          id?: string
+          organization_id?: string
+          reason?: string | null
+          to_status?: Database["public"]["Enums"]["hierarchy_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hierarchy_status_log_changed_by_fkey"
+            columns: ["changed_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hierarchy_status_log_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hierarchy_tasks: {
+        Row: {
+          activation_id: string | null
+          component_id: string | null
+          created_at: string
+          event_id: string | null
+          gate_target_status:
+            | Database["public"]["Enums"]["hierarchy_status"]
+            | null
+          id: string
+          is_status_gate: boolean
+          organization_id: string
+          project_id: string | null
+          task_id: string
+          zone_id: string | null
+        }
+        Insert: {
+          activation_id?: string | null
+          component_id?: string | null
+          created_at?: string
+          event_id?: string | null
+          gate_target_status?:
+            | Database["public"]["Enums"]["hierarchy_status"]
+            | null
+          id?: string
+          is_status_gate?: boolean
+          organization_id: string
+          project_id?: string | null
+          task_id: string
+          zone_id?: string | null
+        }
+        Update: {
+          activation_id?: string | null
+          component_id?: string | null
+          created_at?: string
+          event_id?: string | null
+          gate_target_status?:
+            | Database["public"]["Enums"]["hierarchy_status"]
+            | null
+          id?: string
+          is_status_gate?: boolean
+          organization_id?: string
+          project_id?: string | null
+          task_id?: string
+          zone_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hierarchy_tasks_activation_id_fkey"
+            columns: ["activation_id"]
+            isOneToOne: false
+            referencedRelation: "activations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hierarchy_tasks_component_id_fkey"
+            columns: ["component_id"]
+            isOneToOne: false
+            referencedRelation: "components"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hierarchy_tasks_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hierarchy_tasks_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hierarchy_tasks_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hierarchy_tasks_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hierarchy_tasks_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "zones"
             referencedColumns: ["id"]
           },
         ]
@@ -11607,51 +12024,6 @@ export type Database = {
           },
         ]
       }
-      project_locations: {
-        Row: {
-          created_at: string
-          id: string
-          is_primary: boolean
-          location_id: string
-          notes: string | null
-          project_id: string
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          is_primary?: boolean
-          location_id: string
-          notes?: string | null
-          project_id: string
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          is_primary?: boolean
-          location_id?: string
-          notes?: string | null
-          project_id?: string
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "project_locations_location_id_fkey"
-            columns: ["location_id"]
-            isOneToOne: false
-            referencedRelation: "locations"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "project_locations_project_id_fkey"
-            columns: ["project_id"]
-            isOneToOne: false
-            referencedRelation: "projects"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       project_memberships: {
         Row: {
           access_expires_at: string | null
@@ -11935,11 +12307,17 @@ export type Database = {
           doors_time: string | null
           ends_at: string | null
           general_email: string | null
+          hierarchy_status:
+            | Database["public"]["Enums"]["hierarchy_status"]
+            | null
           id: string
           invite_code_enabled: boolean
+          is_public: boolean
+          markup_pct: number | null
           max_members: number | null
           name: string
           organization_id: string
+          overhead_cents: number | null
           presenter: string | null
           project_code: string | null
           require_admin_approval: boolean
@@ -11947,6 +12325,8 @@ export type Database = {
           slug: string
           starts_at: string | null
           status: string
+          status_changed_at: string | null
+          status_changed_by: string | null
           subtitle: string | null
           updated_at: string
           venue_address: Json | null
@@ -11968,11 +12348,17 @@ export type Database = {
           doors_time?: string | null
           ends_at?: string | null
           general_email?: string | null
+          hierarchy_status?:
+            | Database["public"]["Enums"]["hierarchy_status"]
+            | null
           id?: string
           invite_code_enabled?: boolean
+          is_public?: boolean
+          markup_pct?: number | null
           max_members?: number | null
           name: string
           organization_id: string
+          overhead_cents?: number | null
           presenter?: string | null
           project_code?: string | null
           require_admin_approval?: boolean
@@ -11980,6 +12366,8 @@ export type Database = {
           slug: string
           starts_at?: string | null
           status?: string
+          status_changed_at?: string | null
+          status_changed_by?: string | null
           subtitle?: string | null
           updated_at?: string
           venue_address?: Json | null
@@ -12001,11 +12389,17 @@ export type Database = {
           doors_time?: string | null
           ends_at?: string | null
           general_email?: string | null
+          hierarchy_status?:
+            | Database["public"]["Enums"]["hierarchy_status"]
+            | null
           id?: string
           invite_code_enabled?: boolean
+          is_public?: boolean
+          markup_pct?: number | null
           max_members?: number | null
           name?: string
           organization_id?: string
+          overhead_cents?: number | null
           presenter?: string | null
           project_code?: string | null
           require_admin_approval?: boolean
@@ -12013,6 +12407,8 @@ export type Database = {
           slug?: string
           starts_at?: string | null
           status?: string
+          status_changed_at?: string | null
+          status_changed_by?: string | null
           subtitle?: string | null
           updated_at?: string
           venue_address?: Json | null
@@ -12054,6 +12450,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_status_changed_by_fkey"
+            columns: ["status_changed_by"]
+            isOneToOne: false
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
@@ -12229,6 +12632,7 @@ export type Database = {
           deposit_required: boolean | null
           follow_up_count: number | null
           id: string
+          is_public: boolean
           last_viewed_at: string | null
           name: string
           narrative_context: Json | null
@@ -12271,6 +12675,7 @@ export type Database = {
           deposit_required?: boolean | null
           follow_up_count?: number | null
           id?: string
+          is_public?: boolean
           last_viewed_at?: string | null
           name: string
           narrative_context?: Json | null
@@ -12313,6 +12718,7 @@ export type Database = {
           deposit_required?: boolean | null
           follow_up_count?: number | null
           id?: string
+          is_public?: boolean
           last_viewed_at?: string | null
           name?: string
           narrative_context?: Json | null
@@ -14300,6 +14706,113 @@ export type Database = {
           },
         ]
       }
+      spaces: {
+        Row: {
+          area_sqft: number | null
+          capacity: number | null
+          created_at: string
+          created_by: string | null
+          deleted_at: string | null
+          deleted_by: string | null
+          description: string | null
+          environment: string | null
+          floor_level: string | null
+          floor_plan_url: string | null
+          has_power: boolean | null
+          has_water: boolean | null
+          has_wifi: boolean | null
+          id: string
+          infrastructure_notes: string | null
+          location_id: string
+          name: string
+          organization_id: string
+          slug: string
+          sort_order: number
+          status: string
+          type: Database["public"]["Enums"]["space_type"]
+          updated_at: string
+        }
+        Insert: {
+          area_sqft?: number | null
+          capacity?: number | null
+          created_at?: string
+          created_by?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
+          description?: string | null
+          environment?: string | null
+          floor_level?: string | null
+          floor_plan_url?: string | null
+          has_power?: boolean | null
+          has_water?: boolean | null
+          has_wifi?: boolean | null
+          id?: string
+          infrastructure_notes?: string | null
+          location_id: string
+          name: string
+          organization_id: string
+          slug: string
+          sort_order?: number
+          status?: string
+          type?: Database["public"]["Enums"]["space_type"]
+          updated_at?: string
+        }
+        Update: {
+          area_sqft?: number | null
+          capacity?: number | null
+          created_at?: string
+          created_by?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
+          description?: string | null
+          environment?: string | null
+          floor_level?: string | null
+          floor_plan_url?: string | null
+          has_power?: boolean | null
+          has_water?: boolean | null
+          has_wifi?: boolean | null
+          id?: string
+          infrastructure_notes?: string | null
+          location_id?: string
+          name?: string
+          organization_id?: string
+          slug?: string
+          sort_order?: number
+          status?: string
+          type?: Database["public"]["Enums"]["space_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "spaces_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "spaces_deleted_by_fkey"
+            columns: ["deleted_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "spaces_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "spaces_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sso_configurations: {
         Row: {
           client_id: string
@@ -15680,6 +16193,7 @@ export type Database = {
           created_at: string
           date_format: string
           default_calendar_view: string
+          density: string
           first_day_of_week: number
           id: string
           language: string
@@ -15695,6 +16209,7 @@ export type Database = {
           created_at?: string
           date_format?: string
           default_calendar_view?: string
+          density?: string
           first_day_of_week?: number
           id?: string
           language?: string
@@ -15710,6 +16225,7 @@ export type Database = {
           created_at?: string
           date_format?: string
           default_calendar_view?: string
+          density?: string
           first_day_of_week?: number
           id?: string
           language?: string
@@ -16732,6 +17248,108 @@ export type Database = {
           },
         ]
       }
+      zones: {
+        Row: {
+          color_hex: string | null
+          created_at: string
+          created_by: string | null
+          deleted_at: string | null
+          deleted_by: string | null
+          description: string | null
+          event_id: string
+          id: string
+          markup_pct: number | null
+          name: string
+          organization_id: string
+          overhead_cents: number | null
+          slug: string
+          sort_order: number
+          status: Database["public"]["Enums"]["hierarchy_status"]
+          status_changed_at: string | null
+          status_changed_by: string | null
+          type: Database["public"]["Enums"]["zone_type"]
+          updated_at: string
+        }
+        Insert: {
+          color_hex?: string | null
+          created_at?: string
+          created_by?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
+          description?: string | null
+          event_id: string
+          id?: string
+          markup_pct?: number | null
+          name: string
+          organization_id: string
+          overhead_cents?: number | null
+          slug: string
+          sort_order?: number
+          status?: Database["public"]["Enums"]["hierarchy_status"]
+          status_changed_at?: string | null
+          status_changed_by?: string | null
+          type?: Database["public"]["Enums"]["zone_type"]
+          updated_at?: string
+        }
+        Update: {
+          color_hex?: string | null
+          created_at?: string
+          created_by?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
+          description?: string | null
+          event_id?: string
+          id?: string
+          markup_pct?: number | null
+          name?: string
+          organization_id?: string
+          overhead_cents?: number | null
+          slug?: string
+          sort_order?: number
+          status?: Database["public"]["Enums"]["hierarchy_status"]
+          status_changed_at?: string | null
+          status_changed_by?: string | null
+          type?: Database["public"]["Enums"]["zone_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "zones_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "zones_deleted_by_fkey"
+            columns: ["deleted_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "zones_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "zones_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "zones_status_changed_by_fkey"
+            columns: ["status_changed_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       audit_log: {
@@ -16935,6 +17553,51 @@ export type Database = {
       }
       generate_advance_number: { Args: { org_id: string }; Returns: string }
       generate_deal_number: { Args: { org_id: string }; Returns: string }
+      hierarchy_budget_rollup: {
+        Args: { p_entity_id: string; p_entity_type: string }
+        Returns: {
+          entity_id: string
+          entity_name: string
+          items_total_cents: number
+          level: string
+          markup_amount_cents: number
+          markup_pct: number
+          overhead_cents: number
+          subtotal_cents: number
+        }[]
+      }
+      hierarchy_items_by_vertical: {
+        Args: {
+          p_category_slug?: string
+          p_group_slug?: string
+          p_scope_id: string
+          p_scope_type: string
+          p_subcategory_slug?: string
+        }
+        Returns: {
+          activation_id: string
+          activation_name: string
+          catalog_item_id: string
+          category_name: string
+          component_id: string
+          component_item_id: string
+          component_name: string
+          event_id: string
+          event_name: string
+          group_color: string
+          group_name: string
+          group_slug: string
+          item_code: string
+          item_name: string
+          line_total_cents: number
+          quantity: number
+          space_id: string
+          space_name: string
+          subcategory_name: string
+          zone_id: string
+          zone_name: string
+        }[]
+      }
       increment_campaign_click: {
         Args: { p_token: string }
         Returns: undefined
@@ -16946,6 +17609,10 @@ export type Database = {
       is_super_admin: { Args: never; Returns: boolean }
       mark_overdue_invoices: { Args: { p_org_id?: string }; Returns: number }
       seed_advance_categories: {
+        Args: { p_org_id: string }
+        Returns: undefined
+      }
+      seed_advance_categories_v7_expansion: {
         Args: { p_org_id: string }
         Returns: undefined
       }
@@ -17026,12 +17693,6 @@ export type Database = {
         | "approved"
         | "rejected"
         | "void"
-      collaborator_role:
-        | "owner"
-        | "manager"
-        | "contributor"
-        | "viewer"
-        | "vendor"
       compliance_document_type:
         | "coi"
         | "w9"
@@ -17045,6 +17706,15 @@ export type Database = {
         | "contract"
         | "permit"
         | "other"
+      component_type:
+        | "build"
+        | "install"
+        | "scenic"
+        | "technical"
+        | "hospitality"
+        | "signage"
+        | "infrastructure"
+        | "custom"
       contact_role: "primary" | "billing" | "creative" | "operations"
       creative_reference_type:
         | "reference"
@@ -17108,6 +17778,7 @@ export type Database = {
         | "production"
         | "other"
       expense_status: "pending" | "approved" | "rejected" | "reimbursed"
+      fulfillment_method: "build" | "purchase" | "rent" | "internal"
       fulfillment_status:
         | "pending"
         | "sourcing"
@@ -17130,6 +17801,13 @@ export type Database = {
         | "drop_ship"
         | "will_call"
         | "digital"
+      hierarchy_status:
+        | "draft"
+        | "advancing"
+        | "confirmed"
+        | "locked"
+        | "complete"
+        | "archived"
       integration_status:
         | "disconnected"
         | "connecting"
@@ -17200,15 +17878,14 @@ export type Database = {
       org_role:
         | "developer"
         | "owner"
-        | "manager"
-        | "team_member"
-        | "fabricator"
+        | "admin"
+        | "controller"
+        | "collaborator"
+        | "contractor"
         | "crew"
         | "client"
         | "viewer"
-        | "admin"
-        | "controller"
-        | "contractor"
+        | "community"
       payment_link_status: "active" | "paid" | "expired"
       phase_status:
         | "not_started"
@@ -17232,6 +17909,7 @@ export type Database = {
         | "internal"
         | "subcontract"
         | "consignment"
+      project_role: "creator" | "collaborator" | "viewer" | "vendor"
       proposal_status:
         | "draft"
         | "sent"
@@ -17245,6 +17923,28 @@ export type Database = {
       requirement_assignee: "client" | "producer" | "both" | "external_vendor"
       requirement_status: "pending" | "in_progress" | "complete" | "waived"
       reservation_status: "reserved" | "checked_out" | "returned" | "cancelled"
+      space_type:
+        | "stage"
+        | "conference_room"
+        | "dressing_room"
+        | "green_room"
+        | "loading_dock"
+        | "parking_lot"
+        | "terrace"
+        | "ballroom"
+        | "lobby"
+        | "booth_area"
+        | "open_field"
+        | "rooftop"
+        | "kitchen"
+        | "storage"
+        | "office"
+        | "gate"
+        | "corridor"
+        | "restroom_block"
+        | "medical_station"
+        | "broadcast_compound"
+        | "custom"
       subscription_tier: "free" | "starter" | "professional" | "enterprise"
       task_priority: "low" | "medium" | "high" | "urgent"
       task_status:
@@ -17311,6 +18011,23 @@ export type Database = {
         | "outdoor_rated"
         | "all_weather"
         | "not_applicable"
+      zone_type:
+        | "vip"
+        | "general_admission"
+        | "backstage"
+        | "front_of_house"
+        | "production"
+        | "hospitality"
+        | "vendor"
+        | "perimeter"
+        | "broadcast"
+        | "medical"
+        | "loading"
+        | "parking"
+        | "sponsor"
+        | "artist"
+        | "press"
+        | "custom"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -17511,13 +18228,6 @@ export const Constants = {
         "rejected",
         "void",
       ],
-      collaborator_role: [
-        "owner",
-        "manager",
-        "contributor",
-        "viewer",
-        "vendor",
-      ],
       compliance_document_type: [
         "coi",
         "w9",
@@ -17531,6 +18241,16 @@ export const Constants = {
         "contract",
         "permit",
         "other",
+      ],
+      component_type: [
+        "build",
+        "install",
+        "scenic",
+        "technical",
+        "hospitality",
+        "signage",
+        "infrastructure",
+        "custom",
       ],
       contact_role: ["primary", "billing", "creative", "operations"],
       creative_reference_type: [
@@ -17600,6 +18320,7 @@ export const Constants = {
         "other",
       ],
       expense_status: ["pending", "approved", "rejected", "reimbursed"],
+      fulfillment_method: ["build", "purchase", "rent", "internal"],
       fulfillment_status: [
         "pending",
         "sourcing",
@@ -17623,6 +18344,14 @@ export const Constants = {
         "drop_ship",
         "will_call",
         "digital",
+      ],
+      hierarchy_status: [
+        "draft",
+        "advancing",
+        "confirmed",
+        "locked",
+        "complete",
+        "archived",
       ],
       integration_status: [
         "disconnected",
@@ -17702,15 +18431,14 @@ export const Constants = {
       org_role: [
         "developer",
         "owner",
-        "manager",
-        "team_member",
-        "fabricator",
+        "admin",
+        "controller",
+        "collaborator",
+        "contractor",
         "crew",
         "client",
         "viewer",
-        "admin",
-        "controller",
-        "contractor",
+        "community",
       ],
       payment_link_status: ["active", "paid", "expired"],
       phase_status: [
@@ -17738,6 +18466,7 @@ export const Constants = {
         "subcontract",
         "consignment",
       ],
+      project_role: ["creator", "collaborator", "viewer", "vendor"],
       proposal_status: [
         "draft",
         "sent",
@@ -17752,6 +18481,29 @@ export const Constants = {
       requirement_assignee: ["client", "producer", "both", "external_vendor"],
       requirement_status: ["pending", "in_progress", "complete", "waived"],
       reservation_status: ["reserved", "checked_out", "returned", "cancelled"],
+      space_type: [
+        "stage",
+        "conference_room",
+        "dressing_room",
+        "green_room",
+        "loading_dock",
+        "parking_lot",
+        "terrace",
+        "ballroom",
+        "lobby",
+        "booth_area",
+        "open_field",
+        "rooftop",
+        "kitchen",
+        "storage",
+        "office",
+        "gate",
+        "corridor",
+        "restroom_block",
+        "medical_station",
+        "broadcast_compound",
+        "custom",
+      ],
       subscription_tier: ["free", "starter", "professional", "enterprise"],
       task_priority: ["low", "medium", "high", "urgent"],
       task_status: [
@@ -17823,6 +18575,300 @@ export const Constants = {
         "all_weather",
         "not_applicable",
       ],
+      zone_type: [
+        "vip",
+        "general_admission",
+        "backstage",
+        "front_of_house",
+        "production",
+        "hospitality",
+        "vendor",
+        "perimeter",
+        "broadcast",
+        "medical",
+        "loading",
+        "parking",
+        "sponsor",
+        "artist",
+        "press",
+        "custom",
+      ],
     },
   },
 } as const
+
+// ── Convenience table row aliases ────────────────────────────────────
+// These map `Tables['table_name']['Row']` to short PascalCase names.
+type PublicTables = Database['public']['Tables'];
+type PublicEnums = Database['public']['Enums'];
+
+// Organizations & Users
+export type Organization = PublicTables['organizations']['Row'];
+export type User = PublicTables['users']['Row'];
+export type OrganizationRole = PublicTables['organization_memberships']['Row'];
+
+// Proposals & Phases
+export type Proposal = PublicTables['proposals']['Row'];
+export type Phase = PublicTables['phases']['Row'];
+export type PhaseDeliverable = PublicTables['phase_deliverables']['Row'];
+export type PhaseAddon = PublicTables['phase_addons']['Row'];
+export type PhasePortfolioLink = PublicTables['phase_portfolio_links']['Row'];
+export type ChangeOrder = PublicTables['change_orders']['Row'];
+
+// Milestones
+export type MilestoneGate = PublicTables['milestone_gates']['Row'];
+export type MilestoneRequirement = PublicTables['milestone_requirements']['Row'];
+
+// Clients & Contacts
+export type Client = PublicTables['clients']['Row'];
+export type ClientContact = PublicTables['client_contacts']['Row'];
+
+// Deals & Pipeline
+export type Deal = PublicTables['deals']['Row'];
+export type DealWithClient = Deal & { client?: Client | null };
+
+// Invoices & Payments
+export type Invoice = PublicTables['invoices']['Row'];
+export type InvoiceLineItem = PublicTables['invoice_line_items']['Row'];
+export type InvoicePayment = PublicTables['invoice_payments']['Row'];
+
+// Assets
+export type Asset = PublicTables['assets']['Row'];
+export type AssetLocationHistory = PublicTables['asset_location_history']['Row'];
+
+// Crew
+export type CrewProfile = PublicTables['crew_profiles']['Row'];
+export type CrewProfileWithUser = CrewProfile & { users: User | null };
+export type CrewBooking = PublicTables['crew_bookings']['Row'];
+export type CrewAvailability = PublicTables['crew_availability']['Row'];
+
+// Team & Assignments
+export type TeamAssignment = PublicTables['team_assignments']['Row'];
+
+// Terms
+export type TermsDocument = PublicTables['terms_documents']['Row'];
+
+// Tasks
+export type TaskCommentWithAuthor = PublicTables['task_comments']['Row'] & { users: User | null };
+
+// Advances
+export type ProductionAdvance = PublicTables['production_advances']['Row'];
+export type AdvanceLineItem = PublicTables['advance_line_items']['Row'];
+export type AdvanceCatalogItem = PublicTables['advance_catalog_items']['Row'];
+export type AdvanceCatalogVariant = PublicTables['advance_catalog_variants']['Row'];
+export type AdvanceCategoryGroup = PublicTables['advance_category_groups']['Row'];
+export type AdvanceCategory = PublicTables['advance_categories']['Row'];
+export type AdvanceSubcategory = PublicTables['advance_subcategories']['Row'];
+export type AdvanceCollaborator = PublicTables['advance_collaborators']['Row'];
+export type AdvanceComment = PublicTables['advance_comments']['Row'];
+export type AdvanceAccessCode = PublicTables['advance_access_codes']['Row'];
+export type AdvanceModifierList = PublicTables['advance_modifier_lists']['Row'];
+export type AdvanceModifierOption = PublicTables['advance_modifier_options']['Row'];
+export type AdvanceStatusHistoryEntry = PublicTables['advance_status_history']['Row'];
+
+// ── Convenience enum aliases ────────────────────────────────────────
+export type AdvanceMode = PublicEnums['advance_mode'];
+export type AdvanceType = PublicEnums['advance_type'];
+export type AdvancePriority = PublicEnums['advance_priority'];
+export type AdvanceStatus = PublicEnums['advance_status'];
+export type ApprovalStatus = 'pending' | 'approved' | 'rejected';
+export type AssetCondition = PublicEnums['asset_condition'];
+export type AssetStatus = PublicEnums['asset_status'];
+export type CrewAvailabilityStatus = PublicEnums['availability_status'];
+export type CrewBookingStatus = PublicEnums['booking_status'];
+export type DealStage = PublicEnums['deal_stage'];
+export type FulfillmentMethod = PublicEnums['fulfillment_method'];
+export type FulfillmentStatus = PublicEnums['fulfillment_status'];
+export type FulfillmentType = PublicEnums['fulfillment_type'];
+export type InvoiceStatus = PublicEnums['invoice_status'];
+export type InvoiceType = PublicEnums['invoice_type'];
+export type MilestoneStatus = PublicEnums['milestone_status'];
+export type PhaseStatus = PublicEnums['phase_status'];
+export type ProposalStatus = PublicEnums['proposal_status'];
+export type RequirementStatus = PublicEnums['requirement_status'];
+export type SubscriptionTier = PublicEnums['subscription_tier'];
+export type UnitOfMeasure = PublicEnums['unit_of_measure'];
+export type CollaboratorRole = PublicEnums['project_role'];
+export type InviteStatus = PublicEnums['invite_status'];
+export type CreativeReferenceType = PublicEnums['creative_reference_type'];
+
+// ── JSON composite type aliases ────────────────────────────────────
+// These are JSON fields that have a known structure but are stored in
+// jsonb columns. We define them as explicit types here for usage
+// throughout the codebase.
+export type Address = {
+  street?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+  country?: string;
+};
+
+export type BrandConfig = {
+  primary_color?: string;
+  secondary_color?: string;
+  logo_url?: string;
+  font?: string;
+  primaryColor?: string;
+  secondaryColor?: string;
+  accentColor?: string;
+  backgroundColor?: string;
+  fontHeading?: string;
+  fontBody?: string;
+  portalTitle?: string;
+  companyTagline?: string;
+  footerText?: string;
+  emailFromName?: string;
+  emailReplyTo?: string;
+  [key: string]: unknown;
+};
+
+export type Facility = {
+  name?: string;
+  address?: Address;
+  city?: string;
+  state?: string;
+  capacity?: number;
+  notes?: string;
+};
+
+export type PaymentTerms = {
+  type?: string;
+  due_days?: number;
+  deposit_percent?: number;
+  structure?: string;
+  schedule?: Array<{ milestone: string; percent: number }>;
+  [key: string]: unknown;
+};
+
+export type CreativeReference = {
+  id?: string;
+  type?: string;
+  title?: string;
+  url?: string;
+  description?: string;
+  thumbnail_url?: string;
+  phase_id?: string;
+  [key: string]: unknown;
+};
+
+export type VenueActivationDates = {
+  start?: string;
+  end?: string;
+  load_in?: string;
+  strike?: string;
+};
+
+export type VenueLoadInStrike = {
+  date?: string;
+  startTime?: string;
+  endTime?: string;
+  load_in_start?: string;
+  load_in_end?: string;
+  strike_start?: string;
+  strike_end?: string;
+};
+
+export type VenueContact = {
+  name?: string;
+  role?: string;
+  email?: string;
+  phone?: string;
+};
+
+export type Venue = {
+  id?: string;
+  name?: string;
+  type?: string;
+  address?: Address;
+  activation_dates?: VenueActivationDates;
+  load_in_strike?: VenueLoadInStrike;
+  load_in?: VenueLoadInStrike;
+  strike?: VenueLoadInStrike;
+  contacts?: VenueContact[];
+  contact_on_site?: string;
+  site_constraints?: string;
+  sequence?: number;
+  [key: string]: unknown;
+};
+
+export type NarrativeContext = {
+  brand_story?: string;
+  target_audience?: string;
+  key_messages?: string[];
+  tone_of_voice?: string;
+  assumptions?: string[];
+  [key: string]: unknown;
+};
+
+export type AssetMetadata = {
+  dimensions?: string;
+  weight?: string;
+  material?: string;
+  color?: string;
+  notes?: string;
+};
+
+export type AssetLocation = {
+  location_id?: string;
+  location_name?: string;
+  section?: string;
+  notes?: string;
+};
+
+export type ResourceMetadata = {
+  type?: string;
+  capacity?: number;
+  notes?: string;
+  triggersProcurement?: boolean;
+  [key: string]: unknown;
+};
+
+export type FinanceTrigger = {
+  type?: string;
+  percentage?: number;
+  milestone_id?: string;
+  date?: string;
+};
+
+export type PmMetadata = {
+  assigned_pm?: string;
+  backup_pm?: string;
+  notes?: string;
+};
+
+export type TermsSection = {
+  title: string;
+  content: string;
+  order?: number;
+};
+
+export type ChangeOrderLineItem = {
+  description: string;
+  amount_cents: number;
+  type?: string;
+};
+
+export type RecurrenceRule = {
+  frequency: string;
+  interval?: number;
+  by_day?: string[];
+  days_of_week?: number[];
+  day_of_month?: number;
+  until?: string;
+  end_date?: string;
+  count?: number;
+  end_after_occurrences?: number;
+  occurrences_created?: number;
+  [key: string]: unknown;
+};
+
+export type OrgSettings = {
+  [key: string]: unknown;
+};
+
+export type RequirementAssignee = string;
+
+// ── Platform Role (for RBAC) ────────────────────────────────────────
+// PlatformRole is defined in src/lib/permissions.ts (not a DB enum)
+

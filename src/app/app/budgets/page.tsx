@@ -65,7 +65,7 @@ export default async function BudgetsPage() {
   const budgets = await getBudgets();
 
   return (
-    <RoleGate allowedRoles={['developer', 'owner', 'admin', 'controller', 'manager']}>
+    <RoleGate allowedRoles={['developer', 'owner', 'admin', 'controller', 'collaborator']}>
       <TierGate feature="budgets">
         <PageHeader
           title="Project Budgets"

@@ -97,7 +97,7 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
   });
 
   return (
-    <RoleGate allowedRoles={['developer', 'owner', 'admin', 'controller', 'manager', 'team_member']}>
+    <RoleGate allowedRoles={['developer', 'owner', 'admin', 'controller', 'collaborator']}>
     <>
 <PageHeader
         title="Settings"

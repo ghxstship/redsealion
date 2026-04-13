@@ -9,6 +9,11 @@ import StatusBadge, { EVENT_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import { Badge } from '@/components/ui/Badge';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
+const HIERARCHY_STATUS_COLORS: Record<string, string> = {
+  draft: 'default', advancing: 'info', confirmed: 'success',
+  locked: 'warning', complete: 'success', archived: 'default',
+};
+
 async function getEvent(id: string) {
   try {
     const supabase = await createClient();
@@ -16,7 +21,16 @@ async function getEvent(id: string) {
     if (!ctx) return null;
     const { data } = await supabase
       .from('events')
-      .select('*, activations(id, name, type, status), event_locations(location_id, is_primary, locations(id, name, type)), production_schedules(id, name, schedule_type, status)')
+      .select(`
+        *,
+        zones(id, name, slug, type, status, color_hex, sort_order,
+          activations(id, name, type, status, hierarchy_status, space_id, sort_order,
+            spaces(id, name, type)
+          )
+        ),
+        event_locations(location_id, is_primary, locations(id, name, type)),
+        production_schedules(id, name, schedule_type, status)
+      `)
       .eq('id', id)
       .eq('organization_id', ctx.organizationId)
       .is('deleted_at', null)
@@ -32,7 +46,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
   const event = await getEvent(id);
   if (!event) notFound();
 
-  const activations = (event.activations ?? []) as Array<Record<string, unknown>>;
+  const zones = (event.zones ?? []) as Array<Record<string, unknown>>;
   const eventLocations = (event.event_locations ?? []) as Array<Record<string, unknown>>;
   const schedules = (event.production_schedules ?? []) as Array<Record<string, unknown>>;
 
@@ -83,29 +97,97 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
         </div>
       </div>
 
-      {/* Activations */}
-      <div className="rounded-xl border border-border bg-background overflow-hidden mb-6">
-        <div className="px-6 py-4 border-b border-border flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-foreground">Activations ({activations.length})</h3>
-          <Button variant="ghost" size="sm" className="text-blue-600">+ Add Activation</Button>
+      {/* ── Zones & Activations (L3 → L4) ── */}
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-foreground">Zones & Activations</h3>
+          <Button variant="ghost" size="sm" className="text-blue-600">+ Add Zone</Button>
         </div>
-        {activations.length === 0 ? (
-          <div className="px-8 py-12 text-center text-sm text-text-secondary">No activations for this event.</div>
+
+        {zones.length === 0 ? (
+          <div className="rounded-xl border border-border bg-background px-8 py-12 text-center">
+            <p className="text-sm text-text-secondary">No zones defined for this event.</p>
+            <p className="text-xs text-text-muted mt-1">
+              Zones are logical groupings of activations. Create a zone to start organizing your production.
+            </p>
+          </div>
         ) : (
-            <Table >
-              <TableHeader>
-                <TableRow><TableHead>Name</TableHead><TableHead>Type</TableHead><TableHead>Status</TableHead></TableRow>
-              </TableHeader>
-              <TableBody>
-                {activations.map((a) => (
-                  <TableRow key={a.id as string}>
-                    <TableCell className="font-medium text-foreground">{a.name as string}</TableCell>
-                    <TableCell className="text-text-secondary capitalize">{(a.type as string) ?? '—'}</TableCell>
-                    <TableCell><StatusBadge status={a.status as string} colorMap={EVENT_STATUS_COLORS} /></TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+          <div className="space-y-4">
+            {zones.map((zone) => {
+              const zoneActivations = (zone.activations as Array<Record<string, unknown>>) ?? [];
+              return (
+                <div key={zone.id as string} className="rounded-xl border border-border bg-background overflow-hidden">
+                  {/* Zone header */}
+                  <div
+                    className="px-6 py-4 border-b border-border flex items-center justify-between"
+                    style={zone.color_hex ? { borderLeftWidth: 4, borderLeftColor: zone.color_hex as string } : {}}
+                  >
+                    <div>
+                      <div className="flex items-center gap-3">
+                        <h4 className="text-sm font-semibold text-foreground">{zone.name as string}</h4>
+                        <Badge variant="default" className="text-[10px] uppercase tracking-wider">
+                          {zone.type as string}
+                        </Badge>
+                        <StatusBadge
+                          status={zone.status as string}
+                          colorMap={HIERARCHY_STATUS_COLORS}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-text-muted">{zoneActivations.length} activation{zoneActivations.length !== 1 ? 's' : ''}</span>
+                      <Button variant="ghost" size="sm" className="text-blue-600">+ Activation</Button>
+                    </div>
+                  </div>
+
+                  {/* Activations within this zone */}
+                  {zoneActivations.length === 0 ? (
+                    <div className="px-8 py-6 text-center text-sm text-text-muted italic">
+                      No activations in this zone.
+                    </div>
+                  ) : (
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Activation</TableHead>
+                          <TableHead>Space</TableHead>
+                          <TableHead>Type</TableHead>
+                          <TableHead>Status</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {zoneActivations.map((a) => {
+                          const space = a.spaces as Record<string, unknown> | null;
+                          return (
+                            <TableRow key={a.id as string}>
+                              <TableCell className="font-medium text-foreground">{a.name as string}</TableCell>
+                              <TableCell className="text-text-secondary text-sm">
+                                {space ? (
+                                  <span>
+                                    📍 {space.name as string}
+                                    <span className="ml-1 text-text-muted text-xs capitalize">({space.type as string})</span>
+                                  </span>
+                                ) : (
+                                  <span className="text-text-muted italic">No space</span>
+                                )}
+                              </TableCell>
+                              <TableCell className="text-text-secondary capitalize">{(a.type as string) ?? '—'}</TableCell>
+                              <TableCell>
+                                <StatusBadge
+                                  status={(a.hierarchy_status || a.status) as string}
+                                  colorMap={HIERARCHY_STATUS_COLORS}
+                                />
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         )}
       </div>
 

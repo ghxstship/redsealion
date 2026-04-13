@@ -15,7 +15,8 @@ import { DEFAULT_LOCALE, hasLocale, normalizeBareCode } from '@/lib/i18n/config'
 import type { SupportedLocale } from '@/lib/i18n/config';
 import { createClient } from '@/lib/supabase/server';
 import type { SubscriptionTier } from '@/types/database';
-import { DEFAULT_PERMISSIONS, mapDBRoleToEnum } from '@/lib/permissions';
+import type { PlatformRole } from '@/lib/permissions';
+import { DEFAULT_PERMISSIONS } from '@/lib/permissions';
 import { castRelation } from '@/lib/supabase/cast-relation';
 import { cookies } from 'next/headers';
 
@@ -37,7 +38,7 @@ interface SessionContext {
 
 const DEFAULT_CONTEXT: SessionContext = {
   tier: 'free',
-  user: { fullName: 'User', email: '', role: 'team_member', avatarUrl: null },
+  user: { fullName: 'User', email: '', role: 'collaborator', avatarUrl: null },
   orgName: 'FlyteDeck',
   locale: DEFAULT_LOCALE,
 };
@@ -71,7 +72,7 @@ async function getSessionContext(): Promise<SessionContext> {
 
     const orgId = membership?.organization_id;
     const roleData = castRelation<{ name: string }>(membership?.roles);
-    const role = roleData?.name || 'team_member';
+    const role = roleData?.name || 'collaborator';
 
     const { data: org } = orgId
       ? await supabase
@@ -124,8 +125,8 @@ export default async function AppLayout({
 
   return (
     <PermissionsProvider
-      role={mapDBRoleToEnum(ctx.user.role)}
-      permissions={DEFAULT_PERMISSIONS[mapDBRoleToEnum(ctx.user.role)] ?? {}}
+      role={ctx.user.role as PlatformRole}
+      permissions={DEFAULT_PERMISSIONS[ctx.user.role as PlatformRole] ?? {}}
     >
       <SubscriptionProvider tier={ctx.tier}>
         <I18nProvider locale={ctx.locale} dictionary={dictionary}>

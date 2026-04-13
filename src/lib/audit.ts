@@ -1,10 +1,19 @@
 /**
- * Audit log utility.
+ * Application-Level Audit Logger
  *
  * Records organizational audit events for compliance and security tracking.
  * Called from API routes on create/update/delete operations.
+ * Writes to the `audit_log` table (migration 00014).
+ *
+ * For RBAC identity/security audit events (SOC2 compliance),
+ * use `@/lib/api/audit-logger` which writes to the `audit_logs` table.
+ *
+ * Both modules are intentional — they serve different compliance scopes:
+ *   - `audit_log`  → app-level operations (create/update/delete entities)
+ *   - `audit_logs` → identity/security (login, role changes, permission grants)
  *
  * @module lib/audit
+ * @see {@link @/lib/api/audit-logger} for SOC2 compliance events
  */
 
 import { createClient } from '@/lib/supabase/server';
