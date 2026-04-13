@@ -28,6 +28,7 @@ export async function PATCH(
   const { data: allocation, error } = await supabase
     .from('resource_allocations')
     .update(updates)
+    .eq('organization_id', perm!.organizationId)
     .eq('id', id)
     .select()
     .single();
@@ -57,6 +58,7 @@ export async function DELETE(
   const { error } = await supabase
     .from('resource_allocations')
     .delete()
+    .eq('organization_id', perm!.organizationId)
     .eq('id', id);
 
   if (error) {

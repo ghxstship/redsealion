@@ -84,11 +84,11 @@ export default function ExportCard({
       </div>
 
       {showPreview && previewData && (
-        <div className="border-t border-border bg-[#f8f9fb] px-5 py-4">
+        <div className="border-t border-border bg-bg-secondary px-5 py-4">
           <p className="text-[11px] font-medium uppercase tracking-wider text-text-muted mb-2">
             Sample Output
           </p>
-          <pre className="rounded-lg bg-[#1e293b] p-4 text-xs text-green-300 overflow-x-auto leading-relaxed font-mono">
+          <pre className="rounded-lg bg-bg-tertiary p-4 text-xs text-green-300 overflow-x-auto leading-relaxed font-mono">
             {JSON.stringify(previewData, null, 2)}
           </pre>
         </div>

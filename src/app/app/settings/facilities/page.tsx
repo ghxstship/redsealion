@@ -1,11 +1,13 @@
 'use client';
 
 import Button from '@/components/ui/Button';
+import { Badge } from '@/components/ui/Badge';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import FacilityFormModal from '@/components/admin/settings/FacilityFormModal';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 const facilities = [
   { id: 'fac_001', name: 'Meridian HQ', city: 'Los Angeles', state: 'CA', type: 'headquarters', isHQ: true },
   { id: 'fac_002', name: 'Meridian Fabrication', city: 'Long Beach', state: 'CA', type: 'warehouse', isHQ: false },
@@ -15,6 +17,7 @@ export default function FacilitiesSettingsPage() {
   const router = useRouter();
   const [showCreate, setShowCreate] = useState(false);
   return (
+    <RoleGate resource="settings">
     <div className="max-w-2xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
@@ -35,9 +38,7 @@ export default function FacilitiesSettingsPage() {
                 <div className="flex items-center gap-2">
                   <p className="text-sm font-medium text-foreground">{facility.name}</p>
                   {facility.isHQ && (
-                    <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700">
-                      HQ
-                    </span>
+                    <Badge variant="info">HQ</Badge>
                   )}
                 </div>
                 <p className="mt-0.5 text-xs text-text-muted">
@@ -57,5 +58,6 @@ export default function FacilitiesSettingsPage() {
         </div>
       </div>
     </div>
+  </RoleGate>
   );
 }

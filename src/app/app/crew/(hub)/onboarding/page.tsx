@@ -8,6 +8,7 @@ import MetricCard from '@/components/ui/MetricCard';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 
+import { RoleGate } from '@/components/shared/RoleGate';
 interface OnboardingMember {
   id: string;
   full_name: string;
@@ -78,6 +79,7 @@ export default async function OnboardingPage() {
   const pendingCount = members.filter((m) => m.onboarding_status === 'not_started' || m.onboarding_status === 'pending').length;
 
   return (
+    <RoleGate resource="crew">
     <>
       <PageHeader
         title="Onboarding"
@@ -152,5 +154,6 @@ export default async function OnboardingPage() {
         </Table>
       </div>
     </>
-  );
+  
+    </RoleGate>);
 }

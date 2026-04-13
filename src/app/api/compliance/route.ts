@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
   }
 
   // GAP-M9: Read-access audit logging
-  await logAudit({ action: 'compliance.list_viewed', entityType: 'compliance_document', metadata: { count: count ?? 0, type: docType } }, supabase).catch(() => {});
+  try { await logAudit({ action: 'compliance.list_viewed', entityType: 'compliance_document', metadata: { count: count ?? 0, type: docType } }, supabase); } catch { /* non-fatal */ }
 
   return NextResponse.json({
     documents: data ?? [],

@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
@@ -77,7 +78,7 @@ export default async function DailyReportsPage() {
               <TableBody >
                 {reports.map((r) => (
                   <TableRow key={r.id} className="hover:bg-bg-secondary/50 transition-colors">
-                    <TableCell className="px-4 py-3 font-medium text-foreground">{new Date(r.report_date + 'T00:00:00').toLocaleDateString()}</TableCell>
+                    <TableCell className="px-4 py-3 font-medium text-foreground">{formatDate(r.report_date + 'T00:00:00')}</TableCell>
                     <TableCell className="px-4 py-3 text-text-secondary">{r.event_name ?? '—'}</TableCell>
                     <TableCell className="px-4 py-3 tabular-nums text-foreground">{r.labor_hours}</TableCell>
                     <TableCell className="px-4 py-3 tabular-nums text-text-secondary">{r.crew_count}</TableCell>

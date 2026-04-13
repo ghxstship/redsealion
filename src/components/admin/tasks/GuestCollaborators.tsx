@@ -82,12 +82,12 @@ export default function GuestCollaborators({ taskId }: GuestCollaboratorsProps) 
           <UserPlus size={14} className="text-text-muted" />
           Guest Collaborators
         </h3>
-        <button
+        <Button variant="ghost"
           onClick={() => setShowInvite(!showInvite)}
           className="text-xs font-medium text-text-muted hover:text-foreground transition-colors"
         >
           {showInvite ? 'Cancel' : '+ Invite'}
-        </button>
+        </Button>
       </div>
 
       {showInvite && (
@@ -138,12 +138,12 @@ export default function GuestCollaborators({ taskId }: GuestCollaboratorsProps) 
                 )}
               </div>
               <span className="text-[11px] text-text-muted capitalize">{guest.role}</span>
-              <button
+              <Button variant="ghost"
                 onClick={() => handleRemove(guest.id)}
                 className="opacity-0 group-hover:opacity-100 text-text-muted hover:text-red-600 transition-all"
               >
                 <X size={14} />
-              </button>
+              </Button>
             </div>
           ))}
         </div>

@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency , formatDate } from '@/lib/utils';
 import Link from 'next/link';
 import FabricationHubTabs from '../FabricationHubTabs';
 import NewOrderButton from '@/components/fabrication/NewOrderButton';
@@ -78,7 +78,7 @@ export default async function FabricationOrdersPage() {
                     <TableCell className="px-4 py-3"><StatusBadge status={o.priority} colorMap={TASK_PRIORITY_COLORS} /></TableCell>
                     <TableCell className="px-4 py-3 tabular-nums">{o.quantity}</TableCell>
                     <TableCell className="px-4 py-3 tabular-nums">{formatCurrency(o.total_cost_cents / 100)}</TableCell>
-                    <TableCell className="px-4 py-3 text-text-secondary">{o.due_date ? new Date(o.due_date).toLocaleDateString() : '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{o.due_date ? formatDate(o.due_date) : '—'}</TableCell>
                     <TableCell className="px-4 py-3"><StatusBadge status={o.status} colorMap={FABRICATION_STATUS_COLORS} /></TableCell>
                   </TableRow>
                 ))}

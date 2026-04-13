@@ -9,6 +9,7 @@ import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import Alert from '@/components/ui/Alert';
 import FormSelect from '@/components/ui/FormSelect';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
+import { toast } from 'react-hot-toast';
 
 export interface MyDocumentData {
   id: string;
@@ -52,11 +53,11 @@ export default function MyDocumentsTable({ initialFiles }: MyDocumentsTableProps
         const { data } = await res.json();
         setFiles(prev => [data, ...prev]);
       } else {
-        setError('Upload failed');
+        toast.error('Upload failed');
       }
     } catch (err) {
       console.error(err);
-      setError('Upload failed');
+      toast.error('Upload failed');
     } finally {
       setIsUploading(false);
       e.target.value = '';
@@ -76,11 +77,11 @@ export default function MyDocumentsTable({ initialFiles }: MyDocumentsTableProps
         a.click();
         a.remove();
       } else {
-        setError('Download failed');
+        toast.error('Download failed');
       }
     } catch (err) {
       console.error(err);
-      setError('Download failed');
+      toast.error('Download failed');
     }
   };
 
@@ -92,11 +93,11 @@ export default function MyDocumentsTable({ initialFiles }: MyDocumentsTableProps
       if (res.ok) {
         setFiles(prev => prev.filter(f => f.id !== id));
       } else {
-        setError('Delete failed');
+        toast.error('Delete failed');
       }
     } catch (err) {
       console.error(err);
-      setError('Delete failed');
+      toast.error('Delete failed');
     } finally {
       setDeletingId(null);
       setShowDeleteConfirm(null);

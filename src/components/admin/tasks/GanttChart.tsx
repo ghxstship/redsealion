@@ -228,14 +228,14 @@ export default function GanttChart({ tasks, dependencies }: GanttChartProps) {
                             y1={-rowDiff * 44 + 22}
                             x2={dstLeft}
                             y2={22}
-                            stroke="#94a3b8"
+                            stroke="var(--color-text-muted)"
                             strokeWidth="1.5"
                             strokeDasharray="4 2"
                             markerEnd="url(#arrowhead)"
                           />
                           <defs>
                             <marker id="arrowhead" markerWidth="6" markerHeight="4" refX="6" refY="2" orient="auto">
-                              <polygon points="0 0, 6 2, 0 4" fill="#94a3b8" />
+                              <polygon points="0 0, 6 2, 0 4" fill="var(--color-text-muted)" />
                             </marker>
                           </defs>
                         </svg>

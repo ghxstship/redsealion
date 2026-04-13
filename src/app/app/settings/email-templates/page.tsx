@@ -39,6 +39,7 @@ import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import FormTextarea from '@/components/ui/FormTextarea';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 function MailIcon() {
   return <Mail className="h-5 w-5 text-text-secondary" />;
 }
@@ -144,6 +145,7 @@ export default function EmailTemplatesPage() {
   if (!loaded) return null;
 
   return (
+    <RoleGate resource="settings">
     <div className="max-w-2xl space-y-6">
       <div>
         <h2 className="text-lg font-semibold text-foreground">Email Templates</h2>
@@ -248,5 +250,6 @@ export default function EmailTemplatesPage() {
         })}
       </div>
     </div>
-  );
+  
+    </RoleGate>);
 }

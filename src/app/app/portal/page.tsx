@@ -45,7 +45,7 @@ export default async function PortalIndexPage() {
   // Group portals by project
   const projectMap = new Map<string, { project: { id: string; name: string; slug: string; status: string }; portals: PortalProject[] }>();
 
-  for (const portal of (portals ?? []) as PortalProject[]) {
+  for (const portal of (portals ?? []) as unknown as PortalProject[]) {
     const proj = portal.projects;
     if (!proj) continue;
 

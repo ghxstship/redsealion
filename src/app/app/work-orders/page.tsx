@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
@@ -115,7 +116,7 @@ export default async function WorkOrdersListPage() {
                     <TableCell className="px-4 py-3 text-text-secondary">{wo.location_name ?? '—'}</TableCell>
                     <TableCell className="px-4 py-3 tabular-nums text-text-secondary">{wo.crew_count}</TableCell>
                     <TableCell className="px-4 py-3 text-text-secondary text-xs">
-                      {wo.scheduled_start ? new Date(wo.scheduled_start).toLocaleDateString() : '—'}
+                      {wo.scheduled_start ? formatDate(wo.scheduled_start) : '—'}
                     </TableCell>
                   </TableRow>
                 ))}

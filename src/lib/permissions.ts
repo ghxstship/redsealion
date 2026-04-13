@@ -26,8 +26,9 @@ export type PermissionResource =
   | 'purchase_orders' | 'vendors'
   | 'dispatch' | 'fabrication' | 'rentals' | 'projects' | 'goals'
   | 'portfolio' | 'compliance' | 'marketplace' | 'files'
-  | 'schedule' | 'calendar' | 'campaigns' | 'templates'
-  | 'terms' | 'profitability' | 'roadmap' | 'workloads'
+  | 'project_portals' | 'webhooks' | 'schedule' | 'portals'
+  | 'profitability' | 'templates' | 'terms' | 'workloads'
+  | 'roadmap' | 'finance' | 'calendar' | 'campaigns'
   | 'email_inbox';
 
 export const ALL_RESOURCES: PermissionResource[] = [
@@ -41,9 +42,10 @@ export const ALL_RESOURCES: PermissionResource[] = [
   'purchase_orders', 'vendors',
   'dispatch', 'fabrication', 'rentals', 'projects', 'goals',
   'portfolio', 'compliance', 'marketplace', 'files',
-  'schedule', 'calendar', 'campaigns', 'templates',
+  'project_portals', 'webhooks', 'schedule', 'portals',
+  'profitability', 'templates', 'terms', 'workloads',
+  'roadmap', 'finance', 'calendar', 'campaigns',
   'email_inbox',
-  'terms', 'profitability', 'roadmap', 'workloads',
 ];
 
 export type PermissionAction = 'view' | 'create' | 'edit' | 'delete';
@@ -209,6 +211,12 @@ export const DEFAULT_PERMISSIONS: Record<OrganizationRole, Record<string, boolea
     ...viewOnly(['purchase_orders']),
     ...viewOnly(['vendors']),
     ...viewOnly(['email_inbox']),
+    // portals / project_portals — view (client-facing content oversight)
+    ...viewOnly(['portals', 'project_portals']),
+    // webhooks — none (admin-only config)
+    ...noPerm(['webhooks']),
+    // finance — view + approve (financial dashboard)
+    ...viewOnly(['finance']),
   },
 
   // ── manager — project management (no billing, no org settings) ──
@@ -256,6 +264,12 @@ export const DEFAULT_PERMISSIONS: Record<OrganizationRole, Record<string, boolea
     ...viewOnly(['profitability', 'marketplace']),
     ...viewCreate(['purchase_orders', 'vendors']),
     ...viewCreate(['email_inbox']),
+    // portals / project_portals — manage (no delete)
+    ...viewCreate(['portals', 'project_portals']),
+    // webhooks — view only (configuration visibility)
+    ...viewOnly(['webhooks']),
+    // finance — view (financial dashboard access)
+    ...viewOnly(['finance']),
   },
 
   // ── team_member — standard internal (design, fabrication, general) ──
@@ -329,6 +343,12 @@ export const DEFAULT_PERMISSIONS: Record<OrganizationRole, Record<string, boolea
     ...noPerm(['rentals', 'compliance', 'marketplace', 'campaigns', 'templates', 'terms', 'profitability']),
     ...noPerm(['purchase_orders', 'vendors']),
     ...viewOnly(['email_inbox']),
+    // portals / project_portals — view only
+    ...viewOnly(['portals', 'project_portals']),
+    // webhooks — none (admin-only)
+    ...noPerm(['webhooks']),
+    // finance — none (restricted to controller+)
+    ...noPerm(['finance']),
   },
 
   // ── client — external, portal access for proposals/invoices/approvals ──
@@ -343,7 +363,7 @@ export const DEFAULT_PERMISSIONS: Record<OrganizationRole, Record<string, boolea
   // ── viewer — external, read-only ──
   viewer: noPerm(ALL_RESOURCES),
 
-  // ── fabricator — deprecated (kept in enum, maps to team_member) ──
+  // ── fabricator — deprecated (kept in enum, maps to team_member at runtime) ──
   fabricator: noPerm(ALL_RESOURCES),
 };
 
@@ -379,6 +399,43 @@ export const PORTAL_PERMISSIONS: Record<'client' | 'viewer', Record<string, bool
 };
 
 // ---------------------------------------------------------------------------
+// Contractor portal permissions (for crew / contractor external roles)
+// ---------------------------------------------------------------------------
+
+export const CONTRACTOR_PORTAL_PERMISSIONS: Record<'contractor' | 'crew', Record<string, boolean>> = {
+  contractor: {
+    'work_orders.view': true,
+    'work_orders.bid': true,
+    'bookings.view': true,
+    'bookings.respond': true,
+    'time_entries.view': true,
+    'time_entries.create': true,
+    'compliance.view': true,
+    'compliance.upload': true,
+    'profile.view': true,
+    'profile.edit': true,
+    'documents.view': true,
+    'documents.upload': true,
+    'earnings.view': true,
+  },
+  crew: {
+    'work_orders.view': false,
+    'work_orders.bid': false,
+    'bookings.view': true,
+    'bookings.respond': true,
+    'time_entries.view': true,
+    'time_entries.create': true,
+    'compliance.view': true,
+    'compliance.upload': true,
+    'profile.view': true,
+    'profile.edit': true,
+    'documents.view': true,
+    'documents.upload': true,
+    'earnings.view': true,
+  },
+};
+
+// ---------------------------------------------------------------------------
 // Lookup helpers
 // ---------------------------------------------------------------------------
 
@@ -396,4 +453,11 @@ export function getPortalPermission(
   key: string
 ): boolean {
   return PORTAL_PERMISSIONS[role]?.[key] ?? false;
+}
+
+export function getContractorPortalPermission(
+  role: 'contractor' | 'crew',
+  key: string
+): boolean {
+  return CONTRACTOR_PORTAL_PERMISSIONS[role]?.[key] ?? false;
 }

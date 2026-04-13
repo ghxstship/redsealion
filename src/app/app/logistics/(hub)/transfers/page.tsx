@@ -7,6 +7,7 @@ import TransfersHeader from '@/components/admin/warehouse/TransfersHeader';
 import LogisticsHubTabs from "../../LogisticsHubTabs";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 interface Transfer {
   id: string;
   from_location: string;
@@ -90,6 +91,7 @@ export default async function TransfersPage() {
   const completed = transfers.filter((t) => t.status === 'received').length;
 
   return (
+    <RoleGate>
     <>
       {/* Header */}
       <PageHeader
@@ -146,5 +148,6 @@ export default async function TransfersPage() {
         )}
       </div>
     </>
+  </RoleGate>
   );
 }

@@ -3,6 +3,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import MyInboxTable, { type NotificationRow } from '@/components/admin/my-inbox/MyInboxTable';
 import MyInboxHeader from '@/components/admin/my-inbox/MyInboxHeader';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 async function getMyNotifications(): Promise<NotificationRow[]> {
   try {
     const supabase = await createClient();
@@ -30,9 +31,11 @@ export default async function MyInboxPage() {
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   return (
+    <RoleGate>
     <div>
       <MyInboxHeader unreadCount={unreadCount} />
       <MyInboxTable notifications={notifications} />
     </div>
+  </RoleGate>
   );
 }

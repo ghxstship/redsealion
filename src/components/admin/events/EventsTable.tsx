@@ -1,3 +1,5 @@
+import Checkbox from '@/components/ui/Checkbox';
+import { Badge } from '@/components/ui/Badge';
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -156,7 +158,7 @@ export default function EventsTable({ events }: { events: EventItem[] }) {
           <TableHeader>
             <TableRow className="border-b border-border bg-bg-secondary">
               <TableHead className="px-4 py-3 text-left w-10">
-                <input type="checkbox" checked={isAllSelected} ref={(el) => { if (el) el.indeterminate = isSomeSelected; }} onChange={toggleAll} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
+                <Checkbox checked={isAllSelected} indeterminate={isSomeSelected} onChange={toggleAll} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
               </TableHead>
               {isVisible('name') && <TableHead className="px-6 py-3"><SortableHeader label="Name" field="name" currentSort={sort} onSort={handleSort} /></TableHead>}
               {isVisible('type') && <TableHead className="px-6 py-3"><SortableHeader label="Type" field="type" currentSort={sort} onSort={handleSort} /></TableHead>}
@@ -173,10 +175,10 @@ export default function EventsTable({ events }: { events: EventItem[] }) {
             {sorted.map((item) => (
               <TableRow key={item.id} className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(item.id) ? 'bg-blue-50/50' : ''}`}>
                 <TableCell className="px-4 py-3.5">
-                  <input type="checkbox" checked={isSelected(item.id)} onChange={() => toggle(item.id)} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
+                  <Checkbox checked={isSelected(item.id)} onChange={() => toggle(item.id)} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
                 </TableCell>
                 {isVisible('name') && <TableCell className="px-6 py-3.5"><span className="text-sm font-medium text-foreground">{item.name}</span></TableCell>}
-                {isVisible('type') && <TableCell className="px-6 py-3.5"><span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">{formatLabel(item.type)}</span></TableCell>}
+                {isVisible('type') && <TableCell className="px-6 py-3.5"><Badge variant="muted">{formatLabel(item.type)}</Badge></TableCell>}
                 {isVisible('status') && <TableCell className="px-6 py-3.5"><StatusBadge status={item.status} colorMap={EVENT_STATUS_COLORS} /></TableCell>}
                 {isVisible('starts_at') && <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(item.starts_at)}</TableCell>}
                 {isVisible('ends_at') && <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(item.ends_at)}</TableCell>}

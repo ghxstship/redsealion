@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
@@ -77,7 +78,7 @@ export default async function AdvancingAssignmentsPage() {
                     <TableCell className="px-4 py-3 text-text-secondary">{item.event_name ?? '—'}</TableCell>
                     <TableCell className="px-4 py-3 capitalize">{item.advance_type?.replace('_', ' ') ?? '—'}</TableCell>
                     <TableCell className="px-4 py-3 tabular-nums">{item.line_item_count}</TableCell>
-                    <TableCell className="px-4 py-3 text-text-secondary">{item.service_start_date ? new Date(item.service_start_date).toLocaleDateString() : '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{item.service_start_date ? formatDate(item.service_start_date) : '—'}</TableCell>
                     <TableCell className="px-4 py-3">
                       <StatusBadge status={item.status} colorMap={ADVANCE_STATUS_COLORS} />
                     </TableCell>

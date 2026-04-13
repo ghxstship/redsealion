@@ -140,7 +140,7 @@ export async function POST(
   if (!commentBody) return NextResponse.json({ error: 'Comment body is required' }, { status: 400 });
 
   // Ensure portal user has a users table entry (M-12 fix)
-  let authorId = user.id;
+  const authorId = user.id;
   const { data: existingUser } = await serviceClient
     .from('users')
     .select('id')

@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import PageHeader from '@/components/shared/PageHeader';
 import Link from 'next/link';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 interface PortfolioDetail {
   id: string;
   project_name: string;
@@ -66,6 +67,7 @@ export default async function PortfolioDetailPage({ params }: { params: Promise<
   if (!item) notFound();
 
   return (
+    <RoleGate>
     <>
       <div className="mb-4">
         <Link href="/app/portfolio" className="text-sm text-text-muted hover:text-foreground mb-2 inline-block">
@@ -191,5 +193,6 @@ export default async function PortfolioDetailPage({ params }: { params: Promise<
         </div>
       </div>
     </>
+  </RoleGate>
   );
 }

@@ -15,6 +15,7 @@ export async function GET(_request: NextRequest, context: RouteContext) {
   const { data: entry, error } = await supabase
     .from('time_entries')
     .select()
+    .eq('organization_id', perm!.organizationId)
     .eq('id', id)
     .eq('user_id', perm.userId)
     .single();
@@ -45,6 +46,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
   const { data: entry, error } = await supabase
     .from('time_entries')
     .update(updates)
+    .eq('organization_id', perm!.organizationId)
     .eq('id', id)
     .eq('user_id', perm.userId)
     .select()

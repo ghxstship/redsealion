@@ -16,10 +16,14 @@ const SIZE_CLASSES = {
  */
 const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
   function FormInput({ inputSize = 'default', className = '', ...rest }, ref) {
+    const isInvalid = rest['aria-invalid'] === true || rest['aria-invalid'] === 'true';
+    
     return (
       <input
         ref={ref}
-        className={`w-full rounded-lg border border-border bg-background text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 ${SIZE_CLASSES[inputSize]} ${className}`}
+        className={`w-full rounded-lg border bg-background text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 ${
+          isInvalid ? 'border-red-500/50 focus:border-red-500' : 'border-border'
+        } ${SIZE_CLASSES[inputSize]} ${className}`}
         {...rest}
       />
     );

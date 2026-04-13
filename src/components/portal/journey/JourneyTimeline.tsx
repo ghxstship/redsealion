@@ -1,10 +1,11 @@
+import Button from '@/components/ui/Button';
 'use client';
 
 import { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import type { PhaseStatus } from '@/types/database';
 import { IconCheck } from '@/components/ui/Icons';
-import Button from '@/components/ui/Button';
+
 
 interface TimelinePhase {
   id: string;
@@ -60,7 +61,7 @@ export default function JourneyTimeline({
 
           return (
             <div key={phase.id} className="flex items-center shrink-0">
-              <Button
+              <button
                 ref={active ? activeRef : undefined}
                 type="button"
                 onClick={() => scrollToPhase(phase.id)}
@@ -92,7 +93,7 @@ export default function JourneyTimeline({
                   )}
                 </span>
                 <span className="hidden sm:inline">{phase.name}</span>
-              </Button>
+              </button>
 
               {/* Connector */}
               {index < phases.length - 1 && (

@@ -31,7 +31,7 @@ export default async function PortalAppLayout({ children, params }: PortalAppLay
 
   return (
     <SubscriptionProvider tier="portal">
-      <PortalContextProvider orgSlug={orgSlug} orgName={org.orgName} orgId={org.organizationId}>
+      <PortalContextProvider orgSlug={orgSlug} orgName={org.orgName} orgId={org.organizationId} portalType="client">
         {/* Demo banner — spans full width */}
         <DemoBanner />
 

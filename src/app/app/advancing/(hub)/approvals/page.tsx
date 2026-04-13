@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency , formatDate } from '@/lib/utils';
 import Link from 'next/link';
 import StatusBadge, { ADVANCE_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import { TASK_PRIORITY_COLORS } from '@/components/ui/StatusBadge';
@@ -86,7 +86,7 @@ export default async function AdvancingApprovalsPage() {
                       <StatusBadge status={item.status} colorMap={ADVANCE_STATUS_COLORS} />
                     </TableCell>
                     <TableCell className="px-4 py-3 tabular-nums">{formatCurrency(item.total_cents / 100)}</TableCell>
-                    <TableCell className="px-4 py-3 text-text-secondary">{new Date(item.created_at).toLocaleDateString()}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{formatDate(item.created_at)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

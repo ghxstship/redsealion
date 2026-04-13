@@ -126,17 +126,18 @@ export default async function PortalProjectPage({
 
         {/* Progress card */}
         <MetricCard
-          title="Progress"
+          label="Progress"
           value={`${pct}%`}
-          description={`${project.completedTasks} of ${project.totalTasks} tasks completed`}
-        >
-          <div className="mt-4 h-3 w-full rounded-full bg-bg-secondary overflow-hidden">
-            <div
-              className="h-full rounded-full bg-green-500 transition-all duration-700"
-              style={{ width: `${pct}%` }}
-            />
-          </div>
-        </MetricCard>
+          sublabel={`${project.completedTasks} of ${project.totalTasks} tasks completed`}
+          trailing={
+            <div className="mt-4 h-3 w-full rounded-full bg-bg-secondary overflow-hidden">
+              <div
+                className="h-full rounded-full bg-green-500 transition-all duration-700"
+                style={{ width: `${pct}%` }}
+              />
+            </div>
+          }
+        />
 
         {/* Milestones */}
         {project.milestones.length > 0 && (

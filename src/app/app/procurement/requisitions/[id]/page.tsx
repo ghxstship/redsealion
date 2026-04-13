@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency , formatDate } from '@/lib/utils';
 import Link from 'next/link';
 import RequisitionActions from './RequisitionActions';
 import StatusBadge from '@/components/ui/StatusBadge';
@@ -79,7 +79,7 @@ export default async function RequisitionDetailPage({ params }: { params: Promis
         <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Needed By</p>
           <p className="mt-1 text-sm font-semibold text-foreground">
-            {req.needed_by ? new Date(req.needed_by).toLocaleDateString() : '—'}
+            {req.needed_by ? formatDate(req.needed_by) : '—'}
           </p>
         </div>
         <div className="rounded-xl border border-border bg-background p-4">

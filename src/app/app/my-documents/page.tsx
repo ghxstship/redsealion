@@ -3,6 +3,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
 import MyDocumentsTable, { type MyDocumentData } from '@/components/admin/my-documents/MyDocumentsTable';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 async function getMyDocuments(): Promise<MyDocumentData[]> {
   try {
     const supabase = await createClient();
@@ -29,6 +30,7 @@ export default async function MyDocumentsPage() {
   const files = await getMyDocuments();
 
   return (
+    <RoleGate>
     <div>
       <PageHeader
         title="My Documents"
@@ -36,5 +38,6 @@ export default async function MyDocumentsPage() {
       />
       <MyDocumentsTable initialFiles={files} />
     </div>
+  </RoleGate>
   );
 }

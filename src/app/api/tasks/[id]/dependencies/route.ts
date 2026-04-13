@@ -17,6 +17,15 @@ export async function GET(
   const { id: taskId } = await params;
   const supabase = await createClient();
 
+  // Verify parent task belongs to user's organization
+  const { data: task } = await supabase
+    .from('tasks')
+    .select('id')
+    .eq('id', taskId)
+    .eq('organization_id', perm.organizationId)
+    .single();
+  if (!task) return NextResponse.json({ dependencies: [] });
+
   const { data, error } = await supabase
     .from('task_dependencies')
     .select('*, depends_on:tasks!task_dependencies_depends_on_task_id_fkey(id, title, status)')
@@ -60,8 +69,16 @@ export async function POST(
     return NextResponse.json({ error: 'A task cannot depend on itself.' }, { status: 400 });
   }
 
-  // Detect circular dependencies (simple 1-level check)
   const supabase = await createClient();
+
+  // Verify parent task belongs to user's organization
+  const { data: taskCheck } = await supabase
+    .from('tasks')
+    .select('id')
+    .eq('id', taskId)
+    .eq('organization_id', perm.organizationId)
+    .single();
+  if (!taskCheck) return NextResponse.json({ error: 'Not found' }, { status: 404 });
   const { data: reverse } = await supabase
     .from('task_dependencies')
     .select('id')
@@ -114,6 +131,16 @@ export async function DELETE(
   }
 
   const supabase = await createClient();
+
+  // Verify parent task belongs to user's organization
+  const { data: taskCheck } = await supabase
+    .from('tasks')
+    .select('id')
+    .eq('id', taskId)
+    .eq('organization_id', perm.organizationId)
+    .single();
+  if (!taskCheck) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+
   const { error } = await supabase
     .from('task_dependencies')
     .delete()

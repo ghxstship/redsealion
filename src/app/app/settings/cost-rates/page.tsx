@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/utils';
 import { TierGate } from '@/components/shared/TierGate';
 import { createClient } from '@/lib/supabase/server';
 import { formatRate, DEFAULT_COST_RATES } from '@/lib/cost-rates';
@@ -104,7 +105,7 @@ export default async function CostRatesPage() {
                     {rate.marginPercent}%
                   </TableCell>
                   <TableCell className="px-6 py-3.5 text-sm text-text-secondary">
-                    {new Date(rate.effectiveFrom).toLocaleDateString()}
+                    {formatDate(rate.effectiveFrom)}
                   </TableCell>
                 </TableRow>
               ))}

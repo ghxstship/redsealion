@@ -11,6 +11,7 @@ import StatusBadge from '@/components/ui/StatusBadge';
 import { Badge } from '@/components/ui/Badge';
 import FilterPills from '@/components/ui/FilterPills';
 import Button from '@/components/ui/Button';
+import FormInput from '@/components/ui/FormInput';
 import MiniCalendar from './MiniCalendar';
 import { generateGoogleCalendarUrl, type ICalEvent } from '@/lib/utils/ical';
 
@@ -298,7 +299,7 @@ export default function MyScheduleView({ items }: MyScheduleViewProps) {
           />
           <div className="relative w-full sm:w-56">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={14} />
-            <input
+            <FormInput
               type="text"
               placeholder="Search schedule..."
               value={search}

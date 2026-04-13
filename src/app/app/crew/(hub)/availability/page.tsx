@@ -10,6 +10,7 @@ import EmptyState from '@/components/ui/EmptyState';
 import Button from '@/components/ui/Button';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 interface CrewAvailability {
   id: string;
   full_name: string;
@@ -110,6 +111,7 @@ export default function CrewAvailabilityPage() {
   }
 
   return (
+    <RoleGate resource="crew">
     <>
       <PageHeader
         title="Team Availability"
@@ -203,5 +205,6 @@ export default function CrewAvailabilityPage() {
         </>
       )}
     </>
-  );
+  
+    </RoleGate>);
 }

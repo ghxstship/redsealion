@@ -17,7 +17,7 @@ const TAB_ROUTES: Record<ProcurementTab, string> = {
   overview: '/app/procurement',
   requisitions: '/app/procurement/requisitions',
   'purchase-orders': '/app/procurement/purchase-orders',
-  receiving: '/app/procurement/receiving',
+  receiving: '/app/logistics/goods-receipts',
   suppliers: '/app/procurement/suppliers',
 };
 

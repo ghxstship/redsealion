@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import AssetDetailClient from '@/components/admin/assets/AssetDetailClient';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 export default async function AssetDetailPage({
   params,
 }: {
@@ -53,6 +54,7 @@ export default async function AssetDetailPage({
   const a = asset as Record<string, unknown>;
 
   return (
+    <RoleGate>
     <AssetDetailClient
       asset={{
         id: asset.id,
@@ -96,5 +98,6 @@ export default async function AssetDetailPage({
       proposalName={proposal?.name ?? null}
       locationHistory={history}
     />
+  </RoleGate>
   );
 }

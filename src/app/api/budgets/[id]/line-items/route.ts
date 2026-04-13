@@ -16,6 +16,7 @@ export async function GET(_request: NextRequest, context: RouteContext) {
   const { data, error } = await supabase
     .from('budget_line_items')
     .select()
+    .eq('organization_id', perm!.organizationId)
     .eq('budget_id', id)
     .order('created_at', { ascending: true });
 

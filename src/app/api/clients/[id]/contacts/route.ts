@@ -51,6 +51,7 @@ export async function GET(
   const { data, error } = await supabase
     .from('client_contacts')
     .select('*')
+    .eq('organization_id', perm!.organizationId)
     .eq('client_id', clientId)
     .is('deleted_at', null)
     .order('role', { ascending: true });

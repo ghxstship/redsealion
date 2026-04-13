@@ -51,7 +51,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
 
   if (error || !schedule) return NextResponse.json({ error: 'Failed to update schedule', details: error?.message }, { status: 500 });
 
-  logAuditAction({ orgId: perm.organizationId, action: 'schedule.updated', entity: 'production_schedules', entityId: id, metadata: { fields: Object.keys(updates) } }).catch(() => {});
+
 
   return NextResponse.json({ success: true, schedule });
 }
@@ -73,7 +73,7 @@ export async function DELETE(_request: NextRequest, context: RouteContext) {
 
   if (error) return NextResponse.json({ error: 'Failed to delete schedule', details: error.message }, { status: 500 });
 
-  logAuditAction({ orgId: perm.organizationId, action: 'schedule.deleted', entity: 'production_schedules', entityId: id }).catch(() => {});
+
 
   return NextResponse.json({ success: true });
 }

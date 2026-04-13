@@ -5,6 +5,7 @@ import EmptyState from '@/components/ui/EmptyState';
 import PageHeader from '@/components/shared/PageHeader';
 import PortfolioGrid from '@/components/admin/portfolio/PortfolioGrid';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 interface PortfolioItem {
   id: string;
   project_name: string;
@@ -16,6 +17,7 @@ interface PortfolioItem {
   tags?: string[];
   project_id?: string | null;
   proposal_id?: string | null;
+  is_published?: boolean;
 }
 
 async function getPortfolioItems(): Promise<PortfolioItem[]> {
@@ -30,7 +32,7 @@ async function getPortfolioItems(): Promise<PortfolioItem[]> {
     if (!user) return [];
     const { data: items } = await supabase
       .from('portfolio_library')
-      .select('id, project_name, project_year, category, client_name, description, image_url, tags, project_id, proposal_id')
+      .select('id, project_name, project_year, category, client_name, description, image_url, tags, project_id, proposal_id, is_published')
       .eq('organization_id', ctx.organizationId)
       .is('deleted_at', null)
       .order('project_year', { ascending: false });
@@ -45,6 +47,7 @@ export default async function PortfolioPage() {
   const portfolioItems = await getPortfolioItems();
 
   return (
+    <RoleGate resource="portfolio">
     <>
       <PageHeader
         title="Portfolio"
@@ -62,5 +65,6 @@ export default async function PortfolioPage() {
         <PortfolioGrid items={portfolioItems} />
       )}
     </>
-  );
+  
+    </RoleGate>);
 }

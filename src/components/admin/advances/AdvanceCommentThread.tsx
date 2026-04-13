@@ -1,3 +1,4 @@
+import Checkbox from '@/components/ui/Checkbox';
 'use client';
 
 import { useState } from 'react';
@@ -84,7 +85,7 @@ export default function AdvanceCommentThread({ advanceId, comments, onRefresh, i
         <div className="flex items-center justify-between">
           {isOrgMember && (
             <label className="flex items-center gap-1.5 text-xs text-text-muted cursor-pointer">
-              <input type="checkbox" checked={isInternal} onChange={(e) => setIsInternal(e.target.checked)} className="rounded border-border" />
+              <Checkbox checked={isInternal} onChange={(e) => setIsInternal(e.target.checked)} className="rounded border-border" />
               Internal only
             </label>
           )}

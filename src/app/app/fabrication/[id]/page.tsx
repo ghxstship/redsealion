@@ -3,7 +3,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { notFound } from 'next/navigation';
 import PageHeader from '@/components/shared/PageHeader';
 import { TierGate } from '@/components/shared/TierGate';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency , formatDate } from '@/lib/utils';
 import StatusBadge, { FABRICATION_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import { Badge } from '@/components/ui/Badge';
 import BOMEditor from '@/components/fabrication/BOMEditor';
@@ -66,7 +66,7 @@ export default async function FabricationOrderDetailsPage({ params }: { params: 
               </div>
               <div>
                 <p className="text-text-muted">Due Date</p>
-                <p className="font-medium text-foreground">{order.due_date ? new Date(order.due_date).toLocaleDateString() : '—'}</p>
+                <p className="font-medium text-foreground">{order.due_date ? formatDate(order.due_date) : '—'}</p>
               </div>
             </div>
 

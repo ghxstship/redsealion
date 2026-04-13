@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency , formatDate } from '@/lib/utils';
 import Link from 'next/link';
 import RentalsHubTabs from '../../RentalsHubTabs';
 import StatusBadge, { RENTAL_ORDER_STATUS_COLORS } from '@/components/ui/StatusBadge';
@@ -63,8 +63,8 @@ export default async function ReservationsPage() {
                   <TableRow key={r.id} className="hover:bg-bg-secondary/50 transition-colors">
                     <TableCell className="px-4 py-3"><Link href={`/app/rentals/${r.id}`} className="font-medium text-foreground hover:underline">{r.order_number}</Link></TableCell>
                     <TableCell className="px-4 py-3 text-text-secondary">{r.client_name ?? '—'}</TableCell>
-                    <TableCell className="px-4 py-3 text-text-secondary">{new Date(r.rental_start).toLocaleDateString()}</TableCell>
-                    <TableCell className="px-4 py-3 text-text-secondary">{new Date(r.rental_end).toLocaleDateString()}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{formatDate(r.rental_start)}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{formatDate(r.rental_end)}</TableCell>
                     <TableCell className="px-4 py-3 tabular-nums">{formatCurrency(r.total_cents / 100)}</TableCell>
                     <TableCell className="px-4 py-3"><StatusBadge status={r.status} colorMap={RENTAL_ORDER_STATUS_COLORS} /></TableCell>
                   </TableRow>

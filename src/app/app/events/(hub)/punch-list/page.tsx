@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
@@ -63,7 +64,7 @@ export default async function PunchListPage() {
                     <TableCell className="px-4 py-3 font-medium text-foreground">{item.title}</TableCell>
                     <TableCell className="px-4 py-3 text-text-secondary">{item.event_name ?? '—'}</TableCell>
                     <TableCell className="px-4 py-3"><span className={`font-medium capitalize ${PRIORITY_COLORS[item.priority ?? 'medium']}`}>{item.priority ?? 'medium'}</span></TableCell>
-                    <TableCell className="px-4 py-3 text-text-secondary">{item.due_date ? new Date(item.due_date).toLocaleDateString() : '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{item.due_date ? formatDate(item.due_date) : '—'}</TableCell>
                     <TableCell className="px-4 py-3"><StatusBadge status={item.status} colorMap={{completed: 'bg-green-50 text-green-700', done: 'bg-green-50 text-green-700', pending: 'bg-yellow-50 text-yellow-700', in_progress: 'bg-yellow-50 text-yellow-700'}} /></TableCell>
                   </TableRow>
                 ))}

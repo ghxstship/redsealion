@@ -15,6 +15,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
 import Skeleton from '@/components/ui/Skeleton';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 // Default empty state for a new proposal
 function getEmptyState() {
   const projectSetup: ProjectSetupData = {
@@ -359,6 +360,7 @@ export default function EditProposalBuilderPage({
           await supabase.from('venues').insert(
             venues.map((v, idx) => ({
               proposal_id: id,
+              organization_id: organizationId,
               name: v.name,
               address: v.address,
               type: v.type,
@@ -376,6 +378,7 @@ export default function EditProposalBuilderPage({
           await supabase.from('team_assignments').insert(
             team.map((t) => ({
               proposal_id: id,
+              organization_id: organizationId,
               role: t.role,
               user_id: t.userId,
               facility_id: t.facilityId || null,
@@ -398,6 +401,7 @@ export default function EditProposalBuilderPage({
             .from('phases')
             .insert({
               proposal_id: id,
+              organization_id: organizationId,
               phase_number: phase.number,
               name: phase.name,
               subtitle: phase.subtitle || null,
@@ -573,6 +577,7 @@ export default function EditProposalBuilderPage({
   };
 
   return (
+    <RoleGate resource="proposals">
     <>
       <div className="mb-6">
         <div className="flex items-center gap-2 text-xs text-text-muted mb-2">
@@ -629,5 +634,6 @@ export default function EditProposalBuilderPage({
         </div>
       )}
     </>
-  );
+  
+    </RoleGate>);
 }

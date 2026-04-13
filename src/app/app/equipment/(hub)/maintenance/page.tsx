@@ -8,6 +8,7 @@ import Card from '@/components/ui/Card';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 interface MaintenanceEntry {
   id: string;
   equipment_name: string;
@@ -82,6 +83,7 @@ export default async function MaintenancePage() {
   const completed = maintenance.filter((m) => m.status === 'completed');
 
   return (
+    <RoleGate>
     <>
       {/* Header */}
       <PageHeader
@@ -171,5 +173,6 @@ export default async function MaintenancePage() {
         </div>
       </div>
     </>
+  </RoleGate>
   );
 }

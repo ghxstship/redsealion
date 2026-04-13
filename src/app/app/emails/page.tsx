@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/utils';
 import { TierGate } from '@/components/shared/TierGate';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
@@ -91,7 +92,7 @@ export default async function EmailsPage() {
                   {thread.from_name}
                 </p>
                 <span className="text-xs text-text-muted whitespace-nowrap">
-                  {new Date(thread.last_message_at).toLocaleDateString()}
+                  {formatDate(thread.last_message_at)}
                 </span>
               </div>
               <p className="text-sm text-foreground truncate mt-0.5">{thread.subject}</p>

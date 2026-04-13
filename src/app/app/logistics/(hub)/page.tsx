@@ -1,3 +1,4 @@
+import { Badge } from '@/components/ui/Badge';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
@@ -103,15 +104,16 @@ export default async function WarehousePage() {
         {facilities.map((facility) => (
           <MetricCard
             key={facility.name}
-            title={facility.name}
+            label={facility.name}
             value={facility.total_items}
-            description="total items"
-          >
-            <div className="mt-3 flex gap-4 text-xs font-normal">
-              <span className="text-green-700">{facility.available} available</span>
-              <span className="text-blue-700">{facility.deployed} deployed</span>
-            </div>
-          </MetricCard>
+            sublabel="total items"
+            trailing={
+              <div className="mt-3 flex gap-4 text-xs font-normal">
+                <span className="text-green-700">{facility.available} available</span>
+                <span className="text-blue-700">{facility.deployed} deployed</span>
+              </div>
+            }
+          />
         ))}
       </div>
 
@@ -141,9 +143,9 @@ export default async function WarehousePage() {
                   </Link>
                 </TableCell>
                 <TableCell className="px-6 py-3.5">
-                  <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">
+                  <Badge variant="muted">
                     {asset.category}
-                  </span>
+                  </Badge>
                 </TableCell>
                 <TableCell className="px-6 py-3.5 text-sm text-text-secondary">
                   {asset.location}

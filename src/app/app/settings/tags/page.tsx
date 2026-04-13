@@ -8,6 +8,7 @@ import EmptyState from '@/components/ui/EmptyState';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 type EntityType = 'equipment' | 'crew' | 'project' | 'lead' | 'client';
 
 const entityTypes: { key: EntityType; label: string }[] = [
@@ -99,6 +100,7 @@ export default function TagsSettingsPage() {
   if (!loaded) return null;
 
   return (
+    <RoleGate resource="settings">
     <div className="max-w-2xl space-y-6">
       <div>
         <h2 className="text-lg font-semibold text-foreground">Tags & Categories</h2>
@@ -157,14 +159,17 @@ export default function TagsSettingsPage() {
               </label>
               <div className="flex gap-2">
                 {presetColors.map((c) => (
-                  <Button
+                  <Button variant="ghost"
                     key={c}
+                    type="button"
                     onClick={() => setNewColor(c)}
                     className={`h-7 w-7 rounded-full border-2 transition-[color,background-color,border-color,opacity,box-shadow] ${
                       newColor === c ? 'border-foreground scale-110' : 'border-transparent'
                     }`}
                     style={{ backgroundColor: c }}
-                  />
+                  >
+                    <span className="sr-only">{c}</span>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -212,5 +217,6 @@ export default function TagsSettingsPage() {
         </div>
       </Card>
     </div>
+  </RoleGate>
   );
 }

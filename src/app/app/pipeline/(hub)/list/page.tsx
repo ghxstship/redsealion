@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency , formatDate } from '@/lib/utils';
 import Link from 'next/link';
 import PipelineHubTabs from '../../PipelineHubTabs';
 import StatusBadge, { PIPELINE_STAGE_COLORS } from '@/components/ui/StatusBadge';
@@ -109,7 +109,7 @@ export default async function PipelineListPage({
                     <TableCell className="px-4 py-3"><StatusBadge status={deal.stage} colorMap={PIPELINE_STAGE_COLORS} /></TableCell>
                     <TableCell className="px-4 py-3 tabular-nums">{formatCurrency(deal.value)}</TableCell>
                     <TableCell className="px-4 py-3 tabular-nums">{deal.probability}%</TableCell>
-                    <TableCell className="px-4 py-3 text-text-secondary">{deal.expected_close_date ? new Date(deal.expected_close_date).toLocaleDateString() : '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{deal.expected_close_date ? formatDate(deal.expected_close_date) : '—'}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
@@ -63,7 +64,7 @@ export default async function ReturnsPage() {
                     <TableCell className="px-4 py-3 font-medium text-foreground">{r.name}</TableCell>
                     <TableCell className="px-4 py-3 text-text-secondary">{r.order_number ?? '—'}</TableCell>
                     <TableCell className="px-4 py-3 tabular-nums">{r.quantity}</TableCell>
-                    <TableCell className="px-4 py-3 text-text-secondary">{r.rental_end ? new Date(r.rental_end).toLocaleDateString() : '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{r.rental_end ? formatDate(r.rental_end) : '—'}</TableCell>
                     <TableCell className="px-4 py-3"><StatusBadge status={r.status} colorMap={RETURN_CONDITION_COLORS} /></TableCell>
                   </TableRow>
                 ))}

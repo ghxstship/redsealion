@@ -7,6 +7,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import MetricCard from '@/components/ui/MetricCard';
 import EventsHubTabs from '../../EventsHubTabs';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 async function getActivations(): Promise<ActivationItem[]> {
   try {
     const supabase = await createClient();
@@ -48,6 +49,7 @@ export default async function ActivationsPage() {
   );
 
   return (
+    <RoleGate>
     <>
       <PageHeader
         title="Activations"
@@ -67,5 +69,6 @@ export default async function ActivationsPage() {
 
       <ActivationsTable activations={activations} />
     </>
+  </RoleGate>
   );
 }

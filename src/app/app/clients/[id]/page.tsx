@@ -1,3 +1,4 @@
+import { Badge } from '@/components/ui/Badge';
 import Link from 'next/link';
 import { formatCurrency } from '@/lib/utils';
 import ClientInteractions from '@/components/admin/clients/ClientInteractions';
@@ -12,6 +13,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@
 
 
 
+import { RoleGate } from '@/components/shared/RoleGate';
 export default async function ClientDetailPage({
   params,
 }: {
@@ -112,9 +114,9 @@ export default async function ClientDetailPage({
                 <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{contact.email}</TableCell>
                 <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{contact.phone}</TableCell>
                 <TableCell className="px-6 py-3.5">
-                  <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">
+                  <Badge variant="muted">
                     {roleLabel(contact.role)}
-                  </span>
+                  </Badge>
                 </TableCell>
               </TableRow>
             ))}
@@ -202,6 +204,7 @@ export default async function ClientDetailPage({
   );
 
   return (
+    <RoleGate resource="clients">
     <>
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-8">
@@ -255,5 +258,6 @@ export default async function ClientDetailPage({
         activityContent={activityContent}
       />
     </>
+  </RoleGate>
   );
 }

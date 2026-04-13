@@ -64,7 +64,7 @@ RAW_ELEMENT_EXCLUDE_BASENAMES = {
     'UserMenu.tsx', 'AppHeader.tsx', 'Breadcrumbs.tsx', 'KeyboardShortcutsModal.tsx',
     'CookieBanner.tsx', 'DataExportMenu.tsx', 'PWAInstallPrompt.tsx',
     'ConfirmDialog.tsx', 'ModalShell.tsx', 'Modal.tsx', 'Card.tsx',
-    'ServiceWorkerRegistration.tsx', 'PageHeader.tsx',
+    'ServiceWorkerRegistration.tsx', 'PageHeader.tsx', 'Checkbox.tsx', 'MiniCalendar.tsx',
     'StatusBadge.tsx', 'Badge.tsx', 'Tag.tsx', 'Tooltip.tsx',
     'Alert.tsx', 'EmptyState.tsx', 'MetricCard.tsx', 'Skeleton.tsx',
     'TableSkeleton.tsx', 'Tabs.tsx', 'HubTabs.tsx', 'HubTabNavigation.tsx',

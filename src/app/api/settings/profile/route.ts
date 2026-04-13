@@ -10,6 +10,7 @@ export async function GET() {
   const { data: profile, error } = await supabase
     .from('users')
     .select('id, email, full_name, first_name, last_name, phone, title, avatar_url, created_at')
+    .eq('organization_id', ctx.organizationId)
     .eq('id', ctx.userId)
     .single();
 
@@ -58,6 +59,7 @@ export async function PUT(request: NextRequest) {
       updated_at: new Date().toISOString(),
     })
     .eq('id', ctx.userId)
+    .eq('organization_id', ctx.organizationId)
     .select('id, email, full_name, first_name, last_name, phone, title, avatar_url')
     .single();
 

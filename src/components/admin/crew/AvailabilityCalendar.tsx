@@ -111,7 +111,11 @@ export default function AvailabilityCalendar({
                       onClick={() => toggleAvailability(entry.userId, d, status)}
                       className={`w-5 h-5 rounded ${colorClass} hover:opacity-80`}
                       title={status ?? 'unset'}
-                    />
+                      variant="ghost"
+                      size="sm"
+                    >
+                      <span className="sr-only">{status ?? 'unset'}</span>
+                    </Button>
                   </TableCell>
                 );
               })}

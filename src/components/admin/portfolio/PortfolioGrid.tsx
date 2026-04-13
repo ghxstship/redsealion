@@ -6,10 +6,11 @@
  */
 
 import { useState, useMemo } from 'react';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Trash2, Globe, EyeOff } from 'lucide-react';
 import PortfolioFormModal from './PortfolioFormModal';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import Button from '@/components/ui/Button';
+import { Badge } from '@/components/ui/Badge';
 
 /** Canonical portfolio categories — shared between form and filter. */
 export const PORTFOLIO_CATEGORIES = [
@@ -36,6 +37,7 @@ interface PortfolioItem {
   tags?: string[];
   project_id?: string | null;
   proposal_id?: string | null;
+  is_published?: boolean;
 }
 
 interface PortfolioGridProps {
@@ -46,6 +48,7 @@ export default function PortfolioGrid({ items: initialItems }: PortfolioGridProp
   const [items, setItems] = useState(initialItems);
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [publishingId, setPublishingId] = useState<string | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
   const [itemToEdit, setItemToEdit] = useState<PortfolioItem | null>(null);
 
@@ -69,6 +72,23 @@ export default function PortfolioGrid({ items: initialItems }: PortfolioGridProp
       }
     } catch { /* silent */ }
     finally { setDeletingId(null); setShowDeleteConfirm(null); }
+  }
+
+  async function handleTogglePublish(item: PortfolioItem) {
+    setPublishingId(item.id);
+    try {
+      const res = await fetch(`/api/portfolio/${item.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_published: !item.is_published }),
+      });
+      if (res.ok) {
+        setItems((prev) => prev.map((i) =>
+          i.id === item.id ? { ...i, is_published: !i.is_published } : i
+        ));
+      }
+    } catch { /* silent */ }
+    finally { setPublishingId(null); }
   }
 
   return (
@@ -104,6 +124,16 @@ export default function PortfolioGrid({ items: initialItems }: PortfolioGridProp
           >
             {/* Action buttons — visible on hover */}
             <div className="absolute top-2 right-2 z-10 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              <Button
+                onClick={() => handleTogglePublish(item)}
+                disabled={publishingId === item.id}
+                className={`rounded-lg bg-background/80 backdrop-blur p-1.5 shadow-sm border border-border/50 ${
+                  item.is_published ? 'text-green-600 hover:text-amber-600' : 'text-text-muted hover:text-green-600'
+                }`}
+                title={item.is_published ? 'Unpublish' : 'Publish'}
+              >
+                {item.is_published ? <EyeOff size={14} /> : <Globe size={14} />}
+              </Button>
               <Button
                 onClick={() => setItemToEdit(item)}
                 className="rounded-lg bg-background/80 backdrop-blur p-1.5 text-text-muted hover:text-foreground shadow-sm border border-border/50"
@@ -152,9 +182,12 @@ export default function PortfolioGrid({ items: initialItems }: PortfolioGridProp
               {item.client_name && (
                 <p className="mt-0.5 text-xs text-text-muted">{item.client_name}</p>
               )}
-              <span className="mt-2 inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">
+              <Badge variant="muted" className="mt-2">
                 {item.category}
-              </span>
+              </Badge>
+              {item.is_published && (
+                <Badge variant="success" className="mt-1">published</Badge>
+              )}
             </div>
           </div>
         ))}

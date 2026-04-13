@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency , formatDate } from '@/lib/utils';
 import Link from 'next/link';
 import StatusBadge, { FABRICATION_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import FabricationHubTabs from '../../FabricationHubTabs';
@@ -57,7 +57,7 @@ export default async function PrintPage() {
                     <TableCell className="px-4 py-3 text-text-secondary">{j.name}</TableCell>
                     <TableCell className="px-4 py-3 tabular-nums">{j.quantity}</TableCell>
                     <TableCell className="px-4 py-3 tabular-nums">{formatCurrency(j.total_cost_cents / 100)}</TableCell>
-                    <TableCell className="px-4 py-3 text-text-secondary">{j.due_date ? new Date(j.due_date).toLocaleDateString() : '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{j.due_date ? formatDate(j.due_date) : '—'}</TableCell>
                     <TableCell className="px-4 py-3"><StatusBadge status={j.status} colorMap={FABRICATION_STATUS_COLORS} /></TableCell>
                   </TableRow>
                 ))}

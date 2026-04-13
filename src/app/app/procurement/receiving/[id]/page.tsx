@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
@@ -79,7 +80,7 @@ export default async function ReceiptDetailPage({ params }: { params: Promise<{ 
         <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Received Date</p>
           <p className="mt-1 text-sm font-semibold text-foreground">
-            {receipt.received_date ? new Date(receipt.received_date).toLocaleDateString() : '—'}
+            {receipt.received_date ? formatDate(receipt.received_date) : '—'}
           </p>
         </div>
         <div className="rounded-xl border border-border bg-background p-4">

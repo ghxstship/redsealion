@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import Link from 'next/link';
@@ -50,8 +51,8 @@ export default async function ScheduleDetailPage({ params }: { params: Promise<{
             <div className="flex justify-between"><dt className="text-text-muted">Status</dt><dd><StatusBadge status={schedule.status as string} colorMap={PRODUCTION_SCHEDULE_STATUS_COLORS} /></dd></div>
             <div className="flex justify-between"><dt className="text-text-muted">Type</dt><dd className="text-foreground capitalize">{(schedule.schedule_type as string)?.replace('_', ' ')}</dd></div>
             <div className="flex justify-between"><dt className="text-text-muted">Event</dt><dd className="text-foreground">{event ? <Link href={`/app/events/${event.id}`} className="hover:underline">{event.name}</Link> : '—'}</dd></div>
-            <div className="flex justify-between"><dt className="text-text-muted">Start</dt><dd className="text-foreground">{schedule.start_date ? new Date(schedule.start_date as string).toLocaleDateString() : '—'}</dd></div>
-            <div className="flex justify-between"><dt className="text-text-muted">End</dt><dd className="text-foreground">{schedule.end_date ? new Date(schedule.end_date as string).toLocaleDateString() : '—'}</dd></div>
+            <div className="flex justify-between"><dt className="text-text-muted">Start</dt><dd className="text-foreground">{schedule.start_date ? formatDate(schedule.start_date as string) : '—'}</dd></div>
+            <div className="flex justify-between"><dt className="text-text-muted">End</dt><dd className="text-foreground">{schedule.end_date ? formatDate(schedule.end_date as string) : '—'}</dd></div>
             <div className="flex justify-between"><dt className="text-text-muted">Timezone</dt><dd className="text-foreground">{schedule.timezone as string ?? '—'}</dd></div>
           </dl>
         </div>
@@ -65,7 +66,7 @@ export default async function ScheduleDetailPage({ params }: { params: Promise<{
               {milestones.map((m) => (
                 <li key={m.id as string} className="flex items-center justify-between text-sm">
                   <span className={`text-foreground ${m.completed_at ? 'line-through text-text-muted' : ''}`}>{m.title as string}</span>
-                  <span className="text-xs text-text-muted">{m.due_at ? new Date(m.due_at as string).toLocaleDateString() : ''}</span>
+                  <span className="text-xs text-text-muted">{m.due_at ? formatDate(m.due_at as string) : ''}</span>
                 </li>
               ))}
             </ul>

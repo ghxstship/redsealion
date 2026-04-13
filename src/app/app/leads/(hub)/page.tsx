@@ -5,6 +5,7 @@ import LeadsTable from '@/components/admin/leads/LeadsTable';
 import LeadsHubTabs from '../LeadsHubTabs';
 import PageHeader from '@/components/shared/PageHeader';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 interface Lead {
   id: string;
   contact_first_name: string;
@@ -78,6 +79,7 @@ export default async function LeadsPage() {
   const leads = await getLeads();
 
   return (
+    <RoleGate>
     <>
       <PageHeader
 
@@ -95,5 +97,6 @@ export default async function LeadsPage() {
 
       <LeadsTable leads={leads} />
     </>
+  </RoleGate>
   );
 }

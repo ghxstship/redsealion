@@ -1,3 +1,4 @@
+import Checkbox from '@/components/ui/Checkbox';
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -156,7 +157,7 @@ export default function LocationsTable({ locations }: { locations: LocationItem[
           <TableHeader>
             <TableRow className="border-b border-border bg-bg-secondary">
               <TableHead className="px-4 py-3 text-left w-10">
-                <input type="checkbox" checked={isAllSelected} ref={(el) => { if (el) el.indeterminate = isSomeSelected; }} onChange={toggleAll} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
+                <Checkbox checked={isAllSelected} indeterminate={isSomeSelected} onChange={toggleAll} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
               </TableHead>
               {isVisible('name') && <TableHead className="px-6 py-3"><SortableHeader label="Name" field="name" currentSort={sort} onSort={handleSort} /></TableHead>}
               {isVisible('type') && <TableHead className="px-6 py-3"><SortableHeader label="Type" field="type" currentSort={sort} onSort={handleSort} /></TableHead>}
@@ -173,7 +174,7 @@ export default function LocationsTable({ locations }: { locations: LocationItem[
             {pagedItems.map((item) => (
               <TableRow key={item.id} className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(item.id) ? 'bg-blue-50/50' : ''}`}>
                 <TableCell className="px-4 py-3.5">
-                  <input type="checkbox" checked={isSelected(item.id)} onChange={() => toggle(item.id)} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
+                  <Checkbox checked={isSelected(item.id)} onChange={() => toggle(item.id)} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
                 </TableCell>
                 {isVisible('name') && (
                   <TableCell className="px-6 py-3.5">

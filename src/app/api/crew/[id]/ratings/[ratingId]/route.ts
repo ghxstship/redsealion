@@ -36,6 +36,7 @@ export async function PATCH(request: Request, context: RouteContext) {
   const { data, error } = await supabase
     .from('crew_ratings')
     .update(update)
+    .eq('organization_id', perm!.organizationId)
     .eq('id', ratingId)
     .eq('crew_profile_id', id)
     .select()
@@ -66,6 +67,7 @@ export async function DELETE(_request: Request, context: RouteContext) {
   const { error } = await supabase
     .from('crew_ratings')
     .delete()
+    .eq('organization_id', perm!.organizationId)
     .eq('id', ratingId)
     .eq('crew_profile_id', id);
 

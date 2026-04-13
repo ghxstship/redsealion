@@ -19,6 +19,7 @@ export async function transitionAdvanceStatus(
     .from('production_advances')
     .select('status, advance_mode, organization_id')
     .eq('id', advanceId)
+    .eq('organization_id', ctx.organizationId)
     .single();
 
   if (!advance) {
@@ -59,6 +60,7 @@ export async function transitionAdvanceStatus(
     .from('production_advances')
     .update(update)
     .eq('id', advanceId)
+    .eq('organization_id', ctx.organizationId)
     .select()
     .single();
 

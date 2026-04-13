@@ -1,8 +1,10 @@
+import { formatDate } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { notFound } from 'next/navigation';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 async function getShipment(id: string) {
   const supabase = await createClient();
   const ctx = await resolveCurrentOrg();
@@ -25,6 +27,7 @@ export default async function BillOfLadingPrintablePage({ params }: { params: Pr
   if (!shipment) notFound();
 
   return (
+    <RoleGate>
     <div className="bg-white text-black min-h-screen p-8 max-w-4xl mx-auto print:p-0 print:max-w-none">
       <style dangerouslySetInnerHTML={{ __html: `
         @media print {
@@ -41,7 +44,7 @@ export default async function BillOfLadingPrintablePage({ params }: { params: Pr
         </div>
         <div className="text-right">
           <p className="text-xl font-bold">BOL # {shipment.shipment_number}</p>
-          <p className="text-sm mt-1">Date: {shipment.ship_date ? new Date(shipment.ship_date).toLocaleDateString() : new Date().toLocaleDateString()}</p>
+          <p className="text-sm mt-1">Date: {shipment.ship_date ? formatDate(shipment.ship_date) : formatDate(new Date().toISOString())}</p>
           {shipment.bol_generated_at && <p className="text-xs">Printed: {new Date(shipment.bol_generated_at).toLocaleString()}</p>}
         </div>
       </div>
@@ -135,5 +138,6 @@ export default async function BillOfLadingPrintablePage({ params }: { params: Pr
       {/* Auto-print script */}
       <script dangerouslySetInnerHTML={{ __html: `setTimeout(() => window.print(), 500);` }} />
     </div>
+  </RoleGate>
   );
 }

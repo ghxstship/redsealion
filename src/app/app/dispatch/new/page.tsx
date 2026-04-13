@@ -1,6 +1,7 @@
 'use client';
 
 import FormInput from '@/components/ui/FormInput';
+import Checkbox from '@/components/ui/Checkbox';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -230,11 +231,10 @@ export default function NewWorkOrderPage() {
                       : 'border-border hover:border-foreground/10'
                   }`}
                 >
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     checked={selectedCrew.includes(crew.id)}
                     onChange={() => toggleCrew(crew.id)}
-                    className="h-4 w-4 rounded border-border text-foreground focus:ring-foreground/20"
+                    size="md"
                   />
                   <span className="text-sm text-foreground">{crew.full_name}</span>
                 </label>

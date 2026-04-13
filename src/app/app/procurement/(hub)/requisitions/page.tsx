@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency , formatDate } from '@/lib/utils';
 import Link from 'next/link';
 import ProcurementHubTabs from '../../ProcurementHubTabs';
 import StatusBadge, { PROCUREMENT_REQUISITION_STATUS_COLORS } from '@/components/ui/StatusBadge';
@@ -68,7 +68,7 @@ export default async function RequisitionsPage() {
                     <TableCell className="px-4 py-3"><Link href={`/app/procurement/requisitions/${r.id}`} className="font-medium text-foreground hover:underline">{r.requisition_number}</Link></TableCell>
                     <TableCell className="px-4 py-3 capitalize text-text-secondary">{r.priority}</TableCell>
                     <TableCell className="px-4 py-3 tabular-nums">{formatCurrency(r.total_cents / 100)}</TableCell>
-                    <TableCell className="px-4 py-3 text-text-secondary">{r.needed_by ? new Date(r.needed_by).toLocaleDateString() : '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{r.needed_by ? formatDate(r.needed_by) : '—'}</TableCell>
                     <TableCell className="px-4 py-3"><StatusBadge status={r.status} colorMap={PROCUREMENT_REQUISITION_STATUS_COLORS} /></TableCell>
                   </TableRow>
                 ))}

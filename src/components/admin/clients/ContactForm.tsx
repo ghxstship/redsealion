@@ -1,3 +1,4 @@
+import Checkbox from '@/components/ui/Checkbox';
 'use client';
 
 import { useState } from 'react';
@@ -81,7 +82,7 @@ export default function ContactForm({ open, onClose, onSubmit, initialData }: Co
         </div>
 
         <div className="flex items-center gap-2">
-          <input type="checkbox" id="is_decision_maker" checked={form.is_decision_maker}
+          <Checkbox id="is_decision_maker" checked={form.is_decision_maker}
             onChange={(e) => setForm({ ...form, is_decision_maker: e.target.checked })}
             className="h-4 w-4 rounded border-border text-foreground focus:ring-foreground/10" />
           <FormLabel htmlFor="is_decision_maker">Decision maker</FormLabel>

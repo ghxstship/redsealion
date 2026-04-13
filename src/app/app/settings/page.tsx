@@ -11,6 +11,7 @@ import Alert from '@/components/ui/Alert';
 
 
 
+import { RoleGate } from '@/components/shared/RoleGate';
 export default function GeneralSettingsPage() {
   const [orgName, setOrgName] = useState('');
   const [slug, setSlug] = useState('');
@@ -74,6 +75,7 @@ export default function GeneralSettingsPage() {
   }
 
   return (
+    <RoleGate resource="settings">
     <div className="max-w-2xl space-y-6">
       <div>
         <h2 className="text-lg font-semibold text-foreground">General</h2>
@@ -128,5 +130,6 @@ export default function GeneralSettingsPage() {
         </Button>
       </div>
     </div>
-  );
+  
+    </RoleGate>);
 }

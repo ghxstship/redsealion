@@ -519,11 +519,11 @@ export const GENERIC_STATUS_COLORS: Record<string, string> = {
  * StatusBadge Component
  * ──────────────────────────────────────────── */
 
-interface StatusBadgeProps {
+export interface StatusBadgeProps {
   /** The raw status string (e.g. 'in_progress'). Auto-formatted to title case. */
   status: string;
-  /** Color registry to look up the status. */
-  colorMap: Record<string, string>;
+  /** Color registry to look up the status. Defaults to GENERIC_STATUS_COLORS. */
+  colorMap?: Record<string, string>;
   /** Fallback color when status not found in map. */
   fallback?: string;
   /** Additional className. */
@@ -536,7 +536,7 @@ interface StatusBadgeProps {
  */
 export default function StatusBadge({
   status,
-  colorMap,
+  colorMap = GENERIC_STATUS_COLORS,
   fallback = 'bg-bg-secondary text-text-secondary',
   className = '',
 }: StatusBadgeProps) {

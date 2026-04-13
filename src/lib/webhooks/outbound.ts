@@ -23,7 +23,9 @@ export type WebhookEventType =
   | 'proposal.sent'
   | 'invoice.paid'
   | 'invoice.overdue'
-  | 'client.created';
+  | 'client.created'
+  | 'client.updated'
+  | 'client.deleted';
 
 interface WebhookPayload {
   event: WebhookEventType;

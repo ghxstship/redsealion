@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
@@ -69,7 +70,7 @@ export default async function AnalyticsPage() {
                 {campaigns.map((c) => (
                   <TableRow key={c.id} className="hover:bg-bg-secondary/50 transition-colors">
                     <TableCell className="px-4 py-3 font-medium text-foreground">{c.name}</TableCell>
-                    <TableCell className="px-4 py-3 text-text-secondary">{c.sent_at ? new Date(c.sent_at).toLocaleDateString() : '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{c.sent_at ? formatDate(c.sent_at) : '—'}</TableCell>
                     <TableCell className="px-4 py-3 tabular-nums">{c.recipient_count ?? 0}</TableCell>
                     <TableCell className="px-4 py-3 tabular-nums">{c.open_count ?? 0}</TableCell>
                     <TableCell className="px-4 py-3 tabular-nums">{c.click_count ?? 0}</TableCell>

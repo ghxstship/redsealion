@@ -20,7 +20,7 @@ export default function MyInboxHeader({ unreadCount }: MyInboxHeaderProps) {
       title={
         <div className="flex items-center gap-3">
           <span>{t('myInbox.title')}</span>
-          {unreadCount > 0 && <Badge variant="primary">{unreadCount} new</Badge>}
+          {unreadCount > 0 && <Badge variant="info">{`${unreadCount} new`}</Badge>}
         </div>
       }
       subtitle={t('myInbox.subtitle')}

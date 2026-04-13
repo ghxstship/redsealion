@@ -116,12 +116,12 @@ export default function TaskTemplateLibrary({ onApply }: TaskTemplateLibraryProp
           <Layers size={14} className="text-text-muted" />
           Task Templates
         </h3>
-        <button
+        <Button variant="ghost"
           onClick={() => setShowCreate(true)}
           className="text-xs font-medium text-text-muted hover:text-foreground transition-colors flex items-center gap-1"
         >
           <Plus size={12} /> Create
-        </button>
+        </Button>
       </div>
 
       {loading ? (
@@ -152,21 +152,21 @@ export default function TaskTemplateLibrary({ onApply }: TaskTemplateLibraryProp
                 </div>
                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   {onApply && (
-                    <button
+                    <Button variant="ghost"
                       onClick={() => onApply(tpl.items)}
                       className="rounded p-1 text-text-muted hover:text-foreground hover:bg-bg-secondary transition-colors"
                       title="Apply to project"
                     >
                       <Copy size={14} />
-                    </button>
+                    </Button>
                   )}
-                  <button
+                  <Button variant="ghost"
                     onClick={() => handleDelete(tpl.id)}
                     className="rounded p-1 text-text-muted hover:text-red-600 hover:bg-red-500/10 transition-colors"
                     title="Delete template"
                   >
                     <Trash2 size={14} />
-                  </button>
+                  </Button>
                 </div>
               </div>
 
@@ -226,22 +226,22 @@ export default function TaskTemplateLibrary({ onApply }: TaskTemplateLibraryProp
                     placeholder={`Task ${idx + 1}`}
                     className="flex-1"
                   />
-                  <button
+                  <Button variant="ghost"
                     type="button"
                     onClick={() => removeItem(idx)}
                     className="text-text-muted hover:text-red-600 transition-colors p-1"
                   >
                     <Trash2 size={13} />
-                  </button>
+                  </Button>
                 </div>
               ))}
-              <button
+              <Button variant="ghost"
                 type="button"
                 onClick={addItem}
                 className="text-xs font-medium text-text-muted hover:text-foreground transition-colors flex items-center gap-1"
               >
                 <Plus size={12} /> Add task
-              </button>
+              </Button>
             </div>
           </div>
 

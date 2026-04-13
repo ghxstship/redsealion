@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
@@ -87,8 +88,8 @@ export default async function MilestonesPage() {
                   <TableRow key={m.id} className="hover:bg-bg-secondary/50 transition-colors">
                     <TableCell className="px-4 py-3 font-medium text-foreground">{m.title}</TableCell>
                     <TableCell className="px-4 py-3 text-text-secondary">{m.schedule_name ?? '—'}</TableCell>
-                    <TableCell className="px-4 py-3 text-text-secondary">{new Date(m.due_at).toLocaleDateString()}</TableCell>
-                    <TableCell className="px-4 py-3 text-text-secondary">{m.completed_at ? new Date(m.completed_at).toLocaleDateString() : '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{formatDate(m.due_at)}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{m.completed_at ? formatDate(m.completed_at) : '—'}</TableCell>
                     <TableCell className="px-4 py-3">
                       <StatusBadge status={m.status} colorMap={MILESTONE_STATUS_COLORS} />
                     </TableCell>

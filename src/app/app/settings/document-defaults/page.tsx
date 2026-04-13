@@ -5,6 +5,7 @@ import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import FormTextarea from '@/components/ui/FormTextarea';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 type DocumentType = 'proposal' | 'invoice' | 'contract' | 'sow' | 'crew_call_sheet';
 type Section = 'terms_and_conditions' | 'disclaimer' | 'notes' | 'scope_header' | 'scope_footer' | 'payment_instructions';
 
@@ -109,6 +110,7 @@ export default function DocumentDefaultsPage() {
   if (!loaded) return null;
 
   return (
+    <RoleGate resource="settings">
     <div className="max-w-2xl space-y-6">
       <div>
         <h2 className="text-lg font-semibold text-foreground">Document Defaults</h2>
@@ -157,5 +159,6 @@ export default function DocumentDefaultsPage() {
           </Button>
       </div>
     </div>
+  </RoleGate>
   );
 }

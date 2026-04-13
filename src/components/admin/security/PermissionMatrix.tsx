@@ -1,3 +1,4 @@
+import Button from '@/components/ui/Button';
 'use client';
 
 import { useState, useCallback } from 'react';
@@ -14,7 +15,6 @@ import {
   type PermissionResource,
   type PermissionAction,
 } from '@/lib/permissions';
-import Button from '@/components/ui/Button';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface PermissionMatrixProps {
@@ -59,6 +59,28 @@ const RESOURCE_LABELS: Record<PermissionResource, string> = {
   referral_program: 'Referral Program',
   purchase_orders: 'Purchase Orders',
   vendors: 'Vendors',
+  dispatch: 'Dispatch',
+  fabrication: 'Fabrication',
+  rentals: 'Rentals',
+  projects: 'Projects',
+  goals: 'Goals',
+  portfolio: 'Portfolio',
+  compliance: 'Compliance',
+  marketplace: 'Marketplace',
+  files: 'Files',
+  project_portals: 'Project Portals',
+  webhooks: 'Webhooks',
+  schedule: 'Schedule',
+  portals: 'Portals',
+  profitability: 'Profitability',
+  templates: 'Templates',
+  terms: 'Terms',
+  workloads: 'Workloads',
+  roadmap: 'Roadmap',
+  finance: 'Finance',
+  calendar: 'Calendar',
+  campaigns: 'Campaigns',
+  email_inbox: 'Email Inbox',
 };
 
 const ROLE_LABELS: Record<string, string> = {
@@ -238,7 +260,7 @@ export default function PermissionMatrix({ organizationId, overrides }: Permissi
 
                         return (
                           <TableCell key={action} className="px-4 py-2.5 text-center">
-                            <Button
+                            <Button variant="ghost"
                               type="button"
                               disabled={!editable || isSaving}
                               onClick={() => togglePermission(role, resource, action)}
@@ -248,7 +270,9 @@ export default function PermissionMatrix({ organizationId, overrides }: Permissi
                                 allowed ? 'bg-green-500' : 'bg-bg-tertiary'
                               } ${isSaving ? 'opacity-50 animate-pulse' : ''}`}
                               title={`${allowed ? 'Allowed' : 'Denied'}: ${ROLE_LABELS[role] ?? role} → ${action} ${resource}`}
-                            />
+                            >
+                              <span className="sr-only">Toggle</span>
+                            </Button>
                           </TableCell>
                         );
                       })}

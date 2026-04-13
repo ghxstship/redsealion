@@ -25,7 +25,7 @@ class ConsoleEmailProvider implements EmailProvider {
 
   async send(payload: EmailPayload): Promise<EmailResult> {
     if (!this.warned && process.env.NODE_ENV === 'production') {
-      // eslint-disable-next-line no-console -- intentional startup warning
+
       console.warn(
         '[EMAIL] ⚠️ Using console email provider in production. ' +
         'Emails will NOT be delivered. Set EMAIL_PROVIDER=resend and configure RESEND_API_KEY.',

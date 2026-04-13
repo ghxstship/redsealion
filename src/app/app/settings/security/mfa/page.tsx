@@ -9,6 +9,7 @@ import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import Alert from '@/components/ui/Alert';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 type MfaStep = 'loading' | 'enroll' | 'verify' | 'done';
 
 export default function MfaSetupPage() {
@@ -143,6 +144,7 @@ export default function MfaSetupPage() {
   }
 
   return (
+    <RoleGate resource="settings">
     <div className="max-w-lg mx-auto">
       <div className="mb-6">
         <h1 className="text-xl font-semibold text-foreground">
@@ -218,5 +220,6 @@ export default function MfaSetupPage() {
         </form>
       </Card>
     </div>
-  );
+  
+    </RoleGate>);
 }

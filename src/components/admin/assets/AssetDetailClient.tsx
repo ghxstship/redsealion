@@ -13,6 +13,7 @@ import MoveAssetModal from '@/components/admin/assets/MoveAssetModal';
 import AssetFormModal from '@/components/admin/assets/AssetFormModal';
 import { formatCurrency, formatLabel, formatDate } from '@/lib/utils';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
+import { Badge } from '@/components/ui/Badge';
 
 /**
  * Asset detail client component — handles interactive actions.
@@ -490,11 +491,11 @@ export default function AssetDetailClient({ asset, proposalId, proposalName, loc
                 <dt className="text-sm text-text-muted">Warranty Status</dt>
                 <dd>
                   {warrantyActive ? (
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-700">
-                      Active — {warrantyDaysRemaining}d remaining
-                    </span>
+                    <Badge variant="success">
+                      {`Active — ${warrantyDaysRemaining ?? 0}d remaining`}
+                    </Badge>
                   ) : asset.warranty_end_date ? (
-                    <span className="inline-flex items-center rounded-full bg-red-500/10 px-2.5 py-0.5 text-xs font-medium text-red-700">Expired</span>
+                    <Badge variant="error">Expired</Badge>
                   ) : (
                     <span className="text-sm text-text-muted">Not set</span>
                   )}
@@ -516,9 +517,9 @@ export default function AssetDetailClient({ asset, proposalId, proposalName, loc
                 <dt className="text-sm text-text-muted">Insurance</dt>
                 <dd>
                   {insuranceActive ? (
-                    <span className="inline-flex items-center rounded-full bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-700">Active</span>
+                    <Badge variant="success">Active</Badge>
                   ) : asset.insurance_expiry_date ? (
-                    <span className="inline-flex items-center rounded-full bg-red-500/10 px-2.5 py-0.5 text-xs font-medium text-red-700">Expired</span>
+                    <Badge variant="error">Expired</Badge>
                   ) : (
                     <span className="text-sm text-text-muted">Not set</span>
                   )}

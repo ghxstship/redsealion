@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { Calendar } from 'lucide-react';
 import Card from '@/components/ui/Card';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 type Provider = 'google' | 'outlook' | 'ical';
 type SyncDirection = 'one-way' | 'two-way';
 
@@ -120,6 +121,7 @@ export default function CalendarSyncPage() {
   }
 
   return (
+    <RoleGate resource="settings">
     <div className="max-w-2xl space-y-6">
       <div>
         <h2 className="text-lg font-semibold text-foreground">Calendar Sync</h2>
@@ -259,5 +261,6 @@ export default function CalendarSyncPage() {
         </div>
       </Card>
     </div>
-  );
+  
+    </RoleGate>);
 }

@@ -5,6 +5,7 @@ import { usePreferences } from '@/components/shared/PreferencesProvider';
 import Button from '@/components/ui/Button';
 import FormSelect from '@/components/ui/FormSelect';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 type Theme = 'light' | 'dark' | 'system';
 type CalendarView = 'month' | 'week' | 'day';
 type Density = 'comfortable' | 'compact';
@@ -37,6 +38,7 @@ export default function AppearanceSettingsPage() {
   if (!prefs.loaded) return null;
 
   return (
+    <RoleGate>
     <div className="max-w-2xl space-y-6">
       <div>
         <h2 className="text-lg font-semibold text-foreground">Appearance</h2>
@@ -133,5 +135,6 @@ export default function AppearanceSettingsPage() {
         </Button>
       </div>
     </div>
+  </RoleGate>
   );
 }

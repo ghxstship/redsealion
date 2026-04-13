@@ -21,6 +21,7 @@ import type { DealStage } from '@/types/database';
 const DEAL_STAGES: DealStage[] = [
   'lead', 'qualified', 'proposal_sent', 'negotiation',
   'verbal_yes', 'contract_signed', 'lost', 'on_hold',
+  'discovery', 'qualification', 'proposal', 'closed_won', 'closed_lost',
 ];
 
 const VALID_DEAL_TRANSITIONS: Record<DealStage, DealStage[]> = {
@@ -32,6 +33,11 @@ const VALID_DEAL_TRANSITIONS: Record<DealStage, DealStage[]> = {
   contract_signed: [],
   lost: ['lead'],       // can reopen
   on_hold: ['lead', 'qualified', 'proposal_sent', 'negotiation'],
+  discovery: ['qualification', 'lost', 'on_hold'],
+  qualification: ['proposal', 'lost', 'on_hold'],
+  proposal: ['negotiation', 'lost', 'on_hold'],
+  closed_won: [],
+  closed_lost: ['discovery'],
 };
 
 describe('Deal / Pipeline Workflow', () => {
@@ -41,7 +47,7 @@ describe('Deal / Pipeline Workflow', () => {
 
   describe('Deal stage transitions', () => {
     it('defines all 8 deal stages', () => {
-      expect(DEAL_STAGES).toHaveLength(8);
+      expect(DEAL_STAGES).toHaveLength(13);
     });
 
     it('follows the happy path: lead → contract_signed', () => {

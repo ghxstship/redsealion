@@ -94,7 +94,7 @@ export default function BiddingPanel({ workOrderId }: { workOrderId: string }) {
         <div className="flex items-center gap-2 text-xs text-text-muted">
           <span>Sort:</span>
           {(['date', 'amount', 'status'] as SortField[]).map((field) => (
-            <button
+            <Button variant="ghost"
               key={field}
               onClick={() => setSortBy(field)}
               className={`px-2 py-1 rounded text-xs transition-colors ${
@@ -102,7 +102,7 @@ export default function BiddingPanel({ workOrderId }: { workOrderId: string }) {
               }`}
             >
               {field.charAt(0).toUpperCase() + field.slice(1)}
-            </button>
+            </Button>
           ))}
         </div>
       </div>

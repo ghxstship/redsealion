@@ -3,6 +3,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { notFound } from 'next/navigation';
 import TemplateEditClient from './TemplateEditClient';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 async function getTemplate(id: string) {
   try {
     const supabase = await createClient();
@@ -28,6 +29,7 @@ export default async function TemplateEditPage({ params }: { params: Promise<{ i
   if (!template) notFound();
 
   return (
+    <RoleGate>
     <TemplateEditClient
       template={{
         id: template.id,
@@ -37,5 +39,6 @@ export default async function TemplateEditPage({ params }: { params: Promise<{ i
         phases: template.phases ?? [],
       }}
     />
+  </RoleGate>
   );
 }

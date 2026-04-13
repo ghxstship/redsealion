@@ -2,6 +2,10 @@
 
 import React, { useState } from 'react';
 import Card from '@/components/ui/Card';
+import ProgressBar from '@/components/ui/ProgressBar';
+import StatusBadge, { GENERIC_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import EmptyState from '@/components/ui/EmptyState';
+import Checkbox from '@/components/ui/Checkbox';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface PackingItem {
@@ -63,23 +67,16 @@ export default function PackingList({ items, venueName, proposalName }: PackingL
       </div>
 
       {/* Progress bar */}
-      <div className="w-full h-2 bg-bg-secondary rounded-full mb-4">
-        <div
-          className="h-2 bg-green-500 rounded-full transition-[width,opacity]"
-          style={{ width: items.length > 0 ? `${(checked.size / items.length) * 100}%` : '0%' }}
-        />
-      </div>
+      <ProgressBar value={checked.size} max={items.length} color="green" className="mb-4" />
 
       <div className="overflow-x-auto">
         <Table >
           <TableHeader>
             <TableRow className="border-b border-border">
               <TableHead className="text-left py-2 px-2 w-8">
-                <input
-                  type="checkbox"
+                <Checkbox
                   checked={allChecked}
                   onChange={toggleAll}
-                  className="rounded"
                 />
               </TableHead>
               <TableHead className="text-left py-2 px-2 text-text-secondary font-medium">Item</TableHead>
@@ -93,14 +90,12 @@ export default function PackingList({ items, venueName, proposalName }: PackingL
               grouped[category].map((item) => (
                 <TableRow
                   key={item.originalIndex}
-                  className={`border-b border-border ${checked.has(item.originalIndex) ? 'bg-green-50' : ''}`}
+                  className={`border-b border-border ${checked.has(item.originalIndex) ? 'bg-success/10' : ''}`}
                 >
                   <TableCell className="py-2 px-2">
-                    <input
-                      type="checkbox"
+                    <Checkbox
                       checked={checked.has(item.originalIndex)}
                       onChange={() => toggleItem(item.originalIndex)}
-                      className="rounded"
                     />
                   </TableCell>
                   <TableCell className={`py-2 px-2 text-foreground ${checked.has(item.originalIndex) ? 'line-through text-text-muted' : ''}`}>
@@ -109,9 +104,7 @@ export default function PackingList({ items, venueName, proposalName }: PackingL
                   <TableCell className="py-2 px-2 text-text-secondary">{item.category}</TableCell>
                   <TableCell className="py-2 px-2 text-center text-foreground">{item.quantity}</TableCell>
                   <TableCell className="py-2 px-2">
-                    <span className="inline-block px-2 py-0.5 rounded text-xs bg-bg-secondary text-text-secondary">
-                      {item.status}
-                    </span>
+                    <StatusBadge status={item.status} colorMap={GENERIC_STATUS_COLORS} />
                   </TableCell>
                 </TableRow>
               )),
@@ -121,7 +114,7 @@ export default function PackingList({ items, venueName, proposalName }: PackingL
       </div>
 
       {items.length === 0 && (
-        <p className="text-sm text-text-muted text-center py-4">No items in packing list.</p>
+        <EmptyState message="No items in packing list" />
       )}
     </Card>
   );

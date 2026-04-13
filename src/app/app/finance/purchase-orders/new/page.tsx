@@ -12,6 +12,7 @@ import Alert from '@/components/ui/Alert';
 import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 interface VendorOption {
   id: string;
   name: string;
@@ -106,6 +107,7 @@ export default function NewPurchaseOrderPage() {
   }
 
   return (
+    <RoleGate resource="finance">
     <div className="max-w-2xl">
       <div className="mb-8">
         <Button
@@ -230,5 +232,6 @@ export default function NewPurchaseOrderPage() {
         </div>
       </form>
     </div>
+  </RoleGate>
   );
 }

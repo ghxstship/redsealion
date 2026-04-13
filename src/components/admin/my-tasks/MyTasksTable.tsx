@@ -317,7 +317,7 @@ export default function MyTasksTable({ tasks }: { tasks: MyTaskRow[] }) {
                   )}
                   {isVisible('startDate') && (
                     <TableCell className="px-6 py-3.5">
-                      <RowDate dateString={task.startDate} fallback="\u2014" />
+                      <RowDate date={task.startDate} fallback="\u2014" />
                     </TableCell>
                   )}
                   {isVisible('timeBlock') && (

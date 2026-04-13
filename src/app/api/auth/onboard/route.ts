@@ -275,12 +275,14 @@ export const POST = withRateLimit(RATE_LIMITS.auth, async function POST(request:
     }
 
     // 10. H-02: Log the org creation event
-    await service.from('auth_events').insert({
-      user_id: user.id,
-      organization_id: org.id,
-      event_type: 'org_created',
-      metadata: { company_name, slug },
-    }).catch(() => { /* non-fatal */ });
+    try {
+      await service.from('auth_events').insert({
+        user_id: user.id,
+        organization_id: org.id,
+        event_type: 'org_created',
+        metadata: { company_name, slug },
+      });
+    } catch { /* non-fatal */ }
 
     return NextResponse.json({ success: true, organization_id: org.id });
   } catch (err) {

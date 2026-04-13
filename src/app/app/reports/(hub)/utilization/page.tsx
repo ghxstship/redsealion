@@ -187,7 +187,7 @@ export default async function UtilizationReportPage() {
                           variant={r.utilizationPercent >= 90 ? 'error' : r.utilizationPercent >= 70 ? 'success' : r.utilizationPercent >= 50 ? 'warning' : 'muted'}
                           className="min-w-[3rem] justify-center"
                         >
-                          {r.utilizationPercent}%
+                          {`${r.utilizationPercent}%`}
                         </Badge>
                       </div>
                     </TableCell>

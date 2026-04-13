@@ -13,7 +13,7 @@ export async function GET(
   const tierError = await requireFeature('integrations');
   if (tierError) return tierError;
 
-  const permError = await requirePermission('integrations', 'read');
+  const permError = await requirePermission('integrations', 'view');
   if (permError) return permError;
 
   const supabase = await createClient();
@@ -37,7 +37,7 @@ export async function GET(
     }
 
     const { data: logs, error } = await supabase
-      .from('integration_sync_log')
+      .from('integration_sync_logs')
       .select('*')
       .eq('integration_id', integration.id)
       .order('started_at', { ascending: false })

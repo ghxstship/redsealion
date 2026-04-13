@@ -10,6 +10,7 @@ import FormLabel from '@/components/ui/FormLabel';
 import FormSelect from '@/components/ui/FormSelect';
 import FormTextarea from '@/components/ui/FormTextarea';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 interface EditCrewProfileProps {
   params: Promise<{ id: string }>;
 }
@@ -102,6 +103,7 @@ export default function EditCrewProfilePage({ params }: EditCrewProfileProps) {
   }
 
   return (
+    <RoleGate resource="crew">
     <div className="max-w-2xl mx-auto">
       <Button
         onClick={() => router.back()}
@@ -182,5 +184,6 @@ export default function EditCrewProfilePage({ params }: EditCrewProfileProps) {
         </div>
       </div>
     </div>
-  );
+  
+    </RoleGate>);
 }

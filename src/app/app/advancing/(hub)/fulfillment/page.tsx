@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency , formatDate } from '@/lib/utils';
 import Link from 'next/link';
 import StatusBadge, { ADVANCE_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import AdvancingHubTabs from '../../AdvancingHubTabs';
@@ -77,8 +77,8 @@ export default async function AdvancingFulfillmentPage() {
                     </TableCell>
                     <TableCell className="px-4 py-3 text-text-secondary">{item.event_name ?? '—'}</TableCell>
                     <TableCell className="px-4 py-3 tabular-nums">{formatCurrency(item.total_cents / 100)}</TableCell>
-                    <TableCell className="px-4 py-3 text-text-secondary">{item.service_start_date ? new Date(item.service_start_date).toLocaleDateString() : '—'}</TableCell>
-                    <TableCell className="px-4 py-3 text-text-secondary">{item.service_end_date ? new Date(item.service_end_date).toLocaleDateString() : '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{item.service_start_date ? formatDate(item.service_start_date) : '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{item.service_end_date ? formatDate(item.service_end_date) : '—'}</TableCell>
                     <TableCell className="px-4 py-3">
                       <StatusBadge status={item.status} colorMap={ADVANCE_STATUS_COLORS} />
                     </TableCell>

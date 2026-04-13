@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { formatLabel } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
@@ -7,6 +8,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import EventsHubTabs from '../../EventsHubTabs';
 import MetricCard from '@/components/ui/MetricCard';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 async function getLocations(): Promise<LocationItem[]> {
   try {
     const supabase = await createClient();
@@ -56,6 +58,7 @@ export default async function LocationsPage() {
     .slice(0, 4);
 
   return (
+    <RoleGate>
     <>
       <PageHeader
 
@@ -84,5 +87,6 @@ export default async function LocationsPage() {
 
       <LocationsTable locations={locations} />
     </>
+  </RoleGate>
   );
 }

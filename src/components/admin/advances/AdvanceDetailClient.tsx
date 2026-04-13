@@ -386,12 +386,14 @@ export default function AdvanceDetailClient({ data }: AdvanceDetailClientProps) 
               <h2 className="text-lg font-semibold text-foreground">
                 {selectedCatalogItem ? 'Configure Item' : showAdHoc ? 'Ad-Hoc Item' : 'Browse Catalog'}
               </h2>
-              <button
-                className="text-text-muted hover:text-foreground p-1 transition-colors"
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => { setShowCatalog(false); setSelectedCatalogItem(null); }}
+                aria-label="Close catalog"
               >
                 ✕
-              </button>
+              </Button>
             </div>
             <div className="p-6">
               {selectedCatalogItem ? (

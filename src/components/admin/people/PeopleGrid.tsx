@@ -12,6 +12,7 @@ import RowActionMenu from '@/components/shared/RowActionMenu';
 import { Edit, Eye, FolderHeart, Mail, Users2, Shield, MoreVertical, Trash2 } from 'lucide-react';
 import type { Database } from '@/types/database';
 import StatusBadge from '@/components/ui/StatusBadge';
+import { Badge } from '@/components/ui/Badge';
 import EmptyState from '@/components/ui/EmptyState';
 
 import { ROLE_BADGE_COLORS } from '@/components/ui/StatusBadge';
@@ -173,9 +174,9 @@ export default function PeopleGrid({ members }: { members: TeamMember[] }) {
                   <div className="mt-4 space-y-2 relative z-0">
                     <div className="flex items-center justify-between">
                       <span className="text-xs text-text-muted">Role</span>
-                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${ROLE_BADGE_COLORS[member.role] ?? 'bg-bg-secondary text-text-secondary'}`}>
+                      <Badge variant="muted" className={ROLE_BADGE_COLORS[member.role] ?? 'bg-bg-secondary text-text-secondary'}>
                         {ROLE_LABELS[member.role] ?? member.role}
-                      </span>
+                      </Badge>
                     </div>
                     {member.department && (
                       <div className="flex items-center justify-between">

@@ -543,7 +543,7 @@ export function makeWorkOrder(overrides: RowData = {}) {
     status: 'draft',
     priority: 'high',
     is_public_board: false,
-    bidding_deadline: null,
+    bidding_deadline: null as string | null,
     budget_range: '$5,000 – $10,000',
     client_id: TEST_CLIENT_ID,
     proposal_id: null,

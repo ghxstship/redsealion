@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency , formatDate } from '@/lib/utils';
 import Link from 'next/link';
 import PageHeader from '@/components/shared/PageHeader';
 import EmptyState from '@/components/ui/EmptyState';
@@ -8,6 +8,7 @@ import StatusBadge, { INVOICE_STATUS_COLORS } from '@/components/ui/StatusBadge'
 import InvoiceHubTabs from '../InvoiceHubTabs';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 interface InvoiceRow {
   id: string;
   invoice_number: string;
@@ -65,6 +66,7 @@ export default async function InvoicesPage() {
   const totalOutstanding = invoices.reduce((s, i) => s + (i.total - i.amount_paid), 0);
 
   return (
+    <RoleGate resource="invoices">
     <>
       <PageHeader
         title="Invoices"
@@ -119,8 +121,8 @@ export default async function InvoicesPage() {
                     </TableCell>
                     <TableCell className="px-4 py-3 text-text-secondary">{inv.client_name}</TableCell>
                     <TableCell className="px-4 py-3 capitalize">{inv.type}</TableCell>
-                    <TableCell className="px-4 py-3 text-text-secondary">{new Date(inv.issue_date).toLocaleDateString()}</TableCell>
-                    <TableCell className="px-4 py-3 text-text-secondary">{new Date(inv.due_date).toLocaleDateString()}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{formatDate(inv.issue_date)}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{formatDate(inv.due_date)}</TableCell>
                     <TableCell className="px-4 py-3 text-right tabular-nums">{formatCurrency(inv.total)}</TableCell>
                     <TableCell className="px-4 py-3 text-right tabular-nums">{formatCurrency(inv.amount_paid)}</TableCell>
                     <TableCell className="px-4 py-3">
@@ -134,5 +136,6 @@ export default async function InvoicesPage() {
         </div>
       )}
     </>
+  </RoleGate>
   );
 }

@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency , formatDate } from '@/lib/utils';
 import Link from 'next/link';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
@@ -85,13 +85,13 @@ export default async function PurchaseOrderDetailPage({ params }: { params: Prom
         <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Issued</p>
           <p className="mt-1 text-sm font-semibold text-foreground">
-            {po.issued_date ? new Date(po.issued_date).toLocaleDateString() : '—'}
+            {po.issued_date ? formatDate(po.issued_date) : '—'}
           </p>
         </div>
         <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs text-text-muted">Due</p>
           <p className="mt-1 text-sm font-semibold text-foreground">
-            {po.due_date ? new Date(po.due_date).toLocaleDateString() : '—'}
+            {po.due_date ? formatDate(po.due_date) : '—'}
           </p>
         </div>
       </div>

@@ -14,6 +14,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
 import Skeleton from '@/components/ui/Skeleton';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 const CATEGORIES = [
   'AV / Production',
   'Catering',
@@ -220,6 +221,7 @@ export default function VendorDetailPage() {
   }
 
   return (
+    <RoleGate resource="finance">
     <div className="max-w-2xl">
       <div className="mb-8">
         <Button variant="ghost" href="/app/finance/vendors" className="mb-4">
@@ -457,5 +459,6 @@ export default function VendorDetailPage() {
         onCancel={() => setShowDelete(false)}
       />
     </div>
-  );
+  
+    </RoleGate>);
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import { formatDate } from '@/lib/utils';
 /**
  * Project detail view — tabbed interface for project settings,
  * members, portals, and status updates.
@@ -144,8 +145,8 @@ export default function ProjectDetailClient({ project }: ProjectDetailProps) {
                 {project.project_code && <div className="flex justify-between"><dt className="text-text-muted">Code</dt><dd className="font-mono text-foreground">{project.project_code}</dd></div>}
                 <div className="flex justify-between"><dt className="text-text-muted">Visibility</dt><dd className="text-foreground capitalize">{project.visibility}</dd></div>
                 {project.venue_name && <div className="flex justify-between"><dt className="text-text-muted">Venue</dt><dd className="text-foreground">{project.venue_name}</dd></div>}
-                {project.starts_at && <div className="flex justify-between"><dt className="text-text-muted">Start</dt><dd className="text-foreground tabular-nums">{new Date(project.starts_at).toLocaleDateString()}</dd></div>}
-                {project.ends_at && <div className="flex justify-between"><dt className="text-text-muted">End</dt><dd className="text-foreground tabular-nums">{new Date(project.ends_at).toLocaleDateString()}</dd></div>}
+                {project.starts_at && <div className="flex justify-between"><dt className="text-text-muted">Start</dt><dd className="text-foreground tabular-nums">{formatDate(project.starts_at)}</dd></div>}
+                {project.ends_at && <div className="flex justify-between"><dt className="text-text-muted">End</dt><dd className="text-foreground tabular-nums">{formatDate(project.ends_at)}</dd></div>}
               </dl>
             </div>
 

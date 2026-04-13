@@ -3,6 +3,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
 import TermsDocumentView from './TermsDocumentView';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 interface TermsDocument {
   id: string;
   title: string;
@@ -37,6 +38,7 @@ export default async function TermsPage() {
   const activeDoc = documents.find((d) => d.is_active) ?? documents[0] ?? null;
 
   return (
+    <RoleGate resource="terms">
     <>
       <PageHeader
         title="Terms & Conditions"
@@ -48,5 +50,6 @@ export default async function TermsPage() {
         allDocuments={documents}
       />
     </>
-  );
+  
+    </RoleGate>);
 }

@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { TierGate } from '@/components/shared/TierGate';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
-import { formatLabel } from '@/lib/utils';
+import { formatLabel , formatDate } from '@/lib/utils';
 
 import EmptyState from '@/components/ui/EmptyState';
 import PageHeader from '@/components/shared/PageHeader';
@@ -245,7 +245,7 @@ export default async function MarketplacePage({
                       </TableCell>
                       <TableCell className="px-6 py-3.5 text-sm text-text-muted">
                         {wo.scheduled_start
-                          ? new Date(wo.scheduled_start).toLocaleDateString()
+                          ? formatDate(wo.scheduled_start)
                           : 'TBD'}
                       </TableCell>
                       <TableCell className="px-6 py-3.5 text-sm font-medium text-text-secondary">

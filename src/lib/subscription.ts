@@ -76,6 +76,7 @@ export type FeatureKey =
   | 'warehouse'
   | 'payroll_export'
   | 'work_orders'
+  | 'marketplace'
   | 'ai_drafting'
   | 'logistics'
   | 'procurement';
@@ -154,6 +155,7 @@ const featureRegistry: Record<FeatureKey, AppTier> = {
   warehouse: 'enterprise',
   payroll_export: 'enterprise',
   work_orders: 'enterprise',
+  marketplace: 'enterprise',
   ai_drafting: 'enterprise',
   logistics: 'enterprise',
   procurement: 'enterprise',

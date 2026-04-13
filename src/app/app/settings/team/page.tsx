@@ -5,6 +5,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import TeamHeader from '@/components/admin/settings/TeamHeader';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 interface TeamMember {
   id: string;
   full_name: string | null;
@@ -75,6 +76,7 @@ export default async function TeamSettingsPage() {
     }
 
   return (
+    <RoleGate resource="settings">
     <div className="max-w-4xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
@@ -167,5 +169,6 @@ export default async function TeamSettingsPage() {
         </div>
       </div>
     </div>
+  </RoleGate>
   );
 }

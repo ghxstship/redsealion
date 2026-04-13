@@ -134,9 +134,9 @@ export default function ClientFormModal({ open, onClose, onCreated }: ClientForm
 
         {/* Collapsible additional details */}
         {!showMore && (
-          <button type="button" onClick={() => setShowMore(true)} className="text-sm text-text-muted hover:text-foreground transition-colors">
+          <Button variant="ghost" type="button" onClick={() => setShowMore(true)} className="text-sm text-text-muted hover:text-foreground transition-colors">
             + Additional details (notes)
-          </button>
+          </Button>
         )}
 
         {showMore && (

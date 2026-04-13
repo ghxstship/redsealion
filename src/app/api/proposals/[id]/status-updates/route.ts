@@ -25,6 +25,7 @@ export async function GET(
   const { data } = await supabase
     /* org-scoped */ .from('project_status_updates')
     .select('id, status, summary, created_at, created_by, users!project_status_updates_created_by_fkey(full_name)')
+    .eq('organization_id', perm!.organizationId)
     .eq('proposal_id', proposalId)
     .order('created_at', { ascending: false })
     .limit(20);

@@ -9,6 +9,7 @@ import Button from '@/components/ui/Button';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 interface AutomationRun {
   id: string;
   name: string;
@@ -65,6 +66,7 @@ export default function AutomationsConfigPage() {
   }
 
   return (
+    <RoleGate resource="settings">
     <div className="max-w-2xl space-y-6">
       <div>
         <h2 className="text-lg font-semibold text-foreground">Automations</h2>
@@ -194,5 +196,6 @@ export default function AutomationsConfigPage() {
         </Button>
       </div>
     </div>
-  );
+  
+    </RoleGate>);
 }

@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import CountWorksheetClient from './CountWorksheetClient';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 export default async function CountWorksheetPage({
   params,
 }: {
@@ -28,6 +29,7 @@ export default async function CountWorksheetPage({
     .eq('count_id', id);
 
   return (
+    <RoleGate>
     <CountWorksheetClient
       count={{
         id: count.id,
@@ -55,5 +57,6 @@ export default async function CountWorksheetPage({
         };
       })}
     />
+  </RoleGate>
   );
 }

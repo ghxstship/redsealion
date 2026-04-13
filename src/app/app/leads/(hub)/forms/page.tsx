@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import EmptyState from '@/components/ui/EmptyState';
@@ -7,6 +6,7 @@ import LeadFormsHeader from '@/components/admin/leads/LeadFormsHeader';
 import LeadsHubTabs from '../../LeadsHubTabs';
 import PageHeader from '@/components/shared/PageHeader';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 interface LeadForm {
   id: string;
   name: string;
@@ -37,7 +37,7 @@ async function getLeadForms(): Promise<LeadForm[]> {
 
     // Fetch submission counts per form
     const formIds = forms.map((f: Record<string, unknown>) => f.id as string);
-    let submissionCounts: Record<string, { count: number; last: string | null }> = {};
+    const submissionCounts: Record<string, { count: number; last: string | null }> = {};
     if (formIds.length > 0) {
       const { data: submissions } = await supabase
         .from('lead_form_submissions')
@@ -94,6 +94,7 @@ export default async function LeadFormsPage() {
   const forms = await getLeadForms();
 
   return (
+    <RoleGate>
     <>
       <PageHeader
 
@@ -161,5 +162,6 @@ export default async function LeadFormsPage() {
         ) : null}
       </div>
     </>
+  </RoleGate>
   );
 }

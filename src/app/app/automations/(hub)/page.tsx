@@ -3,7 +3,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import EmptyState from '@/components/ui/EmptyState';
-import { formatLabel } from '@/lib/utils';
+import { formatLabel , formatDate } from '@/lib/utils';
 import StatusBadge, { GENERIC_STATUS_COLORS } from '@/components/ui/StatusBadge';
 
 interface AutomationRow {
@@ -78,7 +78,7 @@ export default async function AutomationsPage() {
                 <span>Action: {formatLabel(automation.action_type)}</span>
                 <span>Runs: {automation.run_count}</span>
                 {automation.last_run_at && (
-                  <span>Last run: {new Date(automation.last_run_at).toLocaleDateString()}</span>
+                  <span>Last run: {formatDate(automation.last_run_at)}</span>
                 )}
               </div>
             </div>

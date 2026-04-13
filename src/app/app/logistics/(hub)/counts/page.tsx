@@ -10,6 +10,7 @@ import { formatDate } from '@/lib/utils';
 import LogisticsHubTabs from "../../LogisticsHubTabs";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 const COUNT_STATUS_COLORS: Record<string, string> = {
   planned: 'bg-bg-secondary text-text-secondary',
   in_progress: 'bg-blue-50 text-blue-700',
@@ -77,6 +78,7 @@ export default async function InventoryCountsPage() {
   const completed = counts.filter((c) => c.status === 'completed');
 
   return (
+    <RoleGate>
     <>
       <PageHeader
         title="Inventory Counts"
@@ -197,5 +199,6 @@ export default async function InventoryCountsPage() {
         </div>
       )}
     </>
+  </RoleGate>
   );
 }

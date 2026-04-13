@@ -19,6 +19,15 @@ export async function GET(
   const { id: taskId } = await params;
   const supabase = await createClient();
 
+  // Verify parent task belongs to user's organization
+  const { data: task } = await supabase
+    .from('tasks')
+    .select('id')
+    .eq('id', taskId)
+    .eq('organization_id', perm.organizationId)
+    .single();
+  if (!task) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+
   const { data: comments, error } = await supabase
     .from('task_comments')
     .select('*, author:users!task_comments_author_id_fkey(id, full_name, avatar_url)')
@@ -55,6 +64,15 @@ export async function POST(
   }
 
   const supabase = await createClient();
+
+  // Verify parent task belongs to user's organization
+  const { data: taskCheck } = await supabase
+    .from('tasks')
+    .select('id')
+    .eq('id', taskId)
+    .eq('organization_id', perm.organizationId)
+    .single();
+  if (!taskCheck) return NextResponse.json({ error: 'Not found' }, { status: 404 });
   const mentions = extractMentionedUserIds(commentBody);
 
   const { data: comment, error: insertError } = await supabase

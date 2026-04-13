@@ -9,6 +9,7 @@ import Card from '@/components/ui/Card';
 import AssetDetailHeaderActions from '@/components/admin/equipment/AssetDetailHeaderActions';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 const RESERVATION_COLORS: Record<string, string> = {
   confirmed: 'bg-green-50 text-green-700',
   tentative: 'bg-yellow-50 text-yellow-700',
@@ -94,6 +95,7 @@ export default async function EquipmentDetailPage({
   const currentLocation = item.current_location as { type?: string } | null;
 
   return (
+    <RoleGate resource="equipment">
     <>
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-8">
@@ -296,5 +298,6 @@ export default async function EquipmentDetailPage({
         </div>
       </div>
     </>
-  );
+  
+    </RoleGate>);
 }

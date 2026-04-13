@@ -14,7 +14,7 @@ import FormTextarea from '@/components/ui/FormTextarea';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import BiddingPanel from '@/components/admin/work-orders/BiddingPanel';
 import StatusBadge, { WORK_ORDER_STATUS_COLORS, PRIORITY_COLORS } from '@/components/ui/StatusBadge';
-import { formatLabel } from '@/lib/utils';
+import { formatLabel, formatDate } from '@/lib/utils';
 import FormSelect from '@/components/ui/FormSelect';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
@@ -477,7 +477,7 @@ export default function DispatchDetailPage({ params }: { params: Promise<{ id: s
             <dl className="space-y-3 text-sm">
               <div className="flex justify-between">
                 <dt className="text-text-muted">Status</dt>
-                <dd><StatusBadge status={wo.status} colorMap={STATUS_COLORS} /></dd>
+                <dd><StatusBadge status={wo.status} colorMap={WORK_ORDER_STATUS_COLORS} /></dd>
               </div>
               <div className="flex justify-between">
                 <dt className="text-text-muted">Priority</dt>
@@ -554,9 +554,9 @@ export default function DispatchDetailPage({ params }: { params: Promise<{ id: s
                     <TableCell className="px-6 py-3 text-text-secondary">{a.crew_profiles?.phone ?? '—'}</TableCell>
                     <TableCell className="px-6 py-3 text-text-secondary">{a.role ?? '—'}</TableCell>
                     <TableCell className="px-6 py-3">
-                      <StatusBadge status={a.status} colorMap={STATUS_COLORS} />
+                      <StatusBadge status={a.status} colorMap={WORK_ORDER_STATUS_COLORS} />
                     </TableCell>
-                    <TableCell className="px-6 py-3 text-text-muted text-xs">{new Date(a.assigned_at).toLocaleDateString()}</TableCell>
+                    <TableCell className="px-6 py-3 text-text-muted text-xs">{formatDate(a.assigned_at)}</TableCell>
                     {isEditable && (
                       <TableCell className="px-6 py-3">
                         <Button onClick={() => handleRemoveAssignment(a.id)} className="text-xs text-text-muted hover:text-red-600 transition-colors">
@@ -605,11 +605,10 @@ export default function DispatchDetailPage({ params }: { params: Promise<{ id: s
             </div>
             <div>
               <label className="block text-xs font-medium text-text-muted mb-1">Comment (optional)</label>
-              <textarea
+              <FormTextarea
                 rows={2}
                 value={ratingComment}
                 onChange={(e) => setRatingComment(e.target.value)}
-                className={inputClass + ' resize-none'}
                 placeholder="How did they do?"
               />
             </div>

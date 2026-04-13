@@ -87,7 +87,7 @@ export default async function CommissionsPage() {
         ].map((stat) => (
           <MetricCard
             key={stat.label}
-            title={stat.label}
+            label={stat.label}
             value={stat.value}
             valueClassName={stat.color}
           />

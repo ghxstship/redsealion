@@ -1,5 +1,6 @@
 'use client';
 
+import { formatDate } from '@/lib/utils';
 import { use, useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -12,6 +13,7 @@ import FormTextarea from '@/components/ui/FormTextarea';
 import StatusBadge, { TASK_PRIORITY_COLORS, BID_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import { toast } from 'react-hot-toast';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 /** Typed interface for the work order detail */
 interface WorkOrderDetail {
   id: string;
@@ -208,7 +210,9 @@ export default function MarketplaceJobPage({ params }: { params: Promise<{ id: s
     );
   }
 
-  const deadlinePassed = wo?.bidding_deadline && new Date() > new Date(wo.bidding_deadline);
+  if (!wo) return null;
+
+  const deadlinePassed = wo.bidding_deadline && new Date() > new Date(wo.bidding_deadline);
   const inputClass = "w-full"; // FormInput/FormTextarea handle styling canonically
   const canSubmitNewBid = !existingBid || existingBid.status === 'withdrawn';
   const canEditBid = existingBid && existingBid.status === 'pending';
@@ -276,6 +280,7 @@ export default function MarketplaceJobPage({ params }: { params: Promise<{ id: s
   }
 
   return (
+    <RoleGate resource="marketplace">
     <>
       <PageHeader 
         title={wo.title} 
@@ -319,8 +324,8 @@ export default function MarketplaceJobPage({ params }: { params: Promise<{ id: s
               <div>
                 <dt className="text-text-muted mb-1">Scheduled Dates</dt>
                 <dd className="text-foreground">
-                  {new Date(wo.scheduled_start).toLocaleDateString()}
-                  {wo.scheduled_end ? ` – ${new Date(wo.scheduled_end).toLocaleDateString()}` : ''}
+                  {formatDate(wo.scheduled_start)}
+                  {wo.scheduled_end ? ` – ${formatDate(wo.scheduled_end)}` : ''}
                 </dd>
               </div>
             )}
@@ -361,9 +366,9 @@ export default function MarketplaceJobPage({ params }: { params: Promise<{ id: s
                   <div className="border-t border-border pt-3 mt-3">
                     <p className="text-xs text-text-muted mb-1">Proposed Schedule</p>
                     <p className="text-sm">
-                      {existingBid.proposed_start ? new Date(existingBid.proposed_start).toLocaleDateString() : '—'}
+                      {existingBid.proposed_start ? formatDate(existingBid.proposed_start) : '—'}
                       {' → '}
-                      {existingBid.proposed_end ? new Date(existingBid.proposed_end).toLocaleDateString() : '—'}
+                      {existingBid.proposed_end ? formatDate(existingBid.proposed_end) : '—'}
                     </p>
                   </div>
                 )}
@@ -410,5 +415,6 @@ export default function MarketplaceJobPage({ params }: { params: Promise<{ id: s
         </Card>
       </div>
     </>
-  );
+  
+    </RoleGate>);
 }

@@ -27,6 +27,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
       version: (version as number) ?? 1,
       is_approved: (is_approved as boolean) ?? false,
     })
+    .eq('organization_id', perm!.organizationId)
     .select()
     .single();
 

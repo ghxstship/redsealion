@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import Link from 'next/link';
@@ -102,7 +103,7 @@ export default async function WorkOrderDetailPage({ params }: { params: Promise<
                     <TableCell className="px-4 py-3 text-foreground">{crew?.full_name ?? '—'}</TableCell>
                     <TableCell className="px-4 py-3 text-text-secondary">{(a.role as string) ?? '—'}</TableCell>
                     <TableCell className="px-4 py-3"><StatusBadge status={a.status as string} colorMap={WORK_ORDER_STATUS_COLORS} /></TableCell>
-                    <TableCell className="px-4 py-3 text-text-muted text-xs">{a.assigned_at ? new Date(a.assigned_at as string).toLocaleDateString() : '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-muted text-xs">{a.assigned_at ? formatDate(a.assigned_at as string) : '—'}</TableCell>
                   </TableRow>
                 );
               })}

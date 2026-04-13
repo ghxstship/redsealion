@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Button from '@/components/ui/Button';
 import { statusColor } from '@/lib/utils';
 import TimeOffRequestModal from './TimeOffRequestModal';
+import { Badge } from '@/components/ui/Badge';
 import TimeOffDetailModal from './TimeOffDetailModal';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
@@ -74,9 +75,9 @@ export default function TimeOffClient({ requests: initialRequests, isAdmin }: Ti
                     <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{req.days}</TableCell>
                     <TableCell className="px-6 py-3.5 text-sm text-text-secondary max-w-[200px] truncate">{req.reason ?? '-'}</TableCell>
                     <TableCell className="px-6 py-3.5">
-                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColor(req.status)}`}>
+                      <Badge variant="muted" className={statusColor(req.status)}>
                         {req.status.charAt(0).toUpperCase() + req.status.slice(1)}
-                      </span>
+                      </Badge>
                     </TableCell>
                   </TableRow>
                 ))}

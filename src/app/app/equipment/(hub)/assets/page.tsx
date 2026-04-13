@@ -8,6 +8,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
 import EquipmentHubTabs from '../../EquipmentHubTabs';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 interface AssetRow {
   id: string;
   name: string;
@@ -66,6 +67,7 @@ export default async function AssetsPage() {
   const inStorage = assets.filter((a) => a.status === 'in_storage').length;
 
   return (
+    <RoleGate>
     <>
       <PageHeader
         title="Asset Inventory"
@@ -100,5 +102,6 @@ export default async function AssetsPage() {
 
       <AssetsTable assets={assets} />
     </>
+  </RoleGate>
   );
 }

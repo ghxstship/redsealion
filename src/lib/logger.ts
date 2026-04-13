@@ -110,8 +110,8 @@ export function createLogger(service: string) {
       log('debug', message, context),
     info: (message: string, context?: Record<string, unknown>) =>
       log('info', message, context),
-    warn: (message: string, context?: Record<string, unknown>) =>
-      log('warn', message, context),
+    warn: (message: string, context?: Record<string, unknown>, error?: unknown) =>
+      log('warn', message, context, error),
     error: (message: string, context?: Record<string, unknown>, error?: unknown) =>
       log('error', message, context, error),
     fatal: (message: string, context?: Record<string, unknown>, error?: unknown) =>

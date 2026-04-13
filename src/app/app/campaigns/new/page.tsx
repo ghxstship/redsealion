@@ -8,7 +8,9 @@ import Button from '@/components/ui/Button';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
 import FormTextarea from '@/components/ui/FormTextarea';
+import Checkbox from '@/components/ui/Checkbox';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 export default function NewCampaignPage() {
   const router = useRouter();
   const [form, setForm] = useState({
@@ -58,6 +60,7 @@ export default function NewCampaignPage() {
   }
 
   return (
+    <RoleGate>
     <div className="max-w-3xl">
 <PageHeader
         title="New Campaign"
@@ -99,15 +102,13 @@ export default function NewCampaignPage() {
 
         <div className="rounded-xl border border-border bg-background p-6 space-y-4">
           <h2 className="text-sm font-semibold text-foreground">Targeting</h2>
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
+          <Checkbox
+              id="c-all-clients"
               checked={form.target_all_clients}
-              onChange={(e) => setForm((p) => ({ ...p, target_all_clients: e.target.checked }))}
-              className="rounded border-border"
+              onChange={(e) => setForm((p) => ({ ...p, target_all_clients: (e.target as HTMLInputElement).checked }))}
+              label="Send to all clients"
+              size="md"
             />
-            <span className="text-sm text-foreground">Send to all clients</span>
-          </label>
           {!form.target_all_clients && (
             <div>
               <FormLabel htmlFor="c-tags">Filter by Tags (comma-separated)</FormLabel>
@@ -127,5 +128,6 @@ export default function NewCampaignPage() {
         </div>
       </form>
     </div>
+  </RoleGate>
   );
 }

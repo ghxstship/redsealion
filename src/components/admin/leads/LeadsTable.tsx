@@ -1,3 +1,4 @@
+import { Badge } from '@/components/ui/Badge';
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -263,9 +264,9 @@ export default function LeadsTable({ leads }: { leads: Lead[] }) {
                 )}
                 {isVisible('source') && (
                   <TableCell className="px-6 py-3.5">
-                    <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">
+                    <Badge variant="muted">
                       {lead.source}
-                    </span>
+                    </Badge>
                   </TableCell>
                 )}
                 {isVisible('budget') && (

@@ -14,6 +14,7 @@ import Skeleton from '@/components/ui/Skeleton';
 import Alert from '@/components/ui/Alert';
 import Button from '@/components/ui/Button';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 function createDefaultPhase(number: number): PhaseData {
   const phaseNames: Record<number, { name: string; subtitle: string }> = {
     1: { name: 'Discovery & Strategy', subtitle: 'Understanding your vision' },
@@ -170,6 +171,7 @@ export default function NewProposalPage() {
   };
 
   return (
+    <RoleGate resource="proposals">
     <>
 <PageHeader
         title="New Proposal"
@@ -226,5 +228,6 @@ export default function NewProposalPage() {
         </div>
       )}
     </>
-  );
+  
+    </RoleGate>);
 }

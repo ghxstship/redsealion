@@ -7,6 +7,7 @@ import StatusBadge from '@/components/ui/StatusBadge';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 
+import { RoleGate } from '@/components/shared/RoleGate';
 interface ScheduleEntry {
   id: string;
   crew_name: string;
@@ -78,6 +79,7 @@ export default async function CrewSchedulePage() {
   const schedule = await getSchedule();
 
   return (
+    <RoleGate resource="crew">
     <>
       <PageHeader
         title="Crew Schedule"
@@ -128,5 +130,6 @@ export default async function CrewSchedulePage() {
         </Table>
       </div>
     </>
+  </RoleGate>
   );
 }

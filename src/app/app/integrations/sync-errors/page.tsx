@@ -22,9 +22,9 @@ async function getSyncErrors(): Promise<SyncError[]> {
     const ctx = await resolveCurrentOrg();
     if (!ctx) return [];
 
-    // Try integration_sync_log table first
+    // Query canonical integration_sync_logs table
     const { data, error } = await supabase
-      .from('integration_sync_log')
+      .from('integration_sync_logs')
       .select('id, platform, entity_type, error_message, created_at, resolved')
       .eq('organization_id', ctx.organizationId)
       .eq('status', 'error')

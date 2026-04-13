@@ -62,9 +62,9 @@ export async function PATCH(
   if (error || !location) return NextResponse.json({ error: 'Failed to update location', details: error?.message }, { status: 500 });
 
   await logAuditAction({
-    supabase, user: perm.user, organizationId: perm.organizationId,
+    orgId: perm.organizationId,
     action: 'update', entity: 'location', entityId: id,
-    targetName: location.name as string, metadata: { updates }, req: request
+    metadata: { name: location.name, updates },
   });
 
   return NextResponse.json({ success: true, location });
@@ -85,9 +85,8 @@ export async function DELETE(
   if (error) return NextResponse.json({ error: 'Failed to delete location', details: error.message }, { status: 500 });
 
   await logAuditAction({
-    supabase, user: perm.user, organizationId: perm.organizationId,
+    orgId: perm.organizationId,
     action: 'delete', entity: 'location', entityId: id,
-    req: _request
   });
 
   return NextResponse.json({ success: true });

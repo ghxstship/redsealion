@@ -22,6 +22,7 @@ import Button from '@/components/ui/Button';
 import ProposalAnalytics from '@/components/admin/proposals/ProposalAnalytics';
 import VersionComparison from '@/components/admin/proposals/VersionComparison';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 export default function ProposalDetailPage({
   params,
 }: {
@@ -158,6 +159,7 @@ export default function ProposalDetailPage({
   ).length;
 
   return (
+    <RoleGate resource="proposals">
     <>
       {/* Header */}
       <PageHeader
@@ -292,5 +294,6 @@ export default function ProposalDetailPage({
         />
       )}
     </>
-  );
+  
+    </RoleGate>);
 }

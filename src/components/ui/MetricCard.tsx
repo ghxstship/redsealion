@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-interface MetricCardProps {
+export interface MetricCardProps {
   /** Metric label shown above the value. */
   label: string;
   /** The primary metric value. */
@@ -9,6 +9,8 @@ interface MetricCardProps {
   sublabel?: string;
   /** Optional icon or extra content rendered to the right of the value. */
   trailing?: ReactNode;
+  /** Optional CSS class for value text. */
+  valueClassName?: string;
   /** Extra CSS class. */
   className?: string;
 }
@@ -22,13 +24,14 @@ export default function MetricCard({
   value,
   sublabel,
   trailing,
+  valueClassName = '',
   className = '',
 }: MetricCardProps) {
   return (
     <div className={`rounded-xl border border-border bg-background p-4 ${className}`}>
       <p className="text-xs font-medium uppercase tracking-wider text-text-muted">{label}</p>
       <div className="mt-2 flex items-baseline gap-2">
-        <p className="text-2xl font-semibold tabular-nums text-foreground">{value}</p>
+        <p className={`text-2xl font-semibold tabular-nums text-foreground ${valueClassName}`}>{value}</p>
         {trailing}
       </div>
       {sublabel && (

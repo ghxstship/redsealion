@@ -11,6 +11,7 @@ import Alert from '@/components/ui/Alert';
 
 
 
+import { RoleGate } from '@/components/shared/RoleGate';
 export default function ProfileSettingsPage() {
   const [fullName, setFullName] = useState('');
   const [email] = useState('');
@@ -71,6 +72,7 @@ export default function ProfileSettingsPage() {
   }
 
   return (
+    <RoleGate>
     <div className="max-w-2xl space-y-6">
       <div>
         <h2 className="text-lg font-semibold text-foreground">Profile</h2>
@@ -128,5 +130,6 @@ export default function ProfileSettingsPage() {
         </Button>
       </div>
     </div>
-  );
+  
+    </RoleGate>);
 }

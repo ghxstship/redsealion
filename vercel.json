@@ -21,6 +21,10 @@
       "schedule": "0 8 * * *"
     },
     {
+      "path": "/api/cron/compliance-renewal",
+      "schedule": "30 8 * * *"
+    },
+    {
       "path": "/api/cron/maintenance",
       "schedule": "0 6 * * *"
     },

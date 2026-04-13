@@ -237,9 +237,9 @@ export default function TermsDocumentView({ activeDocument, allDocuments }: Prop
       <ConfirmDialog
         open={deleteConfirmId !== null}
         title="Archive Document"
-        description="This will archive this terms document version. It will no longer be available for new proposals."
+        message="This will archive this terms document version. It will no longer be available for new proposals."
         confirmLabel="Archive"
-        onConfirm={() => deleteConfirmId && handleArchive(deleteConfirmId)}
+        onConfirm={() => { if (deleteConfirmId) handleArchive(deleteConfirmId); }}
         onCancel={() => setDeleteConfirmId(null)}
       />
 

@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency , formatDate } from '@/lib/utils';
 import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
 import Link from 'next/link';
@@ -126,7 +126,7 @@ export default async function PurchaseOrderDetailPage(props: { params: Promise<{
           </div>
           <div>
             <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Created</p>
-            <p className="mt-1 text-sm text-foreground">{new Date(po.created_at).toLocaleDateString()}</p>
+            <p className="mt-1 text-sm text-foreground">{formatDate(po.created_at)}</p>
           </div>
         </div>
       </div>

@@ -172,8 +172,8 @@ export async function POST(request: NextRequest) {
     // Handle auto-response
     const pendingPromises = [];
     
-    pendingPromises.push(convertLeadToProject(targetLeadId, targetOrgId));
-    pendingPromises.push(notifyLeadReceived(targetLeadId, targetOrgId));
+    pendingPromises.push(convertLeadToProject(targetLeadId!, targetOrgId!));
+    pendingPromises.push(notifyLeadReceived(targetLeadId!, targetOrgId!));
 
     if (autoResponseEnabled && autoResponseSubject && autoResponseBody) {
       pendingPromises.push(

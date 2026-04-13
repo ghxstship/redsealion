@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import Link from 'next/link';
@@ -109,9 +110,9 @@ export default async function ShipmentDetailPage({ params }: { params: Promise<{
           <dl className="space-y-3 text-sm">
             <div className="flex justify-between"><dt className="text-text-muted">Origin</dt><dd className="text-foreground text-right max-w-[200px]">{shipment.origin_address ?? '—'}</dd></div>
             <div className="flex justify-between"><dt className="text-text-muted">Destination</dt><dd className="text-foreground text-right max-w-[200px]">{shipment.destination_address ?? '—'}</dd></div>
-            <div className="flex justify-between"><dt className="text-text-muted">Ship Date</dt><dd className="text-foreground">{shipment.ship_date ? new Date(shipment.ship_date).toLocaleDateString() : '—'}</dd></div>
-            <div className="flex justify-between"><dt className="text-text-muted">Est. Arrival</dt><dd className="text-foreground">{shipment.estimated_arrival ? new Date(shipment.estimated_arrival).toLocaleDateString() : '—'}</dd></div>
-            <div className="flex justify-between"><dt className="text-text-muted">Actual Arrival</dt><dd className="text-foreground">{shipment.actual_arrival ? new Date(shipment.actual_arrival).toLocaleDateString() : '—'}</dd></div>
+            <div className="flex justify-between"><dt className="text-text-muted">Ship Date</dt><dd className="text-foreground">{shipment.ship_date ? formatDate(shipment.ship_date) : '—'}</dd></div>
+            <div className="flex justify-between"><dt className="text-text-muted">Est. Arrival</dt><dd className="text-foreground">{shipment.estimated_arrival ? formatDate(shipment.estimated_arrival) : '—'}</dd></div>
+            <div className="flex justify-between"><dt className="text-text-muted">Actual Arrival</dt><dd className="text-foreground">{shipment.actual_arrival ? formatDate(shipment.actual_arrival) : '—'}</dd></div>
           </dl>
           {(shipment.events || shipment.clients || shipment.vendors) && (
             <div className="mt-4 pt-4 border-t border-border">

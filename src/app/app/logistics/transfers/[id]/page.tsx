@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import Link from 'next/link';
@@ -6,6 +7,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import StatusBadge, { TRANSFER_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 interface TransferDetail {
   id: string;
   status: string;
@@ -58,6 +60,7 @@ export default async function TransferDetailPage({ params }: { params: Promise<{
   if (!transfer) notFound();
 
   return (
+    <RoleGate>
     <>
       <PageHeader
         title="Warehouse Transfer"
@@ -95,19 +98,19 @@ export default async function TransferDetailPage({ params }: { params: Promise<{
             <div className="flex justify-between">
               <dt className="text-text-muted">Scheduled Date</dt>
               <dd className="text-foreground">
-                {transfer.scheduled_date ? new Date(transfer.scheduled_date).toLocaleDateString() : '—'}
+                {transfer.scheduled_date ? formatDate(transfer.scheduled_date) : '—'}
               </dd>
             </div>
             <div className="flex justify-between">
               <dt className="text-text-muted">Shipped Date</dt>
               <dd className="text-foreground">
-                {transfer.shipped_date ? new Date(transfer.shipped_date).toLocaleDateString() : '—'}
+                {transfer.shipped_date ? formatDate(transfer.shipped_date) : '—'}
               </dd>
             </div>
             <div className="flex justify-between">
               <dt className="text-text-muted">Received Date</dt>
               <dd className="text-foreground">
-                {transfer.received_date ? new Date(transfer.received_date).toLocaleDateString() : '—'}
+                {transfer.received_date ? formatDate(transfer.received_date) : '—'}
               </dd>
             </div>
           </dl>
@@ -151,5 +154,6 @@ export default async function TransferDetailPage({ params }: { params: Promise<{
         </div>
       )}
     </>
+  </RoleGate>
   );
 }

@@ -280,11 +280,11 @@ export default function MyInboxTable({ notifications }: { notifications: Notific
                     />
                   </TableCell>
                   <TableCell className="px-3 py-3.5">
-                    <button onClick={() => handleMarkRead(notif.id, !notif.read)} title={notif.read ? 'Mark unread' : 'Mark read'}>
+                    <Button variant="ghost" onClick={() => handleMarkRead(notif.id, !notif.read)} title={notif.read ? 'Mark unread' : 'Mark read'}>
                       {notif.read
                         ? <MailOpen size={14} className="text-text-muted" />
                         : <Mail size={14} className="text-blue-600" />}
-                    </button>
+                    </Button>
                   </TableCell>
                   {isVisible('type') && (
                     <TableCell className="px-6 py-3.5">

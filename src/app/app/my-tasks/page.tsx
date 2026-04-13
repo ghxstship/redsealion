@@ -3,6 +3,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import MyTasksTable, { type MyTaskRow } from '@/components/admin/my-tasks/MyTasksTable';
 import MyTasksHeader from '@/components/admin/my-tasks/MyTasksHeader';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 async function getMyTasks(): Promise<MyTaskRow[]> {
   try {
     const supabase = await createClient();
@@ -67,9 +68,11 @@ export default async function MyTasksPage() {
   const tasks = await getMyTasks();
 
   return (
+    <RoleGate>
     <div>
       <MyTasksHeader taskCount={tasks.length} />
       <MyTasksTable tasks={tasks} />
     </div>
+  </RoleGate>
   );
 }

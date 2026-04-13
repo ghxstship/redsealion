@@ -89,7 +89,7 @@ export default function EmailTemplatesPage() {
 
   async function handleDelete(id: string) {
     // H-10: Soft-delete instead of permanent delete
-    await supabase.from('email_templates').update({ deleted_at: new Date().toISOString() }).eq('id', id);
+    await supabase.from('email_templates').update({ deleted_at: new Date().toISOString() }).eq('id', id).eq('organization_id', currentOrgId!);
     setPreviewTemplate(null);
     setDeletingId(null);
     loadTemplates();
@@ -114,7 +114,7 @@ export default function EmailTemplatesPage() {
     };
 
     if (editFormData.id) {
-      await supabase.from('email_templates').update(payload).eq('id', editFormData.id);
+      await supabase.from('email_templates').update(payload).eq('id', editFormData.id).eq('organization_id', currentOrgId!);
     } else {
       await supabase.from('email_templates').insert([payload]);
     }

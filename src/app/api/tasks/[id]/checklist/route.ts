@@ -24,6 +24,15 @@ export async function GET(
   const { id: taskId } = await params;
   const supabase = await createClient();
 
+  // Verify parent task belongs to user's organization
+  const { data: task } = await supabase
+    .from('tasks')
+    .select('id')
+    .eq('id', taskId)
+    .eq('organization_id', perm.organizationId)
+    .single();
+  if (!task) return NextResponse.json({ items: [] });
+
   const { data, error } = await supabase
     .from('task_checklist_items')
     .select('id, text, done, sort_order')
@@ -58,6 +67,15 @@ export async function POST(
   }
 
   const supabase = await createClient();
+
+  // Verify parent task belongs to user's organization
+  const { data: taskCheck } = await supabase
+    .from('tasks')
+    .select('id')
+    .eq('id', taskId)
+    .eq('organization_id', perm.organizationId)
+    .single();
+  if (!taskCheck) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
   // Get next sort order
   const { data: existing } = await supabase

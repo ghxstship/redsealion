@@ -172,7 +172,7 @@ export default async function WorkloadPage() {
                     <Badge
                       variant={utilPct > 100 ? 'error' : utilPct > 80 ? 'warning' : utilPct > 50 ? 'info' : 'success'}
                     >
-                      {utilPct}%
+                      {`${utilPct}%`}
                     </Badge>
                   )}
                 </div>

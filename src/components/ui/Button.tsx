@@ -1,7 +1,7 @@
 import type { ButtonHTMLAttributes, ReactNode, AnchorHTMLAttributes } from 'react';
 import Link from 'next/link';
 
-type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost' | 'danger_ghost' | 'default' | 'warning' | 'success';
+export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost' | 'danger_ghost' | 'default' | 'warning' | 'success' | 'outline';
 type ButtonSize = 'sm' | 'default' | 'lg';
 
 interface ButtonBaseProps {
@@ -15,7 +15,7 @@ interface ButtonBaseProps {
 type ButtonAsButtonProps = ButtonBaseProps & ButtonHTMLAttributes<HTMLButtonElement> & { href?: never };
 type ButtonAsLinkProps = ButtonBaseProps & AnchorHTMLAttributes<HTMLAnchorElement> & { href: string; disabled?: boolean };
 
-type ButtonProps = ButtonAsButtonProps | ButtonAsLinkProps;
+export type ButtonProps = ButtonAsButtonProps | ButtonAsLinkProps;
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   primary: 'bg-foreground text-background hover:bg-foreground/90',
@@ -26,6 +26,7 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   ghost: 'text-text-muted hover:text-foreground hover:bg-bg-secondary',
   warning: 'bg-yellow-500 text-white hover:bg-yellow-600',
   success: 'bg-green-600 text-white hover:bg-green-700',
+  outline: 'border border-border bg-background text-foreground hover:bg-bg-secondary',
 };
 
 const SIZE_CLASSES: Record<ButtonSize, string> = {
@@ -68,6 +69,8 @@ export default function Button({
   return (
     <button
       disabled={disabled || loading}
+      aria-busy={loading}
+      aria-disabled={disabled || loading}
       className={commonClasses}
       {...(rest as Omit<ButtonAsButtonProps, keyof ButtonBaseProps>)}
     >

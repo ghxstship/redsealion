@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
 
   const csv = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
 
-  await logAudit({ action: 'compliance.exported', entityType: 'compliance_document', metadata: { format: 'csv', count: docs.length } }, supabase).catch(() => {});
+  try { await logAudit({ action: 'compliance.exported', entityType: 'compliance_document', metadata: { format: 'csv', count: docs.length } }, supabase); } catch { /* non-fatal */ }
 
   return new NextResponse(csv, {
     status: 200,

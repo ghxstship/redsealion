@@ -9,6 +9,7 @@ import Button from '@/components/ui/Button';
 import FormSelect from '@/components/ui/FormSelect';
 import FormTextarea from '@/components/ui/FormTextarea';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 function SelectField({
   label,
   options,
@@ -131,6 +132,7 @@ export default function PaymentTermsSettingsPage() {
   }
 
   return (
+    <RoleGate resource="settings">
     <div className="max-w-2xl space-y-6">
       <div>
         <h2 className="text-lg font-semibold text-foreground">Payment Terms</h2>
@@ -182,5 +184,6 @@ export default function PaymentTermsSettingsPage() {
         </Button>
       </div>
     </div>
-  );
+  
+    </RoleGate>);
 }

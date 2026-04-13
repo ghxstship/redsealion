@@ -16,6 +16,7 @@ export async function GET(
   const { data: redemptions, error } = await ctx.supabase
     .from('invite_code_redemptions')
     .select('*, users!invite_code_redemptions_user_id_fkey(email, display_name)')
+    .eq('organization_id', ctx.organizationId)
     .eq('invite_code_id', id)
     .order('redeemed_at', { ascending: false });
 

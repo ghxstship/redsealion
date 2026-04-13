@@ -1,4 +1,5 @@
 'use client';
+import { Badge } from '@/components/ui/Badge';
 
 import React, { useState, useEffect, useTransition } from 'react';
 import { Check, Download } from 'lucide-react';
@@ -185,9 +186,9 @@ export default function PackingClient({ proposals }: { proposals: Proposal[] }) 
                       {item.name}
                     </TableCell>
                     <TableCell className="px-6 py-3.5">
-                      <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">
+                      <Badge variant="muted">
                         {item.category}
-                      </span>
+                      </Badge>
                     </TableCell>
                     <TableCell className="px-6 py-3.5 text-sm tabular-nums text-foreground">{item.quantity}</TableCell>
                   </TableRow>

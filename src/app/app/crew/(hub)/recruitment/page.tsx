@@ -1,5 +1,6 @@
 import { formatLabel } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
+import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
 import StatusBadge from '@/components/ui/StatusBadge';
 
@@ -7,6 +8,7 @@ import Card from '@/components/ui/Card';
 import EmptyState from '@/components/ui/EmptyState';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 interface RecruitmentPosition {
   id: string;
   title: string;
@@ -72,6 +74,7 @@ export default async function RecruitmentPage() {
   const totalApplicants = positions.reduce((sum, p) => sum + p.applicants, 0);
 
   return (
+    <RoleGate resource="crew">
     <>
       <PageHeader
         title="Recruitment"
@@ -132,5 +135,6 @@ export default async function RecruitmentPage() {
         />
       )}
     </>
+  </RoleGate>
   );
 }

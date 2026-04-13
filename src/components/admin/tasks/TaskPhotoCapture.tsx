@@ -79,12 +79,12 @@ export default function TaskPhotoCapture({ taskId }: TaskPhotoCaptureProps) {
     <div className="rounded-xl border border-border bg-background">
       <div className="flex items-center justify-between border-b border-border px-5 py-4">
         <h3 className="text-sm font-semibold text-foreground">Job-Site Photos</h3>
-        <button
+        <Button variant="ghost"
           onClick={() => setShowUpload(!showUpload)}
           className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-bg-secondary transition-colors"
         >
           {showUpload ? 'Cancel' : '+ Add Photo'}
-        </button>
+        </Button>
       </div>
 
       {showUpload && (

@@ -5,7 +5,7 @@ import React from 'react';
 export default function LogisticsModuleLayout({ children }: { children: React.ReactNode }) {
   return (
     <TierGate feature="warehouse">
-      <RoleGate>{children}</RoleGate>
+      <RoleGate resource="warehouse">{children}</RoleGate>
     </TierGate>
   );
 }

@@ -387,7 +387,7 @@ export default function SignupPage() {
             </label>
             <div className="flex items-center rounded-lg border border-zinc-300 bg-white focus-within:border-zinc-500 focus-within:ring-1 focus-within:ring-zinc-500">
               <span className="pl-3.5 text-sm text-zinc-400">flytedeck.app/</span>
-              <input
+              <FormInput
                 id="slug"
                 type="text"
                 value={slug}

@@ -5,6 +5,8 @@
  * These types mirror the database schema from migrations 00022 & 00023.
  */
 
+import type { InviteStatus } from '@/types/database';
+
 // ---------------------------------------------------------------------------
 // Enums & Literal Unions
 // ---------------------------------------------------------------------------
@@ -16,7 +18,7 @@ export type SeatType = 'internal' | 'external';
 export type OrgMembershipStatus = 'active' | 'suspended' | 'pending_approval' | 'dormant';
 export type TeamProjectMembershipStatus = 'active' | 'pending_approval' | 'suspended';
 export type JoinedVia = 'direct_invite' | 'invite_code' | 'domain_match' | 'manual_add' | 'join_request' | 'sso_auto_provision' | 'api' | 'org_creation';
-export type InvitationStatus = 'pending' | 'accepted' | 'declined' | 'expired' | 'revoked';
+export type InvitationStatus = InviteStatus;
 export type InvitationScopeType = 'organization' | 'team' | 'project';
 export type JoinRequestStatus = 'pending' | 'approved' | 'denied' | 'withdrawn';
 export type FeatureFlagType = 'boolean' | 'percentage' | 'allowlist' | 'plan_gated';
@@ -27,6 +29,12 @@ export type ProjectStatus = 'draft' | 'active' | 'paused' | 'archived' | 'comple
 export type ProjectVisibility = 'public' | 'internal' | 'private';
 export type OrgSizeTier = 'solo' | 'startup' | 'small' | 'medium' | 'large' | 'enterprise';
 
+/**
+ * Harbor Master RPC-level permission actions.
+ * NOTE: This is distinct from `@/lib/permissions.ts > PermissionAction` which
+ * uses 'view'/'edit' terminology for the application-layer RBAC matrix.
+ * Harbor Master uses CRUD + extended actions for DB-level enforcement.
+ */
 export type PermissionAction =
   | 'create' | 'read' | 'update' | 'delete'
   | 'manage' | 'invite' | 'approve' | 'export'

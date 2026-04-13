@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Alert from '@/components/ui/Alert';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
+import ProgressBar from '@/components/ui/ProgressBar';
 
 interface Document {
   id: string;
@@ -77,12 +78,7 @@ export default function OnboardingChecklist({ userId, documents }: OnboardingChe
       </div>
 
       {/* Progress bar */}
-      <div className="w-full h-2 bg-bg-secondary rounded-full mb-4">
-        <div
-          className="h-2 bg-green-500 rounded-full transition-[width,opacity]"
-          style={{ width: total > 0 ? `${(completed / total) * 100}%` : '0%' }}
-        />
-      </div>
+      <ProgressBar value={completed} max={total} color="green" className="mb-4" />
 
       {error && (
         <Alert className="mb-4">{error}</Alert>

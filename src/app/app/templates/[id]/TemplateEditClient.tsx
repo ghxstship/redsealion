@@ -8,6 +8,7 @@ import FormLabel from '@/components/ui/FormLabel';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
 import Alert from '@/components/ui/Alert';
+import Checkbox from '@/components/ui/Checkbox';
 
 interface TemplateEditClientProps {
   template: {
@@ -108,16 +109,13 @@ export default function TemplateEditClient({ template }: TemplateEditClientProps
               <FormLabel>Description</FormLabel>
               <FormInput name="description" defaultValue={template.description ?? ''} placeholder="Describe this template" />
             </div>
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
+            <Checkbox
                 name="is_default"
                 id="is_default"
                 defaultChecked={template.is_default}
-                className="rounded border-border"
+                label="Set as default template"
+                size="md"
               />
-              <label htmlFor="is_default" className="text-sm text-foreground">Set as default template</label>
-            </div>
           </div>
 
           <div className="rounded-xl border border-border bg-background p-6 space-y-4">

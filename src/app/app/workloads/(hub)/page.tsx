@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
@@ -110,7 +111,7 @@ export default async function WorkloadsPage() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-8">
         {cards.map((card) => (
-          <MetricCard key={card.label} label={card.label} value={card.value} detail={card.detail} />
+          <MetricCard key={card.label} label={card.label} value={card.value} sublabel={card.detail} />
         ))}
       </div>
 
@@ -141,7 +142,7 @@ export default async function WorkloadsPage() {
                     <TableCell className="px-4 py-3 text-text-secondary capitalize">{a.role ?? '—'}</TableCell>
                     <TableCell className="px-4 py-3 tabular-nums">{a.hoursPerDay}h</TableCell>
                     <TableCell className="px-4 py-3 text-text-secondary text-xs">
-                      {new Date(a.startDate).toLocaleDateString()} – {new Date(a.endDate).toLocaleDateString()}
+                      {formatDate(a.startDate)} – {formatDate(a.endDate)}
                     </TableCell>
                   </TableRow>
                 ))}

@@ -1,3 +1,5 @@
+import { RoleGate } from '@/components/shared/RoleGate';
+
 export default function LogisticsHubLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return <RoleGate resource="warehouse">{children}</RoleGate>;
 }

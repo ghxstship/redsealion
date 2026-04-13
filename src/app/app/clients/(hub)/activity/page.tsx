@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
@@ -54,7 +55,7 @@ export default async function ClientActivityPage() {
                   {activity.description && <p className="text-sm text-text-secondary mt-1 line-clamp-2">{activity.description}</p>}
                   {activity.deals?.title && <p className="text-xs text-text-muted mt-1">Deal: {activity.deals.title}</p>}
                 </div>
-                <p className="text-xs text-text-muted whitespace-nowrap">{new Date(activity.created_at).toLocaleDateString()}</p>
+                <p className="text-xs text-text-muted whitespace-nowrap">{formatDate(activity.created_at)}</p>
               </div>
             ))}
           </div>

@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
 
   // Auto-generate slug with collision handling
-  let locationSlug = (slug as string) || (name as string).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  const locationSlug = (slug as string) || (name as string).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
   // Build JSONB address from flat fields if address object not provided
   const addressObj = (address as Record<string, unknown>) ?? {};
@@ -112,9 +112,9 @@ export async function POST(request: NextRequest) {
   }
 
   await logAuditAction({
-    supabase, user: perm.user, organizationId: perm.organizationId,
+    orgId: perm.organizationId,
     action: 'create', entity: 'location', entityId: location.id,
-    targetName: location.name as string, req: request
+    metadata: { name: location.name },
   });
 
   return NextResponse.json({ success: true, location }, { status: 201 });

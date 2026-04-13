@@ -156,12 +156,12 @@ export default function TaskDependencies({ taskId }: TaskDependenciesProps) {
             </span>
           )}
         </h3>
-        <button
+        <Button variant="ghost"
           onClick={() => setShowAdd(!showAdd)}
           className="text-xs font-medium text-text-muted hover:text-foreground transition-colors"
         >
           {showAdd ? 'Cancel' : '+ Add'}
-        </button>
+        </Button>
       </div>
 
       {/* Add dependency search */}
@@ -187,7 +187,7 @@ export default function TaskDependencies({ taskId }: TaskDependenciesProps) {
           {searchResults.length > 0 && (
             <div className="rounded-lg border border-border bg-background divide-y divide-border max-h-48 overflow-y-auto">
               {searchResults.map((task) => (
-                <button
+                <Button variant="ghost"
                   key={task.id}
                   onClick={() => handleAdd(task.id)}
                   className="w-full flex items-center gap-2 px-3 py-2 text-left text-sm hover:bg-bg-secondary transition-colors"
@@ -199,7 +199,7 @@ export default function TaskDependencies({ taskId }: TaskDependenciesProps) {
                   <span className="flex-1 truncate text-foreground">
                     {task.title}
                   </span>
-                </button>
+                </Button>
               ))}
             </div>
           )}
@@ -241,7 +241,7 @@ export default function TaskDependencies({ taskId }: TaskDependenciesProps) {
               >
                 {dep.title}
               </Link>
-              <button
+              <Button variant="ghost"
                 onClick={() =>
                   handleRemove(dep as DepTask & { depId?: string })
                 }
@@ -249,7 +249,7 @@ export default function TaskDependencies({ taskId }: TaskDependenciesProps) {
                 title="Remove dependency"
               >
                 <X size={14} />
-              </button>
+              </Button>
             </div>
           ))}
         </div>

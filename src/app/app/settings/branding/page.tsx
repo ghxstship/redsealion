@@ -8,6 +8,7 @@ import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
 import FormSelect from '@/components/ui/FormSelect';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 const fontOptions = ['Inter', 'DM Sans', 'Plus Jakarta Sans', 'Manrope', 'Outfit', 'Space Grotesk'];
 
 function ColorField({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
@@ -109,6 +110,7 @@ export default function BrandingSettingsPage() {
   }
 
   return (
+    <RoleGate resource="settings">
     <div className="max-w-2xl space-y-6">
       <div>
         <h2 className="text-lg font-semibold text-foreground">Branding</h2>
@@ -184,5 +186,6 @@ export default function BrandingSettingsPage() {
         </Button>
       </div>
     </div>
-  );
+  
+    </RoleGate>);
 }

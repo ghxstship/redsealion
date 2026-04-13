@@ -68,14 +68,16 @@ export async function POST(request: NextRequest) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   // Audit log for financial data change
-  await supabase.from('audit_logs').insert({
-    organization_id: perm.organizationId,
-    actor_id: perm.userId,
-    action: 'project_cost_created',
-    entity: 'project_cost',
-    entity_id: data.id,
-    metadata: { category, amount: amount ?? 0, proposal_id, project_id },
-  }).select().single().catch(() => {});
+  try {
+    await supabase.from('audit_logs').insert({
+      organization_id: perm.organizationId,
+      actor_id: perm.userId,
+      action: 'project_cost_created',
+      entity: 'project_cost',
+      entity_id: data.id,
+      metadata: { category, amount: amount ?? 0, proposal_id, project_id },
+    });
+  } catch { /* non-fatal */ }
 
   return NextResponse.json({ cost: data }, { status: 201 });
 }

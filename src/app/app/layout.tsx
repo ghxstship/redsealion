@@ -134,7 +134,7 @@ export default async function AppLayout({
               <CopilotProvider>
                 <div className="flex min-h-screen bg-background">
                   <AdminSidebar user={ctx.user} />
-                  <main className="flex-1 min-w-0 transition-[margin] duration-normal md:ml-[var(--sidebar-width)]">
+                  <main id="main-content" className="flex-1 min-w-0 transition-[margin] duration-normal md:ml-[var(--sidebar-width)]">
                     <AppHeader user={ctx.user} orgName={ctx.orgName} />
                     <div className="px-6 py-8 md:px-10 md:py-10 max-w-7xl mx-auto">
                       <PageTransition>

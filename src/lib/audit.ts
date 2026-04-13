@@ -105,7 +105,7 @@ export async function logAudit(
   params: {
     action: string;
     entityType: string;
-    entityId: string;
+    entityId?: string;
     metadata?: Record<string, unknown>;
   },
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

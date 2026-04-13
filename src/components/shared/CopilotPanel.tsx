@@ -335,7 +335,7 @@ export default function CopilotPanel() {
                   {toolParts.length > 0 && msg.role === 'assistant' && (
                     <div className="space-y-1.5 mb-2">
                       {toolParts.map((part, i) => {
-                        const tp = part as { type: 'tool-invocation'; toolInvocation: { toolName: string; state: string; result?: unknown } };
+                        const tp = part as unknown as { type: 'tool-invocation'; toolInvocation: { toolName: string; state: string; result?: unknown } };
                         const inv = tp.toolInvocation;
                         const isComplete = inv.state === 'result';
 

@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency , formatDate } from '@/lib/utils';
 import Link from 'next/link';
 import ProcurementHubTabs from '../../ProcurementHubTabs';
 import StatusBadge, { PO_STATUS_COLORS } from '@/components/ui/StatusBadge';
@@ -57,8 +57,8 @@ export default async function ProcurementPOPage() {
                     <TableCell className="px-4 py-3"><Link href={`/app/procurement/purchase-orders/${po.id}`} className="font-medium text-foreground hover:underline">{po.po_number}</Link></TableCell>
                     <TableCell className="px-4 py-3 text-text-secondary">{po.vendor_name ?? '—'}</TableCell>
                     <TableCell className="px-4 py-3 tabular-nums">{formatCurrency(po.total_amount ?? 0)}</TableCell>
-                    <TableCell className="px-4 py-3 text-text-secondary">{po.issued_date ? new Date(po.issued_date).toLocaleDateString() : '—'}</TableCell>
-                    <TableCell className="px-4 py-3 text-text-secondary">{po.due_date ? new Date(po.due_date).toLocaleDateString() : '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{po.issued_date ? formatDate(po.issued_date) : '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{po.due_date ? formatDate(po.due_date) : '—'}</TableCell>
                     <TableCell className="px-4 py-3"><StatusBadge status={po.status} colorMap={PO_STATUS_COLORS} /></TableCell>
                   </TableRow>
                 ))}

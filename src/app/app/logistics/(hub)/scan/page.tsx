@@ -2,12 +2,14 @@ import ScanPageClient from './ScanPageClient';
 import LogisticsHubTabs from "../../LogisticsHubTabs";
 import PageHeader from '@/components/shared/PageHeader';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 export const metadata = {
   title: 'Scan Equipment',
 };
 
 export default function ScanPage() {
   return (
+    <RoleGate>
     <>
       <PageHeader
         title="Scan Equipment"
@@ -20,5 +22,6 @@ export default function ScanPage() {
         <ScanPageClient />
       </div>
     </>
+  </RoleGate>
   );
 }

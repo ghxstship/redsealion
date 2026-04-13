@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
 import Button from '@/components/ui/Button';
-import { formatLabel } from '@/lib/utils';
+import { formatLabel , formatDate } from '@/lib/utils';
 import StatusBadge, { AUTOMATION_RUN_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
@@ -104,7 +104,7 @@ export default async function AutomationDetailPage({
             </div>
             <div className="flex justify-between">
               <span className="text-text-muted">Created</span>
-              <span className="text-foreground">{new Date(automation.created_at as string).toLocaleDateString()}</span>
+              <span className="text-foreground">{formatDate(automation.created_at as string)}</span>
             </div>
           </div>
         </div>

@@ -5,7 +5,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import EmptyState from '@/components/ui/EmptyState';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency , formatDate } from '@/lib/utils';
 import ExpenseApprovalActions from '@/components/admin/expenses/ExpenseApprovalActions';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
@@ -34,7 +34,7 @@ async function getPendingExpenses(): Promise<{ pending: PendingExpense[]; pendin
   try {
     const supabase = await createClient();
     const ctx = await resolveCurrentOrg();
-    if (!ctx) return { pending: [], approvedCount: 0, rejectedCount: 0 };
+    if (!ctx) return { pending: [], pendingMileage: [], approvedCount: 0, rejectedCount: 0 };
 
     const [pendingRes, approvedRes, rejectedRes, pendingMileageRes] = await Promise.all([
       supabase
@@ -147,7 +147,7 @@ export default async function ExpenseApprovalsPage() {
                     {pending.map((exp) => (
                       <TableRow key={exp.id} className="transition-colors hover:bg-bg-secondary/50">
                         <TableCell className="px-6 py-3.5 text-sm font-medium text-foreground">{exp.user_name}</TableCell>
-                        <TableCell className="px-6 py-3.5 text-sm text-foreground whitespace-nowrap">{new Date(exp.expense_date).toLocaleDateString()}</TableCell>
+                        <TableCell className="px-6 py-3.5 text-sm text-foreground whitespace-nowrap">{formatDate(exp.expense_date)}</TableCell>
                         <TableCell className="px-6 py-3.5 text-sm text-foreground capitalize">{exp.category}</TableCell>
                         <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{exp.description ?? '—'}</TableCell>
                         <TableCell className="px-6 py-3.5 text-right text-sm font-medium tabular-nums text-foreground">{formatCurrency(exp.amount)}</TableCell>
@@ -188,7 +188,7 @@ export default async function ExpenseApprovalsPage() {
                     {pendingMileage.map((m) => (
                       <TableRow key={m.id} className="transition-colors hover:bg-bg-secondary/50">
                         <TableCell className="px-6 py-3.5 text-sm font-medium text-foreground">{m.user_name}</TableCell>
-                        <TableCell className="px-6 py-3.5 text-sm text-foreground whitespace-nowrap">{new Date(m.trip_date).toLocaleDateString()}</TableCell>
+                        <TableCell className="px-6 py-3.5 text-sm text-foreground whitespace-nowrap">{formatDate(m.trip_date)}</TableCell>
                         <TableCell className="px-6 py-3.5 text-sm text-foreground">{m.origin} → {m.destination}</TableCell>
                         <TableCell className="px-6 py-3.5 text-right text-sm text-text-secondary">{m.distance_miles}</TableCell>
                         <TableCell className="px-6 py-3.5 text-right text-sm font-medium tabular-nums text-foreground">{formatCurrency(m.amount)}</TableCell>

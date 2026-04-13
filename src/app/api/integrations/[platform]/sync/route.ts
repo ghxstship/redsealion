@@ -57,7 +57,7 @@ export async function POST(
 
     // Create sync log entry
     const { data: syncLog } = await supabase
-      .from('integration_sync_log')
+      .from('integration_sync_logs')
       .insert({
         integration_id: integration.id,
         organization_id: orgId,
@@ -75,7 +75,7 @@ export async function POST(
       // Update sync log with results
       if (syncLog) {
         await supabase
-          .from('integration_sync_log')
+          .from('integration_sync_logs')
           .update({
             status: result.errors.length > 0 ? 'completed_with_errors' : 'completed',
             entity_type: result.entityType,
@@ -108,7 +108,7 @@ export async function POST(
       // Mark sync as failed
       if (syncLog) {
         await supabase
-          .from('integration_sync_log')
+          .from('integration_sync_logs')
           .update({
             status: 'failed',
             error_message:

@@ -3,6 +3,7 @@ import './globals.css';
 import ServiceWorkerRegistration from '@/components/ServiceWorkerRegistration';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 import { CookieBanner } from '@/components/shared/CookieBanner';
+import { SkipToContent } from '@/components/shared/SkipToContent';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://flytedeck.io'),
@@ -76,7 +77,10 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col antialiased">
-        {children}
+        <SkipToContent />
+        <main id="main-content" className="flex-1 min-w-0 flex flex-col">
+          {children}
+        </main>
         <CookieBanner />
         <ServiceWorkerRegistration />
         <PWAInstallPrompt />

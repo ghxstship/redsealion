@@ -94,7 +94,7 @@ export async function POST(
     }
 
     // Log the sync
-    await supabase.from('integration_sync_log').insert({
+    await supabase.from('integration_sync_logs').insert({
       integration_id: integration.id,
       organization_id: orgId,
       direction: 'outbound',

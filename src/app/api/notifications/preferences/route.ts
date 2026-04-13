@@ -22,6 +22,7 @@ export async function GET() {
     const { data, error } = await supabase
       .from('notification_preferences')
       .select('id, event_type, channel, enabled')
+      .eq('organization_id', permResult.organizationId)
       .eq('user_id', userId);
 
     if (error) {

@@ -1,3 +1,4 @@
+import Button from '@/components/ui/Button';
 'use client';
 
 import { useEffect, useRef, useCallback } from 'react';
@@ -15,13 +16,13 @@ export default function ServiceWorkerRegistration() {
     const banner = document.createElement('div');
     banner.setAttribute(
       'style',
-      'position:fixed;top:0;left:0;right:0;z-index:9999;display:flex;align-items:center;justify-content:center;gap:12px;padding:12px 16px;background:#0a0a0a;color:#fff;font-size:14px;font-family:system-ui,sans-serif;'
+      'position:fixed;top:0;left:0;right:0;z-index:9999;display:flex;align-items:center;justify-content:center;gap:12px;padding:12px 16px;background:var(--color-bg-tertiary,#0a0a0a);color:var(--color-foreground,#fff);font-size:14px;font-family:system-ui,sans-serif;border-bottom:1px solid var(--color-border,#333);'
     );
     banner.innerHTML = `
       <span>New version available</span>
-      <button id="sw-update-btn" style="padding:4px 12px;border-radius:6px;background:#fff;color:#0a0a0a;font-size:13px;font-weight:500;border:none;cursor:pointer;">
+      <Button variant="ghost" id="sw-update-btn" style="padding:4px 12px;border-radius:6px;background:var(--color-foreground,#fff);color:var(--color-bg-primary,#0a0a0a);font-size:13px;font-weight:500;border:none;cursor:pointer;">
         Update
-      </button>
+      </Button>
     `;
     document.body.appendChild(banner);
     updateBannerRef.current = banner;

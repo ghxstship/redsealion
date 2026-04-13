@@ -1,3 +1,4 @@
+import Button from '@/components/ui/Button';
 'use client';
 
 import Link from 'next/link';
@@ -99,7 +100,7 @@ export default function PortalSidebar() {
   return (
     <>
       {/* Mobile hamburger button */}
-      <button
+      <Button variant="ghost"
         onClick={() => setMobileOpen(!mobileOpen)}
         className="fixed top-[calc(2.5rem+6px)] left-4 z-50 md:hidden rounded-lg border border-border bg-background p-2 shadow-sm"
         aria-label="Toggle navigation"
@@ -109,7 +110,7 @@ export default function PortalSidebar() {
           ) : (
             <IconMenu size={20} strokeWidth={1.5} />
           )}
-      </button>
+      </Button>
 
       {/* Mobile overlay */}
       {mobileOpen && (
@@ -155,7 +156,7 @@ export default function PortalSidebar() {
               return (
                 <div key={section.id}>
                   {/* Section header */}
-                  <button
+                  <Button variant="ghost"
                     onClick={() => toggleSection(section.id)}
                     className={`
                       w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[11px] font-semibold uppercase tracking-wider
@@ -169,7 +170,7 @@ export default function PortalSidebar() {
                     <span className="opacity-60">{section.icon}</span>
                     <span className="flex-1 text-left">{section.label}</span>
                     <ChevronIcon open={open} />
-                  </button>
+                  </Button>
 
                   {/* Section items */}
                   <div

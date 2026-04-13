@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/utils';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
@@ -6,6 +7,7 @@ import LogisticsHubTabs from "../../LogisticsHubTabs";
 import GoodsReceiptsHeader from '@/components/admin/warehouse/GoodsReceiptsHeader';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 interface GoodsReceipt {
   id: string;
   receipt_number: string;
@@ -38,6 +40,7 @@ export default async function GoodsReceiptsPage() {
   const receipts = await getGoodsReceipts();
 
   return (
+    <RoleGate resource="warehouse">
     <>
       <PageHeader
         title="Goods Receipts"
@@ -84,7 +87,7 @@ export default async function GoodsReceiptsPage() {
                     {r.users?.full_name ?? '—'}
                   </TableCell>
                   <TableCell className="px-6 py-3.5 text-text-secondary">
-                    {r.received_date ? new Date(r.received_date).toLocaleDateString() : '—'}
+                    {r.received_date ? formatDate(r.received_date) : '—'}
                   </TableCell>
                 </TableRow>
               ))}
@@ -93,5 +96,6 @@ export default async function GoodsReceiptsPage() {
         )}
       </div>
     </>
-  );
+  
+    </RoleGate>);
 }

@@ -7,6 +7,11 @@ export type Json =
   | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.4"
+  }
   graphql_public: {
     Tables: {
       [_ in never]: never
@@ -2215,6 +2220,7 @@ export type Database = {
           conversation_id: string
           created_at: string
           id: string
+          organization_id: string | null
           role: string
         }
         Insert: {
@@ -2222,6 +2228,7 @@ export type Database = {
           conversation_id: string
           created_at?: string
           id?: string
+          organization_id?: string | null
           role: string
         }
         Update: {
@@ -2229,6 +2236,7 @@ export type Database = {
           conversation_id?: string
           created_at?: string
           id?: string
+          organization_id?: string | null
           role?: string
         }
         Relationships: [
@@ -2237,6 +2245,13 @@ export type Database = {
             columns: ["conversation_id"]
             isOneToOne: false
             referencedRelation: "ai_conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_messages_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]
@@ -3589,6 +3604,7 @@ export type Database = {
           dpop_key: Json | null
           handle: string | null
           id: string
+          organization_id: string | null
           refresh_token_encrypted: string | null
           token_expires_at: string | null
           updated_at: string
@@ -3601,6 +3617,7 @@ export type Database = {
           dpop_key?: Json | null
           handle?: string | null
           id?: string
+          organization_id?: string | null
           refresh_token_encrypted?: string | null
           token_expires_at?: string | null
           updated_at?: string
@@ -3613,12 +3630,21 @@ export type Database = {
           dpop_key?: Json | null
           handle?: string | null
           id?: string
+          organization_id?: string | null
           refresh_token_encrypted?: string | null
           token_expires_at?: string | null
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "bluesky_accounts_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       budget_alerts: {
         Row: {
@@ -4261,6 +4287,7 @@ export type Database = {
       }
       compliance_documents: {
         Row: {
+          auto_renew: boolean
           created_at: string
           created_by: string | null
           crew_profile_id: string
@@ -4278,6 +4305,8 @@ export type Database = {
           notes: string | null
           organization_id: string
           rejection_reason: string | null
+          renewal_reminder_sent: boolean
+          renewed_from_id: string | null
           replaces_id: string | null
           status: string
           updated_at: string
@@ -4285,6 +4314,7 @@ export type Database = {
           verified_by: string | null
         }
         Insert: {
+          auto_renew?: boolean
           created_at?: string
           created_by?: string | null
           crew_profile_id: string
@@ -4302,6 +4332,8 @@ export type Database = {
           notes?: string | null
           organization_id: string
           rejection_reason?: string | null
+          renewal_reminder_sent?: boolean
+          renewed_from_id?: string | null
           replaces_id?: string | null
           status?: string
           updated_at?: string
@@ -4309,6 +4341,7 @@ export type Database = {
           verified_by?: string | null
         }
         Update: {
+          auto_renew?: boolean
           created_at?: string
           created_by?: string | null
           crew_profile_id?: string
@@ -4326,6 +4359,8 @@ export type Database = {
           notes?: string | null
           organization_id?: string
           rejection_reason?: string | null
+          renewal_reminder_sent?: boolean
+          renewed_from_id?: string | null
           replaces_id?: string | null
           status?: string
           updated_at?: string
@@ -4355,10 +4390,31 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "compliance_documents_renewed_from_id_fkey"
+            columns: ["renewed_from_id"]
+            isOneToOne: false
+            referencedRelation: "compliance_documents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "compliance_documents_renewed_from_id_fkey"
+            columns: ["renewed_from_id"]
+            isOneToOne: false
+            referencedRelation: "v_compliance_expiring_soon"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "compliance_documents_replaces_id_fkey"
             columns: ["replaces_id"]
             isOneToOne: false
             referencedRelation: "compliance_documents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "compliance_documents_replaces_id_fkey"
+            columns: ["replaces_id"]
+            isOneToOne: false
+            referencedRelation: "v_compliance_expiring_soon"
             referencedColumns: ["id"]
           },
           {
@@ -7258,6 +7314,7 @@ export type Database = {
       goals: {
         Row: {
           category: string | null
+          completed_at: string | null
           created_at: string
           created_by: string | null
           deleted_at: string | null
@@ -7274,6 +7331,7 @@ export type Database = {
         }
         Insert: {
           category?: string | null
+          completed_at?: string | null
           created_at?: string
           created_by?: string | null
           deleted_at?: string | null
@@ -7290,6 +7348,7 @@ export type Database = {
         }
         Update: {
           category?: string | null
+          completed_at?: string | null
           created_at?: string
           created_by?: string | null
           deleted_at?: string | null
@@ -7615,7 +7674,7 @@ export type Database = {
           },
         ]
       }
-      integration_sync_log: {
+      integration_sync_logs: {
         Row: {
           completed_at: string | null
           deleted_at: string | null
@@ -7677,51 +7736,6 @@ export type Database = {
           },
           {
             foreignKeyName: "integration_sync_log_organization_id_fkey"
-            columns: ["organization_id"]
-            isOneToOne: false
-            referencedRelation: "organizations"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      integration_sync_logs: {
-        Row: {
-          error_message: string | null
-          id: string
-          integration_id: string
-          organization_id: string
-          records_synced: number
-          status: string
-          synced_at: string
-        }
-        Insert: {
-          error_message?: string | null
-          id?: string
-          integration_id: string
-          organization_id: string
-          records_synced?: number
-          status?: string
-          synced_at?: string
-        }
-        Update: {
-          error_message?: string | null
-          id?: string
-          integration_id?: string
-          organization_id?: string
-          records_synced?: number
-          status?: string
-          synced_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "integration_sync_logs_integration_id_fkey"
-            columns: ["integration_id"]
-            isOneToOne: false
-            referencedRelation: "integrations"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "integration_sync_logs_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
@@ -9434,6 +9448,7 @@ export type Database = {
         Row: {
           completed_at: string | null
           created_at: string
+          deleted_at: string | null
           id: string
           name: string
           phase_id: string
@@ -9444,6 +9459,7 @@ export type Database = {
         Insert: {
           completed_at?: string | null
           created_at?: string
+          deleted_at?: string | null
           id?: string
           name: string
           phase_id: string
@@ -9454,6 +9470,7 @@ export type Database = {
         Update: {
           completed_at?: string | null
           created_at?: string
+          deleted_at?: string | null
           id?: string
           name?: string
           phase_id?: string
@@ -10389,6 +10406,7 @@ export type Database = {
           asset_metadata: Json | null
           category: string
           created_at: string
+          deleted_at: string | null
           description: string | null
           id: string
           is_selected: boolean
@@ -10410,6 +10428,7 @@ export type Database = {
           asset_metadata?: Json | null
           category?: string
           created_at?: string
+          deleted_at?: string | null
           description?: string | null
           id?: string
           is_selected?: boolean
@@ -10431,6 +10450,7 @@ export type Database = {
           asset_metadata?: Json | null
           category?: string
           created_at?: string
+          deleted_at?: string | null
           description?: string | null
           id?: string
           is_selected?: boolean
@@ -10463,6 +10483,7 @@ export type Database = {
           asset_metadata: Json | null
           category: string
           created_at: string
+          deleted_at: string | null
           description: string | null
           details: string[]
           id: string
@@ -10483,6 +10504,7 @@ export type Database = {
           asset_metadata?: Json | null
           category?: string
           created_at?: string
+          deleted_at?: string | null
           description?: string | null
           details?: string[]
           id?: string
@@ -10503,6 +10525,7 @@ export type Database = {
           asset_metadata?: Json | null
           category?: string
           created_at?: string
+          deleted_at?: string | null
           description?: string | null
           details?: string[]
           id?: string
@@ -10618,9 +10641,11 @@ export type Database = {
       phases: {
         Row: {
           created_at: string
+          deleted_at: string | null
           id: string
           name: string
           narrative: string | null
+          organization_id: string | null
           phase_investment: number
           phase_number: string
           proposal_id: string
@@ -10632,9 +10657,11 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          deleted_at?: string | null
           id?: string
           name: string
           narrative?: string | null
+          organization_id?: string | null
           phase_investment?: number
           phase_number: string
           proposal_id: string
@@ -10646,9 +10673,11 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          deleted_at?: string | null
           id?: string
           name?: string
           narrative?: string | null
+          organization_id?: string | null
           phase_investment?: number
           phase_number?: string
           proposal_id?: string
@@ -10659,6 +10688,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "phases_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "phases_proposal_id_fkey"
             columns: ["proposal_id"]
@@ -10959,12 +10995,15 @@ export type Database = {
           description: string | null
           id: string
           image_url: string | null
+          is_published: boolean
           location: string | null
           organization_id: string
           project_id: string | null
           project_name: string
           project_year: number | null
           proposal_id: string | null
+          public_slug: string | null
+          published_at: string | null
           results: string | null
           services_provided: string[]
           tags: string[]
@@ -10980,12 +11019,15 @@ export type Database = {
           description?: string | null
           id?: string
           image_url?: string | null
+          is_published?: boolean
           location?: string | null
           organization_id: string
           project_id?: string | null
           project_name: string
           project_year?: number | null
           proposal_id?: string | null
+          public_slug?: string | null
+          published_at?: string | null
           results?: string | null
           services_provided?: string[]
           tags?: string[]
@@ -11001,12 +11043,15 @@ export type Database = {
           description?: string | null
           id?: string
           image_url?: string | null
+          is_published?: boolean
           location?: string | null
           organization_id?: string
           project_id?: string | null
           project_name?: string
           project_year?: number | null
           proposal_id?: string | null
+          public_slug?: string | null
+          published_at?: string | null
           results?: string | null
           services_provided?: string[]
           tags?: string[]
@@ -12584,6 +12629,7 @@ export type Database = {
           id: string
           name: string
           order_type: string
+          organization_id: string | null
         }
         Insert: {
           created_at?: string | null
@@ -12591,6 +12637,7 @@ export type Database = {
           id?: string
           name: string
           order_type: string
+          organization_id?: string | null
         }
         Update: {
           created_at?: string | null
@@ -12598,8 +12645,17 @@ export type Database = {
           id?: string
           name?: string
           order_type?: string
+          organization_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "quality_checklists_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       quality_checks: {
         Row: {
@@ -13641,6 +13697,7 @@ export type Database = {
           location: string | null
           location_id: string | null
           notes: string | null
+          organization_id: string | null
           parent_block_id: string | null
           schedule_id: string
           sort_order: number
@@ -13662,6 +13719,7 @@ export type Database = {
           location?: string | null
           location_id?: string | null
           notes?: string | null
+          organization_id?: string | null
           parent_block_id?: string | null
           schedule_id: string
           sort_order?: number
@@ -13683,6 +13741,7 @@ export type Database = {
           location?: string | null
           location_id?: string | null
           notes?: string | null
+          organization_id?: string | null
           parent_block_id?: string | null
           schedule_id?: string
           sort_order?: number
@@ -13696,6 +13755,13 @@ export type Database = {
             columns: ["location_id"]
             isOneToOne: false
             referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "schedule_blocks_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
           {
@@ -14815,6 +14881,7 @@ export type Database = {
       team_assignments: {
         Row: {
           created_at: string
+          deleted_at: string | null
           facility_id: string | null
           id: string
           proposal_id: string
@@ -14824,6 +14891,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          deleted_at?: string | null
           facility_id?: string | null
           id?: string
           proposal_id: string
@@ -14833,6 +14901,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          deleted_at?: string | null
           facility_id?: string | null
           id?: string
           proposal_id?: string
@@ -15611,7 +15680,6 @@ export type Database = {
           created_at: string
           date_format: string
           default_calendar_view: string
-          density: string
           first_day_of_week: number
           id: string
           language: string
@@ -15627,7 +15695,6 @@ export type Database = {
           created_at?: string
           date_format?: string
           default_calendar_view?: string
-          density?: string
           first_day_of_week?: number
           id?: string
           language?: string
@@ -15643,7 +15710,6 @@ export type Database = {
           created_at?: string
           date_format?: string
           default_calendar_view?: string
-          density?: string
           first_day_of_week?: number
           id?: string
           language?: string
@@ -15887,11 +15953,13 @@ export type Database = {
           address: Json
           contact_on_site: Json | null
           created_at: string
+          deleted_at: string | null
           id: string
           load_in: Json | null
           location_id: string | null
           name: string
           notes: string | null
+          organization_id: string | null
           proposal_id: string
           sequence: number
           site_constraints: Json
@@ -15904,11 +15972,13 @@ export type Database = {
           address?: Json
           contact_on_site?: Json | null
           created_at?: string
+          deleted_at?: string | null
           id?: string
           load_in?: Json | null
           location_id?: string | null
           name: string
           notes?: string | null
+          organization_id?: string | null
           proposal_id: string
           sequence?: number
           site_constraints?: Json
@@ -15921,11 +15991,13 @@ export type Database = {
           address?: Json
           contact_on_site?: Json | null
           created_at?: string
+          deleted_at?: string | null
           id?: string
           load_in?: Json | null
           location_id?: string | null
           name?: string
           notes?: string | null
+          organization_id?: string | null
           proposal_id?: string
           sequence?: number
           site_constraints?: Json
@@ -15939,6 +16011,13 @@ export type Database = {
             columns: ["location_id"]
             isOneToOne: false
             referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "venues_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
           {
@@ -16699,6 +16778,129 @@ export type Database = {
           },
           {
             foreignKeyName: "audit_logs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      integration_sync_log: {
+        Row: {
+          completed_at: string | null
+          deleted_at: string | null
+          details: Json | null
+          direction: string | null
+          entity_count: number | null
+          entity_type: string | null
+          error_message: string | null
+          id: string | null
+          integration_id: string | null
+          organization_id: string | null
+          records_failed: number | null
+          records_filtered: number | null
+          records_processed: number | null
+          started_at: string | null
+          status: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          deleted_at?: string | null
+          details?: Json | null
+          direction?: string | null
+          entity_count?: number | null
+          entity_type?: string | null
+          error_message?: string | null
+          id?: string | null
+          integration_id?: string | null
+          organization_id?: string | null
+          records_failed?: number | null
+          records_filtered?: number | null
+          records_processed?: number | null
+          started_at?: string | null
+          status?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          deleted_at?: string | null
+          details?: Json | null
+          direction?: string | null
+          entity_count?: number | null
+          entity_type?: string | null
+          error_message?: string | null
+          id?: string | null
+          integration_id?: string | null
+          organization_id?: string | null
+          records_failed?: number | null
+          records_filtered?: number | null
+          records_processed?: number | null
+          started_at?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "integration_sync_log_integration_id_fkey"
+            columns: ["integration_id"]
+            isOneToOne: false
+            referencedRelation: "integrations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "integration_sync_log_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_compliance_expiring_soon: {
+        Row: {
+          auto_renew: boolean | null
+          crew_profile_id: string | null
+          days_until_expiry: number | null
+          document_name: string | null
+          document_type: string | null
+          expiry_date: string | null
+          file_name: string | null
+          id: string | null
+          organization_id: string | null
+          renewal_reminder_sent: boolean | null
+        }
+        Insert: {
+          auto_renew?: boolean | null
+          crew_profile_id?: string | null
+          days_until_expiry?: never
+          document_name?: string | null
+          document_type?: string | null
+          expiry_date?: string | null
+          file_name?: string | null
+          id?: string | null
+          organization_id?: string | null
+          renewal_reminder_sent?: boolean | null
+        }
+        Update: {
+          auto_renew?: boolean | null
+          crew_profile_id?: string | null
+          days_until_expiry?: never
+          document_name?: string | null
+          document_type?: string | null
+          expiry_date?: string | null
+          file_name?: string | null
+          id?: string | null
+          organization_id?: string | null
+          renewal_reminder_sent?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "compliance_documents_crew_profile_id_fkey"
+            columns: ["crew_profile_id"]
+            isOneToOne: false
+            referencedRelation: "crew_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "compliance_documents_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
@@ -17624,12 +17826,3 @@ export const Constants = {
     },
   },
 } as const
-
-/* ─────────────────────────────────────────────────────────
-   Convenience type aliases for advance-related enums
-   ───────────────────────────────────────────────────────── */
-export type AdvanceStatus = Database["public"]["Enums"]["advance_status"];
-export type AdvanceMode = Database["public"]["Enums"]["advance_mode"];
-export type AdvanceType = Database["public"]["Enums"]["advance_type"];
-export type AdvancePriority = Database["public"]["Enums"]["advance_priority"];
-export type FulfillmentStatus = Database["public"]["Enums"]["fulfillment_status"];

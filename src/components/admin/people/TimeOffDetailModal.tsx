@@ -4,7 +4,7 @@ import { useState } from 'react';
 import ModalShell from '@/components/ui/ModalShell';
 import Button from '@/components/ui/Button';
 import Alert from '@/components/ui/Alert';
-import { statusColor } from '@/lib/utils';
+import StatusBadge from '@/components/ui/StatusBadge';
 
 interface TimeOffRequest {
   id: string;
@@ -87,9 +87,7 @@ export default function TimeOffDetailModal({ open, onClose, request, isAdmin, on
           <div key={field.label} className="flex items-center justify-between px-5 py-3">
             <span className="text-sm text-text-secondary">{field.label}</span>
             {field.isBadge ? (
-              <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColor(request.status)}`}>
-                {field.value}
-              </span>
+              <StatusBadge status={request.status} />
             ) : (
               <span className="text-sm font-medium text-foreground">{field.value}</span>
             )}

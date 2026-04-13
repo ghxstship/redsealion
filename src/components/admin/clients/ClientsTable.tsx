@@ -1,4 +1,5 @@
 'use client';
+import { Badge } from '@/components/ui/Badge';
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
@@ -198,9 +199,9 @@ export default function ClientsTable({ clients }: { clients: ClientRow[] }) {
                     <TableCell className="px-6 py-3.5">
                       <div className="flex flex-wrap gap-1.5">
                         {client.tags.map((tag) => (
-                          <span key={tag} className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">
+                          <Badge key={tag} variant="muted">
                             {tag}
-                          </span>
+                          </Badge>
                         ))}
                       </div>
                     </TableCell>

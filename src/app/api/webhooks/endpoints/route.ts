@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
   const tierError = await requireFeature('integrations');
   if (tierError) return tierError;
 
-  const permError = await requirePermission('integrations', 'read');
+  const permError = await requirePermission('integrations', 'view');
   if (permError) return permError;
 
   const supabase = await createClient();

@@ -1,3 +1,4 @@
+import Checkbox from '@/components/ui/Checkbox';
 'use client';
 
 import { useState, type FormEvent } from 'react';
@@ -302,7 +303,7 @@ export default function AssetFormModal({ open, onClose, onSaved, initialData }: 
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div className="flex items-center gap-2">
-              <input type="checkbox" id="is_reusable" checked={form.is_reusable} onChange={(e) => update('is_reusable', e.target.checked)} className="h-4 w-4 rounded border-border" />
+              <Checkbox id="is_reusable" checked={form.is_reusable} onChange={(e) => update('is_reusable', e.target.checked)} className="h-4 w-4 rounded border-border" />
               <FormLabel htmlFor="is_reusable" className="mb-0">Reusable</FormLabel>
             </div>
             <div>

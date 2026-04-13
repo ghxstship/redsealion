@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency , formatDate } from '@/lib/utils';
 import Link from 'next/link';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
@@ -132,7 +132,7 @@ export default async function SupplierDetailPage({ params }: { params: Promise<{
           </div>
           <div>
             <span className="text-text-muted">W-9 on File:</span>
-            <p className="text-foreground mt-0.5">{vendor.w9_on_file ? `Yes (${vendor.w9_received_date ? new Date(vendor.w9_received_date).toLocaleDateString() : 'date unknown'})` : 'No'}</p>
+            <p className="text-foreground mt-0.5">{vendor.w9_on_file ? `Yes (${vendor.w9_received_date ? formatDate(vendor.w9_received_date) : 'date unknown'})` : 'No'}</p>
           </div>
         </div>
       </div>
@@ -164,7 +164,7 @@ export default async function SupplierDetailPage({ params }: { params: Promise<{
                       <Link href={`/app/procurement/purchase-orders/${p.id}`} className="font-medium text-foreground hover:underline">{p.po_number}</Link>
                     </TableCell>
                     <TableCell className="px-4 py-3 tabular-nums">{formatCurrency(p.total_amount ?? 0)}</TableCell>
-                    <TableCell className="px-4 py-3 text-text-secondary">{p.issued_date ? new Date(p.issued_date).toLocaleDateString() : '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{p.issued_date ? formatDate(p.issued_date) : '—'}</TableCell>
                     <TableCell className="px-4 py-3">
                       <StatusBadge status={p.status ?? 'unknown'} colorMap={{}} />
                     </TableCell>

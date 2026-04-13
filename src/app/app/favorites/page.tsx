@@ -6,6 +6,7 @@ import { Star } from 'lucide-react';
 import Link from 'next/link';
 import FavoriteButton from '@/components/shared/FavoriteButton';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 type EntityConfig = {
   table: string;
   nameField: string;
@@ -23,6 +24,13 @@ const ENTITY_CONFIGS: Record<string, EntityConfig> = {
   deals: { table: 'deals', nameField: 'title', hrefBase: '/app/pipeline', label: 'Deals' },
   invoices: { table: 'invoices', nameField: 'invoice_number', hrefBase: '/app/invoices', label: 'Invoices' },
 };
+
+/** Shape of a favorited entity row returned from dynamic table queries. */
+interface FavoriteRow {
+  id: string;
+  status: string;
+  [key: string]: unknown;
+}
 
 async function getFavoritedItems() {
   const supabase = await createClient();
@@ -45,7 +53,7 @@ async function getFavoritedItems() {
     return acc;
   }, {} as Record<string, string[]>);
 
-  const buckets: Record<string, any[]> = {};
+  const buckets: Record<string, FavoriteRow[]> = {};
 
   // Fetch actual entity data mapped to each bucket
   await Promise.all(
@@ -60,7 +68,8 @@ async function getFavoritedItems() {
 
       if (data) {
         // Sort data matching the recent favorites order
-        const sortedData = data.sort((a, b) => {
+        const rows = data as unknown as FavoriteRow[];
+        const sortedData = rows.sort((a, b) => {
           return ids.indexOf(a.id) - ids.indexOf(b.id);
         });
         buckets[entityType] = sortedData;
@@ -76,6 +85,7 @@ export default async function FavoritesPage() {
   const validKeys = Object.keys(data).filter(key => ENTITY_CONFIGS[key] && data[key].length > 0);
 
   return (
+    <RoleGate>
     <div>
       <PageHeader title="Favorites" subtitle="Quick access to your starred items across the platform." />
 
@@ -101,18 +111,18 @@ export default async function FavoritesPage() {
                 </div>
                 
                 <div className="divide-y divide-border">
-                  {items.map((item: Record<string, unknown>) => (
-                    <div key={item.id as string} className="flex items-center group hover:bg-bg-secondary/50 transition-colors">
+                  {items.map((item: FavoriteRow) => (
+                    <div key={item.id} className="flex items-center group hover:bg-bg-secondary/50 transition-colors">
                       <Link href={`${config.hrefBase}/${item.id}`} className="flex-1 px-5 py-3 block">
                         <div className="flex items-center justify-between">
                           <p className="text-sm font-medium text-foreground">{item[config.nameField] as string}</p>
-                          {(item.status as string) && (
-                            <StatusBadge status={item.status as string} colorMap={GENERIC_STATUS_COLORS} />
+                          {item.status && (
+                            <StatusBadge status={item.status} colorMap={GENERIC_STATUS_COLORS} />
                           )}
                         </div>
                       </Link>
                       <div className="px-5">
-                        <FavoriteButton entityType={key} entityId={item.id as string} />
+                        <FavoriteButton entityType={key} entityId={item.id} />
                       </div>
                     </div>
                   ))}
@@ -123,5 +133,6 @@ export default async function FavoritesPage() {
         </div>
       )}
     </div>
-  );
+  
+    </RoleGate>);
 }

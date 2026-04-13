@@ -117,12 +117,12 @@ export default function TaskAttachments({ taskId }: TaskAttachmentsProps) {
             </span>
           )}
         </h3>
-        <button
+        <Button variant="ghost"
           onClick={() => setShowAdd(!showAdd)}
           className="text-xs font-medium text-text-muted hover:text-foreground transition-colors flex items-center gap-1"
         >
           <Plus size={12} /> Add
-        </button>
+        </Button>
       </div>
 
       {/* Add form */}
@@ -193,13 +193,13 @@ export default function TaskAttachments({ taskId }: TaskAttachmentsProps) {
               >
                 <Download size={14} />
               </a>
-              <button
+              <Button variant="ghost"
                 onClick={() => handleDelete(att.id)}
                 className="opacity-0 group-hover:opacity-100 text-text-muted hover:text-red-600 transition-all"
                 title="Remove"
               >
                 <Trash2 size={14} />
-              </button>
+              </Button>
             </div>
           ))
         )}

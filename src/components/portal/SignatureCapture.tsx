@@ -41,7 +41,7 @@ export default function SignatureCapture({ onSign }: SignatureCaptureProps) {
     ctx.lineWidth = 2;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-    ctx.strokeStyle = '#000';
+    ctx.strokeStyle = getComputedStyle(canvas).getPropertyValue('--color-foreground').trim() || '#000';
   }, []);
 
   const handleStart = (e: React.MouseEvent | React.TouchEvent) => {

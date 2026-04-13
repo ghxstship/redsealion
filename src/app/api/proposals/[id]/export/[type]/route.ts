@@ -29,6 +29,7 @@ export async function GET(
   const { data: proposal, error: propError } = await supabase
     .from('proposals')
     .select('*, clients(*)')
+    .eq('organization_id', perm!.organizationId)
     .eq('id', id)
     .single();
 
@@ -44,6 +45,7 @@ export async function GET(
     const { data: deals } = await supabase
       .from('deals')
       .select('*')
+    .eq('organization_id', perm!.organizationId)
       .eq('proposal_id', id)
       .limit(1);
     
@@ -69,6 +71,7 @@ export async function GET(
     const { data: invoices } = await supabase
       .from('invoices')
       .select('id, number, amount, status')
+    .eq('organization_id', perm!.organizationId)
       .eq('proposal_id', id);
 
     outputData = {
@@ -84,6 +87,7 @@ export async function GET(
     const { data: phases } = await supabase
       .from('phases')
       .select('*, phase_deliverables(id)')
+      .eq('organization_id', perm!.organizationId)
       .eq('proposal_id', id)
       .order('sort_order', { ascending: true });
 
@@ -105,6 +109,7 @@ export async function GET(
     const { data: phases } = await supabase
       .from('phases')
       .select('phase_deliverables(*)')
+      .eq('organization_id', perm!.organizationId)
       .eq('proposal_id', id);
 
     const deliverables = (phases ?? [])

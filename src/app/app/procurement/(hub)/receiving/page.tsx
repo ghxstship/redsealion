@@ -1,82 +1,11 @@
-import { createClient } from '@/lib/supabase/server';
-import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
-import { TierGate } from '@/components/shared/TierGate';
-import PageHeader from '@/components/shared/PageHeader';
-import Link from 'next/link';
-import ProcurementHubTabs from '../../ProcurementHubTabs';
-import StatusBadge, { RECEIPT_STATUS_COLORS } from '@/components/ui/StatusBadge';
-import MetricCard from '@/components/ui/MetricCard';
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
+import { redirect } from 'next/navigation';
 
-async function getReceipts() {
-  try {
-    const supabase = await createClient();
-    const ctx = await resolveCurrentOrg();
-    if (!ctx) return [];
-    const { data } = await supabase
-      .from('goods_receipts')
-      .select('id, status, received_date, notes, purchase_orders(po_number, vendor_name)')
-      .eq('organization_id', ctx.organizationId)
-      .order('received_date', { ascending: false });
-    return (data ?? []).map((r: Record<string, unknown>) => ({
-      id: r.id as string, status: r.status as string, received_date: r.received_date as string,
-      notes: r.notes as string | null,
-      po_number: Array.isArray(r.purchase_orders) ? (r.purchase_orders as Record<string, unknown>[])[0]?.po_number as string : (r.purchase_orders as Record<string, unknown> | null)?.po_number as string ?? null,
-      vendor_name: Array.isArray(r.purchase_orders) ? (r.purchase_orders as Record<string, unknown>[])[0]?.vendor_name as string : (r.purchase_orders as Record<string, unknown> | null)?.vendor_name as string ?? null,
-    }));
-  } catch { return []; }
-}
-
-
-
-export default async function ReceivingPage() {
-  const receipts = await getReceipts();
-
-  return (
-    <TierGate feature="procurement">
-      <PageHeader title="Receiving" subtitle="Log and inspect incoming goods against purchase orders." />
-      <ProcurementHubTabs />
-
-      <div className="flex justify-end mb-6">
-        <Link href="/app/procurement/receiving/new" className="inline-flex items-center gap-2 rounded-lg bg-brand-primary px-4 py-2 text-sm font-medium text-white hover:bg-brand-primary/90 transition-colors">
-          + Log Receipt
-        </Link>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">
-        {[
-          { label: 'Total Receipts', value: receipts.length },
-          { label: 'Complete', value: receipts.filter((r) => r.status === 'complete').length, color: 'text-green-600' },
-          { label: 'Partial', value: receipts.filter((r) => r.status === 'partial').length, color: 'text-yellow-600' },
-        ].map((stat) => (
-          <MetricCard key={stat.label} label={stat.label} value={stat.value} className={stat.color ? `[&_.text-foreground]:${stat.color}` : ''} />
-        ))}
-      </div>
-
-      <div className="rounded-xl border border-border bg-background overflow-hidden">
-        {receipts.length === 0 ? (
-          <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No goods receipts yet. Receipts are logged when PO deliveries arrive.</p></div>
-        ) : (
-          <div className="overflow-x-auto">
-            <Table >
-              <TableHeader >
-                <TableRow><TableHead className="px-4 py-3">PO #</TableHead><TableHead className="px-4 py-3">Vendor</TableHead><TableHead className="px-4 py-3">Received</TableHead><TableHead className="px-4 py-3">Notes</TableHead><TableHead className="px-4 py-3">Status</TableHead></TableRow>
-              </TableHeader>
-              <TableBody >
-                {receipts.map((r) => (
-                  <TableRow key={r.id} className="hover:bg-bg-secondary/50 transition-colors">
-                    <TableCell className="px-4 py-3 font-medium text-foreground">{r.po_number ?? '—'}</TableCell>
-                    <TableCell className="px-4 py-3 text-text-secondary">{r.vendor_name ?? '—'}</TableCell>
-                    <TableCell className="px-4 py-3 text-text-secondary">{new Date(r.received_date).toLocaleDateString()}</TableCell>
-                    <TableCell className="px-4 py-3 text-text-secondary text-xs line-clamp-1">{r.notes ?? '—'}</TableCell>
-                    <TableCell className="px-4 py-3"><StatusBadge status={r.status} colorMap={RECEIPT_STATUS_COLORS} /></TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        )}
-      </div>
-    </TierGate>
-  );
+/**
+ * Procurement → Receiving redirect.
+ *
+ * The canonical goods-receipts list lives at /app/logistics/goods-receipts.
+ * This eliminates the duplicate page that was querying the same goods_receipts table.
+ */
+export default function ProcurementReceivingPage() {
+  redirect('/app/logistics/goods-receipts');
 }

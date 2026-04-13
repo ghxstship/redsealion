@@ -23,6 +23,7 @@ export async function DELETE(
   const { error } = await supabase
     .from('task_templates')
     .delete()
+    .eq('organization_id', perm!.organizationId)
     .eq('id', id);
 
   if (error) {

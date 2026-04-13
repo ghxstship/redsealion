@@ -1,3 +1,4 @@
+import Checkbox from '@/components/ui/Checkbox';
 'use client';
 
 import Link from 'next/link';
@@ -176,7 +177,7 @@ export default function CrewPage() {
           <TableHeader>
             <TableRow className="border-b border-border bg-bg-secondary">
               <TableHead className="px-4 py-3 text-left w-10">
-                <input type="checkbox" checked={isAllSelected} ref={(el) => { if (el) el.indeterminate = isSomeSelected; }} onChange={toggleAll} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/20" />
+                <Checkbox checked={isAllSelected} indeterminate={isSomeSelected} onChange={toggleAll} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/20" />
               </TableHead>
               <TableHead className="px-6 py-3"><SortableHeader label="Name" field="full_name" currentSort={sort} onSort={handleSort} /></TableHead>
               <TableHead className="px-6 py-3"><SortableHeader label="Email" field="email" currentSort={sort} onSort={handleSort} /></TableHead>
@@ -191,7 +192,7 @@ export default function CrewPage() {
             {sorted.map((member) => (
               <TableRow key={member.id} className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(member.id) ? 'bg-blue-50/50' : ''}`}>
                 <TableCell className="px-4 py-3.5">
-                  <input type="checkbox" checked={isSelected(member.id)} onChange={() => toggle(member.id)} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/20" />
+                  <Checkbox checked={isSelected(member.id)} onChange={() => toggle(member.id)} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/20" />
                 </TableCell>
                 <TableCell className="px-6 py-3.5">
                   <Link href={`/app/crew/${member.id}`} className="text-sm font-medium text-foreground hover:underline">{member.full_name}</Link>

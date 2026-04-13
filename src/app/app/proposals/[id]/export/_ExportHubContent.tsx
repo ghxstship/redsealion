@@ -1,3 +1,4 @@
+import Checkbox from '@/components/ui/Checkbox';
 'use client';
 
 import Button from '@/components/ui/Button';
@@ -55,15 +56,15 @@ function DocxOptions({ onExport }: { onExport: (opts: Record<string, boolean>) =
 
         <div className="mt-4 space-y-2.5 pl-[3.375rem]">
           <label className="flex items-center gap-2.5 cursor-pointer">
-            <input type="checkbox" checked={includeTerms} onChange={() => setIncludeTerms(!includeTerms)} className="h-4 w-4 rounded border-border" />
+            <Checkbox checked={includeTerms} onChange={() => setIncludeTerms(!includeTerms)} className="h-4 w-4 rounded border-border" />
             <span className="text-xs text-foreground">Include Terms &amp; Conditions appendix</span>
           </label>
           <label className="flex items-center gap-2.5 cursor-pointer">
-            <input type="checkbox" checked={includePortfolio} onChange={() => setIncludePortfolio(!includePortfolio)} className="h-4 w-4 rounded border-border" />
+            <Checkbox checked={includePortfolio} onChange={() => setIncludePortfolio(!includePortfolio)} className="h-4 w-4 rounded border-border" />
             <span className="text-xs text-foreground">Include portfolio references</span>
           </label>
           <label className="flex items-center gap-2.5 cursor-pointer">
-            <input type="checkbox" checked={includePlaceholders} onChange={() => setIncludePlaceholders(!includePlaceholders)} className="h-4 w-4 rounded border-border" />
+            <Checkbox checked={includePlaceholders} onChange={() => setIncludePlaceholders(!includePlaceholders)} className="h-4 w-4 rounded border-border" />
             <span className="text-xs text-foreground">Include placeholder fields for signatures</span>
           </label>
         </div>

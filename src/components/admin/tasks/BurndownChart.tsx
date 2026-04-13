@@ -106,7 +106,7 @@ export default function BurndownChart({
               y1={chartHeight * (1 - frac)}
               x2={chartData.length * 20}
               y2={chartHeight * (1 - frac)}
-              stroke="var(--color-border, #e5e7eb)"
+              stroke="var(--color-border)"
               strokeWidth="0.5"
             />
           ))}
@@ -117,7 +117,7 @@ export default function BurndownChart({
             y1={mode === 'burndown' ? 0 : chartHeight}
             x2={chartData.length * 20}
             y2={mode === 'burndown' ? chartHeight : 0}
-            stroke="var(--color-text-muted, #9ca3af)"
+            stroke="var(--color-text-muted)"
             strokeWidth="1"
             strokeDasharray="4 4"
             opacity="0.5"
@@ -126,7 +126,7 @@ export default function BurndownChart({
           {/* Actual line */}
           <polyline
             fill="none"
-            stroke={mode === 'burndown' ? '#3b82f6' : '#22c55e'}
+            stroke={mode === 'burndown' ? 'var(--color-accent, oklch(0.63 0.21 255))' : 'var(--color-success, oklch(0.72 0.19 155))'}
             strokeWidth="2"
             points={chartData
               .map(
@@ -138,7 +138,7 @@ export default function BurndownChart({
 
           {/* Area fill */}
           <polygon
-            fill={mode === 'burndown' ? 'rgba(59,130,246,0.1)' : 'rgba(34,197,94,0.1)'}
+            fill={mode === 'burndown' ? 'color-mix(in oklch, var(--color-accent, oklch(0.63 0.21 255)) 10%, transparent)' : 'color-mix(in oklch, var(--color-success, oklch(0.72 0.19 155)) 10%, transparent)'}
             points={`0,${chartHeight} ${chartData
               .map(
                 (d, i) =>

@@ -90,12 +90,12 @@ export default function ProjectStatusUpdates({ proposalId }: ProjectStatusUpdate
           <MessageSquare size={14} className="text-text-muted" />
           Status Updates
         </h3>
-        <button
+        <Button variant="ghost"
           onClick={() => setShowAdd(!showAdd)}
           className="text-xs font-medium text-text-muted hover:text-foreground transition-colors flex items-center gap-1"
         >
           <Plus size={12} /> Post Update
-        </button>
+        </Button>
       </div>
 
       {showAdd && (

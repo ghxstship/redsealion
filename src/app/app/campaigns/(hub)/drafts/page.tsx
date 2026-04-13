@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
@@ -45,7 +46,7 @@ export default async function DraftsPage() {
                   </div>
                   <div className="text-right">
                     <StatusBadge status="draft" colorMap={{draft: 'bg-yellow-50 text-yellow-700'}} />
-                    <p className="text-xs text-text-muted mt-1">{new Date(draft.updated_at).toLocaleDateString()}</p>
+                    <p className="text-xs text-text-muted mt-1">{formatDate(draft.updated_at)}</p>
                   </div>
                 </div>
               </Link>

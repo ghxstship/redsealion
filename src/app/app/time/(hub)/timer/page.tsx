@@ -2,8 +2,10 @@ import TimerWidget from '@/components/admin/time/TimerWidget';
 import TimeHubTabs from '../../TimeHubTabs';
 import PageHeader from '@/components/shared/PageHeader';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 export default function TimerPage() {
   return (
+    <RoleGate>
     <>
 <PageHeader
         title="Timer"
@@ -14,5 +16,6 @@ export default function TimerPage() {
 
       <TimerWidget />
     </>
+  </RoleGate>
   );
 }

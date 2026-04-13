@@ -141,7 +141,7 @@ export default function QRGenerator({ assetId, barcode, name }: QRGeneratorProps
                 y={5}
                 width={moduleWidth}
                 height={barHeight}
-                fill="#000"
+                fill="currentColor"
               />
             ) : null,
           )}

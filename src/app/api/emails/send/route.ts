@@ -75,7 +75,6 @@ export async function POST(request: Request) {
         .from('email_threads')
         .update({
           last_message_at: new Date().toISOString(),
-          message_count: supabase.rpc ? undefined : undefined, // increment handled separately
         })
         .eq('id', finalThreadId);
 
@@ -123,14 +122,16 @@ export async function POST(request: Request) {
     // On failure, update to 'failed' and return error.
 
     // Audit log
-    await supabase.from('audit_logs').insert({
-      organization_id: organizationId,
-      user_id: userId,
-      action: 'email.compose',
-      entity_type: 'email_message',
-      entity_id: finalThreadId,
-      metadata: { to, subject },
-    }).catch(() => { /* non-blocking */ });
+    try {
+      await supabase.from('audit_logs').insert({
+        organization_id: organizationId,
+        user_id: userId,
+        action: 'email.compose',
+        entity_type: 'email_message',
+        entity_id: finalThreadId,
+        metadata: { to, subject },
+      });
+    } catch { /* non-blocking */ }
 
     return NextResponse.json({ success: true, thread_id: finalThreadId });
   } catch {

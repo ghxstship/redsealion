@@ -7,6 +7,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
 import ClientsHubTabs from '../ClientsHubTabs';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 interface ClientRow {
   id: string;
   company_name: string;
@@ -61,6 +62,7 @@ export default async function ClientsPage() {
   const totalValue = clients.reduce((sum, c) => sum + c.total_value, 0);
 
   return (
+    <RoleGate resource="clients">
     <>
 <PageHeader
         title="Clients"
@@ -73,5 +75,6 @@ export default async function ClientsPage() {
 
       <ClientsTable clients={clients} />
     </>
+  </RoleGate>
   );
 }

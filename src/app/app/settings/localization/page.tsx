@@ -7,6 +7,7 @@ import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import FormSelect from '@/components/ui/FormSelect';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 const dateFormatOptions = [
   { value: 'MM/DD/YYYY', label: 'MM/DD/YYYY' },
   { value: 'DD/MM/YYYY', label: 'DD/MM/YYYY' },
@@ -127,6 +128,7 @@ export default function LocalizationSettingsPage() {
   if (!loaded) return null;
 
   return (
+    <RoleGate resource="settings">
     <div className="max-w-2xl space-y-6">
       <div>
         <h2 className="text-lg font-semibold text-foreground">{t('settings.localization')}</h2>
@@ -249,5 +251,6 @@ export default function LocalizationSettingsPage() {
         </Button>
       </div>
     </div>
+  </RoleGate>
   );
 }

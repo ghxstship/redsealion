@@ -73,7 +73,7 @@ export default function MileageForm() {
         </div>
         <p className="text-sm font-medium text-green-600">Mileage logged successfully.</p>
         <div className="mt-4 flex items-center justify-center gap-3">
-          <button
+          <Button variant="ghost"
             onClick={() => {
               setSubmitted(false);
               setOrigin('');
@@ -85,13 +85,13 @@ export default function MileageForm() {
             className="text-sm font-medium text-foreground hover:underline"
           >
             Log another trip
-          </button>
-          <button
+          </Button>
+          <Button variant="ghost"
             onClick={() => router.push('/app/expenses/mileage')}
             className="text-sm font-medium text-text-secondary hover:underline"
           >
             View all mileage
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -193,13 +193,13 @@ export default function MileageForm() {
       )}
 
       <div className="flex justify-end gap-3">
-        <button
+        <Button variant="ghost"
           type="button"
           onClick={() => router.push('/app/expenses/mileage')}
           className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
         >
           Cancel
-        </button>
+        </Button>
         <Button type="submit"
           disabled={saving}>
           {saving ? 'Saving...' : 'Log Mileage'}

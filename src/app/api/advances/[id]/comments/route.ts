@@ -14,6 +14,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   const { data, error } = await ctx.supabase
     .from('advance_comments')
     .select('*, users(full_name, avatar_url)')
+    .eq('organization_id', ctx.organizationId)
     .eq('advance_id', id)
     .order('created_at', { ascending: true });
 
@@ -46,6 +47,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       mentioned_user_ids: body.mentioned_user_ids ?? [],
       parent_comment_id: body.parent_comment_id ?? null,
     })
+    .eq('organization_id', ctx.organizationId)
     .select('*, users(full_name, avatar_url)')
     .single();
 

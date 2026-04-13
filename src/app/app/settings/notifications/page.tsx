@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 type Channel = 'email' | 'sms' | 'in_app';
 
 interface EventType {
@@ -130,6 +131,7 @@ export default function NotificationSettingsPage() {
   }
 
   return (
+    <RoleGate resource="settings">
     <div className="max-w-3xl space-y-6">
       <div>
         <h2 className="text-lg font-semibold text-foreground">Notifications</h2>
@@ -192,5 +194,6 @@ export default function NotificationSettingsPage() {
         </Button>
       </div>
     </div>
-  );
+  
+    </RoleGate>);
 }

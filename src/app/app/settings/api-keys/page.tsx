@@ -7,6 +7,7 @@ import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import ModalShell from '@/components/ui/ModalShell';
+import { Badge } from '@/components/ui/Badge';
 
 interface ApiKeyRow {
   id: string;
@@ -27,6 +28,7 @@ function formatDate(iso: string): string {
 import { KeyRound } from 'lucide-react';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 function KeyIcon() {
   return <KeyRound className="h-5 w-5" />;
 }
@@ -90,6 +92,7 @@ export default function ApiKeysPage() {
   if (!loaded) return null;
 
   return (
+    <RoleGate resource="settings">
     <div className="max-w-3xl space-y-6">
       <div>
         <h2 className="text-lg font-semibold text-foreground">API Keys</h2>
@@ -152,9 +155,7 @@ export default function ApiKeysPage() {
                   <TableCell className="py-3">
                     <div className="flex flex-wrap gap-1">
                       {k.scopes.map((s) => (
-                        <span key={s} className="inline-flex items-center rounded-full bg-bg-secondary px-2 py-0.5 text-xs font-medium text-text-muted">
-                          {s}
-                        </span>
+                        <Badge key={s} variant="muted">{s}</Badge>
                       ))}
                     </div>
                   </TableCell>
@@ -211,5 +212,6 @@ export default function ApiKeysPage() {
         </form>
       </ModalShell>
     </div>
+  </RoleGate>
   );
 }

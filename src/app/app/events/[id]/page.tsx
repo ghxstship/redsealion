@@ -7,7 +7,6 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import StatusBadge, { EVENT_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import { Badge } from '@/components/ui/Badge';
-import { TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getEvent(id: string) {

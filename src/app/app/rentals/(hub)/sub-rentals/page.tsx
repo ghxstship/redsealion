@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency , formatDate } from '@/lib/utils';
 import RentalsHubTabs from '../../RentalsHubTabs';
 import CreateSubRentalButton from './CreateSubRentalButton';
 import StatusBadge, { SUB_RENTAL_STATUS_COLORS } from '@/components/ui/StatusBadge';
@@ -64,7 +64,7 @@ export default async function SubRentalsPage() {
                   <TableRow key={r.id} className="hover:bg-bg-secondary/50 transition-colors">
                     <TableCell className="px-4 py-3 font-medium text-foreground">{r.po_number ?? '—'}</TableCell>
                     <TableCell className="px-4 py-3 text-text-secondary">{r.vendor_name ?? '—'}</TableCell>
-                    <TableCell className="px-4 py-3 text-text-secondary">{new Date(r.rental_start).toLocaleDateString()} – {new Date(r.rental_end).toLocaleDateString()}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{formatDate(r.rental_start)} – {formatDate(r.rental_end)}</TableCell>
                     <TableCell className="px-4 py-3 tabular-nums">{formatCurrency(r.total_cost_cents / 100)}</TableCell>
                     <TableCell className="px-4 py-3"><StatusBadge status={r.status} colorMap={SUB_RENTAL_STATUS_COLORS} /></TableCell>
                   </TableRow>

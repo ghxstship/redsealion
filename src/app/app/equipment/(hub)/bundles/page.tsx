@@ -7,6 +7,7 @@ import Card from '@/components/ui/Card';
 import BundlesHeader from '@/components/admin/equipment/BundlesHeader';
 import EquipmentHubTabs from '../../EquipmentHubTabs';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 interface Bundle {
   id: string;
   name: string;
@@ -60,6 +61,7 @@ export default async function BundlesPage() {
   const bundles = await getBundles();
 
   return (
+    <RoleGate>
     <>
       {/* Header */}
       <PageHeader
@@ -112,5 +114,6 @@ export default async function BundlesPage() {
         />
       )}
     </>
+  </RoleGate>
   );
 }

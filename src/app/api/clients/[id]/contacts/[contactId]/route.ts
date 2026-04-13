@@ -26,6 +26,7 @@ export async function PATCH(
   const { data: contact, error } = await supabase
     .from('client_contacts')
     .update(updates)
+    .eq('organization_id', perm!.organizationId)
     .eq('id', contactId)
     .select()
     .single();
@@ -51,6 +52,7 @@ export async function DELETE(
   const { error } = await supabase
     .from('client_contacts')
     .update({ deleted_at: new Date().toISOString() })
+    .eq('organization_id', perm!.organizationId)
     .eq('id', contactId);
 
   if (error) {

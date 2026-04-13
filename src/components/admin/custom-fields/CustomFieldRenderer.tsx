@@ -5,6 +5,7 @@ import FormInput from '@/components/ui/FormInput';
 import FormSelect from '@/components/ui/FormSelect';
 import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
+import { Badge } from '@/components/ui/Badge';
 
 interface FieldDef {
   id: string;
@@ -48,13 +49,13 @@ export default function CustomFieldRenderer({ fields }: CustomFieldRendererProps
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary capitalize">
+                <Badge variant="muted" className="capitalize">
                   {field.entityType}
-                </span>
+                </Badge>
                 {field.required && (
-                  <span className="inline-flex items-center rounded-full bg-red-500/10 px-2 py-0.5 text-xs font-medium text-red-700">
+                  <Badge variant="error">
                     Required
-                  </span>
+                  </Badge>
                 )}
                 <button className="text-xs text-text-muted hover:text-foreground transition-colors">
                   Edit
@@ -70,17 +71,17 @@ export default function CustomFieldRenderer({ fields }: CustomFieldRendererProps
         <p className="text-xs text-text-muted mb-2">Available field types:</p>
         <div className="flex flex-wrap gap-2">
           {FIELD_TYPES.map((type) => (
-            <span key={type} className="rounded-full bg-bg-secondary px-3 py-1 text-xs text-text-secondary capitalize">
+            <Badge key={type} variant="muted" className="capitalize">
               {type}
-            </span>
+            </Badge>
           ))}
         </div>
         <p className="text-xs text-text-muted mt-3 mb-2">Available entity types:</p>
         <div className="flex flex-wrap gap-2">
           {ENTITY_TYPES.map((type) => (
-            <span key={type} className="rounded-full bg-bg-secondary px-3 py-1 text-xs text-text-secondary capitalize">
+            <Badge key={type} variant="muted" className="capitalize">
               {type}
-            </span>
+            </Badge>
           ))}
         </div>
       </div>

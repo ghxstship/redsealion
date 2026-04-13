@@ -1,9 +1,10 @@
+import Checkbox from '@/components/ui/Checkbox';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import ShipmentsHeader from '@/components/admin/warehouse/ShipmentsHeader';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency , formatDate } from '@/lib/utils';
 import Link from 'next/link';
 import LogisticsHubTabs from "../../LogisticsHubTabs";
 import StatusBadge, { SHIPMENT_STATUS_COLORS } from '@/components/ui/StatusBadge';
@@ -99,7 +100,7 @@ export default async function ShippingPage({ searchParams }: { searchParams: Pro
           <TableHeader>
             <TableRow>
               <TableHead>
-                <input type="checkbox" className="w-4 h-4 rounded border-border text-foreground focus:ring-foreground bg-background" /> {/* Bulk checkbox placeholder */}
+                <Checkbox className="w-4 h-4 rounded border-border text-foreground focus:ring-foreground bg-background" /> {/* Bulk checkbox placeholder */}
               </TableHead>
               <TableHead>Shipment #</TableHead>
               <TableHead>Destination</TableHead>
@@ -114,13 +115,13 @@ export default async function ShippingPage({ searchParams }: { searchParams: Pro
           <TableBody>
                   {shipments.map((s) => (
                     <TableRow key={s.id}>
-                      <TableCell><input type="checkbox" className="w-4 h-4 rounded border-border text-foreground focus:ring-foreground bg-background" /></TableCell>
+                      <TableCell><Checkbox className="w-4 h-4 rounded border-border text-foreground focus:ring-foreground bg-background" /></TableCell>
                       <TableCell><Link href={`/app/logistics/shipments/${s.id}`} className="font-medium text-foreground hover:underline">{s.shipment_number}</Link></TableCell>
                       <TableCell className="text-text-secondary">{s.event_name ?? s.client_name ?? s.destination ?? '—'}</TableCell>
                       <TableCell className="text-text-secondary">{s.carrier ?? '—'}</TableCell>
                       <TableCell className="font-mono text-xs text-text-muted">{s.tracking_number ?? '—'}</TableCell>
-                      <TableCell className="text-text-secondary">{s.ship_date ? new Date(s.ship_date).toLocaleDateString() : '—'}</TableCell>
-                      <TableCell className="text-text-secondary">{s.estimated_arrival ? new Date(s.estimated_arrival).toLocaleDateString() : '—'}</TableCell>
+                      <TableCell className="text-text-secondary">{s.ship_date ? formatDate(s.ship_date) : '—'}</TableCell>
+                      <TableCell className="text-text-secondary">{s.estimated_arrival ? formatDate(s.estimated_arrival) : '—'}</TableCell>
                       <TableCell className="tabular-nums">{s.num_pieces}</TableCell>
                       <TableCell><StatusBadge status={s.status} colorMap={SHIPMENT_STATUS_COLORS} /></TableCell>
                     </TableRow>

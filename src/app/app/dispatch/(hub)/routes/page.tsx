@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
@@ -93,7 +94,7 @@ export default async function DispatchRoutesPage() {
                     </TableCell>
                     <TableCell className="px-4 py-3 text-text-secondary">{r.location_name}</TableCell>
                     <TableCell className="px-4 py-3 text-text-secondary">{crewNames(r)}</TableCell>
-                    <TableCell className="px-4 py-3 text-text-secondary">{r.scheduled_start ? new Date(r.scheduled_start).toLocaleDateString() : '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{r.scheduled_start ? formatDate(r.scheduled_start) : '—'}</TableCell>
                     <TableCell className="px-4 py-3">
                       <StatusBadge status={r.status} colorMap={{in_progress: 'bg-purple-50 text-purple-700', dispatched: 'bg-blue-50 text-blue-700', draft: 'bg-blue-50 text-blue-700'}} />
                     </TableCell>

@@ -36,6 +36,7 @@ export async function PATCH(request: Request, context: RouteContext) {
   const { data, error } = await supabase
     .from('crew_bookings')
     .update(update)
+    .eq('organization_id', perm!.organizationId)
     .eq('id', bookingId)
     .eq('crew_profile_id', id)
     .is('deleted_at', null)
@@ -67,6 +68,7 @@ export async function DELETE(_request: Request, context: RouteContext) {
   const { error } = await supabase
     .from('crew_bookings')
     .update({ deleted_at: new Date().toISOString(), status: 'cancelled' })
+    .eq('organization_id', perm!.organizationId)
     .eq('id', bookingId)
     .eq('crew_profile_id', id)
     .is('deleted_at', null);

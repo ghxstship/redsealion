@@ -1,3 +1,4 @@
+import Checkbox from '@/components/ui/Checkbox';
 'use client';
 
 import { useState, useMemo, useCallback } from 'react';
@@ -203,7 +204,7 @@ export default function ProposalsTable({
             <TableHeader>
               <TableRow className="border-b border-border bg-bg-secondary">
                 <TableHead className="px-4 py-3 text-left w-10">
-                  <input type="checkbox" checked={isAllSelected} ref={(el) => { if (el) el.indeterminate = isSomeSelected; }} onChange={toggleAll} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
+                  <Checkbox checked={isAllSelected} indeterminate={isSomeSelected} onChange={toggleAll} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
                 </TableHead>
                 {isVisible('name') && <TableHead className="px-6 py-3"><SortableHeader label="Proposal Name" field="name" currentSort={sort} onSort={handleSort} /></TableHead>}
                 {isVisible('client') && <TableHead className="px-6 py-3"><SortableHeader label="Client" field="client_id" currentSort={sort} onSort={handleSort} /></TableHead>}
@@ -218,7 +219,7 @@ export default function ProposalsTable({
               {sorted.map((p) => (
                 <TableRow key={p.id} className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(p.id) ? 'bg-blue-50/50' : ''}`}>
                   <TableCell className="px-4 py-3.5">
-                    <input type="checkbox" checked={isSelected(p.id)} onChange={() => toggle(p.id)} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
+                    <Checkbox checked={isSelected(p.id)} onChange={() => toggle(p.id)} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
                   </TableCell>
                   {isVisible('name') && (
                     <TableCell className="px-6 py-3.5">

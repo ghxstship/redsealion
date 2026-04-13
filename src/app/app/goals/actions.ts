@@ -47,16 +47,23 @@ export async function updateGoal(id: string, formData: FormData) {
   const due_date = formData.get('due_date') as string || null;
   const status = formData.get('status') as string;
 
+  const updates: Record<string, unknown> = {
+    title,
+    description,
+    category,
+    start_date,
+    due_date,
+    status,
+  };
+
+  // Set completed_at when completing (DB trigger also handles this)
+  if (status === 'completed') {
+    updates.completed_at = new Date().toISOString();
+  }
+
   const { error } = await supabase
     .from('goals')
-    .update({
-      title,
-      description,
-      category,
-      start_date,
-      due_date,
-      status,
-    })
+    .update(updates)
     .eq('id', id)
     .eq('organization_id', ctx.organizationId);
 
@@ -95,6 +102,15 @@ export async function createKeyResult(goalId: string, formData: FormData) {
   const start_value = parseFloat(formData.get('start_value') as string) || 0;
   const target = parseFloat(formData.get('target') as string) || 0;
   const unit = formData.get('unit') as string;
+
+  // Verify parent goal belongs to user's organization
+  const { data: goal } = await supabase
+    .from('goals')
+    .select('id')
+    .eq('id', goalId)
+    .eq('organization_id', ctx.organizationId)
+    .single();
+  if (!goal) return { error: 'Goal not found' };
 
   const { error } = await supabase.from('goal_key_results').insert({
     goal_id: goalId,
@@ -149,6 +165,15 @@ export async function createCheckIn(goalId: string, formData: FormData) {
   const previous_progress = parseInt(formData.get('previous_progress') as string) || 0;
   const status = formData.get('status') as string;
   const notes = formData.get('notes') as string;
+
+  // Verify parent goal belongs to user's organization
+  const { data: goal } = await supabase
+    .from('goals')
+    .select('id')
+    .eq('id', goalId)
+    .eq('organization_id', ctx.organizationId)
+    .single();
+  if (!goal) return { error: 'Goal not found' };
 
   // Insert checkin (source of truth for progress history)
   const { error: checkinError } = await supabase.from('goal_check_ins').insert({

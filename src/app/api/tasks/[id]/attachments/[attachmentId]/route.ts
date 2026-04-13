@@ -17,13 +17,23 @@ export async function DELETE(
   if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
-  const { attachmentId } = await params;
+  const { id: taskId, attachmentId } = await params;
   const supabase = await createClient();
+
+  // Verify parent task belongs to user's organization
+  const { data: taskCheck } = await supabase
+    .from('tasks')
+    .select('id')
+    .eq('id', taskId)
+    .eq('organization_id', perm.organizationId)
+    .single();
+  if (!taskCheck) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
   const { error } = await supabase
     .from('task_attachments')
     .delete()
-    .eq('id', attachmentId);
+    .eq('id', attachmentId)
+    .eq('task_id', taskId);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

@@ -117,7 +117,7 @@ export async function executeReport(
   const { data, error } = await query;
   if (error) throw new Error(`Query failed: ${error.message}`);
 
-  return (data ?? []) as ReportRow[];
+  return (data ?? []) as unknown as ReportRow[];
 }
 
 /* ─────────────────────────────────────────────────────────

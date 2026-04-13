@@ -27,6 +27,15 @@ export async function GET(
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ watching: false });
 
+  // Verify parent task belongs to user's organization
+  const { data: task } = await supabase
+    .from('tasks')
+    .select('id')
+    .eq('id', taskId)
+    .eq('organization_id', perm.organizationId)
+    .single();
+  if (!task) return NextResponse.json({ watching: false });
+
   const { data } = await supabase
     .from('task_watchers')
     .select('id')
@@ -53,6 +62,15 @@ export async function POST(
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
+  // Verify parent task belongs to user's organization
+  const { data: taskCheck } = await supabase
+    .from('tasks')
+    .select('id')
+    .eq('id', taskId)
+    .eq('organization_id', perm.organizationId)
+    .single();
+  if (!taskCheck) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+
   await supabase.from('task_watchers').upsert(
     { task_id: taskId, user_id: user.id },
     { onConflict: 'task_id,user_id' },
@@ -75,6 +93,15 @@ export async function DELETE(
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  // Verify parent task belongs to user's organization
+  const { data: taskCheck } = await supabase
+    .from('tasks')
+    .select('id')
+    .eq('id', taskId)
+    .eq('organization_id', perm.organizationId)
+    .single();
+  if (!taskCheck) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
   await supabase
     .from('task_watchers')

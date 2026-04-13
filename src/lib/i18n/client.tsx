@@ -3,7 +3,7 @@
 import { createContext, useContext, useCallback, useMemo, type ReactNode } from 'react';
 import type { SupportedLocale } from './config';
 import { DEFAULT_LOCALE } from './config';
-import Button from '@/components/ui/Button';
+
 
 /**
  * i18n Client Provider — provides translation and formatting to client components.

@@ -13,6 +13,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 interface CrewDetail {
   full_name: string;
   email: string;
@@ -189,6 +190,7 @@ export default async function CrewMemberPage({
   );
 
   return (
+    <RoleGate resource="crew">
     <>
       {/* Header */}
       <Link
@@ -281,5 +283,6 @@ export default async function CrewMemberPage({
         </div>
       </div>
     </>
+  </RoleGate>
   );
 }

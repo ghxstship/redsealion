@@ -22,8 +22,17 @@ export async function GET(
   const { id: taskId } = await params;
   const supabase = await createClient();
 
+  // Verify parent task belongs to user's organization
+  const { data: task } = await supabase
+    .from('tasks')
+    .select('id')
+    .eq('id', taskId)
+    .eq('organization_id', perm.organizationId)
+    .single();
+  if (!task) return NextResponse.json({ attachments: [] });
+
   const { data, error } = await supabase
-    /* org-scoped */ .from('task_attachments')
+    .from('task_attachments')
     .select('id, file_name, file_url, file_type, file_size, created_at, uploaded_by, users!task_attachments_uploaded_by_fkey(full_name)')
     .eq('task_id', taskId)
     .order('created_at', { ascending: false });
@@ -73,6 +82,16 @@ export async function POST(
   }
 
   const supabase = await createClient();
+
+  // Verify parent task belongs to user's organization
+  const { data: taskCheck } = await supabase
+    .from('tasks')
+    .select('id')
+    .eq('id', taskId)
+    .eq('organization_id', perm.organizationId)
+    .single();
+  if (!taskCheck) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+
   const { data: { user } } = await supabase.auth.getUser();
 
   const { data, error } = await supabase

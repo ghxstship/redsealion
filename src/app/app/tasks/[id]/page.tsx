@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { Check } from 'lucide-react';
 import { TierGate } from '@/components/shared/TierGate';
@@ -272,7 +273,7 @@ export default async function TaskDetailPage({
               <div className="flex items-center justify-between">
                 <span className="text-xs text-text-muted">Due Date</span>
                 <span className="text-sm text-foreground">
-                  {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : '—'}
+                  {task.dueDate ? formatDate(task.dueDate) : '—'}
                 </span>
               </div>
 
@@ -280,7 +281,7 @@ export default async function TaskDetailPage({
               <div className="flex items-center justify-between">
                 <span className="text-xs text-text-muted">Start Date</span>
                 <span className="text-sm text-foreground">
-                  {task.startDate ? new Date(task.startDate).toLocaleDateString() : '—'}
+                  {task.startDate ? formatDate(task.startDate) : '—'}
                 </span>
               </div>
 
@@ -312,7 +313,7 @@ export default async function TaskDetailPage({
               <div className="flex items-center justify-between">
                 <span className="text-xs text-text-muted">Created</span>
                 <span className="text-sm text-text-secondary">
-                  {new Date(task.createdAt).toLocaleDateString()}
+                  {formatDate(task.createdAt)}
                 </span>
               </div>
             </div>

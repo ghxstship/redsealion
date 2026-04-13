@@ -2,6 +2,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import Link from 'next/link';
 import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
 
 export default function SecurityPage() {
   const sections = [
@@ -50,18 +51,14 @@ export default function SecurityPage() {
                 <p className="text-sm font-medium text-foreground">Single Sign-On</p>
                 <p className="text-xs text-text-secondary">Enforce SSO for all team members</p>
               </div>
-              <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-muted">
-                Not configured
-              </span>
+              <Badge variant="muted">Not configured</Badge>
             </div>
             <div className="flex items-center justify-between py-3 border-b border-border">
               <div>
                 <p className="text-sm font-medium text-foreground">Multi-Factor Authentication</p>
                 <p className="text-xs text-text-secondary">Require MFA for all users</p>
               </div>
-              <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-muted">
-                Optional
-              </span>
+              <Badge variant="muted">Optional</Badge>
             </div>
           </div>
         </TierGate>

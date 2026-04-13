@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import Link from 'next/link';
@@ -134,7 +135,7 @@ export default async function ReportsPage() {
                         <p className="text-xs text-text-secondary mt-1 line-clamp-2">{report.description}</p>
                       )}
                       <p className="text-[11px] text-text-muted mt-2">
-                        Created {new Date(report.created_at).toLocaleDateString()}
+                        Created {formatDate(report.created_at)}
                       </p>
                     </div>
                   </div>

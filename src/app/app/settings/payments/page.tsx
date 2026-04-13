@@ -7,6 +7,7 @@ import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import FormTextarea from '@/components/ui/FormTextarea';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 export default function PaymentSettingsPage() {
   const [instructions, setInstructions] = useState('');
   const [saving, setSaving] = useState(false);
@@ -36,6 +37,7 @@ export default function PaymentSettingsPage() {
   }
 
   return (
+    <RoleGate resource="settings">
     <>
       <PageHeader
         title="Payment Settings"
@@ -83,5 +85,6 @@ export default function PaymentSettingsPage() {
         </div>
       </div>
     </>
+  </RoleGate>
   );
 }

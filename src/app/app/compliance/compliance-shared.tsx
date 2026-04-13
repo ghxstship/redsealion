@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
@@ -56,7 +57,7 @@ function ComplianceTable({ docs, emptyMsg }: { docs: Awaited<ReturnType<typeof g
                 <TableCell className="px-4 py-3 font-medium text-foreground">{doc.document_name}</TableCell>
                 <TableCell className="px-4 py-3 text-text-secondary">{doc.issued_to ?? '—'}</TableCell>
                 <TableCell className="px-4 py-3"><ComplianceStatusBadge status={doc.status} /></TableCell>
-                <TableCell className="px-4 py-3 text-text-secondary">{doc.expiry_date ? new Date(doc.expiry_date).toLocaleDateString() : 'N/A'}</TableCell>
+                <TableCell className="px-4 py-3 text-text-secondary">{doc.expiry_date ? formatDate(doc.expiry_date) : 'N/A'}</TableCell>
               </TableRow>
             ))}
           </TableBody>

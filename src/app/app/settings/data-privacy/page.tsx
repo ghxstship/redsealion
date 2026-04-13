@@ -1,6 +1,7 @@
 'use client';
 
 import FormInput from '@/components/ui/FormInput';
+import { Badge } from '@/components/ui/Badge';
 
 import { useState } from 'react';
 import Card from '@/components/ui/Card';
@@ -8,6 +9,7 @@ import Button from '@/components/ui/Button';
 import FormSelect from '@/components/ui/FormSelect';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 // Demo sessions mock removed
 
 export default function DataPrivacyPage() {
@@ -52,6 +54,7 @@ export default function DataPrivacyPage() {
   }
 
   return (
+    <RoleGate>
     <div className="max-w-2xl space-y-6">
       <div>
         <h2 className="text-lg font-semibold text-foreground">Data & Privacy</h2>
@@ -129,9 +132,7 @@ export default function DataPrivacyPage() {
                   <TableCell className="py-3 text-foreground">
                     {s.browser}
                     {s.current && (
-                      <span className="ml-2 inline-flex items-center rounded-full bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700">
-                        Current
-                      </span>
+                      <Badge variant="success">Current</Badge>
                     )}
                   </TableCell>
                   <TableCell className="py-3 text-text-secondary">{s.ip}</TableCell>
@@ -229,5 +230,6 @@ export default function DataPrivacyPage() {
         </Button>
       </div>
     </div>
+  </RoleGate>
   );
 }

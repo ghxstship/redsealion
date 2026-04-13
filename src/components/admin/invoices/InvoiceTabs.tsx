@@ -1,3 +1,5 @@
+import Checkbox from '@/components/ui/Checkbox';
+import { Badge } from '@/components/ui/Badge';
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -125,7 +127,7 @@ export default function InvoiceTabs({ invoices }: { invoices: InvoiceRow[] }) {
             <TableHeader>
               <TableRow className="border-b border-border bg-bg-secondary">
                 <TableHead className="px-4 py-3 text-left w-10">
-                  <input type="checkbox" checked={isAllSelected} ref={(el) => { if (el) el.indeterminate = isSomeSelected; }} onChange={toggleAll} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
+                  <Checkbox checked={isAllSelected} indeterminate={isSomeSelected} onChange={toggleAll} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
                 </TableHead>
                 <TableHead className="px-6 py-3"><SortableHeader label="Invoice" field="invoice_number" currentSort={sort} onSort={handleSort} /></TableHead>
                 <TableHead className="px-6 py-3"><SortableHeader label="Client" field="client_name" currentSort={sort} onSort={handleSort} /></TableHead>
@@ -141,17 +143,17 @@ export default function InvoiceTabs({ invoices }: { invoices: InvoiceRow[] }) {
               {sorted.map((inv) => (
                 <TableRow key={inv.id} className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(inv.id) ? 'bg-blue-50/50' : ''}`}>
                   <TableCell className="px-4 py-3.5">
-                    <input type="checkbox" checked={isSelected(inv.id)} onChange={() => toggle(inv.id)} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
+                    <Checkbox checked={isSelected(inv.id)} onChange={() => toggle(inv.id)} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
                   </TableCell>
                   <TableCell className="px-6 py-4">
                     <Link href={`/app/invoices/${inv.id}`} className="text-sm font-medium text-foreground hover:underline">{inv.invoice_number}</Link>
                   </TableCell>
                   <TableCell className="px-6 py-4 text-sm text-text-secondary">{inv.client_name}</TableCell>
                   <TableCell className="px-6 py-4">
-                    <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary capitalize">{inv.type}</span>
+                    <Badge variant="muted" className="capitalize">{inv.type}</Badge>
                   </TableCell>
                   <TableCell className="px-6 py-4">
-                    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColor(inv.status)}`}>{formatLabel(inv.status)}</span>
+                    <Badge variant="muted" className={statusColor(inv.status)}>{formatLabel(inv.status)}</Badge>
                   </TableCell>
                   <TableCell className="px-6 py-4 text-right text-sm font-medium tabular-nums text-foreground">{formatCurrency(inv.total)}</TableCell>
                   <TableCell className="px-6 py-4 text-right text-sm tabular-nums text-text-secondary">{formatCurrency(inv.amount_paid)}</TableCell>

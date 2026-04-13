@@ -21,6 +21,15 @@ export async function GET(
   const { id: taskId } = await params;
   const supabase = await createClient();
 
+  // Verify parent task belongs to user's organization
+  const { data: task } = await supabase
+    .from('tasks')
+    .select('id')
+    .eq('id', taskId)
+    .eq('organization_id', perm.organizationId)
+    .single();
+  if (!task) return NextResponse.json({ entries: [] });
+
   const { data, error } = await supabase
     .from('audit_log')
     .select('id, action, details, created_at, user_id, users!audit_log_user_id_fkey(full_name)')

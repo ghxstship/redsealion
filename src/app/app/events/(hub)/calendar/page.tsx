@@ -9,6 +9,7 @@ import { usePreferencesSafe } from '@/components/shared/PreferencesProvider';
 import PageHeader from '@/components/shared/PageHeader';
 import EventsHubTabs from '../../EventsHubTabs';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 const PERSIST_KEY = 'flytedeck:view:calendar';
 interface CalendarEvent {
   id: string;
@@ -192,6 +193,7 @@ export default function CalendarPage() {
   }
 
   return (
+    <RoleGate resource="events">
     <>
       <PageHeader title="Calendar" subtitle="View and manage event schedules across all locations.">
         <ViewTypeSwitcher
@@ -370,5 +372,6 @@ export default function CalendarPage() {
         </div>
       </div>
     </>
-  );
+  
+    </RoleGate>);
 }

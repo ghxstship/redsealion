@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
+import { Badge } from '@/components/ui/Badge';
 
 interface SsoConfig {
   id: string;
@@ -53,15 +54,15 @@ export default async function SsoSettingsPage() {
         <div className="rounded-xl border border-border bg-background p-6">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className={`h-3 w-3 rounded-full ${config?.enabled ? 'bg-green-500' : 'bg-text-muted'}`} />
+              <div className={`h-3 w-3 rounded-full ${config?.enabled ? 'bg-success' : 'bg-text-muted'}`} />
               <span className="text-sm font-medium text-foreground">
                 {config?.enabled ? 'SSO Enabled' : 'SSO Not Configured'}
               </span>
             </div>
             {config && (
-              <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${config.enabled ? 'bg-green-50 text-green-700' : 'bg-bg-secondary text-text-muted'}`}>
+              <Badge variant={config.enabled ? 'success' : 'muted'}>
                 {config.enabled ? 'Active' : 'Inactive'}
-              </span>
+              </Badge>
             )}
           </div>
 

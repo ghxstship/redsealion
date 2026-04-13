@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
@@ -82,7 +83,7 @@ export default async function ScheduleTimelinePage() {
                     </TableCell>
                     <TableCell className="px-4 py-3 text-text-secondary">{s.event_name ?? '—'}</TableCell>
                     <TableCell className="px-4 py-3"><StatusBadge status={s.schedule_type} colorMap={SCHEDULE_TYPE_COLORS} fallback="bg-purple-50 text-purple-700" /></TableCell>
-                    <TableCell className="px-4 py-3 text-text-secondary">{s.start_date ? `${new Date(s.start_date).toLocaleDateString()} – ${s.end_date ? new Date(s.end_date).toLocaleDateString() : ''}` : '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{s.start_date ? `${formatDate(s.start_date)} – ${s.end_date ? formatDate(s.end_date) : ''}` : '—'}</TableCell>
                     <TableCell className="px-4 py-3"><StatusBadge status={s.status} colorMap={PRODUCTION_SCHEDULE_STATUS_COLORS} /></TableCell>
                   </TableRow>
                 ))}

@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
@@ -73,7 +74,7 @@ export default async function InventoryPage() {
                         <StatusBadge status={c.status} />
                       </TableCell>
                       <TableCell className="px-6 py-4 text-sm text-text-secondary">
-                        {c.started_at ? new Date(c.started_at).toLocaleDateString() : '—'}
+                        {c.started_at ? formatDate(c.started_at) : '—'}
                       </TableCell>
                     </TableRow>
                   ))}

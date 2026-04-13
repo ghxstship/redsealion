@@ -7,6 +7,7 @@ import Skeleton from '@/components/ui/Skeleton';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 export default function TaxSettingsPage() {
   const [defaultRate, setDefaultRate] = useState('0');
   const [taxLabel, setTaxLabel] = useState('Tax');
@@ -60,6 +61,7 @@ export default function TaxSettingsPage() {
   }
 
   return (
+    <RoleGate resource="settings">
     <div className="max-w-2xl space-y-6">
       <div>
         <h2 className="text-lg font-semibold text-foreground">Tax Settings</h2>
@@ -123,5 +125,6 @@ export default function TaxSettingsPage() {
         </Button>
       </div>
     </div>
-  );
+  
+    </RoleGate>);
 }

@@ -1,3 +1,4 @@
+import Checkbox from '@/components/ui/Checkbox';
 'use client';
 
 import { useState } from 'react';
@@ -149,11 +150,11 @@ export default function AdHocItemForm({ onAdd, onBack }: AdHocItemFormProps) {
 
       <div className="flex gap-4">
         <label className="flex items-center gap-2 text-sm text-text-secondary cursor-pointer">
-          <input type="checkbox" checked={isExisting} onChange={(e) => setIsExisting(e.target.checked)} className="rounded border-border" />
+          <Checkbox checked={isExisting} onChange={(e) => setIsExisting(e.target.checked)} className="rounded border-border" />
           Existing on-site
         </label>
         <label className="flex items-center gap-2 text-sm text-text-secondary cursor-pointer">
-          <input type="checkbox" checked={isTentative} onChange={(e) => setIsTentative(e.target.checked)} className="rounded border-border" />
+          <Checkbox checked={isTentative} onChange={(e) => setIsTentative(e.target.checked)} className="rounded border-border" />
           Tentative (TBC)
         </label>
       </div>

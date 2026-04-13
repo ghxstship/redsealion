@@ -1,8 +1,16 @@
 'use client';
 
 import React from 'react';
-import { CrewProfileWithUser } from '@/types/database';
+import type { Database } from '@/types/database';
 import Card from '@/components/ui/Card';
+
+type CrewProfileRow = Database['public']['Tables']['crew_profiles']['Row'];
+type UserRow = Database['public']['Tables']['users']['Row'];
+
+/** A crew_profile row joined with its parent user record. */
+type CrewProfileWithUser = CrewProfileRow & {
+  users?: Pick<UserRow, 'full_name' | 'email'> | null;
+};
 
 interface CrewProfileCardProps {
   profile: CrewProfileWithUser;
@@ -12,7 +20,7 @@ export default function CrewProfileCard({ profile }: CrewProfileCardProps) {
   const initials = profile.users?.full_name
     ? profile.users.full_name
         .split(' ')
-        .map((n) => n[0])
+        .map((n: string) => n[0])
         .join('')
         .toUpperCase()
         .slice(0, 2)
@@ -43,7 +51,7 @@ export default function CrewProfileCard({ profile }: CrewProfileCardProps) {
 
       {profile.skills && profile.skills.length > 0 && (
         <div className="flex flex-wrap gap-1 mb-3">
-          {profile.skills.map((skill) => (
+          {profile.skills.map((skill: string) => (
             <span
               key={skill}
               className="inline-block px-2 py-0.5 text-xs rounded bg-bg-secondary text-text-secondary"

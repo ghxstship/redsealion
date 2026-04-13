@@ -30,6 +30,7 @@ export async function POST(
       load_in_time: (load_in_time as string) ?? null,
       load_out_time: (load_out_time as string) ?? null,
     })
+    .eq('organization_id', perm!.organizationId)
     .select()
     .single();
 

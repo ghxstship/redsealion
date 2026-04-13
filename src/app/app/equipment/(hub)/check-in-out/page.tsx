@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
@@ -77,8 +78,8 @@ export default async function CheckInOutPage() {
   // Determine available vs deployed assets for the standalone header
   const supabase = await createClient();
   const orgId = (await resolveCurrentOrg())?.organizationId;
-  let availableAssets = [];
-  let deployedAssets = [];
+  let availableAssets: { id: string; name: string; status: string }[] = [];
+  let deployedAssets: { id: string; name: string; status: string }[] = [];
   if (orgId) {
     const { data: assets } = await supabase.from('assets').select('id, name, status').eq('organization_id', orgId);
     if (assets) {
@@ -138,7 +139,7 @@ export default async function CheckInOutPage() {
                 </div>
                 <div className="text-right shrink-0">
                   <StatusBadge status={c.status} colorMap={STATUS_COLORS} />
-                  <p className="text-xs text-text-muted mt-1">{new Date(c.checked_out_at).toLocaleDateString()}</p>
+                  <p className="text-xs text-text-muted mt-1">{formatDate(c.checked_out_at)}</p>
                   <p className={`text-xs mt-0.5 ${CONDITION_COLORS[c.condition_out]}`}>
                     Condition: {c.condition_out}
                   </p>
@@ -183,8 +184,8 @@ export default async function CheckInOutPage() {
                       {c.event_name ?? c.rental_order ?? c.destination ?? '—'}
                     </TableCell>
                     <TableCell className="px-4 py-3 tabular-nums">{c.quantity}</TableCell>
-                    <TableCell className="px-4 py-3 text-text-secondary text-xs">{new Date(c.checked_out_at).toLocaleDateString()}</TableCell>
-                    <TableCell className="px-4 py-3 text-text-secondary text-xs">{c.checked_in_at ? new Date(c.checked_in_at).toLocaleDateString() : '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary text-xs">{formatDate(c.checked_out_at)}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary text-xs">{c.checked_in_at ? formatDate(c.checked_in_at) : '—'}</TableCell>
                     <TableCell className="px-4 py-3"><span className={`text-xs font-medium capitalize ${CONDITION_COLORS[c.condition_out]}`}>{c.condition_out}</span></TableCell>
                     <TableCell className="px-4 py-3">{c.condition_in ? <span className={`text-xs font-medium capitalize ${CONDITION_COLORS[c.condition_in]}`}>{c.condition_in}</span> : '—'}</TableCell>
                     <TableCell className="px-4 py-3 text-text-muted text-xs">{c.checked_out_by_name ?? '—'}</TableCell>

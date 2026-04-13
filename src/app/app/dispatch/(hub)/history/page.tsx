@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
@@ -90,8 +91,8 @@ export default async function DispatchHistoryPage() {
                     </TableCell>
                     <TableCell className="px-4 py-3 text-text-secondary">{item.location_name ?? '—'}</TableCell>
                     <TableCell className="px-4 py-3 text-text-secondary">{crewNames(item)}</TableCell>
-                    <TableCell className="px-4 py-3 text-text-secondary">{item.scheduled_start ? new Date(item.scheduled_start).toLocaleDateString() : '—'}</TableCell>
-                    <TableCell className="px-4 py-3 text-text-secondary">{item.completed_at ? new Date(item.completed_at).toLocaleDateString() : '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{item.scheduled_start ? formatDate(item.scheduled_start) : '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{item.completed_at ? formatDate(item.completed_at) : '—'}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

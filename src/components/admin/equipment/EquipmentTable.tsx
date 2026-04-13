@@ -1,3 +1,5 @@
+import Checkbox from '@/components/ui/Checkbox';
+import { Badge } from '@/components/ui/Badge';
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -149,7 +151,7 @@ export default function EquipmentTable({ equipment }: { equipment: EquipmentItem
           <TableHeader>
             <TableRow>
               <TableHead className="w-10">
-                <input type="checkbox" checked={isAllSelected} ref={(el) => { if (el) el.indeterminate = isSomeSelected; }} onChange={toggleAll} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
+                <Checkbox checked={isAllSelected} indeterminate={isSomeSelected} onChange={toggleAll} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
               </TableHead>
               {isVisible('name') && <TableHead className="px-6"><SortableHeader label="Name" field="name" currentSort={sort} onSort={handleSort} /></TableHead>}
               {isVisible('category') && <TableHead className="px-6"><SortableHeader label="Category" field="category" currentSort={sort} onSort={handleSort} /></TableHead>}
@@ -164,7 +166,7 @@ export default function EquipmentTable({ equipment }: { equipment: EquipmentItem
             {sorted.map((item) => (
               <TableRow key={item.id} className={isSelected(item.id) ? 'bg-blue-50/50' : ''}>
                 <TableCell>
-                  <input type="checkbox" checked={isSelected(item.id)} onChange={() => toggle(item.id)} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
+                  <Checkbox checked={isSelected(item.id)} onChange={() => toggle(item.id)} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
                 </TableCell>
                 {isVisible('name') && (
                   <TableCell className="px-6 font-medium text-foreground">
@@ -173,7 +175,7 @@ export default function EquipmentTable({ equipment }: { equipment: EquipmentItem
                 )}
                 {isVisible('category') && (
                   <TableCell className="px-6">
-                    <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">{item.category}</span>
+                    <Badge variant="muted">{item.category}</Badge>
                   </TableCell>
                 )}
                 {isVisible('status') && (

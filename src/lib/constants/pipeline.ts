@@ -8,11 +8,16 @@ import type { DealStage } from '@/types/database';
  */
 export const STAGE_LABELS: Record<DealStage, string> = {
   lead: 'Lead',
+  discovery: 'Discovery',
+  qualification: 'Qualification',
   qualified: 'Qualified',
+  proposal: 'Proposal',
   proposal_sent: 'Proposal Sent',
   negotiation: 'Negotiation',
   verbal_yes: 'Verbal Yes',
   contract_signed: 'Contract Signed',
+  closed_won: 'Closed Won',
+  closed_lost: 'Closed Lost',
   lost: 'Lost',
   on_hold: 'On Hold',
 };

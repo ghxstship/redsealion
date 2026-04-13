@@ -5,10 +5,11 @@ import Link from 'next/link';
 import StatusBadge, { LEAD_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import Alert from '@/components/ui/Alert';
 import { Badge } from '@/components/ui/Badge';
-import { scoreBarColor, scoreTierClasses } from '@/lib/leads/lead-scoring';
+import { scoreBarColor } from '@/lib/leads/lead-scoring';
 import PageHeader from '@/components/shared/PageHeader';
 import LeadDetailActions from './LeadDetailActions';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 interface LeadDetail {
   id: string;
   contact_first_name: string;
@@ -110,6 +111,7 @@ export default async function LeadDetailPage({
   const fullName = `${lead.contact_first_name} ${lead.contact_last_name}`.trim();
 
   return (
+    <RoleGate>
     <>
       <PageHeader
         title={fullName || 'Unnamed Lead'}
@@ -231,7 +233,7 @@ export default async function LeadDetailPage({
                 <Badge
                   variant={tier === 'hot' ? 'error' : tier === 'warm' ? 'warning' : 'muted'}
                 >
-                  {score}
+                  {String(score)}
                 </Badge>
               </div>
             </div>
@@ -255,5 +257,6 @@ export default async function LeadDetailPage({
         </div>
       </div>
     </>
+  </RoleGate>
   );
 }

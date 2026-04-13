@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { TierGate } from '@/components/shared/TierGate';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency , formatDate } from '@/lib/utils';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
 import FinanceHubTabs from '../../FinanceHubTabs';
@@ -102,7 +102,7 @@ export default async function RevenueRecognitionPage() {
                   <TableRow key={r.id} className="transition-colors hover:bg-bg-secondary/50">
                     <TableCell className="px-6 py-3.5 text-sm font-medium text-foreground">{r.projectName}</TableCell>
                     <TableCell className="px-6 py-3.5 text-sm text-text-secondary">
-                      {new Date(r.periodStart).toLocaleDateString()} - {new Date(r.periodEnd).toLocaleDateString()}
+                      {formatDate(r.periodStart)} - {formatDate(r.periodEnd)}
                     </TableCell>
                     <TableCell className="px-6 py-3.5 text-sm text-text-secondary capitalize">{r.method.replace(/_/g, ' ')}</TableCell>
                     <TableCell className="px-6 py-3.5 text-right text-sm font-medium tabular-nums text-green-600">{formatCurrency(r.recognized)}</TableCell>

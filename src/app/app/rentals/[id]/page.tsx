@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency , formatDate } from '@/lib/utils';
 import RentalStatusActions from './RentalStatusActions';
 import StatusBadge, { RENTAL_ORDER_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import RentalEditForm from './RentalEditForm';
@@ -89,7 +89,7 @@ export default async function RentalDetailPage({ params }: { params: Promise<{ i
             <div className="flex justify-between">
               <dt className="text-text-muted">Rental Period</dt>
               <dd className="text-foreground">
-                {new Date(order.rental_start as string).toLocaleDateString()} – {new Date(order.rental_end as string).toLocaleDateString()}
+                {formatDate(order.rental_start as string)} – {formatDate(order.rental_end as string)}
               </dd>
             </div>
             {(order.total_cents as number) > 0 && (

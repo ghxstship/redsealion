@@ -103,16 +103,16 @@ export default function ScheduleDetailActions({ id, currentStatus }: ScheduleDet
       <ConfirmDialog
         open={pendingTransition !== null}
         title={`Confirm ${pendingTransition?.replace(/_/g, ' ')}`}
-        description={`Are you sure you want to change this schedule's status to "${pendingTransition?.replace(/_/g, ' ')}"?`}
+        message={`Are you sure you want to change this schedule's status to "${pendingTransition?.replace(/_/g, ' ')}"?`}
         confirmLabel="Confirm"
-        onConfirm={() => pendingTransition && handleTransition(pendingTransition)}
+        onConfirm={() => { if (pendingTransition) handleTransition(pendingTransition); }}
         onCancel={() => setPendingTransition(null)}
       />
 
       <ConfirmDialog
         open={showDeleteConfirm}
         title="Delete Schedule"
-        description="This will permanently delete this schedule and all associated blocks and milestones. This action cannot be undone."
+        message="This will permanently delete this schedule and all associated blocks and milestones. This action cannot be undone."
         confirmLabel="Delete"
         onConfirm={handleDelete}
         onCancel={() => setShowDeleteConfirm(false)}

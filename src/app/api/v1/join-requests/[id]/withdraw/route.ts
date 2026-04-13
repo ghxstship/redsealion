@@ -16,6 +16,7 @@ export async function POST(
   const { data: joinRequest } = await ctx.supabase
     .from('join_requests')
     .select('id, user_id, status')
+    .eq('organization_id', ctx.organizationId)
     .eq('id', id)
     .single();
 
@@ -31,7 +32,10 @@ export async function POST(
     return NextResponse.json({ error: 'Only pending requests can be withdrawn' }, { status: 400 });
   }
 
-  await ctx.supabase.from('join_requests').update({ status: 'withdrawn' }).eq('id', id);
+  await ctx.supabase.from('join_requests')
+    .update({ status: 'withdrawn' })
+    .eq('organization_id', ctx.organizationId)
+    .eq('id', id);
 
   return NextResponse.json({ success: true, status: 'withdrawn' });
 }

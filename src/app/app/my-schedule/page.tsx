@@ -3,6 +3,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import MyScheduleHeader from '@/components/admin/my-schedule/MyScheduleHeader';
 import MyScheduleView, { type ScheduleItem, type ScheduleItemType } from '@/components/admin/my-schedule/MyScheduleView';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 async function getMySchedule(): Promise<ScheduleItem[]> {
   const supabase = await createClient();
   const ctx = await resolveCurrentOrg();
@@ -199,9 +200,11 @@ export default async function MySchedulePage() {
   const items = await getMySchedule();
 
   return (
+    <RoleGate>
     <div>
       <MyScheduleHeader />
       <MyScheduleView items={items} />
     </div>
+  </RoleGate>
   );
 }

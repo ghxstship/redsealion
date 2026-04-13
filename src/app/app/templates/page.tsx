@@ -6,6 +6,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import StatusBadge, { GENERIC_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import { formatDate } from '@/lib/utils';
 
+import { RoleGate } from '@/components/shared/RoleGate';
 interface TemplateRow {
   id: string;
   name: string;
@@ -52,6 +53,7 @@ export default async function TemplatesPage() {
   const templates = await getTemplates();
 
   return (
+    <RoleGate>
     <>
 <PageHeader
         title="Phase Templates"
@@ -109,6 +111,7 @@ export default async function TemplatesPage() {
         ))}
       </div>
     </>
+  </RoleGate>
   );
 }
 

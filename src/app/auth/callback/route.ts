@@ -77,17 +77,19 @@ async function recordSessionAndEvent(
     // Generate a hash placeholder — Supabase manages the actual session token
     const sessionHash = `callback-${user.id}-${Date.now()}`;
 
-    await service.from('sessions').insert({
-      user_id: user.id,
-      session_token_hash: sessionHash,
-      ip_address: ip,
-      user_agent: userAgent,
-      auth_method: 'oauth',
-      mfa_verified: false,
-      is_active: true,
-      last_active_at: new Date().toISOString(),
-      expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days
-    }).catch(() => { /* ignore if sessions table has issues */ });
+    try {
+      await service.from('sessions').insert({
+        user_id: user.id,
+        session_token_hash: sessionHash,
+        ip_address: ip,
+        user_agent: userAgent,
+        auth_method: 'oauth',
+        mfa_verified: false,
+        is_active: true,
+        last_active_at: new Date().toISOString(),
+        expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+      });
+    } catch { /* ignore if sessions table has issues */ }
 
     // H-02: Log the login event
     // Find the user's org for context
@@ -99,31 +101,33 @@ async function recordSessionAndEvent(
       .limit(1)
       .maybeSingle();
 
-    await service.from('auth_events').insert({
-      user_id: user.id,
-      organization_id: membership?.organization_id ?? null,
-      event_type: 'login_success',
-      ip_address: ip,
-      user_agent: userAgent,
-      metadata: { method: 'oauth' },
-    }).catch(() => { /* non-fatal */ });
+    try {
+      await service.from('auth_events').insert({
+        user_id: user.id,
+        organization_id: membership?.organization_id ?? null,
+        event_type: 'login_success',
+        ip_address: ip,
+        user_agent: userAgent,
+        metadata: { method: 'oauth' },
+      });
+    } catch { /* non-fatal */ }
 
-    // M-03: Update login tracking on user
-    await service
-      .from('users')
-      .update({
-        last_login_at: new Date().toISOString(),
-        last_login_ip: ip,
-        login_count: undefined, // We'll use a raw increment below
-        last_active_at: new Date().toISOString(),
-      })
-      .eq('id', user.id)
-      .catch(() => { /* non-fatal */ });
+    try {
+      await service
+        .from('users')
+        .update({
+          last_login_at: new Date().toISOString(),
+          last_login_ip: ip,
+          login_count: undefined,
+          last_active_at: new Date().toISOString(),
+        })
+        .eq('id', user.id);
+    } catch { /* non-fatal */ }
 
     // Increment login_count via RPC or raw update
-    await service.rpc('increment_login_count', { p_user_id: user.id }).catch(() => {
-      // Fallback: just update without increment if the RPC doesn't exist yet
-    });
+    try {
+      await service.rpc('increment_login_count', { p_user_id: user.id });
+    } catch { /* Fallback: just update without increment if the RPC doesn't exist yet */ }
   } catch {
     // All session/event recording is non-fatal
   }
