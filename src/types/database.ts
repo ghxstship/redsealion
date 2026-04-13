@@ -18703,6 +18703,14 @@ export type AdvanceModifierList = PublicTables['advance_modifier_lists']['Row'];
 export type AdvanceModifierOption = PublicTables['advance_modifier_options']['Row'];
 export type AdvanceStatusHistoryEntry = PublicTables['advance_status_history']['Row'];
 
+// ── APS (Atomic Production System) table row aliases ───────────────
+export type Space = PublicTables['spaces']['Row'];
+export type Zone = PublicTables['zones']['Row'];
+export type Component = PublicTables['components']['Row'];
+export type ComponentItem = PublicTables['component_items']['Row'];
+export type HierarchyTask = PublicTables['hierarchy_tasks']['Row'];
+export type HierarchyStatusLog = PublicTables['hierarchy_status_log']['Row'];
+
 // ── Convenience enum aliases ────────────────────────────────────────
 export type AdvanceMode = PublicEnums['advance_mode'];
 export type AdvanceType = PublicEnums['advance_type'];
@@ -18715,6 +18723,10 @@ export type CrewAvailabilityStatus = PublicEnums['availability_status'];
 export type CrewBookingStatus = PublicEnums['booking_status'];
 export type DealStage = PublicEnums['deal_stage'];
 export type FulfillmentMethod = PublicEnums['fulfillment_method'];
+export type SpaceType = PublicEnums['space_type'];
+export type ZoneType = PublicEnums['zone_type'];
+export type ComponentType = PublicEnums['component_type'];
+export type HierarchyStatus = PublicEnums['hierarchy_status'];
 export type FulfillmentStatus = PublicEnums['fulfillment_status'];
 export type FulfillmentType = PublicEnums['fulfillment_type'];
 export type InvoiceStatus = PublicEnums['invoice_status'];

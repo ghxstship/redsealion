@@ -48,22 +48,13 @@ export async function POST(request: NextRequest) {
 
   const body = await request.json().catch(() => ({}));
   const {
-    project_id, portal_type, is_published, call_time,
-    parking_instructions, rideshare_instructions, transit_instructions,
-    check_in_instructions, pre_arrival_checklist, faqs, amenities,
-  } = body as {
-    project_id?: string;
-    portal_type?: string;
-    is_published?: boolean;
-    call_time?: string;
-    parking_instructions?: string;
-    rideshare_instructions?: string;
-    transit_instructions?: string;
-    check_in_instructions?: string;
-    pre_arrival_checklist?: unknown[];
-    faqs?: unknown[];
-    amenities?: Record<string, boolean>;
-  };
+    project_id, portal_type, is_published, description, call_time,
+    route_in_instructions, parking_instructions, rideshare_instructions,
+    transit_instructions, check_in_instructions, pre_arrival_checklist,
+    additional_notes, radio_protocol, safety_rules, emergency_procedures,
+    evacuation_info, accessibility, faqs, crew_intel, amenities, schedule,
+    guest_policies, sustainability, external_links, artist_social_links,
+  } = body as Record<string, unknown>;
 
   if (!project_id || !portal_type) {
     return NextResponse.json({ error: 'project_id and portal_type are required' }, { status: 400 });
@@ -78,17 +69,31 @@ export async function POST(request: NextRequest) {
     .from('project_portals')
     .insert({
       organization_id: perm.organizationId,
-      project_id,
-      portal_type,
-      is_published: is_published ?? false,
-      call_time: call_time ?? null,
-      parking_instructions: parking_instructions ?? null,
-      rideshare_instructions: rideshare_instructions ?? null,
-      transit_instructions: transit_instructions ?? null,
-      check_in_instructions: check_in_instructions ?? null,
+      project_id: project_id as string,
+      portal_type: portal_type as string,
+      is_published: (is_published as boolean) ?? false,
+      description: (description as string) ?? null,
+      call_time: (call_time as string) ?? null,
+      route_in_instructions: (route_in_instructions as string) ?? null,
+      parking_instructions: (parking_instructions as string) ?? null,
+      rideshare_instructions: (rideshare_instructions as string) ?? null,
+      transit_instructions: (transit_instructions as string) ?? null,
+      check_in_instructions: (check_in_instructions as string) ?? null,
       pre_arrival_checklist: pre_arrival_checklist ?? [],
+      additional_notes: additional_notes ?? [],
+      radio_protocol: (radio_protocol as string) ?? null,
+      safety_rules: safety_rules ?? [],
+      emergency_procedures: emergency_procedures ?? [],
+      evacuation_info: evacuation_info ?? null,
+      accessibility: accessibility ?? [],
       faqs: faqs ?? [],
-      amenities: amenities ?? {},
+      crew_intel: crew_intel ?? [],
+      amenities: amenities ?? [],
+      schedule: schedule ?? [],
+      guest_policies: guest_policies ?? null,
+      sustainability: sustainability ?? [],
+      external_links: external_links ?? [],
+      artist_social_links: artist_social_links ?? [],
       access_token: accessToken,
       // GAP-PTL-07: Populate audit trail columns
       created_by: perm.userId ?? null,

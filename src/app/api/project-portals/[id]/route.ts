@@ -44,9 +44,12 @@ export async function PATCH(
   const supabase = await createClient();
 
   const allowedFields = [
-    'is_published', 'call_time', 'pre_arrival_checklist', 'parking_instructions',
-    'rideshare_instructions', 'transit_instructions', 'check_in_instructions',
-    'faqs', 'amenities',
+    'is_published', 'description', 'call_time', 'pre_arrival_checklist',
+    'route_in_instructions', 'parking_instructions', 'rideshare_instructions',
+    'transit_instructions', 'check_in_instructions', 'additional_notes',
+    'radio_protocol', 'safety_rules', 'emergency_procedures', 'evacuation_info',
+    'accessibility', 'faqs', 'crew_intel', 'amenities', 'schedule',
+    'guest_policies', 'sustainability', 'external_links', 'artist_social_links',
   ];
   const updates: Record<string, unknown> = {};
   for (const f of allowedFields) {
