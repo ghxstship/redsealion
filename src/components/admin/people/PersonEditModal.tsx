@@ -8,11 +8,25 @@ import FormSelect from '@/components/ui/FormSelect';
 import Button from '@/components/ui/Button';
 import Alert from '@/components/ui/Alert';
 
+type PersonRecord = {
+  id: string;
+  full_name?: string | null;
+  title?: string | null;
+  role?: string | null;
+  rate_card?: string | null;
+  phone?: string | null;
+  department?: string | null;
+  employment_type?: string | null;
+  start_date?: string | null;
+  hourly_cost?: number | string | null;
+  email?: string | null;
+};
+
 interface PersonEditModalProps {
   open: boolean;
   onClose: () => void;
   onSaved: () => void;
-  person: any; // Simplified to accept full record 
+  person: PersonRecord;
 }
 
 const ROLES = [

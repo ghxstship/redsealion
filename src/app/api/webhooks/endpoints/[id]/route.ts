@@ -27,7 +27,7 @@ export async function PATCH(
     const body = await request.json();
     
     // Only allow updating certain fields
-    const updates: Record<string, any> = {
+    const updates: Record<string, unknown> = {
       updated_at: new Date().toISOString(),
     };
     

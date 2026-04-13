@@ -14,6 +14,16 @@ import FormSelect from '@/components/ui/FormSelect';
 
 type ConfigTab = 'settings' | 'mappings' | 'sync_log';
 
+type SyncLogEntry = {
+  id: string;
+  status: string;
+  started_at: string;
+  entity_count: number;
+  entity_type: string;
+  direction: string;
+  error_message: string | null;
+};
+
 const tabs: { key: ConfigTab; label: string }[] = [
   { key: 'settings', label: 'Settings' },
   { key: 'mappings', label: 'Field Mappings' },
@@ -33,7 +43,7 @@ export default function IntegrationConfigPage({
   
   const [isConnected, setIsConnected] = useState(false);
   const [loadingStatus, setLoadingStatus] = useState(true);
-  const [syncLogs, setSyncLogs] = useState<any[]>([]);
+  const [syncLogs, setSyncLogs] = useState<SyncLogEntry[]>([]);
   const [showDisconnectConfirm, setShowDisconnectConfirm] = useState(false);
 
   const meta = PLATFORM_MAP[platform] ?? { displayName: platform, category: 'unknown' };
@@ -57,7 +67,7 @@ export default function IntegrationConfigPage({
         }
         if (logsRes.ok) {
           const logsData = await logsRes.json();
-          setSyncLogs(logsData.logs || []);
+          setSyncLogs((logsData.logs as SyncLogEntry[]) || []);
         }
       } catch (err) {}
       setLoadingStatus(false);
@@ -213,7 +223,7 @@ export default function IntegrationConfigPage({
             />
           ) : (
             <div className="space-y-4">
-               {syncLogs.map((log: any) => (
+               {syncLogs.map((log) => (
                  <div key={log.id} className="border-b border-border pb-4 last:border-0 last:pb-0">
                    <div className="flex justify-between items-start mb-1">
                      <span className={`text-xs font-semibold ${log.status === 'failed' ? 'text-red-600' : 'text-green-600'}`}>

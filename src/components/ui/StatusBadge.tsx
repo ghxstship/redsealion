@@ -578,7 +578,7 @@ interface StatusBadgeProps {
   /** The raw status string (e.g. 'in_progress'). Auto-formatted to title case. */
   status: string;
   /** Color registry to look up the status. Defaults to GENERIC_STATUS_COLORS. */
-  colorMap?: Record<string, string | undefined> | any;
+  colorMap?: Record<string, string | undefined>;
   /** Fallback color when status not found in map. */
   fallback?: string;
   /** Additional className. */

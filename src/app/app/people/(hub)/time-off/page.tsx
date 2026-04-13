@@ -69,7 +69,7 @@ export default async function TimeOffPage() {
       .eq('organization_id', ctx.organizationId)
       .single();
 
-    const roleMap: Record<string, any> = membership?.roles || {};
+    const roleMap = (membership?.roles as { name?: string } | null) ?? {};
     const roleName = roleMap.name?.toLowerCase() || '';
     isAdmin = ['owner', 'admin', 'collaborator'].includes(roleName);
   }

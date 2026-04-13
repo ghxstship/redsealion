@@ -20,6 +20,10 @@ interface Transfer {
   notes: string | null;
 }
 
+type TransferItemsAggregate = {
+  count?: number;
+};
+
 async function getTransfers(): Promise<Transfer[]> {
   try {
     const supabase = await createClient();
@@ -44,9 +48,10 @@ async function getTransfers(): Promise<Transfer[]> {
     const userMap = new Map((users ?? []).map((u) => [u.id, u.full_name]));
 
     return transfers.map((t: Record<string, unknown>) => {
-      const itemsCount = Array.isArray(t.warehouse_transfer_items) 
-         ? t.warehouse_transfer_items.reduce((sum, i) => sum + (i.count ?? 0), 0)
-         : (t.warehouse_transfer_items as any)?.count ?? 0;
+      const transferItems = t.warehouse_transfer_items as TransferItemsAggregate[] | TransferItemsAggregate | null | undefined;
+      const itemsCount = Array.isArray(transferItems)
+         ? transferItems.reduce((sum, item) => sum + (item.count ?? 0), 0)
+         : transferItems?.count ?? 0;
          
       return {
         id: t.id as string,

@@ -83,7 +83,7 @@ export default function MarketplaceJobPage({ params }: { params: Promise<{ id: s
       const bidsRes = await fetch(`/api/work-orders/${id}/bids`);
       if (bidsRes.ok) {
         const bidsBody = await bidsRes.json();
-        const bids = bidsBody.bids || [];
+        const bids = (bidsBody.bids as BidRecord[] | undefined) ?? [];
         
         // Find current user's bid — we need to check via auth
         // The API returns all bids for the work order; we find ours
@@ -106,8 +106,8 @@ export default function MarketplaceJobPage({ params }: { params: Promise<{ id: s
               .single();
             
             if (crew) {
-              const myBid = bids.find((b: any) => {
-                const crewId = b.crew_profile_id || (b.crew_profiles as any)?.id;
+              const myBid = bids.find((bid) => {
+                const crewId = bid.crew_profile_id || bid.crew_profiles?.id;
                 return crewId === crew.id;
               });
               
@@ -122,8 +122,9 @@ export default function MarketplaceJobPage({ params }: { params: Promise<{ id: s
           }
         }
       }
-    } catch (err: any) {
-      setErrorMsg(err.message);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to load marketplace job.';
+      setErrorMsg(message);
     } finally {
       setLoading(false);
     }
@@ -155,8 +156,9 @@ export default function MarketplaceJobPage({ params }: { params: Promise<{ id: s
       toast.success(existingBid ? 'Bid updated successfully!' : 'Bid submitted successfully!');
       setEditingBid(false);
       loadData();
-    } catch (err: any) {
-      setErrorMsg(err.message);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to submit bid.';
+      setErrorMsg(message);
     } finally {
       setSubmitting(false);
     }
@@ -177,8 +179,9 @@ export default function MarketplaceJobPage({ params }: { params: Promise<{ id: s
       
       toast.success('Bid withdrawn.');
       loadData();
-    } catch (err: any) {
-      setErrorMsg(err.message);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to withdraw bid.';
+      setErrorMsg(message);
     } finally {
       setSubmitting(false);
     }

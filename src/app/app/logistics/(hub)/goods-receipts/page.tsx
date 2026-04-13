@@ -30,7 +30,7 @@ async function getGoodsReceipts(): Promise<GoodsReceipt[]> {
       .order('received_date', { ascending: false });
       
     // Simplifying mapping
-    return (data as any) ?? [];
+    return (data as unknown as GoodsReceipt[]) ?? [];
   } catch {
     return [];
   }

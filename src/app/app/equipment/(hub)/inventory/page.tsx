@@ -30,7 +30,7 @@ export default async function InventoryPage() {
       .order('created_at', { ascending: false });
     
     if (data) {
-      counts = data.map((c: any) => ({
+      counts = (data as InventoryCount[]).map((c) => ({
         id: c.id,
         count_type: c.count_type,
         status: c.status,

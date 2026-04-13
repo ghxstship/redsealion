@@ -1,6 +1,11 @@
-import { test, expect } from '@playwright/test';
+import { expect } from '@playwright/test';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
+
+type ResendEmail = {
+  to?: string | string[];
+  subject?: string;
+};
 
 export async function verifyEmailSent(to: string, subjectMatches: string) {
   if (!RESEND_API_KEY) {
@@ -30,9 +35,9 @@ export async function verifyEmailSent(to: string, subjectMatches: string) {
       
       // Resend /emails endpoint returns { data: [ { to: [...], subject: ... }, ... ] }
       if (data && Array.isArray(data.data)) {
-        const email = data.data.find((e: any) => 
-          (Array.isArray(e.to) ? e.to.includes(to) : e.to === to) &&
-          e.subject.includes(subjectMatches)
+        const email = (data.data as ResendEmail[]).find((emailEntry) => 
+          (Array.isArray(emailEntry.to) ? emailEntry.to.includes(to) : emailEntry.to === to) &&
+          (emailEntry.subject?.includes(subjectMatches) ?? false)
         );
         
         if (email) {

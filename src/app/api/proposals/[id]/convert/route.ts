@@ -2,6 +2,35 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
+type ProposalDeliverable = {
+  id: string;
+  name: string;
+  description: string | null;
+  category: string | null;
+};
+
+type ProposalAddon = {
+  id: string;
+  name: string;
+  description: string | null;
+  category: string | null;
+  selected: boolean;
+};
+
+type ProposalPhase = {
+  name: string;
+  phase_deliverables: ProposalDeliverable[];
+  phase_addons?: ProposalAddon[];
+};
+
+type ProposalChecklistItem = {
+  id: string;
+  title: string;
+  description_text: string | null;
+  completed: boolean;
+  category: string | null;
+};
+
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -46,10 +75,12 @@ export async function POST(
 
     // 2. We can create one work order for the entire proposal, or one per phase.
     // Simplifying: One work order for the whole proposal, with checklist items built from deliverables.
-    const checklist: any[] = [];
+    const checklist: ProposalChecklistItem[] = [];
+    const phases = (proposal.phases as ProposalPhase[] | null) ?? [];
+    const proposalClient = proposal.clients as { company_name?: string | null } | null;
     
-    proposal.phases.forEach((phase: any) => {
-      phase.phase_deliverables.forEach((del: any) => {
+    phases.forEach((phase) => {
+      phase.phase_deliverables.forEach((del) => {
         checklist.push({
           id: del.id,
           title: `[${phase.name}] ${del.name}`,
@@ -59,7 +90,7 @@ export async function POST(
         });
       });
       // Only include selected ADDONS
-      phase.phase_addons?.forEach((addon: any) => {
+      phase.phase_addons?.forEach((addon) => {
         if (addon.selected) {
           checklist.push({
             id: addon.id,
@@ -79,7 +110,7 @@ export async function POST(
         proposal_id: proposal.id,
         wo_number: `WO-${proposal.name.substring(0, 5).toUpperCase()}-${Math.floor(Math.random()*1000)}`,
         title: `Work Order: ${proposal.name}`,
-        description: `Generated from approved proposal.\nClient: ${(proposal.clients as any)?.company_name || 'N/A'}\n${proposal.subtitle || ''}`.trim(),
+        description: `Generated from approved proposal.\nClient: ${proposalClient?.company_name || 'N/A'}\n${proposal.subtitle || ''}`.trim(),
         status: 'draft',
         checklist: checklist,
         priority: 'medium',
@@ -94,8 +125,9 @@ export async function POST(
     await supabase.from('proposals').update({ status: 'in_production' }).eq('id', proposalId);
 
     return NextResponse.json({ workOrder }, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error in quote-to-job conversion:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

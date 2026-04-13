@@ -23,7 +23,7 @@ interface FlyteDeckFixtures {
 export const test = base.extend<FlyteDeckFixtures>({
   currentRole: ['owner', { option: true }],
 
-  authenticatedPage: async ({ browser }, use) => {
+  authenticatedPage: async ({ browser }, fixtureCallback) => {
     const pages: Page[] = [];
 
     const factory = async (role: Role): Promise<Page> => {
@@ -40,7 +40,7 @@ export const test = base.extend<FlyteDeckFixtures>({
       return page;
     };
 
-    await use(factory);
+    await fixtureCallback(factory);
 
     // Cleanup
     for (const page of pages) {

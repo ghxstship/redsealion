@@ -7,8 +7,17 @@ import Button from '@/components/ui/Button';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import StatusBadge from '@/components/ui/StatusBadge';
 
+type WebhookEndpoint = {
+  id: string;
+  name: string | null;
+  url: string;
+  description: string | null;
+  is_active: boolean;
+  events: string[];
+};
+
 export default function WebhooksSettingsPage() {
-  const [endpoints, setEndpoints] = useState<any[]>([]);
+  const [endpoints, setEndpoints] = useState<WebhookEndpoint[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
@@ -18,7 +27,7 @@ export default function WebhooksSettingsPage() {
         const res = await fetch('/api/webhooks/endpoints');
         if (res.ok) {
           const data = await res.json();
-          setEndpoints(data);
+          setEndpoints(data as WebhookEndpoint[]);
         }
       } catch (err) {}
       setLoading(false);

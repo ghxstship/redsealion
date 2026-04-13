@@ -25,7 +25,19 @@ export type WebhookEventType =
   | 'invoice.overdue'
   | 'client.created'
   | 'client.updated'
-  | 'client.deleted';
+  | 'client.deleted'
+  | 'event.status_changed'
+  | 'event.deleted'
+  | 'fabrication_order.status_changed'
+  | 'rental_order.status_changed'
+  | 'shipment.status_changed'
+  | 'work_order.dispatched'
+  | 'work_order.completed'
+  | 'work_order.status_changed'
+  | 'bid.submitted'
+  | 'bid.accepted'
+  | 'bid.rejected'
+  | 'bid.withdrawn';
 
 interface WebhookPayload {
   event: WebhookEventType;
@@ -159,4 +171,18 @@ export const WEBHOOK_EVENT_TYPES: Array<{
   { event: 'invoice.paid', label: 'Invoice Paid', description: 'An invoice is fully paid.' },
   { event: 'invoice.overdue', label: 'Invoice Overdue', description: 'An invoice becomes overdue.' },
   { event: 'client.created', label: 'Client Created', description: 'A new client record is created.' },
+  { event: 'client.updated', label: 'Client Updated', description: 'An existing client record is updated.' },
+  { event: 'client.deleted', label: 'Client Deleted', description: 'A client record is deleted.' },
+  { event: 'event.status_changed', label: 'Event Status Changed', description: 'An event status changes.' },
+  { event: 'event.deleted', label: 'Event Deleted', description: 'An event is deleted.' },
+  { event: 'fabrication_order.status_changed', label: 'Fabrication Order Status Changed', description: 'A fabrication order status changes.' },
+  { event: 'rental_order.status_changed', label: 'Rental Order Status Changed', description: 'A rental order status changes.' },
+  { event: 'shipment.status_changed', label: 'Shipment Status Changed', description: 'A shipment status changes.' },
+  { event: 'work_order.dispatched', label: 'Work Order Dispatched', description: 'A work order is dispatched.' },
+  { event: 'work_order.completed', label: 'Work Order Completed', description: 'A work order is completed.' },
+  { event: 'work_order.status_changed', label: 'Work Order Status Changed', description: 'A work order status changes.' },
+  { event: 'bid.submitted', label: 'Bid Submitted', description: 'A new bid is submitted for a work order.' },
+  { event: 'bid.accepted', label: 'Bid Accepted', description: 'A submitted bid is accepted.' },
+  { event: 'bid.rejected', label: 'Bid Rejected', description: 'A submitted bid is rejected.' },
+  { event: 'bid.withdrawn', label: 'Bid Withdrawn', description: 'A submitted bid is withdrawn.' },
 ];

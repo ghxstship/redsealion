@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
-import { dispatchWebhookEvent } from '@/lib/webhooks/outbound';
+import { dispatchWebhookEvent, type WebhookEventType } from '@/lib/webhooks/outbound';
 import { logAuditAction } from '@/lib/api/audit-logger';
 import { notifyWorkOrderDispatched } from '@/lib/notifications/triggers';
 
@@ -79,10 +79,12 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       changed_by: perm.userId,
     });
 
-    const eventType = updates.status === 'dispatched' ? 'work_order.dispatched' :
-                      updates.status === 'completed' ? 'work_order.completed' :
-                      'work_order.status_changed';
-    dispatchWebhookEvent(perm.organizationId, eventType as any, { work_order_id: id, status: updates.status }).catch(() => {});
+    const eventType: WebhookEventType = updates.status === 'dispatched'
+      ? 'work_order.dispatched'
+      : updates.status === 'completed'
+        ? 'work_order.completed'
+        : 'work_order.status_changed';
+    dispatchWebhookEvent(perm.organizationId, eventType, { work_order_id: id, status: updates.status }).catch(() => {});
 
     // Notify crew when dispatched
     if (updates.status === 'dispatched') {

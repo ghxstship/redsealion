@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import Button from '@/components/ui/Button';
+import Link from 'next/link';
 
 async function getActiveOrders() {
   try {
@@ -26,7 +27,7 @@ export default async function KioskPage() {
       <div className="min-h-[80vh] flex flex-col items-center p-4 sm:p-8 bg-background">
         <div className="w-full max-w-3xl mb-8 flex justify-between items-center text-foreground">
           <h1 className="text-2xl font-bold">Shop Floor Kiosk</h1>
-          <a href="/app/fabrication/shop-floor" className="text-sm bg-bg-secondary px-4 py-2 rounded-lg font-medium">Exit Kiosk</a>
+          <Link href="/app/fabrication/shop-floor" className="text-sm bg-bg-secondary px-4 py-2 rounded-lg font-medium">Exit Kiosk</Link>
         </div>
 
         <div className="w-full max-w-3xl space-y-6">

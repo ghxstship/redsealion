@@ -8,6 +8,11 @@ import { createLogger } from '@/lib/logger';
 
 const log = createLogger('api-ai-draft-proposal');
 
+type ModelUsage = {
+  promptTokens?: number;
+  completionTokens?: number;
+};
+
 /**
  * AI Proposal Drafting endpoint.
  * Takes lead context and generates a draft proposal structure.
@@ -152,7 +157,7 @@ Rules:
         }
       }
 
-      const usage = result.usage as any;
+      const usage = result.usage as ModelUsage | undefined;
       if (usage) {
         await supabase.from('ai_usage_log').insert({
           organization_id: perm.organizationId,

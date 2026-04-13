@@ -42,7 +42,7 @@ async function getTransfer(id: string): Promise<TransferDetail | null> {
       .eq('organization_id', ctx.organizationId)
       .single();
 
-    return data as any;
+    return (data as unknown as TransferDetail) ?? null;
   } catch {
     return null;
   }

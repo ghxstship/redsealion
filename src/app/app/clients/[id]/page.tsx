@@ -22,7 +22,7 @@ export default async function ClientDetailPage({
   const { id } = await params;
   const client = await getClient(id);
 
-  const now = Date.now();
+  const now = new Date().getTime();
 
   /* ── Pre-render each tab panel as RSC content ── */
 

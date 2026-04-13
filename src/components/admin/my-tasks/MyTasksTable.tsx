@@ -278,7 +278,7 @@ export default function MyTasksTable({ tasks }: { tasks: MyTaskRow[] }) {
                       <InlineEditCell
                         type="select"
                         value={task.status}
-                        options={statusEditOptions as any}
+                        options={statusEditOptions}
                         onSave={(val) => patchTask(task.id, { status: val })}
                         renderValue={(v) => <StatusBadge status={v} colorMap={TASK_STATUS_COLORS} />}
                       />
@@ -289,7 +289,7 @@ export default function MyTasksTable({ tasks }: { tasks: MyTaskRow[] }) {
                       <InlineEditCell
                         type="select"
                         value={task.priority}
-                        options={priorityEditOptions as any}
+                        options={priorityEditOptions}
                         onSave={(val) => patchTask(task.id, { priority: val })}
                         renderValue={(v) => <StatusBadge status={v} colorMap={TASK_PRIORITY_COLORS} />}
                       />

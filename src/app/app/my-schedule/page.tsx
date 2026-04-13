@@ -4,6 +4,18 @@ import MyScheduleHeader from '@/components/admin/my-schedule/MyScheduleHeader';
 import MyScheduleView, { type ScheduleItem, type ScheduleItemType } from '@/components/admin/my-schedule/MyScheduleView';
 
 import { RoleGate } from '@/components/shared/RoleGate';
+
+type ScheduleBlock = {
+  title: string;
+  start_time: string | null;
+  end_time: string | null;
+  location: string | null;
+};
+
+type ProductionScheduleRef = {
+  name?: string;
+};
+
 async function getMySchedule(): Promise<ScheduleItem[]> {
   const supabase = await createClient();
   const ctx = await resolveCurrentOrg();
@@ -90,7 +102,8 @@ async function getMySchedule(): Promise<ScheduleItem[]> {
 
       if (assignments) {
         for (const a of assignments) {
-          const block = a.schedule_blocks as any;
+          const blockRelation = a.schedule_blocks as ScheduleBlock | ScheduleBlock[] | null;
+          const block = Array.isArray(blockRelation) ? blockRelation[0] : blockRelation;
           if (!block || !block.start_time) continue;
           items.push({
             id: `block-${a.id}`,
@@ -153,7 +166,8 @@ async function getMySchedule(): Promise<ScheduleItem[]> {
       if (milestones) {
         for (const m of milestones) {
           if (!m.due_at) continue;
-          const schedName = (m.production_schedules as any)?.name;
+          const schedule = m.production_schedules as ProductionScheduleRef | null;
+          const schedName = schedule?.name;
           items.push({
             id: `milestone-${m.id}`,
             type: 'milestone' as ScheduleItemType,

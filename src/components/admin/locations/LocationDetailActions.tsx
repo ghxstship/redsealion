@@ -6,25 +6,26 @@ import Button from '@/components/ui/Button';
 import RowActionMenu from '@/components/shared/RowActionMenu';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import LocationFormModal from '@/components/admin/locations/LocationFormModal';
-import { useGlobalModals } from '@/components/shared/GlobalModalProvider';
 
-export default function LocationDetailActions({ location }: { location: any }) {
+type LocationActionRecord = {
+  id: string;
+  status: string;
+  [key: string]: unknown;
+};
+
+export default function LocationDetailActions({ location }: { location: LocationActionRecord }) {
   const router = useRouter();
   const [showEdit, setShowEdit] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(false);
 
   async function handleDelete() {
-    setIsUpdating(true);
     await fetch(`/api/locations/${location.id}`, { method: 'DELETE' });
     router.push('/app/events/locations');
   }
 
   async function handleArchiveToggle() {
-    setIsUpdating(true);
     const newStatus = location.status === 'archived' ? 'active' : 'archived';
     await fetch(`/api/locations/${location.id}`, { method: 'PATCH', body: JSON.stringify({ status: newStatus }) });
-    setIsUpdating(false);
     router.refresh();
   }
 

@@ -5,7 +5,33 @@ import { notFound } from 'next/navigation';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 import { RoleGate } from '@/components/shared/RoleGate';
-async function getShipment(id: string) {
+
+type ShipmentLineItem = {
+  id: string;
+  quantity: number;
+  description: string;
+  weight_lbs: number | null;
+};
+
+type ShipmentRecord = {
+  shipment_number: string;
+  ship_date: string | null;
+  bol_generated_at: string | null;
+  organizations: { name: string } | null;
+  origin_address: string | null;
+  destination_address: string | null;
+  carrier: string | null;
+  tracking_number: string | null;
+  is_hazardous: boolean;
+  bol_special_instructions: string | null;
+  shipment_line_items: ShipmentLineItem[] | null;
+  freight_class: string | null;
+  nmfc_code: string | null;
+  weight_lbs: number | null;
+  declared_value_cents: number;
+};
+
+async function getShipment(id: string): Promise<ShipmentRecord | null> {
   const supabase = await createClient();
   const ctx = await resolveCurrentOrg();
   if (!ctx) return null;
@@ -17,7 +43,7 @@ async function getShipment(id: string) {
     .eq('organization_id', ctx.organizationId)
     .single();
 
-  return data as any;
+  return (data as unknown as ShipmentRecord) ?? null;
 }
 
 export default async function BillOfLadingPrintablePage({ params }: { params: Promise<{ id: string }> }) {
@@ -97,7 +123,7 @@ export default async function BillOfLadingPrintablePage({ params }: { params: Pr
           {shipment.shipment_line_items?.length === 0 ? (
             <TableRow><TableCell colSpan={6} className="p-4 text-center italic">No items listed.</TableCell></TableRow>
           ) : (
-            shipment.shipment_line_items?.map((item: any) => (
+            shipment.shipment_line_items?.map((item) => (
               <TableRow key={item.id} className="divide-x divide-black">
                 <TableCell className="p-2 text-center">{item.quantity}</TableCell>
                 <TableCell className="p-2 text-center">{shipment.is_hazardous ? 'X' : ''}</TableCell>

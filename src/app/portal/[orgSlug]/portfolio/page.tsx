@@ -13,7 +13,7 @@ interface PortfolioPageProps {
 
 export async function generateMetadata(
   { params }: PortfolioPageProps,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   _parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const { orgSlug } = await params;

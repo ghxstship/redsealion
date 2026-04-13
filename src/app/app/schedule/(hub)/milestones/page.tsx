@@ -34,6 +34,7 @@ async function getMilestones() {
       id: m.id as string, title: m.title as string,
       due_at: m.due_at as string, completed_at: m.completed_at as string | null,
       status: m.status as string,
+      schedule_id: m.schedule_id as string,
       schedule_name: Array.isArray(m.production_schedules) ? (m.production_schedules as Record<string, unknown>[])[0]?.name as string : (m.production_schedules as Record<string, unknown> | null)?.name as string ?? null,
     }));
   } catch { return []; }
@@ -49,7 +50,7 @@ export default async function MilestonesPage() {
     <TierGate feature="events">
       <PageHeader title="Milestones" subtitle="Track critical deadlines across all production schedules.">
         <AddMilestoneButton schedules={milestones.reduce<Array<{ id: string; name: string }>>((acc, m) => {
-          if (!acc.find((s) => s.name === m.schedule_name)) acc.push({ id: (m as any).schedule_id ?? m.id, name: m.schedule_name ?? 'Unknown' });
+          if (!acc.find((s) => s.name === m.schedule_name)) acc.push({ id: m.schedule_id ?? m.id, name: m.schedule_name ?? 'Unknown' });
           return acc;
         }, [])} />
       </PageHeader>

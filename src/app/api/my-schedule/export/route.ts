@@ -116,10 +116,11 @@ export async function GET() {
       if (milestones) {
         for (const m of milestones) {
           if (!m.due_at) continue;
+          const schedule = m.production_schedules as { name?: string } | null;
           events.push({
             uid: `milestone-${m.id}@flytedeck.app`,
             summary: `[Milestone] ${m.title}`,
-            description: (m.production_schedules as any)?.name ? `Schedule: ${(m.production_schedules as any).name}` : undefined,
+            description: schedule?.name ? `Schedule: ${schedule.name}` : undefined,
             dtstart: new Date(m.due_at),
             allDay: true,
             categories: ['Milestone'],

@@ -10,7 +10,7 @@
  * Body: { "handle": "alice.bsky.social" }
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { getBlueskyOAuthClient } from '@/lib/bluesky/oauth-client';
 import { createLogger } from '@/lib/logger';
@@ -31,7 +31,7 @@ function signState(userId: string): string {
   return JSON.stringify({ userId, nonce, sig });
 }
 
-export const POST = withRateLimit(RATE_LIMITS.auth, async function POST(request: any) {
+export const POST = withRateLimit(RATE_LIMITS.auth, async function POST(request: Request) {
   try {
     // Require authenticated user (link-account flow)
     const supabase = await createClient();

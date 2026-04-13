@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Button from '@/components/ui/Button';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
@@ -33,11 +33,7 @@ export default function BiddingPanel({ workOrderId }: { workOrderId: string }) {
   const [successMsg, setSuccessMsg] = useState('');
   const [sortBy, setSortBy] = useState<SortField>('date');
 
-  useEffect(() => {
-    fetchBids();
-  }, [workOrderId]);
-
-  async function fetchBids() {
+  const fetchBids = useCallback(async () => {
     setLoading(true);
     setErrorMsg('');
     try {
@@ -45,12 +41,17 @@ export default function BiddingPanel({ workOrderId }: { workOrderId: string }) {
       const json = await res.json();
       if (!res.ok) throw new Error(json.error);
       setBids(json.bids || []);
-    } catch (err: any) {
-      setErrorMsg('Failed to load bids: ' + err.message);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      setErrorMsg(`Failed to load bids: ${message}`);
     } finally {
       setLoading(false);
     }
-  }
+  }, [workOrderId]);
+
+  useEffect(() => {
+    void fetchBids();
+  }, [fetchBids]);
 
   async function updateBidStatus(bidId: string, status: string) {
     setErrorMsg('');
@@ -64,9 +65,9 @@ export default function BiddingPanel({ workOrderId }: { workOrderId: string }) {
       const json = await res.json();
       if (!res.ok) throw new Error(json.error);
       setSuccessMsg(`Bid ${status}`);
-      fetchBids();
-    } catch (err: any) {
-      setErrorMsg(err.message);
+      void fetchBids();
+    } catch (err: unknown) {
+      setErrorMsg(err instanceof Error ? err.message : 'Unknown error');
     }
   }
 
@@ -126,7 +127,7 @@ export default function BiddingPanel({ workOrderId }: { workOrderId: string }) {
           </TableHeader>
           <TableBody >
             {sortedBids.map((bid) => {
-              const crewUser = (bid.crew_profiles as any)?.users;
+              const crewUser = bid.crew_profiles?.users;
               return (
                 <TableRow key={bid.id} className="hover:bg-bg-secondary/50 transition-colors">
                   <TableCell className="px-4 py-3">
@@ -188,7 +189,7 @@ export default function BiddingPanel({ workOrderId }: { workOrderId: string }) {
           <h4 className="text-xs font-medium text-text-muted uppercase tracking-wider">Bid Notes</h4>
           {sortedBids.filter(b => b.notes).map(bid => (
             <div key={bid.id} className="text-sm text-text-secondary bg-bg-secondary/50 rounded-lg px-3 py-2">
-              <span className="font-medium text-foreground">{(bid.crew_profiles as any)?.users?.full_name || 'Contractor'}:</span>{' '}
+              <span className="font-medium text-foreground">{bid.crew_profiles?.users?.full_name || 'Contractor'}:</span>{' '}
               <span className="italic">&quot;{bid.notes}&quot;</span>
             </div>
           ))}

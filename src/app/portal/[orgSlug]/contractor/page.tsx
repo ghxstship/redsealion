@@ -76,14 +76,15 @@ export default async function ContractorDashboardPage({ params }: ContractorDash
       .eq('entity_id', crewProfileId)
       .eq('organization_id', org.id);
 
-    const thirtyDaysFromNow = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+    const now = new Date();
+    const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString();
     const { count: expiring } = await supabase
       .from('compliance_documents')
       .select('id', { count: 'exact', head: true })
       .eq('entity_id', crewProfileId)
       .eq('organization_id', org.id)
       .lte('expiry_date', thirtyDaysFromNow)
-      .gte('expiry_date', new Date().toISOString());
+      .gte('expiry_date', now.toISOString());
 
     complianceCounts = { total: total ?? 0, expiring: expiring ?? 0 };
   }

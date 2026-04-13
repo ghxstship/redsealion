@@ -68,7 +68,7 @@ export default async function EquipmentDetailPage({
 
   // Compute utilization
   const acquisitionDate = new Date(item.created_at);
-  const nowMs = Date.now();
+  const nowMs = new Date().getTime();
   const daysSinceAcquisition = Math.max(1, Math.floor((nowMs - acquisitionDate.getTime()) / (1000 * 60 * 60 * 24)));
   const totalReservedDays = reservations.reduce((sum, r) => {
     const from = new Date(r.reserved_from as string);

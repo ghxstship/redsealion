@@ -30,21 +30,21 @@ interface ClientDetailActionsProps {
 export default function ClientDetailActions({ clientId, clientName, clientData }: ClientDetailActionsProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const openEditFromUrl = searchParams.get('edit') === 'true' && Boolean(clientData);
   const [showDelete, setShowDelete] = useState(false);
   const [showAddContact, setShowAddContact] = useState(false);
-  const [showEdit, setShowEdit] = useState(false);
+  const [showEdit, setShowEdit] = useState(openEditFromUrl);
   const [showInteraction, setShowInteraction] = useState(false);
 
   // Auto-open edit modal when navigated with ?edit=true
   useEffect(() => {
-    if (searchParams.get('edit') === 'true' && clientData) {
-      setShowEdit(true);
+    if (openEditFromUrl) {
       // Clean up the query param
       const url = new URL(window.location.href);
       url.searchParams.delete('edit');
       window.history.replaceState({}, '', url.toString());
     }
-  }, [searchParams, clientData]);
+  }, [openEditFromUrl]);
 
   async function handleDelete() {
     const res = await fetch(`/api/clients/${clientId}`, { method: 'DELETE' });

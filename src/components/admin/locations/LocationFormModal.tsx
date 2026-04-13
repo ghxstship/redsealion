@@ -16,6 +16,14 @@ interface LocationFormModalProps {
   location?: Record<string, unknown> | null;
 }
 
+type LocationAddress = {
+  street?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+  country?: string;
+};
+
 const LOCATION_TYPES = [
   'venue', 'arena', 'stadium', 'convention_center', 'hotel', 'outdoor',
   'warehouse', 'office', 'studio', 'restaurant', 'virtual', 'other',
@@ -55,6 +63,7 @@ export default function LocationFormModal({ open, onClose, onCreated, location }
   // Prefill form when editing
   useEffect(() => {
     if (open && location) {
+      const address = (location.address as LocationAddress | undefined) ?? {};
       setName((location.name as string) || '');
       setSlug((location.slug as string) || '');
       setType((location.type as string) || 'venue');
@@ -64,11 +73,11 @@ export default function LocationFormModal({ open, onClose, onCreated, location }
       setSiteMapUrl((location.site_map_url as string) || '');
       setNotes((location.notes as string) || '');
       
-      setStreet((location.address_line1 as string) || ((location.address as any)?.street) || '');
-      setCity((location.city as string) || ((location.address as any)?.city) || '');
-      setState((location.state_province as string) || ((location.address as any)?.state) || '');
-      setZip((location.postal_code as string) || ((location.address as any)?.zip) || '');
-      setCountry((location.country as string) || ((location.address as any)?.country) || '');
+      setStreet((location.address_line1 as string) || address.street || '');
+      setCity((location.city as string) || address.city || '');
+      setState((location.state_province as string) || address.state || '');
+      setZip((location.postal_code as string) || address.zip || '');
+      setCountry((location.country as string) || address.country || '');
 
       setGooglePlaceId((location.google_place_id as string) || '');
       setLatitude(location.latitude ? String(location.latitude) : '');

@@ -57,7 +57,7 @@ export async function PATCH(
   if (error || !event) return NextResponse.json({ error: 'Failed to update event', details: error?.message }, { status: 500 });
 
   if ('status' in updates) {
-    dispatchWebhookEvent(perm.organizationId, 'event.status_changed' as any, { event_id: id, status: updates.status }).catch(() => {});
+    dispatchWebhookEvent(perm.organizationId, 'event.status_changed', { event_id: id, status: updates.status }).catch(() => {});
   }
 
   return NextResponse.json({ success: true, event });
@@ -77,7 +77,7 @@ export async function DELETE(
   const { error } = await supabase.from('events').update({ deleted_at: new Date().toISOString() }).eq('id', id).eq('organization_id', perm.organizationId);
   if (error) return NextResponse.json({ error: 'Failed to delete event', details: error.message }, { status: 500 });
 
-  dispatchWebhookEvent(perm.organizationId, 'event.deleted' as any, { event_id: id }).catch(() => {});
+  dispatchWebhookEvent(perm.organizationId, 'event.deleted', { event_id: id }).catch(() => {});
 
   return NextResponse.json({ success: true });
 }

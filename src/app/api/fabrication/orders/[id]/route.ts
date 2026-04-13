@@ -54,7 +54,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
   if (error || !order) return NextResponse.json({ error: 'Failed to update order', details: error?.message }, { status: 500 });
 
   if ('status' in updates) {
-    dispatchWebhookEvent(perm.organizationId, 'fabrication_order.status_changed' as any, { fabrication_order_id: id, status: updates.status }).catch(() => {});
+    dispatchWebhookEvent(perm.organizationId, 'fabrication_order.status_changed', { fabrication_order_id: id, status: updates.status }).catch(() => {});
   }
 
   logAuditAction({ orgId: perm.organizationId, action: 'fabrication_order.update', entity: 'fabrication_orders', entityId: id, metadata: updates }).catch(() => {});

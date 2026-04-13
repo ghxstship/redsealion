@@ -16,6 +16,11 @@ interface TaskFormModalProps {
   onCreated: () => void;
 }
 
+type ProjectOption = {
+  id: string;
+  name: string;
+};
+
 const PRIORITY_OPTIONS = ['low', 'medium', 'high', 'urgent'] as const;
 const STATUS_OPTIONS = ['todo', 'in_progress', 'in_review', 'done'] as const;
 const RECURRENCE_OPTIONS = ['none', 'daily', 'weekly', 'monthly', 'yearly'] as const;
@@ -31,7 +36,7 @@ export default function TaskFormModal({ open, onClose, onCreated }: TaskFormModa
   const [recurrenceInterval, setRecurrenceInterval] = useState('1');
   const [recurrenceEnd, setRecurrenceEnd] = useState('');
   const [projectId, setProjectId] = useState('');
-  const [projects, setProjects] = useState<any[]>([]);
+  const [projects, setProjects] = useState<ProjectOption[]>([]);
   const [loadingProjects, setLoadingProjects] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);

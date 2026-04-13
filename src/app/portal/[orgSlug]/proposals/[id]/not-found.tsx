@@ -27,7 +27,7 @@ export default function ProposalNotFound() {
         Page Not Found
       </h2>
       <p className="text-sm text-text-secondary max-w-sm mb-6">
-        This proposal page doesn't exist or you don't have access.
+        This proposal page doesn&apos;t exist or you don&apos;t have access.
         It may have been removed or your access may have expired.
       </p>
 

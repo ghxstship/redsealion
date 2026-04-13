@@ -4,8 +4,22 @@ import { useState } from 'react';
 import Button from '@/components/ui/Button';
 import PersonEditModal from '@/components/admin/people/PersonEditModal';
 
+type PersonRecord = {
+  id: string;
+  full_name?: string | null;
+  title?: string | null;
+  role?: string | null;
+  rate_card?: string | null;
+  phone?: string | null;
+  department?: string | null;
+  employment_type?: string | null;
+  start_date?: string | null;
+  hourly_cost?: number | string | null;
+  email?: string | null;
+};
+
 interface PersonDetailClientProps {
-  person: any; // Using any here for brevity, covers all fields 
+  person: PersonRecord;
   onUpdated?: () => void;
 }
 

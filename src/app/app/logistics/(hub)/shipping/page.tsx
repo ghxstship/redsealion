@@ -11,6 +11,11 @@ import StatusBadge, { SHIPMENT_STATUS_COLORS } from '@/components/ui/StatusBadge
 import MetricCard from '@/components/ui/MetricCard';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
+type ShipmentSummaryRow = {
+  status: string;
+  shipping_cost_cents: number | null;
+};
+
 async function getOutboundShipments(page: number, limit: number, statusFilter?: string) {
   try {
     const supabase = await createClient();
@@ -61,9 +66,11 @@ export default async function ShippingPage({ searchParams }: { searchParams: Pro
   const supabase = await createClient();
   const ctx = await resolveCurrentOrg();
   const { data: allShipments } = await supabase.from('shipments').select('status, shipping_cost_cents').eq('organization_id', ctx?.organizationId ?? '').eq('direction', 'outbound').is('deleted_at', null);
+  const shipmentSummaries = (allShipments as ShipmentSummaryRow[] | null) ?? [];
   
-  const inTransit = (allShipments ?? []).filter((s: any) => ['shipped', 'in_transit'].includes(s.status)).length;
-  const totalCost = (allShipments ?? []).reduce((s: number, sh: any) => s + sh.shipping_cost_cents, 0);
+  const inTransit = shipmentSummaries.filter((shipment) => ['shipped', 'in_transit'].includes(shipment.status)).length;
+  const totalCost = shipmentSummaries.reduce((sum, shipment) => sum + (shipment.shipping_cost_cents ?? 0), 0);
+  const deliveredCount = shipmentSummaries.filter((shipment) => shipment.status === 'delivered').length;
 
   return (
     <TierGate feature="warehouse">
@@ -74,9 +81,9 @@ export default async function ShippingPage({ searchParams }: { searchParams: Pro
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">
         {[
-          { label: 'Total Shipments', value: String(allShipments?.length ?? 0) },
+          { label: 'Total Shipments', value: String(shipmentSummaries.length) },
           { label: 'In Transit', value: String(inTransit), color: 'text-purple-600' },
-          { label: 'Delivered', value: String((allShipments ?? []).filter((s: any) => s.status === 'delivered').length), color: 'text-green-600' },
+          { label: 'Delivered', value: String(deliveredCount), color: 'text-green-600' },
           { label: 'Shipping Cost', value: formatCurrency(totalCost / 100) },
         ].map((stat) => (
           <MetricCard key={stat.label} label={stat.label} value={stat.value} className={stat.color ? `[&_.text-foreground]:${stat.color}` : ''} />

@@ -48,8 +48,9 @@ export default function ProposalDetailPage({
       if (!res.ok) throw new Error(json.error);
       toast.success('Converted to Work Order successfully!');
       window.location.href = `/app/dispatch/${json.workOrder.id}`;
-    } catch (err: any) {
-      toast.error('Failed to convert: ' + err.message);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      toast.error('Failed to convert: ' + message);
       setConverting(false);
     }
   }

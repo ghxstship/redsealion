@@ -113,6 +113,8 @@ const CONDITION_COLORS: Record<string, string> = {
   damaged: 'bg-red-100 text-red-800',
 };
 
+const RENDER_BASE_TIME_MS = Date.now();
+
 export default function AssetDetailClient({ asset, proposalId, proposalName, locationHistory }: AssetDetailClientProps) {
   const router = useRouter();
   const [actionMenuOpen, setActionMenuOpen] = useState(false);
@@ -147,26 +149,39 @@ export default function AssetDetailClient({ asset, proposalId, proposalName, loc
   // Fetch depreciation schedule — M-2: with error handling
   useEffect(() => {
     if (!asset.depreciation_method || !asset.useful_life_months || !asset.acquisition_cost) return;
-    setDepreciationLoading(true);
-    setDepreciationError(null);
-    fetch(`/api/assets/${asset.id}/depreciation`)
-      .then((r) => r.json())
-      .then((data) => setDepreciationSchedule(data.schedule ?? []))
-      .catch(() => setDepreciationError('Failed to load depreciation schedule.'))
-      .finally(() => setDepreciationLoading(false));
+    const loadDepreciation = async () => {
+      setDepreciationLoading(true);
+      setDepreciationError(null);
+      try {
+        const response = await fetch(`/api/assets/${asset.id}/depreciation`);
+        const data = await response.json();
+        setDepreciationSchedule(data.schedule ?? []);
+      } catch {
+        setDepreciationError('Failed to load depreciation schedule.');
+      } finally {
+        setDepreciationLoading(false);
+      }
+    };
+
+    void loadDepreciation();
   }, [asset.id, asset.depreciation_method, asset.useful_life_months, asset.acquisition_cost]);
 
   // Fetch maintenance TCO — M-2: with error handling
   useEffect(() => {
-    setMaintenanceError(null);
-    fetch(`/api/equipment/maintenance?assetId=${asset.id}`)
-      .then((r) => r.json())
-      .then((data) => {
+    const loadMaintenance = async () => {
+      setMaintenanceError(null);
+      try {
+        const response = await fetch(`/api/equipment/maintenance?assetId=${asset.id}`);
+        const data = await response.json();
         const records = data.records ?? [];
         const total = records.reduce((sum: number, r: { cost?: number }) => sum + (r.cost ?? 0), 0);
         setMaintenanceCostTotal(total);
-      })
-      .catch(() => setMaintenanceError('Failed to load maintenance data.'));
+      } catch {
+        setMaintenanceError('Failed to load maintenance data.');
+      }
+    };
+
+    void loadMaintenance();
   }, [asset.id]);
 
   // H-6: Fetch audit log
@@ -207,7 +222,7 @@ export default function AssetDetailClient({ asset, proposalId, proposalName, loc
   // Warranty status
   const warrantyActive = asset.warranty_end_date && new Date(asset.warranty_end_date) > new Date();
   const warrantyDaysRemaining = asset.warranty_end_date
-    ? Math.ceil((new Date(asset.warranty_end_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+    ? Math.ceil((new Date(asset.warranty_end_date).getTime() - RENDER_BASE_TIME_MS) / (1000 * 60 * 60 * 24))
     : null;
 
   const insuranceActive = asset.insurance_expiry_date && new Date(asset.insurance_expiry_date) > new Date();

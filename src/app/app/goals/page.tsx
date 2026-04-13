@@ -6,6 +6,16 @@ import GoalsPageClient from './GoalsPageClient';
 
 export const dynamic = 'force-dynamic';
 
+type GoalKeyResult = {
+  id: string;
+  title: string;
+  target: number;
+  current: number;
+  start_value: number | null;
+  unit: string | null;
+  deleted_at: string | null;
+};
+
 async function getGoals() {
   try {
     const supabase = await createClient();
@@ -30,7 +40,7 @@ async function getGoals() {
       due_date: g.due_date,
       start_date: g.start_date,
       category: g.category || 'Company',
-      key_results: (((g.goal_key_results as any[]) ?? []).filter((kr: any) => !kr.deleted_at)).map((kr) => ({
+      key_results: (((g.goal_key_results as GoalKeyResult[]) ?? []).filter((kr) => !kr.deleted_at)).map((kr) => ({
         id: kr.id,
         title: kr.title,
         target: kr.target,

@@ -22,6 +22,27 @@ interface PersonDetail {
   created_at: string;
 }
 
+type PermissionGrant = {
+  permissions?: { name?: string | null } | null;
+};
+
+type MembershipRole = {
+  permission_grants?: PermissionGrant[] | null;
+};
+
+type TimeOffBalance = {
+  entitled_days: number;
+  used_days: number;
+  policy?: { name?: string } | null;
+};
+
+type AuditEntry = {
+  id: string;
+  action: string;
+  created_at: string;
+  actor?: { full_name?: string } | null;
+};
+
 async function getPersonData(id: string) {
   const supabase = await createClient();
   const ctx = await resolveCurrentOrg();
@@ -56,11 +77,11 @@ async function getPersonData(id: string) {
   let permissions: string[] = [];
   if (membership?.roles && Array.isArray(membership.roles)) {
     // If it returns an array for some reason
-    const rMap: any = membership.roles[0];
-    permissions = rMap?.permission_grants?.map((g: any) => g.permissions?.name) || [];
+    const role = membership.roles[0] as MembershipRole | undefined;
+    permissions = role?.permission_grants?.map((grant) => grant.permissions?.name).filter((name): name is string => Boolean(name)) || [];
   } else if (membership?.roles) {
-    const rMap: any = membership.roles;
-    permissions = rMap?.permission_grants?.map((g: any) => g.permissions?.name) || [];
+    const role = membership.roles as MembershipRole;
+    permissions = role?.permission_grants?.map((grant) => grant.permissions?.name).filter((name): name is string => Boolean(name)) || [];
   }
 
   // 4. Crew Profile — scoped to current org
@@ -110,6 +131,8 @@ export default async function PersonDetailPage(props: { params: Promise<{ id: st
   }
 
   const { person, audits, permissions, hasCrewProfile, balances } = data;
+  const timeOffBalances = balances as TimeOffBalance[];
+  const activityAudits = audits as AuditEntry[];
 
   /* ── Pre-render tab panels ── */
 
@@ -142,11 +165,11 @@ export default async function PersonDetailPage(props: { params: Promise<{ id: st
             </Link>
           </div>
         )}
-        {balances.length > 0 && (
+        {timeOffBalances.length > 0 && (
           <div className="rounded-xl border border-border bg-background p-5 col-span-2">
             <h3 className="text-sm font-semibold text-foreground mb-3">Time Off Balances ({new Date().getFullYear()})</h3>
             <div className="grid grid-cols-3 gap-4">
-              {balances.map((b: any, i: number) => (
+              {timeOffBalances.map((b, i) => (
                 <div key={i} className="p-3 bg-bg-secondary rounded-lg">
                   <p className="text-xs text-text-secondary mb-1 truncate">{b.policy?.name || 'Unknown'}</p>
                   <p className="text-lg font-semibold text-foreground">{b.entitled_days - b.used_days} <span className="text-xs font-normal text-text-muted">days left</span></p>
@@ -163,15 +186,15 @@ export default async function PersonDetailPage(props: { params: Promise<{ id: st
     <div className="rounded-xl border border-border bg-background p-6">
       <h2 className="text-sm font-semibold text-foreground mb-4">Recent Activity</h2>
       <div className="space-y-4">
-        {audits.length === 0 ? (
+        {activityAudits.length === 0 ? (
           <p className="text-sm text-text-muted">No recent activity.</p>
         ) : (
-          audits.map((audit: any, index: number) => (
-            <div key={audit.id} className={`relative flex gap-4 ${index !== audits.length - 1 ? 'pb-4' : ''}`}>
-              {index !== audits.length - 1 && <div className="absolute left-[7px] top-5 bottom-0 w-px bg-border" />}
+          activityAudits.map((audit, index) => (
+            <div key={audit.id} className={`relative flex gap-4 ${index !== activityAudits.length - 1 ? 'pb-4' : ''}`}>
+              {index !== activityAudits.length - 1 && <div className="absolute left-[7px] top-5 bottom-0 w-px bg-border" />}
               <div className="relative mt-1.5 h-3.5 w-3.5 shrink-0 rounded-full border-2 border-border bg-background" />
               <div>
-                <p className="text-sm font-medium text-foreground">{formatLabel(audit.action.replace(/\./g, ' '))} by {(audit.actor as any)?.full_name || 'System'}</p>
+                <p className="text-sm font-medium text-foreground">{formatLabel(audit.action.replace(/\./g, ' '))} by {audit.actor?.full_name || 'System'}</p>
                 <p className="text-xs text-text-muted mt-0.5">{formatDateStr(audit.created_at)}</p>
               </div>
             </div>

@@ -11,6 +11,8 @@ import StatusBadge, { RECEIPT_STATUS_COLORS } from '@/components/ui/StatusBadge'
 import MetricCard from '@/components/ui/MetricCard';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
+type ShipmentStatusRow = { status: string };
+
 async function getInboundShipments(page: number, limit: number, statusFilter?: string) {
   try {
     const supabase = await createClient();
@@ -59,9 +61,10 @@ export default async function ReceivingPage({ searchParams }: { searchParams: Pr
   const supabase = await createClient();
   const ctx = await resolveCurrentOrg();
   const { data: allShipments } = await supabase.from('shipments').select('status').eq('organization_id', ctx?.organizationId ?? '').eq('direction', 'inbound').is('deleted_at', null);
+  const shipmentStatuses = (allShipments as ShipmentStatusRow[] | null) ?? [];
 
-  const expected = (allShipments ?? []).filter((s: any) => ['pending', 'shipped', 'in_transit'].includes(s.status));
-  const received = (allShipments ?? []).filter((s: any) => s.status === 'received');
+  const expected = shipmentStatuses.filter((shipment) => ['pending', 'shipped', 'in_transit'].includes(shipment.status));
+  const received = shipmentStatuses.filter((shipment) => shipment.status === 'received');
 
   return (
     <TierGate feature="warehouse">
@@ -72,7 +75,7 @@ export default async function ReceivingPage({ searchParams }: { searchParams: Pr
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">
         {[
-          { label: 'Total Inbound', value: allShipments?.length ?? 0 },
+          { label: 'Total Inbound', value: shipmentStatuses.length },
           { label: 'Expected', value: expected.length, color: 'text-blue-600' },
           { label: 'Received', value: received.length, color: 'text-green-600' },
         ].map((stat) => (

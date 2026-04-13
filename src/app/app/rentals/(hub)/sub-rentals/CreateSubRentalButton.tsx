@@ -7,9 +7,7 @@ import { createClient } from '@/lib/supabase/client';
 import { resolveClientOrg } from '@/lib/auth/resolve-org-client';
 import Alert from '@/components/ui/Alert';
 
-interface CreateSubRentalButtonProps {}
-
-export default function CreateSubRentalButton({}: CreateSubRentalButtonProps) {
+export default function CreateSubRentalButton() {
   const router = useRouter();
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);

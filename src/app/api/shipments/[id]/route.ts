@@ -59,7 +59,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
   if (error || !shipment) return NextResponse.json({ error: 'Failed to update shipment', details: error?.message }, { status: 500 });
 
   if ('status' in updates) {
-    dispatchWebhookEvent(perm.organizationId, 'shipment.status_changed' as any, { shipment_id: id, status: updates.status }).catch(() => {});
+    dispatchWebhookEvent(perm.organizationId, 'shipment.status_changed', { shipment_id: id, status: updates.status }).catch(() => {});
     
     // L-1: Audit logging for status changes
     await supabase.from('audit_logs').insert({

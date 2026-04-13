@@ -7,10 +7,12 @@ import MetricCard from '@/components/ui/MetricCard';
 export default async function ContractsPage() {
   const docs = await getDocsByType('contract');
   const verified = docs.filter((d) => d.status === 'verified').length;
+  const now = new Date();
+  const expiringCutoff = new Date(now.getTime() + 30 * 86400000);
   const expiring = docs.filter((d) => {
     if (!d.expiry_date) return false;
     const exp = new Date(d.expiry_date);
-    return exp > new Date() && exp <= new Date(Date.now() + 30 * 86400000);
+    return exp > now && exp <= expiringCutoff;
   }).length;
 
   return (

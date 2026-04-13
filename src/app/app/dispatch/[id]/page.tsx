@@ -32,6 +32,8 @@ interface WorkOrder {
   scheduled_end: string | null;
   actual_start: string | null;
   actual_end: string | null;
+  budget_range: string | null;
+  bidding_deadline: string | null;
   dispatched_at: string | null;
   dispatched_by: string | null;
   completed_at: string | null;
@@ -151,8 +153,8 @@ export default function DispatchDetailPage({ params }: { params: Promise<{ id: s
       location_address: wo.location_address ?? '',
       scheduled_start: toLocalDateTimeInput(wo.scheduled_start),
       scheduled_end: toLocalDateTimeInput(wo.scheduled_end),
-      budget_range: (wo as any).budget_range ?? '',
-      bidding_deadline: toLocalDateTimeInput((wo as any).bidding_deadline),
+      budget_range: wo.budget_range ?? '',
+      bidding_deadline: toLocalDateTimeInput(wo.bidding_deadline),
     });
     setEditMode(true);
   }

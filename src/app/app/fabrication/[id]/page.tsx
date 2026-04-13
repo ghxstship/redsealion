@@ -25,6 +25,9 @@ export default async function FabricationOrderDetailsPage({ params }: { params: 
 
   if (!order) return notFound();
 
+  const shopFloorLogs = order.shop_floor_logs ?? [];
+  const fabricationFiles = order.fabrication_files ?? [];
+
   return (
     <TierGate feature="equipment">
       <div className="mb-4">
@@ -103,14 +106,14 @@ export default async function FabricationOrderDetailsPage({ params }: { params: 
           <div className="rounded-xl border border-border bg-background p-6">
             <h3 className="text-md font-semibold text-foreground mb-4">Activity Logs</h3>
             <div className="space-y-4">
-              {(order.shop_floor_logs || []).slice(0, 5).map((log: any) => (
+              {shopFloorLogs.slice(0, 5).map((log: (typeof shopFloorLogs)[number]) => (
                 <div key={log.id} className="text-sm border-l-2 border-border pl-3 py-1">
                   <p className="font-medium text-foreground capitalize">{log.action.replace('_', ' ')}</p>
                   <p className="text-xs text-text-muted">{new Date(log.created_at).toLocaleString()}</p>
                   {log.notes && <p className="text-xs text-text-secondary mt-1">{log.notes}</p>}
                 </div>
               ))}
-              {(!order.shop_floor_logs || order.shop_floor_logs.length === 0) && (
+              {shopFloorLogs.length === 0 && (
                 <p className="text-sm text-text-secondary">No activity logged.</p>
               )}
             </div>
@@ -119,7 +122,7 @@ export default async function FabricationOrderDetailsPage({ params }: { params: 
           <div className="rounded-xl border border-border bg-background p-6">
             <h3 className="text-md font-semibold text-foreground mb-4">Files & Proofs</h3>
             <ul className="space-y-2">
-              {(order.fabrication_files || []).map((f: any) => (
+              {fabricationFiles.map((f: (typeof fabricationFiles)[number]) => (
                 <li key={f.id} className="text-sm flex justify-between items-center p-2 rounded bg-bg-secondary">
                   <a href={f.file_url} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline truncate mr-2">
                     {f.file_type.toUpperCase()} v{f.version}
@@ -127,7 +130,7 @@ export default async function FabricationOrderDetailsPage({ params }: { params: 
                   {f.is_approved && <Badge variant="success">Approved</Badge>}
                 </li>
               ))}
-              {(!order.fabrication_files || order.fabrication_files.length === 0) && (
+              {fabricationFiles.length === 0 && (
                 <p className="text-sm text-text-secondary">No files attached.</p>
               )}
             </ul>

@@ -37,33 +37,27 @@ export default function EmailTemplatesPage() {
   const [copied, setCopied] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  useEffect(() => {
-    resolveClientOrg().then((org) => {
-      if (org) {
-        setCurrentOrgId(org.organizationId);
-      }
-    });
-  }, []);
-
-  useEffect(() => {
-    if (currentOrgId) {
-      loadTemplates();
-    }
-  }, [currentOrgId]);
-
-  const loadTemplates = useCallback(async function loadTemplates() {
-    if (!currentOrgId) return;
+  const loadTemplates = useCallback(async function loadTemplates(organizationId: string) {
     const { data } = await supabase
       .from('email_templates')
       .select('*')
-      .eq('organization_id', currentOrgId)
+      .eq('organization_id', organizationId)
       .is('deleted_at', null)
       .order('created_at', { ascending: false });
     
     if (data) {
       setTemplates(data as unknown as EmailTemplate[]);
     }
-  }, [currentOrgId, supabase]);
+  }, [supabase]);
+
+  useEffect(() => {
+    resolveClientOrg().then((org) => {
+      if (org) {
+        setCurrentOrgId(org.organizationId);
+        void loadTemplates(org.organizationId);
+      }
+    });
+  }, [loadTemplates]);
 
   const categories = ['All', ...new Set(templates.map((t) => t.category).filter(Boolean))];
 
@@ -92,7 +86,9 @@ export default function EmailTemplatesPage() {
     await supabase.from('email_templates').update({ deleted_at: new Date().toISOString() }).eq('id', id).eq('organization_id', currentOrgId!);
     setPreviewTemplate(null);
     setDeletingId(null);
-    loadTemplates();
+    if (currentOrgId) {
+      await loadTemplates(currentOrgId);
+    }
   }
 
   async function handleSave(e: React.FormEvent) {
@@ -121,7 +117,9 @@ export default function EmailTemplatesPage() {
 
     setLoading(false);
     setIsEditing(false);
-    loadTemplates();
+    if (currentOrgId) {
+      await loadTemplates(currentOrgId);
+    }
   }
 
   return (

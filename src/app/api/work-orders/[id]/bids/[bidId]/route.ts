@@ -6,6 +6,8 @@ import { logAuditAction } from '@/lib/api/audit-logger';
 import { dispatchWebhookEvent } from '@/lib/webhooks/outbound';
 import { notifyBidResolved } from '@/lib/notifications/triggers';
 
+type BidResolutionStatus = 'accepted' | 'rejected' | 'withdrawn';
+
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string, bidId: string }> }
@@ -20,7 +22,10 @@ export async function PATCH(
     }
 
     const body = await req.json();
-    const { status } = body; // Typically 'accepted', 'rejected', 'withdrawn'
+    const status = body.status as BidResolutionStatus | undefined; // Typically 'accepted', 'rejected', 'withdrawn'
+    if (!status || !['accepted', 'rejected', 'withdrawn'].includes(status)) {
+      return NextResponse.json({ error: 'Invalid bid status' }, { status: 400 });
+    }
 
     // Authorization checks
     const { data: userAuth } = await supabase.auth.getUser();
@@ -36,7 +41,8 @@ export async function PATCH(
         .eq('id', bidId)
         .single();
         
-      if (getBidError || !bidOwner || (bidOwner.crew_profiles as any)?.user_id !== userAuth.user.id) {
+      const bidOwnerProfile = bidOwner?.crew_profiles as { user_id?: string } | null;
+      if (getBidError || !bidOwner || bidOwnerProfile?.user_id !== userAuth.user.id) {
         return NextResponse.json({ error: 'Forbidden. Can only withdraw your own bids.' }, { status: 403 });
       }
     } else {
@@ -47,7 +53,11 @@ export async function PATCH(
       }
     }
     
-    const updateData: any = { status };
+    const updateData: {
+      status: BidResolutionStatus;
+      accepted_by?: string;
+      resolved_at?: string;
+    } = { status };
     if (status === 'accepted' || status === 'rejected') {
       updateData.accepted_by = userAuth.user.id;
       updateData.resolved_at = new Date().toISOString();
@@ -93,15 +103,16 @@ export async function PATCH(
         .eq('id', workOrderId);
     }
     
+    const bidEvent = `bid.${status}` as const;
     logAuditAction({
       orgId: ctx.organizationId,
-      action: `bid.${status}` as any, // 'bid.accepted', 'bid.rejected', 'bid.withdrawn'
+      action: bidEvent,
       entity: 'work_order_bid',
       entityId: bidId,
     }).catch(() => {});
 
     // Webhook + notification (fire-and-forget)
-    dispatchWebhookEvent(ctx.organizationId, `bid.${status}` as any, {
+    dispatchWebhookEvent(ctx.organizationId, bidEvent, {
       bid_id: bidId,
       work_order_id: workOrderId,
       status,
@@ -110,8 +121,9 @@ export async function PATCH(
     notifyBidResolved(bidId, workOrderId, ctx.organizationId, status).catch(() => {});
 
     return NextResponse.json({ bid });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error updating bid:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

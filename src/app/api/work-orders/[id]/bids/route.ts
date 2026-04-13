@@ -28,9 +28,10 @@ export async function GET(
     if (error) throw error;
 
     return NextResponse.json({ bids });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching bids:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
@@ -114,21 +115,22 @@ export async function POST(
 
     // Fire-and-forget: notification + webhook + audit
     notifyBidSubmitted(workOrderId, ctx.organizationId, proposed_amount).catch(() => {});
-    dispatchWebhookEvent(ctx.organizationId, 'bid.submitted' as any, {
+    dispatchWebhookEvent(ctx.organizationId, 'bid.submitted', {
       bid_id: bid.id,
       work_order_id: workOrderId,
       proposed_amount,
     }).catch(() => {});
     logAuditAction({
       orgId: ctx.organizationId,
-      action: 'bid.submitted' as any,
+      action: 'bid.submitted',
       entity: 'work_order_bid',
       entityId: bid.id,
     }).catch(() => {});
 
     return NextResponse.json({ bid }, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error submitting bid:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

@@ -1,6 +1,23 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 
+type RecurringInvoiceLineItem = {
+  description?: string;
+  quantity?: number;
+  rate?: number;
+  amount?: number;
+  taxable?: boolean;
+};
+
+type RecurringInvoiceTemplateData = {
+  subtotal?: number;
+  tax_amount?: number;
+  total?: number;
+  currency?: string;
+  memo?: string;
+  line_items?: RecurringInvoiceLineItem[];
+};
+
 export async function POST(request: Request) {
   // Ideally secured via cron secret in production
   const authHeader = request.headers.get('authorization');
@@ -33,7 +50,7 @@ export async function POST(request: Request) {
   for (const schedule of schedules) {
     const orgId = schedule.organization_id;
     const clientId = schedule.client_id;
-    const templateData = schedule.template_data as Record<string, any>;
+    const templateData = schedule.template_data as RecurringInvoiceTemplateData;
     
     // Generate next invoice number
     const { data: maxInvoice } = await supabase
@@ -84,7 +101,7 @@ export async function POST(request: Request) {
 
     // Insert lines
     if (templateData.line_items && Array.isArray(templateData.line_items)) {
-      const lines = templateData.line_items.map((li: any) => ({
+      const lines = templateData.line_items.map((li) => ({
         invoice_id: invoice.id,
         description: li.description,
         quantity: li.quantity || 1,

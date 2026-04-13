@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import type { Metadata } from 'next';
+import Link from 'next/link';
 
 interface OrgLayoutProps {
   children: React.ReactNode;
@@ -57,12 +58,12 @@ export default async function OrgPublicLayout({ children, params }: OrgLayoutPro
             </span>
           </div>
           <div className="flex items-center gap-3 text-sm">
-            <a href={`/portal/${orgSlug}`} className="text-text-secondary hover:text-foreground transition-colors">
+            <Link href={`/portal/${orgSlug}`} className="text-text-secondary hover:text-foreground transition-colors">
               Client Portal
-            </a>
-            <a href={`/portal/${orgSlug}/contractor`} className="text-text-secondary hover:text-foreground transition-colors">
+            </Link>
+            <Link href={`/portal/${orgSlug}/contractor`} className="text-text-secondary hover:text-foreground transition-colors">
               Contractor Portal
-            </a>
+            </Link>
           </div>
         </div>
       </header>
@@ -76,7 +77,7 @@ export default async function OrgPublicLayout({ children, params }: OrgLayoutPro
         <div className="mx-auto max-w-5xl px-6 py-8 text-center">
           <p className="text-xs text-text-muted">
             © {new Date().getFullYear()} {org.name} • Powered by{' '}
-            <a href="/" className="hover:text-foreground transition-colors">FlyteDeck</a>
+            <Link href="/" className="hover:text-foreground transition-colors">FlyteDeck</Link>
           </p>
         </div>
       </footer>
