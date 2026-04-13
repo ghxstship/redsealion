@@ -102,7 +102,7 @@ export default function ProposalAnalytics({
               onClick={() => setTimeRange(range)}
               className={`px-3 py-1.5 text-xs font-medium transition-colors ${
                 timeRange === range
-                  ? 'bg-foreground text-white'
+                  ? 'bg-foreground text-background'
                   : 'bg-background text-text-secondary hover:bg-bg-secondary'
               }`}
             >

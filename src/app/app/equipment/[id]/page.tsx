@@ -11,7 +11,7 @@ import AssetDetailHeaderActions from '@/components/admin/equipment/AssetDetailHe
 const RESERVATION_COLORS: Record<string, string> = {
   confirmed: 'bg-green-50 text-green-700',
   tentative: 'bg-yellow-50 text-yellow-700',
-  cancelled: 'bg-red-50 text-red-700',
+  cancelled: 'bg-red-500/10 text-red-700',
   reserved: 'bg-blue-50 text-blue-700',
   checked_out: 'bg-purple-50 text-purple-700',
   returned: 'bg-bg-secondary text-text-muted',
@@ -208,7 +208,7 @@ export default async function EquipmentDetailPage({
                         <td className="px-6 py-3.5">
                           <StatusBadge 
                             status={isOverdue ? 'Overdue' : 'On Track'} 
-                            colorMap={{'Overdue': 'bg-red-50 text-red-700', 'On Track': 'bg-green-50 text-green-700'}} 
+                            colorMap={{'Overdue': 'bg-red-500/10 text-red-700', 'On Track': 'bg-green-50 text-green-700'}} 
                           />
                         </td>
                       </tr>

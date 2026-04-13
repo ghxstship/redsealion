@@ -189,7 +189,7 @@ export default function ReceiptUploader({
                   className="h-10 w-10 rounded object-cover"
                 />
               ) : file.type === 'application/pdf' ? (
-                <div className="flex h-10 w-10 items-center justify-center rounded bg-red-50">
+                <div className="flex h-10 w-10 items-center justify-center rounded bg-red-500/10">
                   <File size={20} className="text-red-600" />
                 </div>
               ) : (

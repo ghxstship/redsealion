@@ -107,7 +107,7 @@ const CONDITION_COLORS: Record<string, string> = {
   excellent: 'bg-green-50 text-green-700',
   good: 'bg-blue-50 text-blue-700',
   fair: 'bg-amber-50 text-amber-700',
-  poor: 'bg-red-50 text-red-700',
+  poor: 'bg-red-500/10 text-red-700',
   damaged: 'bg-red-100 text-red-800',
 };
 
@@ -306,7 +306,7 @@ export default function AssetDetailClient({ asset, proposalId, proposalName, loc
                   )}
                   {['in_storage', 'retired'].includes(asset.status) && (
                     <button
-                      className="w-full px-4 py-2 text-left text-sm text-red-700 hover:bg-red-50 transition-colors"
+                      className="w-full px-4 py-2 text-left text-sm text-red-700 hover:bg-red-500/10 transition-colors"
                       onClick={() => { setActionMenuOpen(false); setDisposalOpen(true); }}
                     >
                       Dispose
@@ -493,7 +493,7 @@ export default function AssetDetailClient({ asset, proposalId, proposalName, loc
                       Active — {warrantyDaysRemaining}d remaining
                     </span>
                   ) : asset.warranty_end_date ? (
-                    <span className="inline-flex items-center rounded-full bg-red-50 px-2.5 py-0.5 text-xs font-medium text-red-700">Expired</span>
+                    <span className="inline-flex items-center rounded-full bg-red-500/10 px-2.5 py-0.5 text-xs font-medium text-red-700">Expired</span>
                   ) : (
                     <span className="text-sm text-text-muted">Not set</span>
                   )}
@@ -517,7 +517,7 @@ export default function AssetDetailClient({ asset, proposalId, proposalName, loc
                   {insuranceActive ? (
                     <span className="inline-flex items-center rounded-full bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-700">Active</span>
                   ) : asset.insurance_expiry_date ? (
-                    <span className="inline-flex items-center rounded-full bg-red-50 px-2.5 py-0.5 text-xs font-medium text-red-700">Expired</span>
+                    <span className="inline-flex items-center rounded-full bg-red-500/10 px-2.5 py-0.5 text-xs font-medium text-red-700">Expired</span>
                   ) : (
                     <span className="text-sm text-text-muted">Not set</span>
                   )}

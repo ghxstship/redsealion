@@ -120,7 +120,7 @@ function assessDealRisk(props: DealRiskAssessmentProps): RiskResult {
 }
 
 const LEVEL_STYLES: Record<string, { bg: string; text: string; border: string; label: string }> = {
-  high: { bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-200', label: 'High Risk' },
+  high: { bg: 'bg-red-500/10', text: 'text-red-700', border: 'border-red-500/30', label: 'High Risk' },
   medium: { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200', label: 'Medium Risk' },
   low: { bg: 'bg-green-50', text: 'text-green-700', border: 'border-green-200', label: 'Low Risk' },
 };

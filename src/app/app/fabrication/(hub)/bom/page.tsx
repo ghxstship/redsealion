@@ -66,7 +66,7 @@ export default async function BOMPage() {
               </thead>
               <tbody className="divide-y divide-border">
                 {items.map((item) => (
-                  <tr key={item.id} className={`hover:bg-bg-secondary/50 transition-colors ${item.quantity_on_hand < item.quantity_required ? 'bg-red-50/30' : ''}`}>
+                  <tr key={item.id} className={`hover:bg-bg-secondary/50 transition-colors ${item.quantity_on_hand < item.quantity_required ? 'bg-red-500/5' : ''}`}>
                     <td className="px-4 py-3 font-medium text-foreground">{item.material_name}</td>
                     <td className="px-4 py-3 text-text-muted font-mono text-xs">{item.sku ?? '—'}</td>
                     <td className="px-4 py-3 text-text-secondary">{item.order_number ?? '—'}</td>

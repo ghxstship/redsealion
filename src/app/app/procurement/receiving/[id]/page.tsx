@@ -23,7 +23,7 @@ async function getReceipt(id: string) {
 const STATUS_COLORS: Record<string, string> = {
   partial: 'bg-yellow-50 text-yellow-700',
   complete: 'bg-green-50 text-green-700',
-  rejected: 'bg-red-50 text-red-700',
+  rejected: 'bg-red-500/10 text-red-700',
 };
 
 export default async function ReceiptDetailPage({ params }: { params: Promise<{ id: string }> }) {

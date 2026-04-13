@@ -1,6 +1,7 @@
+'use client';
+
 import FormInput from '@/components/ui/FormInput';
 import Button from '@/components/ui/Button';
-'use client';
 
 import { useState } from 'react';
 import { Calendar } from 'lucide-react';
@@ -150,7 +151,7 @@ export default function CalendarSyncPage() {
                   </span>
                   <Button
                     onClick={() => handleDisconnect(provider.key)}
-                    className="rounded-lg border border-red-200 bg-background px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+                    className="rounded-lg border border-red-500/30 bg-background px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-500/10 transition-colors"
                   >
                     Disconnect
                   </Button>
@@ -163,7 +164,7 @@ export default function CalendarSyncPage() {
                   </span>
                   <Button
                     onClick={() => handleConnect(provider.key)}
-                    className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:bg-foreground/90 transition-colors"
+                    className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-background hover:bg-foreground/90 transition-colors"
                   >
                     Connect
                   </Button>

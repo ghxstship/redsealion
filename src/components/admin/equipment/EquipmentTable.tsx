@@ -20,6 +20,7 @@ import { useEntityViews } from '@/hooks/useEntityViews';
 import { useStoredColumnConfig } from '@/hooks/useStoredColumnConfig';
 import ViewBar from '@/components/shared/ViewBar';
 import ColumnConfigPanel from '@/components/shared/ColumnConfigPanel';
+import EquipmentFormModal from '@/components/admin/equipment/EquipmentFormModal';
 
 interface EquipmentItem {
   id: string;
@@ -37,6 +38,7 @@ export default function EquipmentTable({ equipment }: { equipment: EquipmentItem
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
   const [showImport, setShowImport] = useState(false);
   const [showColumnConfig, setShowColumnConfig] = useState(false);
+  const [editItem, setEditItem] = useState<EquipmentItem | null>(null);
 
   const {
     views,
@@ -185,6 +187,7 @@ export default function EquipmentTable({ equipment }: { equipment: EquipmentItem
                 <td className="px-6 py-3.5">
                   <RowActionMenu actions={[
                     { label: 'View', onClick: () => router.push(`/app/equipment/${item.id}`) },
+                    { label: 'Edit', onClick: () => setEditItem(item) },
                     { label: 'Delete', variant: 'danger', onClick: () => setShowDeleteConfirm(item.id) },
                   ]} />
                 </td>
@@ -211,6 +214,23 @@ export default function EquipmentTable({ equipment }: { equipment: EquipmentItem
         rowHeight={rowHeight}
         onRowHeightChange={setRowHeight}
       />
+
+      {editItem && (
+        <EquipmentFormModal
+          open={!!editItem}
+          onClose={() => setEditItem(null)}
+          onCreated={() => { setEditItem(null); router.refresh(); }}
+          initialData={{
+            id: editItem.id,
+            name: editItem.name,
+            category: editItem.category,
+            status: editItem.status,
+            current_location: editItem.current_location,
+            serial_number: editItem.serial_number,
+            notes: null,
+          }}
+        />
+      )}
     </>
   );
 }

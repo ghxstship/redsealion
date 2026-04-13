@@ -200,7 +200,7 @@ export default function ProposalDetailPage({
       {activeTab === 'builder' && (
         <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border py-20">
           <p className="text-sm text-text-secondary mb-3">Edit this proposal using the interactive builder.</p>
-          <Link href={`/app/proposals/${id}/builder`} className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-foreground/90">
+          <Link href={`/app/proposals/${id}/builder`} className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-colors hover:bg-foreground/90">
             Open Builder
           </Link>
         </div>
@@ -209,7 +209,7 @@ export default function ProposalDetailPage({
       {activeTab === 'preview' && (
         <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border py-20">
           <p className="text-sm text-text-secondary mb-3">Preview how your client will see this proposal in the portal.</p>
-          <Link href={`/app/proposals/${id}/export`} className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-foreground/90">
+          <Link href={`/app/proposals/${id}/export`} className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-colors hover:bg-foreground/90">
             Preview & Export
           </Link>
         </div>
@@ -218,7 +218,7 @@ export default function ProposalDetailPage({
       {activeTab === 'export' && (
         <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border py-20">
           <p className="text-sm text-text-secondary mb-3">Export this proposal as PDF, DOCX, or push to your CRM.</p>
-          <Link href={`/app/proposals/${id}/export`} className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-foreground/90">
+          <Link href={`/app/proposals/${id}/export`} className="rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-colors hover:bg-foreground/90">
             Open Export Options
           </Link>
         </div>

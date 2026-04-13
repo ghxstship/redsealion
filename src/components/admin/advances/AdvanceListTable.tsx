@@ -219,7 +219,7 @@ export default function AdvanceListTable({ advances, activeTab, onTabChange }: A
                   )}
                   <td className="px-4 py-3">
                     <RowActionMenu actions={[
-                      { label: 'View', onClick: () => { /* navigation handled by link */ } },
+                      { label: 'View', onClick: () => window.location.href = `/app/advancing/${advance.id}` },
                       { label: 'Duplicate', onClick: async () => {
                         const res = await fetch(`/api/advances/${advance.id}/duplicate`, { method: 'POST' });
                         if (res.ok) { const { data: newAdv } = await res.json(); window.location.href = `/app/advancing/${newAdv.id}`; }

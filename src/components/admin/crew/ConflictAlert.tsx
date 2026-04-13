@@ -17,7 +17,7 @@ export default function ConflictAlert({ conflicts }: ConflictAlertProps) {
   if (conflicts.length === 0) return null;
 
   return (
-    <div className="bg-red-50 border border-red-300 rounded-lg p-4 shadow-sm">
+    <div className="bg-red-500/10 border border-red-300 rounded-lg p-4 shadow-sm">
       <div className="flex items-start gap-2">
         <span className="text-red-600 font-bold text-lg leading-none mt-0.5">!</span>
         <div className="flex-1">

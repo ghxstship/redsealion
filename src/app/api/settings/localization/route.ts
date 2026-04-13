@@ -11,7 +11,6 @@ export async function GET() {
   if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
-  const supabase = await createClient();
   const { data, error } = await supabase
     .from('organizations')
     .select('date_format, time_format, first_day_of_week, number_format, language')

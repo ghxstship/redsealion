@@ -58,7 +58,7 @@ export default async function ReturnsPage() {
               </thead>
               <tbody className="divide-y divide-border">
                 {returns.map((r) => (
-                  <tr key={r.id} className={`hover:bg-bg-secondary/50 transition-colors ${r.status === 'damaged' || r.status === 'lost' ? 'bg-red-50/30' : ''}`}>
+                  <tr key={r.id} className={`hover:bg-bg-secondary/50 transition-colors ${r.status === 'damaged' || r.status === 'lost' ? 'bg-red-500/5' : ''}`}>
                     <td className="px-4 py-3 font-medium text-foreground">{r.name}</td>
                     <td className="px-4 py-3 text-text-secondary">{r.order_number ?? '—'}</td>
                     <td className="px-4 py-3 tabular-nums">{r.quantity}</td>

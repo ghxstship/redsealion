@@ -143,7 +143,7 @@ export default function GanttChart({ tasks, dependencies }: GanttChartProps) {
               onClick={() => setZoom(z)}
               className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
                 zoom === z
-                  ? 'bg-foreground text-white'
+                  ? 'bg-foreground text-background'
                   : 'text-text-muted hover:bg-background'
               }`}
             >

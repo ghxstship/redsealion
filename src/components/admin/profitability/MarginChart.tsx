@@ -84,7 +84,7 @@ export default function MarginChart({ revenue, costs, categories }: MarginChartP
         )}
 
         {/* Margin indicator */}
-        <div className={`rounded-lg px-4 py-3 ${margin >= 0 ? 'bg-green-50' : 'bg-red-50'}`}>
+        <div className={`rounded-lg px-4 py-3 ${margin >= 0 ? 'bg-green-50' : 'bg-red-500/10'}`}>
           <p className="text-sm font-medium text-foreground">
             Net Margin: {formatCurrency(margin)} ({marginPercent}%)
           </p>

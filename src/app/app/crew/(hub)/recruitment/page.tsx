@@ -20,7 +20,7 @@ const STATUS_COLORS: Record<string, string> = {
   interviewing: 'bg-blue-50 text-blue-700',
   offered: 'bg-purple-50 text-purple-700',
   filled: 'bg-bg-secondary text-text-muted',
-  closed: 'bg-red-50 text-red-700',
+  closed: 'bg-red-500/10 text-red-700',
 };
 
 

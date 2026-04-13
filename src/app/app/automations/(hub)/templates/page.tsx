@@ -11,7 +11,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   'Time Tracking': 'bg-orange-50 text-orange-700',
   Operations: 'bg-orange-50 text-orange-700',
   Marketing: 'bg-purple-50 text-purple-700',
-  Production: 'bg-red-50 text-red-700',
+  Production: 'bg-red-500/10 text-red-700',
 };
 
 export default function AutomationTemplatesPage() {

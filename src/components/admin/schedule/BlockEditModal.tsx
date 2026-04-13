@@ -68,7 +68,7 @@ export default function BlockEditModal({ block, isOpen, onClose }: BlockEditModa
     <ModalShell title="Edit Schedule Block" open={isOpen} onClose={onClose}>
       <form onSubmit={handleSubmit} className="space-y-4 pt-2">
         {error && (
-          <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>
+          <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-700">{error}</div>
         )}
         <div>
           <FormLabel>Title *</FormLabel>

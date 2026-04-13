@@ -27,9 +27,9 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const STATUS_COLORS: Record<string, string> = {
-  draft: 'border-yellow-200 bg-yellow-50',
-  dispatched: 'border-blue-200 bg-blue-50',
-  in_progress: 'border-purple-200 bg-purple-50',
+  draft: 'border-yellow-500/30 bg-yellow-500/10',
+  dispatched: 'border-blue-500/30 bg-blue-500/10',
+  in_progress: 'border-purple-500/30 bg-purple-500/10',
   completed: 'border-border bg-bg-secondary',
 };
 
@@ -156,8 +156,8 @@ export default function DispatchKanban({ initialColumns, statuses, workOrderIdPr
                   ) : items.map((item) => (
                     <div key={item.id} className="relative group">
                       <SortableItem item={item} status={status} />
-                      <Link href={`/app/dispatch/${item.id}`} className="absolute top-2 right-2 p-1.5 bg-white rounded shadow-sm opacity-0 group-hover:opacity-100 transition-opacity z-10 hover:bg-zinc-50 border">
-                        <svg className="w-4 h-4 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <Link href={`/app/dispatch/${item.id}`} className="absolute top-2 right-2 p-1.5 bg-background rounded shadow-sm opacity-0 group-hover:opacity-100 transition-opacity z-10 hover:bg-bg-secondary border border-border">
+                        <svg className="w-4 h-4 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>

@@ -1,5 +1,6 @@
-import FormInput from '@/components/ui/FormInput';
 'use client';
+
+import FormInput from '@/components/ui/FormInput';
 
 import { useState } from 'react';
 import { createGoal, updateGoal } from './actions';

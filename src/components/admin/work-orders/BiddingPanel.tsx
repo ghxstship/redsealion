@@ -80,7 +80,7 @@ export default function BiddingPanel({ workOrderId }: { workOrderId: string }) {
     pending: 'bg-blue-100 text-blue-800',
     accepted: 'bg-green-100 text-green-800',
     rejected: 'bg-red-100 text-red-800',
-    withdrawn: 'bg-gray-100 text-gray-800',
+    withdrawn: 'bg-gray-100 text-foreground',
   };
 
   if (loading) return <div className="p-4 text-sm text-text-muted animate-pulse">Loading bids...</div>;
@@ -155,7 +155,7 @@ export default function BiddingPanel({ workOrderId }: { workOrderId: string }) {
                     {bid.crew_profiles?.hourly_rate ? `$${bid.crew_profiles.hourly_rate}/hr` : '—'}
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[bid.status] || 'bg-gray-100 text-gray-800'}`}>
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[bid.status] || 'bg-gray-100 text-foreground'}`}>
                       {bid.status}
                     </span>
                   </td>

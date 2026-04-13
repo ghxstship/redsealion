@@ -10,6 +10,7 @@ import BulkActionBar from '@/components/shared/BulkActionBar';
 import DataExportMenu from '@/components/shared/DataExportMenu';
 import SortableHeader from '@/components/shared/SortableHeader';
 import RowActionMenu from '@/components/shared/RowActionMenu';
+import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import SearchInput from '@/components/ui/SearchInput';
 import Button from '@/components/ui/Button';
 import FilterPills from '@/components/ui/FilterPills';
@@ -51,6 +52,7 @@ export default function ProposalsTable({
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [showColumnConfig, setShowColumnConfig] = useState(false);
   const [showAiDraft, setShowAiDraft] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const {
     views,
@@ -115,6 +117,13 @@ export default function ProposalsTable({
 
   async function handleBulkDelete(ids: string[]) {
     await Promise.all(ids.map((id) => fetch(`/api/proposals/${id}`, { method: 'DELETE' })));
+    router.refresh();
+  }
+
+  async function handleDeleteProposal(id: string) {
+    const res = await fetch(`/api/proposals/${id}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error('Failed to delete');
+    setDeleteId(null);
     router.refresh();
   }
 
@@ -232,9 +241,7 @@ export default function ProposalsTable({
                   <td className="px-6 py-3.5">
                     <RowActionMenu actions={[
                       { label: 'View', onClick: () => router.push(`/app/proposals/${p.id}`) },
-                      { label: 'Delete', variant: 'danger', onClick: () => {
-                        void fetch(`/api/proposals/${p.id}`, { method: 'DELETE' }).then(() => router.refresh());
-                      }},
+                      { label: 'Delete', variant: 'danger', onClick: () => setDeleteId(p.id) },
                     ]} />
                   </td>
                 </tr>
@@ -255,6 +262,18 @@ export default function ProposalsTable({
         rowHeight={rowHeight}
         onRowHeightChange={setRowHeight}
       />
+
+      {deleteId && (
+        <ConfirmDialog
+          open
+          title="Delete Proposal"
+          message="Are you sure you want to delete this proposal? This action cannot be undone."
+          confirmLabel="Delete"
+          variant="danger"
+          onConfirm={() => handleDeleteProposal(deleteId)}
+          onCancel={() => setDeleteId(null)}
+        />
+      )}
 
       <AIDraftProposalModal
         open={showAiDraft}

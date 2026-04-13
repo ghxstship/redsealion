@@ -118,7 +118,7 @@ export default function StripeConnectSetup() {
       </div>
 
       {error && (
-        <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3">
+        <div className="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3">
           <p className="text-sm text-red-700">{error}</p>
         </div>
       )}
@@ -187,7 +187,7 @@ function StatusRow({ label, enabled }: { label: string; enabled: boolean }) {
       {enabled ? (
         <Check size={16} className="text-green-500" />
       ) : (
-        <X size={16} className="text-gray-300" />
+        <X size={16} className="text-text-muted" />
       )}
       <span className="text-sm text-text-muted">{label}</span>
     </div>

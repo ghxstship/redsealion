@@ -52,7 +52,7 @@ const STATUS_STYLES: Record<string, string> = {
   pending: 'bg-amber-50 text-amber-700',
   uploaded: 'bg-blue-50 text-blue-700',
   verified: 'bg-green-50 text-green-700',
-  expired: 'bg-red-50 text-red-700',
+  expired: 'bg-red-500/10 text-red-700',
   rejected: 'bg-bg-secondary text-text-muted',
 };
 
@@ -292,7 +292,7 @@ export default function ComplianceDocumentsPanel({ crewId }: ComplianceDocuments
               </span>
             )}
             {expiredCount > 0 && (
-              <span className="rounded-full bg-red-50 text-red-700 px-2 py-0.5 text-[11px] font-medium">
+              <span className="rounded-full bg-red-500/10 text-red-700 px-2 py-0.5 text-[11px] font-medium">
                 {expiredCount} expired
               </span>
             )}
@@ -308,7 +308,7 @@ export default function ComplianceDocumentsPanel({ crewId }: ComplianceDocuments
 
       {/* Error Banner */}
       {error && (
-        <div className="border-b border-red-200 bg-red-50 px-5 py-2.5 text-xs text-red-700 flex items-center justify-between">
+        <div className="border-b border-red-500/30 bg-red-500/10 px-5 py-2.5 text-xs text-red-700 flex items-center justify-between">
           <span>{error}</span>
           <button onClick={() => setError(null)} className="text-red-500 hover:text-red-700 text-xs font-medium">
             Dismiss
@@ -414,7 +414,7 @@ export default function ComplianceDocumentsPanel({ crewId }: ComplianceDocuments
 
       {/* Delete Confirmation Inline */}
       {confirmDelete && (
-        <div className="border-b border-border bg-red-50/50 px-5 py-4 space-y-2">
+        <div className="border-b border-border bg-red-500/10 px-5 py-4 space-y-2">
           <p className="text-xs font-medium text-red-700">
             Are you sure you want to delete this document? This action cannot be undone.
           </p>
@@ -519,7 +519,7 @@ export default function ComplianceDocumentsPanel({ crewId }: ComplianceDocuments
                   <button
                     onClick={() => setConfirmDelete(doc.id)}
                     disabled={actionInProgress === doc.id}
-                    className="rounded-lg border border-red-200 bg-red-50 px-2.5 py-1 text-xs font-medium text-red-700 hover:bg-red-100 transition-colors disabled:opacity-50"
+                    className="rounded-lg border border-red-500/30 bg-red-500/10 px-2.5 py-1 text-xs font-medium text-red-700 hover:bg-red-100 transition-colors disabled:opacity-50"
                   >
                     Delete
                   </button>

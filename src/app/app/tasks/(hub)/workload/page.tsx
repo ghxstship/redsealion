@@ -86,7 +86,7 @@ async function getWorkload(): Promise<TeamMemberWorkload[]> {
 }
 
 function utilizationColor(pct: number): string {
-  if (pct > 100) return 'text-red-600 bg-red-50';
+  if (pct > 100) return 'text-red-600 bg-red-500/10';
   if (pct > 80) return 'text-amber-600 bg-amber-50';
   if (pct > 50) return 'text-blue-600 bg-blue-50';
   return 'text-green-600 bg-green-50';

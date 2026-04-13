@@ -52,7 +52,7 @@ export default function CustomFieldRenderer({ fields }: CustomFieldRendererProps
                   {field.entityType}
                 </span>
                 {field.required && (
-                  <span className="inline-flex items-center rounded-full bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700">
+                  <span className="inline-flex items-center rounded-full bg-red-500/10 px-2 py-0.5 text-xs font-medium text-red-700">
                     Required
                   </span>
                 )}

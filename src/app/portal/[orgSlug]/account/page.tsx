@@ -156,7 +156,7 @@ export default async function AccountPage({ params }: PageProps) {
                 type="text"
                 defaultValue={clientProfile.company}
                 readOnly
-                className="w-full rounded-md border border-border bg-gray-50 px-3 py-2 text-sm text-foreground"
+                className="w-full rounded-md border border-border bg-bg-secondary px-3 py-2 text-sm text-foreground"
               />
             </div>
             <div>
@@ -165,7 +165,7 @@ export default async function AccountPage({ params }: PageProps) {
                 type="text"
                 defaultValue={clientProfile.companyAddress}
                 readOnly
-                className="w-full rounded-md border border-border bg-gray-50 px-3 py-2 text-sm text-foreground"
+                className="w-full rounded-md border border-border bg-bg-secondary px-3 py-2 text-sm text-foreground"
               />
             </div>
           </div>
@@ -195,7 +195,7 @@ export default async function AccountPage({ params }: PageProps) {
         <div className="mt-4 flex gap-3">
           <a
             href={`mailto:${supportEmail || `hello@${orgSlug}.com`}`}
-            className="inline-flex items-center rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-gray-50 transition-colors"
+            className="inline-flex items-center rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors"
           >
             Email Support
           </a>

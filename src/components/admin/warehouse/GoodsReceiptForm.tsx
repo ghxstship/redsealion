@@ -55,7 +55,7 @@ export default function GoodsReceiptForm({ onClose, onCreated }: { onClose: () =
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {error && <Alert className="mb-4 text-red-600 bg-red-50 border-red-200">{error}</Alert>}
+        {error && <Alert className="mb-4 text-red-600 bg-red-500/10 border-red-500/30">{error}</Alert>}
 
         <div>
           <FormLabel>Purchase Order ID</FormLabel>

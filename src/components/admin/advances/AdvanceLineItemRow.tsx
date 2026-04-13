@@ -41,7 +41,7 @@ export default function AdvanceLineItemRow({ item, showApproval, onApprove, onRe
               <Button onClick={() => onReject(item.id)} className="text-xs text-red-600 hover:text-red-700 font-medium">Reject</Button>
             </div>
           ) : (
-            <StatusBadge status={item.approval_status ?? 'pending'} colorMap={{ pending: 'bg-amber-50 text-amber-700', approved: 'bg-green-50 text-green-700', rejected: 'bg-red-50 text-red-700', modified: 'bg-blue-50 text-blue-700' }} />
+            <StatusBadge status={item.approval_status ?? 'pending'} colorMap={{ pending: 'bg-amber-50 text-amber-700', approved: 'bg-green-50 text-green-700', rejected: 'bg-red-500/10 text-red-700', modified: 'bg-blue-50 text-blue-700' }} />
           )}
         </td>
       )}

@@ -139,7 +139,7 @@ export default function ShipmentLineItems({
                   <button
                     onClick={() => handleDelete(item.id)}
                     disabled={deletingId === item.id}
-                    className="text-red-600 hover:text-red-800 text-xs font-medium px-2 py-1 rounded hover:bg-red-50 disabled:opacity-50"
+                    className="text-red-600 hover:text-red-800 text-xs font-medium px-2 py-1 rounded hover:bg-red-500/10 disabled:opacity-50"
                   >
                     Remove
                   </button>

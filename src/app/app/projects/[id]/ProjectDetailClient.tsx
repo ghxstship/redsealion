@@ -68,7 +68,7 @@ const TABS = [
 const STATUS_COLORS: Record<string, string> = {
   on_track: 'bg-green-50 text-green-700',
   at_risk: 'bg-amber-50 text-amber-700',
-  off_track: 'bg-red-50 text-red-700',
+  off_track: 'bg-red-500/10 text-red-700',
   completed: 'bg-blue-50 text-blue-700',
 };
 
@@ -171,7 +171,7 @@ export default function ProjectDetailClient({ project }: ProjectDetailProps) {
                 {project.portals.map((p) => (
                   <div key={p.id} className="flex items-center justify-between text-sm">
                     <span className="text-foreground capitalize">{p.portal_type.replace(/_/g, ' ')}</span>
-                    <StatusBadge status={p.is_published ? 'published' : 'draft'} colorMap={{published: 'bg-green-100 text-green-700', draft: 'bg-gray-100 text-gray-500'}} />
+                    <StatusBadge status={p.is_published ? 'published' : 'draft'} colorMap={{published: 'bg-green-100 text-green-700', draft: 'bg-gray-100 text-text-muted'}} />
                   </div>
                 ))}
                 {project.portals.length === 0 && <p className="text-xs text-text-muted italic">No portals configured</p>}

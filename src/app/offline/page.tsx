@@ -1,5 +1,6 @@
-import Button from '@/components/ui/Button';
 'use client';
+
+import Button from '@/components/ui/Button';
 
 export default function OfflinePage() {
   return (
@@ -20,7 +21,7 @@ export default function OfflinePage() {
 
         <Button
           onClick={() => window.location.reload()}
-          className="px-4 py-2 text-sm rounded-lg bg-foreground text-white hover:opacity-90 transition-opacity"
+          className="px-4 py-2 text-sm rounded-lg bg-foreground text-background hover:opacity-90 transition-opacity"
         >
           Retry
         </Button>

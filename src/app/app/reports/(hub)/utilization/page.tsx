@@ -99,7 +99,7 @@ function getBusinessDaysInMonth(year: number, month: number): number {
 }
 
 function utilizationColor(percent: number): string {
-  if (percent >= 90) return 'text-red-600 bg-red-50';
+  if (percent >= 90) return 'text-red-600 bg-red-500/10';
   if (percent >= 70) return 'text-green-600 bg-green-50';
   if (percent >= 50) return 'text-yellow-600 bg-yellow-50';
   return 'text-text-muted bg-bg-secondary';

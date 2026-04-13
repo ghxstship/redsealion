@@ -244,7 +244,7 @@ export default function PermissionMatrix({ organizationId, overrides }: Permissi
                               className={`mx-auto h-5 w-5 rounded transition-colors ${
                                 editable ? 'cursor-pointer hover:ring-2 hover:ring-offset-1 hover:ring-gray-300' : 'cursor-default'
                               } ${
-                                allowed ? 'bg-green-500' : 'bg-gray-200'
+                                allowed ? 'bg-green-500' : 'bg-bg-tertiary'
                               } ${isSaving ? 'opacity-50 animate-pulse' : ''}`}
                               title={`${allowed ? 'Allowed' : 'Denied'}: ${ROLE_LABELS[role] ?? role} → ${action} ${resource}`}
                             />

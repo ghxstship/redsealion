@@ -17,8 +17,6 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: 'brand_config is required' }, { status: 400 });
   }
 
-  const supabase = await createClient();
-
   // Merge with existing brand_config
   const { data: existing } = await supabase
     .from('organizations')

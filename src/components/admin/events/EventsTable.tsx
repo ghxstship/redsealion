@@ -184,6 +184,7 @@ export default function EventsTable({ events }: { events: EventItem[] }) {
                 {isVisible('location_count') && <td className="px-6 py-3.5 text-sm tabular-nums text-foreground">{item.location_count}</td>}
                 <td className="px-6 py-3.5">
                   <RowActionMenu actions={[
+                    { label: 'View', onClick: () => router.push(`/app/events/${item.id}`) },
                     { label: 'Delete', variant: 'danger', onClick: () => setShowDeleteConfirm(item.id) },
                   ]} />
                 </td>

@@ -162,7 +162,7 @@ export default function TaskTemplateLibrary({ onApply }: TaskTemplateLibraryProp
                   )}
                   <button
                     onClick={() => handleDelete(tpl.id)}
-                    className="rounded p-1 text-text-muted hover:text-red-600 hover:bg-red-50 transition-colors"
+                    className="rounded p-1 text-text-muted hover:text-red-600 hover:bg-red-500/10 transition-colors"
                     title="Delete template"
                   >
                     <Trash2 size={14} />

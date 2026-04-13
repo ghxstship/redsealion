@@ -78,7 +78,7 @@ export default function PWAInstallPrompt() {
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 rounded-t-xl bg-foreground px-4 py-4 text-white shadow-lg sm:px-6 animate-slide-up-toast">
+    <div className="fixed bottom-0 left-0 right-0 z-50 rounded-t-xl bg-foreground px-4 py-4 text-background shadow-lg sm:px-6 animate-slide-up-toast">
       <div className="mx-auto flex max-w-lg items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-background/10">

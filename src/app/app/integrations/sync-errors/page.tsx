@@ -97,7 +97,7 @@ export default async function SyncErrorsPage() {
                     <td className="px-4 py-3">
                       <StatusBadge
                         status={err.resolved ? 'resolved' : 'unresolved'}
-                        colorMap={{ resolved: 'bg-green-50 text-green-700', unresolved: 'bg-red-50 text-red-700' }}
+                        colorMap={{ resolved: 'bg-green-50 text-green-700', unresolved: 'bg-red-500/10 text-red-700' }}
                       />
                     </td>
                   </tr>

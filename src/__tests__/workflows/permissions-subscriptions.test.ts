@@ -329,6 +329,8 @@ describe('Subscription Tier System', () => {
       'proposals', 'clients', 'portfolio', 'assets', 'team',
       'templates', 'terms', 'pipeline', 'invoices', 'reports',
       'export_docx', 'export_pdf', 'leads', 'billing',
+      // Projects module — available to all tiers (portal)
+      'tasks', 'gantt', 'projects', 'roadmap', 'files', 'calendar',
     ] as const;
 
     for (const feature of starterFeatures) {
@@ -370,8 +372,8 @@ describe('Subscription Tier System', () => {
   describe('Enterprise tier features', () => {
     const enterpriseFeatures = [
       'time_tracking', 'resource_scheduling', 'budgets', 'profitability',
-      'expenses', 'people_hr', 'time_off', 'org_chart', 'tasks',
-      'gantt', 'custom_fields', 'scenarios', 'ai_assistant',
+      'expenses', 'people_hr', 'time_off', 'org_chart',
+      'custom_fields', 'scenarios', 'ai_assistant',
       'audit_log', 'permissions', 'sso', 'warehouse', 'payroll_export',
     ] as const;
 
@@ -382,15 +384,14 @@ describe('Subscription Tier System', () => {
     }
 
     it('denies enterprise features to professional tier', () => {
-      expect(canAccessFeature('professional', 'tasks')).toBe(false);
       expect(canAccessFeature('professional', 'time_tracking')).toBe(false);
       expect(canAccessFeature('professional', 'warehouse')).toBe(false);
       expect(canAccessFeature('professional', 'ai_assistant')).toBe(false);
     });
 
     it('denies enterprise features to starter tier', () => {
-      expect(canAccessFeature('starter', 'tasks')).toBe(false);
       expect(canAccessFeature('starter', 'budgets')).toBe(false);
+      expect(canAccessFeature('starter', 'time_tracking')).toBe(false);
     });
   });
 
@@ -402,7 +403,8 @@ describe('Subscription Tier System', () => {
     it('getRequiredTier returns correct tier for features', () => {
       expect(getRequiredTier('proposals')).toBe('portal');
       expect(getRequiredTier('automations')).toBe('professional');
-      expect(getRequiredTier('tasks')).toBe('enterprise');
+      expect(getRequiredTier('tasks')).toBe('portal');
+      expect(getRequiredTier('time_tracking')).toBe('enterprise');
     });
 
     it('getTierLabel returns human-readable labels', () => {

@@ -14,7 +14,7 @@ import type { AdvanceCollaborator, CollaboratorRole, InviteStatus } from '@/type
 const INVITE_STATUS_COLORS: Record<string, string> = {
   pending: 'bg-amber-50 text-amber-700',
   accepted: 'bg-green-50 text-green-700',
-  declined: 'bg-red-50 text-red-700',
+  declined: 'bg-red-500/10 text-red-700',
   expired: 'bg-bg-secondary text-text-muted',
   revoked: 'bg-bg-secondary text-text-muted',
 };

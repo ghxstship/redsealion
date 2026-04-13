@@ -43,6 +43,35 @@ export interface DashboardStats {
     deals_won: number;
     revenue: number;
   }>;
+  /* ── New widget data ──────────────────────────── */
+  myTasks: Array<{
+    id: string;
+    title: string;
+    priority: string;
+    status: string;
+    due_date: string | null;
+  }>;
+  upcomingEvents: Array<{
+    id: string;
+    name: string;
+    starts_at: string | null;
+    ends_at: string | null;
+    status: string;
+    slug: string;
+  }>;
+  notifications: Array<{
+    id: string;
+    title: string;
+    body: string | null;
+    type: string;
+    priority: string;
+    created_at: string;
+    read: boolean;
+    action_url: string | null;
+  }>;
+  unreadNotificationCount: number;
+  overdueInvoices: number;
+  completedProjects: number;
 }
 
 export interface StatCard {
@@ -69,6 +98,12 @@ const fallbackStats: DashboardStats = {
   recentActivity: [],
   pipelineSummary: [],
   leaderboard: [],
+  myTasks: [],
+  upcomingEvents: [],
+  notifications: [],
+  unreadNotificationCount: 0,
+  overdueInvoices: 0,
+  completedProjects: 0,
 };
 
 /* ─── Data Fetcher ──────────────────────────────────────── */
@@ -261,6 +296,82 @@ export async function getDashboardData(): Promise<{
       }
     }
 
+    // ── New widget queries ─────────────────────────────────
+
+    // My Priority Tasks — top 5 assigned to current user, ordered by priority
+    const priorityOrder = ['urgent', 'high', 'medium', 'low'];
+    let myTasks: DashboardStats['myTasks'] = [];
+    if (canAccessFeature(tier, 'tasks')) {
+      const { data: taskRows } = await supabase
+        .from('tasks')
+        .select('id, title, priority, status, due_date')
+        .eq('organization_id', orgId)
+        .eq('assignee_id', user.id)
+        .neq('status', 'done')
+        .order('due_date', { ascending: true, nullsFirst: false })
+        .limit(10);
+      // Sort by priority rank client-side (DB lacks enum ordering)
+      myTasks = (taskRows ?? [])
+        .sort((a, b) => priorityOrder.indexOf(a.priority) - priorityOrder.indexOf(b.priority))
+        .slice(0, 5);
+    }
+
+    // Upcoming Events — next 5 within 14 days
+    let upcomingEvents: DashboardStats['upcomingEvents'] = [];
+    if (canAccessFeature(tier, 'events')) {
+      const now = new Date().toISOString();
+      const twoWeeks = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
+      const { data: eventRows } = await supabase
+        .from('events')
+        .select('id, name, starts_at, ends_at, status, slug')
+        .eq('organization_id', orgId)
+        .gte('starts_at', now)
+        .lte('starts_at', twoWeeks)
+        .order('starts_at', { ascending: true })
+        .limit(5);
+      upcomingEvents = eventRows ?? [];
+    }
+
+    // Notifications — latest 5 unread for current user
+    let notifications: DashboardStats['notifications'] = [];
+    let unreadNotificationCount = 0;
+    {
+      const { data: notifRows, count: notifCount } = await supabase
+        .from('notifications')
+        .select('id, title, body, type, priority, created_at, read, action_url', { count: 'exact' })
+        .eq('organization_id', orgId)
+        .eq('user_id', user.id)
+        .eq('read', false)
+        .eq('archived', false)
+        .order('created_at', { ascending: false })
+        .limit(5);
+      notifications = notifRows ?? [];
+      unreadNotificationCount = notifCount ?? 0;
+    }
+
+    // Overdue Invoices
+    let overdueInvoices = 0;
+    if (canAccessFeature(tier, 'invoices')) {
+      const { count: overdueCount } = await supabase
+        .from('invoices')
+        .select('id', { count: 'exact', head: true })
+        .eq('organization_id', orgId)
+        .eq('status', 'overdue');
+      overdueInvoices = overdueCount ?? 0;
+    }
+
+    // Project Completion (completed projects count)
+    let completedProjects = 0;
+    if (canAccessFeature(tier, 'projects')) {
+      const { count: completedCount } = await supabase
+        .from('projects')
+        .select('id', { count: 'exact', head: true })
+        .eq('organization_id', orgId)
+        .is('deleted_at', null)
+        .eq('status', 'completed');
+      completedProjects = completedCount ?? 0;
+    }
+
     return {
       stats: {
         userName: firstName,
@@ -277,6 +388,12 @@ export async function getDashboardData(): Promise<{
         recentActivity: activityRes.data ?? [],
         pipelineSummary,
         leaderboard,
+        myTasks,
+        upcomingEvents,
+        notifications,
+        unreadNotificationCount,
+        overdueInvoices,
+        completedProjects,
       },
       tier,
     };

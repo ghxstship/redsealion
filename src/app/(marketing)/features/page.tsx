@@ -107,6 +107,42 @@ const categories: FeatureCategory[] = [
     ],
   },
   {
+    name: 'Project Management',
+    tier: 'All plans',
+    features: [
+      {
+        title: 'Projects',
+        description:
+          'Organize work into projects with milestones, deliverables, and team assignments for end-to-end visibility.',
+      },
+      {
+        title: 'Task Management',
+        description:
+          'Kanban boards, list views, and calendar views to keep production tasks on track.',
+      },
+      {
+        title: 'Gantt Charts',
+        description:
+          'Visual timelines with dependency tracking for complex multi-phase productions.',
+      },
+      {
+        title: 'Goals & Roadmap',
+        description:
+          'Set team objectives, track key results, and map initiatives across a visual product roadmap.',
+      },
+      {
+        title: 'Files & Documents',
+        description:
+          'A central file hub for project assets, documents, and deliverables with version history and sharing.',
+      },
+      {
+        title: 'Calendar & Scheduling',
+        description:
+          'Personal and team calendar with event scheduling, reminders, and cross-project timeline views.',
+      },
+    ],
+  },
+  {
     name: 'Operations',
     tier: 'Enterprise',
     features: [
@@ -124,16 +160,6 @@ const categories: FeatureCategory[] = [
         title: 'Utilization Tracking',
         description:
           'See availability gaps before they become problems so you can plan hires or freelancers ahead of time.',
-      },
-      {
-        title: 'Task Management',
-        description:
-          'Kanban boards, list views, and calendar views to keep production tasks on track.',
-      },
-      {
-        title: 'Gantt Charts',
-        description:
-          'Visual timelines with dependency tracking for complex multi-phase productions.',
       },
       {
         title: 'Expense Management',

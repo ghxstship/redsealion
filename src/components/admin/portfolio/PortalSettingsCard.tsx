@@ -396,7 +396,7 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
                     onClick={() => toggleAmenity(amenity)}
                     className={`rounded-full px-3 py-1 text-xs font-medium transition-colors border ${
                       data.amenities[amenity]
-                        ? 'bg-foreground text-white border-foreground'
+                        ? 'bg-foreground text-background border-foreground'
                         : 'bg-bg-secondary text-text-secondary border-border hover:border-foreground/30'
                     }`}
                   >

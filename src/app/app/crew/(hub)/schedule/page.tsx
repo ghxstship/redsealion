@@ -70,7 +70,7 @@ function formatDate(dateStr: string): string {
 const STATUS_COLORS: Record<string, string> = {
   confirmed: 'bg-green-50 text-green-700',
   tentative: 'bg-yellow-50 text-yellow-700',
-  cancelled: 'bg-red-50 text-red-700',
+  cancelled: 'bg-red-500/10 text-red-700',
 };
 
 export default async function CrewSchedulePage() {

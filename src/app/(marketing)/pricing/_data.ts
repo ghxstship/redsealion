@@ -16,6 +16,7 @@ export const tiers = [
     features: [
       'Up to 10 proposals per month',
       '2 team members',
+      'Project management (tasks, goals, roadmap, Gantt)',
       'Basic templates & terms library',
       'Sales pipeline (Kanban)',
       'Client portal',
@@ -64,7 +65,6 @@ export const tiers = [
       'Budgeting & profitability tracking',
       'Expense management',
       'People & HR (time off, org chart)',
-      'Task management (Kanban, Gantt, Calendar)',
       'AI assistant',
       'Custom fields & scenarios',
       'SSO & advanced security (coming soon)',
@@ -120,13 +120,23 @@ export const comparisonData: Category[] = [
     ],
   },
   {
+    name: 'Project Management',
+    features: [
+      { name: 'Projects', starter: true, professional: true, enterprise: true },
+      { name: 'Task management', starter: true, professional: true, enterprise: true },
+      { name: 'Goals', starter: true, professional: true, enterprise: true },
+      { name: 'Roadmap', starter: true, professional: true, enterprise: true },
+      { name: 'Gantt charts', starter: true, professional: true, enterprise: true },
+      { name: 'Files & documents', starter: true, professional: true, enterprise: true },
+      { name: 'Calendar & scheduling', starter: true, professional: true, enterprise: true },
+    ],
+  },
+  {
     name: 'Operations',
     features: [
       { name: 'Time tracking', starter: false, professional: false, enterprise: true },
       { name: 'Workload management', starter: false, professional: false, enterprise: true },
       { name: 'Utilization tracking', starter: false, professional: false, enterprise: true },
-      { name: 'Task management', starter: false, professional: false, enterprise: true },
-      { name: 'Gantt charts', starter: false, professional: false, enterprise: true },
     ],
   },
   {

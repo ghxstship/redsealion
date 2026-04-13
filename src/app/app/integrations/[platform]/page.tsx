@@ -140,7 +140,7 @@ export default function IntegrationConfigPage({
               if (data.authUrl) window.location.href = data.authUrl;
             }}
             disabled={loadingStatus}
-            className="rounded-lg bg-foreground px-4 py-1.5 text-xs font-medium text-white hover:opacity-90 transition-opacity disabled:opacity-50"
+            className="rounded-lg bg-foreground px-4 py-1.5 text-xs font-medium text-background hover:opacity-90 transition-opacity disabled:opacity-50"
           >
             Connect
           </Button>
@@ -185,7 +185,7 @@ export default function IntegrationConfigPage({
             <Button
               onClick={handleSaveSettings}
               disabled={saving}
-              className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity disabled:opacity-50"
+              className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-background hover:opacity-90 transition-opacity disabled:opacity-50"
             >
               {saving ? 'Saving...' : 'Save Settings'}
             </Button>

@@ -58,7 +58,7 @@ export default function BookingRespondButtons({ bookingId, orgSlug }: BookingRes
           type="button"
           onClick={() => handleRespond('accepted')}
           disabled={isPending}
-          className="flex-1 rounded-lg bg-foreground px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-foreground/90 disabled:opacity-50"
+          className="flex-1 rounded-lg bg-foreground px-4 py-3 text-sm font-medium text-background transition-colors hover:bg-foreground/90 disabled:opacity-50"
         >
           {isPending ? 'Processing…' : 'Accept Booking'}
         </Button>

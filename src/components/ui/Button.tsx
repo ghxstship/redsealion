@@ -22,7 +22,7 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   secondary: 'border border-border bg-background text-foreground hover:bg-bg-secondary',
   default: 'border border-border bg-background text-foreground hover:bg-bg-secondary',
   danger: 'bg-red-600 text-white hover:bg-red-700',
-  danger_ghost: 'text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200',
+  danger_ghost: 'text-red-600 hover:text-red-700 hover:bg-red-500/10 border border-red-500/30',
   ghost: 'text-text-muted hover:text-foreground hover:bg-bg-secondary',
   warning: 'bg-yellow-500 text-white hover:bg-yellow-600',
   success: 'bg-green-600 text-white hover:bg-green-700',

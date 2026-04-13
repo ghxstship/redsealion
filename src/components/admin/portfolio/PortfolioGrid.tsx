@@ -81,7 +81,7 @@ export default function PortfolioGrid({ items: initialItems }: PortfolioGridProp
             onClick={() => setActiveCategory(cat)}
             className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
               cat === activeCategory
-                ? 'bg-foreground text-white'
+                ? 'bg-foreground text-background'
                 : 'bg-bg-secondary text-text-secondary hover:bg-bg-tertiary'
             }`}
           >

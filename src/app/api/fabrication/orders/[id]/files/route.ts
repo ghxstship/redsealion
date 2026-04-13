@@ -18,8 +18,6 @@ export async function POST(request: NextRequest, context: RouteContext) {
 
   if (!file_url) return NextResponse.json({ error: 'file_url is required' }, { status: 400 });
 
-  const supabase = await createClient();
-
   const { data: file, error } = await supabase
     .from('fabrication_files')
     .insert({

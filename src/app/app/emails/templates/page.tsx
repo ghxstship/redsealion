@@ -209,7 +209,7 @@ export default function EmailTemplatesPage() {
               </div>
             </div>
             <div className="flex justify-between items-center pt-4 border-t border-border mt-4">
-              <Button variant="ghost" size="sm" className="text-red-600 hover:bg-red-50" onClick={() => setDeletingId(previewTemplate.id)}>Delete</Button>
+              <Button variant="ghost" size="sm" className="text-red-600 hover:bg-red-500/10" onClick={() => setDeletingId(previewTemplate.id)}>Delete</Button>
               <div className="flex gap-3">
                 <Button variant="secondary" size="sm" onClick={() => { setPreviewTemplate(null); handleOpenEdit(previewTemplate); }}>
                   Edit

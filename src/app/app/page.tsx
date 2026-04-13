@@ -98,5 +98,15 @@ export default async function DashboardPage() {
     });
   }
 
-  return <DashboardClient stats={stats} cards={cards} />;
+  // Overdue invoices — urgent attention signal (HubSpot / Salesforce pattern)
+  if (stats.overdueInvoices > 0) {
+    cards.push({
+      label: 'dashboard.overdueInvoicesStat',
+      value: String(stats.overdueInvoices),
+      detail: 'dashboard.needsAttention',
+      href: '/app/invoices',
+    });
+  }
+
+  return <DashboardClient stats={stats} cards={cards} tier={tier} />;
 }

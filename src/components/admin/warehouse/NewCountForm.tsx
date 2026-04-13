@@ -71,7 +71,7 @@ export default function NewCountForm({ onCreated, onClose }: NewCountFormProps) 
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {error && <Alert className="mb-4 text-red-600 bg-red-50 border-red-200">{error}</Alert>}
+        {error && <Alert className="mb-4 text-red-600 bg-red-500/10 border-red-500/30">{error}</Alert>}
 
         <div className="space-y-3">
           <div>

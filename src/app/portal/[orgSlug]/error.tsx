@@ -1,5 +1,6 @@
-import Button from '@/components/ui/Button';
 'use client';
+
+import Button from '@/components/ui/Button';
 
 /**
  * Portal error boundary — uses CSS variables to respect org branding.

@@ -9,6 +9,7 @@ import RowActionMenu from '@/components/shared/RowActionMenu';
 import { formatLabel, formatCurrency } from '@/lib/utils';
 import StatusBadge, { PIPELINE_STAGE_COLORS } from '@/components/ui/StatusBadge';
 import SearchInput from '@/components/ui/SearchInput';
+import ConfirmDialog from '@/components/shared/ConfirmDialog';
 
 interface Deal {
   id: string;
@@ -28,6 +29,7 @@ interface Deal {
 export default function PipelineTable({ deals }: { deals: Deal[] }) {
   const router = useRouter();
   const [search, setSearch] = useState('');
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const filtered = useMemo(() => {
     if (!search) return deals;
@@ -81,6 +83,8 @@ export default function PipelineTable({ deals }: { deals: Deal[] }) {
                 <td className="px-6 py-3.5">
                   <RowActionMenu actions={[
                     { label: 'View', onClick: () => router.push(`/app/pipeline/${deal.id}`) },
+                    { label: 'Edit', onClick: () => router.push(`/app/pipeline/${deal.id}?edit=true`) },
+                    { label: 'Delete', variant: 'danger', onClick: () => setDeleteId(deal.id) },
                   ]} />
                 </td>
               </tr>
@@ -91,6 +95,22 @@ export default function PipelineTable({ deals }: { deals: Deal[] }) {
           </tbody>
         </table>
       </div>
+
+      {deleteId && (
+        <ConfirmDialog
+          open
+          title="Delete Deal"
+          message="Are you sure you want to delete this deal? This action cannot be undone."
+          confirmLabel="Delete"
+          variant="danger"
+          onConfirm={async () => {
+            await fetch(`/api/deals/${deleteId}`, { method: 'DELETE' });
+            setDeleteId(null);
+            router.refresh();
+          }}
+          onCancel={() => setDeleteId(null)}
+        />
+      )}
     </>
   );
 }

@@ -1,5 +1,6 @@
-import FormInput from '@/components/ui/FormInput';
 'use client';
+
+import FormInput from '@/components/ui/FormInput';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -20,7 +21,7 @@ interface AutomationRun {
 
 const statusBadge: Record<string, string> = {
   success: 'bg-green-50 text-green-700',
-  failed: 'bg-red-50 text-red-700',
+  failed: 'bg-red-500/10 text-red-700',
   skipped: 'bg-yellow-50 text-yellow-700',
 };
 

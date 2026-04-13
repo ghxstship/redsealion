@@ -46,7 +46,7 @@ const STATUS_COLORS: Record<string, string> = {
   in_transit: 'bg-purple-50 text-purple-700',
   on_site: 'bg-green-50 text-green-700',
   checked_in: 'bg-bg-secondary text-text-secondary',
-  lost: 'bg-red-50 text-red-700',
+  lost: 'bg-red-500/10 text-red-700',
   damaged_return: 'bg-orange-50 text-orange-700',
 };
 
@@ -173,7 +173,7 @@ export default async function CheckInOutPage() {
               </thead>
               <tbody className="divide-y divide-border">
                 {checkouts.map((c) => (
-                  <tr key={c.id} className={`hover:bg-bg-secondary/50 transition-colors ${c.status === 'lost' || c.status === 'damaged_return' ? 'bg-red-50/30' : ''}`}>
+                  <tr key={c.id} className={`hover:bg-bg-secondary/50 transition-colors ${c.status === 'lost' || c.status === 'damaged_return' ? 'bg-red-500/5' : ''}`}>
                     <td className="px-4 py-3">
                       <p className="font-medium text-foreground">{c.asset_name}</p>
                       {c.serial_number && <p className="font-mono text-xs text-text-muted">{c.serial_number}</p>}

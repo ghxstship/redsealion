@@ -24,7 +24,7 @@ const STATUS_COLORS: Record<string, string> = {
   scheduled: 'bg-blue-50 text-blue-700',
   in_progress: 'bg-yellow-50 text-yellow-700',
   completed: 'bg-green-50 text-green-700',
-  overdue: 'bg-red-50 text-red-700',
+  overdue: 'bg-red-500/10 text-red-700',
 };
 
 const TYPE_COLORS: Record<string, string> = {

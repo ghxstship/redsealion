@@ -104,7 +104,7 @@ export default async function CommentsPage({ params }: PageProps) {
                     {(phaseRef || delivRef) && (
                       <div className="flex items-center gap-1.5 mt-1">
                         {phaseRef && (
-                          <span className="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-text-muted">
+                          <span className="inline-flex items-center rounded-full bg-bg-secondary px-2 py-0.5 text-[10px] font-medium text-text-muted">
                             {phaseRef}
                           </span>
                         )}

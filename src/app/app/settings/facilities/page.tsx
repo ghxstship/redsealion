@@ -1,5 +1,6 @@
-import Button from '@/components/ui/Button';
 'use client';
+
+import Button from '@/components/ui/Button';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -20,7 +21,7 @@ export default function FacilitiesSettingsPage() {
           <h2 className="text-lg font-semibold text-foreground">Facilities</h2>
           <p className="mt-1 text-sm text-text-secondary">Manage warehouses, offices, and production spaces.</p>
         </div>
-        <Button onClick={() => setShowCreate(true)} className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90">
+        <Button onClick={() => setShowCreate(true)} className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-background transition-colors hover:bg-foreground/90">
           Add Facility
         </Button>
         <FacilityFormModal open={showCreate} onClose={() => setShowCreate(false)} onCreated={() => router.refresh()} />
@@ -47,7 +48,7 @@ export default function FacilitiesSettingsPage() {
                 <Button className="rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary">
                   Edit
                 </Button>
-                <Button className="rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-50">
+                <Button className="rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-500/10">
                   Remove
                 </Button>
               </div>

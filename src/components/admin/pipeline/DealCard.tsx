@@ -117,7 +117,7 @@ export default function DealCard({
       </Link>
       <Button
         onClick={(e) => { e.stopPropagation(); setShowDelete(true); }}
-        className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity rounded p-1 text-text-muted hover:text-red-600 hover:bg-red-50"
+        className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity rounded p-1 text-text-muted hover:text-red-600 hover:bg-red-500/10"
         title="Delete deal"
       >
         <Trash2 size={12} />

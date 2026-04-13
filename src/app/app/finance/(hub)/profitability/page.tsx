@@ -136,7 +136,7 @@ export default async function ProfitabilityPage() {
                       <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
                         p.marginPercent >= 30 ? 'bg-green-50 text-green-700' :
                         p.marginPercent >= 10 ? 'bg-yellow-50 text-yellow-700' :
-                        'bg-red-50 text-red-700'
+                        'bg-red-500/10 text-red-700'
                       }`}>
                         {p.marginPercent}%
                       </span>

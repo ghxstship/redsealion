@@ -10,6 +10,7 @@ import DataExportMenu from '@/components/shared/DataExportMenu';
 import DataImportDialog from '@/components/shared/DataImportDialog';
 import SortableHeader from '@/components/shared/SortableHeader';
 import RowActionMenu from '@/components/shared/RowActionMenu';
+import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import FormSelect from '@/components/ui/FormSelect';
 import SearchInput from '@/components/ui/SearchInput';
 import Button from '@/components/ui/Button';
@@ -38,6 +39,8 @@ export default function ExpensesTable({ expenses }: { expenses: ExpenseRow[] }) 
   const [statusFilter, setStatusFilter] = useState('all');
   const [showImport, setShowImport] = useState(false);
   const [showColumnConfig, setShowColumnConfig] = useState(false);
+  const [reimburseId, setReimburseId] = useState<string | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const {
     views,
@@ -90,6 +93,18 @@ export default function ExpensesTable({ expenses }: { expenses: ExpenseRow[] }) 
 
   async function handleBulkDelete(ids: string[]) {
     await Promise.all(ids.map((id) => fetch(`/api/expenses/${id}`, { method: 'DELETE' })));
+    router.refresh();
+  }
+
+  async function handleReimburse(id: string) {
+    await fetch(`/api/expenses/${id}/reimburse`, { method: 'POST' });
+    setReimburseId(null);
+    router.refresh();
+  }
+
+  async function handleDeleteExpense(id: string) {
+    await fetch(`/api/expenses/${id}`, { method: 'DELETE' });
+    setDeleteId(null);
     router.refresh();
   }
 
@@ -187,13 +202,9 @@ export default function ExpensesTable({ expenses }: { expenses: ExpenseRow[] }) 
                     <RowActionMenu actions={[
                       ...(exp.status === 'approved' ? [{
                         label: 'Mark Reimbursed',
-                        onClick: () => {
-                          void fetch(`/api/expenses/${exp.id}/reimburse`, { method: 'POST' }).then(() => router.refresh());
-                        }
+                        onClick: () => setReimburseId(exp.id),
                       }] : []),
-                      { label: 'Delete', variant: 'danger', onClick: () => {
-                        void fetch(`/api/expenses/${exp.id}`, { method: 'DELETE' }).then(() => router.refresh());
-                      }},
+                      { label: 'Delete', variant: 'danger' as const, onClick: () => setDeleteId(exp.id) },
                     ]} />
                   </td>
                 </tr>
@@ -214,6 +225,30 @@ export default function ExpensesTable({ expenses }: { expenses: ExpenseRow[] }) 
         apiEndpoint="/api/expenses"
         onComplete={() => router.refresh()}
       />
+
+      {reimburseId && (
+        <ConfirmDialog
+          open
+          title="Mark as Reimbursed"
+          message="Are you sure you want to mark this expense as reimbursed? This action records the reimbursement."
+          confirmLabel="Mark Reimbursed"
+          variant="default"
+          onConfirm={() => handleReimburse(reimburseId)}
+          onCancel={() => setReimburseId(null)}
+        />
+      )}
+
+      {deleteId && (
+        <ConfirmDialog
+          open
+          title="Delete Expense"
+          message="Are you sure you want to delete this expense? This action cannot be undone."
+          confirmLabel="Delete"
+          variant="danger"
+          onConfirm={() => handleDeleteExpense(deleteId)}
+          onCancel={() => setDeleteId(null)}
+        />
+      )}
 
       <ColumnConfigPanel
         open={showColumnConfig}

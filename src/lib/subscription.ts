@@ -7,20 +7,30 @@ import type { SubscriptionTier } from '@/types/database';
 export type AppTier = SubscriptionTier | 'portal';
 
 export type FeatureKey =
-  // Starter (CRM / Sales / Presentation)
+  // All tiers (Portal) — core CRM + Project Management
   | 'proposals'
   | 'clients'
+  | 'pipeline'
+  | 'leads'
+  | 'invoices'
+  | 'reports'
+  | 'projects'
+  | 'tasks'
+  | 'gantt'
+  | 'roadmap'
+  | 'files'
+  | 'calendar'
+  // Starter — CRM, sales, presentation
   | 'portfolio'
   | 'assets'
   | 'team'
   | 'templates'
   | 'terms'
-  | 'pipeline'
-  | 'invoices'
-  | 'reports'
   | 'export_docx'
   | 'export_pdf'
-  // Professional (Integration Hub)
+  | 'billing'
+  | 'advancing'
+  // Professional — integrations + advanced workflows
   | 'integrations'
   | 'crm_sync'
   | 'accounting_sync'
@@ -32,7 +42,23 @@ export type FeatureKey =
   | 'custom_reports'
   | 'recurring_invoices'
   | 'credit_notes'
-  // Enterprise (Standalone All-in-One)
+  | 'crew'
+  | 'equipment'
+  | 'esign'
+  | 'online_payments'
+  | 'onboarding'
+  | 'advancing_collection'
+  | 'events'
+  | 'activations'
+  | 'locations'
+  | 'compliance'
+  | 'job_photos'
+  | 'deposit_payments'
+  | 'crew_ratings'
+  | 'referral_program'
+  | 'email_campaigns'
+  | 'review_requests'
+  // Enterprise — full standalone
   | 'time_tracking'
   | 'resource_scheduling'
   | 'budgets'
@@ -41,55 +67,34 @@ export type FeatureKey =
   | 'people_hr'
   | 'time_off'
   | 'org_chart'
-  | 'tasks'
-  | 'gantt'
   | 'custom_fields'
   | 'scenarios'
   | 'ai_assistant'
   | 'audit_log'
   | 'permissions'
   | 'sso'
-  | 'billing'
-  // Feature parity additions
-  | 'crew'
-  | 'equipment'
-  | 'esign'
-  | 'calendar'
-  | 'leads'
-  | 'online_payments'
   | 'warehouse'
-  | 'onboarding'
   | 'payroll_export'
-  // Feature parity — Tiers 2 & 3
   | 'work_orders'
-  | 'job_photos'
-  | 'deposit_payments'
   | 'ai_drafting'
-  | 'crew_ratings'
-  | 'referral_program'
-  | 'email_campaigns'
-  | 'review_requests'
-  // Production Advancing
-  | 'advancing'
-  | 'advancing_collection'
-  // Events, Activations & Locations
-  | 'events'
-  | 'activations'
-  | 'locations'
-  // Compliance
-  | 'compliance'
-  // Logistics
-  | 'logistics';
+  | 'logistics'
+  | 'procurement';
 
 // Maps each feature to the minimum subscription tier required
 const featureRegistry: Record<FeatureKey, AppTier> = {
-  // Portal tier — read-only demo experience
+  // Portal tier — core CRM + project management (all tiers)
   proposals: 'portal',
   clients: 'portal',
   pipeline: 'portal',
   leads: 'portal',
   invoices: 'portal',
   reports: 'portal',
+  projects: 'portal',
+  tasks: 'portal',
+  gantt: 'portal',
+  roadmap: 'portal',
+  files: 'portal',
+  calendar: 'portal',
 
   // Starter tier — CRM, sales, presentation
   portfolio: 'starter',
@@ -99,6 +104,8 @@ const featureRegistry: Record<FeatureKey, AppTier> = {
   terms: 'starter',
   export_docx: 'starter',
   export_pdf: 'starter',
+  billing: 'starter',
+  advancing: 'starter',
 
   // Professional tier — integrations + advanced workflows
   integrations: 'professional',
@@ -112,6 +119,22 @@ const featureRegistry: Record<FeatureKey, AppTier> = {
   custom_reports: 'professional',
   recurring_invoices: 'professional',
   credit_notes: 'professional',
+  crew: 'professional',
+  equipment: 'professional',
+  esign: 'professional',
+  online_payments: 'professional',
+  onboarding: 'professional',
+  advancing_collection: 'professional',
+  events: 'professional',
+  activations: 'professional',
+  locations: 'professional',
+  compliance: 'professional',
+  job_photos: 'professional',
+  deposit_payments: 'professional',
+  crew_ratings: 'professional',
+  referral_program: 'professional',
+  email_campaigns: 'professional',
+  review_requests: 'professional',
 
   // Enterprise tier — full standalone
   time_tracking: 'enterprise',
@@ -122,44 +145,18 @@ const featureRegistry: Record<FeatureKey, AppTier> = {
   people_hr: 'enterprise',
   time_off: 'enterprise',
   org_chart: 'enterprise',
-  tasks: 'enterprise',
-  gantt: 'enterprise',
   custom_fields: 'enterprise',
   scenarios: 'enterprise',
   ai_assistant: 'enterprise',
   audit_log: 'enterprise',
   permissions: 'enterprise',
   sso: 'enterprise',
-  billing: 'starter',
-  // Feature parity additions
-  crew: 'professional',
-  equipment: 'professional',
-  esign: 'professional',
-  calendar: 'professional',
-  online_payments: 'professional',
   warehouse: 'enterprise',
-  onboarding: 'professional',
   payroll_export: 'enterprise',
-  // Feature parity — Tiers 2 & 3
   work_orders: 'enterprise',
-  job_photos: 'professional',
-  deposit_payments: 'professional',
   ai_drafting: 'enterprise',
-  crew_ratings: 'professional',
-  referral_program: 'professional',
-  email_campaigns: 'professional',
-  review_requests: 'professional',
-  // Production Advancing
-  advancing: 'starter',
-  advancing_collection: 'professional',
-  // Events, Activations & Locations
-  events: 'professional',
-  activations: 'professional',
-  locations: 'professional',
-  // Compliance
-  compliance: 'professional',
-  // Logistics
   logistics: 'enterprise',
+  procurement: 'enterprise',
 };
 
 const tierRank: Record<AppTier, number> = {

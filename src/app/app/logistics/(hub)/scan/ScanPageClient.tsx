@@ -195,7 +195,7 @@ export default function ScanPageClient() {
         >
           Recent Scans
           {recentScans.length > 0 && (
-            <span className="ml-1.5 inline-flex items-center justify-center w-5 h-5 text-xs rounded-full bg-foreground text-white">
+            <span className="ml-1.5 inline-flex items-center justify-center w-5 h-5 text-xs rounded-full bg-foreground text-background">
               {recentScans.length}
             </span>
           )}

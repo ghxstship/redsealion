@@ -309,11 +309,11 @@ export default function DispatchDetailPage({ params }: { params: Promise<{ id: s
   if (loading) {
     return (
       <div className="animate-pulse space-y-6">
-        <div className="h-7 w-40 rounded bg-zinc-200" />
-        <div className="h-4 w-64 rounded bg-zinc-100" />
+        <div className="h-7 w-40 rounded bg-bg-tertiary" />
+        <div className="h-4 w-64 rounded bg-bg-secondary" />
         <div className="grid gap-6 md:grid-cols-2">
-          <div className="h-48 rounded-xl bg-zinc-100" />
-          <div className="h-48 rounded-xl bg-zinc-100" />
+          <div className="h-48 rounded-xl bg-bg-secondary" />
+          <div className="h-48 rounded-xl bg-bg-secondary" />
         </div>
       </div>
     );
@@ -372,7 +372,7 @@ export default function DispatchDetailPage({ params }: { params: Promise<{ id: s
               variant={t.variant === 'danger' ? 'secondary' : undefined}
               disabled={actionLoading}
               onClick={() => handleStatusChange(t.to)}
-              className={t.variant === 'danger' ? 'text-red-600 border-red-200 hover:bg-red-50' : ''}
+              className={t.variant === 'danger' ? 'text-red-600 border-red-500/30 hover:bg-red-500/10' : ''}
             >
               {actionLoading ? '...' : t.label}
             </Button>

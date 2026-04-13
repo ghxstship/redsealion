@@ -141,7 +141,7 @@ export default async function ScenariosPage(props: { params: Promise<{ id: strin
                   {/* Baseline badge */}
                   {scenario.isBaseline && (
                     <div className="absolute -top-3 left-4">
-                      <span className="inline-flex items-center rounded-full bg-foreground px-3 py-1 text-[10px] font-semibold text-white tracking-wider uppercase">
+                      <span className="inline-flex items-center rounded-full bg-foreground px-3 py-1 text-[10px] font-semibold text-background tracking-wider uppercase">
                         Recommended
                       </span>
                     </div>

@@ -149,7 +149,7 @@ export default function MyScheduleView({ items }: MyScheduleViewProps) {
                               await fetch(`/api/crew-bookings/${id}/respond`, { method: 'POST', body: JSON.stringify({ response: 'declined' }), headers: { 'Content-Type': 'application/json' } });
                               window.location.reload();
                             }}
-                            className="px-3 py-1 text-xs font-medium text-red-600 hover:bg-red-50 rounded"
+                            className="px-3 py-1 text-xs font-medium text-red-600 hover:bg-red-500/10 rounded"
                           >
                             Decline
                           </Button>

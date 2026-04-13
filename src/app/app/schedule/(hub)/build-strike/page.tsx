@@ -44,7 +44,7 @@ async function getBuildStrikeSchedules() {
 const BLOCK_COLORS: Record<string, string> = {
   load_in: 'border-l-blue-500 bg-blue-50', build: 'border-l-orange-500 bg-orange-50',
   rehearsal: 'border-l-purple-500 bg-purple-50', show: 'border-l-green-500 bg-green-50',
-  strike: 'border-l-red-500 bg-red-50', load_out: 'border-l-gray-500 bg-bg-secondary',
+  strike: 'border-l-red-500 bg-red-500/10', load_out: 'border-l-gray-500 bg-bg-secondary',
   transition: 'border-l-yellow-500 bg-yellow-50', break: 'border-l-gray-300 bg-bg-secondary',
   custom: 'border-l-indigo-500 bg-indigo-50',
 };

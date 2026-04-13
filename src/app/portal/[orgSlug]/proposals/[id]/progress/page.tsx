@@ -162,7 +162,7 @@ export default async function ProgressPage({ params }: PageProps) {
                 {overallCompletion}%
               </span>
             </div>
-            <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
+            <div className="h-2 rounded-full bg-bg-secondary overflow-hidden">
               <div
                 className="h-full rounded-full transition-[width,opacity]"
                 style={{
@@ -243,7 +243,7 @@ export default async function ProgressPage({ params }: PageProps) {
                           <span className="text-[11px] text-text-muted">Completion</span>
                           <span className="text-[11px] font-medium text-text-secondary">{phase.completionPercent}%</span>
                         </div>
-                        <div className="h-1.5 rounded-full bg-gray-100 overflow-hidden">
+                        <div className="h-1.5 rounded-full bg-bg-secondary overflow-hidden">
                           <div
                             className={`h-full rounded-full transition-[width,opacity] ${
                               phase.status === 'complete' ? 'bg-green-500' : 'bg-blue-500'

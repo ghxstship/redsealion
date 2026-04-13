@@ -188,7 +188,7 @@ export default function TermsDocumentView({ activeDocument, allDocuments }: Prop
             <Button size="sm" onClick={handleSaveSections}>Save Changes</Button>
           </>
         )}
-        <Button variant="secondary" size="sm" onClick={() => setDeleteConfirmId(activeDocument.id)} className="text-red-600 hover:bg-red-50">Archive</Button>
+        <Button variant="secondary" size="sm" onClick={() => setDeleteConfirmId(activeDocument.id)} className="text-red-600 hover:bg-red-500/10">Archive</Button>
         <Button
           variant="secondary"
           disabled={creating}

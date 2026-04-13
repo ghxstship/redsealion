@@ -164,7 +164,7 @@ export default function AiChatPanel() {
                     </Button>
                     <Button
                       onClick={(e) => { e.stopPropagation(); deleteConversation(conv.id); }}
-                      className="opacity-0 group-hover:opacity-100 flex items-center justify-center w-6 h-6 rounded-lg transition-all hover:bg-red-50 shrink-0 ml-2"
+                      className="opacity-0 group-hover:opacity-100 flex items-center justify-center w-6 h-6 rounded-lg transition-all hover:bg-red-500/10 shrink-0 ml-2"
                       aria-label="Delete conversation"
                       title="Delete conversation"
                     >
@@ -191,7 +191,7 @@ export default function AiChatPanel() {
                     <div
                       className={`max-w-[85%] rounded-xl px-4 py-3 ${
                         msg.role === 'user'
-                          ? 'bg-foreground text-white'
+                          ? 'bg-foreground text-background'
                           : 'bg-bg-secondary/80 text-foreground border border-border/50'
                       }`}
                     >
@@ -255,7 +255,7 @@ export default function AiChatPanel() {
                 <Button
                   type="submit"
                   disabled={isLoading || !input.trim()}
-                  className="flex items-center justify-center w-9 h-9 rounded-lg bg-foreground text-white transition-all duration-fast hover:bg-foreground/90 disabled:opacity-30 disabled:cursor-not-allowed press-scale shrink-0"
+                  className="flex items-center justify-center w-9 h-9 rounded-lg bg-foreground text-background transition-all duration-fast hover:bg-foreground/90 disabled:opacity-30 disabled:cursor-not-allowed press-scale shrink-0"
                   aria-label="Send message"
                 >
                   <Send size={16} />

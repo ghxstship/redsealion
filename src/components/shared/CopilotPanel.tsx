@@ -327,7 +327,7 @@ export default function CopilotPanel() {
                 <div
                   className={`max-w-[90%] rounded-xl px-4 py-3 ${
                     msg.role === 'user'
-                      ? 'bg-foreground text-white'
+                      ? 'bg-foreground text-background'
                       : 'bg-bg-secondary/80 text-foreground border border-border/50'
                   }`}
                 >
@@ -407,7 +407,7 @@ export default function CopilotPanel() {
                           const idx = messages.indexOf(msg);
                           submitFeedback(idx, 'negative');
                         }}
-                        className="flex items-center justify-center w-6 h-6 rounded transition-colors text-text-muted hover:text-red-500 hover:bg-red-50"
+                        className="flex items-center justify-center w-6 h-6 rounded transition-colors text-text-muted hover:text-red-500 hover:bg-red-500/10"
                         title="Not helpful"
                         aria-label="Mark as not helpful"
                       >
@@ -482,7 +482,7 @@ export default function CopilotPanel() {
             <button
               type="submit"
               disabled={isLoading || !input.trim()}
-              className="flex items-center justify-center w-9 h-9 rounded-lg bg-foreground text-white transition-all duration-fast hover:bg-foreground/90 disabled:opacity-30 disabled:cursor-not-allowed press-scale shrink-0"
+              className="flex items-center justify-center w-9 h-9 rounded-lg bg-foreground text-background transition-all duration-fast hover:bg-foreground/90 disabled:opacity-30 disabled:cursor-not-allowed press-scale shrink-0"
               aria-label="Send message"
             >
               <Send size={16} />

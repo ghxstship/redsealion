@@ -108,7 +108,7 @@ export default function OverviewTab({
                   </p>
                 </div>
                 <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-10">
-                  <div className="rounded-lg bg-foreground px-3 py-2 text-xs text-white whitespace-nowrap shadow-lg">
+                  <div className="rounded-lg bg-foreground px-3 py-2 text-xs text-background whitespace-nowrap shadow-lg">
                     <p className="font-medium">{phase.name}</p>
                     <p className="mt-0.5 opacity-75">
                       {formatStatus(phase.status)}

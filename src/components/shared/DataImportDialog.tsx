@@ -301,7 +301,7 @@ export default function DataImportDialog({
             {steps.map((s, i) => (
               <div key={s.key} className="flex items-center flex-1">
                 <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-bold transition-colors ${
-                  i < stepIndex ? 'bg-green-500 text-white' : i === stepIndex ? 'bg-foreground text-white' : 'bg-bg-tertiary text-text-muted'
+                  i < stepIndex ? 'bg-green-500 text-background' : i === stepIndex ? 'bg-foreground text-background' : 'bg-bg-tertiary text-text-muted'
                 }`}>
                   {i < stepIndex ? <Check size={11} /> : i + 1}
                 </div>
@@ -386,7 +386,7 @@ export default function DataImportDialog({
                       onChange={(e) => updateMapping(m.sourceIndex, e.target.value || null)}
                       className={`flex-1 rounded-lg border px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/10 ${
                         m.targetField && duplicateTargets.has(m.targetField.key)
-                          ? 'border-red-300 bg-red-50'
+                          ? 'border-red-300 bg-red-500/10'
                           : 'border-border bg-background'
                       }`}
                     >
@@ -402,7 +402,7 @@ export default function DataImportDialog({
               </div>
 
               {duplicateTargets.size > 0 && (
-                <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-xs text-red-800">
+                <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2 text-xs text-red-800">
                   <strong>Duplicate mapping detected:</strong> Multiple columns target the same field
                 </div>
               )}
@@ -460,7 +460,7 @@ export default function DataImportDialog({
                       .filter((v) => !showErrorsOnly || v.hasErrors || v.hasWarnings)
                       .slice(0, 50)
                       .map((v) => (
-                        <tr key={v.rowIndex} className={`border-t border-border ${v.skip ? 'opacity-40' : ''} ${v.hasErrors ? 'bg-red-50/30' : ''}`}>
+                        <tr key={v.rowIndex} className={`border-t border-border ${v.skip ? 'opacity-40' : ''} ${v.hasErrors ? 'bg-red-500/5' : ''}`}>
                           <td className="px-3 py-1.5 text-text-muted tabular-nums">{v.rowIndex + 1}</td>
                           <td className="px-3 py-1.5">
                             <input
@@ -477,7 +477,7 @@ export default function DataImportDialog({
                               <td
                                 key={m.targetField!.key}
                                 className={`px-3 py-1.5 ${
-                                  cell?.severity === 'error' ? 'text-red-700 bg-red-50/50' :
+                                  cell?.severity === 'error' ? 'text-red-700 bg-red-500/10' :
                                   cell?.severity === 'warning' ? 'text-amber-700 bg-amber-50/50' :
                                   'text-foreground'
                                 }`}

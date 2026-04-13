@@ -33,8 +33,6 @@ export async function PATCH(request: Request, context: RouteContext) {
     update.responded_at = new Date().toISOString();
   }
 
-  const supabase = await createClient();
-
   const { data, error } = await supabase
     .from('crew_bookings')
     .update(update)

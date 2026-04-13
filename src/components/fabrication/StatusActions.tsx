@@ -17,7 +17,7 @@ const TRANSITIONS: Record<string, { label: string; nextStatus: string; variant: 
   ],
   pending: [
     { label: 'Start Production', nextStatus: 'in_production', variant: 'default' },
-    { label: 'Cancel', nextStatus: 'cancelled', variant: 'secondary', className: 'text-red-600 hover:bg-red-50' },
+    { label: 'Cancel', nextStatus: 'cancelled', variant: 'secondary', className: 'text-red-600 hover:bg-red-500/10' },
   ],
   in_production: [
     { label: 'Send to QC', nextStatus: 'quality_check', variant: 'default' },

@@ -1,5 +1,6 @@
-import Button from '@/components/ui/Button';
 'use client';
+
+import Button from '@/components/ui/Button';
 
 /**
  * Global error boundary — catches errors in the root layout itself.

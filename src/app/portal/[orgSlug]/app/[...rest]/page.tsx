@@ -13,8 +13,6 @@ interface PortalCatchAllProps {
 
 // Map URL segments to FeatureKey + tier
 const segmentMap: Record<string, { feature: FeatureKey; tier: 'starter' | 'professional' | 'enterprise' }> = {
-  tasks: { feature: 'tasks', tier: 'enterprise' },
-  calendar: { feature: 'calendar', tier: 'professional' },
   resources: { feature: 'resource_scheduling', tier: 'enterprise' },
   templates: { feature: 'templates', tier: 'starter' },
   dispatch: { feature: 'work_orders', tier: 'enterprise' },

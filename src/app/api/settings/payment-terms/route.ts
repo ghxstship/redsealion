@@ -13,8 +13,6 @@ export async function PUT(request: NextRequest) {
   const body = await request.json();
   const { default_payment_terms, payment_instructions } = body;
 
-  const supabase = await createClient();
-
   const updateData: Record<string, unknown> = {
     updated_at: new Date().toISOString(),
   };

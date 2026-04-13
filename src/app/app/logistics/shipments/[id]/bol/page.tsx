@@ -123,11 +123,11 @@ export default async function BillOfLadingPrintablePage({ params }: { params: Pr
       <div className="grid grid-cols-2 gap-8 text-xs">
         <div>
           <p className="mb-8"><strong>Shipper Signature</strong> ___________________________ Date ______</p>
-          <p className="text-gray-600 italic">This is to certify that the above named materials are properly classified, described, packaged, marked and labeled, and are in proper condition for transportation according to the applicable regulations of the DOT.</p>
+          <p className="text-text-secondary italic">This is to certify that the above named materials are properly classified, described, packaged, marked and labeled, and are in proper condition for transportation according to the applicable regulations of the DOT.</p>
         </div>
         <div>
           <p className="mb-8"><strong>Carrier Signature</strong> ___________________________ Date ______</p>
-          <p className="text-gray-600 italic">Carrier acknowledges receipt of packages and required placards. Carrier certifies emergency response information was made available and/or carrier has the DOT emergency response guidebook or equivalent documentation in the vehicle.</p>
+          <p className="text-text-secondary italic">Carrier acknowledges receipt of packages and required placards. Carrier certifies emergency response information was made available and/or carrier has the DOT emergency response guidebook or equivalent documentation in the vehicle.</p>
         </div>
       </div>
 

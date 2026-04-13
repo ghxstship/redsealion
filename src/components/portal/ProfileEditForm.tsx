@@ -76,7 +76,7 @@ export default function ProfileEditForm({
 
   const inputClass = editing
     ? 'w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500'
-    : 'w-full rounded-md border border-border bg-gray-50 px-3 py-2 text-sm text-foreground';
+    : 'w-full rounded-md border border-border bg-bg-secondary px-3 py-2 text-sm text-foreground';
 
   return (
     <div>
@@ -97,7 +97,7 @@ export default function ProfileEditForm({
               type="button"
               onClick={handleCancel}
               disabled={isPending}
-              className="rounded-md border border-border px-3 py-1 text-xs font-medium text-foreground hover:bg-gray-50 transition-colors disabled:opacity-50"
+              className="rounded-md border border-border px-3 py-1 text-xs font-medium text-foreground hover:bg-bg-secondary transition-colors disabled:opacity-50"
             >
               Cancel
             </Button>
@@ -115,7 +115,7 @@ export default function ProfileEditForm({
       </div>
 
       {error && (
-        <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
+        <div className="mb-4 rounded-md border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-700">
           {error}
         </div>
       )}
@@ -152,7 +152,7 @@ export default function ProfileEditForm({
             type="email"
             defaultValue={email}
             readOnly
-            className="w-full rounded-md border border-border bg-gray-50 px-3 py-2 text-sm text-foreground"
+            className="w-full rounded-md border border-border bg-bg-secondary px-3 py-2 text-sm text-foreground"
           />
         </div>
         <div>

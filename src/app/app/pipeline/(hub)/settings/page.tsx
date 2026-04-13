@@ -1,5 +1,6 @@
-import FormInput from '@/components/ui/FormInput';
 'use client';
+
+import FormInput from '@/components/ui/FormInput';
 
 import { useEffect, useState, useCallback } from 'react';
 import { TierGate } from '@/components/shared/TierGate';
@@ -241,7 +242,7 @@ export default function PipelineSettingsPage() {
                   {editingId === pipeline.id ? 'Done' : 'Edit'}
                 </Button>
                 {!pipeline.is_default && (
-                  <Button variant="secondary" size="sm" onClick={() => removePipeline(pipeline.id)} className="text-red-600 hover:bg-red-50">
+                  <Button variant="secondary" size="sm" onClick={() => removePipeline(pipeline.id)} className="text-red-600 hover:bg-red-500/10">
                     Delete
                   </Button>
                 )}

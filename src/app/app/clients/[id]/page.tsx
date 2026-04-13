@@ -210,7 +210,7 @@ export default async function ClientDetailPage({
             {client.industry} &middot; Source: {client.source ?? 'Unknown'}
             <StatusBadge
               status={client.status}
-              colorMap={{ active: 'bg-green-50 text-green-700', churned: 'bg-red-50 text-red-700', inactive: 'bg-zinc-100 text-zinc-600' }}
+              colorMap={{ active: 'bg-green-500/10 text-green-600', churned: 'bg-red-500/10 text-red-600', inactive: 'bg-bg-secondary text-text-muted' }}
             />
           </p>
           <div className="mt-3 flex flex-wrap gap-1.5">

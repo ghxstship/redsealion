@@ -55,7 +55,7 @@ function actionColor(action: string): string {
   const map: Record<string, string> = {
     create: 'bg-green-50 text-green-700',
     update: 'bg-blue-50 text-blue-700',
-    delete: 'bg-red-50 text-red-700',
+    delete: 'bg-red-500/10 text-red-700',
     approve: 'bg-emerald-50 text-emerald-700',
     reject: 'bg-orange-50 text-orange-700',
     login: 'bg-indigo-50 text-indigo-700',

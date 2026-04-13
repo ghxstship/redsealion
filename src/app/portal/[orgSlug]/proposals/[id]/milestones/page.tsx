@@ -40,7 +40,7 @@ function AssigneeBadge({ assignee }: { assignee: RequirementAssignee }) {
     external_vendor: 'bg-orange-50 text-orange-700',
   };
   return (
-    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${styles[assignee] ?? 'bg-gray-100 text-gray-600'}`}>
+    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${styles[assignee] ?? 'bg-bg-secondary text-gray-600'}`}>
       {assignee === 'external_vendor' ? 'vendor' : assignee}
     </span>
   );

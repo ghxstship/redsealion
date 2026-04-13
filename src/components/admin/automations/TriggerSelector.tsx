@@ -77,7 +77,7 @@ export function TriggerSelector({ value, config, onChange }: TriggerSelectorProp
                   onClick={() => onChange(selectedType, { ...config, delayDays: days })}
                   className={`rounded-md border px-3 py-1.5 text-xs font-medium transition-colors ${
                     (config.delayDays as number) === days
-                      ? 'border-foreground bg-foreground text-white'
+                      ? 'border-foreground bg-foreground text-background'
                       : 'border-border bg-background text-foreground hover:bg-bg-secondary'
                   }`}
                 >

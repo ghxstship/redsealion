@@ -124,7 +124,7 @@ export default function KeyboardShortcuts({ onNewTask, onFocusSearch, onSave }: 
     <>
       {/* "Go" mode indicator */}
       {pendingGo && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-foreground text-white px-4 py-2 text-sm font-medium shadow-lg animate-fade-in">
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-foreground text-background px-4 py-2 text-sm font-medium shadow-lg animate-fade-in">
           Press a key: <kbd className="mx-1 px-1.5 py-0.5 rounded bg-background/20 text-xs">t</kbd>asks ·
           <kbd className="mx-1 px-1.5 py-0.5 rounded bg-background/20 text-xs">p</kbd>ipeline ·
           <kbd className="mx-1 px-1.5 py-0.5 rounded bg-background/20 text-xs">c</kbd>alendar ·

@@ -137,7 +137,7 @@ function healthLabel(project: ProjectHealth): string {
 }
 
 function healthBg(project: ProjectHealth): string {
-  if (project.blockedTasks > 0) return 'bg-red-50';
+  if (project.blockedTasks > 0) return 'bg-red-500/10';
   if (project.overdueTasks > 0) return 'bg-amber-50';
   if (project.completedTasks === project.totalTasks) return 'bg-green-50';
   return 'bg-blue-50';

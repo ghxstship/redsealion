@@ -6,7 +6,7 @@ import PageHeader from '@/components/shared/PageHeader';
 
 /** Color map for utilization percentage thresholds. */
 function utilizationColor(pct: number): string {
-  if (pct > 100) return 'bg-red-50 text-red-700';
+  if (pct > 100) return 'bg-red-500/10 text-red-700';
   if (pct >= 80) return 'bg-green-50 text-green-700';
   if (pct >= 50) return 'bg-yellow-50 text-yellow-700';
   return 'bg-bg-secondary text-text-secondary';

@@ -136,7 +136,7 @@ export default function PlanSelector() {
                   isCurrent
                     ? 'border border-border bg-bg-secondary text-text-secondary cursor-default'
                     : plan.highlighted
-                      ? 'bg-foreground text-white hover:bg-foreground/90'
+                      ? 'bg-foreground text-background hover:bg-foreground/90'
                       : 'border border-border bg-background text-foreground hover:bg-bg-secondary'
                 }`}
                 disabled={isCurrent || isLoading}

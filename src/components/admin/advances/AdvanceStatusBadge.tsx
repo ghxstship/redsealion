@@ -15,14 +15,14 @@ export const ADVANCE_STATUS_COLORS: Record<string, string> = {
   partially_fulfilled: 'bg-cyan-50 text-cyan-700',
   fulfilled: 'bg-green-50 text-green-700',
   completed: 'bg-green-100 text-green-800',
-  rejected: 'bg-red-50 text-red-700',
+  rejected: 'bg-red-500/10 text-red-700',
   cancelled: 'bg-bg-secondary text-text-muted',
   on_hold: 'bg-yellow-50 text-yellow-700',
   expired: 'bg-bg-secondary text-text-muted',
 };
 
 export const ADVANCE_PRIORITY_COLORS: Record<string, string> = {
-  critical: 'bg-red-50 text-red-700',
+  critical: 'bg-red-500/10 text-red-700',
   high: 'bg-orange-50 text-orange-700',
   medium: 'bg-blue-50 text-blue-700',
   low: 'bg-bg-secondary text-text-secondary',
@@ -41,7 +41,7 @@ export const FULFILLMENT_STATUS_COLORS: Record<string, string> = {
   active: 'bg-emerald-100 text-emerald-800',
   struck: 'bg-orange-50 text-orange-700',
   returned: 'bg-bg-secondary text-text-secondary',
-  damaged: 'bg-red-50 text-red-700',
+  damaged: 'bg-red-500/10 text-red-700',
   cancelled: 'bg-bg-secondary text-text-muted',
 };
 

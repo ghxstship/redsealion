@@ -150,7 +150,6 @@ export default async function PortalDashboardPage({ params }: PortalDashboardPro
   const lockedCards: Array<{ label: string; feature: FeatureKey; tier: string }> = [
     { label: 'Automations Run', feature: 'automations', tier: 'Professional' },
     { label: 'Hours This Week', feature: 'time_tracking', tier: 'Enterprise' },
-    { label: 'Tasks Due Today', feature: 'tasks', tier: 'Enterprise' },
     { label: 'Crew Available', feature: 'crew', tier: 'Professional' },
   ];
 

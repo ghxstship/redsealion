@@ -154,7 +154,7 @@ export default async function TeamSettingsPage() {
                       <Button className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
                         Edit
                       </Button>
-                      <Button className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 hover:border-red-200 transition-colors">
+                      <Button className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-500/10 hover:border-red-500/30 transition-colors">
                         Remove
                       </Button>
                     </div>

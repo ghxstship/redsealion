@@ -98,7 +98,7 @@ export default function TimeOffCalendar({ requests = [] }: TimeOffCalendarProps)
                   <span
                     className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-xs ${
                       isToday(day)
-                        ? 'bg-foreground text-white font-medium'
+                        ? 'bg-foreground text-background font-medium'
                         : 'text-foreground'
                     }`}
                   >

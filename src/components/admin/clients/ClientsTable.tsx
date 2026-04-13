@@ -210,7 +210,7 @@ export default function ClientsTable({ clients }: { clients: ClientRow[] }) {
                   <td className="px-6 py-3.5">
                     <RowActionMenu actions={[
                       { label: 'View', onClick: () => router.push(`/app/clients/${client.id}`) },
-                      { label: 'Edit', onClick: () => router.push(`/app/clients/${client.id}`) },
+                      { label: 'Edit', onClick: () => router.push(`/app/clients/${client.id}?edit=true`) },
                       { label: 'Delete', variant: 'danger', onClick: () => setShowDeleteConfirm(client.id) },
                     ]} />
                   </td>

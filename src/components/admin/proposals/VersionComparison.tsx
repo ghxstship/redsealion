@@ -185,7 +185,7 @@ export default function VersionComparison({
                 className="flex items-center gap-4 p-3 rounded-lg hover:bg-bg-secondary/50 transition-colors"
               >
                 <div className={`h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold ${
-                  i === 0 ? 'bg-foreground text-white' : 'bg-bg-secondary text-text-secondary'
+                  i === 0 ? 'bg-foreground text-background' : 'bg-bg-secondary text-text-secondary'
                 }`}>
                   v{v.version}
                 </div>
@@ -234,7 +234,7 @@ export default function VersionComparison({
                 transition={{ delay: i * 0.03, ...fmTransition.enter }}
                 className={`rounded-lg border p-4 ${
                   diff.changeType === 'added' ? 'border-green-200 bg-green-50/30' :
-                  diff.changeType === 'removed' ? 'border-red-200 bg-red-50/30' :
+                  diff.changeType === 'removed' ? 'border-red-500/30 bg-red-500/5' :
                   diff.changeType === 'modified' ? 'border-amber-200 bg-amber-50/30' :
                   'border-border'
                 }`}

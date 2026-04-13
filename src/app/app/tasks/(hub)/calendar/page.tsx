@@ -21,7 +21,7 @@ interface UnscheduledTask {
 }
 
 const PRIORITY_COLORS: Record<string, string> = {
-  urgent: 'bg-red-100 text-red-800 border-red-200',
+  urgent: 'bg-red-100 text-red-800 border-red-500/30',
   high: 'bg-orange-100 text-orange-800 border-orange-200',
   medium: 'bg-yellow-100 text-yellow-800 border-yellow-200',
   low: 'bg-bg-secondary text-text-muted border-border',
@@ -274,7 +274,7 @@ export default async function TaskCalendarPage({
       {/* Legend */}
       <div className="mt-4 flex flex-wrap gap-4 text-xs text-text-secondary">
         <div className="flex items-center gap-1.5">
-          <span className="inline-block h-3 w-3 rounded border border-red-200 bg-red-100" />
+          <span className="inline-block h-3 w-3 rounded border border-red-500/30 bg-red-100" />
           Urgent
         </div>
         <div className="flex items-center gap-1.5">

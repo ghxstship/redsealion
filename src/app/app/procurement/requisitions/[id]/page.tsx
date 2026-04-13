@@ -26,7 +26,7 @@ const STATUS_COLORS: Record<string, string> = {
   draft: 'bg-bg-secondary text-text-secondary',
   submitted: 'bg-yellow-50 text-yellow-700',
   approved: 'bg-green-50 text-green-700',
-  rejected: 'bg-red-50 text-red-700',
+  rejected: 'bg-red-500/10 text-red-700',
   ordered: 'bg-blue-50 text-blue-700',
 };
 

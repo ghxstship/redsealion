@@ -1,5 +1,6 @@
-import Button from '@/components/ui/Button';
 'use client';
+
+import Button from '@/components/ui/Button';
 
 import { useState, useCallback } from 'react';
 import { FileText } from 'lucide-react';
@@ -67,7 +68,7 @@ function DocxOptions({ onExport }: { onExport: (opts: Record<string, boolean>) =
         </div>
 
         <div className="mt-4 pl-[3.375rem]">
-          <Button onClick={() => onExport({ includeTerms, includePortfolio, includePlaceholders })} className="rounded-lg bg-foreground px-3.5 py-1.5 text-xs font-medium text-white transition-colors hover:bg-foreground/90">
+          <Button onClick={() => onExport({ includeTerms, includePortfolio, includePlaceholders })} className="rounded-lg bg-foreground px-3.5 py-1.5 text-xs font-medium text-background transition-colors hover:bg-foreground/90">
             Download .docx
           </Button>
         </div>
@@ -244,7 +245,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
               {clickupPreview.tasks.map((task: { name: string; subtasks: string[] }, i: number) => (
                 <div key={i} className="px-6 py-4">
                   <div className="flex items-center gap-2.5 mb-3">
-                    <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-foreground text-white text-[10px] font-bold">{i + 1}</div>
+                    <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-foreground text-background text-[10px] font-bold">{i + 1}</div>
                     <h3 className="text-sm font-semibold text-foreground">{task.name}</h3>
                     <span className="text-[11px] text-text-muted">{task.subtasks.length} subtasks</span>
                   </div>
@@ -415,7 +416,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
               <h2 className="text-sm font-semibold text-foreground">Complete CSV Pack</h2>
               <p className="mt-0.5 text-xs text-text-muted">Download all {csvFiles.length} CSV files as a single ZIP archive.</p>
             </div>
-            <Button onClick={() => csvFiles.forEach((f) => downloadCsv([], f.name))} className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90">Download All as ZIP</Button>
+            <Button onClick={() => csvFiles.forEach((f) => downloadCsv([], f.name))} className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-background transition-colors hover:bg-foreground/90">Download All as ZIP</Button>
           </div>
 
           <div className="rounded-xl border border-border bg-background overflow-hidden">

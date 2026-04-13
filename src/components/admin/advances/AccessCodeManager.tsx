@@ -155,7 +155,7 @@ export default function AccessCodeManager({ advanceId, codes, onRefresh }: Acces
                 </button>
                 <button
                   onClick={() => handleRevoke(code.id)}
-                  className="rounded-md p-1.5 text-red-400 hover:bg-red-50 hover:text-red-600 transition-colors"
+                  className="rounded-md p-1.5 text-red-400 hover:bg-red-500/10 hover:text-red-600 transition-colors"
                   title="Revoke code"
                 >
                   <X size={14} />

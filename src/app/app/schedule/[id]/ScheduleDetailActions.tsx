@@ -14,7 +14,7 @@ interface ScheduleDetailActionsProps {
 const TRANSITIONS: Record<string, { label: string; nextStatus: string; variant: 'primary' | 'secondary'; className?: string }[]> = {
   draft: [
     { label: 'Publish', nextStatus: 'published', variant: 'primary' },
-    { label: 'Cancel', nextStatus: 'cancelled', variant: 'secondary', className: 'text-red-600 hover:bg-red-50' },
+    { label: 'Cancel', nextStatus: 'cancelled', variant: 'secondary', className: 'text-red-600 hover:bg-red-500/10' },
   ],
   published: [
     { label: 'Go Live', nextStatus: 'live', variant: 'primary' },
@@ -22,7 +22,7 @@ const TRANSITIONS: Record<string, { label: string; nextStatus: string; variant: 
   ],
   live: [
     { label: 'Complete', nextStatus: 'completed', variant: 'primary' },
-    { label: 'Cancel', nextStatus: 'cancelled', variant: 'secondary', className: 'text-red-600 hover:bg-red-50' },
+    { label: 'Cancel', nextStatus: 'cancelled', variant: 'secondary', className: 'text-red-600 hover:bg-red-500/10' },
   ],
 };
 
@@ -95,7 +95,7 @@ export default function ScheduleDetailActions({ id, currentStatus }: ScheduleDet
       ))}
 
       {currentStatus !== 'completed' && currentStatus !== 'cancelled' && (
-        <Button variant="secondary" size="sm" onClick={() => setShowDeleteConfirm(true)} className="text-red-600 hover:bg-red-50 ml-2">
+        <Button variant="secondary" size="sm" onClick={() => setShowDeleteConfirm(true)} className="text-red-600 hover:bg-red-500/10 ml-2">
           Delete
         </Button>
       )}

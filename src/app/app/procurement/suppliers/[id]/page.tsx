@@ -39,7 +39,7 @@ async function getVendorPOs(vendorId: string, orgId: string) {
 const STATUS_COLORS: Record<string, string> = {
   active: 'bg-green-50 text-green-700',
   inactive: 'bg-bg-secondary text-text-secondary',
-  blacklisted: 'bg-red-50 text-red-700',
+  blacklisted: 'bg-red-500/10 text-red-700',
 };
 
 export default async function SupplierDetailPage({ params }: { params: Promise<{ id: string }> }) {

@@ -10,7 +10,6 @@ export async function GET() {
   if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
-  const supabase = await createClient();
   const { data } = await supabase
     .from('organizations')
     .select('name, slug, settings')

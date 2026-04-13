@@ -64,7 +64,7 @@ export default function TimesheetApprovalCard({
             className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
               status === 'approved'
                 ? 'bg-green-50 text-green-700'
-                : 'bg-red-50 text-red-700'
+                : 'bg-red-500/10 text-red-700'
             }`}
           >
             {status === 'approved' ? 'Approved' : 'Rejected'}
@@ -98,7 +98,7 @@ export default function TimesheetApprovalCard({
           variant="secondary"
           onClick={() => handleAction('rejected')}
           disabled={loading}
-          className="text-red-600 hover:bg-red-50"
+          className="text-red-600 hover:bg-red-500/10"
         >
           Reject
         </Button>

@@ -34,7 +34,7 @@ export default function TaskDetailActions({ taskId, taskTitle }: TaskDetailActio
         </Button>
         <Button
           onClick={() => setShowDelete(true)}
-          className="rounded-lg border border-red-200 bg-background px-3 py-1.5 text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
+          className="rounded-lg border border-red-500/30 bg-background px-3 py-1.5 text-sm font-medium text-red-600 transition-colors hover:bg-red-500/10"
         >
           Delete
         </Button>

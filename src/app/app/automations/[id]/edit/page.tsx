@@ -1,5 +1,6 @@
-import Button from '@/components/ui/Button';
 'use client';
+
+import Button from '@/components/ui/Button';
 
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
@@ -205,7 +206,7 @@ export default function EditAutomationPage() {
           <Button
             onClick={() => setShowDeleteConfirm(true)}
             disabled={deleting}
-            className="rounded-lg border border-red-200 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
+            className="rounded-lg border border-red-500/30 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-500/10 transition-colors disabled:opacity-50"
           >
             {deleting ? 'Deleting...' : 'Delete Automation'}
           </Button>
@@ -219,7 +220,7 @@ export default function EditAutomationPage() {
             <Button
               onClick={handleSave}
               disabled={saving || !name || !triggerType || !actionType}
-              className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity disabled:opacity-50"
+              className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-background hover:opacity-90 transition-opacity disabled:opacity-50"
             >
               {saving ? 'Saving...' : 'Save Changes'}
             </Button>

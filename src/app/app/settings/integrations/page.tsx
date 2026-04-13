@@ -1,5 +1,6 @@
-import Button from '@/components/ui/Button';
 'use client';
+
+import Button from '@/components/ui/Button';
 
 const integrations = [
   { id: 'int_001', platform: 'Salesforce', description: 'Sync clients and proposals to Salesforce CRM.', enabled: false, category: 'CRM' },

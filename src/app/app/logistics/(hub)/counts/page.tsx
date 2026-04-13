@@ -13,7 +13,7 @@ const COUNT_STATUS_COLORS: Record<string, string> = {
   planned: 'bg-bg-secondary text-text-secondary',
   in_progress: 'bg-blue-50 text-blue-700',
   completed: 'bg-green-50 text-green-700',
-  cancelled: 'bg-red-50 text-red-700',
+  cancelled: 'bg-red-500/10 text-red-700',
 };
 
 const COUNT_TYPE_COLORS: Record<string, string> = {

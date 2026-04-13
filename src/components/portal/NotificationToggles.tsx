@@ -74,7 +74,7 @@ export default function NotificationToggles({
   return (
     <div className="space-y-4">
       {error && (
-        <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
+        <div className="rounded-md border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-700">
           {error}
         </div>
       )}
@@ -92,7 +92,7 @@ export default function NotificationToggles({
             onClick={() => handleToggle(notif.id)}
             disabled={pendingId === notif.id}
             className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors disabled:opacity-50 ${
-              notif.enabled ? 'bg-green-500' : 'bg-gray-200'
+              notif.enabled ? 'bg-green-500' : 'bg-bg-tertiary'
             }`}
             role="switch"
             aria-checked={notif.enabled}

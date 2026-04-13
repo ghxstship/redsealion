@@ -28,7 +28,6 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: 'No valid fields to update.' }, { status: 400 });
   }
 
-  const supabase = await createClient();
   const { error } = await supabase
     .from('organizations')
     .update(updates)

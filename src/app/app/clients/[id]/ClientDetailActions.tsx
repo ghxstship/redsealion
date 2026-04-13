@@ -1,8 +1,9 @@
-import Button from '@/components/ui/Button';
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import Button from '@/components/ui/Button';
+
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Trash2, Pencil } from 'lucide-react';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
@@ -28,10 +29,22 @@ interface ClientDetailActionsProps {
 
 export default function ClientDetailActions({ clientId, clientName, clientData }: ClientDetailActionsProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [showDelete, setShowDelete] = useState(false);
   const [showAddContact, setShowAddContact] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [showInteraction, setShowInteraction] = useState(false);
+
+  // Auto-open edit modal when navigated with ?edit=true
+  useEffect(() => {
+    if (searchParams.get('edit') === 'true' && clientData) {
+      setShowEdit(true);
+      // Clean up the query param
+      const url = new URL(window.location.href);
+      url.searchParams.delete('edit');
+      window.history.replaceState({}, '', url.toString());
+    }
+  }, [searchParams, clientData]);
 
   async function handleDelete() {
     const res = await fetch(`/api/clients/${clientId}`, { method: 'DELETE' });
@@ -47,34 +60,34 @@ export default function ClientDetailActions({ clientId, clientName, clientData }
     <>
       <div className="flex items-center gap-3 shrink-0">
         <Button
+          variant="secondary"
           onClick={() => setShowInteraction(true)}
-          className="rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
         >
           Log Interaction
         </Button>
         <Button
+          variant="secondary"
           onClick={() => setShowAddContact(true)}
-          className="rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
         >
           + Add Contact
         </Button>
         <Button
+          variant="secondary"
           onClick={() => setShowEdit(true)}
-          className="rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-bg-secondary"
         >
           <Pencil size={14} className="inline mr-1" />
           Edit
         </Button>
         <Button
+          variant="danger_ghost"
           onClick={() => setShowDelete(true)}
-          className="rounded-lg border border-red-200 bg-background px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
         >
           <Trash2 size={14} className="inline mr-1" />
           Delete
         </Button>
         <Link
           href={`/app/proposals/new?client_id=${clientId}`}
-          className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-foreground/90"
+          className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-background transition-colors hover:bg-foreground/90"
         >
           New Proposal
         </Link>

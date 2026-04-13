@@ -1,5 +1,6 @@
-import FormInput from '@/components/ui/FormInput';
 'use client';
+
+import FormInput from '@/components/ui/FormInput';
 
 import { useState } from 'react';
 import Card from '@/components/ui/Card';
@@ -138,7 +139,7 @@ export default function DataPrivacyPage() {
                     {!s.current && (
                       <Button
                         onClick={() => handleRevoke(s.id)}
-                        className="rounded-lg border border-red-200 bg-background px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+                        className="rounded-lg border border-red-500/30 bg-background px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-500/10 transition-colors"
                       >
                         Revoke
                       </Button>
@@ -157,7 +158,7 @@ export default function DataPrivacyPage() {
       </Card>
 
       {/* Danger Zone */}
-      <div className="rounded-xl border border-red-200 bg-background px-6 py-6">
+      <div className="rounded-xl border border-red-500/30 bg-background px-6 py-6">
         <h3 className="text-sm font-semibold text-red-600 mb-5">Danger Zone</h3>
         <div className="space-y-6">
           {/* Delete Account */}
@@ -181,7 +182,7 @@ export default function DataPrivacyPage() {
               </div>
               <Button
                 disabled={!deletePassword}
-                className="rounded-lg border border-red-200 bg-background px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
+                className="rounded-lg border border-red-500/30 bg-background px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-500/10 transition-colors disabled:opacity-50"
               >
                 Delete Account
               </Button>
@@ -211,7 +212,7 @@ export default function DataPrivacyPage() {
               </div>
               <Button
                 disabled={!orgConfirm}
-                className="rounded-lg border border-red-200 bg-background px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
+                className="rounded-lg border border-red-500/30 bg-background px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-500/10 transition-colors disabled:opacity-50"
               >
                 Delete Organization
               </Button>

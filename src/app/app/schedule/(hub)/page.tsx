@@ -39,7 +39,7 @@ export default async function ScheduleTimelinePage() {
   return (
     <TierGate feature="events">
       <PageHeader title="Production Schedule" subtitle="Manage build & strike timelines, run of show documents, and milestones across all events.">
-        <Link href="/app/schedule/new" className="inline-flex items-center justify-center rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity">
+        <Link href="/app/schedule/new" className="inline-flex items-center justify-center rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-background hover:opacity-90 transition-opacity">
           New Schedule
         </Link>
       </PageHeader>

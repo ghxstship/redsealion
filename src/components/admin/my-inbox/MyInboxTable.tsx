@@ -45,7 +45,7 @@ const NOTIFICATION_TYPE_COLORS: Record<string, string> = {
 };
 
 const NOTIFICATION_PRIORITY_COLORS: Record<string, string> = {
-  urgent: 'bg-red-50 text-red-700',
+  urgent: 'bg-red-500/10 text-red-700',
   high: 'bg-amber-50 text-amber-700',
   normal: 'bg-bg-secondary text-text-secondary',
   low: 'bg-slate-50 text-slate-500',

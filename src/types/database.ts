@@ -17625,3 +17625,11 @@ export const Constants = {
   },
 } as const
 
+/* ─────────────────────────────────────────────────────────
+   Convenience type aliases for advance-related enums
+   ───────────────────────────────────────────────────────── */
+export type AdvanceStatus = Database["public"]["Enums"]["advance_status"];
+export type AdvanceMode = Database["public"]["Enums"]["advance_mode"];
+export type AdvanceType = Database["public"]["Enums"]["advance_type"];
+export type AdvancePriority = Database["public"]["Enums"]["advance_priority"];
+export type FulfillmentStatus = Database["public"]["Enums"]["fulfillment_status"];

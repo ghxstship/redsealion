@@ -28,7 +28,6 @@ export async function PATCH(request: Request, context: RouteContext) {
     return NextResponse.json({ error: 'Rating must be 1-5' }, { status: 400 });
   }
 
-  const supabase = await createClient();
   const update: Record<string, unknown> = {};
   if (rating !== undefined) update.rating = rating;
   if (category !== undefined) update.category = category;

@@ -81,7 +81,7 @@ export default function RowActionMenu({ actions }: RowActionMenuProps) {
                   }}
                   className={`w-full flex items-center gap-2 px-3 py-1.5 text-left text-xs font-medium transition-colors ${
                     isDanger
-                      ? 'text-red-600 hover:bg-red-50'
+                      ? 'text-red-600 hover:bg-red-500/10'
                       : 'text-foreground hover:bg-bg-secondary'
                   }`}
                 >

@@ -13,8 +13,6 @@ export async function GET(_request: NextRequest, context: RouteContext) {
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
   const { id } = await context.params;
-  const supabase = await createClient();
-
   const { data, error } = await supabase
     .from('budget_line_items')
     .select()

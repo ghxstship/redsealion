@@ -113,7 +113,7 @@ export default function ViewBar({
                   </button>
                   <button
                     onClick={() => { onDeleteView(view.id); setMenuOpenId(null); }}
-                    className="w-full px-3 py-1.5 text-left text-xs text-red-600 hover:bg-red-50 transition-colors"
+                    className="w-full px-3 py-1.5 text-left text-xs text-red-600 hover:bg-red-500/10 transition-colors"
                   >
                     Delete
                   </button>

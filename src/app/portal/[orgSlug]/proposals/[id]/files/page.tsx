@@ -48,7 +48,7 @@ function FileTypeIcon({ mimeType }: { mimeType: string }) {
     );
   }
   return (
-    <div className="h-10 w-10 rounded-lg bg-gray-100 flex items-center justify-center">
+    <div className="h-10 w-10 rounded-lg bg-bg-secondary flex items-center justify-center">
       <span className="text-xs font-bold text-gray-500">FILE</span>
     </div>
   );
@@ -64,7 +64,7 @@ function CategoryBadge({ category }: { category: string }) {
     presentation: 'bg-pink-50 text-pink-700',
   };
   return (
-    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${styles[category] ?? 'bg-gray-100 text-gray-600'}`}>
+    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${styles[category] ?? 'bg-bg-secondary text-gray-600'}`}>
       {category}
     </span>
   );

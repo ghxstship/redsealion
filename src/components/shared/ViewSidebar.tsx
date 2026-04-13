@@ -142,7 +142,7 @@ export default function ViewSidebar({
                 </button>
               ))}
               <div className="border-t border-border my-1" />
-              <button onClick={() => { onDeleteView(view.id); setContextId(null); }} className="w-full px-3 py-1.5 text-left text-xs text-red-600 hover:bg-red-50 transition-colors">Delete</button>
+              <button onClick={() => { onDeleteView(view.id); setContextId(null); }} className="w-full px-3 py-1.5 text-left text-xs text-red-600 hover:bg-red-500/10 transition-colors">Delete</button>
             </div>
           </>
         )}

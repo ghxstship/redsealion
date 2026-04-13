@@ -163,6 +163,7 @@ export default function ActivationsTable({ activations }: { activations: Activat
                 {isVisible('ends_at') && <td className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(item.ends_at)}</td>}
                 <td className="px-6 py-3.5">
                   <RowActionMenu actions={[
+                    { label: 'View', onClick: () => router.push(`/app/events`) },
                     { label: 'Delete', variant: 'danger', onClick: () => setShowDeleteConfirm(item.id) },
                   ]} />
                 </td>

@@ -108,7 +108,7 @@ const STATUS_COLORS: Record<string, string> = {
   overdue: 'bg-red-50 text-red-700',
   paid: 'bg-green-50 text-green-700',
   partially_paid: 'bg-yellow-50 text-yellow-700',
-  draft: 'bg-gray-100 text-gray-600',
+  draft: 'bg-bg-secondary text-gray-600',
 };
 
 function formatLabel(s: string): string {
@@ -161,7 +161,7 @@ export default async function PaymentPage({
           <h2 className="text-sm font-semibold text-foreground">Invoice Summary</h2>
           <span
             className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-              STATUS_COLORS[invoice.status] ?? 'bg-gray-100 text-gray-600'
+              STATUS_COLORS[invoice.status] ?? 'bg-bg-secondary text-gray-600'
             }`}
           >
             {formatLabel(invoice.status)}

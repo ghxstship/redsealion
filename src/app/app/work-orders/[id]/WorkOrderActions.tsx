@@ -14,19 +14,19 @@ interface WorkOrderActionsProps {
 const TRANSITIONS: Record<string, { label: string; nextStatus: string; variant: 'primary' | 'secondary'; className?: string }[]> = {
   draft: [
     { label: 'Dispatch', nextStatus: 'dispatched', variant: 'primary' },
-    { label: 'Cancel', nextStatus: 'cancelled', variant: 'secondary', className: 'text-red-600 hover:bg-red-50' },
+    { label: 'Cancel', nextStatus: 'cancelled', variant: 'secondary', className: 'text-red-600 hover:bg-red-500/10' },
   ],
   dispatched: [
     { label: 'Start Work', nextStatus: 'in_progress', variant: 'primary' },
-    { label: 'Cancel', nextStatus: 'cancelled', variant: 'secondary', className: 'text-red-600 hover:bg-red-50' },
+    { label: 'Cancel', nextStatus: 'cancelled', variant: 'secondary', className: 'text-red-600 hover:bg-red-500/10' },
   ],
   accepted: [
     { label: 'Start Work', nextStatus: 'in_progress', variant: 'primary' },
-    { label: 'Cancel', nextStatus: 'cancelled', variant: 'secondary', className: 'text-red-600 hover:bg-red-50' },
+    { label: 'Cancel', nextStatus: 'cancelled', variant: 'secondary', className: 'text-red-600 hover:bg-red-500/10' },
   ],
   in_progress: [
     { label: 'Complete', nextStatus: 'completed', variant: 'primary' },
-    { label: 'Cancel', nextStatus: 'cancelled', variant: 'secondary', className: 'text-red-600 hover:bg-red-50' },
+    { label: 'Cancel', nextStatus: 'cancelled', variant: 'secondary', className: 'text-red-600 hover:bg-red-500/10' },
   ],
 };
 

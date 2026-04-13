@@ -77,7 +77,7 @@ export default async function BudgetsPage() {
       >
         <Link
           href="/app/proposals"
-          className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity"
+          className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-background hover:opacity-90 transition-opacity"
         >
           New Budget
         </Link>
@@ -92,7 +92,7 @@ export default async function BudgetsPage() {
           action={
             <Link
               href="/app/proposals"
-              className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity whitespace-nowrap"
+              className="rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-background hover:opacity-90 transition-opacity whitespace-nowrap"
             >
               Go to Proposals
             </Link>

@@ -1,5 +1,6 @@
-import Button from '@/components/ui/Button';
 'use client';
+
+import Button from '@/components/ui/Button';
 
 import { useState, useMemo, use, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';

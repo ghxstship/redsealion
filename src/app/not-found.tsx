@@ -12,7 +12,7 @@ export default function NotFound() {
         <div className="mt-6 flex items-center justify-center gap-3">
           <Link
             href="/app"
-            className="rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-foreground/90"
+            className="rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-background transition-colors hover:bg-foreground/90"
           >
             Go to Dashboard
           </Link>

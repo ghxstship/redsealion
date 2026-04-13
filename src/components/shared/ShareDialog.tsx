@@ -52,7 +52,7 @@ export default function ShareDialog({ open, onClose, entityType, entityId, entit
           </div>
           <button
             onClick={() => setIsPublic(!isPublic)}
-            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${isPublic ? 'bg-green-500' : 'bg-gray-200'}`}
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${isPublic ? 'bg-green-500' : 'bg-bg-tertiary'}`}
           >
             <span className={`inline-block h-4 w-4 rounded-full bg-background transition-transform ${isPublic ? 'translate-x-6' : 'translate-x-1'}`} />
           </button>

@@ -98,7 +98,7 @@ export default function PeopleGrid({ members }: { members: TeamMember[] }) {
     <>
       {/* Toolbar */}
       {deleteError && (
-        <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 flex items-center justify-between">
+        <div className="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-800 flex items-center justify-between">
           <span>{deleteError}</span>
           <button onClick={() => setDeleteError(null)} className="text-red-600 hover:text-red-800 text-lg leading-none">&times;</button>
         </div>

@@ -7,6 +7,7 @@ import { ShieldCheck, ShieldX } from 'lucide-react';
 import { useSort } from '@/hooks/useSort';
 import SortableHeader from '@/components/shared/SortableHeader';
 import RowActionMenu from '@/components/shared/RowActionMenu';
+import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import SearchInput from '@/components/ui/SearchInput';
 import EmptyState from '@/components/ui/EmptyState';
 import StatusBadge from '@/components/ui/StatusBadge';
@@ -34,6 +35,7 @@ export default function VendorListClient({ vendors }: { vendors: VendorRow[] }) 
   const router = useRouter();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [deleteVendorId, setDeleteVendorId] = useState<string | null>(null);
 
   const filtered = useMemo(() => {
     return vendors.filter((v) => {
@@ -134,6 +136,8 @@ export default function VendorListClient({ vendors }: { vendors: VendorRow[] }) 
                     <td className="px-6 py-3.5">
                       <RowActionMenu actions={[
                         { label: 'View', onClick: () => router.push(`/app/finance/vendors/${vendor.id}`) },
+                        { label: 'Edit', onClick: () => router.push(`/app/finance/vendors/${vendor.id}?edit=true`) },
+                        { label: 'Delete', variant: 'danger', onClick: () => setDeleteVendorId(vendor.id) },
                       ]} />
                     </td>
                   </tr>
@@ -142,6 +146,22 @@ export default function VendorListClient({ vendors }: { vendors: VendorRow[] }) 
             </table>
           </div>
         </div>
+      )}
+
+      {deleteVendorId && (
+        <ConfirmDialog
+          open
+          title="Delete Vendor"
+          message="Are you sure you want to delete this vendor? Associated purchase orders will not be deleted."
+          confirmLabel="Delete"
+          variant="danger"
+          onConfirm={async () => {
+            await fetch(`/api/vendors/${deleteVendorId}`, { method: 'DELETE' });
+            setDeleteVendorId(null);
+            router.refresh();
+          }}
+          onCancel={() => setDeleteVendorId(null)}
+        />
       )}
     </>
   );

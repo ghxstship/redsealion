@@ -100,7 +100,7 @@ export default function ProjectsHubClient({ projects: initialProjects }: { proje
                 onClick={() => setStatusFilter(s)}
                 className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
                   s === statusFilter
-                    ? 'bg-foreground text-white'
+                    ? 'bg-foreground text-background'
                     : 'bg-bg-secondary text-text-secondary hover:bg-bg-tertiary'
                 }`}
               >

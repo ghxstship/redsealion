@@ -58,7 +58,7 @@ export default async function PunchListPage() {
               </thead>
               <tbody className="divide-y divide-border">
                 {items.map((item) => (
-                  <tr key={item.id} className={`hover:bg-bg-secondary/50 transition-colors ${item.priority === 'urgent' ? 'bg-red-50/30' : ''}`}>
+                  <tr key={item.id} className={`hover:bg-bg-secondary/50 transition-colors ${item.priority === 'urgent' ? 'bg-red-500/5' : ''}`}>
                     <td className="px-4 py-3 font-medium text-foreground">{item.title}</td>
                     <td className="px-4 py-3 text-text-secondary">{item.event_name ?? '—'}</td>
                     <td className="px-4 py-3"><span className={`font-medium capitalize ${PRIORITY_COLORS[item.priority ?? 'medium']}`}>{item.priority ?? 'medium'}</span></td>
