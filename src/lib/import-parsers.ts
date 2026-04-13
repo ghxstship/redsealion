@@ -248,7 +248,7 @@ const PHONE_RE = /^[\d\s().+\-x#]+$/;
 const URL_RE = /^https?:\/\/.+/i;
 
 /** Validate a single cell value against a field definition */
-export function validateCell(value: string, field: EntityField): CellValidation {
+function validateCell(value: string, field: EntityField): CellValidation {
   const trimmed = value.trim();
 
   // Required check

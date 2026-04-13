@@ -42,7 +42,7 @@ export const TRIGGER_TYPES = [
 
 export type AutomationTriggerType = (typeof TRIGGER_TYPES)[number]['value'];
 
-export const TRIGGER_TYPE_VALUES: string[] = TRIGGER_TYPES.map((t) => t.value);
+const TRIGGER_TYPE_VALUES: string[] = TRIGGER_TYPES.map((t) => t.value);
 
 // ---------------------------------------------------------------------------
 // Action types
@@ -67,4 +67,4 @@ export const ACTION_TYPES = [
 
 export type AutomationActionType = (typeof ACTION_TYPES)[number]['value'];
 
-export const ACTION_TYPE_VALUES: string[] = ACTION_TYPES.map((a) => a.value);
+const ACTION_TYPE_VALUES: string[] = ACTION_TYPES.map((a) => a.value);

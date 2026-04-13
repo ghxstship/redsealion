@@ -8,7 +8,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
  * Server-side tier guard for API routes.
  * Returns null if access is granted, or a 403 NextResponse if denied.
  */
-export async function requireTier(
+async function requireTier(
   requiredTier: SubscriptionTier
 ): Promise<NextResponse | null> {
   const supabase = await createClient();

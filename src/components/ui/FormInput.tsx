@@ -1,6 +1,6 @@
 import { forwardRef, type InputHTMLAttributes } from 'react';
 
-export interface FormInputProps extends InputHTMLAttributes<HTMLInputElement> {
+interface FormInputProps extends InputHTMLAttributes<HTMLInputElement> {
   /** Compact uses smaller padding. Defaults to 'default'. */
   inputSize?: 'default' | 'compact';
 }

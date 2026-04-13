@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-export interface MetricCardProps {
+interface MetricCardProps {
   /** Metric label shown above the value. */
   label: string;
   /** The primary metric value. */

@@ -9,7 +9,7 @@
  * @module lib/logger
  */
 
-export type LogLevel = 'debug' | 'info' | 'warn' | 'error' | 'fatal';
+type LogLevel = 'debug' | 'info' | 'warn' | 'error' | 'fatal';
 
 interface LogEntry {
   timestamp: string;
@@ -120,4 +120,4 @@ export function createLogger(service: string) {
 }
 
 /** Singleton logger for general application use. */
-export const logger = createLogger('flytedeck');
+const logger = createLogger('flytedeck');

@@ -18075,7 +18075,7 @@ type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
 
 type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
-export type Tables<
+type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
@@ -18104,7 +18104,7 @@ export type Tables<
       : never
     : never
 
-export type TablesInsert<
+type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
@@ -18129,7 +18129,7 @@ export type TablesInsert<
       : never
     : never
 
-export type TablesUpdate<
+type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
@@ -18154,7 +18154,7 @@ export type TablesUpdate<
       : never
     : never
 
-export type Enums<
+type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
@@ -18171,7 +18171,7 @@ export type Enums<
     ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
     : never
 
-export type CompositeTypes<
+type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
@@ -18188,7 +18188,7 @@ export type CompositeTypes<
     ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
 
-export const Constants = {
+const Constants = {
   graphql_public: {
     Enums: {},
   },
@@ -18642,7 +18642,7 @@ type PublicEnums = Database['public']['Enums'];
 // Organizations & Users
 export type Organization = PublicTables['organizations']['Row'];
 export type User = PublicTables['users']['Row'];
-export type OrganizationRole = PublicTables['organization_memberships']['Row'];
+type OrganizationRole = PublicTables['organization_memberships']['Row'];
 
 // Proposals & Phases
 export type Proposal = PublicTables['proposals']['Row'];
@@ -18658,24 +18658,24 @@ export type MilestoneRequirement = PublicTables['milestone_requirements']['Row']
 
 // Clients & Contacts
 export type Client = PublicTables['clients']['Row'];
-export type ClientContact = PublicTables['client_contacts']['Row'];
+type ClientContact = PublicTables['client_contacts']['Row'];
 
 // Deals & Pipeline
 export type Deal = PublicTables['deals']['Row'];
-export type DealWithClient = Deal & { client?: Client | null };
+type DealWithClient = Deal & { client?: Client | null };
 
 // Invoices & Payments
 export type Invoice = PublicTables['invoices']['Row'];
-export type InvoiceLineItem = PublicTables['invoice_line_items']['Row'];
-export type InvoicePayment = PublicTables['invoice_payments']['Row'];
+type InvoiceLineItem = PublicTables['invoice_line_items']['Row'];
+type InvoicePayment = PublicTables['invoice_payments']['Row'];
 
 // Assets
 export type Asset = PublicTables['assets']['Row'];
-export type AssetLocationHistory = PublicTables['asset_location_history']['Row'];
+type AssetLocationHistory = PublicTables['asset_location_history']['Row'];
 
 // Crew
 export type CrewProfile = PublicTables['crew_profiles']['Row'];
-export type CrewProfileWithUser = CrewProfile & { users: User | null };
+type CrewProfileWithUser = CrewProfile & { users: User | null };
 export type CrewBooking = PublicTables['crew_bookings']['Row'];
 export type CrewAvailability = PublicTables['crew_availability']['Row'];
 
@@ -18683,7 +18683,7 @@ export type CrewAvailability = PublicTables['crew_availability']['Row'];
 export type TeamAssignment = PublicTables['team_assignments']['Row'];
 
 // Terms
-export type TermsDocument = PublicTables['terms_documents']['Row'];
+type TermsDocument = PublicTables['terms_documents']['Row'];
 
 // Tasks
 export type TaskCommentWithAuthor = PublicTables['task_comments']['Row'] & { users: User | null };
@@ -18698,18 +18698,18 @@ export type AdvanceCategory = PublicTables['advance_categories']['Row'];
 export type AdvanceSubcategory = PublicTables['advance_subcategories']['Row'];
 export type AdvanceCollaborator = PublicTables['advance_collaborators']['Row'];
 export type AdvanceComment = PublicTables['advance_comments']['Row'];
-export type AdvanceAccessCode = PublicTables['advance_access_codes']['Row'];
+type AdvanceAccessCode = PublicTables['advance_access_codes']['Row'];
 export type AdvanceModifierList = PublicTables['advance_modifier_lists']['Row'];
 export type AdvanceModifierOption = PublicTables['advance_modifier_options']['Row'];
 export type AdvanceStatusHistoryEntry = PublicTables['advance_status_history']['Row'];
 
 // ── APS (Atomic Production System) table row aliases ───────────────
-export type Space = PublicTables['spaces']['Row'];
-export type Zone = PublicTables['zones']['Row'];
-export type Component = PublicTables['components']['Row'];
-export type ComponentItem = PublicTables['component_items']['Row'];
-export type HierarchyTask = PublicTables['hierarchy_tasks']['Row'];
-export type HierarchyStatusLog = PublicTables['hierarchy_status_log']['Row'];
+type Space = PublicTables['spaces']['Row'];
+type Zone = PublicTables['zones']['Row'];
+type Component = PublicTables['components']['Row'];
+type ComponentItem = PublicTables['component_items']['Row'];
+type HierarchyTask = PublicTables['hierarchy_tasks']['Row'];
+type HierarchyStatusLog = PublicTables['hierarchy_status_log']['Row'];
 
 // ── Convenience enum aliases ────────────────────────────────────────
 export type AdvanceMode = PublicEnums['advance_mode'];
@@ -18722,11 +18722,11 @@ export type AssetStatus = PublicEnums['asset_status'];
 export type CrewAvailabilityStatus = PublicEnums['availability_status'];
 export type CrewBookingStatus = PublicEnums['booking_status'];
 export type DealStage = PublicEnums['deal_stage'];
-export type FulfillmentMethod = PublicEnums['fulfillment_method'];
-export type SpaceType = PublicEnums['space_type'];
-export type ZoneType = PublicEnums['zone_type'];
-export type ComponentType = PublicEnums['component_type'];
-export type HierarchyStatus = PublicEnums['hierarchy_status'];
+type FulfillmentMethod = PublicEnums['fulfillment_method'];
+type SpaceType = PublicEnums['space_type'];
+type ZoneType = PublicEnums['zone_type'];
+type ComponentType = PublicEnums['component_type'];
+type HierarchyStatus = PublicEnums['hierarchy_status'];
 export type FulfillmentStatus = PublicEnums['fulfillment_status'];
 export type FulfillmentType = PublicEnums['fulfillment_type'];
 export type InvoiceStatus = PublicEnums['invoice_status'];
@@ -18739,7 +18739,7 @@ export type SubscriptionTier = PublicEnums['subscription_tier'];
 export type UnitOfMeasure = PublicEnums['unit_of_measure'];
 export type CollaboratorRole = PublicEnums['project_role'];
 export type InviteStatus = PublicEnums['invite_status'];
-export type CreativeReferenceType = PublicEnums['creative_reference_type'];
+type CreativeReferenceType = PublicEnums['creative_reference_type'];
 
 // ── JSON composite type aliases ────────────────────────────────────
 // These are JSON fields that have a known structure but are stored in
@@ -18916,7 +18916,7 @@ export type OrgSettings = {
   [key: string]: unknown;
 };
 
-export type RequirementAssignee = string;
+export type RequirementAssignee = PublicEnums['requirement_assignee'];
 
 // ── Platform Role (for RBAC) ────────────────────────────────────────
 // PlatformRole is defined in src/lib/permissions.ts (not a DB enum)

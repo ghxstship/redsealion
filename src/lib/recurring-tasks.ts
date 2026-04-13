@@ -77,7 +77,7 @@ export function isRecurrenceComplete(rule: RecurrenceRule): boolean {
 /**
  * Check whether a new occurrence should be created (i.e., the next date is in the past or today).
  */
-export function shouldCreateOccurrence(
+function shouldCreateOccurrence(
   rule: RecurrenceRule,
   lastDueDate: string | null,
 ): boolean {
@@ -94,7 +94,7 @@ export function shouldCreateOccurrence(
 /**
  * Describe a recurrence rule in human-readable form.
  */
-export function describeRecurrence(rule: RecurrenceRule): string {
+function describeRecurrence(rule: RecurrenceRule): string {
   const interval = rule.interval || 1;
   const freq = rule.frequency;
 

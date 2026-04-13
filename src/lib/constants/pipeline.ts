@@ -1,4 +1,4 @@
-import type { DealStage } from '@/types/database';
+import type { DealStage } from '@/types/enums';
 
 /**
  * Canonical deal stage labels.
@@ -26,7 +26,7 @@ export const STAGE_LABELS: Record<DealStage, string> = {
  * Ordered list of active stages (excludes terminal states like lost/on_hold).
  * Used by pipeline board layout and forecast calculations.
  */
-export const ACTIVE_STAGES: DealStage[] = [
+const ACTIVE_STAGES: DealStage[] = [
   'lead',
   'qualified',
   'proposal_sent',

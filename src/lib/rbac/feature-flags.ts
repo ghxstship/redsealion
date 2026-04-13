@@ -9,7 +9,7 @@ import { createClient } from '@/lib/supabase/server';
 /**
  * Evaluate a single feature flag for the given org/user context.
  */
-export async function evaluateFlag(
+async function evaluateFlag(
   key: string,
   orgId: string | null,
   userId: string | null,

@@ -1,3 +1,5 @@
+import type { ProposalStatus } from '@/types/enums';
+
 /**
  * Canonical project-related constants — SSOT
  * 
@@ -20,7 +22,7 @@ export const PROJECT_STATUSES = [
   { value: 'archived', label: 'Archived' },
 ] as const;
 
-export const PROJECT_STATUS_VALUES = PROJECT_STATUSES.map((s) => s.value);
+const PROJECT_STATUS_VALUES = PROJECT_STATUSES.map((s) => s.value);
 
 export const PROJECT_VISIBILITY = [
   { value: 'internal', label: 'Internal' },
@@ -35,12 +37,12 @@ export const PROJECT_VISIBILITY = [
  * in profitability analysis.
  * ──────────────────────────────────────────── */
 
-export const PROFITABILITY_ELIGIBLE_STATUSES = [
+export const PROFITABILITY_ELIGIBLE_STATUSES: ProposalStatus[] = [
   'approved',
   'in_production',
   'active',
   'complete',
-] as const;
+];
 
 /* ────────────────────────────────────────────
  * COST CATEGORIES

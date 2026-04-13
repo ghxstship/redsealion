@@ -67,4 +67,4 @@ function ComplianceTable({ docs, emptyMsg }: { docs: Awaited<ReturnType<typeof g
   );
 }
 
-export { getDocsByType, ComplianceStatusBadge as StatusBadge, ComplianceTable };
+export { getDocsByType,  ComplianceTable };

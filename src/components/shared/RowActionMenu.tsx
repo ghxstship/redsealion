@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, type ReactNode } from 'react';
 import { MoreVertical, Eye, Pencil, Copy, Trash2 } from 'lucide-react';
 
 /** A single item inside the row action dropdown. */
-export interface RowAction {
+interface RowAction {
   label: string;
   icon?: ReactNode;
   variant?: 'default' | 'danger';

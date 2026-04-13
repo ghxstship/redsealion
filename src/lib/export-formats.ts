@@ -32,7 +32,7 @@ function extractValue<T extends object>(row: T, key: string): string {
 // CSV Generation (RFC 4180)
 // ---------------------------------------------------------------------------
 
-export function generateCSV<T extends object>(data: T[], columns: ExportColumn[]): string {
+function generateCSV<T extends object>(data: T[], columns: ExportColumn[]): string {
   const header = columns.map((c) => escapeCSV(c.label)).join(',');
   const rows = data.map((row) =>
     columns.map((c) => escapeCSV(extractValue(row, c.key))).join(','),
@@ -51,7 +51,7 @@ function escapeCSV(value: string): string {
 // TSV Generation
 // ---------------------------------------------------------------------------
 
-export function generateTSV<T extends object>(data: T[], columns: ExportColumn[]): string {
+function generateTSV<T extends object>(data: T[], columns: ExportColumn[]): string {
   const header = columns.map((c) => c.label).join('\t');
   const rows = data.map((row) =>
     columns.map((c) => extractValue(row, c.key).replace(/\t/g, ' ')).join('\t'),
@@ -63,7 +63,7 @@ export function generateTSV<T extends object>(data: T[], columns: ExportColumn[]
 // JSON Generation
 // ---------------------------------------------------------------------------
 
-export function generateJSON<T extends object>(data: T[], columns: ExportColumn[]): string {
+function generateJSON<T extends object>(data: T[], columns: ExportColumn[]): string {
   const filtered = data.map((row) => {
     const obj: Record<string, unknown> = {};
     for (const c of columns) {
@@ -78,7 +78,7 @@ export function generateJSON<T extends object>(data: T[], columns: ExportColumn[
 // XLSX Generation (via write-excel-file)
 // ---------------------------------------------------------------------------
 
-export async function generateXLSX<T extends object>(
+async function generateXLSX<T extends object>(
   data: T[],
   columns: ExportColumn[],
   filename: string,

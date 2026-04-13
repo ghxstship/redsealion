@@ -14,7 +14,7 @@ import type { Json } from '@/types/database';
    Shared Address / Contact (for JSONB columns)
    ───────────────────────────────────────────────────────── */
 
-export interface DocAddress {
+interface DocAddress {
   street?: string;
   city?: string;
   state?: string;
@@ -22,7 +22,7 @@ export interface DocAddress {
   country?: string;
 }
 
-export interface DocContact {
+interface DocContact {
   name?: string;
   phone?: string;
   email?: string;
@@ -86,7 +86,7 @@ export interface DocChangeOrderLineItem {
    Terms Document (JSONB sections)
    ───────────────────────────────────────────────────────── */
 
-export interface DocTermsSection {
+interface DocTermsSection {
   title: string;
   body: string;
   order?: number;
@@ -96,7 +96,7 @@ export interface DocTermsSection {
    BOM / Deliverable Metadata (JSONB)
    ───────────────────────────────────────────────────────── */
 
-export interface DocDeliverableMeta {
+interface DocDeliverableMeta {
   dimensions?: string;
   weight?: string | number;
   material?: string;
@@ -121,19 +121,19 @@ export function castActivationDates(val: Json | null | undefined): DocVenueActiv
   return castJson<DocVenueActivationDates | null>(val ?? null, null);
 }
 
-export function castLoadInStrike(val: Json | null | undefined): DocVenueLoadInStrike[] {
+function castLoadInStrike(val: Json | null | undefined): DocVenueLoadInStrike[] {
   return castJson<DocVenueLoadInStrike[]>(val ?? null, []);
 }
 
-export function castVenueContact(val: Json | null | undefined): DocVenueContact | null {
+function castVenueContact(val: Json | null | undefined): DocVenueContact | null {
   return castJson<DocVenueContact | null>(val ?? null, null);
 }
 
-export function castTermsSections(val: Json | null | undefined): DocTermsSection[] {
+function castTermsSections(val: Json | null | undefined): DocTermsSection[] {
   return castJson<DocTermsSection[]>(val ?? null, []);
 }
 
-export function castDeliverableMeta(val: Json | null | undefined): DocDeliverableMeta {
+function castDeliverableMeta(val: Json | null | undefined): DocDeliverableMeta {
   return castJson<DocDeliverableMeta>(val ?? null, {});
 }
 
@@ -152,12 +152,12 @@ export function castLoadInStrikeEntry(val: Json | null | undefined): DocVenueLoa
 }
 
 /** Location JSONB column (assets / location history) */
-export interface DocAssetLocation {
+interface DocAssetLocation {
   facilityId?: string;
   type?: string;
   venueId?: string;
 }
 
-export function castAssetLocationDoc(val: Json | null | undefined): DocAssetLocation | null {
+function castAssetLocationDoc(val: Json | null | undefined): DocAssetLocation | null {
   return castJson<DocAssetLocation | null>(val ?? null, null);
 }

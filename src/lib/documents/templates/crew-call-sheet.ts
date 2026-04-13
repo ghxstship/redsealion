@@ -46,7 +46,7 @@ import {
 // Public interface
 // ---------------------------------------------------------------------------
 
-export interface CrewCallSheetData {
+interface CrewCallSheetData {
   org: Organization;
   proposal: Proposal;
   venue: Venue;

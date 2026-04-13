@@ -10,7 +10,7 @@ import Button from '@/components/ui/Button';
 import Alert from '@/components/ui/Alert';
 import { PORTFOLIO_CATEGORIES } from '@/components/admin/portfolio/PortfolioGrid';
 
-export interface PortfolioItem {
+interface PortfolioItem {
   id: string;
   project_name: string;
   project_year: number | null;

@@ -1,6 +1,6 @@
 import { formatLabel } from '@/lib/utils';
 
-export type BadgeVariant = 'default' | 'success' | 'warning' | 'error' | 'info' | 'muted';
+type BadgeVariant = 'default' | 'success' | 'warning' | 'error' | 'info' | 'muted';
 
 const VARIANT_CLASSES: Record<BadgeVariant, string> = {
   default: 'bg-bg-secondary text-text-secondary',

@@ -40,7 +40,7 @@ import { castDocAddress, castActivationDates } from '../doc-types';
 // Public interface
 // ---------------------------------------------------------------------------
 
-export interface PunchListData {
+interface PunchListData {
   org: Organization;
   proposal: Proposal;
   client: Client;

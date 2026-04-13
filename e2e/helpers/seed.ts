@@ -309,4 +309,4 @@ export async function cleanupTestData() {
 
 // ─── Exports ─────────────────────────────────────────────────────────────────
 
-export { TEST_PASSWORD, ROLE_EMAILS, ROLE_LIST, TIER_LIST };
+export { TEST_PASSWORD, ROLE_EMAILS, ROLE_LIST,  };

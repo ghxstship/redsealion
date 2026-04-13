@@ -9,7 +9,7 @@
  */
 
 // ─── Duration tokens (ms) ───────────────────────────────────────────
-export const duration = {
+const duration = {
   instant: 100,   // Micro-interactions: toggle, checkbox, icon swap
   fast: 150,      // Tooltips, dropdowns, hover states
   normal: 200,    // Modals, drawers, cards, most UI
@@ -18,7 +18,7 @@ export const duration = {
 } as const;
 
 // ─── Easing tokens (cubic-bezier) ───────────────────────────────────
-export const ease = {
+const ease = {
   default: 'cubic-bezier(0.25, 0.1, 0.25, 1)',     // General purpose
   in: 'cubic-bezier(0.4, 0, 1, 1)',                  // Elements exiting
   out: 'cubic-bezier(0, 0, 0.2, 1)',                  // Elements entering
@@ -28,7 +28,7 @@ export const ease = {
 } as const;
 
 // ─── Easing as arrays (for Framer Motion) ───────────────────────────
-export const easeArray = {
+const easeArray = {
   default: [0.25, 0.1, 0.25, 1],
   in: [0.4, 0, 1, 1],
   out: [0, 0, 0.2, 1],
@@ -38,7 +38,7 @@ export const easeArray = {
 } as const;
 
 // ─── Semantic presets (declarative) ─────────────────────────────────
-export const preset = {
+const preset = {
   fadeIn:       { opacity: [0, 1],           duration: duration.normal, ease: ease.out },
   fadeOut:      { opacity: [1, 0],           duration: duration.fast,   ease: ease.in },
   slideUp:     { y: [8, 0],     opacity: [0, 1], duration: duration.normal, ease: ease.out },
@@ -101,7 +101,7 @@ export const fmTransition = {
 } as const;
 
 // ─── Aggregate export ───────────────────────────────────────────────
-export const motion = {
+const motion = {
   duration,
   ease,
   easeArray,

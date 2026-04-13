@@ -352,7 +352,7 @@ export default function MarketplaceJobPage({ params }: { params: Promise<{ id: s
                   <div>
                     <p className="text-xs text-text-muted uppercase tracking-wider mb-1">Current Status</p>
                     <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                      BID_STATUS_COLORS[existingBid.status] || 'bg-blue-100 text-blue-800'
+                      BID_STATUS_COLORS[existingBid.status as keyof typeof BID_STATUS_COLORS] || 'bg-blue-100 text-blue-800'
                     }`}>
                       {existingBid.status.toUpperCase()}
                     </span>

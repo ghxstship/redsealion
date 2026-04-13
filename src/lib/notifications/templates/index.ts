@@ -13,7 +13,7 @@ import {
   detailTable,
 } from './base';
 
-export interface TemplateResult {
+interface TemplateResult {
   subject: string;
   html: string;
   smsText?: string;
@@ -201,7 +201,7 @@ export function crewBookingOffer(data: {
 // g) Crew booking confirmed
 // ---------------------------------------------------------------------------
 
-export function crewBookingConfirmed(data: {
+function crewBookingConfirmed(data: {
   crewName: string;
   eventName: string;
   date: string;
@@ -236,7 +236,7 @@ export function crewBookingConfirmed(data: {
 // h) Equipment reservation alert (internal)
 // ---------------------------------------------------------------------------
 
-export function equipmentReservationAlert(data: {
+function equipmentReservationAlert(data: {
   assetName: string;
   eventName: string;
   dates: string;

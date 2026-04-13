@@ -11,7 +11,7 @@
 // Types
 // ---------------------------------------------------------------------------
 
-export type ConditionOperator =
+type ConditionOperator =
   | 'equals'
   | 'not_equals'
   | 'contains'
@@ -25,7 +25,7 @@ export type ConditionOperator =
   | 'starts_with'
   | 'ends_with';
 
-export interface AutomationCondition {
+interface AutomationCondition {
   field: string;
   operator: ConditionOperator;
   value?: unknown;

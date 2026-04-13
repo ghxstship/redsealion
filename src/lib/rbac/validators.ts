@@ -19,7 +19,7 @@ import type {
 // Invitation Validation (Flow A)
 // ---------------------------------------------------------------------------
 
-export interface InvitationValidationInput {
+interface InvitationValidationInput {
   inviterHierarchyLevel: number;
   targetRoleHierarchyLevel: number;
   existingMembership: OrganizationMembership | null;
@@ -30,7 +30,7 @@ export interface InvitationValidationInput {
   hasInvitePermission: boolean;
 }
 
-export interface ValidationResult {
+interface ValidationResult {
   valid: boolean;
   error?: string;
   code?: string;
@@ -87,7 +87,7 @@ export function validateInvitation(input: InvitationValidationInput): Validation
 // Invite Code Redemption Validation (Flow B)
 // ---------------------------------------------------------------------------
 
-export interface InviteCodeRedemptionInput {
+interface InviteCodeRedemptionInput {
   code: InviteCode | null;
   userEmail: string;
   existingMembership: OrganizationMembership | null;
@@ -99,7 +99,7 @@ export interface InviteCodeRedemptionInput {
   bulkInvitationsFeatureEnabled: boolean;
 }
 
-export function validateInviteCodeRedemption(input: InviteCodeRedemptionInput): ValidationResult {
+function validateInviteCodeRedemption(input: InviteCodeRedemptionInput): ValidationResult {
   // Feature flag check
   if (!input.inviteCodesFeatureEnabled) {
     return { valid: false, error: 'Invite codes feature is not enabled', code: 'FEATURE_DISABLED' };
@@ -185,7 +185,7 @@ export function validateInviteCodeRedemption(input: InviteCodeRedemptionInput): 
 // Join Request Validation (Flow D)
 // ---------------------------------------------------------------------------
 
-export interface JoinRequestInput {
+interface JoinRequestInput {
   existingMembership: OrganizationMembership | null;
   existingPendingRequest: boolean;
   scopeVisibility: string;
@@ -193,7 +193,7 @@ export interface JoinRequestInput {
   isOrgMember: boolean;
 }
 
-export function validateJoinRequest(input: JoinRequestInput): ValidationResult {
+function validateJoinRequest(input: JoinRequestInput): ValidationResult {
   // Already a member
   if (input.existingMembership && input.existingMembership.status === 'active') {
     return { valid: false, error: 'Already a member', code: 'ALREADY_MEMBER' };
@@ -221,7 +221,7 @@ export function validateJoinRequest(input: JoinRequestInput): ValidationResult {
 // Domain Match Validation (Flow C)
 // ---------------------------------------------------------------------------
 
-export interface DomainMatchInput {
+interface DomainMatchInput {
   userEmail: string;
   emailVerified: boolean;
   allowedEmailDomains: string[];
@@ -230,12 +230,12 @@ export interface DomainMatchInput {
   domainAutoJoinEnabled: boolean;
 }
 
-export type DomainMatchResult =
+type DomainMatchResult =
   | { action: 'auto_join' }
   | { action: 'join_request' }
   | { action: 'none'; reason: string };
 
-export function evaluateDomainMatch(input: DomainMatchInput): DomainMatchResult {
+function evaluateDomainMatch(input: DomainMatchInput): DomainMatchResult {
   // Feature flag check
   if (!input.domainAutoJoinEnabled) {
     return { action: 'none', reason: 'Domain auto-join feature disabled' };
@@ -277,7 +277,7 @@ export function evaluateDomainMatch(input: DomainMatchInput): DomainMatchResult 
 // Session Validation
 // ---------------------------------------------------------------------------
 
-export interface SessionValidationInput {
+interface SessionValidationInput {
   sessionExists: boolean;
   isActive: boolean;
   expiresAt: string;
@@ -288,7 +288,7 @@ export interface SessionValidationInput {
   mfaVerified: boolean;
 }
 
-export function validateSession(input: SessionValidationInput): ValidationResult {
+function validateSession(input: SessionValidationInput): ValidationResult {
   if (!input.sessionExists) {
     return { valid: false, error: 'Session not found', code: 'NO_SESSION' };
   }

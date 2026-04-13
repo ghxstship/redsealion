@@ -15,7 +15,7 @@ let _client: ReturnType<typeof createAnthropic> | null = null;
  * Returns the singleton Anthropic provider.
  * Throws if ANTHROPIC_API_KEY is not configured.
  */
-export function getAnthropicProvider() {
+function getAnthropicProvider() {
   if (_client) return _client;
 
   const apiKey = process.env.ANTHROPIC_API_KEY;

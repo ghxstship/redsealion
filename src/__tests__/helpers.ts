@@ -12,7 +12,7 @@ import { vi } from 'vitest';
 
 type RowData = Record<string, unknown>;
 
-export interface MockQueryBuilder {
+interface MockQueryBuilder {
   select: ReturnType<typeof vi.fn>;
   insert: ReturnType<typeof vi.fn>;
   update: ReturnType<typeof vi.fn>;
@@ -32,7 +32,7 @@ export interface MockQueryBuilder {
   maybeSingle: ReturnType<typeof vi.fn>;
 }
 
-export function createMockQueryBuilder(resolvedData: RowData | RowData[] | null = null, error: { message: string } | null = null): MockQueryBuilder {
+function createMockQueryBuilder(resolvedData: RowData | RowData[] | null = null, error: { message: string } | null = null): MockQueryBuilder {
   const result = { data: resolvedData, error };
   const builder: MockQueryBuilder = {} as MockQueryBuilder;
 
@@ -70,14 +70,14 @@ export function createMockQueryBuilder(resolvedData: RowData | RowData[] | null 
   return builder;
 }
 
-export interface MockSupabase {
+interface MockSupabase {
   from: ReturnType<typeof vi.fn>;
   auth: {
     getUser: ReturnType<typeof vi.fn>;
   };
 }
 
-export function createMockSupabase(
+function createMockSupabase(
   tableResolvers: Record<string, MockQueryBuilder> = {},
   userId = 'user_001',
 ): MockSupabase {
@@ -145,7 +145,7 @@ export function makeOrganization(overrides: RowData = {}) {
   } as Record<string, any>; // Test factory — flexible typing for assertion convenience
 }
 
-export function makeClient(overrides: RowData = {}) {
+function makeClient(overrides: RowData = {}) {
   return {
     id: TEST_CLIENT_ID,
     organization_id: TEST_ORG_ID,
@@ -582,7 +582,7 @@ export function makeWorkOrderBid(overrides: RowData = {}) {
 // Permission context helpers
 // ---------------------------------------------------------------------------
 
-export function makePermResult(overrides: RowData = {}) {
+function makePermResult(overrides: RowData = {}) {
   return {
     allowed: true,
     role: 'owner',

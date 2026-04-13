@@ -29,7 +29,7 @@ export function getAdapter(platform: string): IntegrationAdapter | null {
   return adapters[platform] ?? null;
 }
 
-export const SUPPORTED_PLATFORMS = Object.keys(adapters);
+const SUPPORTED_PLATFORMS = Object.keys(adapters);
 
 /**
  * OAuth token endpoint URLs per platform.

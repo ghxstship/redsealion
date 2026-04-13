@@ -17,7 +17,7 @@ const log = createLogger('automations');
 // Action executor
 // ---------------------------------------------------------------------------
 
-export type ActionType = AutomationActionType;
+type ActionType = AutomationActionType;
 
 type ActionExecutor = (
   config: Record<string, unknown>,

@@ -13,7 +13,7 @@
 
 const MENTION_REGEX = /@\[([^\]]+)\]\(([a-f0-9-]+)\)/g;
 
-export interface ParsedMention {
+interface ParsedMention {
   displayName: string;
   userId: string;
 }
@@ -21,7 +21,7 @@ export interface ParsedMention {
 /**
  * Extract all @mentions from a comment body.
  */
-export function parseMentions(body: string): ParsedMention[] {
+function parseMentions(body: string): ParsedMention[] {
   const mentions: ParsedMention[] = [];
   let match: RegExpExecArray | null;
   const regex = new RegExp(MENTION_REGEX.source, MENTION_REGEX.flags);

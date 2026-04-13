@@ -32,7 +32,7 @@ export function calculateLineTotal(
   return (unitPriceCents * quantity) + modifierTotalCents - discountCents;
 }
 
-export function calculateCartSubtotal(items: CartItem[]): number {
+function calculateCartSubtotal(items: CartItem[]): number {
   return items.reduce((total, item) => total + (item.lineTotalCents ?? 0), 0);
 }
 
@@ -48,7 +48,7 @@ export function formatCents(cents: number, currency: string = 'USD'): string {
   }).format(cents / 100);
 }
 
-export function formatAdvanceNumber(advanceNumber: string): string {
+function formatAdvanceNumber(advanceNumber: string): string {
   return advanceNumber.toUpperCase();
 }
 
@@ -83,7 +83,7 @@ export function formatUnitOfMeasure(uom: UnitOfMeasure): string {
    Catalog Tree Builder
    ───────────────────────────────────────────────────────── */
 
-export function buildCatalogTree(
+function buildCatalogTree(
   groups: AdvanceCategoryGroup[],
   categories: AdvanceCategory[],
   subcategories: AdvanceSubcategory[],
@@ -114,7 +114,7 @@ export function buildCatalogTree(
    Access Code Generation
    ───────────────────────────────────────────────────────── */
 
-export function generateAccessCode(prefix?: string): string {
+function generateAccessCode(prefix?: string): string {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // No I/O/0/1 for readability
   let code = '';
   for (let i = 0; i < 4; i++) {
@@ -127,7 +127,7 @@ export function generateAccessCode(prefix?: string): string {
    Cart Reducer
    ───────────────────────────────────────────────────────── */
 
-export function cartReducer(state: CartItem[], action: { type: string; [key: string]: unknown }): CartItem[] {
+function cartReducer(state: CartItem[], action: { type: string; [key: string]: unknown }): CartItem[] {
   switch (action.type) {
     case 'ADD_ITEM':
       return [...state, action.item as CartItem];
@@ -189,7 +189,7 @@ export function formatAdvanceDate(dateStr: string | null): string {
   }).format(new Date(dateStr));
 }
 
-export function getDeadlineCountdown(deadline: string | null): { label: string; isUrgent: boolean; isPassed: boolean } {
+function getDeadlineCountdown(deadline: string | null): { label: string; isUrgent: boolean; isPassed: boolean } {
   if (!deadline) return { label: 'No deadline', isUrgent: false, isPassed: false };
 
   const now = new Date();

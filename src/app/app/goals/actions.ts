@@ -203,7 +203,7 @@ export async function createCheckIn(goalId: string, formData: FormData) {
 }
 
 /** Re-derive goal progress from the latest check-in. Called after check-in deletion. */
-export async function recalculateGoalProgress(goalId: string) {
+async function recalculateGoalProgress(goalId: string) {
   const supabase = await createClient();
   const ctx = await resolveCurrentOrg();
   if (!ctx) return;

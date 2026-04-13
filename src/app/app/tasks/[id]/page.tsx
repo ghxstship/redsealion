@@ -171,7 +171,7 @@ export default async function TaskDetailPage({
           {/* Header */}
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${TASK_STATUS_COLORS[task.status] ?? 'bg-bg-secondary text-text-secondary'}`}>
+              <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${TASK_STATUS_COLORS[task.status as keyof typeof TASK_STATUS_COLORS] ?? 'bg-bg-secondary text-text-secondary'}`}>
                 {task.status.replace(/_/g, ' ')}
               </span>
               <StatusBadge status={task.priority} colorMap={TASK_PRIORITY_COLORS} />

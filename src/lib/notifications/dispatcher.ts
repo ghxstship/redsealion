@@ -9,7 +9,7 @@ import { createLogger } from '@/lib/logger';
 
 const log = createLogger('notification-dispatcher');
 
-export interface SendNotificationOptions {
+interface SendNotificationOptions {
   orgId: string;
   userId: string;
   eventType: string;

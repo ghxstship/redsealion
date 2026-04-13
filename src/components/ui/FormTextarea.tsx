@@ -1,6 +1,6 @@
 import { forwardRef, type TextareaHTMLAttributes } from 'react';
 
-export interface FormTextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+interface FormTextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   /** Compact uses smaller padding. Defaults to 'default'. */
   inputSize?: 'default' | 'compact';
 }

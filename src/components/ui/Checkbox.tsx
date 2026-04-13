@@ -2,7 +2,7 @@
 
 import { forwardRef, useEffect, useRef } from 'react';
 
-export interface CheckboxProps
+interface CheckboxProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'> {
   /** Renders the checkbox in an indeterminate state (partially checked) */
   indeterminate?: boolean;

@@ -13,23 +13,23 @@ import type { InviteStatus } from '@/types/database';
 // Enums & Literal Unions
 // ---------------------------------------------------------------------------
 
-export type UserStatus = 'active' | 'suspended' | 'deactivated' | 'pending_deletion';
-export type OrgStatus = 'active' | 'suspended' | 'deactivated' | 'pending_deletion';
+type UserStatus = 'active' | 'suspended' | 'deactivated' | 'pending_deletion';
+type OrgStatus = 'active' | 'suspended' | 'deactivated' | 'pending_deletion';
 export type RoleScope = 'platform' | 'organization' | 'team' | 'project' | 'all';
 export type SeatType = 'internal' | 'external';
 export type OrgMembershipStatus = 'active' | 'suspended' | 'pending_approval' | 'dormant';
-export type TeamProjectMembershipStatus = 'active' | 'pending_approval' | 'suspended';
+type TeamProjectMembershipStatus = 'active' | 'pending_approval' | 'suspended';
 export type JoinedVia = 'direct_invite' | 'invite_code' | 'domain_match' | 'manual_add' | 'join_request' | 'sso_auto_provision' | 'api' | 'org_creation';
 export type InvitationStatus = InviteStatus;
 export type InvitationScopeType = 'organization' | 'team' | 'project';
-export type JoinRequestStatus = 'pending' | 'approved' | 'denied' | 'withdrawn';
-export type FeatureFlagType = 'boolean' | 'percentage' | 'allowlist' | 'plan_gated';
-export type SessionRevokeReason = 'manual' | 'security' | 'concurrent_limit' | 'idle_timeout' | 'password_change' | 'mfa_reset';
+type JoinRequestStatus = 'pending' | 'approved' | 'denied' | 'withdrawn';
+type FeatureFlagType = 'boolean' | 'percentage' | 'allowlist' | 'plan_gated';
+type SessionRevokeReason = 'manual' | 'security' | 'concurrent_limit' | 'idle_timeout' | 'password_change' | 'mfa_reset';
 export type AuditActorType = 'user' | 'api_key' | 'system' | 'platform_admin' | 'impersonator';
-export type TeamVisibility = 'visible' | 'hidden' | 'secret';
-export type ProjectStatus = 'draft' | 'active' | 'paused' | 'archived' | 'completed';
-export type ProjectVisibility = 'public' | 'internal' | 'private';
-export type OrgSizeTier = 'solo' | 'startup' | 'small' | 'medium' | 'large' | 'enterprise';
+type TeamVisibility = 'visible' | 'hidden' | 'secret';
+type ProjectStatus = 'draft' | 'active' | 'paused' | 'archived' | 'completed';
+type ProjectVisibility = 'public' | 'internal' | 'private';
+type OrgSizeTier = 'solo' | 'startup' | 'small' | 'medium' | 'large' | 'enterprise';
 
 /**
  * RBAC RPC-level permission actions.
@@ -52,7 +52,7 @@ export type PermissionResource =
 // Table Row Types
 // ---------------------------------------------------------------------------
 
-export interface Role {
+interface Role {
   id: string;
   name: string;
   display_name: string;
@@ -67,7 +67,7 @@ export interface Role {
   updated_at: string;
 }
 
-export interface PermissionCatalogEntry {
+interface PermissionCatalogEntry {
   id: string;
   action: PermissionAction;
   resource: PermissionResource;
@@ -76,7 +76,7 @@ export interface PermissionCatalogEntry {
   is_sensitive: boolean;
 }
 
-export interface RolePermission {
+interface RolePermission {
   id: string;
   role_id: string;
   permission_id: string;
@@ -85,7 +85,7 @@ export interface RolePermission {
   granted_by: string | null;
 }
 
-export interface Team {
+interface Team {
   id: string;
   organization_id: string;
   name: string;
@@ -101,7 +101,7 @@ export interface Team {
   updated_at: string;
 }
 
-export interface Project {
+interface Project {
   id: string;
   organization_id: string;
   name: string;
@@ -139,7 +139,7 @@ export interface OrganizationMembership {
   updated_at: string;
 }
 
-export interface TeamMembership {
+interface TeamMembership {
   id: string;
   user_id: string;
   team_id: string;
@@ -152,7 +152,7 @@ export interface TeamMembership {
   updated_at: string;
 }
 
-export interface ProjectMembership {
+interface ProjectMembership {
   id: string;
   user_id: string;
   project_id: string;
@@ -209,7 +209,7 @@ export interface InviteCode {
   updated_at: string;
 }
 
-export interface InviteCodeRedemption {
+interface InviteCodeRedemption {
   id: string;
   invite_code_id: string;
   user_id: string;
@@ -218,7 +218,7 @@ export interface InviteCodeRedemption {
   membership_scope: string;
 }
 
-export interface JoinRequest {
+interface JoinRequest {
   id: string;
   user_id: string;
   organization_id: string;
@@ -233,7 +233,7 @@ export interface JoinRequest {
   auto_source: string | null;
 }
 
-export interface AuthSettings {
+interface AuthSettings {
   id: string;
   organization_id: string;
   allowed_auth_methods: string[];
@@ -254,7 +254,7 @@ export interface AuthSettings {
   updated_at: string;
 }
 
-export interface Session {
+interface Session {
   id: string;
   user_id: string;
   session_token_hash: string;
@@ -274,7 +274,7 @@ export interface Session {
   created_at: string;
 }
 
-export interface SubscriptionPlan {
+interface SubscriptionPlan {
   id: string;
   name: string;
   tier: number;
@@ -311,7 +311,7 @@ export interface SeatAllocation {
   updated_at: string;
 }
 
-export interface FeatureFlag {
+interface FeatureFlag {
   id: string;
   key: string;
   display_name: string;
@@ -326,7 +326,7 @@ export interface FeatureFlag {
   updated_at: string;
 }
 
-export interface FeatureFlagOverride {
+interface FeatureFlagOverride {
   id: string;
   feature_flag_id: string;
   organization_id: string | null;
@@ -339,7 +339,7 @@ export interface FeatureFlagOverride {
   updated_at: string;
 }
 
-export interface AuditLogEntry {
+interface AuditLogEntry {
   id: string;
   organization_id: string | null;
   actor_id: string | null;
@@ -378,7 +378,7 @@ export const SYSTEM_ROLE_IDS = {
   PROJECT_VENDOR:       '00000000-0000-0000-0000-000000000205',
 } as const;
 
-export const SYSTEM_PLAN_IDS = {
+const SYSTEM_PLAN_IDS = {
   FREE: '00000000-0000-0000-0001-000000000001',
   STARTER: '00000000-0000-0000-0001-000000000002',
   PROFESSIONAL: '00000000-0000-0000-0001-000000000003',

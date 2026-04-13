@@ -23,7 +23,7 @@ export const SUPPORTED_LOCALES = [
 
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number]['value'];
 
-export const LOCALE_VALUES: SupportedLocale[] = SUPPORTED_LOCALES.map((l) => l.value);
+const LOCALE_VALUES: SupportedLocale[] = SUPPORTED_LOCALES.map((l) => l.value);
 
 export const DEFAULT_LOCALE: SupportedLocale = 'en-US';
 
@@ -41,7 +41,7 @@ export function hasLocale(locale: string): locale is SupportedLocale {
 }
 
 /** Get the display label for a locale. */
-export function getLocaleLabel(locale: string): string {
+function getLocaleLabel(locale: string): string {
   const entry = SUPPORTED_LOCALES.find((l) => l.value === locale);
   return entry?.label ?? locale;
 }

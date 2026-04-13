@@ -28,7 +28,7 @@ import { IconPlus } from '@/components/ui/Icons';
 import { X, ChevronDown, ChevronUp, Palette, Image, FileText, BookOpen } from 'lucide-react';
 import PhaseNarrativeEditor from './PhaseNarrativeEditor';
 
-export type { DeliverableData, AddonData, MilestoneRequirementData, PhaseData } from './types';
+export type {    PhaseData } from './types';
 import Button from '@/components/ui/Button';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 

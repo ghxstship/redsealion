@@ -46,7 +46,7 @@ import { castActivationDates, castChangeOrders, type DocChangeOrder } from '../d
 // Public interface
 // ---------------------------------------------------------------------------
 
-export interface WrapReportData {
+interface WrapReportData {
   org: Organization;
   proposal: Proposal;
   client: Client;

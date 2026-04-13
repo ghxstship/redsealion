@@ -24,7 +24,7 @@ export const PORTFOLIO_CATEGORIES = [
   'Other',
 ] as const;
 
-export type PortfolioCategory = (typeof PORTFOLIO_CATEGORIES)[number];
+type PortfolioCategory = (typeof PORTFOLIO_CATEGORIES)[number];
 
 interface PortfolioItem {
   id: string;

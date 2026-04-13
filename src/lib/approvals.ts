@@ -13,7 +13,7 @@ import type { ApprovalStatus } from '@/types/database';
 // Types
 // ---------------------------------------------------------------------------
 
-export interface ApprovalRequest {
+interface ApprovalRequest {
   id: string;
   organization_id: string;
   entity_type: ApprovalEntityType;
@@ -31,7 +31,7 @@ export interface ApprovalRequest {
   updated_at: string;
 }
 
-export type ApprovalEntityType =
+type ApprovalEntityType =
   | 'expense'
   | 'budget'
   | 'change_order'
@@ -113,7 +113,7 @@ export function getEntityTable(entityType: ApprovalEntityType): string {
 /**
  * Format an approval request for display.
  */
-export function formatApprovalLabel(entityType: ApprovalEntityType): string {
+function formatApprovalLabel(entityType: ApprovalEntityType): string {
   const labels: Record<ApprovalEntityType, string> = {
     expense: 'Expense Report',
     budget: 'Budget',

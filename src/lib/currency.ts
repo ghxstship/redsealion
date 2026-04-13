@@ -11,14 +11,14 @@
 // Supported currencies
 // ---------------------------------------------------------------------------
 
-export interface CurrencyInfo {
+interface CurrencyInfo {
   code: string;
   name: string;
   symbol: string;
   decimals: number;
 }
 
-export const SUPPORTED_CURRENCIES: CurrencyInfo[] = [
+const SUPPORTED_CURRENCIES: CurrencyInfo[] = [
   { code: 'USD', name: 'US Dollar', symbol: '$', decimals: 2 },
   { code: 'EUR', name: 'Euro', symbol: '€', decimals: 2 },
   { code: 'GBP', name: 'British Pound', symbol: '£', decimals: 2 },
@@ -48,7 +48,7 @@ export const SUPPORTED_CURRENCIES: CurrencyInfo[] = [
 /**
  * Convert an amount between currencies given an exchange rate.
  */
-export function convertAmount(
+function convertAmount(
   amount: number,
   _fromCurrency: string,
   _toCurrency: string,
@@ -81,14 +81,14 @@ export function formatCurrencyAmount(amount: number, currencyCode: string, local
 /**
  * Get currency info by code.
  */
-export function getCurrencyInfo(code: string): CurrencyInfo | undefined {
+function getCurrencyInfo(code: string): CurrencyInfo | undefined {
   return SUPPORTED_CURRENCIES.find((c) => c.code === code);
 }
 
 /**
  * Get a currency select option list for form dropdowns.
  */
-export function getCurrencyOptions(): Array<{ value: string; label: string }> {
+function getCurrencyOptions(): Array<{ value: string; label: string }> {
   return SUPPORTED_CURRENCIES.map((c) => ({
     value: c.code,
     label: `${c.code} — ${c.name} (${c.symbol})`,

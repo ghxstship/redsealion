@@ -7,7 +7,7 @@
  * @module lib/automations/templates
  */
 
-export interface AutomationTemplate {
+interface AutomationTemplate {
   id: string;
   name: string;
   description: string;
@@ -187,7 +187,7 @@ export const AUTOMATION_TEMPLATES: AutomationTemplate[] = [
 /**
  * Get templates filtered by category.
  */
-export function getTemplatesByCategory(category?: string): AutomationTemplate[] {
+function getTemplatesByCategory(category?: string): AutomationTemplate[] {
   if (!category) return AUTOMATION_TEMPLATES;
   return AUTOMATION_TEMPLATES.filter((t) => t.category === category);
 }

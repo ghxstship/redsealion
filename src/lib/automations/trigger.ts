@@ -18,9 +18,9 @@ import type { AutomationTriggerType } from './constants';
 // Event types — re-export from constants for backward compatibility
 // ---------------------------------------------------------------------------
 
-export type AutomationEvent = AutomationTriggerType;
+type AutomationEvent = AutomationTriggerType;
 
-export interface AutomationPayload {
+interface AutomationPayload {
   org_id: string;
   [key: string]: unknown;
 }

@@ -7,7 +7,7 @@
 
 import type { AssetStatus } from '@/types/database';
 
-export const VALID_ASSET_TRANSITIONS: Record<AssetStatus, AssetStatus[]> = {
+const VALID_ASSET_TRANSITIONS: Record<AssetStatus, AssetStatus[]> = {
   planned: ['in_production', 'disposed'],
   in_production: ['in_transit', 'in_storage'],
   in_transit: ['deployed', 'in_storage'],

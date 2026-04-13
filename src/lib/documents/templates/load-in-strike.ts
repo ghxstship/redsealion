@@ -48,7 +48,7 @@ import {
 // Public interface
 // ---------------------------------------------------------------------------
 
-export interface LoadInStrikeData {
+interface LoadInStrikeData {
   org: Organization;
   proposal: Proposal;
   client: Client;

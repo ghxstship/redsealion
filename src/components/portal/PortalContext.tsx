@@ -2,7 +2,7 @@
 
 import { createContext, useContext } from 'react';
 
-export type PortalType = 'client' | 'contractor';
+type PortalType = 'client' | 'contractor';
 
 interface PortalContextValue {
   orgSlug: string;

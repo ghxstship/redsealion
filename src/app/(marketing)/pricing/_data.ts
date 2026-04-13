@@ -82,14 +82,14 @@ export const tiers = [
 
 export type FeatureValue = string | boolean;
 
-export interface Feature {
+interface Feature {
   name: string;
   starter: FeatureValue;
   professional: FeatureValue;
   enterprise: FeatureValue;
 }
 
-export interface Category {
+interface Category {
   name: string;
   features: Feature[];
 }

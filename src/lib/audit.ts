@@ -22,7 +22,7 @@ import { createClient } from '@/lib/supabase/server';
 // Types
 // ---------------------------------------------------------------------------
 
-export type AuditAction =
+type AuditAction =
   | 'create'
   | 'update'
   | 'delete'
@@ -36,7 +36,7 @@ export type AuditAction =
   | 'revoke'
   | 'configure';
 
-export type AuditEntityType =
+type AuditEntityType =
   | 'proposal'
   | 'task'
   | 'invoice'
@@ -62,7 +62,7 @@ export type AuditEntityType =
 /**
  * Log an audit event. Fire-and-forget — failures are silently swallowed.
  */
-export async function logAuditEvent(params: {
+async function logAuditEvent(params: {
   orgId: string;
   userId: string | null;
   action: AuditAction;
@@ -93,7 +93,7 @@ export async function logAuditEvent(params: {
 /**
  * Extract IP and UA from a request for audit logging.
  */
-export function extractRequestMeta(request: Request): {
+function extractRequestMeta(request: Request): {
   ipAddress: string | null;
   userAgent: string | null;
 } {

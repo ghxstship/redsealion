@@ -1,6 +1,6 @@
 import { forwardRef, type SelectHTMLAttributes } from 'react';
 
-export interface FormSelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
+interface FormSelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   /** Compact uses smaller padding. Defaults to 'default'. */
   inputSize?: 'default' | 'compact';
 }

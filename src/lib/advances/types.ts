@@ -42,7 +42,7 @@ export interface CatalogTreeNode {
   }>;
 }
 
-export interface CatalogItemWithVariants extends AdvanceCatalogItem {
+interface CatalogItemWithVariants extends AdvanceCatalogItem {
   variants: AdvanceCatalogVariant[];
   modifier_lists: Array<AdvanceModifierList & { options: AdvanceModifierOption[] }>;
 }
@@ -90,7 +90,7 @@ export interface CartItem {
   isAdHoc: boolean;
 }
 
-export type CartAction =
+type CartAction =
   | { type: 'ADD_ITEM'; item: CartItem }
   | { type: 'REMOVE_ITEM'; cartId: string }
   | { type: 'UPDATE_QUANTITY'; cartId: string; quantity: number }
@@ -103,14 +103,14 @@ export type CartAction =
    Advance With Related Data
    ───────────────────────────────────────────────────────── */
 
-export interface AdvanceWithItems extends ProductionAdvance {
+interface AdvanceWithItems extends ProductionAdvance {
   line_items: AdvanceLineItem[];
   collaborators?: AdvanceCollaborator[];
   status_history?: AdvanceStatusHistoryEntry[];
   project_name?: string | null;
 }
 
-export interface CollaboratorWithSubmission extends AdvanceCollaborator {
+interface CollaboratorWithSubmission extends AdvanceCollaborator {
   user_name?: string | null;
   user_email?: string | null;
   org_name?: string | null;
@@ -122,7 +122,7 @@ export interface CollaboratorWithSubmission extends AdvanceCollaborator {
    Status Transitions
    ───────────────────────────────────────────────────────── */
 
-export interface StatusTransition {
+interface StatusTransition {
   from: AdvanceStatus;
   to: AdvanceStatus;
   label: string;
@@ -202,7 +202,7 @@ export interface AddLineItemRequest {
   unit_price_cents?: number;
 }
 
-export interface UpdateAdvanceRequest {
+interface UpdateAdvanceRequest {
   event_name?: string;
   venue_name?: string;
   venue_address?: Record<string, unknown>;
@@ -228,7 +228,7 @@ export interface UpdateAdvanceRequest {
   version: number;
 }
 
-export interface InviteCollaboratorRequest {
+interface InviteCollaboratorRequest {
   user_id?: string;
   organization_id?: string;
   email?: string;
@@ -238,7 +238,7 @@ export interface InviteCollaboratorRequest {
   custom_instructions?: string;
 }
 
-export interface GenerateAccessCodeRequest {
+interface GenerateAccessCodeRequest {
   code_type?: string;
   collaborator_role?: string;
   allowed_advance_types?: AdvanceType[];

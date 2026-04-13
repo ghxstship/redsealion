@@ -10,7 +10,7 @@
 // Types
 // ---------------------------------------------------------------------------
 
-export interface CostRate {
+interface CostRate {
   id: string;
   organization_id: string;
   role: string;
@@ -21,7 +21,7 @@ export interface CostRate {
   updated_at: string;
 }
 
-export interface MarginCalculation {
+interface MarginCalculation {
   cost: number;
   revenue: number;
   margin: number;
@@ -35,7 +35,7 @@ export interface MarginCalculation {
 /**
  * Calculate margin given billable hours and rates.
  */
-export function calculateMargin(
+function calculateMargin(
   hours: number,
   costRate: number,
   billableRate: number,
@@ -51,7 +51,7 @@ export function calculateMargin(
 /**
  * Calculate blended rate across multiple roles.
  */
-export function calculateBlendedRate(
+function calculateBlendedRate(
   allocations: Array<{ hours: number; costRate: number; billableRate: number }>,
 ): MarginCalculation {
   let totalCost = 0;

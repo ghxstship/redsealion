@@ -4,14 +4,14 @@
  * @module lib/clients/contact-roles
  */
 
-export const CONTACT_ROLE_OPTIONS = [
+const CONTACT_ROLE_OPTIONS = [
   { value: 'primary', label: 'Primary' },
   { value: 'billing', label: 'Billing' },
   { value: 'creative', label: 'Creative' },
   { value: 'operations', label: 'Operations' },
 ] as const;
 
-export const CONTACT_ROLE_MAP: Record<string, string> = Object.fromEntries(
+const CONTACT_ROLE_MAP: Record<string, string> = Object.fromEntries(
   CONTACT_ROLE_OPTIONS.map((r) => [r.value, r.label])
 );
 

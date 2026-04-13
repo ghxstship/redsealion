@@ -79,15 +79,15 @@ export const EXTERNAL_ROLES: PlatformRole[] = [
   'client', 'contractor', 'crew', 'viewer',
 ];
 
-export const PUBLIC_ROLES: PlatformRole[] = [
+const PUBLIC_ROLES: PlatformRole[] = [
   'community',
 ];
 
-export const ALL_PLATFORM_ROLES: PlatformRole[] = [
+const ALL_PLATFORM_ROLES: PlatformRole[] = [
   ...INTERNAL_ROLES, ...EXTERNAL_ROLES, ...PUBLIC_ROLES,
 ];
 
-export const ALL_PROJECT_ROLES: ProjectRole[] = [
+const ALL_PROJECT_ROLES: ProjectRole[] = [
   'creator', 'collaborator', 'viewer', 'vendor',
 ];
 
@@ -291,9 +291,9 @@ export const DEFAULT_PERMISSIONS: Record<PlatformRole, Record<string, boolean>> 
 // Client portal permissions (separate from admin app)
 // ---------------------------------------------------------------------------
 
-export type PortalAction = 'view' | 'comment' | 'approve' | 'pay' | 'upload';
+type PortalAction = 'view' | 'comment' | 'approve' | 'pay' | 'upload';
 
-export const PORTAL_PERMISSIONS: Record<'client' | 'viewer' | 'community', Record<string, boolean>> = {
+const PORTAL_PERMISSIONS: Record<'client' | 'viewer' | 'community', Record<string, boolean>> = {
   client: {
     'proposals.view': true,
     'proposals.comment': true,
@@ -337,7 +337,7 @@ export const PORTAL_PERMISSIONS: Record<'client' | 'viewer' | 'community', Recor
 // Contractor portal permissions (for crew / contractor external roles)
 // ---------------------------------------------------------------------------
 
-export const CONTRACTOR_PORTAL_PERMISSIONS: Record<'contractor' | 'crew', Record<string, boolean>> = {
+const CONTRACTOR_PORTAL_PERMISSIONS: Record<'contractor' | 'crew', Record<string, boolean>> = {
   contractor: {
     'work_orders.view': true,
     'work_orders.bid': true,
@@ -390,7 +390,7 @@ export function getPortalPermission(
   return PORTAL_PERMISSIONS[role]?.[key] ?? false;
 }
 
-export function getContractorPortalPermission(
+function getContractorPortalPermission(
   role: 'contractor' | 'crew',
   key: string
 ): boolean {

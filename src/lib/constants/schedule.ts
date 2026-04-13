@@ -8,6 +8,11 @@ export const SCHEDULE_TYPES = [
   { value: 'run_of_show', label: 'Run of Show' },
   { value: 'rehearsal', label: 'Rehearsal' },
   { value: 'general', label: 'General' },
+  { value: 'meeting', label: 'Meeting' },
+  { value: 'training', label: 'Training' },
+  { value: 'inspection', label: 'Inspection' },
+  { value: 'deadline', label: 'Deadline' },
+  { value: 'milestone', label: 'Milestone' },
 ] as const;
 
 export const SCHEDULE_TYPE_LABELS: Record<string, string> = {
@@ -15,6 +20,11 @@ export const SCHEDULE_TYPE_LABELS: Record<string, string> = {
   run_of_show: 'Run of Show',
   rehearsal: 'Rehearsal',
   general: 'General',
+  meeting: 'Meeting',
+  training: 'Training',
+  inspection: 'Inspection',
+  deadline: 'Deadline',
+  milestone: 'Milestone',
 };
 
-export type ScheduleType = (typeof SCHEDULE_TYPES)[number]['value'];
+type ScheduleType = (typeof SCHEDULE_TYPES)[number]['value'];

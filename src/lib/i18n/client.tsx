@@ -18,8 +18,8 @@ import { DEFAULT_LOCALE } from './config';
 // Types
 // ---------------------------------------------------------------------------
 
-export type DictionaryValue = string | Record<string, string | Record<string, string>>;
-export type Dictionary = Record<string, Record<string, DictionaryValue>>;
+type DictionaryValue = string | Record<string, string | Record<string, string>>;
+type Dictionary = Record<string, Record<string, DictionaryValue>>;
 
 interface I18nContextValue {
   locale: SupportedLocale;
@@ -121,7 +121,7 @@ export function useTranslation() {
 /**
  * Returns the current locale string.
  */
-export function useLocale(): SupportedLocale {
+function useLocale(): SupportedLocale {
   const ctx = useContext(I18nContext);
   return ctx?.locale ?? DEFAULT_LOCALE;
 }

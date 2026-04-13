@@ -27,7 +27,7 @@ export type Role =
   | 'crew'
   | 'viewer';
 
-export interface RouteEntry {
+interface RouteEntry {
   path: string;
   minTier: Tier;
   allowedRoles: Role[] | null; // null = all internal roles
@@ -45,7 +45,7 @@ const ADMIN_CTRL_MGR: Role[] = ['developer', 'owner', 'admin', 'controller', 'ma
 
 // ─── Route Registry ──────────────────────────────────────────────────────────
 
-export const ROUTES: RouteEntry[] = [
+const ROUTES: RouteEntry[] = [
   // ── Dashboard & Personal ──
   { path: '/app', minTier: 'free', allowedRoles: ALL_INTERNAL, hasDynamicParams: false, group: 'dashboard' },
   { path: '/app/my-tasks', minTier: 'free', allowedRoles: ALL_INTERNAL, hasDynamicParams: false, group: 'dashboard' },
@@ -258,19 +258,19 @@ const TIER_RANK: Record<Tier, number> = {
   enterprise: 3,
 };
 
-export function tierMeetsMinimum(current: Tier, required: Tier): boolean {
+function tierMeetsMinimum(current: Tier, required: Tier): boolean {
   return TIER_RANK[current] >= TIER_RANK[required];
 }
 
-export function getRoutesByGroup(group: string): RouteEntry[] {
+function getRoutesByGroup(group: string): RouteEntry[] {
   return ROUTES.filter((r) => r.group === group);
 }
 
-export function getRouteGroups(): string[] {
+function getRouteGroups(): string[] {
   return [...new Set(ROUTES.map((r) => r.group))];
 }
 
-export function canRoleAccess(route: RouteEntry, role: Role): boolean {
+function canRoleAccess(route: RouteEntry, role: Role): boolean {
   if (!route.allowedRoles) return true;
   return route.allowedRoles.includes(role);
 }

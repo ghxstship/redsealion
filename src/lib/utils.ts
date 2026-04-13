@@ -22,7 +22,7 @@ export function formatCurrencyDetailed(amount: number, currency = 'USD', locale 
   return formatCurrencyAmount(amount, currency, locale);
 }
 
-export function slugify(text: string): string {
+function slugify(text: string): string {
   return text
     .toLowerCase()
     .replace(/[^\w\s-]/g, '')
@@ -32,7 +32,7 @@ export function slugify(text: string): string {
 }
 
 /** Generate a cryptographically secure random token (48 alphanumeric characters). */
-export function generateToken(): string {
+function generateToken(): string {
   const bytes = new Uint8Array(36);
   crypto.getRandomValues(bytes);
   return Array.from(bytes, (b) => b.toString(36).padStart(2, '0')).join('').slice(0, 48);
@@ -109,7 +109,7 @@ export function statusColor(status: string): string {
 // Safe fetch — standardized client-side API call with error handling
 // ---------------------------------------------------------------------------
 
-export interface SafeFetchResult<T = unknown> {
+interface SafeFetchResult<T = unknown> {
   data: T | null;
   error: string | null;
   ok: boolean;
@@ -119,7 +119,7 @@ export interface SafeFetchResult<T = unknown> {
  * Wrapper around `fetch()` that handles errors, checks `res.ok`, and parses JSON.
  * Returns `{ data, error, ok }` so callers never need try/catch.
  */
-export async function safeFetch<T = unknown>(
+async function safeFetch<T = unknown>(
   url: string,
   options?: RequestInit
 ): Promise<SafeFetchResult<T>> {

@@ -6,7 +6,7 @@ import { useId } from 'react';
 /*  Canonical underline tab bar — design-system atom                  */
 /* ------------------------------------------------------------------ */
 
-export interface TabItem<T extends string = string> {
+interface TabItem<T extends string = string> {
   key: T;
   label: string;
   /** Optional count badge rendered after the label */

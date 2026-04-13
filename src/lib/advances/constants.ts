@@ -12,7 +12,7 @@ import type { AdvanceStatus, AdvanceMode, AdvanceType, AdvancePriority, Fulfillm
    Status State Machine — Valid Transitions
    ───────────────────────────────────────────────────────── */
 
-export const INTERNAL_TRANSITIONS: Record<AdvanceStatus, AdvanceStatus[]> = {
+const INTERNAL_TRANSITIONS: Record<AdvanceStatus, AdvanceStatus[]> = {
   draft: ['submitted', 'cancelled'],
   open_for_submissions: [], // Not used in internal mode
   submitted: ['under_review', 'approved', 'changes_requested', 'rejected', 'cancelled'],
@@ -28,7 +28,7 @@ export const INTERNAL_TRANSITIONS: Record<AdvanceStatus, AdvanceStatus[]> = {
   expired: [],
 };
 
-export const COLLECTION_TRANSITIONS: Record<AdvanceStatus, AdvanceStatus[]> = {
+const COLLECTION_TRANSITIONS: Record<AdvanceStatus, AdvanceStatus[]> = {
   draft: ['open_for_submissions', 'cancelled'],
   open_for_submissions: ['under_review', 'on_hold', 'cancelled'],
   submitted: [], // Not used directly in collection mode
@@ -53,13 +53,13 @@ export function getValidTransitions(mode: AdvanceMode, currentStatus: AdvanceSta
    Fulfillment Pipeline
    ───────────────────────────────────────────────────────── */
 
-export const FULFILLMENT_PIPELINE: FulfillmentStatus[] = [
+const FULFILLMENT_PIPELINE: FulfillmentStatus[] = [
   'pending', 'sourcing', 'quoted', 'confirmed', 'reserved',
   'in_transit', 'delivered', 'inspected', 'setup_complete',
   'active', 'struck', 'returned',
 ];
 
-export const FULFILLMENT_TERMINAL: FulfillmentStatus[] = ['returned', 'damaged', 'cancelled'];
+const FULFILLMENT_TERMINAL: FulfillmentStatus[] = ['returned', 'damaged', 'cancelled'];
 
 /* ─────────────────────────────────────────────────────────
    Display Labels & Colors
@@ -81,7 +81,7 @@ export const ADVANCE_STATUS_CONFIG: Record<AdvanceStatus, { label: string; color
   expired: { label: 'Expired', color: '#9CA3AF', bgClass: 'bg-gray-100 text-gray-500' },
 };
 
-export const FULFILLMENT_STATUS_CONFIG: Record<FulfillmentStatus, { label: string; color: string; bgClass: string }> = {
+const FULFILLMENT_STATUS_CONFIG: Record<FulfillmentStatus, { label: string; color: string; bgClass: string }> = {
   pending: { label: 'Pending', color: '#6B7280', bgClass: 'bg-gray-100 text-gray-700' },
   sourcing: { label: 'Sourcing', color: '#8B5CF6', bgClass: 'bg-violet-100 text-violet-700' },
   quoted: { label: 'Quoted', color: '#6366F1', bgClass: 'bg-indigo-100 text-indigo-700' },
@@ -108,7 +108,7 @@ export const ADVANCE_TYPE_CONFIG: Record<AdvanceType, { label: string; icon: str
   custom: { label: 'Custom', icon: 'Boxes', description: 'Custom advance type' },
 };
 
-export const PRIORITY_CONFIG: Record<AdvancePriority, { label: string; color: string; bgClass: string }> = {
+const PRIORITY_CONFIG: Record<AdvancePriority, { label: string; color: string; bgClass: string }> = {
   critical: { label: 'Critical', color: '#DC2626', bgClass: 'bg-red-100 text-red-700' },
   high: { label: 'High', color: '#F97316', bgClass: 'bg-orange-100 text-orange-700' },
   medium: { label: 'Medium', color: '#3B82F6', bgClass: 'bg-blue-100 text-blue-700' },

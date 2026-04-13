@@ -2,9 +2,9 @@
 
 import { useState, useCallback } from 'react';
 
-export type SortDirection = 'asc' | 'desc';
+type SortDirection = 'asc' | 'desc';
 
-export interface SortConfig {
+interface SortConfig {
   field: string;
   direction: SortDirection;
 }

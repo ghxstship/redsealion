@@ -35,7 +35,7 @@ import {
   IconNavReports, IconNavAutomations, IconNavIntegrations, IconNavTerms,
 } from '@/components/ui/Icons';
 
-export interface NavItem {
+interface NavItem {
   label: string;
   labelKey: string;
   href: string;
@@ -43,7 +43,7 @@ export interface NavItem {
   icon: React.ReactNode;
 }
 
-export interface NavSection {
+interface NavSection {
   id: string;
   label: string;
   labelKey: string;

@@ -39,7 +39,7 @@ export interface EntityField {
 // Registry
 // ---------------------------------------------------------------------------
 
-export const ENTITY_FIELDS: Record<string, EntityField[]> = {
+const ENTITY_FIELDS: Record<string, EntityField[]> = {
   leads: [
     { key: 'contact_first_name', label: 'First Name', required: true, type: 'text', example: 'Jane', aliases: ['first', 'fname', 'first_name', 'given_name'] },
     { key: 'contact_last_name', label: 'Last Name', required: true, type: 'text', example: 'Doe', aliases: ['last', 'lname', 'last_name', 'surname', 'family_name'] },
@@ -154,7 +154,7 @@ export function getExportFields(entityKey: string): EntityField[] {
 }
 
 /** Get default-visible export fields */
-export function getDefaultExportFields(entityKey: string): EntityField[] {
+function getDefaultExportFields(entityKey: string): EntityField[] {
   return getExportFields(entityKey).filter((f) => f.defaultExportVisible !== false);
 }
 

@@ -15,7 +15,7 @@ import type {
 } from '@/types/rbac';
 import { SYSTEM_ROLE_IDS } from '@/types/rbac';
 
-export interface PermissionCheckResult {
+interface PermissionCheckResult {
   allowed: boolean;
   userId: string;
   organizationId: string | null;

@@ -1,6 +1,6 @@
 // Email sending abstraction with provider interface
 
-export interface EmailPayload {
+interface EmailPayload {
   to: string;
   toName?: string;
   subject: string;
@@ -9,13 +9,13 @@ export interface EmailPayload {
   replyTo?: string;
 }
 
-export interface EmailResult {
+interface EmailResult {
   success: boolean;
   messageId?: string;
   error?: string;
 }
 
-export interface EmailProvider {
+interface EmailProvider {
   send(payload: EmailPayload): Promise<EmailResult>;
 }
 
@@ -52,7 +52,7 @@ class SmtpEmailProvider implements EmailProvider {
 }
 
 // Factory
-export function createEmailProvider(): EmailProvider {
+function createEmailProvider(): EmailProvider {
   const provider = process.env.EMAIL_PROVIDER ?? 'console';
 
   switch (provider) {

@@ -55,6 +55,6 @@ interface AdvanceStatusBadgeProps {
   className?: string;
 }
 
-export default function AdvanceStatusBadge({ status, className }: AdvanceStatusBadgeProps) {
+function AdvanceStatusBadge({ status, className }: AdvanceStatusBadgeProps) {
   return <StatusBadge status={status} colorMap={ADVANCE_STATUS_COLORS} className={className} />;
 }

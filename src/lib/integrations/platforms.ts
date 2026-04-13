@@ -1,6 +1,6 @@
 /** Canonical integration platform definitions — single source of truth. */
 
-export interface PlatformConfig {
+interface PlatformConfig {
   platform: string;
   displayName: string;
   description: string;

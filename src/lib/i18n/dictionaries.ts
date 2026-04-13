@@ -9,7 +9,7 @@ import type { SupportedLocale } from './config';
  * @module lib/i18n/dictionaries
  */
 
-export type Dictionary = Record<string, Record<string, string>>;
+type Dictionary = Record<string, Record<string, string>>;
 
 /** Bounded type assertion for JSON dictionary imports. */
 function asDictionary(mod: { default: unknown }): Dictionary {

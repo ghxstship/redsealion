@@ -97,7 +97,7 @@ export function validateAddLineItem(body: Partial<AddLineItemRequest>): { valid:
    Modifier Validation
    ───────────────────────────────────────────────────────── */
 
-export function validateModifierSelections(
+function validateModifierSelections(
   modifiers: CartModifierSelection[],
   modifierLists: Array<{
     id: string;
@@ -133,7 +133,7 @@ export function validateModifierSelections(
    Submission Deadline Check
    ───────────────────────────────────────────────────────── */
 
-export function isSubmissionDeadlinePassed(deadline: string | null): boolean {
+function isSubmissionDeadlinePassed(deadline: string | null): boolean {
   if (!deadline) return false;
   return new Date() > new Date(deadline);
 }
@@ -142,7 +142,7 @@ export function isSubmissionDeadlinePassed(deadline: string | null): boolean {
    Quantity Rules
    ───────────────────────────────────────────────────────── */
 
-export function validateQuantityRules(
+function validateQuantityRules(
   quantity: number,
   min: number,
   max: number | null,

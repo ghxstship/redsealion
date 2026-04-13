@@ -6,7 +6,7 @@
 import { createClient } from '@/lib/supabase/server';
 import type { SeatType } from '@/types/rbac';
 
-export interface SeatCheckResult {
+interface SeatCheckResult {
   allowed: boolean;
   reason?: string;
   overageTriggered?: boolean;
@@ -117,7 +117,7 @@ export async function decrementSeatUsage(
  * Run as a daily cron job to correct drift between seat_allocations
  * counters and actual membership rows.
  */
-export async function reconcileSeats(organizationId: string): Promise<{
+async function reconcileSeats(organizationId: string): Promise<{
   internalBefore: number;
   internalAfter: number;
   externalBefore: number;

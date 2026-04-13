@@ -10,7 +10,7 @@ import { formatLabel } from '@/lib/utils';
 
 /* ─── Types ─────────────────────────────────────────────── */
 
-export interface ClientDetail {
+interface ClientDetail {
   company_name: string;
   industry: string | null;
   tags: string[];
@@ -204,7 +204,7 @@ export async function getClient(id: string): Promise<ClientDetail> {
 
 /* ─── Helpers ───────────────────────────────────────────── */
 
-export function formatStatus(status: string): string {
+function formatStatus(status: string): string {
   return formatLabel(status);
 }
 

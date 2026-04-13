@@ -68,7 +68,7 @@ export async function linkBlueskyAccount({ userId, did, handle }: LinkBlueskyPar
 /**
  * Unlink a Bluesky identity from a FlyteDeck user.
  */
-export async function unlinkBlueskyAccount(userId: string) {
+async function unlinkBlueskyAccount(userId: string) {
   const supabase = await createServiceClient();
 
   const { error } = await supabase
@@ -87,7 +87,7 @@ export async function unlinkBlueskyAccount(userId: string) {
 /**
  * Get the linked Bluesky account for a user, if any.
  */
-export async function getLinkedBlueskyAccount(userId: string) {
+async function getLinkedBlueskyAccount(userId: string) {
   const supabase = await createClient();
 
   const { data } = await supabase

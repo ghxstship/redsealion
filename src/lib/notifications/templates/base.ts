@@ -95,7 +95,7 @@ export function ctaButton(text: string, url: string): string {
 /**
  * Render a secondary / outline CTA button.
  */
-export function secondaryButton(text: string, url: string): string {
+function secondaryButton(text: string, url: string): string {
   return `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:12px 0 0 0;">
   <tr>
     <td align="center" style="background-color:#ffffff;border-radius:6px;border:1px solid #d4d4d8;">

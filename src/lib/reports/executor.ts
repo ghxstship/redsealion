@@ -21,7 +21,7 @@ interface QueryConfig {
   filters: Array<{ id: string; field: string; operator: string; value: string }>;
 }
 
-export interface ReportRow {
+interface ReportRow {
   [key: string]: unknown;
 }
 

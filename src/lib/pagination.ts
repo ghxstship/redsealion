@@ -5,16 +5,16 @@
  * @module lib/pagination
  */
 
-export const DEFAULT_PAGE_SIZE = 50;
-export const MAX_PAGE_SIZE = 200;
+const DEFAULT_PAGE_SIZE = 50;
+const MAX_PAGE_SIZE = 200;
 
-export interface PaginationParams {
+interface PaginationParams {
   page: number;
   limit: number;
   offset: number;
 }
 
-export interface PaginatedResult<T> {
+interface PaginatedResult<T> {
   data: T[];
   page: number;
   limit: number;
@@ -44,7 +44,7 @@ export function parsePagination(searchParams: URLSearchParams | Record<string, s
 /**
  * Wrap data array with pagination metadata.
  */
-export function paginatedResponse<T>(data: T[], total: number, params: PaginationParams): PaginatedResult<T> {
+function paginatedResponse<T>(data: T[], total: number, params: PaginationParams): PaginatedResult<T> {
   const totalPages = Math.ceil(total / params.limit);
   return {
     data,

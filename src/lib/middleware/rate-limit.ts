@@ -58,7 +58,7 @@ function gcExpired() {
  * Check and increment rate limit for a given key.
  * Returns { allowed, remaining, resetAt }.
  */
-export function checkRateLimit(
+function checkRateLimit(
   key: string,
   config: RateLimitConfig
 ): { allowed: boolean; remaining: number; resetAt: number } {

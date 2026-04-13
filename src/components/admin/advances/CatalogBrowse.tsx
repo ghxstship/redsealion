@@ -24,7 +24,7 @@ export interface CatalogItemFull extends AdvanceCatalogItem {
   base_price_cents?: number | null;
 }
 
-export interface CatalogBrowseProps {
+interface CatalogBrowseProps {
   groups: AdvanceCategoryGroup[];
   categories: AdvanceCategory[];
   subcategories: AdvanceSubcategory[];

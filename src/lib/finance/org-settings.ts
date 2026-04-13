@@ -29,7 +29,7 @@ export async function getOrgCurrency(): Promise<string> {
 /**
  * Resolve all org-level finance settings in one call.
  */
-export async function getOrgFinanceSettings(): Promise<{
+async function getOrgFinanceSettings(): Promise<{
   currency: string;
   mileageRate: number;
   taxLabel: string;

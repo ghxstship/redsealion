@@ -9,7 +9,7 @@ type SupabaseClient = Awaited<ReturnType<typeof createClient>>;
 /**
  * Authenticated user context — returned by requireAuth().
  */
-export interface AuthContext {
+interface AuthContext {
   userId: string;
   organizationId: string;
   role: PlatformRole;

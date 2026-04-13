@@ -39,10 +39,10 @@ import { castBrandConfig, castFacilities } from './json-casts';
 // ---------------------------------------------------------------------------
 
 /** DXA units per inch */
-export const DXA_PER_INCH = 1440;
-export const PAGE_WIDTH = 12240; // 8.5 in
-export const PAGE_HEIGHT = 15840; // 11 in
-export const MARGIN = DXA_PER_INCH; // 1 in
+const DXA_PER_INCH = 1440;
+const PAGE_WIDTH = 12240; // 8.5 in
+const PAGE_HEIGHT = 15840; // 11 in
+const MARGIN = DXA_PER_INCH; // 1 in
 export const CONTENT_WIDTH = PAGE_WIDTH - 2 * MARGIN; // 9360
 
 const BORDER_LIGHT = { style: BorderStyle.SINGLE, size: 1, color: 'DDDDDD' };
@@ -64,7 +64,7 @@ const BORDERS_NONE = {
 // Brand helpers
 // ---------------------------------------------------------------------------
 
-export interface DocBrand {
+interface DocBrand {
   orgName: string;
   primaryColor: string; // hex without #
   secondaryColor: string;
@@ -106,7 +106,7 @@ export function brandFromOrg(org: Organization, logoBuffer?: Buffer): DocBrand {
 // Style factory — builds Document `styles` from brand
 // ---------------------------------------------------------------------------
 
-export function buildStyles(brand: DocBrand) {
+function buildStyles(brand: DocBrand) {
   return {
     default: {
       document: {
@@ -149,7 +149,7 @@ export function buildStyles(brand: DocBrand) {
 // Numbering (bullets & numbered lists)
 // ---------------------------------------------------------------------------
 
-export function buildNumbering() {
+function buildNumbering() {
   return {
     config: [
       {
@@ -215,7 +215,7 @@ export function buildNumbering() {
 // Header & Footer builders
 // ---------------------------------------------------------------------------
 
-export function buildHeader(brand: DocBrand, documentTitle?: string): Header {
+function buildHeader(brand: DocBrand, documentTitle?: string): Header {
   const children: (TextRun | ImageRun)[] = [];
 
   if (brand.logoBuffer && brand.logoMime) {
@@ -262,7 +262,7 @@ export function buildHeader(brand: DocBrand, documentTitle?: string): Header {
   });
 }
 
-export function buildFooter(brand: DocBrand): Footer {
+function buildFooter(brand: DocBrand): Footer {
   const locationText = brand.facilities?.map((f) => `${f.city}, ${f.state}`).join('  |  ') ?? '';
   return new Footer({
     children: [
@@ -308,7 +308,7 @@ export function buildFooter(brand: DocBrand): Footer {
 // Section builder — wraps children with header/footer/margins/page size
 // ---------------------------------------------------------------------------
 
-export interface SectionOptions {
+interface SectionOptions {
   brand: DocBrand;
   children: Paragraph[] | (Paragraph | Table)[];
   documentTitle?: string;
@@ -368,7 +368,7 @@ export function bullet(text: string, level = 0): Paragraph {
   });
 }
 
-export function numbered(text: string, ref = 'numbers', level = 0): Paragraph {
+function numbered(text: string, ref = 'numbers', level = 0): Paragraph {
   return new Paragraph({
     numbering: { reference: ref, level },
     children: [new TextRun(text)],
@@ -414,7 +414,7 @@ export function calloutBox(text: string, brand: DocBrand, icon?: string): Paragr
 // Phase header block — styled "PHASE 01" label + title + rule + subtitle
 // ---------------------------------------------------------------------------
 
-export function phaseHeaderBlock(
+function phaseHeaderBlock(
   phaseNumber: string,
   title: string,
   subtitle: string | null,
@@ -482,7 +482,7 @@ export function phaseHeaderBlock(
 // Narrative block — left-border indented storytelling paragraph
 // ---------------------------------------------------------------------------
 
-export function narrativeBlock(text: string, brand: DocBrand): Paragraph {
+function narrativeBlock(text: string, brand: DocBrand): Paragraph {
   return new Paragraph({
     spacing: { before: 120, after: 200 },
     border: {
@@ -504,7 +504,7 @@ export function narrativeBlock(text: string, brand: DocBrand): Paragraph {
 // Styled box — colored bordered container for callouts
 // ---------------------------------------------------------------------------
 
-export type BoxStyle = 'milestone' | 'terms' | 'addon' | 'info';
+type BoxStyle = 'milestone' | 'terms' | 'addon' | 'info';
 
 const BOX_COLORS: Record<BoxStyle, { border: string; bg: string; icon: string }> = {
   milestone: { border: '16A34A', bg: 'F0FDF4', icon: '🏁' },
@@ -513,7 +513,7 @@ const BOX_COLORS: Record<BoxStyle, { border: string; bg: string; icon: string }>
   info: { border: '2563EB', bg: 'EFF6FF', icon: 'ℹ️' },
 };
 
-export function styledBox(
+function styledBox(
   title: string,
   bodyLines: string[],
   style: BoxStyle,
@@ -583,7 +583,7 @@ export function styledBox(
 // Milestone gate box — green bordered with checkbox requirements + unlocks
 // ---------------------------------------------------------------------------
 
-export function milestoneGateBox(
+function milestoneGateBox(
   name: string,
   requirements: { text: string; assignee: string }[],
   unlocks: string | null,
@@ -609,7 +609,7 @@ export function milestoneGateBox(
 // Add-on table — amber styled rows with checkbox + description + cost
 // ---------------------------------------------------------------------------
 
-export function addOnTable(
+function addOnTable(
   addons: Array<{ name: string; description: string; cost: string; selected: boolean; termsRef?: string }>,
   brand: DocBrand,
 ): Table {
@@ -716,7 +716,7 @@ export function addOnTable(
 // Reference cards — 2-column layout for creative refs / portfolio
 // ---------------------------------------------------------------------------
 
-export function referenceCards(
+function referenceCards(
   items: Array<{ label: string; description: string; type?: string }>,
   sectionTitle: string,
   brand: DocBrand,
@@ -915,7 +915,7 @@ export function kvTable(
 // Signature block
 // ---------------------------------------------------------------------------
 
-export function signatureBlock(brand: DocBrand, clientCompanyName: string): (Paragraph | Table)[] {
+function signatureBlock(brand: DocBrand, clientCompanyName: string): (Paragraph | Table)[] {
   const colWidth = Math.floor(CONTENT_WIDTH / 2);
   const line = '________________________________';
 

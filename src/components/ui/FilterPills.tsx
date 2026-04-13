@@ -6,7 +6,7 @@ import { useId, type ReactNode } from 'react';
 /*  Filter Pills — Horizontal segmented controls for data filtering   */
 /* ------------------------------------------------------------------ */
 
-export interface FilterPillItem<T extends string = string> {
+interface FilterPillItem<T extends string = string> {
   key: T;
   label: string;
   /** Optional count badge rendered after the label */

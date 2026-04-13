@@ -49,71 +49,71 @@ export function castPaymentTerms(val: Json | null): PaymentTerms | null {
 }
 
 /** Address from various JSONB address columns */
-export function castAddress(val: Json | null): Address | null {
+function castAddress(val: Json | null): Address | null {
   return castJson<Address | null>(val, null);
 }
 
 /** Venue activation dates */
-export function castActivationDates(val: Json | null): VenueActivationDates | null {
+function castActivationDates(val: Json | null): VenueActivationDates | null {
   return castJson<VenueActivationDates | null>(val, null);
 }
 
 /** Venue load-in / strike schedule */
-export function castLoadInStrike(val: Json | null): VenueLoadInStrike[] {
+function castLoadInStrike(val: Json | null): VenueLoadInStrike[] {
   return castJson<VenueLoadInStrike[]>(val, []);
 }
 
 /** Venue contact */
-export function castVenueContact(val: Json | null): VenueContact | null {
+function castVenueContact(val: Json | null): VenueContact | null {
   return castJson<VenueContact | null>(val, null);
 }
 
 /** Narrative context from proposals / phases */
-export function castNarrativeContext(val: Json | null): NarrativeContext | null {
+function castNarrativeContext(val: Json | null): NarrativeContext | null {
   return castJson<NarrativeContext | null>(val, null);
 }
 
 /** Asset metadata from phase_deliverables */
-export function castAssetMetadata(val: Json | null): AssetMetadata | null {
+function castAssetMetadata(val: Json | null): AssetMetadata | null {
   return castJson<AssetMetadata | null>(val, null);
 }
 
 /** Resource metadata from phase_deliverables */
-export function castResourceMetadata(val: Json | null): ResourceMetadata | null {
+function castResourceMetadata(val: Json | null): ResourceMetadata | null {
   return castJson<ResourceMetadata | null>(val, null);
 }
 
 /** Finance trigger from phase_deliverables */
-export function castFinanceTrigger(val: Json | null): FinanceTrigger | null {
+function castFinanceTrigger(val: Json | null): FinanceTrigger | null {
   return castJson<FinanceTrigger | null>(val, null);
 }
 
 /** PM metadata from phase_deliverables / addons */
-export function castPmMetadata(val: Json | null): PmMetadata | null {
+function castPmMetadata(val: Json | null): PmMetadata | null {
   return castJson<PmMetadata | null>(val, null);
 }
 
 /** Terms sections from terms_documents */
-export function castTermsSections(val: Json | null): TermsSection[] {
+function castTermsSections(val: Json | null): TermsSection[] {
   return castJson<TermsSection[]>(val, []);
 }
 
 /** Change order line items */
-export function castChangeOrderLineItems(val: Json | null): ChangeOrderLineItem[] {
+function castChangeOrderLineItems(val: Json | null): ChangeOrderLineItem[] {
   return castJson<ChangeOrderLineItem[]>(val, []);
 }
 
 /** Asset location */
-export function castAssetLocation(val: Json | null): AssetLocation | null {
+function castAssetLocation(val: Json | null): AssetLocation | null {
   return castJson<AssetLocation | null>(val, null);
 }
 
 /** Recurrence rule */
-export function castRecurrenceRule(val: Json | null): RecurrenceRule | null {
+function castRecurrenceRule(val: Json | null): RecurrenceRule | null {
   return castJson<RecurrenceRule | null>(val, null);
 }
 
 /** Org settings */
-export function castOrgSettings(val: Json | null): OrgSettings | null {
+function castOrgSettings(val: Json | null): OrgSettings | null {
   return castJson<OrgSettings | null>(val, null);
 }

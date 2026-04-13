@@ -1,7 +1,7 @@
 import type { ButtonHTMLAttributes, ReactNode, AnchorHTMLAttributes } from 'react';
 import Link from 'next/link';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost' | 'danger_ghost' | 'default' | 'warning' | 'success' | 'outline';
+type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost' | 'danger_ghost' | 'default' | 'warning' | 'success' | 'outline';
 type ButtonSize = 'sm' | 'default' | 'lg';
 
 interface ButtonBaseProps {
@@ -15,7 +15,7 @@ interface ButtonBaseProps {
 type ButtonAsButtonProps = ButtonBaseProps & ButtonHTMLAttributes<HTMLButtonElement> & { href?: never };
 type ButtonAsLinkProps = ButtonBaseProps & AnchorHTMLAttributes<HTMLAnchorElement> & { href: string; disabled?: boolean };
 
-export type ButtonProps = ButtonAsButtonProps | ButtonAsLinkProps;
+type ButtonProps = ButtonAsButtonProps | ButtonAsLinkProps;
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   primary: 'bg-foreground text-background hover:bg-foreground/90',

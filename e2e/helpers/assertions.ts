@@ -97,7 +97,7 @@ export async function expectAccessDenied(page: Page) {
 /**
  * Asserts the user was redirected to the login page.
  */
-export async function expectRedirectToLogin(page: Page) {
+async function expectRedirectToLogin(page: Page) {
   await page.waitForURL('**/login**', { timeout: 10_000 });
   expect(page.url()).toContain('/login');
 }
@@ -143,7 +143,7 @@ export async function expectPageHeading(page: Page) {
 /**
  * Asserts no template strings like {variable} or {{variable}} are visible.
  */
-export async function expectNoTemplateStrings(page: Page) {
+async function expectNoTemplateStrings(page: Page) {
   const bodyText = (await page.textContent('body')) || '';
   const templatePattern = /\{\{?\w+\}?\}/g;
   const matches = bodyText.match(templatePattern) || [];

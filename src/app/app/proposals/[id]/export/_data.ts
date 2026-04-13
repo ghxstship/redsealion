@@ -318,7 +318,7 @@ export type ExportHubData = Awaited<ReturnType<typeof getExportData>>;
 // Static field mapping constants (these don't change per proposal)
 // ---------------------------------------------------------------------------
 
-export const salesforceMappings = [
+const salesforceMappings = [
   {
     name: 'Deal / Opportunity',
     mappings: [
@@ -348,7 +348,7 @@ export const salesforceMappings = [
   },
 ];
 
-export const hubspotMappings = [
+const hubspotMappings = [
   {
     name: 'Deal',
     mappings: [
@@ -367,7 +367,7 @@ export const hubspotMappings = [
   },
 ];
 
-export const pipedriveMappings = [
+const pipedriveMappings = [
   {
     name: 'Deal',
     mappings: [

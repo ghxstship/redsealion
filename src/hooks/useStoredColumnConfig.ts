@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import type { SavedView } from '@/hooks/useEntityViews';
 
-export interface ColumnDef {
+interface ColumnDef {
   key: string;
   label: string;
   visible: boolean;
