@@ -18,6 +18,7 @@ import { useEntityViews } from '@/hooks/useEntityViews';
 import { useStoredColumnConfig } from '@/hooks/useStoredColumnConfig';
 import ViewBar from '@/components/shared/ViewBar';
 import ColumnConfigPanel from '@/components/shared/ColumnConfigPanel';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 export interface ActivationItem {
   id: string;
@@ -132,48 +133,48 @@ export default function ActivationsTable({ activations }: { activations: Activat
       />
 
       <div className="rounded-xl border border-border bg-background overflow-hidden overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-border bg-bg-secondary">
-              <th className="px-4 py-3 text-left w-10">
+        <Table >
+          <TableHeader>
+            <TableRow className="border-b border-border bg-bg-secondary">
+              <TableHead className="px-4 py-3 text-left w-10">
                 <input type="checkbox" checked={isAllSelected} ref={(el) => { if (el) el.indeterminate = isSomeSelected; }} onChange={toggleAll} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
-              </th>
-              {isVisible('name') && <th className="px-6 py-3"><SortableHeader label="Name" field="name" currentSort={sort} onSort={handleSort} /></th>}
-              {isVisible('type') && <th className="px-6 py-3"><SortableHeader label="Type" field="type" currentSort={sort} onSort={handleSort} /></th>}
-              {isVisible('status') && <th className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></th>}
-              {isVisible('event_name') && <th className="px-6 py-3"><SortableHeader label="Event" field="event_name" currentSort={sort} onSort={handleSort} /></th>}
-              {isVisible('location_name') && <th className="px-6 py-3"><SortableHeader label="Location" field="location_name" currentSort={sort} onSort={handleSort} /></th>}
-              {isVisible('starts_at') && <th className="px-6 py-3"><SortableHeader label="Start Date" field="starts_at" currentSort={sort} onSort={handleSort} /></th>}
-              {isVisible('ends_at') && <th className="px-6 py-3"><SortableHeader label="End Date" field="ends_at" currentSort={sort} onSort={handleSort} /></th>}
-              <th className="px-6 py-3 w-12"><span className="sr-only">Actions</span></th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
+              </TableHead>
+              {isVisible('name') && <TableHead className="px-6 py-3"><SortableHeader label="Name" field="name" currentSort={sort} onSort={handleSort} /></TableHead>}
+              {isVisible('type') && <TableHead className="px-6 py-3"><SortableHeader label="Type" field="type" currentSort={sort} onSort={handleSort} /></TableHead>}
+              {isVisible('status') && <TableHead className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></TableHead>}
+              {isVisible('event_name') && <TableHead className="px-6 py-3"><SortableHeader label="Event" field="event_name" currentSort={sort} onSort={handleSort} /></TableHead>}
+              {isVisible('location_name') && <TableHead className="px-6 py-3"><SortableHeader label="Location" field="location_name" currentSort={sort} onSort={handleSort} /></TableHead>}
+              {isVisible('starts_at') && <TableHead className="px-6 py-3"><SortableHeader label="Start Date" field="starts_at" currentSort={sort} onSort={handleSort} /></TableHead>}
+              {isVisible('ends_at') && <TableHead className="px-6 py-3"><SortableHeader label="End Date" field="ends_at" currentSort={sort} onSort={handleSort} /></TableHead>}
+              <TableHead className="px-6 py-3 w-12"><span className="sr-only">Actions</span></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody >
             {sorted.map((item) => (
-              <tr key={item.id} className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(item.id) ? 'bg-blue-50/50' : ''}`}>
-                <td className="px-4 py-3.5">
+              <TableRow key={item.id} className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(item.id) ? 'bg-blue-50/50' : ''}`}>
+                <TableCell className="px-4 py-3.5">
                   <input type="checkbox" checked={isSelected(item.id)} onChange={() => toggle(item.id)} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
-                </td>
-                {isVisible('name') && <td className="px-6 py-3.5"><span className="text-sm font-medium text-foreground">{item.name}</span></td>}
-                {isVisible('type') && <td className="px-6 py-3.5"><span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">{formatLabel(item.type)}</span></td>}
-                {isVisible('status') && <td className="px-6 py-3.5"><StatusBadge status={item.status} colorMap={ACTIVATION_STATUS_COLORS} /></td>}
-                {isVisible('event_name') && <td className="px-6 py-3.5 text-sm text-text-secondary">{item.event_name}</td>}
-                {isVisible('location_name') && <td className="px-6 py-3.5 text-sm text-text-secondary">{item.location_name}</td>}
-                {isVisible('starts_at') && <td className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(item.starts_at)}</td>}
-                {isVisible('ends_at') && <td className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(item.ends_at)}</td>}
-                <td className="px-6 py-3.5">
+                </TableCell>
+                {isVisible('name') && <TableCell className="px-6 py-3.5"><span className="text-sm font-medium text-foreground">{item.name}</span></TableCell>}
+                {isVisible('type') && <TableCell className="px-6 py-3.5"><span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">{formatLabel(item.type)}</span></TableCell>}
+                {isVisible('status') && <TableCell className="px-6 py-3.5"><StatusBadge status={item.status} colorMap={ACTIVATION_STATUS_COLORS} /></TableCell>}
+                {isVisible('event_name') && <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{item.event_name}</TableCell>}
+                {isVisible('location_name') && <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{item.location_name}</TableCell>}
+                {isVisible('starts_at') && <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(item.starts_at)}</TableCell>}
+                {isVisible('ends_at') && <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(item.ends_at)}</TableCell>}
+                <TableCell className="px-6 py-3.5">
                   <RowActionMenu actions={[
                     { label: 'View', onClick: () => router.push(`/app/events`) },
                     { label: 'Delete', variant: 'danger', onClick: () => setShowDeleteConfirm(item.id) },
                   ]} />
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
             {sorted.length === 0 && (
-              <tr><td colSpan={9} className="px-6 py-12 text-center text-sm text-text-muted">No activations match your search.</td></tr>
+              <TableRow><TableCell colSpan={9} className="px-6 py-12 text-center text-sm text-text-muted">No activations match your search.</TableCell></TableRow>
             )}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
 
       {showDeleteConfirm && (

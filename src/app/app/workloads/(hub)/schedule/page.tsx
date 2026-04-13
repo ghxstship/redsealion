@@ -4,6 +4,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import WorkloadsHubTabs from '../../WorkloadsHubTabs';
 import PageHeader from '@/components/shared/PageHeader';
 import Link from 'next/link';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface ScheduleAllocation {
   id: string;
@@ -94,28 +95,28 @@ export default async function WorkloadsSchedulePage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr>
-                  <th className="px-4 py-3 sticky left-0 bg-bg-secondary z-10 min-w-[160px]">Team Member</th>
+            <Table >
+              <TableHeader >
+                <TableRow>
+                  <TableHead className="px-4 py-3 sticky left-0 bg-bg-secondary z-10 min-w-[160px]">Team Member</TableHead>
                   {weeks.map((w) => (
-                    <th key={w.start} className="px-3 py-3 text-center min-w-[120px]">{w.label}</th>
+                    <TableHead key={w.start} className="px-3 py-3 text-center min-w-[120px]">{w.label}</TableHead>
                   ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {[...byUser.entries()].map(([userName, userAllocations]) => (
-                  <tr key={userName} className="hover:bg-bg-secondary/30 transition-colors">
-                    <td className="px-4 py-3 font-medium text-foreground sticky left-0 bg-background z-10">{userName}</td>
+                  <TableRow key={userName} className="hover:bg-bg-secondary/30 transition-colors">
+                    <TableCell className="px-4 py-3 font-medium text-foreground sticky left-0 bg-background z-10">{userName}</TableCell>
                     {weeks.map((week) => {
                       const active = userAllocations.filter(
                         (a) => a.startDate <= week.end && a.endDate >= week.start,
                       );
                       if (active.length === 0) {
-                        return <td key={week.start} className="px-3 py-3 text-center text-text-muted">—</td>;
+                        return <TableCell key={week.start} className="px-3 py-3 text-center text-text-muted">—</TableCell>;
                       }
                       return (
-                        <td key={week.start} className="px-3 py-3">
+                        <TableCell key={week.start} className="px-3 py-3">
                           {active.map((a) => (
                             <div
                               key={a.id}
@@ -125,13 +126,13 @@ export default async function WorkloadsSchedulePage() {
                               <p className="text-[10px] text-blue-600">{a.hoursPerDay}h/day</p>
                             </div>
                           ))}
-                        </td>
+                        </TableCell>
                       );
                     })}
-                  </tr>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

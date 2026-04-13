@@ -6,6 +6,7 @@ import Link from 'next/link';
 import DispatchHubTabs from '../../DispatchHubTabs';
 import Alert from '@/components/ui/Alert';
 import MetricCard from '@/components/ui/MetricCard';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface HistoryItem {
   id: string;
@@ -71,30 +72,30 @@ export default async function DispatchHistoryPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr>
-                  <th className="px-4 py-3">Job</th>
-                  <th className="px-4 py-3">Location</th>
-                  <th className="px-4 py-3">Crew</th>
-                  <th className="px-4 py-3">Scheduled</th>
-                  <th className="px-4 py-3">Completed</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow>
+                  <TableHead className="px-4 py-3">Job</TableHead>
+                  <TableHead className="px-4 py-3">Location</TableHead>
+                  <TableHead className="px-4 py-3">Crew</TableHead>
+                  <TableHead className="px-4 py-3">Scheduled</TableHead>
+                  <TableHead className="px-4 py-3">Completed</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {history.map((item) => (
-                  <tr key={item.id} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3 font-medium text-foreground">
+                  <TableRow key={item.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <TableCell className="px-4 py-3 font-medium text-foreground">
                       <Link href={`/app/dispatch/${item.id}`} className="hover:underline">{item.title}</Link>
-                    </td>
-                    <td className="px-4 py-3 text-text-secondary">{item.location_name ?? '—'}</td>
-                    <td className="px-4 py-3 text-text-secondary">{crewNames(item)}</td>
-                    <td className="px-4 py-3 text-text-secondary">{item.scheduled_start ? new Date(item.scheduled_start).toLocaleDateString() : '—'}</td>
-                    <td className="px-4 py-3 text-text-secondary">{item.completed_at ? new Date(item.completed_at).toLocaleDateString() : '—'}</td>
-                  </tr>
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{item.location_name ?? '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{crewNames(item)}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{item.scheduled_start ? new Date(item.scheduled_start).toLocaleDateString() : '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{item.completed_at ? new Date(item.completed_at).toLocaleDateString() : '—'}</TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

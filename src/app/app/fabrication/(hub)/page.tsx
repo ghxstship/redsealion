@@ -8,6 +8,7 @@ import FabricationHubTabs from '../FabricationHubTabs';
 import NewOrderButton from '@/components/fabrication/NewOrderButton';
 import StatusBadge, { FABRICATION_STATUS_COLORS, TASK_PRIORITY_COLORS } from '@/components/ui/StatusBadge';
 import MetricCard from '@/components/ui/MetricCard';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getOrders() {
   try {
@@ -55,34 +56,34 @@ export default async function FabricationOrdersPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr>
-                  <th className="px-4 py-3">Order #</th>
-                  <th className="px-4 py-3">Name</th>
-                  <th className="px-4 py-3">Type</th>
-                  <th className="px-4 py-3">Priority</th>
-                  <th className="px-4 py-3">Qty</th>
-                  <th className="px-4 py-3">Cost</th>
-                  <th className="px-4 py-3">Due</th>
-                  <th className="px-4 py-3">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow>
+                  <TableHead className="px-4 py-3">Order #</TableHead>
+                  <TableHead className="px-4 py-3">Name</TableHead>
+                  <TableHead className="px-4 py-3">Type</TableHead>
+                  <TableHead className="px-4 py-3">Priority</TableHead>
+                  <TableHead className="px-4 py-3">Qty</TableHead>
+                  <TableHead className="px-4 py-3">Cost</TableHead>
+                  <TableHead className="px-4 py-3">Due</TableHead>
+                  <TableHead className="px-4 py-3">Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {orders.map((o) => (
-                  <tr key={o.id} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3"><Link href={`/app/fabrication/${o.id}`} className="font-medium text-foreground hover:underline">{o.order_number}</Link></td>
-                    <td className="px-4 py-3 text-text-secondary">{o.name}</td>
-                    <td className="px-4 py-3 capitalize">{o.order_type}</td>
-                    <td className="px-4 py-3"><StatusBadge status={o.priority} colorMap={TASK_PRIORITY_COLORS} /></td>
-                    <td className="px-4 py-3 tabular-nums">{o.quantity}</td>
-                    <td className="px-4 py-3 tabular-nums">{formatCurrency(o.total_cost_cents / 100)}</td>
-                    <td className="px-4 py-3 text-text-secondary">{o.due_date ? new Date(o.due_date).toLocaleDateString() : '—'}</td>
-                    <td className="px-4 py-3"><StatusBadge status={o.status} colorMap={FABRICATION_STATUS_COLORS} /></td>
-                  </tr>
+                  <TableRow key={o.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <TableCell className="px-4 py-3"><Link href={`/app/fabrication/${o.id}`} className="font-medium text-foreground hover:underline">{o.order_number}</Link></TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{o.name}</TableCell>
+                    <TableCell className="px-4 py-3 capitalize">{o.order_type}</TableCell>
+                    <TableCell className="px-4 py-3"><StatusBadge status={o.priority} colorMap={TASK_PRIORITY_COLORS} /></TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums">{o.quantity}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums">{formatCurrency(o.total_cost_cents / 100)}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{o.due_date ? new Date(o.due_date).toLocaleDateString() : '—'}</TableCell>
+                    <TableCell className="px-4 py-3"><StatusBadge status={o.status} colorMap={FABRICATION_STATUS_COLORS} /></TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

@@ -5,6 +5,7 @@ import StatusBadge from '@/components/ui/StatusBadge';
 
 import Card from '@/components/ui/Card';
 import EmptyState from '@/components/ui/EmptyState';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface RecruitmentPosition {
   id: string;
@@ -97,32 +98,32 @@ export default async function RecruitmentPage() {
       {/* Positions table */}
       {positions.length > 0 ? (
         <div className="rounded-xl border border-border bg-background overflow-hidden overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-border bg-bg-secondary">
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Position</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Department</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Applicants</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Posted</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
+          <Table >
+            <TableHeader>
+              <TableRow className="border-b border-border bg-bg-secondary">
+                <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Position</TableHead>
+                <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Department</TableHead>
+                <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</TableHead>
+                <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Applicants</TableHead>
+                <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Posted</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody >
               {positions.map((position) => (
-                <tr key={position.id} className="transition-colors hover:bg-bg-secondary/50">
-                  <td className="px-6 py-3.5 text-sm font-medium text-foreground">{position.title}</td>
-                  <td className="px-6 py-3.5">
+                <TableRow key={position.id} className="transition-colors hover:bg-bg-secondary/50">
+                  <TableCell className="px-6 py-3.5 text-sm font-medium text-foreground">{position.title}</TableCell>
+                  <TableCell className="px-6 py-3.5">
                     <StatusBadge status={position.department} colorMap={{}} className="bg-bg-secondary text-text-secondary" />
-                  </td>
-                  <td className="px-6 py-3.5">
+                  </TableCell>
+                  <TableCell className="px-6 py-3.5">
                     <StatusBadge status={position.status} colorMap={STATUS_COLORS} />
-                  </td>
-                  <td className="px-6 py-3.5 text-sm tabular-nums text-foreground">{position.applicants}</td>
-                  <td className="px-6 py-3.5 text-sm text-text-muted">{formatDate(position.posted_date)}</td>
-                </tr>
+                  </TableCell>
+                  <TableCell className="px-6 py-3.5 text-sm tabular-nums text-foreground">{position.applicants}</TableCell>
+                  <TableCell className="px-6 py-3.5 text-sm text-text-muted">{formatDate(position.posted_date)}</TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       ) : (
         <EmptyState

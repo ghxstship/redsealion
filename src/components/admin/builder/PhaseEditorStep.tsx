@@ -30,6 +30,7 @@ import PhaseNarrativeEditor from './PhaseNarrativeEditor';
 
 export type { DeliverableData, AddonData, MilestoneRequirementData, PhaseData } from './types';
 import Button from '@/components/ui/Button';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface PhaseEditorStepProps {
   phase: PhaseData;
@@ -352,25 +353,25 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
 
         {phase.deliverables.length > 0 && (
           <div className="overflow-x-auto rounded-lg border border-border">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-bg-secondary border-b border-border">
-                  <th className="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted w-6" />
-                  <th className="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Name</th>
-                  <th className="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Description</th>
-                  <th className="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted w-28">Category</th>
-                  <th className="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted w-24">Unit</th>
-                  <th className="px-3 py-2 text-right text-xs font-medium uppercase tracking-wider text-text-muted w-16">Qty</th>
-                  <th className="px-3 py-2 text-right text-xs font-medium uppercase tracking-wider text-text-muted w-24">Unit Cost</th>
-                  <th className="px-3 py-2 text-right text-xs font-medium uppercase tracking-wider text-text-muted w-24">Total</th>
-                  <th className="px-3 py-2 w-10" />
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader>
+                <TableRow className="bg-bg-secondary border-b border-border">
+                  <TableHead className="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted w-6" />
+                  <TableHead className="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Name</TableHead>
+                  <TableHead className="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Description</TableHead>
+                  <TableHead className="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted w-28">Category</TableHead>
+                  <TableHead className="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted w-24">Unit</TableHead>
+                  <TableHead className="px-3 py-2 text-right text-xs font-medium uppercase tracking-wider text-text-muted w-16">Qty</TableHead>
+                  <TableHead className="px-3 py-2 text-right text-xs font-medium uppercase tracking-wider text-text-muted w-24">Unit Cost</TableHead>
+                  <TableHead className="px-3 py-2 text-right text-xs font-medium uppercase tracking-wider text-text-muted w-24">Total</TableHead>
+                  <TableHead className="px-3 py-2 w-10" />
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {phase.deliverables.map((d, index) => (
                   <>
-                    <tr key={d.id} className="hover:bg-bg-secondary/50">
-                      <td className="px-3 py-2">
+                    <TableRow key={d.id} className="hover:bg-bg-secondary/50">
+                      <TableCell className="px-3 py-2">
                         <Button
                           type="button"
                           onClick={() => setExpandedDeliverable(expandedDeliverable === d.id ? null : d.id)}
@@ -379,22 +380,22 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
                         >
                           {expandedDeliverable === d.id ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
                         </Button>
-                      </td>
-                      <td className="px-3 py-2">
+                      </TableCell>
+                      <TableCell className="px-3 py-2">
                         <FormInput
                           type="text"
                           value={d.name}
                           onChange={(e) => updateDeliverable(index, { name: e.target.value })}
                           placeholder="Item name" />
-                      </td>
-                      <td className="px-3 py-2">
+                      </TableCell>
+                      <TableCell className="px-3 py-2">
                         <FormInput
                           type="text"
                           value={d.description}
                           onChange={(e) => updateDeliverable(index, { description: e.target.value })}
                           placeholder="Description" />
-                      </td>
-                      <td className="px-3 py-2">
+                      </TableCell>
+                      <TableCell className="px-3 py-2">
                         <FormSelect
                           value={d.category}
                           onChange={(e) => updateDeliverable(index, { category: e.target.value })}
@@ -404,8 +405,8 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
                             <option key={c} value={c}>{c}</option>
                           ))}
                         </FormSelect>
-                      </td>
-                      <td className="px-3 py-2">
+                      </TableCell>
+                      <TableCell className="px-3 py-2">
                         <FormSelect
                           value={d.unit}
                           onChange={(e) => updateDeliverable(index, { unit: e.target.value })}
@@ -414,26 +415,26 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
                             <option key={u} value={u}>{u}</option>
                           ))}
                         </FormSelect>
-                      </td>
-                      <td className="px-3 py-2">
+                      </TableCell>
+                      <TableCell className="px-3 py-2">
                         <FormInput
                           type="number"
                           min={0}
                           value={d.qty}
                           onChange={(e) => updateDeliverable(index, { qty: Number(e.target.value) })} />
-                      </td>
-                      <td className="px-3 py-2">
+                      </TableCell>
+                      <TableCell className="px-3 py-2">
                         <FormInput
                           type="number"
                           min={0}
                           step={0.01}
                           value={d.unitCost}
                           onChange={(e) => updateDeliverable(index, { unitCost: Number(e.target.value) })} />
-                      </td>
-                      <td className="px-3 py-2 text-right text-sm font-medium text-foreground">
+                      </TableCell>
+                      <TableCell className="px-3 py-2 text-right text-sm font-medium text-foreground">
                         {formatCurrency(d.totalCost)}
-                      </td>
-                      <td className="px-3 py-2">
+                      </TableCell>
+                      <TableCell className="px-3 py-2">
                         <Button
                           type="button"
                           onClick={() => removeDeliverable(index)}
@@ -441,12 +442,12 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
                         >
                           <X size={14} />
                         </Button>
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                     {/* Expandable details sub-rows */}
                     {expandedDeliverable === d.id && (
-                      <tr key={`${d.id}-details`}>
-                        <td colSpan={9} className="px-6 py-3 bg-bg-secondary/30">
+                      <TableRow key={`${d.id}-details`}>
+                        <TableCell colSpan={9} className="px-6 py-3 bg-bg-secondary/30">
                           <div className="space-y-2">
                             <p className="text-xs font-medium text-text-secondary">Specification Details</p>
                             {d.details.map((detail, dIdx) => (
@@ -471,24 +472,24 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
                               Add Detail
                             </Button>
                           </div>
-                        </td>
-                      </tr>
+                        </TableCell>
+                      </TableRow>
                     )}
                   </>
                 ))}
-              </tbody>
+              </TableBody>
               <tfoot>
-                <tr className="border-t border-border bg-bg-secondary">
-                  <td colSpan={7} className="px-3 py-2 text-right text-xs font-medium uppercase tracking-wider text-text-muted">
+                <TableRow className="border-t border-border bg-bg-secondary">
+                  <TableCell colSpan={7} className="px-3 py-2 text-right text-xs font-medium uppercase tracking-wider text-text-muted">
                     Deliverables Subtotal
-                  </td>
-                  <td className="px-3 py-2 text-right text-sm font-semibold text-foreground">
+                  </TableCell>
+                  <TableCell className="px-3 py-2 text-right text-sm font-semibold text-foreground">
                     {formatCurrency(deliverablesTotal)}
-                  </td>
-                  <td />
-                </tr>
+                  </TableCell>
+                  <TableCell />
+                </TableRow>
               </tfoot>
-            </table>
+            </Table>
           </div>
         )}
 
@@ -509,46 +510,46 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
 
         {phase.addons.length > 0 && (
           <div className="overflow-x-auto rounded-lg border border-addon/30">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-addon-bg border-b border-addon/20">
-                  <th className="px-3 py-2 text-center text-xs font-medium uppercase tracking-wider text-addon w-10">On</th>
-                  <th className="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider text-addon">Name</th>
-                  <th className="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider text-addon">Description</th>
-                  <th className="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider text-addon w-24">Category</th>
-                  <th className="px-3 py-2 text-right text-xs font-medium uppercase tracking-wider text-addon w-16">Qty</th>
-                  <th className="px-3 py-2 text-right text-xs font-medium uppercase tracking-wider text-addon w-24">Unit Cost</th>
-                  <th className="px-3 py-2 text-right text-xs font-medium uppercase tracking-wider text-addon w-24">Total</th>
-                  <th className="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider text-addon w-24">Excl. Group</th>
-                  <th className="px-3 py-2 w-10" />
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-addon/10">
+            <Table >
+              <TableHeader>
+                <TableRow className="bg-addon-bg border-b border-addon/20">
+                  <TableHead className="px-3 py-2 text-center text-xs font-medium uppercase tracking-wider text-addon w-10">On</TableHead>
+                  <TableHead className="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider text-addon">Name</TableHead>
+                  <TableHead className="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider text-addon">Description</TableHead>
+                  <TableHead className="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider text-addon w-24">Category</TableHead>
+                  <TableHead className="px-3 py-2 text-right text-xs font-medium uppercase tracking-wider text-addon w-16">Qty</TableHead>
+                  <TableHead className="px-3 py-2 text-right text-xs font-medium uppercase tracking-wider text-addon w-24">Unit Cost</TableHead>
+                  <TableHead className="px-3 py-2 text-right text-xs font-medium uppercase tracking-wider text-addon w-24">Total</TableHead>
+                  <TableHead className="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider text-addon w-24">Excl. Group</TableHead>
+                  <TableHead className="px-3 py-2 w-10" />
+                </TableRow>
+              </TableHeader>
+              <TableBody className="divide-y divide-addon/10">
                 {phase.addons.map((a, index) => (
-                  <tr key={a.id} className={a.selected ? 'bg-addon-bg/50' : 'hover:bg-bg-secondary/50'}>
-                    <td className="px-3 py-2 text-center">
+                  <TableRow key={a.id} className={a.selected ? 'bg-addon-bg/50' : 'hover:bg-bg-secondary/50'}>
+                    <TableCell className="px-3 py-2 text-center">
                       <input
                         type="checkbox"
                         checked={a.selected}
                         onChange={(e) => updateAddon(index, { selected: e.target.checked })}
                         className="rounded border-border text-addon focus:ring-addon"
                       />
-                    </td>
-                    <td className="px-3 py-2">
+                    </TableCell>
+                    <TableCell className="px-3 py-2">
                       <FormInput
                         type="text"
                         value={a.name}
                         onChange={(e) => updateAddon(index, { name: e.target.value })}
                         placeholder="Add-on name" />
-                    </td>
-                    <td className="px-3 py-2">
+                    </TableCell>
+                    <TableCell className="px-3 py-2">
                       <FormInput
                         type="text"
                         value={a.description}
                         onChange={(e) => updateAddon(index, { description: e.target.value })}
                         placeholder="Description" />
-                    </td>
-                    <td className="px-3 py-2">
+                    </TableCell>
+                    <TableCell className="px-3 py-2">
                       <FormSelect
                         value={a.category}
                         onChange={(e) => updateAddon(index, { category: e.target.value })}
@@ -558,33 +559,33 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
                           <option key={c} value={c}>{c}</option>
                         ))}
                       </FormSelect>
-                    </td>
-                    <td className="px-3 py-2">
+                    </TableCell>
+                    <TableCell className="px-3 py-2">
                       <FormInput
                         type="number"
                         min={0}
                         value={a.qty}
                         onChange={(e) => updateAddon(index, { qty: Number(e.target.value) })} />
-                    </td>
-                    <td className="px-3 py-2">
+                    </TableCell>
+                    <TableCell className="px-3 py-2">
                       <FormInput
                         type="number"
                         min={0}
                         step={0.01}
                         value={a.unitCost}
                         onChange={(e) => updateAddon(index, { unitCost: Number(e.target.value) })} />
-                    </td>
-                    <td className="px-3 py-2 text-right text-sm font-medium text-foreground">
+                    </TableCell>
+                    <TableCell className="px-3 py-2 text-right text-sm font-medium text-foreground">
                       {formatCurrency(a.totalCost)}
-                    </td>
-                    <td className="px-3 py-2">
+                    </TableCell>
+                    <TableCell className="px-3 py-2">
                       <FormInput
                         type="text"
                         value={a.mutuallyExclusiveGroup}
                         onChange={(e) => updateAddon(index, { mutuallyExclusiveGroup: e.target.value })}
                         placeholder="Group" />
-                    </td>
-                    <td className="px-3 py-2">
+                    </TableCell>
+                    <TableCell className="px-3 py-2">
                       <Button
                         type="button"
                         onClick={() => removeAddon(index)}
@@ -592,11 +593,11 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
                       >
                         <X size={14} />
                       </Button>
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
 

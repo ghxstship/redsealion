@@ -6,6 +6,7 @@ import Button from '@/components/ui/Button';
 import EventsHubTabs from '../../EventsHubTabs';
 import StatusBadge from '@/components/ui/StatusBadge';
 import MetricCard from '@/components/ui/MetricCard';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getPunchList() {
   try {
@@ -52,22 +53,22 @@ export default async function PunchListPage() {
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No punch list items. Items are created during event close-out to track remaining work.</p></div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr><th className="px-4 py-3">Item</th><th className="px-4 py-3">Event</th><th className="px-4 py-3">Priority</th><th className="px-4 py-3">Due</th><th className="px-4 py-3">Status</th></tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow><TableHead className="px-4 py-3">Item</TableHead><TableHead className="px-4 py-3">Event</TableHead><TableHead className="px-4 py-3">Priority</TableHead><TableHead className="px-4 py-3">Due</TableHead><TableHead className="px-4 py-3">Status</TableHead></TableRow>
+              </TableHeader>
+              <TableBody >
                 {items.map((item) => (
-                  <tr key={item.id} className={`hover:bg-bg-secondary/50 transition-colors ${item.priority === 'urgent' ? 'bg-red-500/5' : ''}`}>
-                    <td className="px-4 py-3 font-medium text-foreground">{item.title}</td>
-                    <td className="px-4 py-3 text-text-secondary">{item.event_name ?? '—'}</td>
-                    <td className="px-4 py-3"><span className={`font-medium capitalize ${PRIORITY_COLORS[item.priority ?? 'medium']}`}>{item.priority ?? 'medium'}</span></td>
-                    <td className="px-4 py-3 text-text-secondary">{item.due_date ? new Date(item.due_date).toLocaleDateString() : '—'}</td>
-                    <td className="px-4 py-3"><StatusBadge status={item.status} colorMap={{completed: 'bg-green-50 text-green-700', done: 'bg-green-50 text-green-700', pending: 'bg-yellow-50 text-yellow-700', in_progress: 'bg-yellow-50 text-yellow-700'}} /></td>
-                  </tr>
+                  <TableRow key={item.id} className={`hover:bg-bg-secondary/50 transition-colors ${item.priority === 'urgent' ? 'bg-red-500/5' : ''}`}>
+                    <TableCell className="px-4 py-3 font-medium text-foreground">{item.title}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{item.event_name ?? '—'}</TableCell>
+                    <TableCell className="px-4 py-3"><span className={`font-medium capitalize ${PRIORITY_COLORS[item.priority ?? 'medium']}`}>{item.priority ?? 'medium'}</span></TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{item.due_date ? new Date(item.due_date).toLocaleDateString() : '—'}</TableCell>
+                    <TableCell className="px-4 py-3"><StatusBadge status={item.status} colorMap={{completed: 'bg-green-50 text-green-700', done: 'bg-green-50 text-green-700', pending: 'bg-yellow-50 text-yellow-700', in_progress: 'bg-yellow-50 text-yellow-700'}} /></TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

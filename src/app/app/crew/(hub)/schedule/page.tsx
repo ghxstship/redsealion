@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
 import StatusBadge from '@/components/ui/StatusBadge';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 
 interface ScheduleEntry {
@@ -86,45 +87,45 @@ export default async function CrewSchedulePage() {
 
       {/* Schedule table */}
       <div className="rounded-xl border border-border bg-background overflow-hidden overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-border bg-bg-secondary">
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Date</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Crew</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Project</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Venue</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Shift</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
+        <Table >
+          <TableHeader>
+            <TableRow className="border-b border-border bg-bg-secondary">
+              <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Date</TableHead>
+              <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Crew</TableHead>
+              <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Project</TableHead>
+              <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Venue</TableHead>
+              <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Shift</TableHead>
+              <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody >
             {schedule.map((entry) => (
-              <tr key={entry.id} className="transition-colors hover:bg-bg-secondary/50">
-                <td className="px-6 py-3.5 text-sm text-text-secondary whitespace-nowrap">
+              <TableRow key={entry.id} className="transition-colors hover:bg-bg-secondary/50">
+                <TableCell className="px-6 py-3.5 text-sm text-text-secondary whitespace-nowrap">
                   {formatDate(entry.date)}
-                </td>
-                <td className="px-6 py-3.5 text-sm font-medium text-foreground">
+                </TableCell>
+                <TableCell className="px-6 py-3.5 text-sm font-medium text-foreground">
                   {entry.crew_name}
-                </td>
-                <td className="px-6 py-3.5 text-sm text-text-secondary">
+                </TableCell>
+                <TableCell className="px-6 py-3.5 text-sm text-text-secondary">
                   {entry.project_name}
-                </td>
-                <td className="px-6 py-3.5 text-sm text-text-secondary">
+                </TableCell>
+                <TableCell className="px-6 py-3.5 text-sm text-text-secondary">
                   {entry.venue}
-                </td>
-                <td className="px-6 py-3.5 text-sm tabular-nums text-text-secondary">
+                </TableCell>
+                <TableCell className="px-6 py-3.5 text-sm tabular-nums text-text-secondary">
                   {entry.start_time} &ndash; {entry.end_time}
-                </td>
-                <td className="px-6 py-3.5">
+                </TableCell>
+                <TableCell className="px-6 py-3.5">
                   <StatusBadge status={entry.status} colorMap={STATUS_COLORS} />
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
             {schedule.length === 0 && (
-              <tr><td colSpan={6} className="px-6 py-12 text-center text-sm text-text-muted">No upcoming bookings.</td></tr>
+              <TableRow><TableCell colSpan={6} className="px-6 py-12 text-center text-sm text-text-muted">No upcoming bookings.</TableCell></TableRow>
             )}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
     </>
   );

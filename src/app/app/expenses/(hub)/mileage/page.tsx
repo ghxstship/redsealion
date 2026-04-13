@@ -8,6 +8,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
 import StatusBadge, { MILEAGE_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface MileageStats {
   milesThisMonth: number;
@@ -121,32 +122,32 @@ export default async function MileagePage() {
       {data.entries.length > 0 ? (
         <div className="rounded-xl border border-border bg-background overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border bg-bg-secondary">
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">From</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">To</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Miles</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Amount</th>
-                  <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-text-muted">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader>
+                <TableRow className="border-b border-border bg-bg-secondary">
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Date</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">From</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">To</TableHead>
+                  <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Miles</TableHead>
+                  <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Amount</TableHead>
+                  <TableHead className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-text-muted">Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {data.entries.map((entry) => (
-                  <tr key={entry.id} className="transition-colors hover:bg-bg-secondary/50">
-                    <td className="px-6 py-3.5 text-sm text-foreground whitespace-nowrap">{entry.trip_date}</td>
-                    <td className="px-6 py-3.5 text-sm text-foreground">{entry.origin}</td>
-                    <td className="px-6 py-3.5 text-sm text-foreground">{entry.destination}</td>
-                    <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{entry.distance_miles}</td>
-                    <td className="px-6 py-3.5 text-right text-sm tabular-nums font-medium text-foreground">{formatCurrency(entry.amount)}</td>
-                    <td className="px-6 py-3.5 text-center">
+                  <TableRow key={entry.id} className="transition-colors hover:bg-bg-secondary/50">
+                    <TableCell className="px-6 py-3.5 text-sm text-foreground whitespace-nowrap">{entry.trip_date}</TableCell>
+                    <TableCell className="px-6 py-3.5 text-sm text-foreground">{entry.origin}</TableCell>
+                    <TableCell className="px-6 py-3.5 text-sm text-foreground">{entry.destination}</TableCell>
+                    <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{entry.distance_miles}</TableCell>
+                    <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums font-medium text-foreground">{formatCurrency(entry.amount)}</TableCell>
+                    <TableCell className="px-6 py-3.5 text-center">
                       <StatusBadge status={entry.status} colorMap={MILEAGE_STATUS_COLORS} />
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </div>
       ) : (

@@ -7,6 +7,7 @@ import Link from 'next/link';
 import PipelineHubTabs from '../../PipelineHubTabs';
 import StatusBadge, { PIPELINE_STAGE_COLORS } from '@/components/ui/StatusBadge';
 import MetricCard from '@/components/ui/MetricCard';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 const PAGE_SIZE = 50;
 
@@ -87,32 +88,32 @@ export default async function PipelineListPage({
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr>
-                  <th className="px-4 py-3">Deal</th>
-                  <th className="px-4 py-3">Client</th>
-                  <th className="px-4 py-3">Stage</th>
-                  <th className="px-4 py-3">Value</th>
-                  <th className="px-4 py-3">Probability</th>
-                  <th className="px-4 py-3">Close Date</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow>
+                  <TableHead className="px-4 py-3">Deal</TableHead>
+                  <TableHead className="px-4 py-3">Client</TableHead>
+                  <TableHead className="px-4 py-3">Stage</TableHead>
+                  <TableHead className="px-4 py-3">Value</TableHead>
+                  <TableHead className="px-4 py-3">Probability</TableHead>
+                  <TableHead className="px-4 py-3">Close Date</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {deals.map((deal) => (
-                  <tr key={deal.id} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3">
+                  <TableRow key={deal.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <TableCell className="px-4 py-3">
                       <Link href={`/app/pipeline/${deal.id}`} className="font-medium text-foreground hover:underline">{deal.title}</Link>
-                    </td>
-                    <td className="px-4 py-3 text-text-secondary">{deal.clients?.name ?? '—'}</td>
-                    <td className="px-4 py-3"><StatusBadge status={deal.stage} colorMap={PIPELINE_STAGE_COLORS} /></td>
-                    <td className="px-4 py-3 tabular-nums">{formatCurrency(deal.value)}</td>
-                    <td className="px-4 py-3 tabular-nums">{deal.probability}%</td>
-                    <td className="px-4 py-3 text-text-secondary">{deal.expected_close_date ? new Date(deal.expected_close_date).toLocaleDateString() : '—'}</td>
-                  </tr>
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{deal.clients?.name ?? '—'}</TableCell>
+                    <TableCell className="px-4 py-3"><StatusBadge status={deal.stage} colorMap={PIPELINE_STAGE_COLORS} /></TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums">{formatCurrency(deal.value)}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums">{deal.probability}%</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{deal.expected_close_date ? new Date(deal.expected_close_date).toLocaleDateString() : '—'}</TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

@@ -7,6 +7,7 @@ import RentalsHubTabs from '../../RentalsHubTabs';
 import CreateSubRentalButton from './CreateSubRentalButton';
 import StatusBadge, { SUB_RENTAL_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import MetricCard from '@/components/ui/MetricCard';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getSubRentals() {
   try {
@@ -54,22 +55,22 @@ export default async function SubRentalsPage() {
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No sub-rentals. Sub-rentals are created when your inventory cannot meet a rental order.</p></div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr><th className="px-4 py-3">PO #</th><th className="px-4 py-3">Supplier</th><th className="px-4 py-3">Period</th><th className="px-4 py-3">Cost</th><th className="px-4 py-3">Status</th></tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow><TableHead className="px-4 py-3">PO #</TableHead><TableHead className="px-4 py-3">Supplier</TableHead><TableHead className="px-4 py-3">Period</TableHead><TableHead className="px-4 py-3">Cost</TableHead><TableHead className="px-4 py-3">Status</TableHead></TableRow>
+              </TableHeader>
+              <TableBody >
                 {subRentals.map((r) => (
-                  <tr key={r.id} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3 font-medium text-foreground">{r.po_number ?? '—'}</td>
-                    <td className="px-4 py-3 text-text-secondary">{r.vendor_name ?? '—'}</td>
-                    <td className="px-4 py-3 text-text-secondary">{new Date(r.rental_start).toLocaleDateString()} – {new Date(r.rental_end).toLocaleDateString()}</td>
-                    <td className="px-4 py-3 tabular-nums">{formatCurrency(r.total_cost_cents / 100)}</td>
-                    <td className="px-4 py-3"><StatusBadge status={r.status} colorMap={SUB_RENTAL_STATUS_COLORS} /></td>
-                  </tr>
+                  <TableRow key={r.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <TableCell className="px-4 py-3 font-medium text-foreground">{r.po_number ?? '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{r.vendor_name ?? '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{new Date(r.rental_start).toLocaleDateString()} – {new Date(r.rental_end).toLocaleDateString()}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums">{formatCurrency(r.total_cost_cents / 100)}</TableCell>
+                    <TableCell className="px-4 py-3"><StatusBadge status={r.status} colorMap={SUB_RENTAL_STATUS_COLORS} /></TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

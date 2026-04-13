@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import WorkloadsHubTabs from '../../WorkloadsHubTabs';
 import PageHeader from '@/components/shared/PageHeader';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 /** Color map for utilization percentage thresholds. */
 function utilizationColor(pct: number): string {
@@ -99,34 +100,34 @@ export default async function UtilizationPage() {
 
       <div className="rounded-xl border border-border bg-background overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-border bg-bg-secondary">
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Name</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Role</th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Available (h/day)</th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Allocated (h/day)</th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Utilization</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
+          <Table >
+            <TableHeader>
+              <TableRow className="border-b border-border bg-bg-secondary">
+                <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Name</TableHead>
+                <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Role</TableHead>
+                <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Available (h/day)</TableHead>
+                <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Allocated (h/day)</TableHead>
+                <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Utilization</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody >
               {capacity.map((member) => (
-                <tr key={member.name} className="transition-colors hover:bg-bg-secondary/50">
-                  <td className="px-6 py-3.5 text-sm font-medium text-foreground">{member.name}</td>
-                  <td className="px-6 py-3.5 text-sm text-text-secondary">{member.role}</td>
-                  <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{member.available}h</td>
-                  <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{member.allocated}h</td>
-                  <td className="px-6 py-3.5 text-right">
+                <TableRow key={member.name} className="transition-colors hover:bg-bg-secondary/50">
+                  <TableCell className="px-6 py-3.5 text-sm font-medium text-foreground">{member.name}</TableCell>
+                  <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{member.role}</TableCell>
+                  <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{member.available}h</TableCell>
+                  <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{member.allocated}h</TableCell>
+                  <TableCell className="px-6 py-3.5 text-right">
                     <span
                       className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${utilizationColor(member.utilization)}`}
                     >
                       {member.utilization}%
                     </span>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </div>
 

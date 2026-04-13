@@ -5,6 +5,7 @@ import EmptyState from '@/components/ui/EmptyState';
 import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
 import { Check, Star, Sparkles, Diamond } from 'lucide-react';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface Scenario {
   id: string;
@@ -187,61 +188,61 @@ export default async function ScenariosPage(props: { params: Promise<{ id: strin
           {scenarios.length > 1 && (
             <Card className="p-6 overflow-x-auto">
               <h3 className="text-sm font-semibold text-foreground mb-4">Side-by-Side Comparison</h3>
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="text-left text-xs text-text-muted border-b border-border">
-                    <th className="py-2 font-medium w-48">Metric</th>
+              <Table >
+                <TableHeader>
+                  <TableRow className="text-left text-xs text-text-muted border-b border-border">
+                    <TableHead className="py-2 font-medium w-48">Metric</TableHead>
                     {scenarios.map((s) => (
-                      <th key={s.id} className="py-2 font-medium text-right">
+                      <TableHead key={s.id} className="py-2 font-medium text-right">
                         {s.name}
                         {s.isBaseline && (
                           <span className="ml-1 text-[10px] text-blue-500">★</span>
                         )}
-                      </th>
+                      </TableHead>
                     ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-b border-border/50">
-                    <td className="py-2.5 text-text-secondary">Investment</td>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow className="border-b border-border/50">
+                    <TableCell className="py-2.5 text-text-secondary">Investment</TableCell>
                     {scenarios.map((s) => (
-                      <td key={s.id} className="py-2.5 text-right font-semibold tabular-nums text-foreground">
+                      <TableCell key={s.id} className="py-2.5 text-right font-semibold tabular-nums text-foreground">
                         {formatCurrency(s.totalValue, currency)}
-                      </td>
+                      </TableCell>
                     ))}
-                  </tr>
-                  <tr className="border-b border-border/50">
-                    <td className="py-2.5 text-text-secondary">Phases</td>
+                  </TableRow>
+                  <TableRow className="border-b border-border/50">
+                    <TableCell className="py-2.5 text-text-secondary">Phases</TableCell>
                     {scenarios.map((s) => (
-                      <td key={s.id} className="py-2.5 text-right tabular-nums">{s.phaseCount || '—'}</td>
+                      <TableCell key={s.id} className="py-2.5 text-right tabular-nums">{s.phaseCount || '—'}</TableCell>
                     ))}
-                  </tr>
-                  <tr className="border-b border-border/50">
-                    <td className="py-2.5 text-text-secondary">Add-ons Included</td>
+                  </TableRow>
+                  <TableRow className="border-b border-border/50">
+                    <TableCell className="py-2.5 text-text-secondary">Add-ons Included</TableCell>
                     {scenarios.map((s) => (
-                      <td key={s.id} className="py-2.5 text-right tabular-nums">{s.addonsIncluded || '—'}</td>
+                      <TableCell key={s.id} className="py-2.5 text-right tabular-nums">{s.addonsIncluded || '—'}</TableCell>
                     ))}
-                  </tr>
+                  </TableRow>
                   {scenarios.some((s) => s.tier) && (
-                    <tr>
-                      <td className="py-2.5 text-text-secondary">Tier</td>
+                    <TableRow>
+                      <TableCell className="py-2.5 text-text-secondary">Tier</TableCell>
                       {scenarios.map((s) => {
                         const t = s.tier ? tierConfig[s.tier] : null;
                         return (
-                          <td key={s.id} className="py-2.5 text-right">
+                          <TableCell key={s.id} className="py-2.5 text-right">
                             {t ? (
                               <span className={`inline-flex items-center gap-1 text-xs font-medium ${t.color}`}>
                                 {t.icon}
                                 {t.label}
                               </span>
                             ) : '—'}
-                          </td>
+                          </TableCell>
                         );
                       })}
-                    </tr>
+                    </TableRow>
                   )}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </Card>
           )}
         </div>

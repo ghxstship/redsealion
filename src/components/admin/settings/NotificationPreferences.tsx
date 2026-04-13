@@ -3,6 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import Button from '@/components/ui/Button';
 import Alert from '@/components/ui/Alert';
+import Card from '@/components/ui/Card';
+import Toggle from '@/components/ui/Toggle';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface Preference {
   event_type: string;
@@ -77,14 +80,14 @@ export default function NotificationPreferences() {
 
   if (loading) {
     return (
-      <div className="bg-background border border-border rounded-lg shadow-sm p-6">
+      <Card>
         <p className="text-sm text-text-muted">Loading preferences...</p>
-      </div>
+      </Card>
     );
   }
 
   return (
-    <div className="bg-background border border-border rounded-lg shadow-sm p-6">
+    <Card>
       <h2 className="text-base font-semibold text-foreground mb-4">Notification Preferences</h2>
 
       {error && (
@@ -98,42 +101,33 @@ export default function NotificationPreferences() {
       )}
 
       <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-border">
-              <th className="text-left py-2 px-3 text-text-secondary font-medium">Event</th>
+        <Table >
+          <TableHeader>
+            <TableRow className="border-b border-border">
+              <TableHead className="text-left py-2 px-3 text-text-secondary font-medium">Event</TableHead>
               {CHANNELS.map((ch) => (
-                <th key={ch} className="text-center py-2 px-3 text-text-secondary font-medium">
+                <TableHead key={ch} className="text-center py-2 px-3 text-text-secondary font-medium">
                   {formatChannel(ch)}
-                </th>
+                </TableHead>
               ))}
-            </tr>
-          </thead>
-          <tbody>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {preferences.map((pref) => (
-              <tr key={pref.event_type} className="border-b border-border">
-                <td className="py-2 px-3 text-foreground">{formatEventType(pref.event_type)}</td>
+              <TableRow key={pref.event_type} className="border-b border-border">
+                <TableCell className="py-2 px-3 text-foreground">{formatEventType(pref.event_type)}</TableCell>
                 {CHANNELS.map((ch) => (
-                  <td key={ch} className="text-center py-2 px-3">
-                    <button
-                      type="button"
-                      onClick={() => toggleChannel(pref.event_type, ch)}
-                      className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-                        pref[ch] ? 'bg-foreground' : 'bg-bg-tertiary'
-                      }`}
-                    >
-                      <span
-                        className={`inline-block h-3.5 w-3.5 rounded-full bg-background transition-transform ${
-                          pref[ch] ? 'translate-x-4.5' : 'translate-x-0.5'
-                        }`}
-                      />
-                    </button>
-                  </td>
+                  <TableCell key={ch} className="text-center py-2 px-3">
+                    <Toggle
+                      checked={pref[ch]}
+                      onChange={() => toggleChannel(pref.event_type, ch)}
+                    />
+                  </TableCell>
                 ))}
-              </tr>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
 
       <div className="flex justify-end mt-4">
@@ -142,6 +136,6 @@ export default function NotificationPreferences() {
           {saving ? 'Saving...' : 'Save Preferences'}
         </Button>
       </div>
-    </div>
+    </Card>
   );
 }

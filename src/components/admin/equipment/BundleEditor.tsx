@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
 import Alert from '@/components/ui/Alert';
 import FormSelect from '@/components/ui/FormSelect';
 import FormTextarea from '@/components/ui/FormTextarea';
@@ -87,7 +88,7 @@ export default function BundleEditor({ bundle, onClose, onSaved }: BundleEditorP
   };
 
   return (
-    <div className="bg-background border border-border rounded-lg shadow-sm p-5">
+    <Card>
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-base font-semibold text-foreground">
           {bundle ? 'Edit Bundle' : 'Create Bundle'}
@@ -123,13 +124,13 @@ export default function BundleEditor({ bundle, onClose, onSaved }: BundleEditorP
         <div>
           <div className="flex items-center justify-between mb-2">
             <FormLabel>Items</FormLabel>
-            <button
-              type="button"
+            <Button
+              variant="secondary"
+              size="sm"
               onClick={addItem}
-              className="px-3 py-1 text-xs rounded-lg bg-bg-secondary text-foreground hover:bg-bg-tertiary"
             >
               + Add Item
-            </button>
+            </Button>
           </div>
 
           {items.length === 0 && (
@@ -167,19 +168,18 @@ export default function BundleEditor({ bundle, onClose, onSaved }: BundleEditorP
         </div>
 
         <div className="flex justify-end gap-2 pt-2">
-          <button
-            type="button"
+          <Button
+            variant="secondary"
             onClick={onClose}
-            className="px-4 py-2 text-sm rounded-lg bg-bg-secondary text-foreground hover:bg-bg-tertiary"
           >
             Cancel
-          </button>
+          </Button>
           <Button type="submit"
             disabled={submitting}>
             {submitting ? 'Saving...' : 'Save Bundle'}
           </Button>
         </div>
       </form>
-    </div>
+    </Card>
   );
 }

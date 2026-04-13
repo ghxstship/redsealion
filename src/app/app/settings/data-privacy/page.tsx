@@ -6,6 +6,7 @@ import { useState } from 'react';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import FormSelect from '@/components/ui/FormSelect';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 // Demo sessions mock removed
 
@@ -113,29 +114,29 @@ export default function DataPrivacyPage() {
       <Card>
         <h3 className="text-sm font-semibold text-foreground mb-5">Connected Sessions</h3>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border">
-                <th className="text-left text-xs font-medium text-text-muted uppercase tracking-wider pb-3">Browser</th>
-                <th className="text-left text-xs font-medium text-text-muted uppercase tracking-wider pb-3">IP</th>
-                <th className="text-left text-xs font-medium text-text-muted uppercase tracking-wider pb-3">Last Active</th>
-                <th className="text-right text-xs font-medium text-text-muted uppercase tracking-wider pb-3"></th>
-              </tr>
-            </thead>
-            <tbody>
+          <Table >
+            <TableHeader>
+              <TableRow className="border-b border-border">
+                <TableHead className="text-left text-xs font-medium text-text-muted uppercase tracking-wider pb-3">Browser</TableHead>
+                <TableHead className="text-left text-xs font-medium text-text-muted uppercase tracking-wider pb-3">IP</TableHead>
+                <TableHead className="text-left text-xs font-medium text-text-muted uppercase tracking-wider pb-3">Last Active</TableHead>
+                <TableHead className="text-right text-xs font-medium text-text-muted uppercase tracking-wider pb-3"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {sessions.map((s) => (
-                <tr key={s.id} className="border-b border-border last:border-0">
-                  <td className="py-3 text-foreground">
+                <TableRow key={s.id} className="border-b border-border last:border-0">
+                  <TableCell className="py-3 text-foreground">
                     {s.browser}
                     {s.current && (
                       <span className="ml-2 inline-flex items-center rounded-full bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700">
                         Current
                       </span>
                     )}
-                  </td>
-                  <td className="py-3 text-text-secondary">{s.ip}</td>
-                  <td className="py-3 text-text-secondary">{s.lastActive}</td>
-                  <td className="py-3 text-right">
+                  </TableCell>
+                  <TableCell className="py-3 text-text-secondary">{s.ip}</TableCell>
+                  <TableCell className="py-3 text-text-secondary">{s.lastActive}</TableCell>
+                  <TableCell className="py-3 text-right">
                     {!s.current && (
                       <Button
                         onClick={() => handleRevoke(s.id)}
@@ -144,16 +145,16 @@ export default function DataPrivacyPage() {
                         Revoke
                       </Button>
                     )}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
               {sessions.length === 0 && (
-                <tr>
-                  <td colSpan={4} className="py-6 text-center text-text-muted">No active sessions.</td>
-                </tr>
+                <TableRow>
+                  <TableCell colSpan={4} className="py-6 text-center text-text-muted">No active sessions.</TableCell>
+                </TableRow>
               )}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </Card>
 

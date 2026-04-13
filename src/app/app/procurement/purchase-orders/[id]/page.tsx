@@ -5,6 +5,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
 import StatusBadge from '@/components/ui/StatusBadge';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getPurchaseOrder(id: string) {
   const supabase = await createClient();
@@ -118,28 +119,28 @@ export default async function PurchaseOrderDetailPage({ params }: { params: Prom
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr>
-                  <th className="px-4 py-3">Description</th>
-                  <th className="px-4 py-3">Qty</th>
-                  <th className="px-4 py-3">Unit Price</th>
-                  <th className="px-4 py-3">Amount</th>
-                  <th className="px-4 py-3">Received</th>
-                  <th className="px-4 py-3">Fulfillment</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow>
+                  <TableHead className="px-4 py-3">Description</TableHead>
+                  <TableHead className="px-4 py-3">Qty</TableHead>
+                  <TableHead className="px-4 py-3">Unit Price</TableHead>
+                  <TableHead className="px-4 py-3">Amount</TableHead>
+                  <TableHead className="px-4 py-3">Received</TableHead>
+                  <TableHead className="px-4 py-3">Fulfillment</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {lineItems.map((li) => {
                   const pct = li.quantity > 0 ? Math.round((li.received_quantity / li.quantity) * 100) : 0;
                   return (
-                    <tr key={li.id} className="hover:bg-bg-secondary/50 transition-colors">
-                      <td className="px-4 py-3 font-medium text-foreground">{li.description}</td>
-                      <td className="px-4 py-3 tabular-nums">{li.quantity}</td>
-                      <td className="px-4 py-3 tabular-nums">{formatCurrency(li.unit_price)}</td>
-                      <td className="px-4 py-3 tabular-nums font-medium">{formatCurrency(li.amount)}</td>
-                      <td className="px-4 py-3 tabular-nums">{li.received_quantity} / {li.quantity}</td>
-                      <td className="px-4 py-3">
+                    <TableRow key={li.id} className="hover:bg-bg-secondary/50 transition-colors">
+                      <TableCell className="px-4 py-3 font-medium text-foreground">{li.description}</TableCell>
+                      <TableCell className="px-4 py-3 tabular-nums">{li.quantity}</TableCell>
+                      <TableCell className="px-4 py-3 tabular-nums">{formatCurrency(li.unit_price)}</TableCell>
+                      <TableCell className="px-4 py-3 tabular-nums font-medium">{formatCurrency(li.amount)}</TableCell>
+                      <TableCell className="px-4 py-3 tabular-nums">{li.received_quantity} / {li.quantity}</TableCell>
+                      <TableCell className="px-4 py-3">
                         <div className="flex items-center gap-2">
                           <div className="flex-1 h-1.5 rounded-full bg-bg-secondary overflow-hidden">
                             <div
@@ -149,12 +150,12 @@ export default async function PurchaseOrderDetailPage({ params }: { params: Prom
                           </div>
                           <span className="text-xs text-text-muted tabular-nums">{pct}%</span>
                         </div>
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   );
                 })}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

@@ -19,6 +19,7 @@ import type { ColumnMatch, RowValidation, ParsedFile } from '@/lib/import-parser
 import { downloadBlob } from '@/lib/export-formats';
 import FormLabel from '@/components/ui/FormLabel';
 import { IconX } from '@/components/ui/Icons';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -443,38 +444,38 @@ export default function DataImportDialog({
 
               {/* Validation table */}
               <div className="overflow-x-auto rounded-lg border border-border">
-                <table className="w-full text-xs">
-                  <thead>
-                    <tr className="bg-bg-secondary border-b border-border">
-                      <th className="px-3 py-2 text-left text-text-muted font-medium w-10">#</th>
-                      <th className="px-3 py-2 text-left text-text-muted font-medium w-14">Skip</th>
+                <Table className="w-full text-xs">
+                  <TableHeader>
+                    <TableRow className="bg-bg-secondary border-b border-border">
+                      <TableHead className="px-3 py-2 text-left text-text-muted font-medium w-10">#</TableHead>
+                      <TableHead className="px-3 py-2 text-left text-text-muted font-medium w-14">Skip</TableHead>
                       {activeMappings.map((m) => (
-                        <th key={m.targetField!.key} className="px-3 py-2 text-left text-text-muted font-medium">
+                        <TableHead key={m.targetField!.key} className="px-3 py-2 text-left text-text-muted font-medium">
                           {m.targetField!.label}
-                        </th>
+                        </TableHead>
                       ))}
-                    </tr>
-                  </thead>
-                  <tbody>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
                     {validations
                       .filter((v) => !showErrorsOnly || v.hasErrors || v.hasWarnings)
                       .slice(0, 50)
                       .map((v) => (
-                        <tr key={v.rowIndex} className={`border-t border-border ${v.skip ? 'opacity-40' : ''} ${v.hasErrors ? 'bg-red-500/5' : ''}`}>
-                          <td className="px-3 py-1.5 text-text-muted tabular-nums">{v.rowIndex + 1}</td>
-                          <td className="px-3 py-1.5">
+                        <TableRow key={v.rowIndex} className={`border-t border-border ${v.skip ? 'opacity-40' : ''} ${v.hasErrors ? 'bg-red-500/5' : ''}`}>
+                          <TableCell className="px-3 py-1.5 text-text-muted tabular-nums">{v.rowIndex + 1}</TableCell>
+                          <TableCell className="px-3 py-1.5">
                             <input
                               type="checkbox"
                               checked={v.skip}
                               onChange={() => toggleRowSkip(v.rowIndex)}
                               className="h-3 w-3 rounded border-border"
                             />
-                          </td>
+                          </TableCell>
                           {activeMappings.map((m) => {
                             const cell = v.cells[m.targetField!.key];
                             const value = parsed.rows[v.rowIndex]?.[m.sourceIndex] ?? '';
                             return (
-                              <td
+                              <TableCell
                                 key={m.targetField!.key}
                                 className={`px-3 py-1.5 ${
                                   cell?.severity === 'error' ? 'text-red-700 bg-red-500/10' :
@@ -489,13 +490,13 @@ export default function DataImportDialog({
                                     <AlertTriangle size={10} />
                                   </span>
                                 )}
-                              </td>
+                              </TableCell>
                             );
                           })}
-                        </tr>
+                        </TableRow>
                       ))}
-                  </tbody>
-                </table>
+                  </TableBody>
+                </Table>
                 {validations.length > 50 && (
                   <div className="px-3 py-2 text-xs text-text-muted bg-bg-secondary border-t border-border">
                     Showing first 50 of {validations.length} rows
@@ -513,24 +514,24 @@ export default function DataImportDialog({
               </div>
 
               <div className="overflow-x-auto rounded-lg border border-border">
-                <table className="w-full text-xs">
-                  <thead>
-                    <tr className="bg-bg-secondary border-b border-border">
+                <Table className="w-full text-xs">
+                  <TableHeader>
+                    <TableRow className="bg-bg-secondary border-b border-border">
                       {activeMappings.map((m) => (
-                        <th key={m.targetField!.key} className="px-3 py-2 text-left font-medium text-text-muted">
+                        <TableHead key={m.targetField!.key} className="px-3 py-2 text-left font-medium text-text-muted">
                           {m.targetField!.label}
-                        </th>
+                        </TableHead>
                       ))}
-                    </tr>
-                  </thead>
-                  <tbody>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
                     {previewRows.map((v) => (
-                      <tr key={v.rowIndex} className="border-t border-border hover:bg-bg-secondary/50">
+                      <TableRow key={v.rowIndex} className="border-t border-border hover:bg-bg-secondary/50">
                         {activeMappings.map((m) => {
                           const value = parsed.rows[v.rowIndex]?.[m.sourceIndex] ?? '';
                           const cell = v.cells[m.targetField!.key];
                           return (
-                            <td
+                            <TableCell
                               key={m.targetField!.key}
                               className={`px-3 py-1.5 ${
                                 cell?.severity === 'ok' ? 'text-foreground' :
@@ -538,13 +539,13 @@ export default function DataImportDialog({
                               }`}
                             >
                               {value || '—'}
-                            </td>
+                            </TableCell>
                           );
                         })}
-                      </tr>
+                      </TableRow>
                     ))}
-                  </tbody>
-                </table>
+                  </TableBody>
+                </Table>
                 {previewRows.length < validationSummary.importable && (
                   <div className="px-3 py-2 text-xs text-text-muted bg-bg-secondary border-t border-border">
                     Showing {previewRows.length} of {validationSummary.importable} rows

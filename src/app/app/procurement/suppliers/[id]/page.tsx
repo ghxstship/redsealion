@@ -5,6 +5,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
 import StatusBadge from '@/components/ui/StatusBadge';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getVendor(id: string) {
   const supabase = await createClient();
@@ -147,30 +148,30 @@ export default async function SupplierDetailPage({ params }: { params: Promise<{
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr>
-                  <th className="px-4 py-3">PO #</th>
-                  <th className="px-4 py-3">Amount</th>
-                  <th className="px-4 py-3">Issued</th>
-                  <th className="px-4 py-3">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow>
+                  <TableHead className="px-4 py-3">PO #</TableHead>
+                  <TableHead className="px-4 py-3">Amount</TableHead>
+                  <TableHead className="px-4 py-3">Issued</TableHead>
+                  <TableHead className="px-4 py-3">Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {pos.map((p: { id: string; po_number: string; total_amount: number; status: string; issued_date: string | null }) => (
-                  <tr key={p.id} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3">
+                  <TableRow key={p.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <TableCell className="px-4 py-3">
                       <Link href={`/app/procurement/purchase-orders/${p.id}`} className="font-medium text-foreground hover:underline">{p.po_number}</Link>
-                    </td>
-                    <td className="px-4 py-3 tabular-nums">{formatCurrency(p.total_amount ?? 0)}</td>
-                    <td className="px-4 py-3 text-text-secondary">{p.issued_date ? new Date(p.issued_date).toLocaleDateString() : '—'}</td>
-                    <td className="px-4 py-3">
+                    </TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums">{formatCurrency(p.total_amount ?? 0)}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{p.issued_date ? new Date(p.issued_date).toLocaleDateString() : '—'}</TableCell>
+                    <TableCell className="px-4 py-3">
                       <StatusBadge status={p.status ?? 'unknown'} colorMap={{}} />
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

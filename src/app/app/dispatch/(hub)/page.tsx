@@ -12,6 +12,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import DispatchHubTabs from '../DispatchHubTabs';
 import Alert from '@/components/ui/Alert';
 import MetricCard from '@/components/ui/MetricCard';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 
 
@@ -82,50 +83,50 @@ export default async function DispatchPage() {
           />
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border bg-bg-secondary">
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">WO #</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Title</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Priority</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Crew</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Scheduled</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader>
+                <TableRow className="border-b border-border bg-bg-secondary">
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">WO #</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Title</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Priority</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Crew</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Scheduled</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {workOrders.map((wo: Record<string, unknown>) => {
                   const assignments = (wo.work_order_assignments ?? []) as Array<Record<string, unknown>>;
                   const crewNames = assignments
                     .map((a) => (a.crew_profiles as Record<string, string>)?.full_name)
                     .filter(Boolean);
                   return (
-                    <tr key={wo.id as string} className="transition-colors hover:bg-bg-secondary/50">
-                      <td className="px-6 py-3.5 text-sm font-mono text-text-muted">{(wo.wo_number as string) ?? '—'}</td>
-                      <td className="px-6 py-3.5">
+                    <TableRow key={wo.id as string} className="transition-colors hover:bg-bg-secondary/50">
+                      <TableCell className="px-6 py-3.5 text-sm font-mono text-text-muted">{(wo.wo_number as string) ?? '—'}</TableCell>
+                      <TableCell className="px-6 py-3.5">
                         <Link href={`/app/dispatch/${wo.id}`} className="text-sm font-medium text-foreground hover:underline">
                           {wo.title as string}
                         </Link>
-                      </td>
-                      <td className="px-6 py-3.5">
+                      </TableCell>
+                      <TableCell className="px-6 py-3.5">
                         <StatusBadge status={wo.status as string} colorMap={WORK_ORDER_STATUS_COLORS} />
-                      </td>
-                      <td className="px-6 py-3.5">
+                      </TableCell>
+                      <TableCell className="px-6 py-3.5">
                         <StatusBadge status={wo.priority as string} colorMap={PRIORITY_COLORS} />
-                      </td>
-                      <td className="px-6 py-3.5 text-sm text-text-secondary">
+                      </TableCell>
+                      <TableCell className="px-6 py-3.5 text-sm text-text-secondary">
                         {crewNames.length > 0 ? crewNames.join(', ') : '—'}
-                      </td>
-                      <td className="px-6 py-3.5 text-sm text-text-muted">
+                      </TableCell>
+                      <TableCell className="px-6 py-3.5 text-sm text-text-muted">
                         {wo.scheduled_start
                           ? new Date(wo.scheduled_start as string).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
                           : '—'}
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   );
                 })}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

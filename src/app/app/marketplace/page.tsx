@@ -11,6 +11,7 @@ import Button from '@/components/ui/Button';
 import FormInput from '@/components/ui/FormInput';
 import FormSelect from '@/components/ui/FormSelect';
 import StatusBadge, { TASK_PRIORITY_COLORS, BID_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 // #38: Typed interface for work order rows
 interface WorkOrderRow {
@@ -214,56 +215,56 @@ export default async function MarketplacePage({
           />
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border bg-bg-secondary">
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Job ID</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Title</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Priority</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Location</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Dates</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Budget</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Your Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader>
+                <TableRow className="border-b border-border bg-bg-secondary">
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Job ID</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Title</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Priority</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Location</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Dates</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Budget</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Your Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {workOrders.map((wo) => {
                   return (
-                    <tr key={wo.id} className="transition-colors hover:bg-bg-secondary/50">
-                      <td className="px-6 py-3.5 text-sm font-mono text-text-muted">{wo.wo_number}</td>
-                      <td className="px-6 py-3.5">
+                    <TableRow key={wo.id} className="transition-colors hover:bg-bg-secondary/50">
+                      <TableCell className="px-6 py-3.5 text-sm font-mono text-text-muted">{wo.wo_number}</TableCell>
+                      <TableCell className="px-6 py-3.5">
                         <Link href={`/app/marketplace/${wo.id}`} className="text-sm font-medium text-foreground hover:underline">
                           {wo.title}
                         </Link>
-                      </td>
-                      <td className="px-6 py-3.5">
+                      </TableCell>
+                      <TableCell className="px-6 py-3.5">
                         <StatusBadge status={wo.priority} colorMap={TASK_PRIORITY_COLORS} />
-                      </td>
-                      <td className="px-6 py-3.5 text-sm text-text-secondary">
+                      </TableCell>
+                      <TableCell className="px-6 py-3.5 text-sm text-text-secondary">
                         {wo.location_name || 'TBD'}
-                      </td>
-                      <td className="px-6 py-3.5 text-sm text-text-muted">
+                      </TableCell>
+                      <TableCell className="px-6 py-3.5 text-sm text-text-muted">
                         {wo.scheduled_start
                           ? new Date(wo.scheduled_start).toLocaleDateString()
                           : 'TBD'}
-                      </td>
-                      <td className="px-6 py-3.5 text-sm font-medium text-text-secondary">
+                      </TableCell>
+                      <TableCell className="px-6 py-3.5 text-sm font-medium text-text-secondary">
                         {wo.budget_range || 'Not specified'}
-                      </td>
-                      <td className="px-6 py-3.5 text-sm">
+                      </TableCell>
+                      <TableCell className="px-6 py-3.5 text-sm">
                         {wo.myBid ? (
-                          <StatusBadge status={wo.myBid.status} colorMap={BID_STATUS_COLORS} className="" />
+                          <StatusBadge status={wo.myBid.status} colorMap={BID_STATUS_COLORS} />
                         ) : (
                           <Link href={`/app/marketplace/${wo.id}`} className="text-blue-600 hover:underline">
                             Submit Bid &rarr;
                           </Link>
                         )}
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   );
                 })}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

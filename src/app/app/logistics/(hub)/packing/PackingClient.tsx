@@ -8,6 +8,7 @@ import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
 import LogisticsHubTabs from "../../LogisticsHubTabs";
 import Alert from '@/components/ui/Alert';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface Proposal {
   id: string;
@@ -147,27 +148,27 @@ export default function PackingClient({ proposals }: { proposals: Proposal[] }) 
             </div>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border bg-bg-secondary">
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted w-10">
+            <Table >
+              <TableHeader>
+                <TableRow className="border-b border-border bg-bg-secondary">
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted w-10">
                     Packed
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Item</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Category</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Qty</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+                  </TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Item</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Category</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Qty</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {items.map((item) => (
-                  <tr
+                  <TableRow
                     key={item.id}
                     onClick={() => togglePacked(item.id, item.packed)}
                     className={`transition-colors hover:bg-bg-secondary/50 cursor-pointer ${
                       item.packed ? 'opacity-60' : ''
                     }`}
                   >
-                    <td className="px-6 py-3.5">
+                    <TableCell className="px-6 py-3.5">
                       <div
                         className={`h-4 w-4 rounded border transition-colors ${
                           item.packed
@@ -179,20 +180,20 @@ export default function PackingClient({ proposals }: { proposals: Proposal[] }) 
                           <Check size={10} className="text-white" />
                         )}
                       </div>
-                    </td>
-                    <td className={`px-6 py-3.5 text-sm font-medium transition-all ${item.packed ? 'text-text-muted line-through' : 'text-foreground'}`}>
+                    </TableCell>
+                    <TableCell className={`px-6 py-3.5 text-sm font-medium transition-all ${item.packed ? 'text-text-muted line-through' : 'text-foreground'}`}>
                       {item.name}
-                    </td>
-                    <td className="px-6 py-3.5">
+                    </TableCell>
+                    <TableCell className="px-6 py-3.5">
                       <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">
                         {item.category}
                       </span>
-                    </td>
-                    <td className="px-6 py-3.5 text-sm tabular-nums text-foreground">{item.quantity}</td>
-                  </tr>
+                    </TableCell>
+                    <TableCell className="px-6 py-3.5 text-sm tabular-nums text-foreground">{item.quantity}</TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </div>
       ) : (

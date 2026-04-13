@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import type { OrganizationRole } from '@/types/database';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import TeamHeader from '@/components/admin/settings/TeamHeader';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface TeamMember {
   id: string;
@@ -87,33 +88,33 @@ export default async function TeamSettingsPage() {
 
       <div className="rounded-xl border border-border bg-background overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border bg-bg-secondary/50">
-                <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+          <Table >
+            <TableHeader>
+              <TableRow className="border-b border-border bg-bg-secondary/50">
+                <TableHead className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
                   Name
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                </TableHead>
+                <TableHead className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
                   Email
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                </TableHead>
+                <TableHead className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
                   Role
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                </TableHead>
+                <TableHead className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
                   Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                </TableHead>
+                <TableHead className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
                   Joined
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-text-muted uppercase tracking-wider">
+                </TableHead>
+                <TableHead className="px-6 py-3 text-right text-xs font-medium text-text-muted uppercase tracking-wider">
                   Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody >
               {members.map((member) => (
-                <tr key={member.id} className="hover:bg-bg-secondary/50 transition-colors">
-                  <td className="px-6 py-4 whitespace-nowrap">
+                <TableRow key={member.id} className="hover:bg-bg-secondary/50 transition-colors">
+                  <TableCell className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-3">
                       <div className="h-8 w-8 shrink-0 rounded-full bg-bg-secondary border border-border flex items-center justify-center text-xs font-medium text-text-muted">
                         {(member.full_name || member.email)
@@ -127,11 +128,11 @@ export default async function TeamSettingsPage() {
                         {member.full_name || 'Unnamed'}
                       </span>
                     </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-text-secondary">
+                  </TableCell>
+                  <TableCell className="px-6 py-4 whitespace-nowrap text-text-secondary">
                     {member.email}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  </TableCell>
+                  <TableCell className="px-6 py-4 whitespace-nowrap">
                     <span
                       className={`inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-medium ${
                         ROLE_BADGE_COLORS[member.role] || 'bg-bg-secondary text-text-muted border-border'
@@ -139,17 +140,17 @@ export default async function TeamSettingsPage() {
                     >
                       {formatRole(member.role)}
                     </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  </TableCell>
+                  <TableCell className="px-6 py-4 whitespace-nowrap">
                     <span className="inline-flex items-center gap-1.5 text-xs font-medium text-green-700">
                       <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
                       Active
                     </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-text-secondary">
+                  </TableCell>
+                  <TableCell className="px-6 py-4 whitespace-nowrap text-text-secondary">
                     {formatDate(member.created_at)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right">
+                  </TableCell>
+                  <TableCell className="px-6 py-4 whitespace-nowrap text-right">
                     <div className="flex items-center justify-end gap-2">
                       <Button className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-bg-secondary transition-colors">
                         Edit
@@ -158,11 +159,11 @@ export default async function TeamSettingsPage() {
                         Remove
                       </Button>
                     </div>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </div>
     </div>

@@ -5,6 +5,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import EquipmentHubTabs from '../../EquipmentHubTabs';
 import Button from '@/components/ui/Button';
 import StatusBadge from '@/components/ui/StatusBadge';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface InventoryCount {
   id: string;
@@ -54,30 +55,30 @@ export default async function InventoryPage() {
           <h2 className="text-sm font-semibold text-foreground mb-4">Active & Planned Counts</h2>
           {activeCounts.length > 0 ? (
             <div className="rounded-xl border border-border bg-background overflow-hidden">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-border bg-bg-secondary text-left text-xs uppercase text-text-muted">
-                    <th className="px-6 py-3">Type</th>
-                    <th className="px-6 py-3">Location</th>
-                    <th className="px-6 py-3">Status</th>
-                    <th className="px-6 py-3">Started</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
+              <Table >
+                <TableHeader>
+                  <TableRow className="border-b border-border bg-bg-secondary text-left text-xs uppercase text-text-muted">
+                    <TableHead className="px-6 py-3">Type</TableHead>
+                    <TableHead className="px-6 py-3">Location</TableHead>
+                    <TableHead className="px-6 py-3">Status</TableHead>
+                    <TableHead className="px-6 py-3">Started</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody >
                   {activeCounts.map(c => (
-                    <tr key={c.id}>
-                      <td className="px-6 py-4 text-sm capitalize">{c.count_type}</td>
-                      <td className="px-6 py-4 text-sm text-text-secondary">{c.location || 'All Locations'}</td>
-                      <td className="px-6 py-4 text-sm">
+                    <TableRow key={c.id}>
+                      <TableCell className="px-6 py-4 text-sm capitalize">{c.count_type}</TableCell>
+                      <TableCell className="px-6 py-4 text-sm text-text-secondary">{c.location || 'All Locations'}</TableCell>
+                      <TableCell className="px-6 py-4 text-sm">
                         <StatusBadge status={c.status} />
-                      </td>
-                      <td className="px-6 py-4 text-sm text-text-secondary">
+                      </TableCell>
+                      <TableCell className="px-6 py-4 text-sm text-text-secondary">
                         {c.started_at ? new Date(c.started_at).toLocaleDateString() : '—'}
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           ) : (
             <div className="rounded-xl border border-border bg-background p-8 text-center text-sm text-text-secondary">

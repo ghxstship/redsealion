@@ -28,6 +28,7 @@ import EmptyState from '@/components/ui/EmptyState';
 import { CheckCircle2 } from 'lucide-react';
 import RowDate from '@/components/ui/RowDate';
 import { useTranslation } from '@/lib/i18n/client';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 export interface MyTaskRow {
   id: string;
@@ -221,10 +222,10 @@ export default function MyTasksTable({ tasks }: { tasks: MyTaskRow[] }) {
         />
       ) : (
         <div className="rounded-xl border border-border bg-background overflow-hidden overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-border bg-bg-secondary">
-                <th className="px-4 py-3 text-left w-10">
+          <Table >
+            <TableHeader>
+              <TableRow className="border-b border-border bg-bg-secondary">
+                <TableHead className="px-4 py-3 text-left w-10">
                   <input
                     type="checkbox"
                     checked={isAllSelected}
@@ -232,36 +233,36 @@ export default function MyTasksTable({ tasks }: { tasks: MyTaskRow[] }) {
                     onChange={toggleAll}
                     className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10"
                   />
-                </th>
-                {isVisible('title') && <th className="px-6 py-3"><SortableHeader label="Task" field="title" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('status') && <th className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('priority') && <th className="px-6 py-3"><SortableHeader label="Priority" field="priority" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('dueDate') && <th className="px-6 py-3"><SortableHeader label="Due Date" field="dueDate" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('projectName') && <th className="px-6 py-3"><SortableHeader label="Project" field="projectName" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('startDate') && <th className="px-6 py-3"><SortableHeader label="Start Date" field="startDate" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('timeBlock') && <th className="px-6 py-3"><span className="text-xs font-medium uppercase tracking-wider text-text-muted">Time Block</span></th>}
-                {isVisible('estimatedHours') && <th className="px-6 py-3"><SortableHeader label="Est. Hours" field="estimatedHours" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('actualHours') && <th className="px-6 py-3"><SortableHeader label="Actual Hours" field="actualHours" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('createdBy') && <th className="px-6 py-3"><SortableHeader label="Created By" field="createdBy" currentSort={sort} onSort={handleSort} /></th>}
-                <th className="px-6 py-3 text-left w-16 text-xs font-medium uppercase tracking-wider text-text-muted"><span className="sr-only">Actions</span></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
+                </TableHead>
+                {isVisible('title') && <TableHead className="px-6 py-3"><SortableHeader label="Task" field="title" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('status') && <TableHead className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('priority') && <TableHead className="px-6 py-3"><SortableHeader label="Priority" field="priority" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('dueDate') && <TableHead className="px-6 py-3"><SortableHeader label="Due Date" field="dueDate" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('projectName') && <TableHead className="px-6 py-3"><SortableHeader label="Project" field="projectName" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('startDate') && <TableHead className="px-6 py-3"><SortableHeader label="Start Date" field="startDate" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('timeBlock') && <TableHead className="px-6 py-3"><span className="text-xs font-medium uppercase tracking-wider text-text-muted">Time Block</span></TableHead>}
+                {isVisible('estimatedHours') && <TableHead className="px-6 py-3"><SortableHeader label="Est. Hours" field="estimatedHours" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('actualHours') && <TableHead className="px-6 py-3"><SortableHeader label="Actual Hours" field="actualHours" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('createdBy') && <TableHead className="px-6 py-3"><SortableHeader label="Created By" field="createdBy" currentSort={sort} onSort={handleSort} /></TableHead>}
+                <TableHead className="px-6 py-3 text-left w-16 text-xs font-medium uppercase tracking-wider text-text-muted"><span className="sr-only">Actions</span></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody >
               {sorted.map((task) => (
-                <tr
+                <TableRow
                   key={task.id}
                   className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(task.id) ? 'bg-blue-50/50' : ''}`}
                 >
-                  <td className="px-4 py-3.5">
+                  <TableCell className="px-4 py-3.5">
                     <input
                       type="checkbox"
                       checked={isSelected(task.id)}
                       onChange={() => toggle(task.id)}
                       className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10"
                     />
-                  </td>
+                  </TableCell>
                   {isVisible('title') && (
-                    <td className="px-6 py-3.5">
+                    <TableCell className="px-6 py-3.5">
                       <Link href={`/app/tasks/${task.id}`} className="text-sm font-medium text-foreground hover:underline">
                         {task.title}
                       </Link>
@@ -270,10 +271,10 @@ export default function MyTasksTable({ tasks }: { tasks: MyTaskRow[] }) {
                           {task.subtaskCount} subtask{task.subtaskCount > 1 ? 's' : ''}
                         </span>
                       )}
-                    </td>
+                    </TableCell>
                   )}
                   {isVisible('status') && (
-                    <td className="px-6 py-3.5">
+                    <TableCell className="px-6 py-3.5">
                       <InlineEditCell
                         type="select"
                         value={task.status}
@@ -281,10 +282,10 @@ export default function MyTasksTable({ tasks }: { tasks: MyTaskRow[] }) {
                         onSave={(val) => patchTask(task.id, { status: val })}
                         renderValue={(v) => <StatusBadge status={v} colorMap={TASK_STATUS_COLORS} />}
                       />
-                    </td>
+                    </TableCell>
                   )}
                   {isVisible('priority') && (
-                    <td className="px-6 py-3.5">
+                    <TableCell className="px-6 py-3.5">
                       <InlineEditCell
                         type="select"
                         value={task.priority}
@@ -292,10 +293,10 @@ export default function MyTasksTable({ tasks }: { tasks: MyTaskRow[] }) {
                         onSave={(val) => patchTask(task.id, { priority: val })}
                         renderValue={(v) => <StatusBadge status={v} colorMap={TASK_PRIORITY_COLORS} />}
                       />
-                    </td>
+                    </TableCell>
                   )}
                   {isVisible('dueDate') && (
-                    <td className="px-6 py-3.5">
+                    <TableCell className="px-6 py-3.5">
                       <InlineEditCell
                         type="date"
                         value={task.dueDate ?? ''}
@@ -309,52 +310,52 @@ export default function MyTasksTable({ tasks }: { tasks: MyTaskRow[] }) {
                           );
                         }}
                       />
-                    </td>
+                    </TableCell>
                   )}
                   {isVisible('projectName') && (
-                    <td className="px-6 py-3.5 text-sm text-text-secondary">{task.projectName ?? '\u2014'}</td>
+                    <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{task.projectName ?? '\u2014'}</TableCell>
                   )}
                   {isVisible('startDate') && (
-                    <td className="px-6 py-3.5">
+                    <TableCell className="px-6 py-3.5">
                       <RowDate dateString={task.startDate} fallback="\u2014" />
-                    </td>
+                    </TableCell>
                   )}
                   {isVisible('timeBlock') && (
-                    <td className="px-6 py-3.5 text-sm text-text-secondary">
+                    <TableCell className="px-6 py-3.5 text-sm text-text-secondary">
                       {task.startTime ? (
                         <span>
                           {task.startTime.substring(0, 5)}
                           {task.endTime ? ` - ${task.endTime.substring(0, 5)}` : ''}
                         </span>
                       ) : '\u2014'}
-                    </td>
+                    </TableCell>
                   )}
                   {isVisible('estimatedHours') && (
-                    <td className="px-6 py-3.5 text-sm text-text-secondary">{task.estimatedHours ?? '\u2014'}</td>
+                    <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{task.estimatedHours ?? '\u2014'}</TableCell>
                   )}
                   {isVisible('actualHours') && (
-                    <td className="px-6 py-3.5 text-sm text-text-secondary">{task.actualHours ?? '\u2014'}</td>
+                    <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{task.actualHours ?? '\u2014'}</TableCell>
                   )}
                   {isVisible('createdBy') && (
-                    <td className="px-6 py-3.5 text-sm text-text-secondary">{task.createdBy ?? '\u2014'}</td>
+                    <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{task.createdBy ?? '\u2014'}</TableCell>
                   )}
-                  <td className="px-6 py-3.5">
+                  <TableCell className="px-6 py-3.5">
                     <RowActionMenu actions={[
                       { label: 'View', onClick: () => router.push(`/app/tasks/${task.id}`) },
                       { label: 'Delete', variant: 'danger', onClick: () => setShowDeleteConfirm(task.id) },
                     ]} />
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
               {filtered.length === 0 && tasks.length > 0 && (
-                <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-sm text-text-muted">
+                <TableRow>
+                  <TableCell colSpan={7} className="px-6 py-12 text-center text-sm text-text-muted">
                     No tasks match your filters.
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               )}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       )}
 

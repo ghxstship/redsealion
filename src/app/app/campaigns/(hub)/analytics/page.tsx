@@ -4,6 +4,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import CampaignsHubTabs from '../../CampaignsHubTabs';
 import MetricCard from '@/components/ui/MetricCard';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getAnalytics() {
   try {
@@ -54,28 +55,28 @@ export default async function AnalyticsPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr>
-                  <th className="px-4 py-3">Campaign</th>
-                  <th className="px-4 py-3">Sent</th>
-                  <th className="px-4 py-3">Recipients</th>
-                  <th className="px-4 py-3">Opens</th>
-                  <th className="px-4 py-3">Clicks</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow>
+                  <TableHead className="px-4 py-3">Campaign</TableHead>
+                  <TableHead className="px-4 py-3">Sent</TableHead>
+                  <TableHead className="px-4 py-3">Recipients</TableHead>
+                  <TableHead className="px-4 py-3">Opens</TableHead>
+                  <TableHead className="px-4 py-3">Clicks</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {campaigns.map((c) => (
-                  <tr key={c.id} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3 font-medium text-foreground">{c.name}</td>
-                    <td className="px-4 py-3 text-text-secondary">{c.sent_at ? new Date(c.sent_at).toLocaleDateString() : '—'}</td>
-                    <td className="px-4 py-3 tabular-nums">{c.recipient_count ?? 0}</td>
-                    <td className="px-4 py-3 tabular-nums">{c.open_count ?? 0}</td>
-                    <td className="px-4 py-3 tabular-nums">{c.click_count ?? 0}</td>
-                  </tr>
+                  <TableRow key={c.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <TableCell className="px-4 py-3 font-medium text-foreground">{c.name}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{c.sent_at ? new Date(c.sent_at).toLocaleDateString() : '—'}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums">{c.recipient_count ?? 0}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums">{c.open_count ?? 0}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums">{c.click_count ?? 0}</TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

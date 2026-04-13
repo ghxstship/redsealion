@@ -6,6 +6,7 @@ import Link from 'next/link';
 import ProcurementHubTabs from '../../ProcurementHubTabs';
 import StatusBadge, { SUPPLIER_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import MetricCard from '@/components/ui/MetricCard';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getSuppliers() {
   try {
@@ -50,22 +51,22 @@ export default async function SuppliersPage() {
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No suppliers added. Add vendors from Finance or Procurement to start sourcing.</p></div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr><th className="px-4 py-3">Name</th><th className="px-4 py-3">Contact</th><th className="px-4 py-3">Email</th><th className="px-4 py-3">Category</th><th className="px-4 py-3">Status</th></tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow><TableHead className="px-4 py-3">Name</TableHead><TableHead className="px-4 py-3">Contact</TableHead><TableHead className="px-4 py-3">Email</TableHead><TableHead className="px-4 py-3">Category</TableHead><TableHead className="px-4 py-3">Status</TableHead></TableRow>
+              </TableHeader>
+              <TableBody >
                 {suppliers.map((s) => (
-                  <tr key={s.id} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3 font-medium text-foreground">{s.name}</td>
-                    <td className="px-4 py-3 text-text-secondary">{s.display_name ?? '—'}</td>
-                    <td className="px-4 py-3 text-text-secondary">{s.email ?? '—'}</td>
-                    <td className="px-4 py-3 text-text-secondary capitalize">{s.category ?? '—'}</td>
-                    <td className="px-4 py-3"><StatusBadge status={s.status} colorMap={SUPPLIER_STATUS_COLORS} /></td>
-                  </tr>
+                  <TableRow key={s.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <TableCell className="px-4 py-3 font-medium text-foreground">{s.name}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{s.display_name ?? '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{s.email ?? '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary capitalize">{s.category ?? '—'}</TableCell>
+                    <TableCell className="px-4 py-3"><StatusBadge status={s.status} colorMap={SUPPLIER_STATUS_COLORS} /></TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

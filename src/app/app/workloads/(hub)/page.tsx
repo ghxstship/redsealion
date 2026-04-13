@@ -5,6 +5,7 @@ import WorkloadsHubTabs from '../WorkloadsHubTabs';
 import PageHeader from '@/components/shared/PageHeader';
 import MetricCard from '@/components/ui/MetricCard';
 import WorkloadsActions from './WorkloadsActions';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface ResourceStats {
   totalAllocations: number;
@@ -122,30 +123,30 @@ export default async function WorkloadsPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr>
-                  <th className="px-4 py-3">Team Member</th>
-                  <th className="px-4 py-3">Project</th>
-                  <th className="px-4 py-3">Role</th>
-                  <th className="px-4 py-3">Hours/Day</th>
-                  <th className="px-4 py-3">Period</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow>
+                  <TableHead className="px-4 py-3">Team Member</TableHead>
+                  <TableHead className="px-4 py-3">Project</TableHead>
+                  <TableHead className="px-4 py-3">Role</TableHead>
+                  <TableHead className="px-4 py-3">Hours/Day</TableHead>
+                  <TableHead className="px-4 py-3">Period</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {allocations.map((a) => (
-                  <tr key={a.id} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3 font-medium text-foreground">{a.userName}</td>
-                    <td className="px-4 py-3 text-text-secondary">{a.projectName ?? '—'}</td>
-                    <td className="px-4 py-3 text-text-secondary capitalize">{a.role ?? '—'}</td>
-                    <td className="px-4 py-3 tabular-nums">{a.hoursPerDay}h</td>
-                    <td className="px-4 py-3 text-text-secondary text-xs">
+                  <TableRow key={a.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <TableCell className="px-4 py-3 font-medium text-foreground">{a.userName}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{a.projectName ?? '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary capitalize">{a.role ?? '—'}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums">{a.hoursPerDay}h</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary text-xs">
                       {new Date(a.startDate).toLocaleDateString()} – {new Date(a.endDate).toLocaleDateString()}
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

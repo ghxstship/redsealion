@@ -4,6 +4,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import Link from 'next/link';
 import CampaignsHubTabs from '../../CampaignsHubTabs';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getScheduled() {
   try {
@@ -35,28 +36,28 @@ export default async function ScheduledPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr>
-                  <th className="px-4 py-3">Campaign</th>
-                  <th className="px-4 py-3">Subject</th>
-                  <th className="px-4 py-3">Recipients</th>
-                  <th className="px-4 py-3">Scheduled For</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow>
+                  <TableHead className="px-4 py-3">Campaign</TableHead>
+                  <TableHead className="px-4 py-3">Subject</TableHead>
+                  <TableHead className="px-4 py-3">Recipients</TableHead>
+                  <TableHead className="px-4 py-3">Scheduled For</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {scheduled.map((item) => (
-                  <tr key={item.id} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3">
+                  <TableRow key={item.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <TableCell className="px-4 py-3">
                       <Link href={`/app/campaigns/${item.id}`} className="font-medium text-foreground hover:underline">{item.name}</Link>
-                    </td>
-                    <td className="px-4 py-3 text-text-secondary">{item.subject ?? '—'}</td>
-                    <td className="px-4 py-3 tabular-nums">{item.recipient_count ?? 0}</td>
-                    <td className="px-4 py-3 text-text-secondary">{item.scheduled_at ? new Date(item.scheduled_at).toLocaleString() : '—'}</td>
-                  </tr>
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{item.subject ?? '—'}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums">{item.recipient_count ?? 0}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{item.scheduled_at ? new Date(item.scheduled_at).toLocaleString() : '—'}</TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

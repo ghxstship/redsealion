@@ -6,6 +6,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import StatusBadge, { PRODUCTION_SCHEDULE_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import ScheduleDetailActions from './ScheduleDetailActions';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getSchedule(id: string) {
   try {
@@ -80,22 +81,22 @@ export default async function ScheduleDetailPage({ params }: { params: Promise<{
         {blocks.length === 0 ? (
           <div className="px-8 py-12 text-center text-sm text-text-secondary">No schedule blocks defined.</div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr><th className="px-4 py-3">Title</th><th className="px-4 py-3">Type</th><th className="px-4 py-3">Start</th><th className="px-4 py-3">End</th><th className="px-4 py-3">Location</th></tr>
-            </thead>
-            <tbody className="divide-y divide-border">
+          <Table >
+            <TableHeader >
+              <TableRow><TableHead className="px-4 py-3">Title</TableHead><TableHead className="px-4 py-3">Type</TableHead><TableHead className="px-4 py-3">Start</TableHead><TableHead className="px-4 py-3">End</TableHead><TableHead className="px-4 py-3">Location</TableHead></TableRow>
+            </TableHeader>
+            <TableBody >
               {blocks.map((b) => (
-                <tr key={b.id as string} className="hover:bg-bg-secondary/50">
-                  <td className="px-4 py-3 font-medium text-foreground">{b.title as string}</td>
-                  <td className="px-4 py-3 text-text-secondary capitalize">{(b.block_type as string)?.replace('_', ' ')}</td>
-                  <td className="px-4 py-3 tabular-nums text-text-secondary">{b.start_time ? new Date(b.start_time as string).toLocaleString() : '—'}</td>
-                  <td className="px-4 py-3 tabular-nums text-text-secondary">{b.end_time ? new Date(b.end_time as string).toLocaleString() : '—'}</td>
-                  <td className="px-4 py-3 text-text-secondary">{(b.location as string) ?? '—'}</td>
-                </tr>
+                <TableRow key={b.id as string} className="hover:bg-bg-secondary/50">
+                  <TableCell className="px-4 py-3 font-medium text-foreground">{b.title as string}</TableCell>
+                  <TableCell className="px-4 py-3 text-text-secondary capitalize">{(b.block_type as string)?.replace('_', ' ')}</TableCell>
+                  <TableCell className="px-4 py-3 tabular-nums text-text-secondary">{b.start_time ? new Date(b.start_time as string).toLocaleString() : '—'}</TableCell>
+                  <TableCell className="px-4 py-3 tabular-nums text-text-secondary">{b.end_time ? new Date(b.end_time as string).toLocaleString() : '—'}</TableCell>
+                  <TableCell className="px-4 py-3 text-text-secondary">{(b.location as string) ?? '—'}</TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         )}
       </div>
     </TierGate>

@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { notFound } from 'next/navigation';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getShipment(id: string) {
   const supabase = await createClient();
@@ -78,41 +79,41 @@ export default async function BillOfLadingPrintablePage({ params }: { params: Pr
         </div>
       </div>
 
-      <table className="w-full text-sm border-2 border-black mb-6 divide-y divide-black">
-        <thead className="bg-gray-100">
-          <tr className="divide-x divide-black text-left">
-            <th className="p-2 font-bold uppercase text-xs w-16">Pieces</th>
-            <th className="p-2 font-bold uppercase text-xs w-20 text-center">HM</th>
-            <th className="p-2 font-bold uppercase text-xs">Description of Articles, Special Marks & Exceptions</th>
-            <th className="p-2 font-bold uppercase text-xs w-24">Weight (lbs)</th>
-            <th className="p-2 font-bold uppercase text-xs w-20 text-center">Class</th>
-            <th className="p-2 font-bold uppercase text-xs w-24 text-center">NMFC #</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-black">
+      <Table className="w-full text-sm border-2 border-black mb-6 divide-y divide-black">
+        <TableHeader className="bg-gray-100">
+          <TableRow className="divide-x divide-black text-left">
+            <TableHead className="p-2 font-bold uppercase text-xs w-16">Pieces</TableHead>
+            <TableHead className="p-2 font-bold uppercase text-xs w-20 text-center">HM</TableHead>
+            <TableHead className="p-2 font-bold uppercase text-xs">Description of Articles, Special Marks & Exceptions</TableHead>
+            <TableHead className="p-2 font-bold uppercase text-xs w-24">Weight (lbs)</TableHead>
+            <TableHead className="p-2 font-bold uppercase text-xs w-20 text-center">Class</TableHead>
+            <TableHead className="p-2 font-bold uppercase text-xs w-24 text-center">NMFC #</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody className="divide-y divide-black">
           {shipment.shipment_line_items?.length === 0 ? (
-            <tr><td colSpan={6} className="p-4 text-center italic">No items listed.</td></tr>
+            <TableRow><TableCell colSpan={6} className="p-4 text-center italic">No items listed.</TableCell></TableRow>
           ) : (
             shipment.shipment_line_items?.map((item: any) => (
-              <tr key={item.id} className="divide-x divide-black">
-                <td className="p-2 text-center">{item.quantity}</td>
-                <td className="p-2 text-center">{shipment.is_hazardous ? 'X' : ''}</td>
-                <td className="p-2">{item.description}</td>
-                <td className="p-2 text-right">{item.weight_lbs ?? '—'}</td>
-                <td className="p-2 text-center">{shipment.freight_class ?? '—'}</td>
-                <td className="p-2 text-center">{shipment.nmfc_code ?? '—'}</td>
-              </tr>
+              <TableRow key={item.id} className="divide-x divide-black">
+                <TableCell className="p-2 text-center">{item.quantity}</TableCell>
+                <TableCell className="p-2 text-center">{shipment.is_hazardous ? 'X' : ''}</TableCell>
+                <TableCell className="p-2">{item.description}</TableCell>
+                <TableCell className="p-2 text-right">{item.weight_lbs ?? '—'}</TableCell>
+                <TableCell className="p-2 text-center">{shipment.freight_class ?? '—'}</TableCell>
+                <TableCell className="p-2 text-center">{shipment.nmfc_code ?? '—'}</TableCell>
+              </TableRow>
             ))
           )}
-        </tbody>
+        </TableBody>
         <tfoot className="border-t-2 border-black bg-gray-50">
-          <tr className="divide-x divide-black">
-            <td colSpan={3} className="p-2 text-right font-bold text-xs uppercase">Totals:</td>
-            <td className="p-2 text-right font-bold">{shipment.weight_lbs ?? '—'}</td>
-            <td colSpan={2}></td>
-          </tr>
+          <TableRow className="divide-x divide-black">
+            <TableCell colSpan={3} className="p-2 text-right font-bold text-xs uppercase">Totals:</TableCell>
+            <TableCell className="p-2 text-right font-bold">{shipment.weight_lbs ?? '—'}</TableCell>
+            <TableCell colSpan={2}></TableCell>
+          </TableRow>
         </tfoot>
-      </table>
+      </Table>
 
       {shipment.declared_value_cents > 0 && (
         <div className="text-xs mb-6">

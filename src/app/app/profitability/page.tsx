@@ -7,6 +7,7 @@ import { PROFITABILITY_ELIGIBLE_STATUSES } from '@/lib/constants/project';
 import Card from '@/components/ui/Card';
 import Link from 'next/link';
 import ProfitabilityExportButton from './ProfitabilityExportButton';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface ProfitRow {
   id: string;
@@ -109,38 +110,38 @@ export default async function ProfitabilityDashboardPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr>
-                  <th className="px-4 py-3">Project</th>
-                  <th className="px-4 py-3">Client</th>
-                  <th className="px-4 py-3 text-right">Revenue</th>
-                  <th className="px-4 py-3 text-right">Costs</th>
-                  <th className="px-4 py-3 text-right">Margin</th>
-                  <th className="px-4 py-3 text-right">Margin %</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow>
+                  <TableHead className="px-4 py-3">Project</TableHead>
+                  <TableHead className="px-4 py-3">Client</TableHead>
+                  <TableHead className="px-4 py-3 text-right">Revenue</TableHead>
+                  <TableHead className="px-4 py-3 text-right">Costs</TableHead>
+                  <TableHead className="px-4 py-3 text-right">Margin</TableHead>
+                  <TableHead className="px-4 py-3 text-right">Margin %</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {projects.map((p) => (
-                  <tr key={p.id} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3">
+                  <TableRow key={p.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <TableCell className="px-4 py-3">
                       <Link href={`/app/profitability/${p.id}`} className="font-medium text-foreground hover:underline">
                         {p.name}
                       </Link>
-                    </td>
-                    <td className="px-4 py-3 text-text-secondary">{p.clientName ?? '—'}</td>
-                    <td className="px-4 py-3 text-right tabular-nums">{formatCurrency(p.revenue)}</td>
-                    <td className="px-4 py-3 text-right tabular-nums">{formatCurrency(p.totalCosts)}</td>
-                    <td className={`px-4 py-3 text-right tabular-nums font-medium ${p.margin >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{p.clientName ?? '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-right tabular-nums">{formatCurrency(p.revenue)}</TableCell>
+                    <TableCell className="px-4 py-3 text-right tabular-nums">{formatCurrency(p.totalCosts)}</TableCell>
+                    <TableCell className={`px-4 py-3 text-right tabular-nums font-medium ${p.margin >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                       {formatCurrency(p.margin)}
-                    </td>
-                    <td className={`px-4 py-3 text-right tabular-nums ${p.marginPct >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    </TableCell>
+                    <TableCell className={`px-4 py-3 text-right tabular-nums ${p.marginPct >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                       {p.marginPct}%
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

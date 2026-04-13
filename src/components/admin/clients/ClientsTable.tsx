@@ -19,6 +19,7 @@ import { useEntityViews } from '@/hooks/useEntityViews';
 import { useStoredColumnConfig } from '@/hooks/useStoredColumnConfig';
 import ViewBar from '@/components/shared/ViewBar';
 import ColumnConfigPanel from '@/components/shared/ColumnConfigPanel';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface ClientRow {
   id: string;
@@ -150,10 +151,10 @@ export default function ClientsTable({ clients }: { clients: ClientRow[] }) {
 
       <div className="rounded-xl border border-border bg-background overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-border bg-bg-secondary">
-                <th className="px-4 py-3 text-left w-10">
+          <Table >
+            <TableHeader>
+              <TableRow className="border-b border-border bg-bg-secondary">
+                <TableHead className="px-4 py-3 text-left w-10">
                   <input
                     type="checkbox"
                     checked={isAllSelected}
@@ -161,40 +162,40 @@ export default function ClientsTable({ clients }: { clients: ClientRow[] }) {
                     onChange={toggleAll}
                     className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10"
                   />
-                </th>
-                {isVisible('company_name') && <th className="px-6 py-3"><SortableHeader label="Company" field="company_name" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('industry') && <th className="px-6 py-3"><SortableHeader label="Industry" field="industry" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('tags') && <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Tags</th>}
-                {isVisible('proposals') && <th className="px-6 py-3"><SortableHeader label="Proposals" field="proposals" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('total_value') && <th className="px-6 py-3"><SortableHeader label="Total Value" field="total_value" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('last_activity') && <th className="px-6 py-3"><SortableHeader label="Last Activity" field="last_activity" currentSort={sort} onSort={handleSort} /></th>}
-                <th className="px-6 py-3 w-12"><span className="sr-only">Actions</span></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
+                </TableHead>
+                {isVisible('company_name') && <TableHead className="px-6 py-3"><SortableHeader label="Company" field="company_name" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('industry') && <TableHead className="px-6 py-3"><SortableHeader label="Industry" field="industry" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('tags') && <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Tags</TableHead>}
+                {isVisible('proposals') && <TableHead className="px-6 py-3"><SortableHeader label="Proposals" field="proposals" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('total_value') && <TableHead className="px-6 py-3"><SortableHeader label="Total Value" field="total_value" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('last_activity') && <TableHead className="px-6 py-3"><SortableHeader label="Last Activity" field="last_activity" currentSort={sort} onSort={handleSort} /></TableHead>}
+                <TableHead className="px-6 py-3 w-12"><span className="sr-only">Actions</span></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody >
               {sorted.map((client) => (
-                <tr
+                <TableRow
                   key={client.id}
                   className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(client.id) ? 'bg-blue-50/50' : ''}`}
                 >
-                  <td className="px-4 py-3.5">
+                  <TableCell className="px-4 py-3.5">
                     <input
                       type="checkbox"
                       checked={isSelected(client.id)}
                       onChange={() => toggle(client.id)}
                       className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10"
                     />
-                  </td>
+                  </TableCell>
                   {isVisible('company_name') && (
-                    <td className="px-6 py-3.5">
+                    <TableCell className="px-6 py-3.5">
                       <Link href={`/app/clients/${client.id}`} className="text-sm font-medium text-foreground hover:underline">
                         {client.company_name}
                       </Link>
-                    </td>
+                    </TableCell>
                   )}
-                  {isVisible('industry') && <td className="px-6 py-3.5 text-sm text-text-secondary">{client.industry ?? '\u2014'}</td>}
+                  {isVisible('industry') && <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{client.industry ?? '\u2014'}</TableCell>}
                   {isVisible('tags') && (
-                    <td className="px-6 py-3.5">
+                    <TableCell className="px-6 py-3.5">
                       <div className="flex flex-wrap gap-1.5">
                         {client.tags.map((tag) => (
                           <span key={tag} className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">
@@ -202,27 +203,27 @@ export default function ClientsTable({ clients }: { clients: ClientRow[] }) {
                           </span>
                         ))}
                       </div>
-                    </td>
+                    </TableCell>
                   )}
-                  {isVisible('proposals') && <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{client.proposals}</td>}
-                  {isVisible('total_value') && <td className="px-6 py-3.5 text-right text-sm font-medium tabular-nums text-foreground">{formatCurrency(client.total_value)}</td>}
-                  {isVisible('last_activity') && <td className="px-6 py-3.5 text-right text-sm text-text-muted">{formatDate(client.last_activity)}</td>}
-                  <td className="px-6 py-3.5">
+                  {isVisible('proposals') && <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{client.proposals}</TableCell>}
+                  {isVisible('total_value') && <TableCell className="px-6 py-3.5 text-right text-sm font-medium tabular-nums text-foreground">{formatCurrency(client.total_value)}</TableCell>}
+                  {isVisible('last_activity') && <TableCell className="px-6 py-3.5 text-right text-sm text-text-muted">{formatDate(client.last_activity)}</TableCell>}
+                  <TableCell className="px-6 py-3.5">
                     <RowActionMenu actions={[
                       { label: 'View', onClick: () => router.push(`/app/clients/${client.id}`) },
                       { label: 'Edit', onClick: () => router.push(`/app/clients/${client.id}?edit=true`) },
                       { label: 'Delete', variant: 'danger', onClick: () => setShowDeleteConfirm(client.id) },
                     ]} />
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
               {filtered.length === 0 && (
-                <tr>
-                  <td colSpan={8} className="px-6 py-12 text-center text-sm text-text-muted">No clients match your search.</td>
-                </tr>
+                <TableRow>
+                  <TableCell colSpan={8} className="px-6 py-12 text-center text-sm text-text-muted">No clients match your search.</TableCell>
+                </TableRow>
               )}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </div>
 

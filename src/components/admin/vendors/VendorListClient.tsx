@@ -13,6 +13,7 @@ import EmptyState from '@/components/ui/EmptyState';
 import StatusBadge from '@/components/ui/StatusBadge';
 import Tabs from '@/components/ui/Tabs';
 import { Building2 } from 'lucide-react';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 const VENDOR_STATUS_COLORS: Record<string, string> = {
   active: 'bg-green-50 text-green-700',
@@ -84,22 +85,22 @@ export default function VendorListClient({ vendors }: { vendors: VendorRow[] }) 
       ) : (
         <div className="rounded-xl border border-border bg-background overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border bg-bg-secondary">
-                  <th className="px-6 py-3"><SortableHeader label="Vendor" field="name" currentSort={sort} onSort={handleSort} /></th>
-                  <th className="px-6 py-3"><SortableHeader label="Category" field="category" currentSort={sort} onSort={handleSort} /></th>
-                  <th className="px-6 py-3"><SortableHeader label="Contact" field="email" currentSort={sort} onSort={handleSort} /></th>
-                  <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-text-muted">W-9</th>
-                  <th className="px-6 py-3"><SortableHeader label="POs" field="poCount" currentSort={sort} onSort={handleSort} /></th>
-                  <th className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></th>
-                  <th className="px-6 py-3 w-12"><span className="sr-only">Actions</span></th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader>
+                <TableRow className="border-b border-border bg-bg-secondary">
+                  <TableHead className="px-6 py-3"><SortableHeader label="Vendor" field="name" currentSort={sort} onSort={handleSort} /></TableHead>
+                  <TableHead className="px-6 py-3"><SortableHeader label="Category" field="category" currentSort={sort} onSort={handleSort} /></TableHead>
+                  <TableHead className="px-6 py-3"><SortableHeader label="Contact" field="email" currentSort={sort} onSort={handleSort} /></TableHead>
+                  <TableHead className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-text-muted">W-9</TableHead>
+                  <TableHead className="px-6 py-3"><SortableHeader label="POs" field="poCount" currentSort={sort} onSort={handleSort} /></TableHead>
+                  <TableHead className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></TableHead>
+                  <TableHead className="px-6 py-3 w-12"><span className="sr-only">Actions</span></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {sorted.map((vendor) => (
-                  <tr key={vendor.id} className="transition-colors hover:bg-bg-secondary/50">
-                    <td className="px-6 py-3.5">
+                  <TableRow key={vendor.id} className="transition-colors hover:bg-bg-secondary/50">
+                    <TableCell className="px-6 py-3.5">
                       <Link
                         href={`/app/finance/vendors/${vendor.id}`}
                         className="text-sm font-medium text-foreground hover:underline"
@@ -109,41 +110,41 @@ export default function VendorListClient({ vendors }: { vendors: VendorRow[] }) 
                       {vendor.displayName && (
                         <p className="text-xs text-text-muted">{vendor.name}</p>
                       )}
-                    </td>
-                    <td className="px-6 py-3.5 text-sm text-text-secondary">
+                    </TableCell>
+                    <TableCell className="px-6 py-3.5 text-sm text-text-secondary">
                       {vendor.category ?? '—'}
-                    </td>
-                    <td className="px-6 py-3.5">
+                    </TableCell>
+                    <TableCell className="px-6 py-3.5">
                       {vendor.email ? (
                         <p className="text-sm text-text-secondary">{vendor.email}</p>
                       ) : (
                         <span className="text-sm text-text-muted">—</span>
                       )}
-                    </td>
-                    <td className="px-6 py-3.5 text-center">
+                    </TableCell>
+                    <TableCell className="px-6 py-3.5 text-center">
                       {vendor.w9OnFile ? (
                         <ShieldCheck className="mx-auto h-4 w-4 text-green-600" />
                       ) : (
                         <ShieldX className="mx-auto h-4 w-4 text-text-muted" />
                       )}
-                    </td>
-                    <td className="px-6 py-3.5 text-right">
+                    </TableCell>
+                    <TableCell className="px-6 py-3.5 text-right">
                       <span className="text-sm tabular-nums text-foreground">{vendor.poCount}</span>
-                    </td>
-                    <td className="px-6 py-3.5">
+                    </TableCell>
+                    <TableCell className="px-6 py-3.5">
                       <StatusBadge status={vendor.status} colorMap={VENDOR_STATUS_COLORS} />
-                    </td>
-                    <td className="px-6 py-3.5">
+                    </TableCell>
+                    <TableCell className="px-6 py-3.5">
                       <RowActionMenu actions={[
                         { label: 'View', onClick: () => router.push(`/app/finance/vendors/${vendor.id}`) },
                         { label: 'Edit', onClick: () => router.push(`/app/finance/vendors/${vendor.id}?edit=true`) },
                         { label: 'Delete', variant: 'danger', onClick: () => setDeleteVendorId(vendor.id) },
                       ]} />
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </div>
       )}

@@ -2,19 +2,16 @@
 
 /**
  * Client-side Projects hub — filterable project list with status badges,
- * create modal, and navigation to project detail.
+ * and navigation to project detail.
  */
 
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Plus, Search, Calendar, MapPin, Lock, Globe } from 'lucide-react';
-import Button from '@/components/ui/Button';
+import { Search, Calendar, MapPin, Lock, Globe } from 'lucide-react';
 import FormInput from '@/components/ui/FormInput';
-import ModalShell from '@/components/ui/ModalShell';
-import FormLabel from '@/components/ui/FormLabel';
-import FormSelect from '@/components/ui/FormSelect';
 import StatusBadge, { PROJECT_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import Link from 'next/link';
+import Tabs from '@/components/ui/Tabs';
 
 interface ProjectRow {
   id: string;
@@ -29,8 +26,6 @@ interface ProjectRow {
   project_code: string | null;
 }
 
-
-
 const STATUS_FILTERS = ['all', 'active', 'in_progress', 'draft', 'on_hold', 'completed', 'archived'];
 
 export default function ProjectsHubClient({ projects: initialProjects }: { projects: ProjectRow[] }) {
@@ -38,11 +33,6 @@ export default function ProjectsHubClient({ projects: initialProjects }: { proje
   const projects = initialProjects;
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [showCreate, setShowCreate] = useState(false);
-  const [creating, setCreating] = useState(false);
-  const [newName, setNewName] = useState('');
-  const [newStatus, setNewStatus] = useState('active');
-  const [newVisibility, setNewVisibility] = useState('private');
 
   const filtered = useMemo(() => {
     return projects.filter((p) => {
@@ -52,28 +42,6 @@ export default function ProjectsHubClient({ projects: initialProjects }: { proje
     });
   }, [projects, search, statusFilter]);
 
-  async function handleCreate() {
-    if (!newName.trim()) return;
-    setCreating(true);
-    try {
-      const res = await fetch('/api/projects', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: newName,
-          status: newStatus,
-          visibility: newVisibility,
-        }),
-      });
-      if (res.ok) {
-        setNewName('');
-        setShowCreate(false);
-        router.refresh();
-      }
-    } catch { /* silent */ }
-    finally { setCreating(false); }
-  }
-
   function formatDate(iso: string | null): string {
     if (!iso) return '—';
     return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
@@ -81,6 +49,18 @@ export default function ProjectsHubClient({ projects: initialProjects }: { proje
 
   return (
     <>
+      {/* Tabs */}
+      <Tabs
+        tabs={STATUS_FILTERS.map((s) => ({
+          key: s,
+          label: s === 'all' ? 'All' : s.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+          count: s === 'all' ? projects.length : projects.filter((p) => p.status === s).length,
+        }))}
+        activeTab={statusFilter}
+        onTabChange={setStatusFilter}
+        className="mb-6"
+      />
+
       {/* Toolbar */}
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3 flex-1">
@@ -93,25 +73,7 @@ export default function ProjectsHubClient({ projects: initialProjects }: { proje
               className="pl-9"
             />
           </div>
-          <div className="flex gap-1">
-            {STATUS_FILTERS.map((s) => (
-              <Button
-                key={s}
-                onClick={() => setStatusFilter(s)}
-                className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
-                  s === statusFilter
-                    ? 'bg-foreground text-background'
-                    : 'bg-bg-secondary text-text-secondary hover:bg-bg-tertiary'
-                }`}
-              >
-                {s === 'all' ? 'All' : s.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
-              </Button>
-            ))}
-          </div>
         </div>
-        <Button size="sm" onClick={() => setShowCreate(true)}>
-          <Plus size={14} className="mr-1" /> New Project
-        </Button>
       </div>
 
       {/* Grid */}
@@ -168,45 +130,6 @@ export default function ProjectsHubClient({ projects: initialProjects }: { proje
           </p>
         </div>
       )}
-
-      {/* Create Modal */}
-      <ModalShell open={showCreate} onClose={() => setShowCreate(false)} title="New Project">
-        <div className="space-y-4">
-          <div>
-            <FormLabel>Project Name</FormLabel>
-            <FormInput
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-              placeholder="e.g., Ultra Music Festival 2026"
-              autoFocus
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <FormLabel>Status</FormLabel>
-              <FormSelect value={newStatus} onChange={(e) => setNewStatus(e.target.value)}>
-                <option value="draft">Draft</option>
-                <option value="active">Active</option>
-                <option value="in_progress">In Progress</option>
-              </FormSelect>
-            </div>
-            <div>
-              <FormLabel>Visibility</FormLabel>
-              <FormSelect value={newVisibility} onChange={(e) => setNewVisibility(e.target.value)}>
-                <option value="private">Private</option>
-                <option value="internal">Internal</option>
-                <option value="public">Public</option>
-              </FormSelect>
-            </div>
-          </div>
-          <div className="flex justify-end gap-3 pt-2">
-            <Button variant="secondary" onClick={() => setShowCreate(false)}>Cancel</Button>
-            <Button onClick={handleCreate} loading={creating} disabled={!newName.trim()}>
-              Create Project
-            </Button>
-          </div>
-        </div>
-      </ModalShell>
     </>
   );
 }

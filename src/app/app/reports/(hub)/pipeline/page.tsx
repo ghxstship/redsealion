@@ -8,6 +8,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import ReportsHubTabs from '../../ReportsHubTabs';
 import type { DealStage } from '@/types/database';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 const STAGE_LABELS: Record<string, string> = {
   lead: 'Lead',
@@ -108,26 +109,26 @@ export default async function PipelineReportPage() {
 
         <div className="rounded-xl border border-border bg-background overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border bg-bg-secondary">
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Stage</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Deals</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Total Value</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Weighted Value</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader>
+                <TableRow className="border-b border-border bg-bg-secondary">
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Stage</TableHead>
+                  <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Deals</TableHead>
+                  <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Total Value</TableHead>
+                  <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Weighted Value</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {stageData.map((s) => (
-                  <tr key={s.stage} className="transition-colors hover:bg-bg-secondary/50">
-                    <td className="px-6 py-3.5 text-sm font-medium text-foreground">{STAGE_LABELS[s.stage]}</td>
-                    <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{s.count}</td>
-                    <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{formatCurrency(s.value)}</td>
-                    <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{formatCurrency(s.weighted)}</td>
-                  </tr>
+                  <TableRow key={s.stage} className="transition-colors hover:bg-bg-secondary/50">
+                    <TableCell className="px-6 py-3.5 text-sm font-medium text-foreground">{STAGE_LABELS[s.stage]}</TableCell>
+                    <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{s.count}</TableCell>
+                    <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{formatCurrency(s.value)}</TableCell>
+                    <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{formatCurrency(s.weighted)}</TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </div>
       </div>

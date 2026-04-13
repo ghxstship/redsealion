@@ -109,6 +109,7 @@ export async function POST(request: NextRequest) {
     start_date,
     estimated_hours,
     recurrence_rule,
+    project_id,
   } = body as {
     title?: string;
     description?: string;
@@ -124,6 +125,7 @@ export async function POST(request: NextRequest) {
     start_date?: string;
     estimated_hours?: number;
     recurrence_rule?: Record<string, unknown>;
+    project_id?: string;
   };
 
   if (!title) {
@@ -151,6 +153,7 @@ export async function POST(request: NextRequest) {
       start_date: start_date || null,
       estimated_hours: estimated_hours ?? null,
       recurrence_rule: recurrence_rule ?? null,
+      project_id: project_id || null,
       recurring_parent_id: null,
       created_by: perm.userId,
       sort_order: 0,

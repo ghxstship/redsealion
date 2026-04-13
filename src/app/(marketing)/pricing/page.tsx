@@ -6,6 +6,7 @@ import JsonLd from '@/components/marketing/JsonLd';
 
 import { tiers, comparisonData, type FeatureValue } from './_data';
 import PricingCards from '@/components/marketing/PricingCards';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -68,57 +69,57 @@ export default function PricingPage() {
 
         {/* Desktop Table */}
         <div className="hidden lg:block">
-          <table className="w-full border-collapse text-left">
-            <thead>
-              <tr className="sticky top-0 z-10 bg-white">
-                <th className="border-b border-zinc-200 pb-4 pr-4 text-sm font-medium text-zinc-500">
+          <Table className="w-full border-collapse text-left">
+            <TableHeader>
+              <TableRow className="sticky top-0 z-10 bg-white">
+                <TableHead className="border-b border-zinc-200 pb-4 pr-4 text-sm font-medium text-zinc-500">
                   Feature
-                </th>
-                <th className="border-b border-zinc-200 pb-4 text-center text-sm font-medium text-zinc-500">
+                </TableHead>
+                <TableHead className="border-b border-zinc-200 pb-4 text-center text-sm font-medium text-zinc-500">
                   Starter
-                </th>
-                <th className="border-b border-zinc-200 bg-zinc-50 pb-4 text-center text-sm font-semibold text-zinc-900">
+                </TableHead>
+                <TableHead className="border-b border-zinc-200 bg-zinc-50 pb-4 text-center text-sm font-semibold text-zinc-900">
                   Professional
-                </th>
-                <th className="border-b border-zinc-200 pb-4 text-center text-sm font-medium text-zinc-500">
+                </TableHead>
+                <TableHead className="border-b border-zinc-200 pb-4 text-center text-sm font-medium text-zinc-500">
                   Enterprise
-                </th>
-              </tr>
-            </thead>
-            <tbody>
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {comparisonData.map((category) => (
                 <Fragment key={`cat-${category.name}`}>
-                  <tr>
-                    <td
+                  <TableRow>
+                    <TableCell
                       colSpan={4}
                       className="border-b border-zinc-100 pb-3 pt-8 text-sm font-semibold text-zinc-900"
                     >
                       {category.name}
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                   {category.features.map((feature, featureIdx) => (
-                    <tr
+                    <TableRow
                       key={`${category.name}-${feature.name}`}
                       className={featureIdx % 2 === 0 ? 'bg-white' : 'bg-zinc-50/50'}
                     >
-                      <td className="border-b border-zinc-100 py-3 pr-4 text-sm text-zinc-600">
+                      <TableCell className="border-b border-zinc-100 py-3 pr-4 text-sm text-zinc-600">
                         {feature.name}
-                      </td>
-                      <td className="border-b border-zinc-100 py-3 text-center">
+                      </TableCell>
+                      <TableCell className="border-b border-zinc-100 py-3 text-center">
                         <CellValue value={feature.starter} />
-                      </td>
-                      <td className="border-b border-zinc-100 bg-zinc-50/80 py-3 text-center">
+                      </TableCell>
+                      <TableCell className="border-b border-zinc-100 bg-zinc-50/80 py-3 text-center">
                         <CellValue value={feature.professional} />
-                      </td>
-                      <td className="border-b border-zinc-100 py-3 text-center">
+                      </TableCell>
+                      <TableCell className="border-b border-zinc-100 py-3 text-center">
                         <CellValue value={feature.enterprise} />
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
                 </Fragment>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
 
         {/* Mobile Stacked Layout */}

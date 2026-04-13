@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { formatCurrency } from '@/lib/utils';
 import ExpenseApprovalActions from '@/components/admin/expenses/ExpenseApprovalActions';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface PendingExpense {
   id: string;
@@ -131,32 +132,32 @@ export default async function ExpenseApprovalsPage() {
           {pending.length > 0 ? (
             <div className="rounded-xl border border-border bg-background overflow-hidden">
               <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-border bg-bg-secondary">
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Submitted By</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Date</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Category</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Description</th>
-                      <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Amount</th>
-                      <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-text-muted">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
+                <Table >
+                  <TableHeader>
+                    <TableRow className="border-b border-border bg-bg-secondary">
+                      <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Submitted By</TableHead>
+                      <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Date</TableHead>
+                      <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Category</TableHead>
+                      <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Description</TableHead>
+                      <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Amount</TableHead>
+                      <TableHead className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-text-muted">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody >
                     {pending.map((exp) => (
-                      <tr key={exp.id} className="transition-colors hover:bg-bg-secondary/50">
-                        <td className="px-6 py-3.5 text-sm font-medium text-foreground">{exp.user_name}</td>
-                        <td className="px-6 py-3.5 text-sm text-foreground whitespace-nowrap">{new Date(exp.expense_date).toLocaleDateString()}</td>
-                        <td className="px-6 py-3.5 text-sm text-foreground capitalize">{exp.category}</td>
-                        <td className="px-6 py-3.5 text-sm text-text-secondary">{exp.description ?? '—'}</td>
-                        <td className="px-6 py-3.5 text-right text-sm font-medium tabular-nums text-foreground">{formatCurrency(exp.amount)}</td>
-                        <td className="px-6 py-3.5 text-center">
+                      <TableRow key={exp.id} className="transition-colors hover:bg-bg-secondary/50">
+                        <TableCell className="px-6 py-3.5 text-sm font-medium text-foreground">{exp.user_name}</TableCell>
+                        <TableCell className="px-6 py-3.5 text-sm text-foreground whitespace-nowrap">{new Date(exp.expense_date).toLocaleDateString()}</TableCell>
+                        <TableCell className="px-6 py-3.5 text-sm text-foreground capitalize">{exp.category}</TableCell>
+                        <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{exp.description ?? '—'}</TableCell>
+                        <TableCell className="px-6 py-3.5 text-right text-sm font-medium tabular-nums text-foreground">{formatCurrency(exp.amount)}</TableCell>
+                        <TableCell className="px-6 py-3.5 text-center">
                           <ExpenseApprovalActions expenseId={exp.id} />
-                        </td>
-                      </tr>
+                        </TableCell>
+                      </TableRow>
                     ))}
-                  </tbody>
-                </table>
+                  </TableBody>
+                </Table>
               </div>
             </div>
           ) : (
@@ -172,32 +173,32 @@ export default async function ExpenseApprovalsPage() {
           {pendingMileage.length > 0 ? (
             <div className="rounded-xl border border-border bg-background overflow-hidden">
               <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-border bg-bg-secondary">
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Submitted By</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Date</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Route</th>
-                      <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Miles</th>
-                      <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Amount</th>
-                      <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-text-muted">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
+                <Table >
+                  <TableHeader>
+                    <TableRow className="border-b border-border bg-bg-secondary">
+                      <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Submitted By</TableHead>
+                      <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Date</TableHead>
+                      <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Route</TableHead>
+                      <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Miles</TableHead>
+                      <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Amount</TableHead>
+                      <TableHead className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-text-muted">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody >
                     {pendingMileage.map((m) => (
-                      <tr key={m.id} className="transition-colors hover:bg-bg-secondary/50">
-                        <td className="px-6 py-3.5 text-sm font-medium text-foreground">{m.user_name}</td>
-                        <td className="px-6 py-3.5 text-sm text-foreground whitespace-nowrap">{new Date(m.trip_date).toLocaleDateString()}</td>
-                        <td className="px-6 py-3.5 text-sm text-foreground">{m.origin} → {m.destination}</td>
-                        <td className="px-6 py-3.5 text-right text-sm text-text-secondary">{m.distance_miles}</td>
-                        <td className="px-6 py-3.5 text-right text-sm font-medium tabular-nums text-foreground">{formatCurrency(m.amount)}</td>
-                        <td className="px-6 py-3.5 text-center">
+                      <TableRow key={m.id} className="transition-colors hover:bg-bg-secondary/50">
+                        <TableCell className="px-6 py-3.5 text-sm font-medium text-foreground">{m.user_name}</TableCell>
+                        <TableCell className="px-6 py-3.5 text-sm text-foreground whitespace-nowrap">{new Date(m.trip_date).toLocaleDateString()}</TableCell>
+                        <TableCell className="px-6 py-3.5 text-sm text-foreground">{m.origin} → {m.destination}</TableCell>
+                        <TableCell className="px-6 py-3.5 text-right text-sm text-text-secondary">{m.distance_miles}</TableCell>
+                        <TableCell className="px-6 py-3.5 text-right text-sm font-medium tabular-nums text-foreground">{formatCurrency(m.amount)}</TableCell>
+                        <TableCell className="px-6 py-3.5 text-center">
                           <ExpenseApprovalActions expenseId={m.id} isMileage />
-                        </td>
-                      </tr>
+                        </TableCell>
+                      </TableRow>
                     ))}
-                  </tbody>
-                </table>
+                  </TableBody>
+                </Table>
               </div>
             </div>
           ) : (

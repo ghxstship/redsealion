@@ -3,6 +3,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import EmptyState from '@/components/ui/EmptyState';
 import PageHeader from '@/components/shared/PageHeader';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface AuditEntry {
   id: string;
@@ -81,45 +82,45 @@ export default async function AuditLogPage() {
       ) : (
         <div className="rounded-xl border border-border bg-background overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border bg-bg-secondary">
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Timestamp</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">User</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Action</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Entity</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">IP Address</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader>
+                <TableRow className="border-b border-border bg-bg-secondary">
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Timestamp</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">User</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Action</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Entity</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">IP Address</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {entries.map((entry) => (
-                  <tr key={entry.id} className="transition-colors hover:bg-bg-secondary/50">
-                    <td className="px-6 py-3.5 text-sm tabular-nums text-text-secondary">
+                  <TableRow key={entry.id} className="transition-colors hover:bg-bg-secondary/50">
+                    <TableCell className="px-6 py-3.5 text-sm tabular-nums text-text-secondary">
                       {new Date(entry.createdAt).toLocaleString()}
-                    </td>
-                    <td className="px-6 py-3.5 text-sm text-foreground">
+                    </TableCell>
+                    <TableCell className="px-6 py-3.5 text-sm text-foreground">
                       {entry.userName ?? 'System'}
-                    </td>
-                    <td className="px-6 py-3.5">
+                    </TableCell>
+                    <TableCell className="px-6 py-3.5">
                       <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium capitalize ${actionColor(entry.action)}`}>
                         {entry.action}
                       </span>
-                    </td>
-                    <td className="px-6 py-3.5 text-sm text-text-secondary">
+                    </TableCell>
+                    <TableCell className="px-6 py-3.5 text-sm text-text-secondary">
                       <span className="capitalize">{entry.entityType.replace(/_/g, ' ')}</span>
                       {entry.entityId && (
                         <span className="ml-1 text-text-muted font-mono text-xs">
                           {entry.entityId.slice(0, 8)}…
                         </span>
                       )}
-                    </td>
-                    <td className="px-6 py-3.5 text-sm font-mono text-text-muted">
+                    </TableCell>
+                    <TableCell className="px-6 py-3.5 text-sm font-mono text-text-muted">
                       {entry.ipAddress ?? '—'}
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </div>
       )}

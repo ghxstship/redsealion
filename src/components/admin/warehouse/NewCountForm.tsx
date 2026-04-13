@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
 import Alert from '@/components/ui/Alert';
 import FormSelect from '@/components/ui/FormSelect';
 import FormLabel from '@/components/ui/FormLabel';
@@ -62,7 +63,7 @@ export default function NewCountForm({ onCreated, onClose }: NewCountFormProps) 
   };
 
   return (
-    <div className="bg-background border border-border rounded-lg shadow-sm p-5">
+    <Card>
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-base font-semibold text-foreground">New Inventory Count</h2>
         <button onClick={onClose} className="text-text-muted hover:text-foreground text-lg leading-none">
@@ -105,18 +106,17 @@ export default function NewCountForm({ onCreated, onClose }: NewCountFormProps) 
         </div>
 
         <div className="flex justify-end gap-2 pt-2">
-          <button
-            type="button"
+          <Button
+            variant="secondary"
             onClick={onClose}
-            className="px-4 py-2 text-sm rounded-lg bg-bg-secondary text-foreground hover:bg-bg-tertiary"
           >
             Cancel
-          </button>
+          </Button>
           <Button type="submit" disabled={submitting}>
             {submitting ? 'Creating...' : 'Start Count'}
           </Button>
         </div>
       </form>
-    </div>
+    </Card>
   );
 }

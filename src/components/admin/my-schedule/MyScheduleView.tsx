@@ -8,6 +8,7 @@ import {
   ExternalLink, Flag, Milestone, CalendarDays, Briefcase, Layers,
 } from 'lucide-react';
 import StatusBadge from '@/components/ui/StatusBadge';
+import { Badge } from '@/components/ui/Badge';
 import FilterPills from '@/components/ui/FilterPills';
 import Button from '@/components/ui/Button';
 import MiniCalendar from './MiniCalendar';
@@ -411,9 +412,9 @@ function AgendaItem({ item, isAllDay }: { item: ScheduleItem; isAllDay?: boolean
                 )}
               </h4>
               {overdue && (
-                <span className="flex-shrink-0 text-[10px] font-semibold text-red-600 bg-red-100 dark:bg-red-900/30 dark:text-red-400 px-1.5 py-0.5 rounded-full uppercase tracking-wider">
+                <Badge variant="error" className="uppercase tracking-wider">
                   Overdue
-                </span>
+                </Badge>
               )}
             </div>
             {item.subtitle && (

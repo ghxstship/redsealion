@@ -8,6 +8,7 @@ import StatusBadge, { COUNT_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import FormInput from '@/components/ui/FormInput';
 import { formatLabel } from '@/lib/utils';
 import PageHeader from '@/components/shared/PageHeader';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface CountLine {
   id: string;
@@ -164,32 +165,32 @@ export default function CountWorksheetClient({ count, lines: initialLines }: Cou
       {/* Worksheet table */}
       <div className="rounded-xl border border-border bg-background overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="sticky top-0">
-              <tr className="border-b border-border bg-bg-secondary">
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Asset</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Category</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">ID</th>
-                <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-text-muted">Expected</th>
-                <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-text-muted w-28">Counted</th>
-                <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-text-muted">Variance</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Condition</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
+          <Table >
+            <TableHeader className="sticky top-0">
+              <TableRow className="border-b border-border bg-bg-secondary">
+                <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Asset</TableHead>
+                <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Category</TableHead>
+                <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">ID</TableHead>
+                <TableHead className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-text-muted">Expected</TableHead>
+                <TableHead className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-text-muted w-28">Counted</TableHead>
+                <TableHead className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-text-muted">Variance</TableHead>
+                <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Condition</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody >
               {lines.map((line) => {
                 const variance = line.counted_quantity != null
                   ? line.counted_quantity - line.expected_quantity
                   : null;
                 return (
-                  <tr key={line.id} className="transition-colors hover:bg-bg-secondary/50">
-                    <td className="px-6 py-3 text-sm font-medium text-foreground">{line.asset_name}</td>
-                    <td className="px-6 py-3 text-sm text-text-secondary">{line.asset_category}</td>
-                    <td className="px-6 py-3 text-xs font-mono text-text-muted">
+                  <TableRow key={line.id} className="transition-colors hover:bg-bg-secondary/50">
+                    <TableCell className="px-6 py-3 text-sm font-medium text-foreground">{line.asset_name}</TableCell>
+                    <TableCell className="px-6 py-3 text-sm text-text-secondary">{line.asset_category}</TableCell>
+                    <TableCell className="px-6 py-3 text-xs font-mono text-text-muted">
                       {line.asset_barcode || line.asset_serial || '—'}
-                    </td>
-                    <td className="px-6 py-3 text-sm text-center tabular-nums text-foreground">{line.expected_quantity}</td>
-                    <td className="px-6 py-3 text-center">
+                    </TableCell>
+                    <TableCell className="px-6 py-3 text-sm text-center tabular-nums text-foreground">{line.expected_quantity}</TableCell>
+                    <TableCell className="px-6 py-3 text-center">
                       {isEditable ? (
                         <FormInput
                           type="number"
@@ -202,8 +203,8 @@ export default function CountWorksheetClient({ count, lines: initialLines }: Cou
                       ) : (
                         <span className="text-sm tabular-nums">{line.counted_quantity ?? '—'}</span>
                       )}
-                    </td>
-                    <td className="px-6 py-3 text-center">
+                    </TableCell>
+                    <TableCell className="px-6 py-3 text-center">
                       {variance != null ? (
                         <span className={`text-sm font-medium tabular-nums ${
                           variance === 0 ? 'text-green-700' : 'text-red-700'
@@ -213,15 +214,15 @@ export default function CountWorksheetClient({ count, lines: initialLines }: Cou
                       ) : (
                         <span className="text-sm text-text-muted">—</span>
                       )}
-                    </td>
-                    <td className="px-6 py-3 text-sm text-text-secondary">
+                    </TableCell>
+                    <TableCell className="px-6 py-3 text-sm text-text-secondary">
                       {line.condition_observed ?? line.asset_condition}
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 );
               })}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </div>
     </>

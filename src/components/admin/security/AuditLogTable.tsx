@@ -11,6 +11,7 @@ import SortableHeader from '@/components/shared/SortableHeader';
 import SearchInput from '@/components/ui/SearchInput';
 import Button from '@/components/ui/Button';
 import { SlidersHorizontal } from 'lucide-react';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface AuditRow {
   id: string;
@@ -98,56 +99,56 @@ export default function AuditLogTable({ entries }: AuditLogTableProps) {
 
       <div className="rounded-xl border border-border bg-background overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-border bg-bg-secondary">
-                {isVisible('createdAt') && <th className="px-6 py-3"><SortableHeader label="Time" field="createdAt" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('userName') && <th className="px-6 py-3"><SortableHeader label="User" field="userName" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('action') && <th className="px-6 py-3"><SortableHeader label="Action" field="action" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('entityType') && <th className="px-6 py-3"><SortableHeader label="Entity" field="entityType" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('entityId') && <th className="px-6 py-3"><SortableHeader label="Entity ID" field="entityId" currentSort={sort} onSort={handleSort} /></th>}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
+          <Table >
+            <TableHeader>
+              <TableRow className="border-b border-border bg-bg-secondary">
+                {isVisible('createdAt') && <TableHead className="px-6 py-3"><SortableHeader label="Time" field="createdAt" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('userName') && <TableHead className="px-6 py-3"><SortableHeader label="User" field="userName" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('action') && <TableHead className="px-6 py-3"><SortableHeader label="Action" field="action" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('entityType') && <TableHead className="px-6 py-3"><SortableHeader label="Entity" field="entityType" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('entityId') && <TableHead className="px-6 py-3"><SortableHeader label="Entity ID" field="entityId" currentSort={sort} onSort={handleSort} /></TableHead>}
+              </TableRow>
+            </TableHeader>
+            <TableBody >
               {sorted.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-sm text-text-muted">
+                <TableRow>
+                  <TableCell colSpan={5} className="px-6 py-12 text-center text-sm text-text-muted">
                     No audit logs match your search.
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ) : (
                 sorted.map((entry) => (
-                  <tr key={entry.id} className="transition-colors hover:bg-bg-secondary/50">
+                  <TableRow key={entry.id} className="transition-colors hover:bg-bg-secondary/50">
                     {isVisible('createdAt') && (
-                      <td className="px-6 py-3.5 text-sm text-text-secondary whitespace-nowrap">
+                      <TableCell className="px-6 py-3.5 text-sm text-text-secondary whitespace-nowrap">
                         {relativeTime(entry.createdAt)}
-                      </td>
+                      </TableCell>
                     )}
                     {isVisible('userName') && (
-                      <td className="px-6 py-3.5 text-sm font-medium text-foreground">
+                      <TableCell className="px-6 py-3.5 text-sm font-medium text-foreground">
                         {entry.userName ?? 'System'}
-                      </td>
+                      </TableCell>
                     )}
                     {isVisible('action') && (
-                      <td className="px-6 py-3.5 text-sm text-foreground capitalize">
+                      <TableCell className="px-6 py-3.5 text-sm text-foreground capitalize">
                         {entry.action.replace(/_/g, ' ')}
-                      </td>
+                      </TableCell>
                     )}
                     {isVisible('entityType') && (
-                      <td className="px-6 py-3.5 text-sm text-text-secondary capitalize">
+                      <TableCell className="px-6 py-3.5 text-sm text-text-secondary capitalize">
                         {entry.entityType.replace(/_/g, ' ')}
-                      </td>
+                      </TableCell>
                     )}
                     {isVisible('entityId') && (
-                      <td className="px-6 py-3.5 text-xs text-text-muted font-mono">
+                      <TableCell className="px-6 py-3.5 text-xs text-text-muted font-mono">
                         {entry.entityId ? entry.entityId.substring(0, 8) + '...' : '-'}
-                      </td>
+                      </TableCell>
                     )}
-                  </tr>
+                  </TableRow>
                 ))
               )}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </div>
 

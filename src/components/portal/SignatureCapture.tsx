@@ -2,6 +2,7 @@
 
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
 
 interface SignatureCaptureProps {
   onSign: (dataUrl: string) => void;
@@ -85,7 +86,7 @@ export default function SignatureCapture({ onSign }: SignatureCaptureProps) {
   };
 
   return (
-    <div className="bg-background border border-border rounded-lg shadow-sm p-4">
+    <Card padding="sm">
       <p className="text-sm text-text-secondary mb-2">Draw your signature below</p>
       <canvas
         ref={canvasRef}
@@ -101,19 +102,18 @@ export default function SignatureCapture({ onSign }: SignatureCaptureProps) {
         onTouchEnd={handleEnd}
       />
       <div className="flex justify-end gap-2 mt-3">
-        <button
-          type="button"
+        <Button
+          variant="secondary"
           onClick={handleClear}
-          className="px-4 py-2 text-sm rounded-lg bg-bg-secondary text-foreground hover:bg-bg-tertiary"
         >
           Clear
-        </button>
+        </Button>
         <Button type="button"
           onClick={handleSign}
           disabled={!hasContent}>
           Sign
         </Button>
       </div>
-    </div>
+    </Card>
   );
 }

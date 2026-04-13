@@ -7,6 +7,7 @@ import Link from 'next/link';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import StatusBadge from '@/components/ui/StatusBadge';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface AutomationRun {
   id: string;
@@ -146,37 +147,37 @@ export default function AutomationsConfigPage() {
       <Card>
         <h3 className="text-sm font-semibold text-foreground mb-5">Recent Runs</h3>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border">
-                <th className="text-left text-xs font-medium text-text-muted uppercase tracking-wider pb-3">Automation</th>
-                <th className="text-left text-xs font-medium text-text-muted uppercase tracking-wider pb-3">Trigger</th>
-                <th className="text-left text-xs font-medium text-text-muted uppercase tracking-wider pb-3">Status</th>
-                <th className="text-left text-xs font-medium text-text-muted uppercase tracking-wider pb-3">Duration</th>
-                <th className="text-left text-xs font-medium text-text-muted uppercase tracking-wider pb-3">Time</th>
-              </tr>
-            </thead>
-            <tbody>
+          <Table >
+            <TableHeader>
+              <TableRow className="border-b border-border">
+                <TableHead className="text-left text-xs font-medium text-text-muted uppercase tracking-wider pb-3">Automation</TableHead>
+                <TableHead className="text-left text-xs font-medium text-text-muted uppercase tracking-wider pb-3">Trigger</TableHead>
+                <TableHead className="text-left text-xs font-medium text-text-muted uppercase tracking-wider pb-3">Status</TableHead>
+                <TableHead className="text-left text-xs font-medium text-text-muted uppercase tracking-wider pb-3">Duration</TableHead>
+                <TableHead className="text-left text-xs font-medium text-text-muted uppercase tracking-wider pb-3">Time</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {runs.map((run) => (
-                <tr key={run.id} className="border-b border-border last:border-0">
-                  <td className="py-3 text-foreground font-medium">{run.name}</td>
-                  <td className="py-3 text-text-secondary font-mono text-xs">{run.trigger}</td>
-                  <td className="py-3">
+                <TableRow key={run.id} className="border-b border-border last:border-0">
+                  <TableCell className="py-3 text-foreground font-medium">{run.name}</TableCell>
+                  <TableCell className="py-3 text-text-secondary font-mono text-xs">{run.trigger}</TableCell>
+                  <TableCell className="py-3">
                     <StatusBadge status={run.status} colorMap={statusBadge} />
-                  </td>
-                  <td className="py-3 text-text-secondary">{run.duration}</td>
-                  <td className="py-3 text-text-secondary">{run.timestamp}</td>
-                </tr>
+                  </TableCell>
+                  <TableCell className="py-3 text-text-secondary">{run.duration}</TableCell>
+                  <TableCell className="py-3 text-text-secondary">{run.timestamp}</TableCell>
+                </TableRow>
               ))}
               {runs.length === 0 && (
-                <tr className="border-b border-border last:border-0">
-                  <td colSpan={5} className="py-6 text-center text-sm text-text-muted">
+                <TableRow className="border-b border-border last:border-0">
+                  <TableCell colSpan={5} className="py-6 text-center text-sm text-text-muted">
                     No recent automation runs found.
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               )}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </Card>
 

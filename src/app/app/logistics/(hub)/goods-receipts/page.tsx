@@ -4,6 +4,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
 import LogisticsHubTabs from "../../LogisticsHubTabs";
 import GoodsReceiptsHeader from '@/components/admin/warehouse/GoodsReceiptsHeader';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface GoodsReceipt {
   id: string;
@@ -55,40 +56,40 @@ export default async function GoodsReceiptsPage() {
             No goods receipts found. Create one from an inbound shipment or PO.
           </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider border-b border-border">
-              <tr>
-                <th className="px-6 py-3">Receipt #</th>
-                <th className="px-6 py-3">PO Number</th>
-                <th className="px-6 py-3">Vendor</th>
-                <th className="px-6 py-3">Received By</th>
-                <th className="px-6 py-3">Date</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
+          <Table >
+            <TableHeader className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider border-b border-border">
+              <TableRow>
+                <TableHead className="px-6 py-3">Receipt #</TableHead>
+                <TableHead className="px-6 py-3">PO Number</TableHead>
+                <TableHead className="px-6 py-3">Vendor</TableHead>
+                <TableHead className="px-6 py-3">Received By</TableHead>
+                <TableHead className="px-6 py-3">Date</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody >
               {receipts.map((r) => (
-                <tr key={r.id} className="transition-colors hover:bg-bg-secondary/50">
-                  <td className="px-6 py-3.5 font-medium text-foreground">
+                <TableRow key={r.id} className="transition-colors hover:bg-bg-secondary/50">
+                  <TableCell className="px-6 py-3.5 font-medium text-foreground">
                     <Link href={`/app/logistics/goods-receipts/${r.id}`} className="hover:underline">
                       {r.receipt_number}
                     </Link>
-                  </td>
-                  <td className="px-6 py-3.5 text-text-secondary">
+                  </TableCell>
+                  <TableCell className="px-6 py-3.5 text-text-secondary">
                     {r.purchase_orders?.po_number ?? '—'}
-                  </td>
-                  <td className="px-6 py-3.5 text-text-secondary">
+                  </TableCell>
+                  <TableCell className="px-6 py-3.5 text-text-secondary">
                     {r.purchase_orders?.vendors?.name ?? '—'}
-                  </td>
-                  <td className="px-6 py-3.5 text-text-secondary">
+                  </TableCell>
+                  <TableCell className="px-6 py-3.5 text-text-secondary">
                     {r.users?.full_name ?? '—'}
-                  </td>
-                  <td className="px-6 py-3.5 text-text-secondary">
+                  </TableCell>
+                  <TableCell className="px-6 py-3.5 text-text-secondary">
                     {r.received_date ? new Date(r.received_date).toLocaleDateString() : '—'}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         )}
       </div>
     </>

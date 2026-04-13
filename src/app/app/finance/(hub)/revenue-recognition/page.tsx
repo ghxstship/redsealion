@@ -7,6 +7,7 @@ import FinanceHubTabs from '../../FinanceHubTabs';
 import Card from '@/components/ui/Card';
 import EmptyState from '@/components/ui/EmptyState';
 import RecordRecognitionButton from './RecordRecognitionButton';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface RevRecRow {
   id: string;
@@ -86,30 +87,30 @@ export default async function RevenueRecognitionPage() {
       ) : (
         <div className="rounded-xl border border-border bg-background overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border bg-bg-secondary">
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Project</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Period</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Method</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Recognized</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Deferred</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader>
+                <TableRow className="border-b border-border bg-bg-secondary">
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Project</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Period</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Method</TableHead>
+                  <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Recognized</TableHead>
+                  <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Deferred</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {rows.map((r) => (
-                  <tr key={r.id} className="transition-colors hover:bg-bg-secondary/50">
-                    <td className="px-6 py-3.5 text-sm font-medium text-foreground">{r.projectName}</td>
-                    <td className="px-6 py-3.5 text-sm text-text-secondary">
+                  <TableRow key={r.id} className="transition-colors hover:bg-bg-secondary/50">
+                    <TableCell className="px-6 py-3.5 text-sm font-medium text-foreground">{r.projectName}</TableCell>
+                    <TableCell className="px-6 py-3.5 text-sm text-text-secondary">
                       {new Date(r.periodStart).toLocaleDateString()} - {new Date(r.periodEnd).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-3.5 text-sm text-text-secondary capitalize">{r.method.replace(/_/g, ' ')}</td>
-                    <td className="px-6 py-3.5 text-right text-sm font-medium tabular-nums text-green-600">{formatCurrency(r.recognized)}</td>
-                    <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{formatCurrency(r.deferred)}</td>
-                  </tr>
+                    </TableCell>
+                    <TableCell className="px-6 py-3.5 text-sm text-text-secondary capitalize">{r.method.replace(/_/g, ' ')}</TableCell>
+                    <TableCell className="px-6 py-3.5 text-right text-sm font-medium tabular-nums text-green-600">{formatCurrency(r.recognized)}</TableCell>
+                    <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{formatCurrency(r.deferred)}</TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </div>
       )}

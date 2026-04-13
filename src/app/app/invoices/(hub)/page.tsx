@@ -6,6 +6,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import EmptyState from '@/components/ui/EmptyState';
 import StatusBadge, { INVOICE_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import InvoiceHubTabs from '../InvoiceHubTabs';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface InvoiceRow {
   id: string;
@@ -95,40 +96,40 @@ export default async function InvoicesPage() {
       ) : (
         <div className="rounded-xl border border-border bg-background overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr>
-                  <th className="px-4 py-3">Invoice #</th>
-                  <th className="px-4 py-3">Client</th>
-                  <th className="px-4 py-3">Type</th>
-                  <th className="px-4 py-3">Issued</th>
-                  <th className="px-4 py-3">Due</th>
-                  <th className="px-4 py-3 text-right">Total</th>
-                  <th className="px-4 py-3 text-right">Paid</th>
-                  <th className="px-4 py-3">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow>
+                  <TableHead className="px-4 py-3">Invoice #</TableHead>
+                  <TableHead className="px-4 py-3">Client</TableHead>
+                  <TableHead className="px-4 py-3">Type</TableHead>
+                  <TableHead className="px-4 py-3">Issued</TableHead>
+                  <TableHead className="px-4 py-3">Due</TableHead>
+                  <TableHead className="px-4 py-3 text-right">Total</TableHead>
+                  <TableHead className="px-4 py-3 text-right">Paid</TableHead>
+                  <TableHead className="px-4 py-3">Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {invoices.map((inv) => (
-                  <tr key={inv.id} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3">
+                  <TableRow key={inv.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <TableCell className="px-4 py-3">
                       <Link href={`/app/invoices/${inv.id}`} className="font-medium text-foreground hover:underline">
                         {inv.invoice_number}
                       </Link>
-                    </td>
-                    <td className="px-4 py-3 text-text-secondary">{inv.client_name}</td>
-                    <td className="px-4 py-3 capitalize">{inv.type}</td>
-                    <td className="px-4 py-3 text-text-secondary">{new Date(inv.issue_date).toLocaleDateString()}</td>
-                    <td className="px-4 py-3 text-text-secondary">{new Date(inv.due_date).toLocaleDateString()}</td>
-                    <td className="px-4 py-3 text-right tabular-nums">{formatCurrency(inv.total)}</td>
-                    <td className="px-4 py-3 text-right tabular-nums">{formatCurrency(inv.amount_paid)}</td>
-                    <td className="px-4 py-3">
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{inv.client_name}</TableCell>
+                    <TableCell className="px-4 py-3 capitalize">{inv.type}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{new Date(inv.issue_date).toLocaleDateString()}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{new Date(inv.due_date).toLocaleDateString()}</TableCell>
+                    <TableCell className="px-4 py-3 text-right tabular-nums">{formatCurrency(inv.total)}</TableCell>
+                    <TableCell className="px-4 py-3 text-right tabular-nums">{formatCurrency(inv.amount_paid)}</TableCell>
+                    <TableCell className="px-4 py-3">
                       <StatusBadge status={inv.status} colorMap={INVOICE_STATUS_COLORS} />
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </div>
       )}

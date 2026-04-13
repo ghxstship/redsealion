@@ -23,6 +23,7 @@ import { useStoredColumnConfig } from '@/hooks/useStoredColumnConfig';
 import ViewBar from '@/components/shared/ViewBar';
 import ColumnConfigPanel from '@/components/shared/ColumnConfigPanel';
 import BulkReassignModal from '@/components/shared/BulkReassignModal';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface Lead {
   id: string;
@@ -205,10 +206,10 @@ export default function LeadsTable({ leads }: { leads: Lead[] }) {
 
       {/* Table */}
       <div className="rounded-xl border border-border bg-background overflow-hidden overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-border bg-bg-secondary">
-              <th className="px-4 py-3 text-left w-10">
+        <Table >
+          <TableHeader>
+            <TableRow className="border-b border-border bg-bg-secondary">
+              <TableHead className="px-4 py-3 text-left w-10">
                 <input
                   type="checkbox"
                   checked={isAllSelected}
@@ -216,71 +217,71 @@ export default function LeadsTable({ leads }: { leads: Lead[] }) {
                   onChange={toggleAll}
                   className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10"
                 />
-              </th>
-              {isVisible('name') && <th className="px-6 py-3"><SortableHeader label="Name" field="contact_first_name" currentSort={sort} onSort={handleSort} /></th>}
-              {isVisible('company') && <th className="px-6 py-3"><SortableHeader label="Company" field="company_name" currentSort={sort} onSort={handleSort} /></th>}
-              {isVisible('contact') && <th className="px-6 py-3"><SortableHeader label="Contact" field="contact_email" currentSort={sort} onSort={handleSort} /></th>}
-              {isVisible('source') && <th className="px-6 py-3"><SortableHeader label="Source" field="source" currentSort={sort} onSort={handleSort} /></th>}
-              {isVisible('budget') && <th className="px-6 py-3"><SortableHeader label="Budget" field="estimated_budget" currentSort={sort} onSort={handleSort} /></th>}
-              {isVisible('status') && <th className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></th>}
-              {isVisible('score') && <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Score</th>}
-              {isVisible('date') && <th className="px-6 py-3"><SortableHeader label="Date" field="created_at" currentSort={sort} onSort={handleSort} /></th>}
-              <th className="px-6 py-3 w-12"><span className="sr-only">Actions</span></th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
+              </TableHead>
+              {isVisible('name') && <TableHead className="px-6 py-3"><SortableHeader label="Name" field="contact_first_name" currentSort={sort} onSort={handleSort} /></TableHead>}
+              {isVisible('company') && <TableHead className="px-6 py-3"><SortableHeader label="Company" field="company_name" currentSort={sort} onSort={handleSort} /></TableHead>}
+              {isVisible('contact') && <TableHead className="px-6 py-3"><SortableHeader label="Contact" field="contact_email" currentSort={sort} onSort={handleSort} /></TableHead>}
+              {isVisible('source') && <TableHead className="px-6 py-3"><SortableHeader label="Source" field="source" currentSort={sort} onSort={handleSort} /></TableHead>}
+              {isVisible('budget') && <TableHead className="px-6 py-3"><SortableHeader label="Budget" field="estimated_budget" currentSort={sort} onSort={handleSort} /></TableHead>}
+              {isVisible('status') && <TableHead className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></TableHead>}
+              {isVisible('score') && <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Score</TableHead>}
+              {isVisible('date') && <TableHead className="px-6 py-3"><SortableHeader label="Date" field="created_at" currentSort={sort} onSort={handleSort} /></TableHead>}
+              <TableHead className="px-6 py-3 w-12"><span className="sr-only">Actions</span></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody >
             {sorted.map((lead) => (
-              <tr
+              <TableRow
                 key={lead.id}
                 className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(lead.id) ? 'bg-blue-50/50' : ''}`}
               >
-                <td className="px-4 py-3.5">
+                <TableCell className="px-4 py-3.5">
                   <input
                     type="checkbox"
                     checked={isSelected(lead.id)}
                     onChange={() => toggle(lead.id)}
                     className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10"
                   />
-                </td>
+                </TableCell>
                 {isVisible('name') && (
-                  <td className="px-6 py-3.5 text-sm font-medium text-foreground">
+                  <TableCell className="px-6 py-3.5 text-sm font-medium text-foreground">
                     {lead.contact_first_name} {lead.contact_last_name}
-                  </td>
+                  </TableCell>
                 )}
                 {isVisible('company') && (
-                  <td className="px-6 py-3.5 text-sm text-text-secondary">
+                  <TableCell className="px-6 py-3.5 text-sm text-text-secondary">
                     {lead.company_name ?? '\u2014'}
-                  </td>
+                  </TableCell>
                 )}
                 {isVisible('contact') && (
-                  <td className="px-6 py-3.5">
+                  <TableCell className="px-6 py-3.5">
                     <div className="text-sm text-text-secondary">{lead.contact_email ?? '\u2014'}</div>
                     {lead.contact_phone && (
                       <div className="text-xs text-text-muted">{lead.contact_phone}</div>
                     )}
-                  </td>
+                  </TableCell>
                 )}
                 {isVisible('source') && (
-                  <td className="px-6 py-3.5">
+                  <TableCell className="px-6 py-3.5">
                     <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">
                       {lead.source}
                     </span>
-                  </td>
+                  </TableCell>
                 )}
                 {isVisible('budget') && (
-                  <td className="px-6 py-3.5 text-sm tabular-nums text-foreground">
+                  <TableCell className="px-6 py-3.5 text-sm tabular-nums text-foreground">
                     {lead.estimated_budget != null
                       ? formatCurrency(lead.estimated_budget)
                       : '\u2014'}
-                  </td>
+                  </TableCell>
                 )}
                 {isVisible('status') && (
-                  <td className="px-6 py-3.5">
+                  <TableCell className="px-6 py-3.5">
                     <StatusBadge status={lead.status} colorMap={LEAD_STATUS_COLORS} />
-                  </td>
+                  </TableCell>
                 )}
                 {isVisible('score') && (
-                  <td className="px-6 py-3.5">
+                  <TableCell className="px-6 py-3.5">
                     {(() => {
                       const score = lead.score ?? 0;
                       const tier = (lead.score_tier ?? 'cold') as 'hot' | 'warm' | 'cold';
@@ -298,14 +299,14 @@ export default function LeadsTable({ leads }: { leads: Lead[] }) {
                         </div>
                       );
                     })()}
-                  </td>
+                  </TableCell>
                 )}
                 {isVisible('date') && (
-                  <td className="px-6 py-3.5 text-sm text-text-muted">
+                  <TableCell className="px-6 py-3.5 text-sm text-text-muted">
                     {formatDate(lead.created_at)}
-                  </td>
+                  </TableCell>
                 )}
-                <td className="px-4 py-3.5">
+                <TableCell className="px-4 py-3.5">
                   <RowActionMenu actions={[
                     { label: 'View', onClick: () => router.push(`/app/leads/${lead.id}`) },
                     { label: 'Edit', onClick: () => setEditingLead(lead) },
@@ -317,18 +318,18 @@ export default function LeadsTable({ leads }: { leads: Lead[] }) {
                       void fetch(`/api/leads/${lead.id}`, { method: 'DELETE' }).then(() => router.refresh());
                     }},
                   ]} />
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
             {filtered.length === 0 && (
-              <tr>
-                <td colSpan={10} className="px-6 py-12 text-center text-sm text-text-muted">
+              <TableRow>
+                <TableCell colSpan={10} className="px-6 py-12 text-center text-sm text-text-muted">
                   No leads match your filters.
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             )}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
 
       <DataImportDialog

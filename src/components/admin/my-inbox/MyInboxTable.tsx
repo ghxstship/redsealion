@@ -21,6 +21,7 @@ import ViewBar from '@/components/shared/ViewBar';
 import ColumnConfigPanel from '@/components/shared/ColumnConfigPanel';
 import EmptyState from '@/components/ui/EmptyState';
 import { Inbox } from 'lucide-react';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 export interface NotificationRow {
   id: string;
@@ -240,10 +241,10 @@ export default function MyInboxTable({ notifications }: { notifications: Notific
         />
       ) : (
         <div className="rounded-xl border border-border bg-background overflow-hidden overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-border bg-bg-secondary">
-                <th className="px-4 py-3 text-left w-10">
+          <Table >
+            <TableHeader>
+              <TableRow className="border-b border-border bg-bg-secondary">
+                <TableHead className="px-4 py-3 text-left w-10">
                   <input
                     type="checkbox"
                     checked={isAllSelected}
@@ -251,47 +252,47 @@ export default function MyInboxTable({ notifications }: { notifications: Notific
                     onChange={toggleAll}
                     className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10"
                   />
-                </th>
-                <th className="px-3 py-3 w-8"><span className="sr-only">Read</span></th>
-                {isVisible('type') && <th className="px-6 py-3"><SortableHeader label="Type" field="type" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('title') && <th className="px-6 py-3"><SortableHeader label="Title" field="title" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('actor_name') && <th className="px-6 py-3"><SortableHeader label="From" field="actor_name" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('source_label') && <th className="px-6 py-3"><SortableHeader label="Source" field="source_label" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('priority') && <th className="px-6 py-3"><SortableHeader label="Priority" field="priority" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('created_at') && <th className="px-6 py-3"><SortableHeader label="Date" field="created_at" currentSort={sort} onSort={handleSort} /></th>}
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted w-16">
+                </TableHead>
+                <TableHead className="px-3 py-3 w-8"><span className="sr-only">Read</span></TableHead>
+                {isVisible('type') && <TableHead className="px-6 py-3"><SortableHeader label="Type" field="type" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('title') && <TableHead className="px-6 py-3"><SortableHeader label="Title" field="title" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('actor_name') && <TableHead className="px-6 py-3"><SortableHeader label="From" field="actor_name" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('source_label') && <TableHead className="px-6 py-3"><SortableHeader label="Source" field="source_label" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('priority') && <TableHead className="px-6 py-3"><SortableHeader label="Priority" field="priority" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('created_at') && <TableHead className="px-6 py-3"><SortableHeader label="Date" field="created_at" currentSort={sort} onSort={handleSort} /></TableHead>}
+                <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted w-16">
                   <span className="sr-only">Actions</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody >
               {sorted.map((notif) => (
-                <tr
+                <TableRow
                   key={notif.id}
                   className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(notif.id) ? 'bg-blue-50/50' : ''} ${!notif.read ? 'bg-blue-50/20' : ''}`}
                 >
-                  <td className="px-4 py-3.5">
+                  <TableCell className="px-4 py-3.5">
                     <input
                       type="checkbox"
                       checked={isSelected(notif.id)}
                       onChange={() => toggle(notif.id)}
                       className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10"
                     />
-                  </td>
-                  <td className="px-3 py-3.5">
+                  </TableCell>
+                  <TableCell className="px-3 py-3.5">
                     <button onClick={() => handleMarkRead(notif.id, !notif.read)} title={notif.read ? 'Mark unread' : 'Mark read'}>
                       {notif.read
                         ? <MailOpen size={14} className="text-text-muted" />
                         : <Mail size={14} className="text-blue-600" />}
                     </button>
-                  </td>
+                  </TableCell>
                   {isVisible('type') && (
-                    <td className="px-6 py-3.5">
+                    <TableCell className="px-6 py-3.5">
                       <StatusBadge status={notif.type} colorMap={NOTIFICATION_TYPE_COLORS} />
-                    </td>
+                    </TableCell>
                   )}
                   {isVisible('title') && (
-                    <td className="px-6 py-3.5">
+                    <TableCell className="px-6 py-3.5">
                       <div>
                         <span className={`text-sm ${!notif.read ? 'font-semibold text-foreground' : 'font-medium text-foreground'}`}>
                           {notif.action_url ? (
@@ -302,43 +303,43 @@ export default function MyInboxTable({ notifications }: { notifications: Notific
                           <p className="mt-0.5 text-xs text-text-muted line-clamp-1">{notif.message}</p>
                         )}
                       </div>
-                    </td>
+                    </TableCell>
                   )}
                   {isVisible('actor_name') && (
-                    <td className="px-6 py-3.5 text-sm text-text-secondary">{notif.actor_name ?? '\u2014'}</td>
+                    <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{notif.actor_name ?? '\u2014'}</TableCell>
                   )}
                   {isVisible('source_label') && (
-                    <td className="px-6 py-3.5 text-sm text-text-secondary">{notif.source_label ?? '\u2014'}</td>
+                    <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{notif.source_label ?? '\u2014'}</TableCell>
                   )}
                   {isVisible('priority') && (
-                    <td className="px-6 py-3.5">
+                    <TableCell className="px-6 py-3.5">
                       <StatusBadge status={notif.priority} colorMap={NOTIFICATION_PRIORITY_COLORS} />
-                    </td>
+                    </TableCell>
                   )}
                   {isVisible('created_at') && (
-                    <td className="px-6 py-3.5 text-sm text-text-secondary">
+                    <TableCell className="px-6 py-3.5 text-sm text-text-secondary">
                       {new Date(notif.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
-                    </td>
+                    </TableCell>
                   )}
-                  <td className="px-6 py-3.5">
+                  <TableCell className="px-6 py-3.5">
                     <RowActionMenu actions={[
                       { label: notif.read ? 'Mark Unread' : 'Mark Read', onClick: () => handleMarkRead(notif.id, !notif.read) },
                       { label: 'Archive', onClick: () => handleBulkArchive([notif.id]) },
                       ...(notif.action_url ? [{ label: 'View Source', onClick: () => router.push(notif.action_url!) }] : []),
                       { label: 'Delete', variant: 'danger' as const, onClick: () => handleBulkDelete([notif.id]) },
                     ]} />
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
               {filtered.length === 0 && notifications.length > 0 && (
-                <tr>
-                  <td colSpan={8} className="px-6 py-12 text-center text-sm text-text-muted">
+                <TableRow>
+                  <TableCell colSpan={8} className="px-6 py-12 text-center text-sm text-text-muted">
                     No notifications match your filters.
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               )}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       )}
 

@@ -5,6 +5,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
 import StatusBadge from '@/components/ui/StatusBadge';
 import MetricCard from '@/components/ui/MetricCard';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 
 interface OnboardingMember {
@@ -93,17 +94,17 @@ export default async function OnboardingPage() {
 
       {/* Table */}
       <div className="rounded-xl border border-border bg-background overflow-hidden overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-border bg-bg-secondary">
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Name</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Email</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Documents</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Started</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
+        <Table >
+          <TableHeader>
+            <TableRow className="border-b border-border bg-bg-secondary">
+              <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Name</TableHead>
+              <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Email</TableHead>
+              <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</TableHead>
+              <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Documents</TableHead>
+              <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Started</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody >
             {members.map((member) => {
               const pct =
                 member.documents_total > 0
@@ -111,20 +112,20 @@ export default async function OnboardingPage() {
                   : 0;
 
               return (
-                <tr key={member.id} className="transition-colors hover:bg-bg-secondary/50">
-                  <td className="px-6 py-3.5">
+                <TableRow key={member.id} className="transition-colors hover:bg-bg-secondary/50">
+                  <TableCell className="px-6 py-3.5">
                     <Link
                       href={`/app/crew/${member.id}`}
                       className="text-sm font-medium text-foreground hover:underline"
                     >
                       {member.full_name}
                     </Link>
-                  </td>
-                  <td className="px-6 py-3.5 text-sm text-text-secondary">{member.email}</td>
-                  <td className="px-6 py-3.5">
+                  </TableCell>
+                  <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{member.email}</TableCell>
+                  <TableCell className="px-6 py-3.5">
                     <StatusBadge status={member.onboarding_status} colorMap={STATUS_COLORS} />
-                  </td>
-                  <td className="px-6 py-3.5">
+                  </TableCell>
+                  <TableCell className="px-6 py-3.5">
                     <div className="flex items-center gap-3">
                       <div className="flex-1 max-w-[120px]">
                         <div className="h-2 w-full rounded-full bg-bg-secondary">
@@ -140,15 +141,15 @@ export default async function OnboardingPage() {
                         {member.documents_completed}/{member.documents_total}
                       </span>
                     </div>
-                  </td>
-                  <td className="px-6 py-3.5 text-sm text-text-muted">
+                  </TableCell>
+                  <TableCell className="px-6 py-3.5 text-sm text-text-muted">
                     {member.started_at ? formatDate(member.started_at) : '\u2014'}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               );
             })}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
     </>
   );

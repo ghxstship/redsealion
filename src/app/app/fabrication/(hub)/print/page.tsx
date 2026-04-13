@@ -7,6 +7,7 @@ import Link from 'next/link';
 import StatusBadge, { FABRICATION_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import FabricationHubTabs from '../../FabricationHubTabs';
 import MetricCard from '@/components/ui/MetricCard';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getPrintJobs() {
   try {
@@ -45,23 +46,23 @@ export default async function PrintPage() {
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No print jobs. Create a fabrication order with type &quot;print&quot; to start tracking.</p></div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr><th className="px-4 py-3">Order #</th><th className="px-4 py-3">Name</th><th className="px-4 py-3">Qty</th><th className="px-4 py-3">Cost</th><th className="px-4 py-3">Due</th><th className="px-4 py-3">Status</th></tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow><TableHead className="px-4 py-3">Order #</TableHead><TableHead className="px-4 py-3">Name</TableHead><TableHead className="px-4 py-3">Qty</TableHead><TableHead className="px-4 py-3">Cost</TableHead><TableHead className="px-4 py-3">Due</TableHead><TableHead className="px-4 py-3">Status</TableHead></TableRow>
+              </TableHeader>
+              <TableBody >
                 {jobs.map((j) => (
-                  <tr key={j.id} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3"><Link href={`/app/fabrication/${j.id}`} className="font-medium text-foreground hover:underline">{j.order_number}</Link></td>
-                    <td className="px-4 py-3 text-text-secondary">{j.name}</td>
-                    <td className="px-4 py-3 tabular-nums">{j.quantity}</td>
-                    <td className="px-4 py-3 tabular-nums">{formatCurrency(j.total_cost_cents / 100)}</td>
-                    <td className="px-4 py-3 text-text-secondary">{j.due_date ? new Date(j.due_date).toLocaleDateString() : '—'}</td>
-                    <td className="px-4 py-3"><StatusBadge status={j.status} colorMap={FABRICATION_STATUS_COLORS} /></td>
-                  </tr>
+                  <TableRow key={j.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <TableCell className="px-4 py-3"><Link href={`/app/fabrication/${j.id}`} className="font-medium text-foreground hover:underline">{j.order_number}</Link></TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{j.name}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums">{j.quantity}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums">{formatCurrency(j.total_cost_cents / 100)}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{j.due_date ? new Date(j.due_date).toLocaleDateString() : '—'}</TableCell>
+                    <TableCell className="px-4 py-3"><StatusBadge status={j.status} colorMap={FABRICATION_STATUS_COLORS} /></TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

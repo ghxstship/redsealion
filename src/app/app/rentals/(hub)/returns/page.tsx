@@ -5,6 +5,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import RentalsHubTabs from '../../RentalsHubTabs';
 import StatusBadge, { RETURN_CONDITION_COLORS } from '@/components/ui/StatusBadge';
 import MetricCard from '@/components/ui/MetricCard';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getReturns() {
   try {
@@ -52,22 +53,22 @@ export default async function ReturnsPage() {
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No returns processed. Returned rental items will appear here for inspection.</p></div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr><th className="px-4 py-3">Item</th><th className="px-4 py-3">Order</th><th className="px-4 py-3">Qty</th><th className="px-4 py-3">Return Date</th><th className="px-4 py-3">Condition</th></tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow><TableHead className="px-4 py-3">Item</TableHead><TableHead className="px-4 py-3">Order</TableHead><TableHead className="px-4 py-3">Qty</TableHead><TableHead className="px-4 py-3">Return Date</TableHead><TableHead className="px-4 py-3">Condition</TableHead></TableRow>
+              </TableHeader>
+              <TableBody >
                 {returns.map((r) => (
-                  <tr key={r.id} className={`hover:bg-bg-secondary/50 transition-colors ${r.status === 'damaged' || r.status === 'lost' ? 'bg-red-500/5' : ''}`}>
-                    <td className="px-4 py-3 font-medium text-foreground">{r.name}</td>
-                    <td className="px-4 py-3 text-text-secondary">{r.order_number ?? '—'}</td>
-                    <td className="px-4 py-3 tabular-nums">{r.quantity}</td>
-                    <td className="px-4 py-3 text-text-secondary">{r.rental_end ? new Date(r.rental_end).toLocaleDateString() : '—'}</td>
-                    <td className="px-4 py-3"><StatusBadge status={r.status} colorMap={RETURN_CONDITION_COLORS} /></td>
-                  </tr>
+                  <TableRow key={r.id} className={`hover:bg-bg-secondary/50 transition-colors ${r.status === 'damaged' || r.status === 'lost' ? 'bg-red-500/5' : ''}`}>
+                    <TableCell className="px-4 py-3 font-medium text-foreground">{r.name}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{r.order_number ?? '—'}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums">{r.quantity}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{r.rental_end ? new Date(r.rental_end).toLocaleDateString() : '—'}</TableCell>
+                    <TableCell className="px-4 py-3"><StatusBadge status={r.status} colorMap={RETURN_CONDITION_COLORS} /></TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

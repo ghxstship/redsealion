@@ -12,6 +12,7 @@ import RevaluationModal from '@/components/admin/assets/RevaluationModal';
 import MoveAssetModal from '@/components/admin/assets/MoveAssetModal';
 import AssetFormModal from '@/components/admin/assets/AssetFormModal';
 import { formatCurrency, formatLabel, formatDate } from '@/lib/utils';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 /**
  * Asset detail client component — handles interactive actions.
@@ -604,28 +605,28 @@ export default function AssetDetailClient({ asset, proposalId, proposalName, loc
               <div className="px-6 py-8 text-center text-sm text-text-muted">Loading schedule...</div>
             ) : (
               <div className="overflow-x-auto max-h-64 overflow-y-auto">
-                <table className="w-full">
-                  <thead className="sticky top-0">
-                    <tr className="border-b border-border bg-bg-secondary">
-                      <th className="px-6 py-2.5 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Period</th>
-                      <th className="px-6 py-2.5 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Date</th>
-                      <th className="px-6 py-2.5 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Depreciation</th>
-                      <th className="px-6 py-2.5 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Accumulated</th>
-                      <th className="px-6 py-2.5 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Book Value</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
+                <Table >
+                  <TableHeader className="sticky top-0">
+                    <TableRow className="border-b border-border bg-bg-secondary">
+                      <TableHead className="px-6 py-2.5 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Period</TableHead>
+                      <TableHead className="px-6 py-2.5 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Date</TableHead>
+                      <TableHead className="px-6 py-2.5 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Depreciation</TableHead>
+                      <TableHead className="px-6 py-2.5 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Accumulated</TableHead>
+                      <TableHead className="px-6 py-2.5 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Book Value</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody >
                     {depreciationSchedule.slice(0, 60).map((entry) => (
-                      <tr key={entry.periodNumber} className="transition-colors hover:bg-bg-secondary/50">
-                        <td className="px-6 py-2.5 text-sm text-text-secondary tabular-nums">{entry.periodNumber}</td>
-                        <td className="px-6 py-2.5 text-sm text-text-secondary">{formatDate(entry.entryDate)}</td>
-                        <td className="px-6 py-2.5 text-sm text-right text-red-700 tabular-nums">{formatCurrency(entry.depreciationAmount)}</td>
-                        <td className="px-6 py-2.5 text-sm text-right text-text-secondary tabular-nums">{formatCurrency(entry.accumulatedDepreciation)}</td>
-                        <td className="px-6 py-2.5 text-sm text-right font-medium text-foreground tabular-nums">{formatCurrency(entry.bookValue)}</td>
-                      </tr>
+                      <TableRow key={entry.periodNumber} className="transition-colors hover:bg-bg-secondary/50">
+                        <TableCell className="px-6 py-2.5 text-sm text-text-secondary tabular-nums">{entry.periodNumber}</TableCell>
+                        <TableCell className="px-6 py-2.5 text-sm text-text-secondary">{formatDate(entry.entryDate)}</TableCell>
+                        <TableCell className="px-6 py-2.5 text-sm text-right text-red-700 tabular-nums">{formatCurrency(entry.depreciationAmount)}</TableCell>
+                        <TableCell className="px-6 py-2.5 text-sm text-right text-text-secondary tabular-nums">{formatCurrency(entry.accumulatedDepreciation)}</TableCell>
+                        <TableCell className="px-6 py-2.5 text-sm text-right font-medium text-foreground tabular-nums">{formatCurrency(entry.bookValue)}</TableCell>
+                      </TableRow>
                     ))}
-                  </tbody>
-                </table>
+                  </TableBody>
+                </Table>
               </div>
             )}
           </div>
@@ -716,30 +717,30 @@ export default function AssetDetailClient({ asset, proposalId, proposalName, loc
               <h2 className="text-sm font-semibold text-foreground">Value History</h2>
             </div>
             <div className="overflow-x-auto max-h-48 overflow-y-auto">
-              <table className="w-full">
-                <thead className="sticky top-0">
-                  <tr className="border-b border-border bg-bg-secondary">
-                    <th className="px-6 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Date</th>
-                    <th className="px-6 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Type</th>
-                    <th className="px-6 py-2 text-right text-xs font-medium uppercase tracking-wider text-text-muted">From</th>
-                    <th className="px-6 py-2 text-right text-xs font-medium uppercase tracking-wider text-text-muted">To</th>
-                    <th className="px-6 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Reason</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
+              <Table >
+                <TableHeader className="sticky top-0">
+                  <TableRow className="border-b border-border bg-bg-secondary">
+                    <TableHead className="px-6 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Date</TableHead>
+                    <TableHead className="px-6 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Type</TableHead>
+                    <TableHead className="px-6 py-2 text-right text-xs font-medium uppercase tracking-wider text-text-muted">From</TableHead>
+                    <TableHead className="px-6 py-2 text-right text-xs font-medium uppercase tracking-wider text-text-muted">To</TableHead>
+                    <TableHead className="px-6 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Reason</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody >
                   {valueHistory.map((v) => (
-                    <tr key={v.id} className="transition-colors hover:bg-bg-secondary/50">
-                      <td className="px-6 py-2 text-sm text-text-secondary">{formatDate(v.created_at)}</td>
-                      <td className="px-6 py-2 text-sm">
+                    <TableRow key={v.id} className="transition-colors hover:bg-bg-secondary/50">
+                      <TableCell className="px-6 py-2 text-sm text-text-secondary">{formatDate(v.created_at)}</TableCell>
+                      <TableCell className="px-6 py-2 text-sm">
                         <StatusBadge status={v.change_type} />
-                      </td>
-                      <td className="px-6 py-2 text-sm text-right text-text-secondary tabular-nums">{v.previous_value != null ? formatCurrency(v.previous_value) : '—'}</td>
-                      <td className="px-6 py-2 text-sm text-right font-medium text-foreground tabular-nums">{v.new_value != null ? formatCurrency(v.new_value) : '—'}</td>
-                      <td className="px-6 py-2 text-sm text-text-muted max-w-xs truncate">{v.reason ?? '—'}</td>
-                    </tr>
+                      </TableCell>
+                      <TableCell className="px-6 py-2 text-sm text-right text-text-secondary tabular-nums">{v.previous_value != null ? formatCurrency(v.previous_value) : '—'}</TableCell>
+                      <TableCell className="px-6 py-2 text-sm text-right font-medium text-foreground tabular-nums">{v.new_value != null ? formatCurrency(v.new_value) : '—'}</TableCell>
+                      <TableCell className="px-6 py-2 text-sm text-text-muted max-w-xs truncate">{v.reason ?? '—'}</TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           </div>
         )}
@@ -751,28 +752,28 @@ export default function AssetDetailClient({ asset, proposalId, proposalName, loc
               <h2 className="text-sm font-semibold text-foreground">Audit Trail</h2>
             </div>
             <div className="overflow-x-auto max-h-48 overflow-y-auto">
-              <table className="w-full">
-                <thead className="sticky top-0">
-                  <tr className="border-b border-border bg-bg-secondary">
-                    <th className="px-6 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Date</th>
-                    <th className="px-6 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Field</th>
-                    <th className="px-6 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted">From</th>
-                    <th className="px-6 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted">To</th>
-                    <th className="px-6 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Source</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
+              <Table >
+                <TableHeader className="sticky top-0">
+                  <TableRow className="border-b border-border bg-bg-secondary">
+                    <TableHead className="px-6 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Date</TableHead>
+                    <TableHead className="px-6 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Field</TableHead>
+                    <TableHead className="px-6 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted">From</TableHead>
+                    <TableHead className="px-6 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted">To</TableHead>
+                    <TableHead className="px-6 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Source</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody >
                   {auditLog.map((log) => (
-                    <tr key={log.id} className="transition-colors hover:bg-bg-secondary/50">
-                      <td className="px-6 py-2 text-sm text-text-secondary">{formatDate(log.created_at)}</td>
-                      <td className="px-6 py-2 text-sm text-foreground font-mono text-xs">{log.field_changed}</td>
-                      <td className="px-6 py-2 text-sm text-text-secondary">{log.old_value ?? '—'}</td>
-                      <td className="px-6 py-2 text-sm text-foreground">{log.new_value ?? '—'}</td>
-                      <td className="px-6 py-2 text-sm text-text-muted">{log.change_source}</td>
-                    </tr>
+                    <TableRow key={log.id} className="transition-colors hover:bg-bg-secondary/50">
+                      <TableCell className="px-6 py-2 text-sm text-text-secondary">{formatDate(log.created_at)}</TableCell>
+                      <TableCell className="px-6 py-2 text-sm text-foreground font-mono text-xs">{log.field_changed}</TableCell>
+                      <TableCell className="px-6 py-2 text-sm text-text-secondary">{log.old_value ?? '—'}</TableCell>
+                      <TableCell className="px-6 py-2 text-sm text-foreground">{log.new_value ?? '—'}</TableCell>
+                      <TableCell className="px-6 py-2 text-sm text-text-muted">{log.change_source}</TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           </div>
         )}

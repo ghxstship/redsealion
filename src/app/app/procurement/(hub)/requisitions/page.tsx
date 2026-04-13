@@ -7,6 +7,7 @@ import Link from 'next/link';
 import ProcurementHubTabs from '../../ProcurementHubTabs';
 import StatusBadge, { PROCUREMENT_REQUISITION_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import MetricCard from '@/components/ui/MetricCard';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getRequisitions() {
   try {
@@ -57,22 +58,22 @@ export default async function RequisitionsPage() {
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No requisitions submitted. Create a requisition to request materials or services.</p></div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr><th className="px-4 py-3">Req #</th><th className="px-4 py-3">Priority</th><th className="px-4 py-3">Amount</th><th className="px-4 py-3">Needed By</th><th className="px-4 py-3">Status</th></tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow><TableHead className="px-4 py-3">Req #</TableHead><TableHead className="px-4 py-3">Priority</TableHead><TableHead className="px-4 py-3">Amount</TableHead><TableHead className="px-4 py-3">Needed By</TableHead><TableHead className="px-4 py-3">Status</TableHead></TableRow>
+              </TableHeader>
+              <TableBody >
                 {reqs.map((r) => (
-                  <tr key={r.id} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3"><Link href={`/app/procurement/requisitions/${r.id}`} className="font-medium text-foreground hover:underline">{r.requisition_number}</Link></td>
-                    <td className="px-4 py-3 capitalize text-text-secondary">{r.priority}</td>
-                    <td className="px-4 py-3 tabular-nums">{formatCurrency(r.total_cents / 100)}</td>
-                    <td className="px-4 py-3 text-text-secondary">{r.needed_by ? new Date(r.needed_by).toLocaleDateString() : '—'}</td>
-                    <td className="px-4 py-3"><StatusBadge status={r.status} colorMap={PROCUREMENT_REQUISITION_STATUS_COLORS} /></td>
-                  </tr>
+                  <TableRow key={r.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <TableCell className="px-4 py-3"><Link href={`/app/procurement/requisitions/${r.id}`} className="font-medium text-foreground hover:underline">{r.requisition_number}</Link></TableCell>
+                    <TableCell className="px-4 py-3 capitalize text-text-secondary">{r.priority}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums">{formatCurrency(r.total_cents / 100)}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{r.needed_by ? new Date(r.needed_by).toLocaleDateString() : '—'}</TableCell>
+                    <TableCell className="px-4 py-3"><StatusBadge status={r.status} colorMap={PROCUREMENT_REQUISITION_STATUS_COLORS} /></TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { IconCheck } from '@/components/ui/Icons';
 import JsonLd from '@/components/marketing/JsonLd';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -129,39 +130,39 @@ export default function MondayComparisonPage() {
 
         {/* Desktop Table */}
         <div className="hidden lg:block">
-          <table className="w-full border-collapse text-left">
-            <thead>
-              <tr>
-                <th className="border-b border-zinc-200 pb-4 pr-4 text-sm font-medium text-zinc-500">
+          <Table className="w-full border-collapse text-left">
+            <TableHeader>
+              <TableRow>
+                <TableHead className="border-b border-zinc-200 pb-4 pr-4 text-sm font-medium text-zinc-500">
                   Capability
-                </th>
-                <th className="border-b border-zinc-200 pb-4 pr-4 text-sm font-medium text-zinc-500">
+                </TableHead>
+                <TableHead className="border-b border-zinc-200 pb-4 pr-4 text-sm font-medium text-zinc-500">
                   Monday.com
-                </th>
-                <th className="border-b border-zinc-200 bg-zinc-50 pb-4 pl-4 text-sm font-semibold text-zinc-900">
+                </TableHead>
+                <TableHead className="border-b border-zinc-200 bg-zinc-50 pb-4 pl-4 text-sm font-semibold text-zinc-900">
                   FlyteDeck
-                </th>
-              </tr>
-            </thead>
-            <tbody>
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {comparisonRows.map((row, idx) => (
-                <tr
+                <TableRow
                   key={row.dimension}
                   className={idx % 2 === 0 ? 'bg-white' : 'bg-zinc-50/50'}
                 >
-                  <td className="border-b border-zinc-100 py-3 pr-4 text-sm font-medium text-zinc-900">
+                  <TableCell className="border-b border-zinc-100 py-3 pr-4 text-sm font-medium text-zinc-900">
                     {row.dimension}
-                  </td>
-                  <td className="border-b border-zinc-100 py-3 pr-4 text-sm text-zinc-500">
+                  </TableCell>
+                  <TableCell className="border-b border-zinc-100 py-3 pr-4 text-sm text-zinc-500">
                     {row.spreadsheet}
-                  </td>
-                  <td className="border-b border-zinc-100 bg-zinc-50/80 py-3 pl-4 text-sm font-medium text-zinc-700">
+                  </TableCell>
+                  <TableCell className="border-b border-zinc-100 bg-zinc-50/80 py-3 pl-4 text-sm font-medium text-zinc-700">
                     {row.flyteDeck}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
 
         {/* Mobile Stacked Layout */}

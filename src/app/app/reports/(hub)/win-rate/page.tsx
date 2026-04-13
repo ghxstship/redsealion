@@ -7,6 +7,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import ReportsHubTabs from '../../ReportsHubTabs';
 import type { DealStage } from '@/types/database';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getDealsData() {
   try {
@@ -122,30 +123,30 @@ export default async function WinRateReportPage() {
               <h3 className="text-sm font-semibold text-foreground">Win Rate by Client</h3>
             </div>
             <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border bg-bg-secondary">
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Client</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Won</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Lost</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Win Rate</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader>
+                <TableRow className="border-b border-border bg-bg-secondary">
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Client</TableHead>
+                  <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Won</TableHead>
+                  <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Lost</TableHead>
+                  <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Win Rate</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {clientStats.map((cs) => {
                   const total = cs.won + cs.lost;
                   const rate = total > 0 ? (cs.won / total) * 100 : 0;
                   return (
-                    <tr key={cs.name} className="transition-colors hover:bg-bg-secondary/50">
-                      <td className="px-6 py-3.5 text-sm font-medium text-foreground">{cs.name}</td>
-                      <td className="px-6 py-3.5 text-right text-sm tabular-nums text-green-700">{cs.won}</td>
-                      <td className="px-6 py-3.5 text-right text-sm tabular-nums text-red-700">{cs.lost}</td>
-                      <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{rate.toFixed(0)}%</td>
-                    </tr>
+                    <TableRow key={cs.name} className="transition-colors hover:bg-bg-secondary/50">
+                      <TableCell className="px-6 py-3.5 text-sm font-medium text-foreground">{cs.name}</TableCell>
+                      <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-green-700">{cs.won}</TableCell>
+                      <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-red-700">{cs.lost}</TableCell>
+                      <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{rate.toFixed(0)}%</TableCell>
+                    </TableRow>
                   );
                 })}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
             </div>
           </div>
         )}

@@ -6,6 +6,7 @@ import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { ROADMAP_BAR_COLORS } from '@/components/ui/StatusBadge';
 import FormSelect from '@/components/ui/FormSelect';
+import FilterPills from '@/components/ui/FilterPills';
 
 interface RoadmapItem {
   id: string;
@@ -72,21 +73,14 @@ export default function RoadmapClient({ items, months, timeRangeStart, timeRange
       <div className="flex flex-wrap gap-3 mb-6">
         <div className="flex items-center gap-2">
           <span className="text-xs text-text-muted">Status:</span>
-          <div className="flex gap-1">
-            {STATUSES.map((s) => (
-              <Button
-                key={s}
-                onClick={() => setStatusFilter(s)}
-                className={`px-2.5 py-1 rounded-full text-xs font-medium transition-colors ${
-                  statusFilter === s
-                    ? 'bg-foreground text-background'
-                    : 'bg-bg-secondary text-text-secondary hover:bg-border'
-                }`}
-              >
-                {s === 'all' ? 'All' : s.charAt(0).toUpperCase() + s.slice(1)}
-              </Button>
-            ))}
-          </div>
+          <FilterPills
+            items={STATUSES.map((s) => ({
+              key: s,
+              label: s === 'all' ? 'All' : s.charAt(0).toUpperCase() + s.slice(1)
+            }))}
+            activeKey={statusFilter}
+            onChange={setStatusFilter}
+          />
         </div>
 
         {clients.length > 0 && (

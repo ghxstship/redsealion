@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Card from '@/components/ui/Card';
 
 interface Facility {
   id: string;
@@ -30,9 +31,9 @@ export default function WarehouseDashboard({ facilities }: WarehouseDashboardPro
           );
 
           return (
-            <div
+            <Card
               key={facility.id}
-              className="bg-background border border-border rounded-lg shadow-sm p-4"
+              padding="sm"
             >
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-semibold text-foreground truncate">
@@ -55,15 +56,15 @@ export default function WarehouseDashboard({ facilities }: WarehouseDashboardPro
               ) : (
                 <p className="text-xs text-text-muted">No assets</p>
               )}
-            </div>
+            </Card>
           );
         })}
       </div>
 
       {facilities.length === 0 && (
-        <div className="bg-background border border-border rounded-lg shadow-sm p-6 text-center">
+        <Card className="text-center">
           <p className="text-sm text-text-muted">No facilities found.</p>
-        </div>
+        </Card>
       )}
     </div>
   );

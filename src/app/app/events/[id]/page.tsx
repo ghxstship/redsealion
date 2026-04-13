@@ -6,6 +6,9 @@ import { notFound } from 'next/navigation';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import StatusBadge, { EVENT_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import { Badge } from '@/components/ui/Badge';
+import { TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getEvent(id: string) {
   try {
@@ -72,7 +75,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
                 return (
                   <li key={el.location_id as string} className="flex items-center justify-between text-sm">
                     <span className="text-foreground">{loc?.name as string ?? '—'}</span>
-                    {Boolean(el.is_primary) && <span className="text-xs bg-blue-50 text-blue-700 rounded-full px-1.5 py-0.5">Primary</span>}
+                    {Boolean(el.is_primary) && <Badge variant="info">Primary</Badge>}
                   </li>
                 );
               })}
@@ -90,20 +93,20 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
         {activations.length === 0 ? (
           <div className="px-8 py-12 text-center text-sm text-text-secondary">No activations for this event.</div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr><th className="px-4 py-3">Name</th><th className="px-4 py-3">Type</th><th className="px-4 py-3">Status</th></tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {activations.map((a) => (
-                <tr key={a.id as string} className="hover:bg-bg-secondary/50">
-                  <td className="px-4 py-3 font-medium text-foreground">{a.name as string}</td>
-                  <td className="px-4 py-3 text-text-secondary capitalize">{(a.type as string) ?? '—'}</td>
-                  <td className="px-4 py-3"><StatusBadge status={a.status as string} colorMap={EVENT_STATUS_COLORS} /></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+            <Table >
+              <TableHeader>
+                <TableRow><TableHead>Name</TableHead><TableHead>Type</TableHead><TableHead>Status</TableHead></TableRow>
+              </TableHeader>
+              <TableBody>
+                {activations.map((a) => (
+                  <TableRow key={a.id as string}>
+                    <TableCell className="font-medium text-foreground">{a.name as string}</TableCell>
+                    <TableCell className="text-text-secondary capitalize">{(a.type as string) ?? '—'}</TableCell>
+                    <TableCell><StatusBadge status={a.status as string} colorMap={EVENT_STATUS_COLORS} /></TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
         )}
       </div>
 
@@ -113,20 +116,20 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
           <div className="px-6 py-4 border-b border-border">
             <h3 className="text-sm font-semibold text-foreground">Production Schedules ({schedules.length})</h3>
           </div>
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr><th className="px-4 py-3">Name</th><th className="px-4 py-3">Type</th><th className="px-4 py-3">Status</th></tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {schedules.map((s) => (
-                <tr key={s.id as string} className="hover:bg-bg-secondary/50">
-                  <td className="px-4 py-3"><Link href={`/app/schedule/${s.id}`} className="font-medium text-foreground hover:underline">{s.name as string}</Link></td>
-                  <td className="px-4 py-3 text-text-secondary capitalize">{(s.schedule_type as string)?.replace('_', ' ')}</td>
-                  <td className="px-4 py-3"><StatusBadge status={s.status as string} colorMap={EVENT_STATUS_COLORS} /></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+            <Table >
+              <TableHeader>
+                <TableRow><TableHead>Name</TableHead><TableHead>Type</TableHead><TableHead>Status</TableHead></TableRow>
+              </TableHeader>
+              <TableBody>
+                {schedules.map((s) => (
+                  <TableRow key={s.id as string}>
+                    <TableCell><Link href={`/app/schedule/${s.id}`} className="font-medium text-foreground hover:underline">{s.name as string}</Link></TableCell>
+                    <TableCell className="text-text-secondary capitalize">{(s.schedule_type as string)?.replace('_', ' ')}</TableCell>
+                    <TableCell><StatusBadge status={s.status as string} colorMap={EVENT_STATUS_COLORS} /></TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
         </div>
       )}
     </TierGate>

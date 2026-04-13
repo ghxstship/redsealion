@@ -2,6 +2,7 @@
 
 import React, { useRef } from 'react';
 import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
 
 // ─── Code 128B Barcode Encoder ────────────────────────────────────────────────
 // Code 128B covers ASCII 32–127 which is sufficient for asset IDs and barcodes.
@@ -120,7 +121,7 @@ export default function QRGenerator({ assetId, barcode, name }: QRGeneratorProps
   };
 
   return (
-    <div className="bg-background border border-border rounded-lg shadow-sm p-4 inline-block">
+    <Card padding="sm" className="inline-block">
       <div ref={labelRef} className="text-center">
         <p className="text-xs font-semibold text-foreground mb-2 truncate max-w-[200px]">
           {name}
@@ -157,6 +158,6 @@ export default function QRGenerator({ assetId, barcode, name }: QRGeneratorProps
       >
         Print Label
       </Button>
-    </div>
+    </Card>
   );
 }

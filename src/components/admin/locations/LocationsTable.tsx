@@ -20,6 +20,7 @@ import { useStoredColumnConfig } from '@/hooks/useStoredColumnConfig';
 import ViewBar from '@/components/shared/ViewBar';
 import ColumnConfigPanel from '@/components/shared/ColumnConfigPanel';
 import LocationFormModal from './LocationFormModal';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 export interface LocationItem extends Record<string, unknown> {
   id: string;
@@ -151,52 +152,52 @@ export default function LocationsTable({ locations }: { locations: LocationItem[
       />
 
       <div className="rounded-xl border border-border bg-background overflow-hidden overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-border bg-bg-secondary">
-              <th className="px-4 py-3 text-left w-10">
+        <Table >
+          <TableHeader>
+            <TableRow className="border-b border-border bg-bg-secondary">
+              <TableHead className="px-4 py-3 text-left w-10">
                 <input type="checkbox" checked={isAllSelected} ref={(el) => { if (el) el.indeterminate = isSomeSelected; }} onChange={toggleAll} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
-              </th>
-              {isVisible('name') && <th className="px-6 py-3"><SortableHeader label="Name" field="name" currentSort={sort} onSort={handleSort} /></th>}
-              {isVisible('type') && <th className="px-6 py-3"><SortableHeader label="Type" field="type" currentSort={sort} onSort={handleSort} /></th>}
-              {isVisible('status') && <th className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></th>}
-              {isVisible('formatted_address') && <th className="px-6 py-3"><SortableHeader label="Address" field="formatted_address" currentSort={sort} onSort={handleSort} /></th>}
-              {isVisible('phone') && <th className="px-6 py-3"><SortableHeader label="Phone" field="phone" currentSort={sort} onSort={handleSort} /></th>}
-              {isVisible('capacity') && <th className="px-6 py-3"><SortableHeader label="Capacity" field="capacity" currentSort={sort} onSort={handleSort} /></th>}
-              {isVisible('timezone') && <th className="px-6 py-3"><SortableHeader label="Timezone" field="timezone" currentSort={sort} onSort={handleSort} /></th>}
-              {isVisible('google_place_id') && <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Maps</th>}
-              <th className="px-6 py-3 w-12"><span className="sr-only">Actions</span></th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
+              </TableHead>
+              {isVisible('name') && <TableHead className="px-6 py-3"><SortableHeader label="Name" field="name" currentSort={sort} onSort={handleSort} /></TableHead>}
+              {isVisible('type') && <TableHead className="px-6 py-3"><SortableHeader label="Type" field="type" currentSort={sort} onSort={handleSort} /></TableHead>}
+              {isVisible('status') && <TableHead className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></TableHead>}
+              {isVisible('formatted_address') && <TableHead className="px-6 py-3"><SortableHeader label="Address" field="formatted_address" currentSort={sort} onSort={handleSort} /></TableHead>}
+              {isVisible('phone') && <TableHead className="px-6 py-3"><SortableHeader label="Phone" field="phone" currentSort={sort} onSort={handleSort} /></TableHead>}
+              {isVisible('capacity') && <TableHead className="px-6 py-3"><SortableHeader label="Capacity" field="capacity" currentSort={sort} onSort={handleSort} /></TableHead>}
+              {isVisible('timezone') && <TableHead className="px-6 py-3"><SortableHeader label="Timezone" field="timezone" currentSort={sort} onSort={handleSort} /></TableHead>}
+              {isVisible('google_place_id') && <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Maps</TableHead>}
+              <TableHead className="px-6 py-3 w-12"><span className="sr-only">Actions</span></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody >
             {pagedItems.map((item) => (
-              <tr key={item.id} className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(item.id) ? 'bg-blue-50/50' : ''}`}>
-                <td className="px-4 py-3.5">
+              <TableRow key={item.id} className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(item.id) ? 'bg-blue-50/50' : ''}`}>
+                <TableCell className="px-4 py-3.5">
                   <input type="checkbox" checked={isSelected(item.id)} onChange={() => toggle(item.id)} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
-                </td>
+                </TableCell>
                 {isVisible('name') && (
-                  <td className="px-6 py-3.5">
+                  <TableCell className="px-6 py-3.5">
                     <Link href={`/app/locations/${item.id}`} className="text-sm font-medium text-blue-600 hover:underline">
                       {item.name}
                     </Link>
-                  </td>
+                  </TableCell>
                 )}
-                {isVisible('type') && <td className="px-6 py-3.5"><StatusBadge status={item.type} colorMap={LOCATION_TYPE_COLORS} /></td>}
-                {isVisible('status') && <td className="px-6 py-3.5"><StatusBadge status={item.status} colorMap={{ active: 'green', archived: 'gray' }} /></td>}
-                {isVisible('formatted_address') && <td className="px-6 py-3.5 text-sm text-text-secondary max-w-xs truncate">{item.formatted_address ?? '\u2014'}</td>}
-                {isVisible('phone') && <td className="px-6 py-3.5 text-sm text-text-secondary">{item.phone ?? '\u2014'}</td>}
-                {isVisible('capacity') && <td className="px-6 py-3.5 text-sm tabular-nums text-foreground">{item.capacity?.toLocaleString() ?? '\u2014'}</td>}
-                {isVisible('timezone') && <td className="px-6 py-3.5 text-sm text-text-muted">{item.timezone ?? '\u2014'}</td>}
+                {isVisible('type') && <TableCell className="px-6 py-3.5"><StatusBadge status={item.type} colorMap={LOCATION_TYPE_COLORS} /></TableCell>}
+                {isVisible('status') && <TableCell className="px-6 py-3.5"><StatusBadge status={item.status} colorMap={{ active: 'green', archived: 'gray' }} /></TableCell>}
+                {isVisible('formatted_address') && <TableCell className="px-6 py-3.5 text-sm text-text-secondary max-w-xs truncate">{item.formatted_address ?? '\u2014'}</TableCell>}
+                {isVisible('phone') && <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{item.phone ?? '\u2014'}</TableCell>}
+                {isVisible('capacity') && <TableCell className="px-6 py-3.5 text-sm tabular-nums text-foreground">{item.capacity?.toLocaleString() ?? '\u2014'}</TableCell>}
+                {isVisible('timezone') && <TableCell className="px-6 py-3.5 text-sm text-text-muted">{item.timezone ?? '\u2014'}</TableCell>}
                 {isVisible('google_place_id') && (
-                  <td className="px-6 py-3.5 text-sm">
+                  <TableCell className="px-6 py-3.5 text-sm">
                     {item.google_place_id ? (
                       <a href={`https://www.google.com/maps/place/?q=place_id:${item.google_place_id}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-xs">View Map</a>
                     ) : (
                       <span className="text-text-muted">\u2014</span>
                     )}
-                  </td>
+                  </TableCell>
                 )}
-                <td className="px-6 py-3.5">
+                <TableCell className="px-6 py-3.5">
                   <RowActionMenu actions={[
                     { label: 'View', onClick: () => router.push(`/app/locations/${item.id}`) },
                     { label: 'Edit', onClick: () => setEditingLocation(item) },
@@ -205,14 +206,14 @@ export default function LocationsTable({ locations }: { locations: LocationItem[
                       : { label: 'Archive', onClick: async () => { await fetch(`/api/locations/${item.id}`, { method: 'PATCH', body: JSON.stringify({ status: 'archived' })}); router.refresh(); } },
                     { label: 'Delete', variant: 'danger', onClick: () => setShowDeleteConfirm(item.id) },
                   ]} />
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
             {sorted.length === 0 && (
-              <tr><td colSpan={9} className="px-6 py-12 text-center text-sm text-text-muted">No locations match your search.</td></tr>
+              <TableRow><TableCell colSpan={9} className="px-6 py-12 text-center text-sm text-text-muted">No locations match your search.</TableCell></TableRow>
             )}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
         
         {totalPages > 1 && (
           <div className="flex items-center justify-between border-t border-border px-6 py-3 bg-bg-secondary/20">

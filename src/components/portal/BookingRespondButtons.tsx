@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
+import Alert from '@/components/ui/Alert';
 
 interface BookingRespondButtonsProps {
   bookingId: string;
@@ -72,7 +73,7 @@ export default function BookingRespondButtons({ bookingId, orgSlug }: BookingRes
         </Button>
       </div>
       {error && (
-        <p className="text-xs text-red-600 text-center">{error}</p>
+        <Alert variant="error" className="text-center">{error}</Alert>
       )}
     </div>
   );

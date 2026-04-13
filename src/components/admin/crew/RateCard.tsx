@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
 import Alert from '@/components/ui/Alert';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
@@ -72,7 +73,7 @@ export default function RateCard({ profileId, rates, onSaved }: RateCardProps) {
     val != null ? `$${val.toFixed(2)}` : '';
 
   return (
-    <div className="bg-background border border-border rounded-lg shadow-sm p-5">
+    <Card>
       <h2 className="text-base font-semibold text-foreground mb-4">Rate Card</h2>
 
       {error && (
@@ -109,6 +110,6 @@ export default function RateCard({ profileId, rates, onSaved }: RateCardProps) {
           {saving ? 'Saving...' : 'Save Rates'}
         </Button>
       </div>
-    </div>
+    </Card>
   );
 }

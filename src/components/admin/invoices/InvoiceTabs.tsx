@@ -16,6 +16,7 @@ import SearchInput from '@/components/ui/SearchInput';
 import Button from '@/components/ui/Button';
 import Tabs from '@/components/ui/Tabs';
 import { Upload } from 'lucide-react';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface InvoiceRow {
   id: string;
@@ -120,54 +121,54 @@ export default function InvoiceTabs({ invoices }: { invoices: InvoiceRow[] }) {
       {/* Table */}
       <div className="rounded-xl border border-border bg-background overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-border bg-bg-secondary">
-                <th className="px-4 py-3 text-left w-10">
+          <Table >
+            <TableHeader>
+              <TableRow className="border-b border-border bg-bg-secondary">
+                <TableHead className="px-4 py-3 text-left w-10">
                   <input type="checkbox" checked={isAllSelected} ref={(el) => { if (el) el.indeterminate = isSomeSelected; }} onChange={toggleAll} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
-                </th>
-                <th className="px-6 py-3"><SortableHeader label="Invoice" field="invoice_number" currentSort={sort} onSort={handleSort} /></th>
-                <th className="px-6 py-3"><SortableHeader label="Client" field="client_name" currentSort={sort} onSort={handleSort} /></th>
-                <th className="px-6 py-3"><SortableHeader label="Type" field="type" currentSort={sort} onSort={handleSort} /></th>
-                <th className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></th>
-                <th className="px-6 py-3"><SortableHeader label="Amount" field="total_amount" currentSort={sort} onSort={handleSort} /></th>
-                <th className="px-6 py-3"><SortableHeader label="Paid" field="amount_paid" currentSort={sort} onSort={handleSort} /></th>
-                <th className="px-6 py-3"><SortableHeader label="Due Date" field="due_date" currentSort={sort} onSort={handleSort} /></th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted w-16"><span className="sr-only">Actions</span></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
+                </TableHead>
+                <TableHead className="px-6 py-3"><SortableHeader label="Invoice" field="invoice_number" currentSort={sort} onSort={handleSort} /></TableHead>
+                <TableHead className="px-6 py-3"><SortableHeader label="Client" field="client_name" currentSort={sort} onSort={handleSort} /></TableHead>
+                <TableHead className="px-6 py-3"><SortableHeader label="Type" field="type" currentSort={sort} onSort={handleSort} /></TableHead>
+                <TableHead className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></TableHead>
+                <TableHead className="px-6 py-3"><SortableHeader label="Amount" field="total_amount" currentSort={sort} onSort={handleSort} /></TableHead>
+                <TableHead className="px-6 py-3"><SortableHeader label="Paid" field="amount_paid" currentSort={sort} onSort={handleSort} /></TableHead>
+                <TableHead className="px-6 py-3"><SortableHeader label="Due Date" field="due_date" currentSort={sort} onSort={handleSort} /></TableHead>
+                <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted w-16"><span className="sr-only">Actions</span></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody >
               {sorted.map((inv) => (
-                <tr key={inv.id} className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(inv.id) ? 'bg-blue-50/50' : ''}`}>
-                  <td className="px-4 py-3.5">
+                <TableRow key={inv.id} className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(inv.id) ? 'bg-blue-50/50' : ''}`}>
+                  <TableCell className="px-4 py-3.5">
                     <input type="checkbox" checked={isSelected(inv.id)} onChange={() => toggle(inv.id)} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
-                  </td>
-                  <td className="px-6 py-4">
+                  </TableCell>
+                  <TableCell className="px-6 py-4">
                     <Link href={`/app/invoices/${inv.id}`} className="text-sm font-medium text-foreground hover:underline">{inv.invoice_number}</Link>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-text-secondary">{inv.client_name}</td>
-                  <td className="px-6 py-4">
+                  </TableCell>
+                  <TableCell className="px-6 py-4 text-sm text-text-secondary">{inv.client_name}</TableCell>
+                  <TableCell className="px-6 py-4">
                     <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary capitalize">{inv.type}</span>
-                  </td>
-                  <td className="px-6 py-4">
+                  </TableCell>
+                  <TableCell className="px-6 py-4">
                     <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColor(inv.status)}`}>{formatLabel(inv.status)}</span>
-                  </td>
-                  <td className="px-6 py-4 text-right text-sm font-medium tabular-nums text-foreground">{formatCurrency(inv.total)}</td>
-                  <td className="px-6 py-4 text-right text-sm tabular-nums text-text-secondary">{formatCurrency(inv.amount_paid)}</td>
-                  <td className="px-6 py-4 text-right text-sm text-text-muted">{formatDate(inv.due_date)}</td>
-                  <td className="px-6 py-4">
+                  </TableCell>
+                  <TableCell className="px-6 py-4 text-right text-sm font-medium tabular-nums text-foreground">{formatCurrency(inv.total)}</TableCell>
+                  <TableCell className="px-6 py-4 text-right text-sm tabular-nums text-text-secondary">{formatCurrency(inv.amount_paid)}</TableCell>
+                  <TableCell className="px-6 py-4 text-right text-sm text-text-muted">{formatDate(inv.due_date)}</TableCell>
+                  <TableCell className="px-6 py-4">
                     <RowActionMenu actions={[
                       { label: 'View', onClick: () => router.push(`/app/invoices/${inv.id}`) },
                       { label: 'Delete', variant: 'danger', onClick: () => setDeleteId(inv.id) },
                     ]} />
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
               {sorted.length === 0 && (
-                <tr><td colSpan={9} className="px-6 py-12 text-center text-sm text-text-muted">No invoices match your filters.</td></tr>
+                <TableRow><TableCell colSpan={9} className="px-6 py-12 text-center text-sm text-text-muted">No invoices match your filters.</TableCell></TableRow>
               )}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </div>
 

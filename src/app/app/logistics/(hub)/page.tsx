@@ -6,6 +6,7 @@ import MetricCard from '@/components/ui/MetricCard';
 import StatusBadge, { GENERIC_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import { TierGate } from '@/components/shared/TierGate';
 import LogisticsHubTabs from '../LogisticsHubTabs';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface WarehouseAsset {
   id: string;
@@ -117,43 +118,43 @@ export default async function WarehousePage() {
 
       {/* Assets table */}
       <div className="rounded-xl border border-border bg-background overflow-hidden overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-border bg-bg-secondary">
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Asset</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Category</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Location</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Qty</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Context</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
+        <Table >
+          <TableHeader>
+            <TableRow className="border-b border-border bg-bg-secondary">
+              <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Asset</TableHead>
+              <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Category</TableHead>
+              <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Location</TableHead>
+              <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Qty</TableHead>
+              <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</TableHead>
+              <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Context</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody >
             {assets.map((asset) => (
-              <tr key={asset.id} className="transition-colors hover:bg-bg-secondary/50">
-                <td className="px-6 py-3.5">
+              <TableRow key={asset.id} className="transition-colors hover:bg-bg-secondary/50">
+                <TableCell className="px-6 py-3.5">
                   <Link
                     href={`/app/equipment/${asset.id}`}
                     className="text-sm font-medium text-foreground hover:underline"
                   >
                     {asset.name}
                   </Link>
-                </td>
-                <td className="px-6 py-3.5">
+                </TableCell>
+                <TableCell className="px-6 py-3.5">
                   <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">
                     {asset.category}
                   </span>
-                </td>
-                <td className="px-6 py-3.5 text-sm text-text-secondary">
+                </TableCell>
+                <TableCell className="px-6 py-3.5 text-sm text-text-secondary">
                   {asset.location}
-                </td>
-                <td className="px-6 py-3.5 text-sm tabular-nums text-foreground">
+                </TableCell>
+                <TableCell className="px-6 py-3.5 text-sm tabular-nums text-foreground">
                   {asset.quantity}
-                </td>
-                <td className="px-6 py-3.5">
+                </TableCell>
+                <TableCell className="px-6 py-3.5">
                   <StatusBadge status={asset.status} colorMap={GENERIC_STATUS_COLORS} />
-                </td>
-                <td className="px-6 py-3.5 text-sm text-text-secondary">
+                </TableCell>
+                <TableCell className="px-6 py-3.5 text-sm text-text-secondary">
                   <div className="flex flex-col gap-1">
                     <Link href={`/app/equipment/${asset.id}`} className="text-xs font-medium text-blue-600 hover:underline">
                       View asset
@@ -161,14 +162,14 @@ export default async function WarehousePage() {
                     {asset.status === 'maintenance' && <span className="text-xs text-red-500 font-medium">Flagged for repair</span>}
                     {asset.status === 'deployed' && <span className="text-xs text-blue-500 font-medium">Currently on assignment</span>}
                   </div>
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
             {assets.length === 0 && (
-              <tr><td colSpan={5} className="px-6 py-12 text-center text-sm text-text-muted">No assets in inventory.</td></tr>
+              <TableRow><TableCell colSpan={5} className="px-6 py-12 text-center text-sm text-text-muted">No assets in inventory.</TableCell></TableRow>
             )}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
     </>
     </TierGate>

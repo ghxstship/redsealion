@@ -88,6 +88,7 @@ function getUtilColor(percent: number): string {
 }
 
 import AllocationForm from './AllocationForm';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 
 export default function UtilizationHeatMap({ teamMembers }: UtilizationHeatMapProps) {
@@ -167,31 +168,31 @@ export default function UtilizationHeatMap({ teamMembers }: UtilizationHeatMapPr
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border bg-bg-secondary">
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">
+            <Table >
+              <TableHeader>
+                <TableRow className="border-b border-border bg-bg-secondary">
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">
                     Team Member
-                  </th>
+                  </TableHead>
                   {weeks.map((w) => (
-                    <th
+                    <TableHead
                       key={w.label}
                       className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-text-muted w-32"
                     >
                       {w.label}
-                    </th>
+                    </TableHead>
                   ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {data.map((member) => (
-                  <tr key={member.name} className="transition-colors hover:bg-bg-secondary/50">
-                    <td className="px-6 py-3">
+                  <TableRow key={member.name} className="transition-colors hover:bg-bg-secondary/50">
+                    <TableCell className="px-6 py-3">
                       <p className="text-sm font-medium text-foreground">{member.name}</p>
                       <p className="text-xs text-text-muted">{member.role}</p>
-                    </td>
+                    </TableCell>
                     {member.weeks.map((util, idx) => (
-                      <td key={idx} className="px-4 py-3 text-center">
+                      <TableCell key={idx} className="px-4 py-3 text-center">
                         <div
                           className={`mx-auto flex h-10 w-16 items-center justify-center rounded-lg ${getUtilColor(util)}`}
                         >
@@ -199,12 +200,12 @@ export default function UtilizationHeatMap({ teamMembers }: UtilizationHeatMapPr
                             {util}%
                           </span>
                         </div>
-                      </td>
+                      </TableCell>
                     ))}
-                  </tr>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
 

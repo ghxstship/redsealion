@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Button from '@/components/ui/Button';
 import FormInput from '@/components/ui/FormInput';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as const;
 
@@ -39,31 +40,31 @@ export default function WeeklyTimesheet() {
   return (
     <div className="rounded-xl border border-border bg-background overflow-hidden">
       <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-border bg-bg-secondary">
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">
+        <Table >
+          <TableHeader>
+            <TableRow className="border-b border-border bg-bg-secondary">
+              <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">
                 Project
-              </th>
+              </TableHead>
               {DAYS.map((day) => (
-                <th
+                <TableHead
                   key={day}
                   className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-text-muted w-20"
                 >
                   {day}
-                </th>
+                </TableHead>
               ))}
-              <th className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-text-muted w-20">
+              <TableHead className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-text-muted w-20">
                 Total
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody >
             {rows.map((row, rowIdx) => {
               const rowTotal = row.hours.reduce((s, h) => s + h, 0);
               return (
-                <tr key={rowIdx} className="transition-colors hover:bg-bg-secondary/50">
-                  <td className="px-6 py-2">
+                <TableRow key={rowIdx} className="transition-colors hover:bg-bg-secondary/50">
+                  <TableCell className="px-6 py-2">
                     <FormInput
                       type="text"
                       value={row.project}
@@ -75,9 +76,9 @@ export default function WeeklyTimesheet() {
                         )
                       }
                       placeholder="Project name" />
-                  </td>
+                  </TableCell>
                   {DAYS.map((day, dayIdx) => (
-                    <td key={day} className="px-2 py-2 text-center">
+                    <TableCell key={day} className="px-2 py-2 text-center">
                       <FormInput
                         type="number"
                         min="0"
@@ -85,34 +86,34 @@ export default function WeeklyTimesheet() {
                         step="0.5"
                         value={row.hours[dayIdx]}
                         onChange={(e) => updateHours(rowIdx, dayIdx, e.target.value)} />
-                    </td>
+                    </TableCell>
                   ))}
-                  <td className="px-4 py-2 text-center text-sm font-medium tabular-nums text-foreground">
+                  <TableCell className="px-4 py-2 text-center text-sm font-medium tabular-nums text-foreground">
                     {rowTotal}h
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               );
             })}
-          </tbody>
+          </TableBody>
           <tfoot>
-            <tr className="border-t border-border bg-bg-secondary">
-              <td className="px-6 py-3 text-sm font-medium text-foreground">
+            <TableRow className="border-t border-border bg-bg-secondary">
+              <TableCell className="px-6 py-3 text-sm font-medium text-foreground">
                 Daily Total
-              </td>
+              </TableCell>
               {totalByDay.map((total, idx) => (
-                <td
+                <TableCell
                   key={idx}
                   className="px-4 py-3 text-center text-sm font-medium tabular-nums text-foreground"
                 >
                   {total}h
-                </td>
+                </TableCell>
               ))}
-              <td className="px-4 py-3 text-center text-sm font-semibold tabular-nums text-foreground">
+              <TableCell className="px-4 py-3 text-center text-sm font-semibold tabular-nums text-foreground">
                 {grandTotal}h
-              </td>
-            </tr>
+              </TableCell>
+            </TableRow>
           </tfoot>
-        </table>
+        </Table>
       </div>
 
       <div className="flex items-center justify-between border-t border-border px-6 py-4">

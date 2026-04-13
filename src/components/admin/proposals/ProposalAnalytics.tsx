@@ -16,6 +16,7 @@ import { fmTransition } from '@/lib/motion';
 import Card from '@/components/ui/Card';
 import { Eye, Clock, BarChart3, MousePointer, TrendingUp, Users } from 'lucide-react';
 import Button from '@/components/ui/Button';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 /* ─── Types ──────────────────────────────────────────────── */
 
@@ -150,22 +151,22 @@ export default function ProposalAnalytics({
           <h3 className="text-sm font-semibold text-foreground">Section Heatmap</h3>
         </div>
         {heatmapData.length > 0 ? (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-xs text-text-muted border-b border-border">
-                <th className="py-2 font-medium">Section</th>
-                <th className="py-2 font-medium text-right">Views</th>
-                <th className="py-2 font-medium text-right">Avg Time</th>
-                <th className="py-2 font-medium text-right">Scroll Depth</th>
-              </tr>
-            </thead>
-            <tbody>
+          <Table >
+            <TableHeader>
+              <TableRow className="text-left text-xs text-text-muted border-b border-border">
+                <TableHead className="py-2 font-medium">Section</TableHead>
+                <TableHead className="py-2 font-medium text-right">Views</TableHead>
+                <TableHead className="py-2 font-medium text-right">Avg Time</TableHead>
+                <TableHead className="py-2 font-medium text-right">Scroll Depth</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {heatmapData.map((row) => (
-                <tr key={row.section} className="border-b border-border/50">
-                  <td className="py-2.5 text-foreground">{row.section}</td>
-                  <td className="py-2.5 text-right tabular-nums">{row.views}</td>
-                  <td className="py-2.5 text-right tabular-nums text-text-secondary">{row.avgTime}</td>
-                  <td className="py-2.5 text-right">
+                <TableRow key={row.section} className="border-b border-border/50">
+                  <TableCell className="py-2.5 text-foreground">{row.section}</TableCell>
+                  <TableCell className="py-2.5 text-right tabular-nums">{row.views}</TableCell>
+                  <TableCell className="py-2.5 text-right tabular-nums text-text-secondary">{row.avgTime}</TableCell>
+                  <TableCell className="py-2.5 text-right">
                     <div className="inline-flex items-center gap-2">
                       <div className="w-16 h-1.5 rounded-full bg-bg-secondary overflow-hidden">
                         <div
@@ -175,11 +176,11 @@ export default function ProposalAnalytics({
                       </div>
                       <span className="text-xs tabular-nums text-text-muted">{row.scrollDepth}%</span>
                     </div>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         ) : (
           <div className="text-center py-12">
             <BarChart3 size={28} className="mx-auto text-text-muted mb-3" />

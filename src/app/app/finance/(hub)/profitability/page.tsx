@@ -6,6 +6,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
 import FinanceHubTabs from '../../FinanceHubTabs';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface ProjectProfit {
   proposalId: string;
@@ -106,33 +107,33 @@ export default async function ProfitabilityPage() {
       ) : (
         <div className="rounded-xl border border-border bg-background overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border bg-bg-secondary">
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Project</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Revenue</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Costs</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Margin</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Margin %</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader>
+                <TableRow className="border-b border-border bg-bg-secondary">
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Project</TableHead>
+                  <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Revenue</TableHead>
+                  <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Costs</TableHead>
+                  <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Margin</TableHead>
+                  <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Margin %</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {projects.map((p) => (
-                  <tr key={p.proposalId} className="transition-colors hover:bg-bg-secondary/50">
-                    <td className="px-6 py-3.5">
+                  <TableRow key={p.proposalId} className="transition-colors hover:bg-bg-secondary/50">
+                    <TableCell className="px-6 py-3.5">
                       <Link
                         href={`/app/profitability/${p.proposalId}`}
                         className="text-sm font-medium text-foreground hover:underline"
                       >
                         {p.name}
                       </Link>
-                    </td>
-                    <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{formatCurrency(p.revenue)}</td>
-                    <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{formatCurrency(p.costs)}</td>
-                    <td className={`px-6 py-3.5 text-right text-sm tabular-nums font-medium ${p.margin >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    </TableCell>
+                    <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{formatCurrency(p.revenue)}</TableCell>
+                    <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{formatCurrency(p.costs)}</TableCell>
+                    <TableCell className={`px-6 py-3.5 text-right text-sm tabular-nums font-medium ${p.margin >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                       {formatCurrency(p.margin)}
-                    </td>
-                    <td className="px-6 py-3.5 text-right">
+                    </TableCell>
+                    <TableCell className="px-6 py-3.5 text-right">
                       <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
                         p.marginPercent >= 30 ? 'bg-green-50 text-green-700' :
                         p.marginPercent >= 10 ? 'bg-yellow-50 text-yellow-700' :
@@ -140,11 +141,11 @@ export default async function ProfitabilityPage() {
                       }`}>
                         {p.marginPercent}%
                       </span>
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </div>
       )}

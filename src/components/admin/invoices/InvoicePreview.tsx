@@ -1,6 +1,7 @@
 'use client';
 
 import { formatCurrencyDetailed } from '@/lib/utils';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface LineItem {
   description: string;
@@ -55,26 +56,26 @@ export default function InvoicePreview({
       </div>
 
       <div className="overflow-x-auto">
-      <table className="w-full mb-4 text-xs">
-        <thead>
-          <tr className="border-b border-border">
-            <th className="py-2 text-left text-text-muted font-medium">Item</th>
-            <th className="py-2 text-right text-text-muted font-medium">Qty</th>
-            <th className="py-2 text-right text-text-muted font-medium">Rate</th>
-            <th className="py-2 text-right text-text-muted font-medium">Amount</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-border">
+      <Table className="w-full mb-4 text-xs">
+        <TableHeader>
+          <TableRow className="border-b border-border">
+            <TableHead className="py-2 text-left text-text-muted font-medium">Item</TableHead>
+            <TableHead className="py-2 text-right text-text-muted font-medium">Qty</TableHead>
+            <TableHead className="py-2 text-right text-text-muted font-medium">Rate</TableHead>
+            <TableHead className="py-2 text-right text-text-muted font-medium">Amount</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody >
           {lineItems.map((li, i) => (
-            <tr key={i}>
-              <td className="py-2 text-foreground">{li.description || '(empty)'}</td>
-              <td className="py-2 text-right tabular-nums text-text-secondary">{li.quantity}</td>
-              <td className="py-2 text-right tabular-nums text-text-secondary">{formatCurrencyDetailed(li.rate)}</td>
-              <td className="py-2 text-right tabular-nums font-medium text-foreground">{formatCurrencyDetailed(li.quantity * li.rate)}</td>
-            </tr>
+            <TableRow key={i}>
+              <TableCell className="py-2 text-foreground">{li.description || '(empty)'}</TableCell>
+              <TableCell className="py-2 text-right tabular-nums text-text-secondary">{li.quantity}</TableCell>
+              <TableCell className="py-2 text-right tabular-nums text-text-secondary">{formatCurrencyDetailed(li.rate)}</TableCell>
+              <TableCell className="py-2 text-right tabular-nums font-medium text-foreground">{formatCurrencyDetailed(li.quantity * li.rate)}</TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
       </div>
 
       {(() => {

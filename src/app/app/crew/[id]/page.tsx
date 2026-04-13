@@ -11,6 +11,7 @@ import CrewRatingsPanel from '@/components/admin/crew/CrewRatingsPanel';
 import CrewDetailTabs from './CrewDetailTabs';
 import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface CrewDetail {
   full_name: string;
@@ -151,28 +152,28 @@ export default async function CrewMemberPage({
       </div>
       {member.bookings.length > 0 ? (
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-border bg-bg-secondary">
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Project</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Venue</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
+          <Table >
+            <TableHeader>
+              <TableRow className="border-b border-border bg-bg-secondary">
+                <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Project</TableHead>
+                <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Venue</TableHead>
+                <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Date</TableHead>
+                <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody >
               {member.bookings.map((booking) => (
-                <tr key={booking.id} className="transition-colors hover:bg-bg-secondary/50">
-                  <td className="px-6 py-3.5 text-sm font-medium text-foreground">{booking.project_name}</td>
-                  <td className="px-6 py-3.5 text-sm text-text-secondary">{booking.venue}</td>
-                  <td className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(booking.date)}</td>
-                  <td className="px-6 py-3.5">
+                <TableRow key={booking.id} className="transition-colors hover:bg-bg-secondary/50">
+                  <TableCell className="px-6 py-3.5 text-sm font-medium text-foreground">{booking.project_name}</TableCell>
+                  <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{booking.venue}</TableCell>
+                  <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(booking.date)}</TableCell>
+                  <TableCell className="px-6 py-3.5">
                     <StatusBadge status={booking.status} colorMap={BOOKING_STATUS_COLORS} />
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       ) : (
         <EmptyState message="No bookings yet" />

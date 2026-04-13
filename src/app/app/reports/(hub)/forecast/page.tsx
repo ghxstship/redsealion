@@ -8,6 +8,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import ReportsHubTabs from '../../ReportsHubTabs';
 import type { DealStage } from '@/types/database';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface ForecastDeal {
   deal_value: number;
@@ -207,43 +208,43 @@ export default async function ForecastReportPage() {
               </h3>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-border bg-bg-secondary">
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Deal</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Client</th>
-                    <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Value</th>
-                    <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Prob.</th>
-                    <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Weighted</th>
-                    <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Close Date</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
+              <Table >
+                <TableHeader>
+                  <TableRow className="border-b border-border bg-bg-secondary">
+                    <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Deal</TableHead>
+                    <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Client</TableHead>
+                    <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Value</TableHead>
+                    <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Prob.</TableHead>
+                    <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Weighted</TableHead>
+                    <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Close Date</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody >
                   {topDeals.map((deal) => (
-                    <tr key={deal.title} className="transition-colors hover:bg-bg-secondary/50">
-                      <td className="px-6 py-3.5 text-sm font-medium text-foreground">{deal.title}</td>
-                      <td className="px-6 py-3.5 text-sm text-text-secondary">{deal.client_name}</td>
-                      <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">
+                    <TableRow key={deal.title} className="transition-colors hover:bg-bg-secondary/50">
+                      <TableCell className="px-6 py-3.5 text-sm font-medium text-foreground">{deal.title}</TableCell>
+                      <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{deal.client_name}</TableCell>
+                      <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">
                         {formatCurrency(deal.deal_value)}
-                      </td>
-                      <td className="px-6 py-3.5 text-right text-sm tabular-nums text-text-muted">
+                      </TableCell>
+                      <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-text-muted">
                         {deal.probability}%
-                      </td>
-                      <td className="px-6 py-3.5 text-right text-sm tabular-nums font-medium text-foreground">
+                      </TableCell>
+                      <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums font-medium text-foreground">
                         {formatCurrency(deal.deal_value * (deal.probability / 100))}
-                      </td>
-                      <td className="px-6 py-3.5 text-right text-sm text-text-muted">
+                      </TableCell>
+                      <TableCell className="px-6 py-3.5 text-right text-sm text-text-muted">
                         {deal.expected_close_date
                           ? new Date(deal.expected_close_date).toLocaleDateString('en-US', {
                               month: 'short',
                               day: 'numeric',
                             })
                           : '—'}
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           </div>
         )}

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import StatusBadge, { PRODUCTION_SCHEDULE_STATUS_COLORS, SCHEDULE_BLOCK_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import ScheduleHubTabs from '../../ScheduleHubTabs';
 import MetricCard from '@/components/ui/MetricCard';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getRunOfShowSchedules() {
   try {
@@ -76,30 +77,30 @@ export default async function RunOfShowPage() {
                   <div className="px-5 py-8 text-center text-xs text-text-muted">No cues added yet</div>
                 ) : (
                   <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead className="text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                        <tr>
-                          <th className="px-4 py-2 w-20">Time</th>
-                          <th className="px-4 py-2 w-16">Dur.</th>
-                          <th className="px-4 py-2">Cue</th>
-                          <th className="px-4 py-2">Notes</th>
-                          <th className="px-4 py-2 w-24">Status</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-border">
+                    <Table >
+                      <TableHeader className="text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                        <TableRow>
+                          <TableHead className="px-4 py-2 w-20">Time</TableHead>
+                          <TableHead className="px-4 py-2 w-16">Dur.</TableHead>
+                          <TableHead className="px-4 py-2">Cue</TableHead>
+                          <TableHead className="px-4 py-2">Notes</TableHead>
+                          <TableHead className="px-4 py-2 w-24">Status</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody >
                         {cues.map((cue) => (
-                          <tr key={cue.id} className="hover:bg-bg-secondary/50 transition-colors">
-                            <td className="px-4 py-2 text-xs font-mono tabular-nums text-text-secondary">{new Date(cue.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
-                            <td className="px-4 py-2 text-xs tabular-nums text-text-muted">{cue.duration_minutes ? `${cue.duration_minutes}m` : '—'}</td>
-                            <td className="px-4 py-2 font-medium text-foreground">{cue.title}</td>
-                            <td className="px-4 py-2 text-text-secondary text-xs line-clamp-1">{cue.notes ?? '—'}</td>
-                            <td className="px-4 py-2">
+                          <TableRow key={cue.id} className="hover:bg-bg-secondary/50 transition-colors">
+                            <TableCell className="px-4 py-2 text-xs font-mono tabular-nums text-text-secondary">{new Date(cue.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</TableCell>
+                            <TableCell className="px-4 py-2 text-xs tabular-nums text-text-muted">{cue.duration_minutes ? `${cue.duration_minutes}m` : '—'}</TableCell>
+                            <TableCell className="px-4 py-2 font-medium text-foreground">{cue.title}</TableCell>
+                            <TableCell className="px-4 py-2 text-text-secondary text-xs line-clamp-1">{cue.notes ?? '—'}</TableCell>
+                            <TableCell className="px-4 py-2">
                               <StatusBadge status={cue.status} colorMap={SCHEDULE_BLOCK_STATUS_COLORS} />
-                            </td>
-                          </tr>
+                            </TableCell>
+                          </TableRow>
                         ))}
-                      </tbody>
-                    </table>
+                      </TableBody>
+                    </Table>
                   </div>
                 )}
               </div>

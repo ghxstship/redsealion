@@ -5,6 +5,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import { TierGate } from '@/components/shared/TierGate';
 import { formatCurrency } from '@/lib/utils';
 import StatusBadge, { FABRICATION_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import { Badge } from '@/components/ui/Badge';
 import BOMEditor from '@/components/fabrication/BOMEditor';
 import StatusActions from '@/components/fabrication/StatusActions';
 import Link from 'next/link';
@@ -123,7 +124,7 @@ export default async function FabricationOrderDetailsPage({ params }: { params: 
                   <a href={f.file_url} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline truncate mr-2">
                     {f.file_type.toUpperCase()} v{f.version}
                   </a>
-                  {f.is_approved && <span className="text-xs bg-green-100 text-green-800 px-1.5 py-0.5 rounded">Approved</span>}
+                  {f.is_approved && <Badge variant="success">Approved</Badge>}
                 </li>
               ))}
               {(!order.fabrication_files || order.fabrication_files.length === 0) && (

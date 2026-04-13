@@ -8,6 +8,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import ReportsHubTabs from '../../ReportsHubTabs';
 import type { DealStage } from '@/types/database';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 const FUNNEL_STAGES: { key: DealStage; label: string }[] = [
   { key: 'lead', label: 'Lead' },
@@ -182,37 +183,37 @@ export default async function FunnelReportPage() {
             <h3 className="text-sm font-semibold text-foreground">Stage-by-Stage Breakdown</h3>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border bg-bg-secondary">
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Stage</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Deals</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Value</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Conv. Rate</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Drop-off</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader>
+                <TableRow className="border-b border-border bg-bg-secondary">
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Stage</TableHead>
+                  <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Deals</TableHead>
+                  <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Value</TableHead>
+                  <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Conv. Rate</TableHead>
+                  <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Drop-off</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {conversionRates.map((stage, idx) => {
                   const dropOff = idx > 0 ? funnelData[idx - 1].count - stage.count : 0;
                   return (
-                    <tr key={stage.key} className="transition-colors hover:bg-bg-secondary/50">
-                      <td className="px-6 py-3.5 text-sm font-medium text-foreground">{stage.label}</td>
-                      <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{stage.count}</td>
-                      <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">
+                    <TableRow key={stage.key} className="transition-colors hover:bg-bg-secondary/50">
+                      <TableCell className="px-6 py-3.5 text-sm font-medium text-foreground">{stage.label}</TableCell>
+                      <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{stage.count}</TableCell>
+                      <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">
                         {formatCurrency(stage.value)}
-                      </td>
-                      <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">
+                      </TableCell>
+                      <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">
                         {idx === 0 ? '—' : `${stage.rate.toFixed(1)}%`}
-                      </td>
-                      <td className="px-6 py-3.5 text-right text-sm tabular-nums text-red-600">
+                      </TableCell>
+                      <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-red-600">
                         {dropOff > 0 ? `-${dropOff}` : '—'}
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   );
                 })}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </div>
       </div>

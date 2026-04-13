@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
+import { useState, useEffect, type FormEvent } from 'react';
 import { formatLabel } from '@/lib/utils';
 import ModalShell from '@/components/ui/ModalShell';
 import FormLabel from '@/components/ui/FormLabel';
@@ -30,13 +30,36 @@ export default function TaskFormModal({ open, onClose, onCreated }: TaskFormModa
   const [recurrence, setRecurrence] = useState('none');
   const [recurrenceInterval, setRecurrenceInterval] = useState('1');
   const [recurrenceEnd, setRecurrenceEnd] = useState('');
+  const [projectId, setProjectId] = useState('');
+  const [projects, setProjects] = useState<any[]>([]);
+  const [loadingProjects, setLoadingProjects] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function loadProjects() {
+      if (!open) return;
+      setLoadingProjects(true);
+      try {
+        const res = await fetch('/api/projects');
+        if (res.ok) {
+          const data = await res.json();
+          setProjects(data.projects || []);
+        }
+      } catch (err) {
+        console.error('Failed to load projects', err);
+      } finally {
+        setLoadingProjects(false);
+      }
+    }
+    loadProjects();
+  }, [open]);
 
   function resetForm() {
     setTitle(''); setDescription(''); setPriority('medium');
     setStatus('todo'); setDueDate(''); setEstimatedHours('');
     setRecurrence('none'); setRecurrenceInterval('1'); setRecurrenceEnd('');
+    setProjectId('');
     setError(null);
   }
 
@@ -61,6 +84,7 @@ export default function TaskFormModal({ open, onClose, onCreated }: TaskFormModa
           description: description || undefined,
           priority,
           status,
+          project_id: projectId || undefined,
           due_date: dueDate || undefined,
           estimated_hours: estimatedHours ? parseFloat(estimatedHours) : undefined,
           recurrence_rule: recurrenceRule,
@@ -111,6 +135,18 @@ export default function TaskFormModal({ open, onClose, onCreated }: TaskFormModa
               {STATUS_OPTIONS.map((s) => <option key={s} value={s}>{formatLabel(s)}</option>)}
             </FormSelect>
           </div>
+        </div>
+
+        <div>
+          <FormLabel>Project (Optional)</FormLabel>
+          <FormSelect value={projectId} onChange={(e) => setProjectId(e.target.value)} disabled={loadingProjects}>
+            <option value="">No Project</option>
+            {projects.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
+            ))}
+          </FormSelect>
         </div>
 
         <div className="grid grid-cols-2 gap-4">

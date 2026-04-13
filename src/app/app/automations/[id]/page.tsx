@@ -7,6 +7,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import Button from '@/components/ui/Button';
 import { formatLabel } from '@/lib/utils';
 import StatusBadge, { AUTOMATION_RUN_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 
 
@@ -140,28 +141,28 @@ export default async function AutomationDetailPage({
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr>
-                  <th className="px-4 py-3">Status</th>
-                  <th className="px-4 py-3">Started</th>
-                  <th className="px-4 py-3">Completed</th>
-                  <th className="px-4 py-3">Error</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow>
+                  <TableHead className="px-4 py-3">Status</TableHead>
+                  <TableHead className="px-4 py-3">Started</TableHead>
+                  <TableHead className="px-4 py-3">Completed</TableHead>
+                  <TableHead className="px-4 py-3">Error</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {runs.map((run) => (
-                  <tr key={run.id as string} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3">
+                  <TableRow key={run.id as string} className="hover:bg-bg-secondary/50 transition-colors">
+                    <TableCell className="px-4 py-3">
                       <StatusBadge status={run.status as string} colorMap={AUTOMATION_RUN_STATUS_COLORS} />
-                    </td>
-                    <td className="px-4 py-3 text-text-secondary">{new Date(run.started_at as string).toLocaleString()}</td>
-                    <td className="px-4 py-3 text-text-secondary">{run.completed_at ? new Date(run.completed_at as string).toLocaleString() : '—'}</td>
-                    <td className="px-4 py-3 text-red-600 text-xs max-w-48 truncate">{(run.error as string) || '—'}</td>
-                  </tr>
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{new Date(run.started_at as string).toLocaleString()}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{run.completed_at ? new Date(run.completed_at as string).toLocaleString() : '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-red-600 text-xs max-w-48 truncate">{(run.error as string) || '—'}</TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

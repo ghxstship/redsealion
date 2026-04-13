@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Button from '@/components/ui/Button';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface Bid {
   id: string;
@@ -110,34 +111,34 @@ export default function BiddingPanel({ workOrderId }: { workOrderId: string }) {
       {successMsg && <div className="text-green-600 text-sm">{successMsg}</div>}
 
       <div className="overflow-x-auto -mx-4">
-        <table className="w-full text-sm">
-          <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-            <tr>
-              <th className="px-4 py-2">Contractor</th>
-              <th className="px-4 py-2">Amount</th>
-              <th className="px-4 py-2">Proposed Dates</th>
-              <th className="px-4 py-2">Skills</th>
-              <th className="px-4 py-2">Rate</th>
-              <th className="px-4 py-2">Status</th>
-              <th className="px-4 py-2">Submitted</th>
-              <th className="px-4 py-2"></th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
+        <Table >
+          <TableHeader >
+            <TableRow>
+              <TableHead className="px-4 py-2">Contractor</TableHead>
+              <TableHead className="px-4 py-2">Amount</TableHead>
+              <TableHead className="px-4 py-2">Proposed Dates</TableHead>
+              <TableHead className="px-4 py-2">Skills</TableHead>
+              <TableHead className="px-4 py-2">Rate</TableHead>
+              <TableHead className="px-4 py-2">Status</TableHead>
+              <TableHead className="px-4 py-2">Submitted</TableHead>
+              <TableHead className="px-4 py-2"></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody >
             {sortedBids.map((bid) => {
               const crewUser = (bid.crew_profiles as any)?.users;
               return (
-                <tr key={bid.id} className="hover:bg-bg-secondary/50 transition-colors">
-                  <td className="px-4 py-3">
+                <TableRow key={bid.id} className="hover:bg-bg-secondary/50 transition-colors">
+                  <TableCell className="px-4 py-3">
                     <div className="font-medium text-foreground">{crewUser?.full_name || 'Contractor'}</div>
                     {crewUser?.email && (
                       <div className="text-xs text-text-muted">{crewUser.email}</div>
                     )}
-                  </td>
-                  <td className="px-4 py-3 font-semibold text-foreground">
+                  </TableCell>
+                  <TableCell className="px-4 py-3 font-semibold text-foreground">
                     ${bid.proposed_amount?.toLocaleString()}
-                  </td>
-                  <td className="px-4 py-3 text-text-secondary text-xs">
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-text-secondary text-xs">
                     {bid.proposed_start || bid.proposed_end ? (
                       <>
                         {bid.proposed_start ? new Date(bid.proposed_start).toLocaleDateString() : '—'}
@@ -147,22 +148,22 @@ export default function BiddingPanel({ workOrderId }: { workOrderId: string }) {
                     ) : (
                       <span className="text-text-muted">—</span>
                     )}
-                  </td>
-                  <td className="px-4 py-3 text-text-secondary text-xs">
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-text-secondary text-xs">
                     {bid.crew_profiles?.skills?.join(', ') || '—'}
-                  </td>
-                  <td className="px-4 py-3 text-text-secondary">
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-text-secondary">
                     {bid.crew_profiles?.hourly_rate ? `$${bid.crew_profiles.hourly_rate}/hr` : '—'}
-                  </td>
-                  <td className="px-4 py-3">
+                  </TableCell>
+                  <TableCell className="px-4 py-3">
                     <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[bid.status] || 'bg-gray-100 text-foreground'}`}>
                       {bid.status}
                     </span>
-                  </td>
-                  <td className="px-4 py-3 text-text-muted text-xs">
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-text-muted text-xs">
                     {new Date(bid.created_at).toLocaleDateString()}
-                  </td>
-                  <td className="px-4 py-3">
+                  </TableCell>
+                  <TableCell className="px-4 py-3">
                     {bid.status === 'pending' && (
                       <div className="flex gap-1.5">
                         <Button variant="secondary" onClick={() => updateBidStatus(bid.id, 'rejected')} className="text-xs !px-2 !py-1">
@@ -173,12 +174,12 @@ export default function BiddingPanel({ workOrderId }: { workOrderId: string }) {
                         </Button>
                       </div>
                     )}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               );
             })}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
 
       {/* Notes section */}

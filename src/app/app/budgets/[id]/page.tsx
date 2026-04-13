@@ -5,6 +5,7 @@ import { formatCurrency } from '@/lib/utils';
 import BurnChart from '@/components/admin/budgets/BurnChart';
 import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface BudgetDetail {
   projectName: string;
@@ -114,33 +115,33 @@ export default async function BudgetDetailPage(props: { params: Promise<{ id: st
             <h2 className="text-base font-semibold text-foreground">Line Items</h2>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border bg-bg-secondary">
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Category</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Description</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Planned</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Actual</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Variance</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader>
+                <TableRow className="border-b border-border bg-bg-secondary">
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Category</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Description</TableHead>
+                  <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Planned</TableHead>
+                  <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Actual</TableHead>
+                  <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Variance</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {budget.lineItems.map((item) => {
                   const variance = item.planned - item.actual;
                   return (
-                    <tr key={item.id} className="transition-colors hover:bg-bg-secondary/50">
-                      <td className="px-6 py-3.5 text-sm font-medium text-foreground">{item.category}</td>
-                      <td className="px-6 py-3.5 text-sm text-text-secondary">{item.description ?? '-'}</td>
-                      <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{formatCurrency(item.planned)}</td>
-                      <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{formatCurrency(item.actual)}</td>
-                      <td className={`px-6 py-3.5 text-right text-sm tabular-nums font-medium ${variance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    <TableRow key={item.id} className="transition-colors hover:bg-bg-secondary/50">
+                      <TableCell className="px-6 py-3.5 text-sm font-medium text-foreground">{item.category}</TableCell>
+                      <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{item.description ?? '-'}</TableCell>
+                      <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{formatCurrency(item.planned)}</TableCell>
+                      <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{formatCurrency(item.actual)}</TableCell>
+                      <TableCell className={`px-6 py-3.5 text-right text-sm tabular-nums font-medium ${variance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                         {variance >= 0 ? '+' : ''}{formatCurrency(variance)}
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   );
                 })}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </div>
       )}

@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react';
 import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface CalendarEvent {
   id: string;
@@ -68,41 +70,35 @@ export default function EventCalendar({ events }: EventCalendarProps) {
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   return (
-    <div className="bg-background border border-border rounded-lg shadow-sm p-4">
+    <Card padding="sm">
       <div className="flex items-center justify-between mb-4">
-        <Button
-          onClick={handlePrev}
-          className="px-3 py-1 text-sm rounded bg-bg-secondary text-foreground hover:bg-bg-tertiary"
-        >
+        <Button variant="secondary" size="sm" onClick={handlePrev}>
           Prev
         </Button>
         <h2 className="text-sm font-semibold text-foreground">
           {monthName} {currentYear}
         </h2>
-        <Button
-          onClick={handleNext}
-          className="px-3 py-1 text-sm rounded bg-bg-secondary text-foreground hover:bg-bg-tertiary"
-        >
+        <Button variant="secondary" size="sm" onClick={handleNext}>
           Next
         </Button>
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[500px]">
-          <thead>
-            <tr>
+        <Table >
+          <TableHeader>
+            <TableRow>
               {dayNames.map((d) => (
-                <th key={d} className="text-xs text-text-muted font-medium py-1 text-center">
+                <TableHead key={d} className="text-xs text-text-muted font-medium py-1 text-center">
                   {d}
-                </th>
+                </TableHead>
               ))}
-            </tr>
-          </thead>
-          <tbody>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {weeks.map((week, wi) => (
-              <tr key={wi}>
+              <TableRow key={wi}>
                 {week.map((day, di) => (
-                  <td
+                  <TableCell
                     key={di}
                     className="border border-border p-1 align-top h-20 text-xs min-w-[70px]"
                   >
@@ -130,13 +126,13 @@ export default function EventCalendar({ events }: EventCalendarProps) {
                         </div>
                       </>
                     )}
-                  </td>
+                  </TableCell>
                 ))}
-              </tr>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
-    </div>
+    </Card>
   );
 }

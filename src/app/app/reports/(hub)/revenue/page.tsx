@@ -7,6 +7,7 @@ import ChartContainer from '@/components/admin/reports/ChartContainer';
 import PageHeader from '@/components/shared/PageHeader';
 import ReportsHubTabs from '../../ReportsHubTabs';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface RevenueRow {
   total: number;
@@ -131,44 +132,44 @@ export default async function RevenueReportPage() {
               <h3 className="text-sm font-semibold text-foreground">Forecast vs. Actual by Month</h3>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-border bg-bg-secondary">
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Month</th>
-                    <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Invoiced</th>
-                    <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Collected</th>
-                    <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Collection Rate</th>
-                    <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Variance</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
+              <Table >
+                <TableHeader>
+                  <TableRow className="border-b border-border bg-bg-secondary">
+                    <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Month</TableHead>
+                    <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Invoiced</TableHead>
+                    <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Collected</TableHead>
+                    <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Collection Rate</TableHead>
+                    <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Variance</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody >
                   {months.map((m) => {
                     const rate = m.invoiced > 0 ? (m.collected / m.invoiced) * 100 : 0;
                     const variance = m.collected - m.invoiced;
                     return (
-                      <tr key={m.label} className="transition-colors hover:bg-bg-secondary/50">
-                        <td className="px-6 py-3.5 text-sm font-medium text-foreground">{m.label}</td>
-                        <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">
+                      <TableRow key={m.label} className="transition-colors hover:bg-bg-secondary/50">
+                        <TableCell className="px-6 py-3.5 text-sm font-medium text-foreground">{m.label}</TableCell>
+                        <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">
                           {formatCurrency(m.invoiced)}
-                        </td>
-                        <td className="px-6 py-3.5 text-right text-sm tabular-nums text-green-700">
+                        </TableCell>
+                        <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-green-700">
                           {formatCurrency(m.collected)}
-                        </td>
-                        <td className={`px-6 py-3.5 text-right text-sm tabular-nums ${
+                        </TableCell>
+                        <TableCell className={`px-6 py-3.5 text-right text-sm tabular-nums ${
                           rate >= 90 ? 'text-green-700' : rate >= 50 ? 'text-amber-700' : 'text-red-700'
                         }`}>
                           {rate.toFixed(0)}%
-                        </td>
-                        <td className={`px-6 py-3.5 text-right text-sm tabular-nums ${
+                        </TableCell>
+                        <TableCell className={`px-6 py-3.5 text-right text-sm tabular-nums ${
                           variance >= 0 ? 'text-green-700' : 'text-red-700'
                         }`}>
                           {variance >= 0 ? '+' : ''}{formatCurrency(variance)}
-                        </td>
-                      </tr>
+                        </TableCell>
+                      </TableRow>
                     );
                   })}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           </div>
         )}

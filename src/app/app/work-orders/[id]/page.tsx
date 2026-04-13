@@ -6,6 +6,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import StatusBadge, { WORK_ORDER_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import WorkOrderActions from './WorkOrderActions';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getWorkOrder(id: string) {
   try {
@@ -89,24 +90,24 @@ export default async function WorkOrderDetailPage({ params }: { params: Promise<
         {assignments.length === 0 ? (
           <div className="px-8 py-12 text-center text-sm text-text-secondary">No crew assigned.</div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr><th className="px-4 py-3">Name</th><th className="px-4 py-3">Role</th><th className="px-4 py-3">Status</th><th className="px-4 py-3">Assigned</th></tr>
-            </thead>
-            <tbody className="divide-y divide-border">
+          <Table >
+            <TableHeader >
+              <TableRow><TableHead className="px-4 py-3">Name</TableHead><TableHead className="px-4 py-3">Role</TableHead><TableHead className="px-4 py-3">Status</TableHead><TableHead className="px-4 py-3">Assigned</TableHead></TableRow>
+            </TableHeader>
+            <TableBody >
               {assignments.map((a) => {
                 const crew = a.crew_profiles as { id: string; full_name: string } | null;
                 return (
-                  <tr key={a.id as string} className="hover:bg-bg-secondary/50">
-                    <td className="px-4 py-3 text-foreground">{crew?.full_name ?? '—'}</td>
-                    <td className="px-4 py-3 text-text-secondary">{(a.role as string) ?? '—'}</td>
-                    <td className="px-4 py-3"><StatusBadge status={a.status as string} colorMap={WORK_ORDER_STATUS_COLORS} /></td>
-                    <td className="px-4 py-3 text-text-muted text-xs">{a.assigned_at ? new Date(a.assigned_at as string).toLocaleDateString() : '—'}</td>
-                  </tr>
+                  <TableRow key={a.id as string} className="hover:bg-bg-secondary/50">
+                    <TableCell className="px-4 py-3 text-foreground">{crew?.full_name ?? '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{(a.role as string) ?? '—'}</TableCell>
+                    <TableCell className="px-4 py-3"><StatusBadge status={a.status as string} colorMap={WORK_ORDER_STATUS_COLORS} /></TableCell>
+                    <TableCell className="px-4 py-3 text-text-muted text-xs">{a.assigned_at ? new Date(a.assigned_at as string).toLocaleDateString() : '—'}</TableCell>
+                  </TableRow>
                 );
               })}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         )}
       </div>
 

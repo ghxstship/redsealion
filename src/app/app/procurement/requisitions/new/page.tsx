@@ -11,6 +11,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import Alert from '@/components/ui/Alert';
 import FormSelect from '@/components/ui/FormSelect';
 import FormTextarea from '@/components/ui/FormTextarea';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface LineItem {
   id: string;
@@ -144,37 +145,37 @@ export default function NewRequisitionPage() {
 
           {lineItems.length > 0 && (
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase">
-                  <tr>
-                    <th className="px-3 py-2">Description</th>
-                    <th className="px-3 py-2 w-20">Qty</th>
-                    <th className="px-3 py-2 w-28">Unit Cost</th>
-                    <th className="px-3 py-2 w-28">Total</th>
-                    <th className="px-3 py-2 w-12"></th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
+              <Table >
+                <TableHeader className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase">
+                  <TableRow>
+                    <TableHead className="px-3 py-2">Description</TableHead>
+                    <TableHead className="px-3 py-2 w-20">Qty</TableHead>
+                    <TableHead className="px-3 py-2 w-28">Unit Cost</TableHead>
+                    <TableHead className="px-3 py-2 w-28">Total</TableHead>
+                    <TableHead className="px-3 py-2 w-12"></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody >
                   {lineItems.map((l) => (
-                    <tr key={l.id}>
-                      <td className="px-3 py-2">{l.description}</td>
-                      <td className="px-3 py-2 tabular-nums">{l.quantity}</td>
-                      <td className="px-3 py-2 tabular-nums">${(l.unit_cost_cents / 100).toFixed(2)}</td>
-                      <td className="px-3 py-2 tabular-nums font-medium">${((l.quantity * l.unit_cost_cents) / 100).toFixed(2)}</td>
-                      <td className="px-3 py-2">
+                    <TableRow key={l.id}>
+                      <TableCell className="px-3 py-2">{l.description}</TableCell>
+                      <TableCell className="px-3 py-2 tabular-nums">{l.quantity}</TableCell>
+                      <TableCell className="px-3 py-2 tabular-nums">${(l.unit_cost_cents / 100).toFixed(2)}</TableCell>
+                      <TableCell className="px-3 py-2 tabular-nums font-medium">${((l.quantity * l.unit_cost_cents) / 100).toFixed(2)}</TableCell>
+                      <TableCell className="px-3 py-2">
                         <Button type="button" onClick={() => removeLine(l.id)} className="text-red-500 hover:text-red-700 text-xs">✕</Button>
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
+                </TableBody>
                 <tfoot>
-                  <tr className="border-t-2 border-border">
-                    <td colSpan={3} className="px-3 py-2 text-right font-semibold text-xs text-text-secondary uppercase">Total</td>
-                    <td className="px-3 py-2 tabular-nums font-semibold">${(total / 100).toFixed(2)}</td>
-                    <td></td>
-                  </tr>
+                  <TableRow className="border-t-2 border-border">
+                    <TableCell colSpan={3} className="px-3 py-2 text-right font-semibold text-xs text-text-secondary uppercase">Total</TableCell>
+                    <TableCell className="px-3 py-2 tabular-nums font-semibold">${(total / 100).toFixed(2)}</TableCell>
+                    <TableCell></TableCell>
+                  </TableRow>
                 </tfoot>
-              </table>
+              </Table>
             </div>
           )}
 

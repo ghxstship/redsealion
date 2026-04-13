@@ -9,6 +9,7 @@ import {
 import { IconCheck, IconX, IconChevronDown } from '@/components/ui/Icons';
 import MarketingNav from '@/components/marketing/MarketingNav';
 import MarketingFooter from '@/components/marketing/MarketingFooter';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 
 export default function HomePage() {
@@ -168,57 +169,57 @@ export default function HomePage() {
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[500px]">
-                <thead>
-                  <tr className="border-b border-zinc-200">
-                    <th className="pb-4 text-left text-sm font-medium text-zinc-400">
+              <Table >
+                <TableHeader>
+                  <TableRow className="border-b border-zinc-200">
+                    <TableHead className="pb-4 text-left text-sm font-medium text-zinc-400">
                       Feature
-                    </th>
-                    <th className="pb-4 text-center text-sm font-semibold text-zinc-900">
+                    </TableHead>
+                    <TableHead className="pb-4 text-center text-sm font-semibold text-zinc-900">
                       <span className="rounded-lg bg-zinc-900 px-3 py-1 text-white">
                         FlyteDeck
                       </span>
-                    </th>
-                    <th className="pb-4 text-center text-sm font-medium text-zinc-400">
+                    </TableHead>
+                    <TableHead className="pb-4 text-center text-sm font-medium text-zinc-400">
                       Spreadsheets &amp; Email
-                    </th>
-                    <th className="pb-4 text-center text-sm font-medium text-zinc-400">
+                    </TableHead>
+                    <TableHead className="pb-4 text-center text-sm font-medium text-zinc-400">
                       Generic PM Tools
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {comparisonRows.map((row) => {
                     const [flyteDeck, spreadsheets, generic] = comparisonData[row];
                     return (
-                      <tr key={row} className="border-b border-zinc-100">
-                        <td className="py-4 text-sm text-zinc-600">{row}</td>
-                        <td className="py-4 text-center">
+                      <TableRow key={row} className="border-b border-zinc-100">
+                        <TableCell className="py-4 text-sm text-zinc-600">{row}</TableCell>
+                        <TableCell className="py-4 text-center">
                           {flyteDeck ? (
                             <IconCheck className="mx-auto h-5 w-5 text-zinc-900" strokeWidth={2} />
                           ) : (
                             <IconX className="mx-auto h-5 w-5 text-zinc-300" strokeWidth={2} />
                           )}
-                        </td>
-                        <td className="py-4 text-center">
+                        </TableCell>
+                        <TableCell className="py-4 text-center">
                           {spreadsheets ? (
                             <IconCheck className="mx-auto h-5 w-5 text-zinc-400" strokeWidth={2} />
                           ) : (
                             <IconX className="mx-auto h-5 w-5 text-zinc-300" strokeWidth={2} />
                           )}
-                        </td>
-                        <td className="py-4 text-center">
+                        </TableCell>
+                        <TableCell className="py-4 text-center">
                           {generic ? (
                             <IconCheck className="mx-auto h-5 w-5 text-zinc-400" strokeWidth={2} />
                           ) : (
                             <IconX className="mx-auto h-5 w-5 text-zinc-300" strokeWidth={2} />
                           )}
-                        </td>
-                      </tr>
+                        </TableCell>
+                      </TableRow>
                     );
                   })}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           </div>
         </section>

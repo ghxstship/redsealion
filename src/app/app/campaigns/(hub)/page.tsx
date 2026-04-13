@@ -7,6 +7,7 @@ import CampaignsHubTabs from '../CampaignsHubTabs';
 import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
 import StatusBadge, { CAMPAIGN_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getCampaigns() {
   try {
@@ -55,36 +56,36 @@ export default async function CampaignsPage() {
           />
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border bg-bg-secondary">
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Name</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Subject</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Sent</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Opens</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Clicks</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader>
+                <TableRow className="border-b border-border bg-bg-secondary">
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Name</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Subject</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Sent</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Opens</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Clicks</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {campaigns.map((c: Record<string, unknown>) => (
-                  <tr key={c.id as string} className="transition-colors hover:bg-bg-secondary/50">
-                    <td className="px-6 py-3.5">
+                  <TableRow key={c.id as string} className="transition-colors hover:bg-bg-secondary/50">
+                    <TableCell className="px-6 py-3.5">
                       <Link href={`/app/campaigns/${c.id}`} className="text-sm font-medium text-foreground hover:underline">
                         {c.name as string}
                       </Link>
-                    </td>
-                    <td className="px-6 py-3.5 text-sm text-text-secondary">{c.subject as string}</td>
-                    <td className="px-6 py-3.5">
+                    </TableCell>
+                    <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{c.subject as string}</TableCell>
+                    <TableCell className="px-6 py-3.5">
                       <StatusBadge status={c.status as string} colorMap={CAMPAIGN_STATUS_COLORS} />
-                    </td>
-                    <td className="px-6 py-3.5 text-sm tabular-nums text-text-muted">{c.sent_count as number}</td>
-                    <td className="px-6 py-3.5 text-sm tabular-nums text-text-muted">{c.open_count as number}</td>
-                    <td className="px-6 py-3.5 text-sm tabular-nums text-text-muted">{c.click_count as number}</td>
-                  </tr>
+                    </TableCell>
+                    <TableCell className="px-6 py-3.5 text-sm tabular-nums text-text-muted">{c.sent_count as number}</TableCell>
+                    <TableCell className="px-6 py-3.5 text-sm tabular-nums text-text-muted">{c.open_count as number}</TableCell>
+                    <TableCell className="px-6 py-3.5 text-sm tabular-nums text-text-muted">{c.click_count as number}</TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

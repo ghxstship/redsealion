@@ -23,6 +23,7 @@ import ViewBar from '@/components/shared/ViewBar';
 import ColumnConfigPanel from '@/components/shared/ColumnConfigPanel';
 import PageHeader from '@/components/shared/PageHeader';
 import type { Database } from '@/types/database';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 type Proposal = Database['public']['Tables']['proposals']['Row'];
 type Client = Database['public']['Tables']['clients']['Row'];
@@ -198,59 +199,59 @@ export default function ProposalsTable({
 
       <div className="rounded-xl border border-border bg-background overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-border bg-bg-secondary">
-                <th className="px-4 py-3 text-left w-10">
+          <Table >
+            <TableHeader>
+              <TableRow className="border-b border-border bg-bg-secondary">
+                <TableHead className="px-4 py-3 text-left w-10">
                   <input type="checkbox" checked={isAllSelected} ref={(el) => { if (el) el.indeterminate = isSomeSelected; }} onChange={toggleAll} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
-                </th>
-                {isVisible('name') && <th className="px-6 py-3"><SortableHeader label="Proposal Name" field="name" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('client') && <th className="px-6 py-3"><SortableHeader label="Client" field="client_id" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('status') && <th className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('prepared_date') && <th className="px-6 py-3"><SortableHeader label="Date" field="prepared_date" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('total_value') && <th className="px-6 py-3"><SortableHeader label="Value" field="total_value" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('probability') && <th className="px-6 py-3"><SortableHeader label="Probability" field="probability_percent" currentSort={sort} onSort={handleSort} /></th>}
-                <th className="px-6 py-3 w-12"><span className="sr-only">Actions</span></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
+                </TableHead>
+                {isVisible('name') && <TableHead className="px-6 py-3"><SortableHeader label="Proposal Name" field="name" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('client') && <TableHead className="px-6 py-3"><SortableHeader label="Client" field="client_id" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('status') && <TableHead className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('prepared_date') && <TableHead className="px-6 py-3"><SortableHeader label="Date" field="prepared_date" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('total_value') && <TableHead className="px-6 py-3"><SortableHeader label="Value" field="total_value" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('probability') && <TableHead className="px-6 py-3"><SortableHeader label="Probability" field="probability_percent" currentSort={sort} onSort={handleSort} /></TableHead>}
+                <TableHead className="px-6 py-3 w-12"><span className="sr-only">Actions</span></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody >
               {sorted.map((p) => (
-                <tr key={p.id} className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(p.id) ? 'bg-blue-50/50' : ''}`}>
-                  <td className="px-4 py-3.5">
+                <TableRow key={p.id} className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(p.id) ? 'bg-blue-50/50' : ''}`}>
+                  <TableCell className="px-4 py-3.5">
                     <input type="checkbox" checked={isSelected(p.id)} onChange={() => toggle(p.id)} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
-                  </td>
+                  </TableCell>
                   {isVisible('name') && (
-                    <td className="px-6 py-3.5">
+                    <TableCell className="px-6 py-3.5">
                       <div>
                         <Link href={`/app/proposals/${p.id}`} className="text-sm font-medium text-foreground hover:underline">{p.name}</Link>
                         {p.subtitle && <p className="text-xs text-text-secondary mt-0.5">{p.subtitle}</p>}
                       </div>
-                    </td>
+                    </TableCell>
                   )}
-                  {isVisible('client') && <td className="px-6 py-3.5 text-sm text-text-secondary">{clientName(p.client_id)}</td>}
+                  {isVisible('client') && <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{clientName(p.client_id)}</TableCell>}
                   {isVisible('status') && (
-                    <td className="px-6 py-3.5">
+                    <TableCell className="px-6 py-3.5">
                       <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColor(p.status)}`}>{formatLabel(p.status)}</span>
-                    </td>
+                    </TableCell>
                   )}
-                  {isVisible('prepared_date') && <td className="px-6 py-3.5 text-sm text-foreground whitespace-nowrap">{formatDate(p.prepared_date || p.created_at)}</td>}
-                  {isVisible('total_value') && <td className="px-6 py-3.5 text-right text-sm font-medium tabular-nums text-foreground">{formatCurrency(p.total_value, p.currency)}</td>}
+                  {isVisible('prepared_date') && <TableCell className="px-6 py-3.5 text-sm text-foreground whitespace-nowrap">{formatDate(p.prepared_date || p.created_at)}</TableCell>}
+                  {isVisible('total_value') && <TableCell className="px-6 py-3.5 text-right text-sm font-medium tabular-nums text-foreground">{formatCurrency(p.total_value, p.currency)}</TableCell>}
                   {isVisible('probability') && (
-                    <td className="px-6 py-3.5 text-right text-sm font-medium tabular-nums text-foreground">{p.probability_percent}%</td>
+                    <TableCell className="px-6 py-3.5 text-right text-sm font-medium tabular-nums text-foreground">{p.probability_percent}%</TableCell>
                   )}
-                  <td className="px-6 py-3.5">
+                  <TableCell className="px-6 py-3.5">
                     <RowActionMenu actions={[
                       { label: 'View', onClick: () => router.push(`/app/proposals/${p.id}`) },
                       { label: 'Delete', variant: 'danger', onClick: () => setDeleteId(p.id) },
                     ]} />
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
               {sorted.length === 0 && (
-                <tr><td colSpan={8} className="px-6 py-12 text-center text-sm text-text-muted">No proposals match your filters.</td></tr>
+                <TableRow><TableCell colSpan={8} className="px-6 py-12 text-center text-sm text-text-muted">No proposals match your filters.</TableCell></TableRow>
               )}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </div>
 

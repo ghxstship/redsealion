@@ -5,6 +5,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import ReportsHubTabs from '../../ReportsHubTabs';
 import Card from '@/components/ui/Card';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface WipRow {
   projectId: string;
@@ -178,32 +179,32 @@ export default async function WipReportPage() {
       ) : (
         <div className="rounded-xl border border-border bg-background overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border bg-bg-secondary">
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Project</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Client</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Billed</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Cost</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Unbilled Time</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Unbilled Exp.</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">WIP Balance</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader>
+                <TableRow className="border-b border-border bg-bg-secondary">
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Project</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Client</TableHead>
+                  <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Billed</TableHead>
+                  <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Cost</TableHead>
+                  <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Unbilled Time</TableHead>
+                  <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Unbilled Exp.</TableHead>
+                  <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">WIP Balance</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {rows.map((r) => (
-                  <tr key={r.projectId} className="transition-colors hover:bg-bg-secondary/50">
-                    <td className="px-6 py-3.5 text-sm font-medium text-foreground">{r.projectName}</td>
-                    <td className="px-6 py-3.5 text-sm text-text-secondary">{r.clientName ?? '—'}</td>
-                    <td className="px-6 py-3.5 text-right text-sm tabular-nums text-green-600">{formatCurrency(r.totalBilled)}</td>
-                    <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{formatCurrency(r.totalCost)}</td>
-                    <td className="px-6 py-3.5 text-right text-sm tabular-nums text-text-secondary">{formatCurrency(r.unbilledTimeValue)}</td>
-                    <td className="px-6 py-3.5 text-right text-sm tabular-nums text-text-secondary">{formatCurrency(r.unbilledExpenses)}</td>
-                    <td className="px-6 py-3.5 text-right text-sm font-medium tabular-nums text-orange-600">{formatCurrency(r.wipBalance)}</td>
-                  </tr>
+                  <TableRow key={r.projectId} className="transition-colors hover:bg-bg-secondary/50">
+                    <TableCell className="px-6 py-3.5 text-sm font-medium text-foreground">{r.projectName}</TableCell>
+                    <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{r.clientName ?? '—'}</TableCell>
+                    <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-green-600">{formatCurrency(r.totalBilled)}</TableCell>
+                    <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{formatCurrency(r.totalCost)}</TableCell>
+                    <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-text-secondary">{formatCurrency(r.unbilledTimeValue)}</TableCell>
+                    <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-text-secondary">{formatCurrency(r.unbilledExpenses)}</TableCell>
+                    <TableCell className="px-6 py-3.5 text-right text-sm font-medium tabular-nums text-orange-600">{formatCurrency(r.wipBalance)}</TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </div>
       )}

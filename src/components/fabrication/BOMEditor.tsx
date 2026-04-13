@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { formatCurrency } from '@/lib/utils';
 import { Trash, Plus } from 'lucide-react';
 import Button from '@/components/ui/Button';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface BOMItem {
   id: string;
@@ -42,40 +43,40 @@ export default function BOMEditor({ orderId, initialItems }: { orderId: string, 
         {items.length === 0 ? (
           <div className="p-8 text-center text-sm text-text-secondary">No materials added yet.</div>
         ) : (
-          <table className="w-full text-sm text-left">
-            <thead className="bg-bg-secondary text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr>
-                <th className="px-4 py-3">Material</th>
-                <th className="px-4 py-3">SKU</th>
-                <th className="px-4 py-3">Req</th>
-                <th className="px-4 py-3">On Hand</th>
-                <th className="px-4 py-3">Unit Cost</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3"></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
+          <Table className="w-full text-sm text-left">
+            <TableHeader className="bg-bg-secondary text-xs font-medium text-text-muted uppercase tracking-wider">
+              <TableRow>
+                <TableHead className="px-4 py-3">Material</TableHead>
+                <TableHead className="px-4 py-3">SKU</TableHead>
+                <TableHead className="px-4 py-3">Req</TableHead>
+                <TableHead className="px-4 py-3">On Hand</TableHead>
+                <TableHead className="px-4 py-3">Unit Cost</TableHead>
+                <TableHead className="px-4 py-3">Status</TableHead>
+                <TableHead className="px-4 py-3"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody >
               {items.map(item => (
-                <tr key={item.id} className={item.quantity_on_hand < item.quantity_required ? 'bg-red-500/5' : ''}>
-                  <td className="px-4 py-3 font-medium text-foreground">{item.material_name}</td>
-                  <td className="px-4 py-3 text-text-muted">{item.sku || '—'}</td>
-                  <td className="px-4 py-3 tabular-nums">{item.quantity_required} {item.unit}</td>
-                  <td className="px-4 py-3 tabular-nums text-blue-600">{item.quantity_on_hand} {item.unit}</td>
-                  <td className="px-4 py-3 tabular-nums">{formatCurrency(item.unit_cost_cents / 100)}</td>
-                  <td className="px-4 py-3">
+                <TableRow key={item.id} className={item.quantity_on_hand < item.quantity_required ? 'bg-red-500/5' : ''}>
+                  <TableCell className="px-4 py-3 font-medium text-foreground">{item.material_name}</TableCell>
+                  <TableCell className="px-4 py-3 text-text-muted">{item.sku || '—'}</TableCell>
+                  <TableCell className="px-4 py-3 tabular-nums">{item.quantity_required} {item.unit}</TableCell>
+                  <TableCell className="px-4 py-3 tabular-nums text-blue-600">{item.quantity_on_hand} {item.unit}</TableCell>
+                  <TableCell className="px-4 py-3 tabular-nums">{formatCurrency(item.unit_cost_cents / 100)}</TableCell>
+                  <TableCell className="px-4 py-3">
                     <span className="inline-flex rounded-full px-2 py-0.5 text-xs font-medium bg-bg-secondary text-text-secondary">
                       {item.status}
                     </span>
-                  </td>
-                  <td className="px-4 py-3 text-right">
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-right">
                     <Button className="text-text-muted hover:text-red-600 transition-colors">
                       <Trash className="w-4 h-4" />
                     </Button>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         )}
       </div>
     </div>

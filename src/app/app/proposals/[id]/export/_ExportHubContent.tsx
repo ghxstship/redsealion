@@ -10,6 +10,7 @@ import ExportPreview from '@/components/admin/export/ExportPreview';
 import Tabs from '@/components/ui/Tabs';
 import type { ProposalExportData, ExportHubData } from './_data';
 import PageHeader from '@/components/shared/PageHeader';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 type ExportTab = 'document' | 'crm' | 'finance' | 'pm' | 'assets' | 'resources' | 'csv';
 
@@ -188,39 +189,39 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
               <p className="mt-0.5 text-xs text-text-muted">Based on payment terms and milestone triggers</p>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-border bg-bg-secondary">
-                    <th className="px-6 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-text-muted">Type</th>
-                    <th className="px-6 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-text-muted">Description</th>
-                    <th className="px-6 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-text-muted">Date</th>
-                    <th className="px-6 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-text-muted">Amount</th>
-                    <th className="px-6 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-text-muted">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
+              <Table >
+                <TableHeader>
+                  <TableRow className="border-b border-border bg-bg-secondary">
+                    <TableHead className="px-6 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-text-muted">Type</TableHead>
+                    <TableHead className="px-6 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-text-muted">Description</TableHead>
+                    <TableHead className="px-6 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-text-muted">Date</TableHead>
+                    <TableHead className="px-6 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-text-muted">Amount</TableHead>
+                    <TableHead className="px-6 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-text-muted">Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody >
                   {invoiceSchedule.map((inv: { type: string; description: string; date: string; amount: number; status: string }, i: number) => (
-                    <tr key={i} className="hover:bg-bg-secondary/50">
-                      <td className="px-6 py-3">
+                    <TableRow key={i} className="hover:bg-bg-secondary/50">
+                      <TableCell className="px-6 py-3">
                         <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${inv.type === 'Deposit' ? 'bg-blue-50 text-blue-700' : 'bg-amber-50 text-amber-700'}`}>{inv.type}</span>
-                      </td>
-                      <td className="px-6 py-3 text-foreground">{inv.description}</td>
-                      <td className="px-6 py-3 text-text-secondary tabular-nums">{new Date(inv.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
-                      <td className="px-6 py-3 text-right font-medium text-foreground tabular-nums">{fmt(inv.amount)}</td>
-                      <td className="px-6 py-3">
+                      </TableCell>
+                      <TableCell className="px-6 py-3 text-foreground">{inv.description}</TableCell>
+                      <TableCell className="px-6 py-3 text-text-secondary tabular-nums">{new Date(inv.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</TableCell>
+                      <TableCell className="px-6 py-3 text-right font-medium text-foreground tabular-nums">{fmt(inv.amount)}</TableCell>
+                      <TableCell className="px-6 py-3">
                         <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${inv.status === 'Draft' ? 'bg-bg-secondary text-text-muted' : 'bg-green-50 text-green-700'}`}>{inv.status}</span>
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
+                </TableBody>
                 <tfoot>
-                  <tr className="border-t border-border bg-bg-secondary">
-                    <td className="px-6 py-3" colSpan={3}><span className="text-sm font-semibold text-foreground">Total</span></td>
-                    <td className="px-6 py-3 text-right font-semibold text-foreground tabular-nums">{fmt(invoiceSchedule.reduce((s: number, inv: { amount: number }) => s + inv.amount, 0))}</td>
-                    <td />
-                  </tr>
+                  <TableRow className="border-t border-border bg-bg-secondary">
+                    <TableCell className="px-6 py-3" colSpan={3}><span className="text-sm font-semibold text-foreground">Total</span></TableCell>
+                    <TableCell className="px-6 py-3 text-right font-semibold text-foreground tabular-nums">{fmt(invoiceSchedule.reduce((s: number, inv: { amount: number }) => s + inv.amount, 0))}</TableCell>
+                    <TableCell />
+                  </TableRow>
                 </tfoot>
-              </table>
+              </Table>
             </div>
           </div>
         </div>
@@ -241,7 +242,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
               <h2 className="text-sm font-semibold text-foreground">Task Structure Preview</h2>
               <p className="mt-0.5 text-xs text-text-muted">Phases, tasks, and subtasks as they will appear in your PM tool</p>
             </div>
-            <div className="divide-y divide-border">
+            <div >
               {clickupPreview.tasks.map((task: { name: string; subtasks: string[] }, i: number) => (
                 <div key={i} className="px-6 py-4">
                   <div className="flex items-center gap-2.5 mb-3">
@@ -276,32 +277,32 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
               <Button onClick={() => downloadCsv(assetInventory, 'asset-inventory')} className="rounded-lg border border-border bg-background px-3.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary">Download CSV</Button>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-border bg-bg-secondary">
-                    <th className="px-6 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-text-muted">Asset Name</th>
-                    <th className="px-6 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-text-muted">Type</th>
-                    <th className="px-6 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-text-muted">Category</th>
-                    <th className="px-6 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-text-muted">Venue</th>
-                    <th className="px-6 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-text-muted">Qty</th>
-                    <th className="px-6 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-text-muted">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
+              <Table >
+                <TableHeader>
+                  <TableRow className="border-b border-border bg-bg-secondary">
+                    <TableHead className="px-6 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-text-muted">Asset Name</TableHead>
+                    <TableHead className="px-6 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-text-muted">Type</TableHead>
+                    <TableHead className="px-6 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-text-muted">Category</TableHead>
+                    <TableHead className="px-6 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-text-muted">Venue</TableHead>
+                    <TableHead className="px-6 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-text-muted">Qty</TableHead>
+                    <TableHead className="px-6 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-text-muted">Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody >
                   {assetInventory.map((asset: { name: string; type: string; category: string; venue: string; qty: number; status: string }, i: number) => (
-                    <tr key={i} className="hover:bg-bg-secondary/50">
-                      <td className="px-6 py-3 font-medium text-foreground">{asset.name}</td>
-                      <td className="px-6 py-3 text-text-secondary">{asset.type}</td>
-                      <td className="px-6 py-3 text-text-secondary">{asset.category}</td>
-                      <td className="px-6 py-3 text-text-secondary">{asset.venue}</td>
-                      <td className="px-6 py-3 text-right tabular-nums text-foreground">{asset.qty}</td>
-                      <td className="px-6 py-3">
+                    <TableRow key={i} className="hover:bg-bg-secondary/50">
+                      <TableCell className="px-6 py-3 font-medium text-foreground">{asset.name}</TableCell>
+                      <TableCell className="px-6 py-3 text-text-secondary">{asset.type}</TableCell>
+                      <TableCell className="px-6 py-3 text-text-secondary">{asset.category}</TableCell>
+                      <TableCell className="px-6 py-3 text-text-secondary">{asset.venue}</TableCell>
+                      <TableCell className="px-6 py-3 text-right tabular-nums text-foreground">{asset.qty}</TableCell>
+                      <TableCell className="px-6 py-3">
                         <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${asset.status === 'In Production' ? 'bg-orange-50 text-orange-700' : 'bg-bg-secondary text-text-muted'}`}>{asset.status}</span>
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           </div>
 
@@ -311,26 +312,26 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
               <h2 className="text-sm font-semibold text-foreground">Venue Assignment Matrix</h2>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-border bg-bg-secondary">
-                    <th className="px-6 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-text-muted">Asset</th>
-                    <th className="px-6 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-text-muted">Venue A</th>
-                    <th className="px-6 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-text-muted">Venue B</th>
-                    <th className="px-6 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-text-muted">Total</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
+              <Table >
+                <TableHeader>
+                  <TableRow className="border-b border-border bg-bg-secondary">
+                    <TableHead className="px-6 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-text-muted">Asset</TableHead>
+                    <TableHead className="px-6 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-text-muted">Venue A</TableHead>
+                    <TableHead className="px-6 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-text-muted">Venue B</TableHead>
+                    <TableHead className="px-6 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-text-muted">Total</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody >
                   {venueMatrix.map((row: { asset: string; venueA: number; venueB: number }, i: number) => (
-                    <tr key={i} className="hover:bg-bg-secondary/50">
-                      <td className="px-6 py-3 font-medium text-foreground">{row.asset}</td>
-                      <td className="px-6 py-3 text-right tabular-nums text-text-secondary">{row.venueA || '\u2014'}</td>
-                      <td className="px-6 py-3 text-right tabular-nums text-text-secondary">{row.venueB || '\u2014'}</td>
-                      <td className="px-6 py-3 text-right tabular-nums font-medium text-foreground">{row.venueA + row.venueB}</td>
-                    </tr>
+                    <TableRow key={i} className="hover:bg-bg-secondary/50">
+                      <TableCell className="px-6 py-3 font-medium text-foreground">{row.asset}</TableCell>
+                      <TableCell className="px-6 py-3 text-right tabular-nums text-text-secondary">{row.venueA || '\u2014'}</TableCell>
+                      <TableCell className="px-6 py-3 text-right tabular-nums text-text-secondary">{row.venueB || '\u2014'}</TableCell>
+                      <TableCell className="px-6 py-3 text-right tabular-nums font-medium text-foreground">{row.venueA + row.venueB}</TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           </div>
         </div>
@@ -348,30 +349,30 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
               <Button onClick={() => downloadCsv(personnelTable, 'personnel-allocation')} className="rounded-lg border border-border bg-background px-3.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary">Download CSV</Button>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-border bg-bg-secondary">
-                    <th className="px-6 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-text-muted">Role</th>
-                    <th className="px-6 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-text-muted">Phase 1</th>
-                    <th className="px-6 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-text-muted">Phase 2</th>
-                    <th className="px-6 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-text-muted">Phase 3</th>
-                    <th className="px-6 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-text-muted">Phase 4</th>
-                    <th className="px-6 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-text-muted">Est. Hours</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
+              <Table >
+                <TableHeader>
+                  <TableRow className="border-b border-border bg-bg-secondary">
+                    <TableHead className="px-6 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-text-muted">Role</TableHead>
+                    <TableHead className="px-6 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-text-muted">Phase 1</TableHead>
+                    <TableHead className="px-6 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-text-muted">Phase 2</TableHead>
+                    <TableHead className="px-6 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-text-muted">Phase 3</TableHead>
+                    <TableHead className="px-6 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-text-muted">Phase 4</TableHead>
+                    <TableHead className="px-6 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-text-muted">Est. Hours</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody >
                   {personnelTable.map((row: { role: string; phase1: number; phase2: number; phase3: number; phase4: number; totalHours: number }, i: number) => (
-                    <tr key={i} className="hover:bg-bg-secondary/50">
-                      <td className="px-6 py-3 font-medium text-foreground">{row.role}</td>
-                      <td className="px-6 py-3 text-right tabular-nums text-text-secondary">{row.phase1 || '\u2014'}</td>
-                      <td className="px-6 py-3 text-right tabular-nums text-text-secondary">{row.phase2 || '\u2014'}</td>
-                      <td className="px-6 py-3 text-right tabular-nums text-text-secondary">{row.phase3 || '\u2014'}</td>
-                      <td className="px-6 py-3 text-right tabular-nums text-text-secondary">{row.phase4 || '\u2014'}</td>
-                      <td className="px-6 py-3 text-right tabular-nums font-medium text-foreground">{row.totalHours.toLocaleString()}</td>
-                    </tr>
+                    <TableRow key={i} className="hover:bg-bg-secondary/50">
+                      <TableCell className="px-6 py-3 font-medium text-foreground">{row.role}</TableCell>
+                      <TableCell className="px-6 py-3 text-right tabular-nums text-text-secondary">{row.phase1 || '\u2014'}</TableCell>
+                      <TableCell className="px-6 py-3 text-right tabular-nums text-text-secondary">{row.phase2 || '\u2014'}</TableCell>
+                      <TableCell className="px-6 py-3 text-right tabular-nums text-text-secondary">{row.phase3 || '\u2014'}</TableCell>
+                      <TableCell className="px-6 py-3 text-right tabular-nums text-text-secondary">{row.phase4 || '\u2014'}</TableCell>
+                      <TableCell className="px-6 py-3 text-right tabular-nums font-medium text-foreground">{row.totalHours.toLocaleString()}</TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           </div>
 
@@ -383,26 +384,26 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
               <Button onClick={() => downloadCsv(equipmentList, 'equipment-requirements')} className="rounded-lg border border-border bg-background px-3.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-bg-secondary">Download CSV</Button>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-border bg-bg-secondary">
-                    <th className="px-6 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-text-muted">Item</th>
-                    <th className="px-6 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-text-muted">Qty</th>
-                    <th className="px-6 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-text-muted">Phases</th>
-                    <th className="px-6 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-text-muted">Notes</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
+              <Table >
+                <TableHeader>
+                  <TableRow className="border-b border-border bg-bg-secondary">
+                    <TableHead className="px-6 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-text-muted">Item</TableHead>
+                    <TableHead className="px-6 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-text-muted">Qty</TableHead>
+                    <TableHead className="px-6 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-text-muted">Phases</TableHead>
+                    <TableHead className="px-6 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-text-muted">Notes</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody >
                   {equipmentList.map((row: { item: string; qty: number; phases: string; notes: string }, i: number) => (
-                    <tr key={i} className="hover:bg-bg-secondary/50">
-                      <td className="px-6 py-3 font-medium text-foreground">{row.item}</td>
-                      <td className="px-6 py-3 text-right tabular-nums text-text-secondary">{row.qty}</td>
-                      <td className="px-6 py-3 text-text-secondary">{row.phases}</td>
-                      <td className="px-6 py-3 text-text-muted">{row.notes}</td>
-                    </tr>
+                    <TableRow key={i} className="hover:bg-bg-secondary/50">
+                      <TableCell className="px-6 py-3 font-medium text-foreground">{row.item}</TableCell>
+                      <TableCell className="px-6 py-3 text-right tabular-nums text-text-secondary">{row.qty}</TableCell>
+                      <TableCell className="px-6 py-3 text-text-secondary">{row.phases}</TableCell>
+                      <TableCell className="px-6 py-3 text-text-muted">{row.notes}</TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           </div>
         </div>
@@ -423,7 +424,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
             <div className="px-6 py-4 border-b border-border">
               <h2 className="text-sm font-semibold text-foreground">Individual Files</h2>
             </div>
-            <div className="divide-y divide-border">
+            <div >
               {csvFiles.map((file: { name: string; label: string; rows: number; description: string }) => (
                 <div key={file.name} className="flex items-center justify-between px-6 py-4 hover:bg-bg-secondary/50 transition-colors">
                   <div className="flex items-center gap-3.5 min-w-0">

@@ -7,6 +7,7 @@ import DispatchHubTabs from '../../DispatchHubTabs';
 import Alert from '@/components/ui/Alert';
 import StatusBadge from '@/components/ui/StatusBadge';
 import MetricCard from '@/components/ui/MetricCard';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface RouteItem {
   id: string;
@@ -74,32 +75,32 @@ export default async function DispatchRoutesPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr>
-                  <th className="px-4 py-3">Job</th>
-                  <th className="px-4 py-3">Location</th>
-                  <th className="px-4 py-3">Crew</th>
-                  <th className="px-4 py-3">Date</th>
-                  <th className="px-4 py-3">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow>
+                  <TableHead className="px-4 py-3">Job</TableHead>
+                  <TableHead className="px-4 py-3">Location</TableHead>
+                  <TableHead className="px-4 py-3">Crew</TableHead>
+                  <TableHead className="px-4 py-3">Date</TableHead>
+                  <TableHead className="px-4 py-3">Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {routes.map((r) => (
-                  <tr key={r.id} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3 font-medium text-foreground">
+                  <TableRow key={r.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <TableCell className="px-4 py-3 font-medium text-foreground">
                       <Link href={`/app/dispatch/${r.id}`} className="hover:underline">{r.title}</Link>
-                    </td>
-                    <td className="px-4 py-3 text-text-secondary">{r.location_name}</td>
-                    <td className="px-4 py-3 text-text-secondary">{crewNames(r)}</td>
-                    <td className="px-4 py-3 text-text-secondary">{r.scheduled_start ? new Date(r.scheduled_start).toLocaleDateString() : '—'}</td>
-                    <td className="px-4 py-3">
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{r.location_name}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{crewNames(r)}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{r.scheduled_start ? new Date(r.scheduled_start).toLocaleDateString() : '—'}</TableCell>
+                    <TableCell className="px-4 py-3">
                       <StatusBadge status={r.status} colorMap={{in_progress: 'bg-purple-50 text-purple-700', dispatched: 'bg-blue-50 text-blue-700', draft: 'bg-blue-50 text-blue-700'}} />
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

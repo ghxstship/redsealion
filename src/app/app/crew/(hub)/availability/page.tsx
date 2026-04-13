@@ -8,6 +8,7 @@ import PageHeader from '@/components/shared/PageHeader';
 
 import EmptyState from '@/components/ui/EmptyState';
 import Button from '@/components/ui/Button';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface CrewAvailability {
   id: string;
@@ -142,46 +143,46 @@ export default function CrewAvailabilityPage() {
         <>
           {/* Calendar grid */}
           <div className="rounded-xl border border-border bg-background overflow-hidden overflow-x-auto">
-            <table className="w-full min-w-[800px]">
-              <thead>
-                <tr className="border-b border-border bg-bg-secondary">
-                  <th className="sticky left-0 bg-bg-secondary px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted min-w-[150px]">
+            <Table className="w-full min-w-[800px]">
+              <TableHeader>
+                <TableRow className="border-b border-border bg-bg-secondary">
+                  <TableHead className="sticky left-0 bg-bg-secondary px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted min-w-[150px]">
                     Crew Member
-                  </th>
+                  </TableHead>
                   {days.map((d) => (
-                    <th
+                    <TableHead
                       key={d}
                       className="px-1 py-3 text-center text-xs font-medium text-text-muted min-w-[32px]"
                     >
                       {d}
-                    </th>
+                    </TableHead>
                   ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {crew.map((member) => (
-                  <tr key={member.id} className="transition-colors hover:bg-bg-secondary/30">
-                    <td className="sticky left-0 bg-background px-4 py-2 text-sm font-medium text-foreground border-r border-border">
+                  <TableRow key={member.id} className="transition-colors hover:bg-bg-secondary/30">
+                    <TableCell className="sticky left-0 bg-background px-4 py-2 text-sm font-medium text-foreground border-r border-border">
                       <Link href={`/app/crew/${member.id}`} className="hover:underline">
                         {member.full_name}
                       </Link>
-                    </td>
+                    </TableCell>
                     {days.map((d) => {
                       const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                       const status = member.availability[dateKey] ?? 'available';
                       return (
-                        <td key={d} className="px-1 py-2">
+                        <TableCell key={d} className="px-1 py-2">
                           <div
                             className={`mx-auto h-5 w-5 rounded ${CELL_COLORS[status]}`}
                             title={`${member.full_name} - ${dateKey}: ${status}`}
                           />
-                        </td>
+                        </TableCell>
                       );
                     })}
-                  </tr>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
 
           {/* Legend */}

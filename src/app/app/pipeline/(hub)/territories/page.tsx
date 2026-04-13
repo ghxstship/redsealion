@@ -5,6 +5,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import { formatCurrency } from '@/lib/utils';
 import PipelineHubTabs from '../../PipelineHubTabs';
 import MetricCard from '@/components/ui/MetricCard';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getTerritoryData() {
   try {
@@ -57,21 +58,21 @@ export default async function TerritoriesPage() {
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No deal territories yet. Territories are derived from client address data.</p></div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr><th className="px-4 py-3">Region</th><th className="px-4 py-3">Deals</th><th className="px-4 py-3">Pipeline Value</th><th className="px-4 py-3">% of Total</th></tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow><TableHead className="px-4 py-3">Region</TableHead><TableHead className="px-4 py-3">Deals</TableHead><TableHead className="px-4 py-3">Pipeline Value</TableHead><TableHead className="px-4 py-3">% of Total</TableHead></TableRow>
+              </TableHeader>
+              <TableBody >
                 {territories.map(([region, data]) => (
-                  <tr key={region} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3 font-medium text-foreground">{region}</td>
-                    <td className="px-4 py-3 tabular-nums">{data.count}</td>
-                    <td className="px-4 py-3 tabular-nums">{formatCurrency(data.value)}</td>
-                    <td className="px-4 py-3 tabular-nums">{totalValue > 0 ? `${Math.round((data.value / totalValue) * 100)}%` : '0%'}</td>
-                  </tr>
+                  <TableRow key={region} className="hover:bg-bg-secondary/50 transition-colors">
+                    <TableCell className="px-4 py-3 font-medium text-foreground">{region}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums">{data.count}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums">{formatCurrency(data.value)}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums">{totalValue > 0 ? `${Math.round((data.value / totalValue) * 100)}%` : '0%'}</TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

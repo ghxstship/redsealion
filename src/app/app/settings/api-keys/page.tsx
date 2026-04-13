@@ -25,6 +25,7 @@ function formatDate(iso: string): string {
 
 
 import { KeyRound } from 'lucide-react';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 function KeyIcon() {
   return <KeyRound className="h-5 w-5" />;
@@ -125,30 +126,30 @@ export default function ApiKeysPage() {
           <Button onClick={() => setShowNameModal(true)}>Generate Key</Button>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border text-left">
-                <th className="pb-3 text-xs font-medium text-text-muted uppercase tracking-wider">Name</th>
-                <th className="pb-3 text-xs font-medium text-text-muted uppercase tracking-wider">Key</th>
-                <th className="pb-3 text-xs font-medium text-text-muted uppercase tracking-wider">Scopes</th>
-                <th className="pb-3 text-xs font-medium text-text-muted uppercase tracking-wider">Created</th>
-                <th className="pb-3 text-xs font-medium text-text-muted uppercase tracking-wider">Last Used</th>
-                <th className="pb-3 text-xs font-medium text-text-muted uppercase tracking-wider"></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
+          <Table >
+            <TableHeader>
+              <TableRow className="border-b border-border text-left">
+                <TableHead className="pb-3 text-xs font-medium text-text-muted uppercase tracking-wider">Name</TableHead>
+                <TableHead className="pb-3 text-xs font-medium text-text-muted uppercase tracking-wider">Key</TableHead>
+                <TableHead className="pb-3 text-xs font-medium text-text-muted uppercase tracking-wider">Scopes</TableHead>
+                <TableHead className="pb-3 text-xs font-medium text-text-muted uppercase tracking-wider">Created</TableHead>
+                <TableHead className="pb-3 text-xs font-medium text-text-muted uppercase tracking-wider">Last Used</TableHead>
+                <TableHead className="pb-3 text-xs font-medium text-text-muted uppercase tracking-wider"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody >
               {keys.length === 0 && (
-                <tr>
-                  <td colSpan={6} className="py-8 text-center text-sm text-text-muted">
+                <TableRow>
+                  <TableCell colSpan={6} className="py-8 text-center text-sm text-text-muted">
                     No API keys yet. Generate one to get started.
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               )}
               {keys.map((k) => (
-                <tr key={k.id}>
-                  <td className="py-3 font-medium text-foreground">{k.name}</td>
-                  <td className="py-3 font-mono text-text-secondary">{k.key_prefix}...</td>
-                  <td className="py-3">
+                <TableRow key={k.id}>
+                  <TableCell className="py-3 font-medium text-foreground">{k.name}</TableCell>
+                  <TableCell className="py-3 font-mono text-text-secondary">{k.key_prefix}...</TableCell>
+                  <TableCell className="py-3">
                     <div className="flex flex-wrap gap-1">
                       {k.scopes.map((s) => (
                         <span key={s} className="inline-flex items-center rounded-full bg-bg-secondary px-2 py-0.5 text-xs font-medium text-text-muted">
@@ -156,18 +157,18 @@ export default function ApiKeysPage() {
                         </span>
                       ))}
                     </div>
-                  </td>
-                  <td className="py-3 text-text-secondary">{formatDate(k.created_at)}</td>
-                  <td className="py-3 text-text-secondary">{k.last_used_at ? formatDate(k.last_used_at) : 'Never'}</td>
-                  <td className="py-3">
+                  </TableCell>
+                  <TableCell className="py-3 text-text-secondary">{formatDate(k.created_at)}</TableCell>
+                  <TableCell className="py-3 text-text-secondary">{k.last_used_at ? formatDate(k.last_used_at) : 'Never'}</TableCell>
+                  <TableCell className="py-3">
                     <Button variant="ghost" size="sm" onClick={() => setRevokeConfirm(k.id)} className="text-red-600 hover:text-red-800">
                       Revoke
                     </Button>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </Card>
 

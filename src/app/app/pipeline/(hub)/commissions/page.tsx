@@ -5,6 +5,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import { formatCurrency } from '@/lib/utils';
 import PipelineHubTabs from '../../PipelineHubTabs';
 import MetricCard from '@/components/ui/MetricCard';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 const DEFAULT_COMMISSION_RATE = 0.1; // 10% fallback
 
@@ -98,21 +99,21 @@ export default async function CommissionsPage() {
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No commissions earned yet. Commissions are calculated from closed-won deals.</p></div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr><th className="px-4 py-3">Sales Rep</th><th className="px-4 py-3">Deals Won</th><th className="px-4 py-3">Revenue</th><th className="px-4 py-3">Commission</th></tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow><TableHead className="px-4 py-3">Sales Rep</TableHead><TableHead className="px-4 py-3">Deals Won</TableHead><TableHead className="px-4 py-3">Revenue</TableHead><TableHead className="px-4 py-3">Commission</TableHead></TableRow>
+              </TableHeader>
+              <TableBody >
                 {repList.map(([name, data]) => (
-                  <tr key={name} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3 font-medium text-foreground">{name}</td>
-                    <td className="px-4 py-3 tabular-nums">{data.deals}</td>
-                    <td className="px-4 py-3 tabular-nums">{formatCurrency(data.revenue)}</td>
-                    <td className="px-4 py-3 tabular-nums font-medium text-green-600">{formatCurrency(data.revenue * commissionRate)}</td>
-                  </tr>
+                  <TableRow key={name} className="hover:bg-bg-secondary/50 transition-colors">
+                    <TableCell className="px-4 py-3 font-medium text-foreground">{name}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums">{data.deals}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums">{formatCurrency(data.revenue)}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums font-medium text-green-600">{formatCurrency(data.revenue * commissionRate)}</TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

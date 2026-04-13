@@ -8,6 +8,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
 import FormInput from '@/components/ui/FormInput';
 import FormTextarea from '@/components/ui/FormTextarea';
 import Tabs from '@/components/ui/Tabs';
@@ -236,7 +237,7 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
   const activeLabel = PORTAL_TYPES.find(t => t.key === activeTab)?.label || 'Portal';
 
   return (
-    <div className="bg-background border rounded-lg shadow-sm p-6 lg:col-span-2">
+    <Card className="lg:col-span-2">
       <h2 className="text-lg font-semibold mb-4 text-foreground">Event Portal Configuration</h2>
       <p className="text-sm text-text-muted mb-6">
         Manage the Know Before You Go information served to productionsite.guide for this specific project.
@@ -431,6 +432,6 @@ export function PortalSettingsCard({ projectId }: { projectId: string }) {
           </>
         )}
       </div>
-    </div>
+    </Card>
   );
 }

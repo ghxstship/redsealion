@@ -8,6 +8,7 @@ import { formatCurrency } from '@/lib/utils';
 import RentalStatusActions from './RentalStatusActions';
 import StatusBadge, { RENTAL_ORDER_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import RentalEditForm from './RentalEditForm';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getRentalOrder(id: string) {
   try {
@@ -129,26 +130,26 @@ export default async function RentalDetailPage({ params }: { params: Promise<{ i
         {lineItems.length === 0 ? (
           <div className="px-8 py-12 text-center text-sm text-text-secondary">No line items added to this rental order.</div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr>
-                <th className="px-4 py-3">Item</th>
-                <th className="px-4 py-3">Quantity</th>
-                <th className="px-4 py-3">Rate</th>
-                <th className="px-4 py-3">Total</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
+          <Table >
+            <TableHeader >
+              <TableRow>
+                <TableHead className="px-4 py-3">Item</TableHead>
+                <TableHead className="px-4 py-3">Quantity</TableHead>
+                <TableHead className="px-4 py-3">Rate</TableHead>
+                <TableHead className="px-4 py-3">Total</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody >
               {lineItems.map((item) => (
-                <tr key={item.id as string} className="hover:bg-bg-secondary/50 transition-colors">
-                  <td className="px-4 py-3 text-foreground">{(item.description as string) ?? (item.equipment_item_id as string) ?? '—'}</td>
-                  <td className="px-4 py-3 text-text-secondary tabular-nums">{(item.quantity as number) ?? 1}</td>
-                  <td className="px-4 py-3 text-text-secondary tabular-nums">{item.daily_rate_cents ? formatCurrency((item.daily_rate_cents as number) / 100) : '—'}</td>
-                  <td className="px-4 py-3 text-foreground tabular-nums">{item.total_cents ? formatCurrency((item.total_cents as number) / 100) : '—'}</td>
-                </tr>
+                <TableRow key={item.id as string} className="hover:bg-bg-secondary/50 transition-colors">
+                  <TableCell className="px-4 py-3 text-foreground">{(item.description as string) ?? (item.equipment_item_id as string) ?? '—'}</TableCell>
+                  <TableCell className="px-4 py-3 text-text-secondary tabular-nums">{(item.quantity as number) ?? 1}</TableCell>
+                  <TableCell className="px-4 py-3 text-text-secondary tabular-nums">{item.daily_rate_cents ? formatCurrency((item.daily_rate_cents as number) / 100) : '—'}</TableCell>
+                  <TableCell className="px-4 py-3 text-foreground tabular-nums">{item.total_cents ? formatCurrency((item.total_cents as number) / 100) : '—'}</TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         )}
       </div>
 
@@ -158,26 +159,26 @@ export default async function RentalDetailPage({ params }: { params: Promise<{ i
           <div className="px-6 py-4 border-b border-border">
             <h3 className="text-sm font-semibold text-foreground">Sub-Rentals ({subRentals.length})</h3>
           </div>
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr>
-                <th className="px-4 py-3">Vendor</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3">Cost</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
+          <Table >
+            <TableHeader >
+              <TableRow>
+                <TableHead className="px-4 py-3">Vendor</TableHead>
+                <TableHead className="px-4 py-3">Status</TableHead>
+                <TableHead className="px-4 py-3">Cost</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody >
               {subRentals.map((sr) => (
-                <tr key={sr.id as string} className="hover:bg-bg-secondary/50 transition-colors">
-                  <td className="px-4 py-3 text-foreground">{(sr.vendor_name as string) ?? '—'}</td>
-                  <td className="px-4 py-3">
+                <TableRow key={sr.id as string} className="hover:bg-bg-secondary/50 transition-colors">
+                  <TableCell className="px-4 py-3 text-foreground">{(sr.vendor_name as string) ?? '—'}</TableCell>
+                  <TableCell className="px-4 py-3">
                     <StatusBadge status={sr.status as string} colorMap={RENTAL_ORDER_STATUS_COLORS} />
-                  </td>
-                  <td className="px-4 py-3 text-foreground tabular-nums">{sr.total_cost_cents ? formatCurrency((sr.total_cost_cents as number) / 100) : '—'}</td>
-                </tr>
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-foreground tabular-nums">{sr.total_cost_cents ? formatCurrency((sr.total_cost_cents as number) / 100) : '—'}</TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       )}
     </TierGate>

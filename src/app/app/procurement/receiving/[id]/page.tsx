@@ -4,6 +4,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import Link from 'next/link';
 import StatusBadge from '@/components/ui/StatusBadge';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getReceipt(id: string) {
   const supabase = await createClient();
@@ -94,31 +95,31 @@ export default async function ReceiptDetailPage({ params }: { params: Promise<{ 
             <h3 className="text-sm font-semibold text-foreground">PO Line Items</h3>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr>
-                  <th className="px-4 py-3">Description</th>
-                  <th className="px-4 py-3">Ordered</th>
-                  <th className="px-4 py-3">Received</th>
-                  <th className="px-4 py-3">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow>
+                  <TableHead className="px-4 py-3">Description</TableHead>
+                  <TableHead className="px-4 py-3">Ordered</TableHead>
+                  <TableHead className="px-4 py-3">Received</TableHead>
+                  <TableHead className="px-4 py-3">Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {poLineItems.map((li) => {
                   const fulfilled = li.received_quantity >= li.quantity;
                   return (
-                    <tr key={li.id} className="hover:bg-bg-secondary/50 transition-colors">
-                      <td className="px-4 py-3 font-medium text-foreground">{li.description}</td>
-                      <td className="px-4 py-3 tabular-nums">{li.quantity}</td>
-                      <td className="px-4 py-3 tabular-nums">{li.received_quantity}</td>
-                      <td className="px-4 py-3">
+                    <TableRow key={li.id} className="hover:bg-bg-secondary/50 transition-colors">
+                      <TableCell className="px-4 py-3 font-medium text-foreground">{li.description}</TableCell>
+                      <TableCell className="px-4 py-3 tabular-nums">{li.quantity}</TableCell>
+                      <TableCell className="px-4 py-3 tabular-nums">{li.received_quantity}</TableCell>
+                      <TableCell className="px-4 py-3">
                         <StatusBadge status={fulfilled ? 'complete' : 'pending'} colorMap={{complete: 'bg-green-50 text-green-700', pending: 'bg-yellow-50 text-yellow-700'}} />
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   );
                 })}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </div>
       )}

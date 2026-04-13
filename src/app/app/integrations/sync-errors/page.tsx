@@ -5,6 +5,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import StatusBadge, { GENERIC_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import Link from 'next/link';
 import MetricCard from '@/components/ui/MetricCard';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface SyncError {
   id: string;
@@ -77,33 +78,33 @@ export default async function SyncErrorsPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr>
-                  <th className="px-4 py-3">Platform</th>
-                  <th className="px-4 py-3">Entity</th>
-                  <th className="px-4 py-3">Error</th>
-                  <th className="px-4 py-3">When</th>
-                  <th className="px-4 py-3">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow>
+                  <TableHead className="px-4 py-3">Platform</TableHead>
+                  <TableHead className="px-4 py-3">Entity</TableHead>
+                  <TableHead className="px-4 py-3">Error</TableHead>
+                  <TableHead className="px-4 py-3">When</TableHead>
+                  <TableHead className="px-4 py-3">Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {errors.map((err) => (
-                  <tr key={err.id} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3 font-medium text-foreground capitalize">{err.platform}</td>
-                    <td className="px-4 py-3 text-text-secondary capitalize">{err.entity_type.replace(/_/g, ' ')}</td>
-                    <td className="px-4 py-3 text-text-secondary max-w-[300px] truncate">{err.error_message}</td>
-                    <td className="px-4 py-3 text-text-muted text-xs whitespace-nowrap">{new Date(err.occurred_at).toLocaleString()}</td>
-                    <td className="px-4 py-3">
+                  <TableRow key={err.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <TableCell className="px-4 py-3 font-medium text-foreground capitalize">{err.platform}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary capitalize">{err.entity_type.replace(/_/g, ' ')}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary max-w-[300px] truncate">{err.error_message}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-muted text-xs whitespace-nowrap">{new Date(err.occurred_at).toLocaleString()}</TableCell>
+                    <TableCell className="px-4 py-3">
                       <StatusBadge
                         status={err.resolved ? 'resolved' : 'unresolved'}
                         colorMap={{ resolved: 'bg-green-50 text-green-700', unresolved: 'bg-red-500/10 text-red-700' }}
                       />
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

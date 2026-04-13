@@ -6,6 +6,7 @@ import Button from '@/components/ui/Button';
 import EventsHubTabs from '../../EventsHubTabs';
 import StatusBadge from '@/components/ui/StatusBadge';
 import MetricCard from '@/components/ui/MetricCard';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getDailyReports() {
   try {
@@ -62,30 +63,30 @@ export default async function DailyReportsPage() {
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No daily reports filed. Reports capture weather, labor hours, deliveries, and incidents during events.</p></div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr>
-                  <th className="px-4 py-3">Date</th>
-                  <th className="px-4 py-3">Event</th>
-                  <th className="px-4 py-3">Labor Hrs</th>
-                  <th className="px-4 py-3">Crew</th>
-                  <th className="px-4 py-3">Deliveries</th>
-                  <th className="px-4 py-3">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow>
+                  <TableHead className="px-4 py-3">Date</TableHead>
+                  <TableHead className="px-4 py-3">Event</TableHead>
+                  <TableHead className="px-4 py-3">Labor Hrs</TableHead>
+                  <TableHead className="px-4 py-3">Crew</TableHead>
+                  <TableHead className="px-4 py-3">Deliveries</TableHead>
+                  <TableHead className="px-4 py-3">Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {reports.map((r) => (
-                  <tr key={r.id} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3 font-medium text-foreground">{new Date(r.report_date + 'T00:00:00').toLocaleDateString()}</td>
-                    <td className="px-4 py-3 text-text-secondary">{r.event_name ?? '—'}</td>
-                    <td className="px-4 py-3 tabular-nums text-foreground">{r.labor_hours}</td>
-                    <td className="px-4 py-3 tabular-nums text-text-secondary">{r.crew_count}</td>
-                    <td className="px-4 py-3 tabular-nums text-text-secondary">{r.deliveries_received}</td>
-                    <td className="px-4 py-3"><StatusBadge status={r.status} colorMap={STATUS_COLORS} /></td>
-                  </tr>
+                  <TableRow key={r.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <TableCell className="px-4 py-3 font-medium text-foreground">{new Date(r.report_date + 'T00:00:00').toLocaleDateString()}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{r.event_name ?? '—'}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums text-foreground">{r.labor_hours}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums text-text-secondary">{r.crew_count}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums text-text-secondary">{r.deliveries_received}</TableCell>
+                    <TableCell className="px-4 py-3"><StatusBadge status={r.status} colorMap={STATUS_COLORS} /></TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

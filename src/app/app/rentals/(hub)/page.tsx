@@ -7,6 +7,7 @@ import Link from 'next/link';
 import RentalsHubTabs from '../RentalsHubTabs';
 import StatusBadge, { RENTAL_ORDER_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import MetricCard from '@/components/ui/MetricCard';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getRentalCatalog() {
   try {
@@ -63,22 +64,22 @@ export default async function RentalsCatalogPage() {
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No rental orders yet. Create a rental order to start tracking equipment rentals.</p></div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr><th className="px-4 py-3">Order #</th><th className="px-4 py-3">Client</th><th className="px-4 py-3">Period</th><th className="px-4 py-3">Total</th><th className="px-4 py-3">Status</th></tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow><TableHead className="px-4 py-3">Order #</TableHead><TableHead className="px-4 py-3">Client</TableHead><TableHead className="px-4 py-3">Period</TableHead><TableHead className="px-4 py-3">Total</TableHead><TableHead className="px-4 py-3">Status</TableHead></TableRow>
+              </TableHeader>
+              <TableBody >
                 {orders.map((o) => (
-                  <tr key={o.id} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3"><Link href={`/app/rentals/${o.id}`} className="font-medium text-foreground hover:underline">{o.order_number}</Link></td>
-                    <td className="px-4 py-3 text-text-secondary">{o.client_name ?? '—'}</td>
-                    <td className="px-4 py-3 text-text-secondary">{new Date(o.rental_start).toLocaleDateString()} – {new Date(o.rental_end).toLocaleDateString()}</td>
-                    <td className="px-4 py-3 tabular-nums">{formatCurrency(o.total_cents / 100)}</td>
-                    <td className="px-4 py-3"><StatusBadge status={o.status} colorMap={RENTAL_ORDER_STATUS_COLORS} /></td>
-                  </tr>
+                  <TableRow key={o.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <TableCell className="px-4 py-3"><Link href={`/app/rentals/${o.id}`} className="font-medium text-foreground hover:underline">{o.order_number}</Link></TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{o.client_name ?? '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{new Date(o.rental_start).toLocaleDateString()} – {new Date(o.rental_end).toLocaleDateString()}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums">{formatCurrency(o.total_cents / 100)}</TableCell>
+                    <TableCell className="px-4 py-3"><StatusBadge status={o.status} colorMap={RENTAL_ORDER_STATUS_COLORS} /></TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { RESERVATION_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import Card from '@/components/ui/Card';
 
 interface Reservation {
   id: string;
@@ -39,7 +40,7 @@ export default function AvailabilityTimeline({ reservations, from, to }: Availab
   };
 
   return (
-    <div className="bg-background border border-border rounded-lg shadow-sm p-4">
+    <Card padding="sm">
       <div className="relative">
         {/* Day tick labels */}
         <div className="flex justify-between text-xs text-text-muted mb-2">
@@ -80,6 +81,6 @@ export default function AvailabilityTimeline({ reservations, from, to }: Availab
           <span className="inline-block w-3 h-3 rounded bg-gray-400" /> Returned
         </span>
       </div>
-    </div>
+    </Card>
   );
 }

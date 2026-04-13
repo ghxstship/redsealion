@@ -22,6 +22,7 @@ import { useStoredColumnConfig } from '@/hooks/useStoredColumnConfig';
 import ViewBar from '@/components/shared/ViewBar';
 import ColumnConfigPanel from '@/components/shared/ColumnConfigPanel';
 import AssetFormModal from '@/components/admin/assets/AssetFormModal';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface AssetRow {
   id: string;
@@ -194,56 +195,56 @@ export default function AssetsTable({ assets }: { assets: AssetRow[] }) {
       ) : (
         <div className="rounded-xl border border-border bg-background overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border bg-bg-secondary">
-                  <th className="px-4 py-3 text-left w-10">
+            <Table >
+              <TableHeader>
+                <TableRow className="border-b border-border bg-bg-secondary">
+                  <TableHead className="px-4 py-3 text-left w-10">
                     <input type="checkbox" checked={isAllSelected} ref={(el) => { if (el) el.indeterminate = isSomeSelected; }} onChange={toggleAll} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
-                  </th>
-                  {isVisible('name') && <th className="px-6 py-3"><SortableHeader label="Name" field="name" currentSort={sort} onSort={handleSort} /></th>}
-                  {isVisible('type') && <th className="px-6 py-3"><SortableHeader label="Type" field="type" currentSort={sort} onSort={handleSort} /></th>}
-                  {isVisible('status') && <th className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></th>}
-                  {isVisible('condition') && <th className="px-6 py-3"><SortableHeader label="Condition" field="condition" currentSort={sort} onSort={handleSort} /></th>}
-                  {isVisible('location_name') && <th className="px-6 py-3"><SortableHeader label="Location" field="location_name" currentSort={sort} onSort={handleSort} /></th>}
-                  {isVisible('current_value') && <th className="px-6 py-3"><SortableHeader label="Value" field="current_value" currentSort={sort} onSort={handleSort} /></th>}
-                  <th className="px-6 py-3 w-12"><span className="sr-only">Actions</span></th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+                  </TableHead>
+                  {isVisible('name') && <TableHead className="px-6 py-3"><SortableHeader label="Name" field="name" currentSort={sort} onSort={handleSort} /></TableHead>}
+                  {isVisible('type') && <TableHead className="px-6 py-3"><SortableHeader label="Type" field="type" currentSort={sort} onSort={handleSort} /></TableHead>}
+                  {isVisible('status') && <TableHead className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></TableHead>}
+                  {isVisible('condition') && <TableHead className="px-6 py-3"><SortableHeader label="Condition" field="condition" currentSort={sort} onSort={handleSort} /></TableHead>}
+                  {isVisible('location_name') && <TableHead className="px-6 py-3"><SortableHeader label="Location" field="location_name" currentSort={sort} onSort={handleSort} /></TableHead>}
+                  {isVisible('current_value') && <TableHead className="px-6 py-3"><SortableHeader label="Value" field="current_value" currentSort={sort} onSort={handleSort} /></TableHead>}
+                  <TableHead className="px-6 py-3 w-12"><span className="sr-only">Actions</span></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {sorted.map((asset) => (
-                  <tr key={asset.id} className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(asset.id) ? 'bg-blue-50/50' : ''}`}>
-                    <td className="px-4 py-3.5">
+                  <TableRow key={asset.id} className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(asset.id) ? 'bg-blue-50/50' : ''}`}>
+                    <TableCell className="px-4 py-3.5">
                       <input type="checkbox" checked={isSelected(asset.id)} onChange={() => toggle(asset.id)} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
-                    </td>
+                    </TableCell>
                     {isVisible('name') && (
-                      <td className="px-6 py-3.5">
+                      <TableCell className="px-6 py-3.5">
                         <Link href={`/app/assets/${asset.id}`} className="text-sm font-medium text-foreground hover:underline">{asset.name}</Link>
-                      </td>
+                      </TableCell>
                     )}
-                    {isVisible('type') && <td className="px-6 py-3.5 text-sm text-text-secondary">{asset.type}</td>}
+                    {isVisible('type') && <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{asset.type}</TableCell>}
                     {isVisible('status') && (
-                      <td className="px-6 py-3.5">
+                      <TableCell className="px-6 py-3.5">
                         <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColor(asset.status)}`}>{formatStatus(asset.status)}</span>
-                      </td>
+                      </TableCell>
                     )}
                     {isVisible('condition') && (
-                      <td className="px-6 py-3.5">
+                      <TableCell className="px-6 py-3.5">
                         <span className={`text-sm font-medium capitalize ${conditionColors[asset.condition] ?? 'text-text-muted'}`}>{asset.condition}</span>
-                      </td>
+                      </TableCell>
                     )}
-                    {isVisible('location_name') && <td className="px-6 py-3.5 text-sm text-text-secondary">{asset.location_name ?? '\u2014'}</td>}
-                    {isVisible('current_value') && <td className="px-6 py-3.5 text-right text-sm font-medium tabular-nums text-foreground">{formatCurrency(asset.current_value ?? 0)}</td>}
-                    <td className="px-6 py-3.5">
+                    {isVisible('location_name') && <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{asset.location_name ?? '\u2014'}</TableCell>}
+                    {isVisible('current_value') && <TableCell className="px-6 py-3.5 text-right text-sm font-medium tabular-nums text-foreground">{formatCurrency(asset.current_value ?? 0)}</TableCell>}
+                    <TableCell className="px-6 py-3.5">
                       <RowActionMenu actions={[
                         { label: 'View', onClick: () => router.push(`/app/assets/${asset.id}`) },
                         { label: 'Edit', onClick: () => setEditAssetData({ id: asset.id, name: asset.name, type: asset.type, category: '', status: asset.status }) },
                         { label: 'Delete', variant: 'danger', onClick: () => setShowDeleteConfirm(asset.id) },
                       ]} />
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </div>
       )}

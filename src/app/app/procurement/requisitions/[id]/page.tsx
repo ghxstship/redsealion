@@ -6,6 +6,7 @@ import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
 import RequisitionActions from './RequisitionActions';
 import StatusBadge from '@/components/ui/StatusBadge';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getRequisition(id: string) {
   const supabase = await createClient();
@@ -112,32 +113,32 @@ export default async function RequisitionDetailPage({ params }: { params: Promis
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr>
-                  <th className="px-4 py-3">Description</th>
-                  <th className="px-4 py-3">Vendor</th>
-                  <th className="px-4 py-3">Qty</th>
-                  <th className="px-4 py-3">Unit Cost</th>
-                  <th className="px-4 py-3">Total</th>
-                  <th className="px-4 py-3">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow>
+                  <TableHead className="px-4 py-3">Description</TableHead>
+                  <TableHead className="px-4 py-3">Vendor</TableHead>
+                  <TableHead className="px-4 py-3">Qty</TableHead>
+                  <TableHead className="px-4 py-3">Unit Cost</TableHead>
+                  <TableHead className="px-4 py-3">Total</TableHead>
+                  <TableHead className="px-4 py-3">Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {lineItems.map((li) => (
-                  <tr key={li.id} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3 font-medium text-foreground">{li.description}</td>
-                    <td className="px-4 py-3 text-text-secondary">{li.vendors?.name ?? '—'}</td>
-                    <td className="px-4 py-3 tabular-nums">{li.quantity}</td>
-                    <td className="px-4 py-3 tabular-nums">{formatCurrency(li.unit_cost_cents / 100)}</td>
-                    <td className="px-4 py-3 tabular-nums font-medium">{formatCurrency((li.quantity * li.unit_cost_cents) / 100)}</td>
-                    <td className="px-4 py-3">
+                  <TableRow key={li.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <TableCell className="px-4 py-3 font-medium text-foreground">{li.description}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{li.vendors?.name ?? '—'}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums">{li.quantity}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums">{formatCurrency(li.unit_cost_cents / 100)}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums font-medium">{formatCurrency((li.quantity * li.unit_cost_cents) / 100)}</TableCell>
+                    <TableCell className="px-4 py-3">
                       <StatusBadge status={li.status} colorMap={{}} />
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

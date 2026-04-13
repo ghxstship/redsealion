@@ -5,6 +5,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import StatusBadge, { TRANSFER_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import TransfersHeader from '@/components/admin/warehouse/TransfersHeader';
 import LogisticsHubTabs from "../../LogisticsHubTabs";
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface Transfer {
   id: string;
@@ -107,41 +108,41 @@ export default async function TransfersPage() {
             No transfers found.
           </div>
         ) : (
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-border bg-bg-secondary">
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">From</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">To</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Items</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Initiated By</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Created</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Received</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Notes</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
+          <Table >
+            <TableHeader>
+              <TableRow className="border-b border-border bg-bg-secondary">
+                <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">From</TableHead>
+                <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">To</TableHead>
+                <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Items</TableHead>
+                <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</TableHead>
+                <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Initiated By</TableHead>
+                <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Created</TableHead>
+                <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Received</TableHead>
+                <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Notes</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody >
               {transfers.map((transfer) => (
-                <tr key={transfer.id} className="transition-colors hover:bg-bg-secondary/50 relative group">
-                  <td className="px-6 py-3.5 text-sm font-medium text-foreground">
+                <TableRow key={transfer.id} className="transition-colors hover:bg-bg-secondary/50 relative group">
+                  <TableCell className="px-6 py-3.5 text-sm font-medium text-foreground">
                     <Link href={`/app/logistics/transfers/${transfer.id}`} className="absolute inset-0 z-0" aria-label={`View transfer ${transfer.id}`}></Link>
                     <span className="relative z-10">{transfer.from_location}</span>
-                  </td>
-                  <td className="px-6 py-3.5 text-sm font-medium text-foreground relative z-10">{transfer.to_location}</td>
-                  <td className="px-6 py-3.5 text-sm tabular-nums text-foreground relative z-10">{transfer.items_count}</td>
-                  <td className="px-6 py-3.5 relative z-10">
+                  </TableCell>
+                  <TableCell className="px-6 py-3.5 text-sm font-medium text-foreground relative z-10">{transfer.to_location}</TableCell>
+                  <TableCell className="px-6 py-3.5 text-sm tabular-nums text-foreground relative z-10">{transfer.items_count}</TableCell>
+                  <TableCell className="px-6 py-3.5 relative z-10">
                     <StatusBadge status={transfer.status} colorMap={TRANSFER_STATUS_COLORS} />
-                  </td>
-                  <td className="px-6 py-3.5 text-sm text-text-secondary relative z-10">{transfer.requested_by}</td>
-                  <td className="px-6 py-3.5 text-sm text-text-secondary relative z-10">{formatDate(transfer.requested_date)}</td>
-                  <td className="px-6 py-3.5 text-sm text-text-secondary relative z-10">
+                  </TableCell>
+                  <TableCell className="px-6 py-3.5 text-sm text-text-secondary relative z-10">{transfer.requested_by}</TableCell>
+                  <TableCell className="px-6 py-3.5 text-sm text-text-secondary relative z-10">{formatDate(transfer.requested_date)}</TableCell>
+                  <TableCell className="px-6 py-3.5 text-sm text-text-secondary relative z-10">
                     {transfer.completed_date ? formatDate(transfer.completed_date) : '\u2014'}
-                  </td>
-                  <td className="px-6 py-3.5 text-sm text-text-muted max-w-xs truncate relative z-10">{transfer.notes ?? '\u2014'}</td>
-                </tr>
+                  </TableCell>
+                  <TableCell className="px-6 py-3.5 text-sm text-text-muted max-w-xs truncate relative z-10">{transfer.notes ?? '\u2014'}</TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         )}
       </div>
     </>

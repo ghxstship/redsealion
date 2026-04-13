@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
+import Card from '@/components/ui/Card';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface PackingItem {
   assetName: string;
@@ -49,7 +51,7 @@ export default function PackingList({ items, venueName, proposalName }: PackingL
   const allChecked = checked.size === items.length && items.length > 0;
 
   return (
-    <div className="bg-background border border-border rounded-lg shadow-sm p-5">
+    <Card>
       <div className="mb-4">
         <h2 className="text-base font-semibold text-foreground">Packing List</h2>
         <p className="text-xs text-text-secondary mt-0.5">
@@ -69,58 +71,58 @@ export default function PackingList({ items, venueName, proposalName }: PackingL
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-border">
-              <th className="text-left py-2 px-2 w-8">
+        <Table >
+          <TableHeader>
+            <TableRow className="border-b border-border">
+              <TableHead className="text-left py-2 px-2 w-8">
                 <input
                   type="checkbox"
                   checked={allChecked}
                   onChange={toggleAll}
                   className="rounded"
                 />
-              </th>
-              <th className="text-left py-2 px-2 text-text-secondary font-medium">Item</th>
-              <th className="text-left py-2 px-2 text-text-secondary font-medium">Category</th>
-              <th className="text-center py-2 px-2 text-text-secondary font-medium">Qty</th>
-              <th className="text-left py-2 px-2 text-text-secondary font-medium">Status</th>
-            </tr>
-          </thead>
-          <tbody>
+              </TableHead>
+              <TableHead className="text-left py-2 px-2 text-text-secondary font-medium">Item</TableHead>
+              <TableHead className="text-left py-2 px-2 text-text-secondary font-medium">Category</TableHead>
+              <TableHead className="text-center py-2 px-2 text-text-secondary font-medium">Qty</TableHead>
+              <TableHead className="text-left py-2 px-2 text-text-secondary font-medium">Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {categories.map((category) =>
               grouped[category].map((item) => (
-                <tr
+                <TableRow
                   key={item.originalIndex}
                   className={`border-b border-border ${checked.has(item.originalIndex) ? 'bg-green-50' : ''}`}
                 >
-                  <td className="py-2 px-2">
+                  <TableCell className="py-2 px-2">
                     <input
                       type="checkbox"
                       checked={checked.has(item.originalIndex)}
                       onChange={() => toggleItem(item.originalIndex)}
                       className="rounded"
                     />
-                  </td>
-                  <td className={`py-2 px-2 text-foreground ${checked.has(item.originalIndex) ? 'line-through text-text-muted' : ''}`}>
+                  </TableCell>
+                  <TableCell className={`py-2 px-2 text-foreground ${checked.has(item.originalIndex) ? 'line-through text-text-muted' : ''}`}>
                     {item.assetName}
-                  </td>
-                  <td className="py-2 px-2 text-text-secondary">{item.category}</td>
-                  <td className="py-2 px-2 text-center text-foreground">{item.quantity}</td>
-                  <td className="py-2 px-2">
+                  </TableCell>
+                  <TableCell className="py-2 px-2 text-text-secondary">{item.category}</TableCell>
+                  <TableCell className="py-2 px-2 text-center text-foreground">{item.quantity}</TableCell>
+                  <TableCell className="py-2 px-2">
                     <span className="inline-block px-2 py-0.5 rounded text-xs bg-bg-secondary text-text-secondary">
                       {item.status}
                     </span>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               )),
             )}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
 
       {items.length === 0 && (
         <p className="text-sm text-text-muted text-center py-4">No items in packing list.</p>
       )}
-    </div>
+    </Card>
   );
 }

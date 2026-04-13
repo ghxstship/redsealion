@@ -5,6 +5,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import Link from 'next/link';
 import StatusBadge, { WORK_ORDER_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import MetricCard from '@/components/ui/MetricCard';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface WorkOrderRow {
   id: string;
@@ -86,40 +87,40 @@ export default async function WorkOrdersListPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr>
-                  <th className="px-4 py-3">WO #</th>
-                  <th className="px-4 py-3">Title</th>
-                  <th className="px-4 py-3">Status</th>
-                  <th className="px-4 py-3">Priority</th>
-                  <th className="px-4 py-3">Location</th>
-                  <th className="px-4 py-3">Crew</th>
-                  <th className="px-4 py-3">Scheduled</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow>
+                  <TableHead className="px-4 py-3">WO #</TableHead>
+                  <TableHead className="px-4 py-3">Title</TableHead>
+                  <TableHead className="px-4 py-3">Status</TableHead>
+                  <TableHead className="px-4 py-3">Priority</TableHead>
+                  <TableHead className="px-4 py-3">Location</TableHead>
+                  <TableHead className="px-4 py-3">Crew</TableHead>
+                  <TableHead className="px-4 py-3">Scheduled</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {workOrders.map((wo) => (
-                  <tr key={wo.id} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3">
+                  <TableRow key={wo.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <TableCell className="px-4 py-3">
                       <Link href={`/app/work-orders/${wo.id}`} className="font-medium text-foreground hover:underline">
                         {wo.wo_number}
                       </Link>
-                    </td>
-                    <td className="px-4 py-3 text-foreground max-w-[200px] truncate">{wo.title}</td>
-                    <td className="px-4 py-3"><StatusBadge status={wo.status} colorMap={WORK_ORDER_STATUS_COLORS} /></td>
-                    <td className="px-4 py-3">
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-foreground max-w-[200px] truncate">{wo.title}</TableCell>
+                    <TableCell className="px-4 py-3"><StatusBadge status={wo.status} colorMap={WORK_ORDER_STATUS_COLORS} /></TableCell>
+                    <TableCell className="px-4 py-3">
                       <span className={`font-medium capitalize ${PRIORITY_COLORS[wo.priority] ?? ''}`}>{wo.priority}</span>
-                    </td>
-                    <td className="px-4 py-3 text-text-secondary">{wo.location_name ?? '—'}</td>
-                    <td className="px-4 py-3 tabular-nums text-text-secondary">{wo.crew_count}</td>
-                    <td className="px-4 py-3 text-text-secondary text-xs">
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{wo.location_name ?? '—'}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums text-text-secondary">{wo.crew_count}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary text-xs">
                       {wo.scheduled_start ? new Date(wo.scheduled_start).toLocaleDateString() : '—'}
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

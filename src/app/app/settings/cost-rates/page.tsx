@@ -4,6 +4,7 @@ import { formatRate, DEFAULT_COST_RATES } from '@/lib/cost-rates';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import CostRatesHeader from '@/components/admin/settings/CostRatesHeader';
 import PageHeader from '@/components/shared/PageHeader';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface RateRow {
   id: string;
@@ -77,38 +78,38 @@ export default async function CostRatesPage() {
 
       <div className="rounded-xl border border-border bg-background overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-border bg-bg-secondary">
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Role</th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Hourly Cost</th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Hourly Billable</th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Margin</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Effective From</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
+          <Table >
+            <TableHeader>
+              <TableRow className="border-b border-border bg-bg-secondary">
+                <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Role</TableHead>
+                <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Hourly Cost</TableHead>
+                <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Hourly Billable</TableHead>
+                <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Margin</TableHead>
+                <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Effective From</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody >
               {rates.map((rate) => (
-                <tr key={rate.id} className="transition-colors hover:bg-bg-secondary/50">
-                  <td className="px-6 py-3.5 text-sm font-medium text-foreground capitalize">
+                <TableRow key={rate.id} className="transition-colors hover:bg-bg-secondary/50">
+                  <TableCell className="px-6 py-3.5 text-sm font-medium text-foreground capitalize">
                     {rate.role.replace(/_/g, ' ')}
-                  </td>
-                  <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">
+                  </TableCell>
+                  <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">
                     {formatRate(rate.hourlyCost)}/hr
-                  </td>
-                  <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">
+                  </TableCell>
+                  <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">
                     {formatRate(rate.hourlyBillable)}/hr
-                  </td>
-                  <td className={`px-6 py-3.5 text-right text-sm font-medium tabular-nums ${marginColor(rate.marginPercent)}`}>
+                  </TableCell>
+                  <TableCell className={`px-6 py-3.5 text-right text-sm font-medium tabular-nums ${marginColor(rate.marginPercent)}`}>
                     {rate.marginPercent}%
-                  </td>
-                  <td className="px-6 py-3.5 text-sm text-text-secondary">
+                  </TableCell>
+                  <TableCell className="px-6 py-3.5 text-sm text-text-secondary">
                     {new Date(rate.effectiveFrom).toLocaleDateString()}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </div>
 

@@ -8,6 +8,7 @@ import EmptyState from '@/components/ui/EmptyState';
 import Button from '@/components/ui/Button';
 import { formatDate } from '@/lib/utils';
 import LogisticsHubTabs from "../../LogisticsHubTabs";
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 const COUNT_STATUS_COLORS: Record<string, string> = {
   planned: 'bg-bg-secondary text-text-secondary',
@@ -117,43 +118,43 @@ export default async function InventoryCountsPage() {
               <h2 className="text-sm font-semibold text-foreground mb-4">Active Counts</h2>
               <div className="rounded-xl border border-border bg-background overflow-hidden">
                 <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-border bg-bg-secondary">
-                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Type</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Location</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Items</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Started</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</th>
-                        <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted" />
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border">
+                  <Table >
+                    <TableHeader>
+                      <TableRow className="border-b border-border bg-bg-secondary">
+                        <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Type</TableHead>
+                        <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Location</TableHead>
+                        <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Items</TableHead>
+                        <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Started</TableHead>
+                        <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</TableHead>
+                        <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted" />
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody >
                       {active.map((count) => (
-                        <tr key={count.id} className="transition-colors hover:bg-bg-secondary/50">
-                          <td className="px-6 py-3.5">
+                        <TableRow key={count.id} className="transition-colors hover:bg-bg-secondary/50">
+                          <TableCell className="px-6 py-3.5">
                             <StatusBadge status={count.count_type} colorMap={COUNT_TYPE_COLORS} />
-                          </td>
-                          <td className="px-6 py-3.5 text-sm text-foreground">{count.location ?? 'All locations'}</td>
-                          <td className="px-6 py-3.5 text-sm text-foreground tabular-nums">{count.line_count}</td>
-                          <td className="px-6 py-3.5 text-sm text-text-secondary">
+                          </TableCell>
+                          <TableCell className="px-6 py-3.5 text-sm text-foreground">{count.location ?? 'All locations'}</TableCell>
+                          <TableCell className="px-6 py-3.5 text-sm text-foreground tabular-nums">{count.line_count}</TableCell>
+                          <TableCell className="px-6 py-3.5 text-sm text-text-secondary">
                             {count.started_at ? formatDate(count.started_at) : '—'}
-                          </td>
-                          <td className="px-6 py-3.5">
+                          </TableCell>
+                          <TableCell className="px-6 py-3.5">
                             <StatusBadge status={count.status} colorMap={COUNT_STATUS_COLORS} />
-                          </td>
-                          <td className="px-6 py-3.5 text-right">
+                          </TableCell>
+                          <TableCell className="px-6 py-3.5 text-right">
                             <Link
                               href={`/app/logistics/counts/${count.id}`}
                               className="text-sm font-medium text-foreground hover:underline"
                             >
                               Open →
                             </Link>
-                          </td>
-                        </tr>
+                          </TableCell>
+                        </TableRow>
                       ))}
-                    </tbody>
-                  </table>
+                    </TableBody>
+                  </Table>
                 </div>
               </div>
             </div>
@@ -165,30 +166,30 @@ export default async function InventoryCountsPage() {
               <h2 className="text-sm font-semibold text-foreground mb-4">Completed</h2>
               <div className="rounded-xl border border-border bg-background overflow-hidden">
                 <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-border bg-bg-secondary">
-                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Type</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Location</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Items</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Completed</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border">
+                  <Table >
+                    <TableHeader>
+                      <TableRow className="border-b border-border bg-bg-secondary">
+                        <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Type</TableHead>
+                        <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Location</TableHead>
+                        <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Items</TableHead>
+                        <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Completed</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody >
                       {completed.map((count) => (
-                        <tr key={count.id} className="transition-colors hover:bg-bg-secondary/50">
-                          <td className="px-6 py-3.5">
+                        <TableRow key={count.id} className="transition-colors hover:bg-bg-secondary/50">
+                          <TableCell className="px-6 py-3.5">
                             <StatusBadge status={count.count_type} colorMap={COUNT_TYPE_COLORS} />
-                          </td>
-                          <td className="px-6 py-3.5 text-sm text-foreground">{count.location ?? 'All'}</td>
-                          <td className="px-6 py-3.5 text-sm text-foreground tabular-nums">{count.line_count}</td>
-                          <td className="px-6 py-3.5 text-sm text-text-secondary">
+                          </TableCell>
+                          <TableCell className="px-6 py-3.5 text-sm text-foreground">{count.location ?? 'All'}</TableCell>
+                          <TableCell className="px-6 py-3.5 text-sm text-foreground tabular-nums">{count.line_count}</TableCell>
+                          <TableCell className="px-6 py-3.5 text-sm text-text-secondary">
                             {count.completed_at ? formatDate(count.completed_at) : '—'}
-                          </td>
-                        </tr>
+                          </TableCell>
+                        </TableRow>
                       ))}
-                    </tbody>
-                  </table>
+                    </TableBody>
+                  </Table>
                 </div>
               </div>
             </div>

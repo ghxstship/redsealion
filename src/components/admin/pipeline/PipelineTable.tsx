@@ -10,6 +10,7 @@ import { formatLabel, formatCurrency } from '@/lib/utils';
 import StatusBadge, { PIPELINE_STAGE_COLORS } from '@/components/ui/StatusBadge';
 import SearchInput from '@/components/ui/SearchInput';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface Deal {
   id: string;
@@ -51,49 +52,49 @@ export default function PipelineTable({ deals }: { deals: Deal[] }) {
       </div>
 
       <div className="rounded-xl border border-border bg-background overflow-hidden overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-border bg-bg-secondary">
-              <th className="px-6 py-3"><SortableHeader label="Deal" field="title" currentSort={sort} onSort={handleSort} /></th>
-              <th className="px-6 py-3"><SortableHeader label="Client" field="client_name" currentSort={sort} onSort={handleSort} /></th>
-              <th className="px-6 py-3"><SortableHeader label="Value" field="value" currentSort={sort} onSort={handleSort} /></th>
-              <th className="px-6 py-3"><SortableHeader label="Stage" field="stage" currentSort={sort} onSort={handleSort} /></th>
-              <th className="px-6 py-3"><SortableHeader label="Probability" field="probability" currentSort={sort} onSort={handleSort} /></th>
-              <th className="px-6 py-3"><SortableHeader label="Expected Close" field="expected_close" currentSort={sort} onSort={handleSort} /></th>
-              <th className="px-6 py-3"><SortableHeader label="Owner" field="owner_name" currentSort={sort} onSort={handleSort} /></th>
-              <th className="px-6 py-3 w-12"><span className="sr-only">Actions</span></th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
+        <Table >
+          <TableHeader>
+            <TableRow className="border-b border-border bg-bg-secondary">
+              <TableHead className="px-6 py-3"><SortableHeader label="Deal" field="title" currentSort={sort} onSort={handleSort} /></TableHead>
+              <TableHead className="px-6 py-3"><SortableHeader label="Client" field="client_name" currentSort={sort} onSort={handleSort} /></TableHead>
+              <TableHead className="px-6 py-3"><SortableHeader label="Value" field="value" currentSort={sort} onSort={handleSort} /></TableHead>
+              <TableHead className="px-6 py-3"><SortableHeader label="Stage" field="stage" currentSort={sort} onSort={handleSort} /></TableHead>
+              <TableHead className="px-6 py-3"><SortableHeader label="Probability" field="probability" currentSort={sort} onSort={handleSort} /></TableHead>
+              <TableHead className="px-6 py-3"><SortableHeader label="Expected Close" field="expected_close" currentSort={sort} onSort={handleSort} /></TableHead>
+              <TableHead className="px-6 py-3"><SortableHeader label="Owner" field="owner_name" currentSort={sort} onSort={handleSort} /></TableHead>
+              <TableHead className="px-6 py-3 w-12"><span className="sr-only">Actions</span></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody >
             {sorted.map((deal) => (
-              <tr key={deal.id} className="transition-colors hover:bg-bg-secondary/50">
-                <td className="px-6 py-3.5">
+              <TableRow key={deal.id} className="transition-colors hover:bg-bg-secondary/50">
+                <TableCell className="px-6 py-3.5">
                   <Link href={`/app/pipeline/${deal.id}`} className="text-sm font-medium text-foreground hover:underline">{deal.title}</Link>
-                </td>
-                <td className="px-6 py-3.5 text-sm text-text-secondary">{deal.client_name ?? '\u2014'}</td>
-                <td className="px-6 py-3.5 text-sm font-medium tabular-nums text-foreground">{formatCurrency(deal.value)}</td>
-                <td className="px-6 py-3.5">
+                </TableCell>
+                <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{deal.client_name ?? '\u2014'}</TableCell>
+                <TableCell className="px-6 py-3.5 text-sm font-medium tabular-nums text-foreground">{formatCurrency(deal.value)}</TableCell>
+                <TableCell className="px-6 py-3.5">
                   <StatusBadge status={deal.stage} colorMap={PIPELINE_STAGE_COLORS} />
-                </td>
-                <td className="px-6 py-3.5 text-sm tabular-nums text-text-secondary">{deal.probability}%</td>
-                <td className="px-6 py-3.5 text-sm text-text-secondary">
+                </TableCell>
+                <TableCell className="px-6 py-3.5 text-sm tabular-nums text-text-secondary">{deal.probability}%</TableCell>
+                <TableCell className="px-6 py-3.5 text-sm text-text-secondary">
                   {deal.expected_close ? new Date(deal.expected_close).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '\u2014'}
-                </td>
-                <td className="px-6 py-3.5 text-sm text-text-secondary">{deal.owner_name ?? '\u2014'}</td>
-                <td className="px-6 py-3.5">
+                </TableCell>
+                <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{deal.owner_name ?? '\u2014'}</TableCell>
+                <TableCell className="px-6 py-3.5">
                   <RowActionMenu actions={[
                     { label: 'View', onClick: () => router.push(`/app/pipeline/${deal.id}`) },
                     { label: 'Edit', onClick: () => router.push(`/app/pipeline/${deal.id}?edit=true`) },
                     { label: 'Delete', variant: 'danger', onClick: () => setDeleteId(deal.id) },
                   ]} />
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
             {sorted.length === 0 && (
-              <tr><td colSpan={8} className="px-6 py-12 text-center text-sm text-text-muted">No deals match your search.</td></tr>
+              <TableRow><TableCell colSpan={8} className="px-6 py-12 text-center text-sm text-text-muted">No deals match your search.</TableCell></TableRow>
             )}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
 
       {deleteId && (

@@ -32,6 +32,7 @@ import type {
   AdvanceStatus,
 } from '@/types/database';
 import { castRelation } from '@/lib/supabase/cast-relation';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 type AdvanceCommentWithUser = AdvanceComment & {
   users?: { full_name: string; avatar_url: string | null } | null;
@@ -245,28 +246,28 @@ export default function AdvanceDetailClient({ data }: AdvanceDetailClientProps) 
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-border bg-bg-secondary/50">
-                      <th className="px-4 py-2 text-left text-xs font-semibold text-text-muted uppercase tracking-wider">Item</th>
-                      <th className="px-4 py-2 text-left text-xs font-semibold text-text-muted uppercase tracking-wider">Qty</th>
-                      <th className="px-4 py-2 text-right text-xs font-semibold text-text-muted uppercase tracking-wider">Unit Price</th>
-                      <th className="px-4 py-2 text-left text-xs font-semibold text-text-muted uppercase tracking-wider">Status</th>
+                <Table >
+                  <TableHeader>
+                    <TableRow className="border-b border-border bg-bg-secondary/50">
+                      <TableHead className="px-4 py-2 text-left text-xs font-semibold text-text-muted uppercase tracking-wider">Item</TableHead>
+                      <TableHead className="px-4 py-2 text-left text-xs font-semibold text-text-muted uppercase tracking-wider">Qty</TableHead>
+                      <TableHead className="px-4 py-2 text-right text-xs font-semibold text-text-muted uppercase tracking-wider">Unit Price</TableHead>
+                      <TableHead className="px-4 py-2 text-left text-xs font-semibold text-text-muted uppercase tracking-wider">Status</TableHead>
                       {a.advance_mode === 'collection' && (
-                        <th className="px-4 py-2 text-left text-xs font-semibold text-text-muted uppercase tracking-wider">Approval</th>
+                        <TableHead className="px-4 py-2 text-left text-xs font-semibold text-text-muted uppercase tracking-wider">Approval</TableHead>
                       )}
-                      <th className="px-4 py-2 text-right text-xs font-semibold text-text-muted uppercase tracking-wider">Total</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
+                      <TableHead className="px-4 py-2 text-right text-xs font-semibold text-text-muted uppercase tracking-wider">Total</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody >
                     {Object.entries(groupedItems).map(([groupSlug, groupItems]) => (
                       <>
                         {Object.keys(groupedItems).length > 1 && (
-                          <tr key={`group-${groupSlug}`} className="bg-bg-secondary/30">
-                            <td colSpan={6} className="px-4 py-1.5 text-xs font-semibold text-text-muted uppercase tracking-wider">
+                          <TableRow key={`group-${groupSlug}`} className="bg-bg-secondary/30">
+                            <TableCell colSpan={6} className="px-4 py-1.5 text-xs font-semibold text-text-muted uppercase tracking-wider">
                               {groupSlug.replace(/-/g, ' ')}
-                            </td>
-                          </tr>
+                            </TableCell>
+                          </TableRow>
                         )}
                         {groupItems.map((item) => (
                           <AdvanceLineItemRow
@@ -279,8 +280,8 @@ export default function AdvanceDetailClient({ data }: AdvanceDetailClientProps) 
                         ))}
                       </>
                     ))}
-                  </tbody>
-                </table>
+                  </TableBody>
+                </Table>
               </div>
             )}
           </div>

@@ -19,6 +19,7 @@ import { useStoredColumnConfig } from '@/hooks/useStoredColumnConfig';
 import ViewBar from '@/components/shared/ViewBar';
 import ColumnConfigPanel from '@/components/shared/ColumnConfigPanel';
 import FormSelect from '@/components/ui/FormSelect';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 export interface EventItem {
   id: string;
@@ -151,50 +152,50 @@ export default function EventsTable({ events }: { events: EventItem[] }) {
       />
 
       <div className="rounded-xl border border-border bg-background overflow-hidden overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-border bg-bg-secondary">
-              <th className="px-4 py-3 text-left w-10">
+        <Table >
+          <TableHeader>
+            <TableRow className="border-b border-border bg-bg-secondary">
+              <TableHead className="px-4 py-3 text-left w-10">
                 <input type="checkbox" checked={isAllSelected} ref={(el) => { if (el) el.indeterminate = isSomeSelected; }} onChange={toggleAll} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
-              </th>
-              {isVisible('name') && <th className="px-6 py-3"><SortableHeader label="Name" field="name" currentSort={sort} onSort={handleSort} /></th>}
-              {isVisible('type') && <th className="px-6 py-3"><SortableHeader label="Type" field="type" currentSort={sort} onSort={handleSort} /></th>}
-              {isVisible('status') && <th className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></th>}
-              {isVisible('starts_at') && <th className="px-6 py-3"><SortableHeader label="Start Date" field="starts_at" currentSort={sort} onSort={handleSort} /></th>}
-              {isVisible('ends_at') && <th className="px-6 py-3"><SortableHeader label="End Date" field="ends_at" currentSort={sort} onSort={handleSort} /></th>}
-              {isVisible('event_code') && <th className="px-6 py-3"><SortableHeader label="Code" field="event_code" currentSort={sort} onSort={handleSort} /></th>}
-              {isVisible('presenter') && <th className="px-6 py-3"><SortableHeader label="Presenter" field="presenter" currentSort={sort} onSort={handleSort} /></th>}
-              {isVisible('location_count') && <th className="px-6 py-3"><SortableHeader label="Locations" field="location_count" currentSort={sort} onSort={handleSort} /></th>}
-              <th className="px-6 py-3 w-12"><span className="sr-only">Actions</span></th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
+              </TableHead>
+              {isVisible('name') && <TableHead className="px-6 py-3"><SortableHeader label="Name" field="name" currentSort={sort} onSort={handleSort} /></TableHead>}
+              {isVisible('type') && <TableHead className="px-6 py-3"><SortableHeader label="Type" field="type" currentSort={sort} onSort={handleSort} /></TableHead>}
+              {isVisible('status') && <TableHead className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></TableHead>}
+              {isVisible('starts_at') && <TableHead className="px-6 py-3"><SortableHeader label="Start Date" field="starts_at" currentSort={sort} onSort={handleSort} /></TableHead>}
+              {isVisible('ends_at') && <TableHead className="px-6 py-3"><SortableHeader label="End Date" field="ends_at" currentSort={sort} onSort={handleSort} /></TableHead>}
+              {isVisible('event_code') && <TableHead className="px-6 py-3"><SortableHeader label="Code" field="event_code" currentSort={sort} onSort={handleSort} /></TableHead>}
+              {isVisible('presenter') && <TableHead className="px-6 py-3"><SortableHeader label="Presenter" field="presenter" currentSort={sort} onSort={handleSort} /></TableHead>}
+              {isVisible('location_count') && <TableHead className="px-6 py-3"><SortableHeader label="Locations" field="location_count" currentSort={sort} onSort={handleSort} /></TableHead>}
+              <TableHead className="px-6 py-3 w-12"><span className="sr-only">Actions</span></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody >
             {sorted.map((item) => (
-              <tr key={item.id} className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(item.id) ? 'bg-blue-50/50' : ''}`}>
-                <td className="px-4 py-3.5">
+              <TableRow key={item.id} className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(item.id) ? 'bg-blue-50/50' : ''}`}>
+                <TableCell className="px-4 py-3.5">
                   <input type="checkbox" checked={isSelected(item.id)} onChange={() => toggle(item.id)} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
-                </td>
-                {isVisible('name') && <td className="px-6 py-3.5"><span className="text-sm font-medium text-foreground">{item.name}</span></td>}
-                {isVisible('type') && <td className="px-6 py-3.5"><span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">{formatLabel(item.type)}</span></td>}
-                {isVisible('status') && <td className="px-6 py-3.5"><StatusBadge status={item.status} colorMap={EVENT_STATUS_COLORS} /></td>}
-                {isVisible('starts_at') && <td className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(item.starts_at)}</td>}
-                {isVisible('ends_at') && <td className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(item.ends_at)}</td>}
-                {isVisible('event_code') && <td className="px-6 py-3.5 text-sm tabular-nums text-text-muted">{item.event_code ?? '\u2014'}</td>}
-                {isVisible('presenter') && <td className="px-6 py-3.5 text-sm text-text-secondary">{item.presenter ?? '\u2014'}</td>}
-                {isVisible('location_count') && <td className="px-6 py-3.5 text-sm tabular-nums text-foreground">{item.location_count}</td>}
-                <td className="px-6 py-3.5">
+                </TableCell>
+                {isVisible('name') && <TableCell className="px-6 py-3.5"><span className="text-sm font-medium text-foreground">{item.name}</span></TableCell>}
+                {isVisible('type') && <TableCell className="px-6 py-3.5"><span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">{formatLabel(item.type)}</span></TableCell>}
+                {isVisible('status') && <TableCell className="px-6 py-3.5"><StatusBadge status={item.status} colorMap={EVENT_STATUS_COLORS} /></TableCell>}
+                {isVisible('starts_at') && <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(item.starts_at)}</TableCell>}
+                {isVisible('ends_at') && <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(item.ends_at)}</TableCell>}
+                {isVisible('event_code') && <TableCell className="px-6 py-3.5 text-sm tabular-nums text-text-muted">{item.event_code ?? '\u2014'}</TableCell>}
+                {isVisible('presenter') && <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{item.presenter ?? '\u2014'}</TableCell>}
+                {isVisible('location_count') && <TableCell className="px-6 py-3.5 text-sm tabular-nums text-foreground">{item.location_count}</TableCell>}
+                <TableCell className="px-6 py-3.5">
                   <RowActionMenu actions={[
                     { label: 'View', onClick: () => router.push(`/app/events/${item.id}`) },
                     { label: 'Delete', variant: 'danger', onClick: () => setShowDeleteConfirm(item.id) },
                   ]} />
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
             {sorted.length === 0 && (
-              <tr><td colSpan={10} className="px-6 py-12 text-center text-sm text-text-muted">No events match your search.</td></tr>
+              <TableRow><TableCell colSpan={10} className="px-6 py-12 text-center text-sm text-text-muted">No events match your search.</TableCell></TableRow>
             )}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
 
       {showDeleteConfirm && (

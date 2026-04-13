@@ -6,6 +6,7 @@ import StatusBadge, { MILESTONE_STATUS_COLORS } from '@/components/ui/StatusBadg
 import ScheduleHubTabs from '../../ScheduleHubTabs';
 import AddMilestoneButton from './AddMilestoneButton';
 import MetricCard from '@/components/ui/MetricCard';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getMilestones() {
   try {
@@ -71,30 +72,30 @@ export default async function MilestonesPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr>
-                  <th className="px-4 py-3">Milestone</th>
-                  <th className="px-4 py-3">Schedule</th>
-                  <th className="px-4 py-3">Due</th>
-                  <th className="px-4 py-3">Completed</th>
-                  <th className="px-4 py-3">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow>
+                  <TableHead className="px-4 py-3">Milestone</TableHead>
+                  <TableHead className="px-4 py-3">Schedule</TableHead>
+                  <TableHead className="px-4 py-3">Due</TableHead>
+                  <TableHead className="px-4 py-3">Completed</TableHead>
+                  <TableHead className="px-4 py-3">Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {milestones.map((m) => (
-                  <tr key={m.id} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3 font-medium text-foreground">{m.title}</td>
-                    <td className="px-4 py-3 text-text-secondary">{m.schedule_name ?? '—'}</td>
-                    <td className="px-4 py-3 text-text-secondary">{new Date(m.due_at).toLocaleDateString()}</td>
-                    <td className="px-4 py-3 text-text-secondary">{m.completed_at ? new Date(m.completed_at).toLocaleDateString() : '—'}</td>
-                    <td className="px-4 py-3">
+                  <TableRow key={m.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <TableCell className="px-4 py-3 font-medium text-foreground">{m.title}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{m.schedule_name ?? '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{new Date(m.due_at).toLocaleDateString()}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{m.completed_at ? new Date(m.completed_at).toLocaleDateString() : '—'}</TableCell>
+                    <TableCell className="px-4 py-3">
                       <StatusBadge status={m.status} colorMap={MILESTONE_STATUS_COLORS} />
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

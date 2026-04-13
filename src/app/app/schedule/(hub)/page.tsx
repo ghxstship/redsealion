@@ -7,6 +7,7 @@ import StatusBadge, { PRODUCTION_SCHEDULE_STATUS_COLORS, SCHEDULE_TYPE_COLORS } 
 import MetricCard from '@/components/ui/MetricCard';
 import { SCHEDULE_TYPE_LABELS } from '@/lib/constants/schedule';
 import ScheduleHubTabs from '../ScheduleHubTabs';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getSchedules() {
   try {
@@ -63,30 +64,30 @@ export default async function ScheduleTimelinePage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr>
-                  <th className="px-4 py-3">Schedule</th>
-                  <th className="px-4 py-3">Event</th>
-                  <th className="px-4 py-3">Type</th>
-                  <th className="px-4 py-3">Dates</th>
-                  <th className="px-4 py-3">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow>
+                  <TableHead className="px-4 py-3">Schedule</TableHead>
+                  <TableHead className="px-4 py-3">Event</TableHead>
+                  <TableHead className="px-4 py-3">Type</TableHead>
+                  <TableHead className="px-4 py-3">Dates</TableHead>
+                  <TableHead className="px-4 py-3">Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {schedules.map((s) => (
-                  <tr key={s.id} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3">
+                  <TableRow key={s.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <TableCell className="px-4 py-3">
                       <Link href={`/app/schedule/${s.id}`} className="font-medium text-foreground hover:underline">{s.name}</Link>
-                    </td>
-                    <td className="px-4 py-3 text-text-secondary">{s.event_name ?? '—'}</td>
-                    <td className="px-4 py-3"><StatusBadge status={s.schedule_type} colorMap={SCHEDULE_TYPE_COLORS} fallback="bg-purple-50 text-purple-700" /></td>
-                    <td className="px-4 py-3 text-text-secondary">{s.start_date ? `${new Date(s.start_date).toLocaleDateString()} – ${s.end_date ? new Date(s.end_date).toLocaleDateString() : ''}` : '—'}</td>
-                    <td className="px-4 py-3"><StatusBadge status={s.status} colorMap={PRODUCTION_SCHEDULE_STATUS_COLORS} /></td>
-                  </tr>
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{s.event_name ?? '—'}</TableCell>
+                    <TableCell className="px-4 py-3"><StatusBadge status={s.schedule_type} colorMap={SCHEDULE_TYPE_COLORS} fallback="bg-purple-50 text-purple-700" /></TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{s.start_date ? `${new Date(s.start_date).toLocaleDateString()} – ${s.end_date ? new Date(s.end_date).toLocaleDateString() : ''}` : '—'}</TableCell>
+                    <TableCell className="px-4 py-3"><StatusBadge status={s.status} colorMap={PRODUCTION_SCHEDULE_STATUS_COLORS} /></TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

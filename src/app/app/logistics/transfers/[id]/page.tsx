@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import PageHeader from '@/components/shared/PageHeader';
 import StatusBadge, { TRANSFER_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface TransferDetail {
   id: string;
@@ -122,24 +123,24 @@ export default async function TransferDetailPage({ params }: { params: Promise<{
             No items in this transfer.
           </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-              <tr>
-                <th className="px-6 py-3">Asset</th>
-                <th className="px-6 py-3">Category</th>
-                <th className="px-6 py-3">Qty</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
+          <Table >
+            <TableHeader >
+              <TableRow>
+                <TableHead className="px-6 py-3">Asset</TableHead>
+                <TableHead className="px-6 py-3">Category</TableHead>
+                <TableHead className="px-6 py-3">Qty</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody >
               {transfer.items.map((item) => (
-                <tr key={item.id} className="hover:bg-bg-secondary/50">
-                  <td className="px-6 py-3.5 text-foreground font-medium">{item.assets?.name ?? 'Unknown'}</td>
-                  <td className="px-6 py-3.5 text-text-secondary">{item.assets?.category ?? '—'}</td>
-                  <td className="px-6 py-3.5 tabular-nums text-foreground">{item.quantity}</td>
-                </tr>
+                <TableRow key={item.id} className="hover:bg-bg-secondary/50">
+                  <TableCell className="px-6 py-3.5 text-foreground font-medium">{item.assets?.name ?? 'Unknown'}</TableCell>
+                  <TableCell className="px-6 py-3.5 text-text-secondary">{item.assets?.category ?? '—'}</TableCell>
+                  <TableCell className="px-6 py-3.5 tabular-nums text-foreground">{item.quantity}</TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         )}
       </div>
 

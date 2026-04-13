@@ -4,6 +4,7 @@ import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import ClientsHubTabs from '../../ClientsHubTabs';
 import MetricCard from '@/components/ui/MetricCard';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getClientLocations() {
   try {
@@ -61,28 +62,28 @@ export default async function ClientMapPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr>
-                  <th className="px-4 py-3">State / Province</th>
-                  <th className="px-4 py-3">Clients</th>
-                  <th className="px-4 py-3">Distribution</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow>
+                  <TableHead className="px-4 py-3">State / Province</TableHead>
+                  <TableHead className="px-4 py-3">Clients</TableHead>
+                  <TableHead className="px-4 py-3">Distribution</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {sortedStates.map(([state, count]) => (
-                  <tr key={state} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3 font-medium text-foreground">{state}</td>
-                    <td className="px-4 py-3 tabular-nums">{count}</td>
-                    <td className="px-4 py-3">
+                  <TableRow key={state} className="hover:bg-bg-secondary/50 transition-colors">
+                    <TableCell className="px-4 py-3 font-medium text-foreground">{state}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums">{count}</TableCell>
+                    <TableCell className="px-4 py-3">
                       <div className="w-32 h-2 rounded-full bg-bg-secondary overflow-hidden">
                         <div className="h-full rounded-full bg-blue-500" style={{ width: `${Math.round((count / clients.length) * 100)}%` }} />
                       </div>
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

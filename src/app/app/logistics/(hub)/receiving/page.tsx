@@ -7,6 +7,7 @@ import Link from 'next/link';
 import LogisticsHubTabs from "../../LogisticsHubTabs";
 import StatusBadge, { RECEIPT_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import MetricCard from '@/components/ui/MetricCard';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getInboundShipments(page: number, limit: number, statusFilter?: string) {
   try {
@@ -91,40 +92,38 @@ export default async function ReceivingPage({ searchParams }: { searchParams: Pr
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No inbound shipments found.</p></div>
         ) : (
           <>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                  <tr>
-                    <th className="px-4 py-3">
-                      <input type="checkbox" className="rounded" /> {/* Bulk checkbox placeholder L-6 */}
-                    </th>
-                    <th className="px-4 py-3">Shipment #</th>
-                    <th className="px-4 py-3">Vendor</th>
-                    <th className="px-4 py-3">PO</th>
-                    <th className="px-4 py-3">Carrier</th>
-                    <th className="px-4 py-3">Tracking</th>
-                    <th className="px-4 py-3">ETA</th>
-                    <th className="px-4 py-3">Received</th>
-                    <th className="px-4 py-3">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
+      <Table className="border-b-0 rounded-b-none border-x-0 border-t-0">
+          <TableHeader>
+            <TableRow>
+              <TableHead>
+                <input type="checkbox" className="w-4 h-4 rounded border-border text-foreground focus:ring-foreground bg-background" /> {/* Bulk checkbox placeholder L-6 */}
+              </TableHead>
+              <TableHead>Shipment #</TableHead>
+              <TableHead>Vendor</TableHead>
+              <TableHead>PO</TableHead>
+              <TableHead>Carrier</TableHead>
+              <TableHead>Tracking</TableHead>
+              <TableHead>ETA</TableHead>
+              <TableHead>Received</TableHead>
+              <TableHead>Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
                   {shipments.map((s) => (
-                    <tr key={s.id} className={`hover:bg-bg-secondary/50 transition-colors ${s.status === 'in_transit' ? 'bg-blue-50/20' : ''}`}>
-                      <td className="px-4 py-3"><input type="checkbox" className="rounded" /></td>
-                      <td className="px-4 py-3"><Link href={`/app/logistics/shipments/${s.id}`} className="font-medium text-foreground hover:underline">{s.shipment_number}</Link></td>
-                      <td className="px-4 py-3 text-text-secondary">{s.vendor_name ?? '—'}</td>
-                      <td className="px-4 py-3 text-text-secondary">{s.po_number ?? '—'}</td>
-                      <td className="px-4 py-3 text-text-secondary">{s.carrier ?? '—'}</td>
-                      <td className="px-4 py-3 font-mono text-xs text-text-muted">{s.tracking_number ?? '—'}</td>
-                      <td className="px-4 py-3 text-text-secondary">{s.estimated_arrival ? new Date(s.estimated_arrival).toLocaleDateString() : '—'}</td>
-                      <td className="px-4 py-3 text-text-secondary">{s.actual_arrival ? new Date(s.actual_arrival).toLocaleDateString() : '—'}</td>
-                      <td className="px-4 py-3"><StatusBadge status={s.status} colorMap={RECEIPT_STATUS_COLORS} /></td>
-                    </tr>
+                    <TableRow key={s.id} className={s.status === 'in_transit' ? 'bg-blue-50/20' : ''}>
+                      <TableCell><input type="checkbox" className="w-4 h-4 rounded border-border text-foreground focus:ring-foreground bg-background" /></TableCell>
+                      <TableCell><Link href={`/app/logistics/shipments/${s.id}`} className="font-medium text-foreground hover:underline">{s.shipment_number}</Link></TableCell>
+                      <TableCell className="text-text-secondary">{s.vendor_name ?? '—'}</TableCell>
+                      <TableCell className="text-text-secondary">{s.po_number ?? '—'}</TableCell>
+                      <TableCell className="text-text-secondary">{s.carrier ?? '—'}</TableCell>
+                      <TableCell className="font-mono text-xs text-text-muted">{s.tracking_number ?? '—'}</TableCell>
+                      <TableCell className="text-text-secondary">{s.estimated_arrival ? new Date(s.estimated_arrival).toLocaleDateString() : '—'}</TableCell>
+                      <TableCell className="text-text-secondary">{s.actual_arrival ? new Date(s.actual_arrival).toLocaleDateString() : '—'}</TableCell>
+                      <TableCell><StatusBadge status={s.status} colorMap={RECEIPT_STATUS_COLORS} /></TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
-            </div>
+                </TableBody>
+              </Table>
 
             {/* Pagination block */}
             <div className="flex items-center justify-between border-t border-border px-4 py-3 bg-bg-secondary">

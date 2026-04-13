@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { CrewProfileWithUser } from '@/types/database';
+import Card from '@/components/ui/Card';
 
 interface CrewProfileCardProps {
   profile: CrewProfileWithUser;
@@ -25,7 +26,7 @@ export default function CrewProfileCard({ profile }: CrewProfileCardProps) {
         : 'bg-yellow-100 text-yellow-800';
 
   return (
-    <div className="bg-background border border-border rounded-lg shadow-sm p-4">
+    <Card padding="sm">
       <div className="flex items-center gap-3 mb-3">
         <div className="w-10 h-10 rounded-full bg-bg-tertiary flex items-center justify-center text-sm font-semibold text-foreground">
           {initials}
@@ -63,6 +64,6 @@ export default function CrewProfileCard({ profile }: CrewProfileCardProps) {
           {profile.availability_default ?? 'unknown'}
         </span>
       </div>
-    </div>
+    </Card>
   );
 }

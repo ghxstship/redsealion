@@ -6,6 +6,7 @@ import Link from 'next/link';
 import StatusBadge, { ADVANCE_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import AdvancingHubTabs from '../../AdvancingHubTabs';
 import MetricCard from '@/components/ui/MetricCard';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getAssignments() {
   try {
@@ -56,34 +57,34 @@ export default async function AdvancingAssignmentsPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr>
-                  <th className="px-4 py-3">Number</th>
-                  <th className="px-4 py-3">Event</th>
-                  <th className="px-4 py-3">Type</th>
-                  <th className="px-4 py-3">Items</th>
-                  <th className="px-4 py-3">Start Date</th>
-                  <th className="px-4 py-3">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow>
+                  <TableHead className="px-4 py-3">Number</TableHead>
+                  <TableHead className="px-4 py-3">Event</TableHead>
+                  <TableHead className="px-4 py-3">Type</TableHead>
+                  <TableHead className="px-4 py-3">Items</TableHead>
+                  <TableHead className="px-4 py-3">Start Date</TableHead>
+                  <TableHead className="px-4 py-3">Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {assignments.map((item) => (
-                  <tr key={item.id} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3">
+                  <TableRow key={item.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <TableCell className="px-4 py-3">
                       <Link href={`/app/advancing/${item.id}`} className="font-medium text-foreground hover:underline">{item.advance_number}</Link>
-                    </td>
-                    <td className="px-4 py-3 text-text-secondary">{item.event_name ?? '—'}</td>
-                    <td className="px-4 py-3 capitalize">{item.advance_type?.replace('_', ' ') ?? '—'}</td>
-                    <td className="px-4 py-3 tabular-nums">{item.line_item_count}</td>
-                    <td className="px-4 py-3 text-text-secondary">{item.service_start_date ? new Date(item.service_start_date).toLocaleDateString() : '—'}</td>
-                    <td className="px-4 py-3">
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{item.event_name ?? '—'}</TableCell>
+                    <TableCell className="px-4 py-3 capitalize">{item.advance_type?.replace('_', ' ') ?? '—'}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums">{item.line_item_count}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{item.service_start_date ? new Date(item.service_start_date).toLocaleDateString() : '—'}</TableCell>
+                    <TableCell className="px-4 py-3">
                       <StatusBadge status={item.status} colorMap={ADVANCE_STATUS_COLORS} />
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

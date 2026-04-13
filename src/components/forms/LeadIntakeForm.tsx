@@ -7,6 +7,7 @@ import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
 import { IconCheck } from '@/components/ui/Icons';
 import Button from '@/components/ui/Button';
+import Alert from '@/components/ui/Alert';
 
 /**
  * LeadIntakeForm
@@ -89,9 +90,9 @@ export function LeadIntakeForm({ organizationId }: { organizationId: string }) {
         </p>
 
         {error && (
-          <div className="mb-6 rounded-lg bg-red-500/20 p-4 border border-red-500/30 text-red-200">
+          <Alert variant="error" className="mb-6">
             {error}
-          </div>
+          </Alert>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5">

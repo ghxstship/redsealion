@@ -5,6 +5,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import { formatCurrency } from '@/lib/utils';
 import PipelineHubTabs from '../../PipelineHubTabs';
 import MetricCard from '@/components/ui/MetricCard';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getForecast() {
   try {
@@ -56,35 +57,35 @@ export default async function PipelineForecastPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr>
-                  <th className="px-4 py-3">Stage</th>
-                  <th className="px-4 py-3">Deals</th>
-                  <th className="px-4 py-3">Total Value</th>
-                  <th className="px-4 py-3">Weighted Value</th>
-                  <th className="px-4 py-3">Forecast Share</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow>
+                  <TableHead className="px-4 py-3">Stage</TableHead>
+                  <TableHead className="px-4 py-3">Deals</TableHead>
+                  <TableHead className="px-4 py-3">Total Value</TableHead>
+                  <TableHead className="px-4 py-3">Weighted Value</TableHead>
+                  <TableHead className="px-4 py-3">Forecast Share</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {stages.map((stage) => (
-                  <tr key={stage.stage} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3 font-medium text-foreground capitalize">{stage.stage.replace('_', ' ')}</td>
-                    <td className="px-4 py-3 tabular-nums">{stage.count}</td>
-                    <td className="px-4 py-3 tabular-nums">{formatCurrency(stage.value)}</td>
-                    <td className="px-4 py-3 tabular-nums font-medium text-green-600">{formatCurrency(stage.weighted)}</td>
-                    <td className="px-4 py-3">
+                  <TableRow key={stage.stage} className="hover:bg-bg-secondary/50 transition-colors">
+                    <TableCell className="px-4 py-3 font-medium text-foreground capitalize">{stage.stage.replace('_', ' ')}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums">{stage.count}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums">{formatCurrency(stage.value)}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums font-medium text-green-600">{formatCurrency(stage.weighted)}</TableCell>
+                    <TableCell className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <div className="w-20 h-2 rounded-full bg-bg-secondary overflow-hidden">
                           <div className="h-full rounded-full bg-green-500" style={{ width: `${totalWeighted > 0 ? Math.round((stage.weighted / totalWeighted) * 100) : 0}%` }} />
                         </div>
                         <span className="text-xs tabular-nums text-text-muted">{totalWeighted > 0 ? Math.round((stage.weighted / totalWeighted) * 100) : 0}%</span>
                       </div>
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

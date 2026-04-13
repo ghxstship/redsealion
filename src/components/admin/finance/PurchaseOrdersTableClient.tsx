@@ -8,6 +8,7 @@ import StatusBadge, { PURCHASE_ORDER_STATUS_COLORS } from '@/components/ui/Statu
 import EmptyState from '@/components/ui/EmptyState';
 import Button from '@/components/ui/Button';
 import { Plus, FileText } from 'lucide-react';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 
 
@@ -65,36 +66,36 @@ export default function PurchaseOrdersTableClient({ orders }: { orders: PoRow[] 
       ) : (
         <div className="rounded-xl border border-border bg-background overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border bg-bg-secondary">
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">PO #</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Vendor</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Project</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Amount</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Due</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader>
+                <TableRow className="border-b border-border bg-bg-secondary">
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">PO #</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Vendor</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Project</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</TableHead>
+                  <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Amount</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Due</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {filtered.map((po) => (
-                  <tr key={po.id} className="transition-colors hover:bg-bg-secondary/50">
-                    <td className="px-6 py-3.5 text-sm font-medium text-foreground">{po.poNumber}</td>
-                    <td className="px-6 py-3.5 text-sm text-foreground">{po.vendorName}</td>
-                    <td className="px-6 py-3.5 text-sm text-text-secondary">{po.projectName ?? '—'}</td>
-                    <td className="px-6 py-3.5">
+                  <TableRow key={po.id} className="transition-colors hover:bg-bg-secondary/50">
+                    <TableCell className="px-6 py-3.5 text-sm font-medium text-foreground">{po.poNumber}</TableCell>
+                    <TableCell className="px-6 py-3.5 text-sm text-foreground">{po.vendorName}</TableCell>
+                    <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{po.projectName ?? '—'}</TableCell>
+                    <TableCell className="px-6 py-3.5">
                       <StatusBadge status={po.status} colorMap={PURCHASE_ORDER_STATUS_COLORS} />
-                    </td>
-                    <td className="px-6 py-3.5 text-right text-sm font-medium tabular-nums text-foreground">
+                    </TableCell>
+                    <TableCell className="px-6 py-3.5 text-right text-sm font-medium tabular-nums text-foreground">
                       {formatCurrency(po.totalAmount)}
-                    </td>
-                    <td className="px-6 py-3.5 text-sm text-text-secondary">
+                    </TableCell>
+                    <TableCell className="px-6 py-3.5 text-sm text-text-secondary">
                       {po.dueDate ? new Date(po.dueDate).toLocaleDateString() : '—'}
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </div>
       )}

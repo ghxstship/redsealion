@@ -8,6 +8,7 @@ import EmptyState from '@/components/ui/EmptyState';
 import { getClient, formatDate, roleLabel } from './_data';
 import PageHeader from '@/components/shared/PageHeader';
 import StatusBadge, { GENERIC_STATUS_COLORS, PIPELINE_STAGE_COLORS } from '@/components/ui/StatusBadge';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 
 
@@ -86,39 +87,39 @@ export default async function ClientDetailPage({
         <h2 className="text-sm font-semibold text-foreground">Contacts</h2>
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-border bg-bg-secondary">
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Name</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Title</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Email</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Phone</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Role</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
+        <Table >
+          <TableHeader>
+            <TableRow className="border-b border-border bg-bg-secondary">
+              <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Name</TableHead>
+              <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Title</TableHead>
+              <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Email</TableHead>
+              <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Phone</TableHead>
+              <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Role</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody >
             {client.contacts.map((contact) => (
-              <tr key={contact.id} className="transition-colors hover:bg-bg-secondary/50">
-                <td className="px-6 py-3.5">
+              <TableRow key={contact.id} className="transition-colors hover:bg-bg-secondary/50">
+                <TableCell className="px-6 py-3.5">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium text-foreground">{contact.name}</span>
                     {contact.is_decision_maker && (
                       <StatusBadge status="overdue" colorMap={{overdue: 'bg-amber-50 text-amber-700'}} />
                     )}
                   </div>
-                </td>
-                <td className="px-6 py-3.5 text-sm text-text-secondary">{contact.title}</td>
-                <td className="px-6 py-3.5 text-sm text-text-secondary">{contact.email}</td>
-                <td className="px-6 py-3.5 text-sm text-text-secondary">{contact.phone}</td>
-                <td className="px-6 py-3.5">
+                </TableCell>
+                <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{contact.title}</TableCell>
+                <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{contact.email}</TableCell>
+                <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{contact.phone}</TableCell>
+                <TableCell className="px-6 py-3.5">
                   <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">
                     {roleLabel(contact.role)}
                   </span>
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
     </div>
   );

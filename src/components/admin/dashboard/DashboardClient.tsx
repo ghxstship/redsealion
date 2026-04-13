@@ -50,6 +50,7 @@ import type { SubscriptionTier } from '@/types/database';
 import { canAccessFeature } from '@/lib/subscription';
 import { getGreeting, getContextualSubtitle, timeAgo } from './greeting';
 import { useTranslation } from '@/lib/i18n/client';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 /* ─── Action Icons ─────────────────────────────────────── */
 
@@ -299,7 +300,7 @@ export default function DashboardClient({ stats, cards, tier }: DashboardClientP
                       />
                     </div>
                   ) : (
-                    <div className="divide-y divide-border">
+                    <div >
                       {stats.myTasks.map((task) => {
                         const dueInfo = formatDueDate(task.due_date, t);
                         return (
@@ -355,7 +356,7 @@ export default function DashboardClient({ stats, cards, tier }: DashboardClientP
                       />
                     </div>
                   ) : (
-                    <div className="divide-y divide-border">
+                    <div >
                       {stats.upcomingEvents.map((event) => {
                         const dateInfo = formatEventDate(event.starts_at);
                         return (
@@ -413,7 +414,7 @@ export default function DashboardClient({ stats, cards, tier }: DashboardClientP
                     />
                   </div>
                 ) : (
-                  <div className="divide-y divide-border">
+                  <div >
                     {stats.notifications.map((notif) => {
                       const config = getNotifConfig(notif.type);
                       return (
@@ -518,30 +519,30 @@ export default function DashboardClient({ stats, cards, tier }: DashboardClientP
               </h2>
               <div className="surface overflow-hidden">
                 <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-border bg-bg-secondary">
-                        <th className="px-5 py-2.5 text-left text-xs font-medium uppercase tracking-wider text-text-muted w-8">
+                  <Table >
+                    <TableHeader>
+                      <TableRow className="border-b border-border bg-bg-secondary">
+                        <TableHead className="px-5 py-2.5 text-left text-xs font-medium uppercase tracking-wider text-text-muted w-8">
                           #
-                        </th>
-                        <th className="px-5 py-2.5 text-left text-xs font-medium uppercase tracking-wider text-text-muted">
+                        </TableHead>
+                        <TableHead className="px-5 py-2.5 text-left text-xs font-medium uppercase tracking-wider text-text-muted">
                           {t('dashboard.rep')}
-                        </th>
-                        <th className="px-5 py-2.5 text-right text-xs font-medium uppercase tracking-wider text-text-muted">
+                        </TableHead>
+                        <TableHead className="px-5 py-2.5 text-right text-xs font-medium uppercase tracking-wider text-text-muted">
                           {t('dashboard.dealsWon')}
-                        </th>
-                        <th className="px-5 py-2.5 text-right text-xs font-medium uppercase tracking-wider text-text-muted">
+                        </TableHead>
+                        <TableHead className="px-5 py-2.5 text-right text-xs font-medium uppercase tracking-wider text-text-muted">
                           {t('dashboard.revenue')}
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border">
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody >
                       {stats.leaderboard.map((entry, idx) => (
-                        <tr
+                        <TableRow
                           key={entry.name}
                           className="transition-colors duration-fast hover:bg-bg-secondary/50"
                         >
-                          <td className="px-5 py-3 text-sm tabular-nums text-text-muted">
+                          <TableCell className="px-5 py-3 text-sm tabular-nums text-text-muted">
                             {idx === 0
                               ? '🥇'
                               : idx === 1
@@ -549,20 +550,20 @@ export default function DashboardClient({ stats, cards, tier }: DashboardClientP
                                 : idx === 2
                                   ? '🥉'
                                   : `${idx + 1}`}
-                          </td>
-                          <td className="px-5 py-3 text-sm font-medium text-foreground">
+                          </TableCell>
+                          <TableCell className="px-5 py-3 text-sm font-medium text-foreground">
                             {entry.name}
-                          </td>
-                          <td className="px-5 py-3 text-right text-sm tabular-nums text-foreground">
+                          </TableCell>
+                          <TableCell className="px-5 py-3 text-right text-sm tabular-nums text-foreground">
                             {entry.deals_won}
-                          </td>
-                          <td className="px-5 py-3 text-right text-sm tabular-nums font-medium text-foreground">
+                          </TableCell>
+                          <TableCell className="px-5 py-3 text-right text-sm tabular-nums font-medium text-foreground">
                             {formatCurrency(entry.revenue)}
-                          </td>
-                        </tr>
+                          </TableCell>
+                        </TableRow>
                       ))}
-                    </tbody>
-                  </table>
+                    </TableBody>
+                  </Table>
                 </div>
               </div>
             </div>

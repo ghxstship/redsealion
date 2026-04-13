@@ -15,6 +15,7 @@ import {
   type PermissionAction,
 } from '@/lib/permissions';
 import Button from '@/components/ui/Button';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface PermissionMatrixProps {
   organizationId: string;
@@ -207,28 +208,28 @@ export default function PermissionMatrix({ organizationId, overrides }: Permissi
               )}
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-border">
-                    <th className="px-6 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted w-48">
+              <Table >
+                <TableHeader>
+                  <TableRow className="border-b border-border">
+                    <TableHead className="px-6 py-2 text-left text-xs font-medium uppercase tracking-wider text-text-muted w-48">
                       Resource
-                    </th>
+                    </TableHead>
                     {ALL_ACTIONS.map((action) => (
-                      <th
+                      <TableHead
                         key={action}
                         className="px-4 py-2 text-center text-xs font-medium uppercase tracking-wider text-text-muted"
                       >
                         {action}
-                      </th>
+                      </TableHead>
                     ))}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
+                  </TableRow>
+                </TableHeader>
+                <TableBody >
                   {ALL_RESOURCES.map((resource) => (
-                    <tr key={resource} className="hover:bg-bg-secondary/50 transition-colors">
-                      <td className="px-6 py-2.5 text-sm text-foreground">
+                    <TableRow key={resource} className="hover:bg-bg-secondary/50 transition-colors">
+                      <TableCell className="px-6 py-2.5 text-sm text-foreground">
                         {RESOURCE_LABELS[resource]}
-                      </td>
+                      </TableCell>
                       {ALL_ACTIONS.map((action) => {
                         const key = permKey(resource, action);
                         const allowed = permissions[role]?.[key] ?? false;
@@ -236,7 +237,7 @@ export default function PermissionMatrix({ organizationId, overrides }: Permissi
                         const editable = isEnterprise && !isAdmin;
 
                         return (
-                          <td key={action} className="px-4 py-2.5 text-center">
+                          <TableCell key={action} className="px-4 py-2.5 text-center">
                             <Button
                               type="button"
                               disabled={!editable || isSaving}
@@ -248,13 +249,13 @@ export default function PermissionMatrix({ organizationId, overrides }: Permissi
                               } ${isSaving ? 'opacity-50 animate-pulse' : ''}`}
                               title={`${allowed ? 'Allowed' : 'Denied'}: ${ROLE_LABELS[role] ?? role} → ${action} ${resource}`}
                             />
-                          </td>
+                          </TableCell>
                         );
                       })}
-                    </tr>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           </div>
         );

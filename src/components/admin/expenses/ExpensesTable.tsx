@@ -21,6 +21,7 @@ import { useEntityViews } from '@/hooks/useEntityViews';
 import { useStoredColumnConfig } from '@/hooks/useStoredColumnConfig';
 import ViewBar from '@/components/shared/ViewBar';
 import ColumnConfigPanel from '@/components/shared/ColumnConfigPanel';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface ExpenseRow {
   id: string;
@@ -169,36 +170,36 @@ export default function ExpensesTable({ expenses }: { expenses: ExpenseRow[] }) 
 
       <div className="rounded-xl border border-border bg-background overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-border bg-bg-secondary">
-                <th className="px-4 py-3 text-left w-10">
+          <Table >
+            <TableHeader>
+              <TableRow className="border-b border-border bg-bg-secondary">
+                <TableHead className="px-4 py-3 text-left w-10">
                   <input type="checkbox" checked={isAllSelected} ref={(el) => { if (el) el.indeterminate = isSomeSelected; }} onChange={toggleAll} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
-                </th>
-                {isVisible('expense_date') && <th className="px-6 py-3"><SortableHeader label="Date" field="expense_date" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('category') && <th className="px-6 py-3"><SortableHeader label="Category" field="category" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('description') && <th className="px-6 py-3"><SortableHeader label="Description" field="description" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('amount') && <th className="px-6 py-3"><SortableHeader label="Amount" field="amount" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('status') && <th className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></th>}
-                <th className="px-6 py-3 w-12"><span className="sr-only">Actions</span></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
+                </TableHead>
+                {isVisible('expense_date') && <TableHead className="px-6 py-3"><SortableHeader label="Date" field="expense_date" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('category') && <TableHead className="px-6 py-3"><SortableHeader label="Category" field="category" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('description') && <TableHead className="px-6 py-3"><SortableHeader label="Description" field="description" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('amount') && <TableHead className="px-6 py-3"><SortableHeader label="Amount" field="amount" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('status') && <TableHead className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></TableHead>}
+                <TableHead className="px-6 py-3 w-12"><span className="sr-only">Actions</span></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody >
               {sorted.map((exp) => (
-                <tr key={exp.id} className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(exp.id) ? 'bg-blue-50/50' : ''}`}>
-                  <td className="px-4 py-3.5">
+                <TableRow key={exp.id} className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(exp.id) ? 'bg-blue-50/50' : ''}`}>
+                  <TableCell className="px-4 py-3.5">
                     <input type="checkbox" checked={isSelected(exp.id)} onChange={() => toggle(exp.id)} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
-                  </td>
-                  {isVisible('expense_date') && <td className="px-6 py-3.5 text-sm text-foreground whitespace-nowrap">{new Date(exp.expense_date).toLocaleDateString()}</td>}
-                  {isVisible('category') && <td className="px-6 py-3.5 text-sm font-medium text-foreground capitalize">{exp.category}</td>}
-                  {isVisible('description') && <td className="px-6 py-3.5 text-sm text-text-secondary">{exp.description ?? '\u2014'}</td>}
-                  {isVisible('amount') && <td className="px-6 py-3.5 text-right text-sm font-medium tabular-nums text-foreground">{formatCurrency(exp.amount)}</td>}
+                  </TableCell>
+                  {isVisible('expense_date') && <TableCell className="px-6 py-3.5 text-sm text-foreground whitespace-nowrap">{new Date(exp.expense_date).toLocaleDateString()}</TableCell>}
+                  {isVisible('category') && <TableCell className="px-6 py-3.5 text-sm font-medium text-foreground capitalize">{exp.category}</TableCell>}
+                  {isVisible('description') && <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{exp.description ?? '\u2014'}</TableCell>}
+                  {isVisible('amount') && <TableCell className="px-6 py-3.5 text-right text-sm font-medium tabular-nums text-foreground">{formatCurrency(exp.amount)}</TableCell>}
                   {isVisible('status') && (
-                    <td className="px-6 py-3.5">
+                    <TableCell className="px-6 py-3.5">
                       <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColor(exp.status)}`}>{formatLabel(exp.status)}</span>
-                    </td>
+                    </TableCell>
                   )}
-                  <td className="px-6 py-3.5">
+                  <TableCell className="px-6 py-3.5">
                     <RowActionMenu actions={[
                       ...(exp.status === 'approved' ? [{
                         label: 'Mark Reimbursed',
@@ -206,14 +207,14 @@ export default function ExpensesTable({ expenses }: { expenses: ExpenseRow[] }) 
                       }] : []),
                       { label: 'Delete', variant: 'danger' as const, onClick: () => setDeleteId(exp.id) },
                     ]} />
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
               {sorted.length === 0 && (
-                <tr><td colSpan={7} className="px-6 py-12 text-center text-sm text-text-muted">No expenses match your filters.</td></tr>
+                <TableRow><TableCell colSpan={7} className="px-6 py-12 text-center text-sm text-text-muted">No expenses match your filters.</TableCell></TableRow>
               )}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </div>
 

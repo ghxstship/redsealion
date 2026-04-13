@@ -7,6 +7,7 @@ import Link from 'next/link';
 import StatusBadge, { ADVANCE_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import AdvancingHubTabs from '../../AdvancingHubTabs';
 import MetricCard from '@/components/ui/MetricCard';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getSubmissions() {
   try {
@@ -53,34 +54,34 @@ export default async function AdvancingSubmissionsPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr>
-                  <th className="px-4 py-3">Number</th>
-                  <th className="px-4 py-3">Event</th>
-                  <th className="px-4 py-3">Status</th>
-                  <th className="px-4 py-3">Amount</th>
-                  <th className="px-4 py-3">Deadline</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow>
+                  <TableHead className="px-4 py-3">Number</TableHead>
+                  <TableHead className="px-4 py-3">Event</TableHead>
+                  <TableHead className="px-4 py-3">Status</TableHead>
+                  <TableHead className="px-4 py-3">Amount</TableHead>
+                  <TableHead className="px-4 py-3">Deadline</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {submissions.map((item) => (
-                  <tr key={item.id} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3">
+                  <TableRow key={item.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <TableCell className="px-4 py-3">
                       <Link href={`/app/advancing/${item.id}`} className="font-medium text-foreground hover:underline">
                         {item.advance_number}
                       </Link>
-                    </td>
-                    <td className="px-4 py-3 text-text-secondary">{item.event_name ?? '—'}</td>
-                    <td className="px-4 py-3">
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{item.event_name ?? '—'}</TableCell>
+                    <TableCell className="px-4 py-3">
                       <StatusBadge status={item.status} colorMap={ADVANCE_STATUS_COLORS} />
-                    </td>
-                    <td className="px-4 py-3 tabular-nums">{formatCurrency(item.total_cents / 100)}</td>
-                    <td className="px-4 py-3 text-text-secondary">{item.submission_deadline ? new Date(item.submission_deadline).toLocaleDateString() : '—'}</td>
-                  </tr>
+                    </TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums">{formatCurrency(item.total_cents / 100)}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{item.submission_deadline ? new Date(item.submission_deadline).toLocaleDateString() : '—'}</TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

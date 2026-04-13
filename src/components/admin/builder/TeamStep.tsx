@@ -5,6 +5,7 @@ import { IconPlus } from '@/components/ui/Icons';
 import { X } from 'lucide-react';
 import EmptyState from '@/components/ui/EmptyState';
 import Button from '@/components/ui/Button';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 export interface TeamAssignmentData {
   id: string;
@@ -86,25 +87,25 @@ export default function TeamStep({ assignments, onChange }: TeamStepProps) {
 
       {assignments.length > 0 && (
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-border">
-                <th className="pb-2 pr-4 text-left text-xs font-medium uppercase tracking-wider text-text-muted">
+          <Table >
+            <TableHeader>
+              <TableRow className="border-b border-border">
+                <TableHead className="pb-2 pr-4 text-left text-xs font-medium uppercase tracking-wider text-text-muted">
                   Role
-                </th>
-                <th className="pb-2 pr-4 text-left text-xs font-medium uppercase tracking-wider text-text-muted">
+                </TableHead>
+                <TableHead className="pb-2 pr-4 text-left text-xs font-medium uppercase tracking-wider text-text-muted">
                   Team Member
-                </th>
-                <th className="pb-2 pr-4 text-left text-xs font-medium uppercase tracking-wider text-text-muted">
+                </TableHead>
+                <TableHead className="pb-2 pr-4 text-left text-xs font-medium uppercase tracking-wider text-text-muted">
                   Facility
-                </th>
-                <th className="pb-2 w-10"></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
+                </TableHead>
+                <TableHead className="pb-2 w-10"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody >
               {assignments.map((assignment, index) => (
-                <tr key={assignment.id}>
-                  <td className="py-3 pr-4">
+                <TableRow key={assignment.id}>
+                  <TableCell className="py-3 pr-4">
                     <FormSelect
                       value={assignment.role}
                       onChange={(e) => updateAssignment(index, { role: e.target.value })}
@@ -116,8 +117,8 @@ export default function TeamStep({ assignments, onChange }: TeamStepProps) {
                         </option>
                       ))}
                     </FormSelect>
-                  </td>
-                  <td className="py-3 pr-4">
+                  </TableCell>
+                  <TableCell className="py-3 pr-4">
                     <FormSelect
                       value={assignment.userId}
                       onChange={(e) => updateAssignment(index, { userId: e.target.value })}
@@ -129,8 +130,8 @@ export default function TeamStep({ assignments, onChange }: TeamStepProps) {
                         </option>
                       ))}
                     </FormSelect>
-                  </td>
-                  <td className="py-3 pr-4">
+                  </TableCell>
+                  <TableCell className="py-3 pr-4">
                     <FormSelect
                       value={assignment.facilityId}
                       onChange={(e) => updateAssignment(index, { facilityId: e.target.value })}
@@ -142,8 +143,8 @@ export default function TeamStep({ assignments, onChange }: TeamStepProps) {
                         </option>
                       ))}
                     </FormSelect>
-                  </td>
-                  <td className="py-3">
+                  </TableCell>
+                  <TableCell className="py-3">
                     <Button
                       type="button"
                       onClick={() => removeAssignment(index)}
@@ -152,11 +153,11 @@ export default function TeamStep({ assignments, onChange }: TeamStepProps) {
                     >
                       <X size={16} />
                     </Button>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       )}
 

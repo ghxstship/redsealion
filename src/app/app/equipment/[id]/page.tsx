@@ -7,6 +7,7 @@ import { formatDate, formatLabel, formatCurrency } from '@/lib/utils';
 import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
 import AssetDetailHeaderActions from '@/components/admin/equipment/AssetDetailHeaderActions';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 const RESERVATION_COLORS: Record<string, string> = {
   confirmed: 'bg-green-50 text-green-700',
@@ -182,40 +183,40 @@ export default async function EquipmentDetailPage({
               <h2 className="text-sm font-semibold text-foreground">Preventive Schedules</h2>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-border bg-bg-secondary">
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Type</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Description</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Interval</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Next Due</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
+              <Table >
+                <TableHeader>
+                  <TableRow className="border-b border-border bg-bg-secondary">
+                    <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Type</TableHead>
+                    <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Description</TableHead>
+                    <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Interval</TableHead>
+                    <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Next Due</TableHead>
+                    <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody >
                   {schedules.map((s) => {
                     const isOverdue = s.next_due_at && s.next_due_at < now;
                     return (
-                      <tr key={s.id} className="transition-colors hover:bg-bg-secondary/50">
-                        <td className="px-6 py-3.5 text-sm text-foreground">{formatLabel(s.maintenance_type)}</td>
-                        <td className="px-6 py-3.5 text-sm text-text-secondary max-w-xs truncate">{s.description ?? '—'}</td>
-                        <td className="px-6 py-3.5 text-sm text-text-secondary tabular-nums">
+                      <TableRow key={s.id} className="transition-colors hover:bg-bg-secondary/50">
+                        <TableCell className="px-6 py-3.5 text-sm text-foreground">{formatLabel(s.maintenance_type)}</TableCell>
+                        <TableCell className="px-6 py-3.5 text-sm text-text-secondary max-w-xs truncate">{s.description ?? '—'}</TableCell>
+                        <TableCell className="px-6 py-3.5 text-sm text-text-secondary tabular-nums">
                           {s.schedule_type === 'time_based' ? `Every ${s.interval_days}d` : `Every ${s.interval_usage} uses`}
-                        </td>
-                        <td className="px-6 py-3.5 text-sm text-text-secondary">
+                        </TableCell>
+                        <TableCell className="px-6 py-3.5 text-sm text-text-secondary">
                           {s.next_due_at ? formatDate(s.next_due_at) : '—'}
-                        </td>
-                        <td className="px-6 py-3.5">
+                        </TableCell>
+                        <TableCell className="px-6 py-3.5">
                           <StatusBadge 
                             status={isOverdue ? 'Overdue' : 'On Track'} 
                             colorMap={{'Overdue': 'bg-red-500/10 text-red-700', 'On Track': 'bg-green-50 text-green-700'}} 
                           />
-                        </td>
-                      </tr>
+                        </TableCell>
+                      </TableRow>
                     );
                   })}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           </div>
         )}
@@ -227,28 +228,28 @@ export default async function EquipmentDetailPage({
           </div>
           {reservations.length > 0 ? (
             <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-border bg-bg-secondary">
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Project</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Start</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">End</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
+              <Table >
+                <TableHeader>
+                  <TableRow className="border-b border-border bg-bg-secondary">
+                    <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Project</TableHead>
+                    <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Start</TableHead>
+                    <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">End</TableHead>
+                    <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody >
                   {reservations.map((res) => (
-                    <tr key={res.id} className="transition-colors hover:bg-bg-secondary/50">
-                      <td className="px-6 py-3.5 text-sm font-medium text-foreground">{res.proposal_id ?? '—'}</td>
-                      <td className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(res.reserved_from as string)}</td>
-                      <td className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(res.reserved_until as string)}</td>
-                      <td className="px-6 py-3.5">
+                    <TableRow key={res.id} className="transition-colors hover:bg-bg-secondary/50">
+                      <TableCell className="px-6 py-3.5 text-sm font-medium text-foreground">{res.proposal_id ?? '—'}</TableCell>
+                      <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(res.reserved_from as string)}</TableCell>
+                      <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(res.reserved_until as string)}</TableCell>
+                      <TableCell className="px-6 py-3.5">
                         <StatusBadge status={res.status} colorMap={RESERVATION_COLORS} />
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           ) : (
             <div className="px-6 py-12 text-center text-sm text-text-muted">No reservations.</div>
@@ -262,32 +263,32 @@ export default async function EquipmentDetailPage({
           </div>
           {maintenanceRecords.length > 0 ? (
             <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-border bg-bg-secondary">
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Type</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Description</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Date</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Performed By</th>
-                    <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Cost</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
+              <Table >
+                <TableHeader>
+                  <TableRow className="border-b border-border bg-bg-secondary">
+                    <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Type</TableHead>
+                    <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Description</TableHead>
+                    <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Date</TableHead>
+                    <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Performed By</TableHead>
+                    <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Cost</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody >
                   {maintenanceRecords.map((record) => (
-                    <tr key={record.id} className="transition-colors hover:bg-bg-secondary/50">
-                      <td className="px-6 py-3.5">
+                    <TableRow key={record.id} className="transition-colors hover:bg-bg-secondary/50">
+                      <TableCell className="px-6 py-3.5">
                         <StatusBadge status={record.type} colorMap={{}} className="bg-bg-secondary text-text-secondary" />
-                      </td>
-                      <td className="px-6 py-3.5 text-sm text-text-secondary max-w-xs truncate">{record.description}</td>
-                      <td className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(record.scheduled_date)}</td>
-                      <td className="px-6 py-3.5 text-sm text-text-secondary">{record.performed_by ?? '—'}</td>
-                      <td className="px-6 py-3.5 text-sm text-right font-medium tabular-nums text-foreground">
+                      </TableCell>
+                      <TableCell className="px-6 py-3.5 text-sm text-text-secondary max-w-xs truncate">{record.description}</TableCell>
+                      <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{formatDate(record.scheduled_date)}</TableCell>
+                      <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{record.performed_by ?? '—'}</TableCell>
+                      <TableCell className="px-6 py-3.5 text-sm text-right font-medium tabular-nums text-foreground">
                         {record.cost ? formatCurrency(record.cost) : '—'}
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           ) : (
             <div className="px-6 py-12 text-center text-sm text-text-muted">No maintenance records.</div>

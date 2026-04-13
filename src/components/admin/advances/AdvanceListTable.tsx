@@ -20,6 +20,7 @@ import { ADVANCE_STATUS_COLORS, ADVANCE_PRIORITY_COLORS, ADVANCE_MODE_COLORS } f
 import { ADVANCE_LIST_TABS, ADVANCE_TYPE_CONFIG } from '@/lib/advances/constants';
 import { formatCents, formatAdvanceDate } from '@/lib/advances/utils';
 import type { AdvanceStatus, AdvanceMode, AdvanceType, AdvancePriority } from '@/types/database';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface AdvanceListItem {
   id: string;
@@ -154,70 +155,70 @@ export default function AdvanceListTable({ advances, activeTab, onTabChange }: A
         />
       ) : (
         <div className="overflow-x-auto rounded-xl border border-border bg-background">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border bg-bg-secondary/50">
-                {isVisible('advance_number') && <th className="px-4 py-3"><SortableHeader label="Advance" field="advance_number" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('advance_type') && <th className="px-4 py-3"><SortableHeader label="Type" field="advance_type" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('status') && <th className="px-4 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('priority') && <th className="px-4 py-3"><SortableHeader label="Priority" field="priority" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('event_name') && <th className="px-4 py-3 text-left text-xs font-semibold text-text-muted uppercase tracking-wider">Event / Project</th>}
-                {isVisible('service_start_date') && <th className="px-4 py-3"><SortableHeader label="Dates" field="service_start_date" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('line_item_count') && <th className="px-4 py-3"><SortableHeader label="Items" field="line_item_count" currentSort={sort} onSort={handleSort} /></th>}
-                {isVisible('total_cents') && <th className="px-4 py-3"><SortableHeader label="Total" field="total_cents" currentSort={sort} onSort={handleSort} /></th>}
-                <th className="px-4 py-3 w-12"><span className="sr-only">Actions</span></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
+          <Table >
+            <TableHeader>
+              <TableRow className="border-b border-border bg-bg-secondary/50">
+                {isVisible('advance_number') && <TableHead className="px-4 py-3"><SortableHeader label="Advance" field="advance_number" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('advance_type') && <TableHead className="px-4 py-3"><SortableHeader label="Type" field="advance_type" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('status') && <TableHead className="px-4 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('priority') && <TableHead className="px-4 py-3"><SortableHeader label="Priority" field="priority" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('event_name') && <TableHead className="px-4 py-3 text-left text-xs font-semibold text-text-muted uppercase tracking-wider">Event / Project</TableHead>}
+                {isVisible('service_start_date') && <TableHead className="px-4 py-3"><SortableHeader label="Dates" field="service_start_date" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('line_item_count') && <TableHead className="px-4 py-3"><SortableHeader label="Items" field="line_item_count" currentSort={sort} onSort={handleSort} /></TableHead>}
+                {isVisible('total_cents') && <TableHead className="px-4 py-3"><SortableHeader label="Total" field="total_cents" currentSort={sort} onSort={handleSort} /></TableHead>}
+                <TableHead className="px-4 py-3 w-12"><span className="sr-only">Actions</span></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody >
               {sorted.map((advance) => (
-                <tr key={advance.id} className="transition-colors hover:bg-bg-secondary/30">
+                <TableRow key={advance.id} className="transition-colors hover:bg-bg-secondary/30">
                   {isVisible('advance_number') && (
-                    <td className="px-4 py-3">
+                    <TableCell className="px-4 py-3">
                       <Link href={`/app/advancing/${advance.id}`} className="group flex flex-col">
                         <span className="font-medium text-foreground group-hover:text-blue-600 transition-colors">
                           {advance.advance_number}
                         </span>
                         <StatusBadge status={advance.advance_mode} colorMap={ADVANCE_MODE_COLORS} className="mt-0.5 w-fit" />
                       </Link>
-                    </td>
+                    </TableCell>
                   )}
                   {isVisible('advance_type') && (
-                    <td className="px-4 py-3 text-text-secondary text-xs">
+                    <TableCell className="px-4 py-3 text-text-secondary text-xs">
                       {ADVANCE_TYPE_CONFIG[advance.advance_type]?.label ?? advance.advance_type}
-                    </td>
+                    </TableCell>
                   )}
                   {isVisible('status') && (
-                    <td className="px-4 py-3">
+                    <TableCell className="px-4 py-3">
                       <StatusBadge status={advance.status} colorMap={ADVANCE_STATUS_COLORS} />
-                    </td>
+                    </TableCell>
                   )}
                   {isVisible('priority') && (
-                    <td className="px-4 py-3">
+                    <TableCell className="px-4 py-3">
                       <StatusBadge status={advance.priority} colorMap={ADVANCE_PRIORITY_COLORS} />
-                    </td>
+                    </TableCell>
                   )}
                   {isVisible('event_name') && (
-                    <td className="px-4 py-3 text-text-secondary text-xs">
+                    <TableCell className="px-4 py-3 text-text-secondary text-xs">
                       {advance.event_name ?? advance.projects?.name ?? '—'}
-                    </td>
+                    </TableCell>
                   )}
                   {isVisible('service_start_date') && (
-                    <td className="px-4 py-3 text-text-secondary text-xs whitespace-nowrap">
+                    <TableCell className="px-4 py-3 text-text-secondary text-xs whitespace-nowrap">
                       {formatAdvanceDate(advance.service_start_date)}
                       {advance.service_end_date && ` — ${formatAdvanceDate(advance.service_end_date)}`}
-                    </td>
+                    </TableCell>
                   )}
                   {isVisible('line_item_count') && (
-                    <td className="px-4 py-3 text-right tabular-nums text-text-secondary">
+                    <TableCell className="px-4 py-3 text-right tabular-nums text-text-secondary">
                       {advance.line_item_count}
-                    </td>
+                    </TableCell>
                   )}
                   {isVisible('total_cents') && (
-                    <td className="px-4 py-3 text-right tabular-nums font-medium text-foreground">
+                    <TableCell className="px-4 py-3 text-right tabular-nums font-medium text-foreground">
                       {advance.total_cents > 0 ? formatCents(advance.total_cents) : '—'}
-                    </td>
+                    </TableCell>
                   )}
-                  <td className="px-4 py-3">
+                  <TableCell className="px-4 py-3">
                     <RowActionMenu actions={[
                       { label: 'View', onClick: () => window.location.href = `/app/advancing/${advance.id}` },
                       { label: 'Duplicate', onClick: async () => {
@@ -226,11 +227,11 @@ export default function AdvanceListTable({ advances, activeTab, onTabChange }: A
                       }},
                       { label: 'Export CSV', onClick: () => window.open(`/api/advances/${advance.id}/export?format=csv`, '_blank') },
                     ]} />
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       )}
 

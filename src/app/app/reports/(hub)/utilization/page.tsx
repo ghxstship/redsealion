@@ -5,6 +5,7 @@ import ReportsHubTabs from '../../ReportsHubTabs';
 import Card from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface UtilizationRow {
   userId: string;
@@ -155,26 +156,26 @@ export default async function UtilizationReportPage() {
       ) : (
         <div className="rounded-xl border border-border bg-background overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border bg-bg-secondary">
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Team Member</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Role</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Billable</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Non-Bill.</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Total</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted min-w-[200px]">Utilization</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader>
+                <TableRow className="border-b border-border bg-bg-secondary">
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Team Member</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Role</TableHead>
+                  <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Billable</TableHead>
+                  <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Non-Bill.</TableHead>
+                  <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-muted">Total</TableHead>
+                  <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted min-w-[200px]">Utilization</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {rows.map((r) => (
-                  <tr key={r.userId} className="transition-colors hover:bg-bg-secondary/50">
-                    <td className="px-6 py-3.5 text-sm font-medium text-foreground">{r.userName}</td>
-                    <td className="px-6 py-3.5 text-sm text-text-secondary capitalize">{r.role?.replace(/_/g, ' ') ?? '—'}</td>
-                    <td className="px-6 py-3.5 text-right text-sm tabular-nums text-green-600">{r.billableHours}h</td>
-                    <td className="px-6 py-3.5 text-right text-sm tabular-nums text-text-secondary">{r.nonBillableHours}h</td>
-                    <td className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{r.totalHours}h</td>
-                    <td className="px-6 py-3.5">
+                  <TableRow key={r.userId} className="transition-colors hover:bg-bg-secondary/50">
+                    <TableCell className="px-6 py-3.5 text-sm font-medium text-foreground">{r.userName}</TableCell>
+                    <TableCell className="px-6 py-3.5 text-sm text-text-secondary capitalize">{r.role?.replace(/_/g, ' ') ?? '—'}</TableCell>
+                    <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-green-600">{r.billableHours}h</TableCell>
+                    <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-text-secondary">{r.nonBillableHours}h</TableCell>
+                    <TableCell className="px-6 py-3.5 text-right text-sm tabular-nums text-foreground">{r.totalHours}h</TableCell>
+                    <TableCell className="px-6 py-3.5">
                       <div className="flex items-center gap-3">
                         <div className="flex-1 h-2 rounded-full bg-bg-secondary overflow-hidden">
                           <div
@@ -189,11 +190,11 @@ export default async function UtilizationReportPage() {
                           {r.utilizationPercent}%
                         </Badge>
                       </div>
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </div>
       )}

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
 import FormInput from '@/components/ui/FormInput';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface LineItem {
   id: string;
@@ -82,7 +83,7 @@ export default function ShipmentLineItems({
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Item description"
-            className="w-full"
+            
             required
           />
         </div>
@@ -93,7 +94,7 @@ export default function ShipmentLineItems({
             min="1"
             value={quantity}
             onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
-            className="w-full"
+            
             required
           />
         </div>
@@ -104,7 +105,7 @@ export default function ShipmentLineItems({
             step="0.01"
             value={weight}
             onChange={(e) => setWeight(e.target.value)}
-            className="w-full"
+            
             placeholder="-"
           />
         </div>
@@ -118,24 +119,24 @@ export default function ShipmentLineItems({
           No line items added to this shipment.
         </div>
       ) : (
-        <table className="w-full text-sm">
-          <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-            <tr>
-              <th className="px-4 py-3">Description</th>
-              <th className="px-4 py-3">Qty</th>
-              <th className="px-4 py-3">Weight</th>
-              <th className="px-4 py-3 w-16"></th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
+        <Table >
+          <TableHeader >
+            <TableRow>
+              <TableHead className="px-4 py-3">Description</TableHead>
+              <TableHead className="px-4 py-3">Qty</TableHead>
+              <TableHead className="px-4 py-3">Weight</TableHead>
+              <TableHead className="px-4 py-3 w-16"></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody >
             {items.map((item) => (
-              <tr key={item.id} className="hover:bg-bg-secondary/50">
-                <td className="px-4 py-3 text-foreground">{item.description ?? '—'}</td>
-                <td className="px-4 py-3 tabular-nums">{item.quantity}</td>
-                <td className="px-4 py-3 tabular-nums text-text-secondary">
+              <TableRow key={item.id} className="hover:bg-bg-secondary/50">
+                <TableCell className="px-4 py-3 text-foreground">{item.description ?? '—'}</TableCell>
+                <TableCell className="px-4 py-3 tabular-nums">{item.quantity}</TableCell>
+                <TableCell className="px-4 py-3 tabular-nums text-text-secondary">
                   {item.weight_lbs ? `${item.weight_lbs} lbs` : '—'}
-                </td>
-                <td className="px-4 py-3 text-right">
+                </TableCell>
+                <TableCell className="px-4 py-3 text-right">
                   <button
                     onClick={() => handleDelete(item.id)}
                     disabled={deletingId === item.id}
@@ -143,11 +144,11 @@ export default function ShipmentLineItems({
                   >
                     Remove
                   </button>
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       )}
     </div>
   );

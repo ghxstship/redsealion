@@ -6,6 +6,7 @@ import { formatCurrency } from '@/lib/utils';
 import FabricationHubTabs from '../../FabricationHubTabs';
 import StatusBadge, { BOM_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import MetricCard from '@/components/ui/MetricCard';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getBOM() {
   try {
@@ -52,32 +53,32 @@ export default async function BOMPage() {
           <div className="px-8 py-16 text-center"><p className="text-sm text-text-secondary">No materials in BOM. Add materials when creating fabrication orders.</p></div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr>
-                  <th className="px-4 py-3">Material</th>
-                  <th className="px-4 py-3">SKU</th>
-                  <th className="px-4 py-3">Order</th>
-                  <th className="px-4 py-3">Required</th>
-                  <th className="px-4 py-3">On Hand</th>
-                  <th className="px-4 py-3">Cost</th>
-                  <th className="px-4 py-3">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow>
+                  <TableHead className="px-4 py-3">Material</TableHead>
+                  <TableHead className="px-4 py-3">SKU</TableHead>
+                  <TableHead className="px-4 py-3">Order</TableHead>
+                  <TableHead className="px-4 py-3">Required</TableHead>
+                  <TableHead className="px-4 py-3">On Hand</TableHead>
+                  <TableHead className="px-4 py-3">Cost</TableHead>
+                  <TableHead className="px-4 py-3">Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {items.map((item) => (
-                  <tr key={item.id} className={`hover:bg-bg-secondary/50 transition-colors ${item.quantity_on_hand < item.quantity_required ? 'bg-red-500/5' : ''}`}>
-                    <td className="px-4 py-3 font-medium text-foreground">{item.material_name}</td>
-                    <td className="px-4 py-3 text-text-muted font-mono text-xs">{item.sku ?? '—'}</td>
-                    <td className="px-4 py-3 text-text-secondary">{item.order_number ?? '—'}</td>
-                    <td className="px-4 py-3 tabular-nums">{item.quantity_required} {item.unit}</td>
-                    <td className="px-4 py-3 tabular-nums">{item.quantity_on_hand} {item.unit}</td>
-                    <td className="px-4 py-3 tabular-nums">{formatCurrency((item.unit_cost_cents * item.quantity_required) / 100)}</td>
-                    <td className="px-4 py-3"><StatusBadge status={item.status} colorMap={BOM_STATUS_COLORS} /></td>
-                  </tr>
+                  <TableRow key={item.id} className={`hover:bg-bg-secondary/50 transition-colors ${item.quantity_on_hand < item.quantity_required ? 'bg-red-500/5' : ''}`}>
+                    <TableCell className="px-4 py-3 font-medium text-foreground">{item.material_name}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-muted font-mono text-xs">{item.sku ?? '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{item.order_number ?? '—'}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums">{item.quantity_required} {item.unit}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums">{item.quantity_on_hand} {item.unit}</TableCell>
+                    <TableCell className="px-4 py-3 tabular-nums">{formatCurrency((item.unit_cost_cents * item.quantity_required) / 100)}</TableCell>
+                    <TableCell className="px-4 py-3"><StatusBadge status={item.status} colorMap={BOM_STATUS_COLORS} /></TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

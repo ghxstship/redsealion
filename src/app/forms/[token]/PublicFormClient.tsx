@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Button from '@/components/ui/Button';
 import FormInput from '@/components/ui/FormInput';
 import FormTextarea from '@/components/ui/FormTextarea';
+import Alert from '@/components/ui/Alert';
 
 interface LeadForm {
   id: string;
@@ -96,9 +97,9 @@ export default function PublicFormClient({ form }: { form: LeadForm }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       {errorMsg && (
-        <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm border border-red-100">
+        <Alert variant="error">
           {errorMsg}
-        </div>
+        </Alert>
       )}
 
       {/* Render mapped fields for demo purposes based on standard intake fields */}

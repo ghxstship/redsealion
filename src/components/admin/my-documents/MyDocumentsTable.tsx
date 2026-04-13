@@ -8,6 +8,7 @@ import EmptyState from '@/components/ui/EmptyState';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import Alert from '@/components/ui/Alert';
 import FormSelect from '@/components/ui/FormSelect';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 export interface MyDocumentData {
   id: string;
@@ -163,41 +164,41 @@ export default function MyDocumentsTable({ initialFiles }: MyDocumentsTableProps
       </div>
       
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm">
-          <thead className="bg-bg-secondary/30 text-text-muted">
-            <tr>
-              <th className="px-6 py-3 font-medium">Name</th>
-              <th className="px-6 py-3 font-medium">Size</th>
-              <th className="px-6 py-3 font-medium">Category</th>
-              <th className="px-6 py-3 font-medium">Version</th>
-              <th className="px-6 py-3 font-medium">Uploaded</th>
-              <th className="px-6 py-3 font-medium text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
+        <Table >
+          <TableHeader className="bg-bg-secondary/30 text-text-muted">
+            <TableRow>
+              <TableHead className="px-6 py-3 font-medium">Name</TableHead>
+              <TableHead className="px-6 py-3 font-medium">Size</TableHead>
+              <TableHead className="px-6 py-3 font-medium">Category</TableHead>
+              <TableHead className="px-6 py-3 font-medium">Version</TableHead>
+              <TableHead className="px-6 py-3 font-medium">Uploaded</TableHead>
+              <TableHead className="px-6 py-3 font-medium text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody >
             {filteredFiles.map(file => (
-              <tr key={file.id} className="hover:bg-bg-secondary/20 transition-colors">
-                <td className="px-6 py-4">
+              <TableRow key={file.id} className="hover:bg-bg-secondary/20 transition-colors">
+                <TableCell className="px-6 py-4">
                   <div className="flex items-center space-x-3">
                     <File className="text-text-muted" size={16} />
                     <span className="font-medium text-foreground">{file.file_name}</span>
                   </div>
-                </td>
-                <td className="px-6 py-4 text-text-secondary">
+                </TableCell>
+                <TableCell className="px-6 py-4 text-text-secondary">
                   {(file.file_size / 1024 / 1024).toFixed(2)} MB
-                </td>
-                <td className="px-6 py-4">
+                </TableCell>
+                <TableCell className="px-6 py-4">
                   <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary capitalize">
                     {file.category}
                   </span>
-                </td>
-                <td className="px-6 py-4 text-text-secondary">
+                </TableCell>
+                <TableCell className="px-6 py-4 text-text-secondary">
                   v{file.version_number ?? 1}
-                </td>
-                <td className="px-6 py-4 text-text-secondary">
+                </TableCell>
+                <TableCell className="px-6 py-4 text-text-secondary">
                   {new Date(file.created_at).toLocaleDateString()}
-                </td>
-                <td className="px-6 py-4 text-right">
+                </TableCell>
+                <TableCell className="px-6 py-4 text-right">
                   <div className="flex justify-end space-x-2">
                     <Button 
                       variant="ghost" 
@@ -215,11 +216,11 @@ export default function MyDocumentsTable({ initialFiles }: MyDocumentsTableProps
                       {deletingId === file.id ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
                     </Button>
                   </div>
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
     </Card>
 

@@ -21,6 +21,7 @@ import { useStoredColumnConfig } from '@/hooks/useStoredColumnConfig';
 import ViewBar from '@/components/shared/ViewBar';
 import ColumnConfigPanel from '@/components/shared/ColumnConfigPanel';
 import EquipmentFormModal from '@/components/admin/equipment/EquipmentFormModal';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface EquipmentItem {
   id: string;
@@ -144,61 +145,59 @@ export default function EquipmentTable({ equipment }: { equipment: EquipmentItem
         ]}
       />
 
-      <div className="rounded-xl border border-border bg-background overflow-hidden overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-border bg-bg-secondary">
-              <th className="px-4 py-3 text-left w-10">
+      <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-10">
                 <input type="checkbox" checked={isAllSelected} ref={(el) => { if (el) el.indeterminate = isSomeSelected; }} onChange={toggleAll} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
-              </th>
-              {isVisible('name') && <th className="px-6 py-3"><SortableHeader label="Name" field="name" currentSort={sort} onSort={handleSort} /></th>}
-              {isVisible('category') && <th className="px-6 py-3"><SortableHeader label="Category" field="category" currentSort={sort} onSort={handleSort} /></th>}
-              {isVisible('status') && <th className="px-6 py-3"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></th>}
-              {isVisible('current_location') && <th className="px-6 py-3"><SortableHeader label="Location" field="current_location" currentSort={sort} onSort={handleSort} /></th>}
-              {isVisible('serial_number') && <th className="px-6 py-3"><SortableHeader label="Serial #" field="serial_number" currentSort={sort} onSort={handleSort} /></th>}
-              {isVisible('reservation_count') && <th className="px-6 py-3"><SortableHeader label="Reservations" field="reservation_count" currentSort={sort} onSort={handleSort} /></th>}
-              <th className="px-6 py-3 w-12"><span className="sr-only">Actions</span></th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
+              </TableHead>
+              {isVisible('name') && <TableHead className="px-6"><SortableHeader label="Name" field="name" currentSort={sort} onSort={handleSort} /></TableHead>}
+              {isVisible('category') && <TableHead className="px-6"><SortableHeader label="Category" field="category" currentSort={sort} onSort={handleSort} /></TableHead>}
+              {isVisible('status') && <TableHead className="px-6"><SortableHeader label="Status" field="status" currentSort={sort} onSort={handleSort} /></TableHead>}
+              {isVisible('current_location') && <TableHead className="px-6"><SortableHeader label="Location" field="current_location" currentSort={sort} onSort={handleSort} /></TableHead>}
+              {isVisible('serial_number') && <TableHead className="px-6"><SortableHeader label="Serial #" field="serial_number" currentSort={sort} onSort={handleSort} /></TableHead>}
+              {isVisible('reservation_count') && <TableHead className="px-6"><SortableHeader label="Reservations" field="reservation_count" currentSort={sort} onSort={handleSort} /></TableHead>}
+              <TableHead className="px-6 w-12"><span className="sr-only">Actions</span></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {sorted.map((item) => (
-              <tr key={item.id} className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(item.id) ? 'bg-blue-50/50' : ''}`}>
-                <td className="px-4 py-3.5">
+              <TableRow key={item.id} className={isSelected(item.id) ? 'bg-blue-50/50' : ''}>
+                <TableCell>
                   <input type="checkbox" checked={isSelected(item.id)} onChange={() => toggle(item.id)} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/10" />
-                </td>
+                </TableCell>
                 {isVisible('name') && (
-                  <td className="px-6 py-3.5">
-                    <Link href={`/app/equipment/${item.id}`} className="text-sm font-medium text-foreground hover:underline">{item.name}</Link>
-                  </td>
+                  <TableCell className="px-6 font-medium text-foreground">
+                    <Link href={`/app/equipment/${item.id}`} className="hover:underline">{item.name}</Link>
+                  </TableCell>
                 )}
                 {isVisible('category') && (
-                  <td className="px-6 py-3.5">
+                  <TableCell className="px-6">
                     <span className="inline-flex items-center rounded-full bg-bg-secondary px-2.5 py-0.5 text-xs font-medium text-text-secondary">{item.category}</span>
-                  </td>
+                  </TableCell>
                 )}
                 {isVisible('status') && (
-                  <td className="px-6 py-3.5">
+                  <TableCell className="px-6">
                     <StatusBadge status={item.status} colorMap={EQUIPMENT_STATUS_COLORS} />
-                  </td>
+                  </TableCell>
                 )}
-                {isVisible('current_location') && <td className="px-6 py-3.5 text-sm text-text-secondary">{item.current_location}</td>}
-                {isVisible('serial_number') && <td className="px-6 py-3.5 text-sm tabular-nums text-text-muted">{item.serial_number ?? '\u2014'}</td>}
-                {isVisible('reservation_count') && <td className="px-6 py-3.5 text-sm tabular-nums text-foreground">{item.reservation_count}</td>}
-                <td className="px-6 py-3.5">
+                {isVisible('current_location') && <TableCell className="px-6 text-text-secondary">{item.current_location}</TableCell>}
+                {isVisible('serial_number') && <TableCell className="px-6 tabular-nums text-text-muted">{item.serial_number ?? '\u2014'}</TableCell>}
+                {isVisible('reservation_count') && <TableCell className="px-6 tabular-nums text-foreground">{item.reservation_count}</TableCell>}
+                <TableCell className="px-6">
                   <RowActionMenu actions={[
                     { label: 'View', onClick: () => router.push(`/app/equipment/${item.id}`) },
                     { label: 'Edit', onClick: () => setEditItem(item) },
                     { label: 'Delete', variant: 'danger', onClick: () => setShowDeleteConfirm(item.id) },
                   ]} />
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
             {sorted.length === 0 && (
-              <tr><td colSpan={8} className="px-6 py-12 text-center text-sm text-text-muted">No equipment matches your search.</td></tr>
+              <TableRow><TableCell colSpan={8} className="px-6 py-12 text-center text-text-muted">No equipment matches your search.</TableCell></TableRow>
             )}
-          </tbody>
-        </table>
-      </div>
+          </TableBody>
+        </Table>
 
       {showDeleteConfirm && (
         <ConfirmDialog open title="Delete Equipment" message="Are you sure you want to delete this equipment item? This cannot be undone." confirmLabel="Delete" variant="danger" onConfirm={() => handleDelete(showDeleteConfirm)} onCancel={() => setShowDeleteConfirm(null)} />

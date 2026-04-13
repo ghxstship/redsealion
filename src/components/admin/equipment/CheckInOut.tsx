@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
 import Alert from '@/components/ui/Alert';
 import FormSelect from '@/components/ui/FormSelect';
 import FormTextarea from '@/components/ui/FormTextarea';
@@ -61,7 +62,7 @@ export default function CheckInOut({ reservationId, currentStatus, onComplete }:
         : 'bg-bg-secondary text-foreground';
 
   return (
-    <div className="bg-background border border-border rounded-lg shadow-sm p-5">
+    <Card>
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-semibold text-foreground">Equipment Status</h3>
         <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${statusColor}`}>
@@ -104,6 +105,6 @@ export default function CheckInOut({ reservationId, currentStatus, onComplete }:
       ) : (
         <p className="text-sm text-text-muted">No actions available for this status.</p>
       )}
-    </div>
+    </Card>
   );
 }

@@ -16,6 +16,7 @@ import BiddingPanel from '@/components/admin/work-orders/BiddingPanel';
 import StatusBadge, { WORK_ORDER_STATUS_COLORS, PRIORITY_COLORS } from '@/components/ui/StatusBadge';
 import { formatLabel } from '@/lib/utils';
 import FormSelect from '@/components/ui/FormSelect';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface WorkOrder {
   id: string;
@@ -534,49 +535,49 @@ export default function DispatchDetailPage({ params }: { params: Promise<{ id: s
           <div className="py-8 text-center text-sm text-text-secondary">No crew assigned to this work order.</div>
         ) : (
           <div className="overflow-x-auto -mx-6">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr>
-                  <th className="px-6 py-3">Name</th>
-                  <th className="px-6 py-3">Phone</th>
-                  <th className="px-6 py-3">Role</th>
-                  <th className="px-6 py-3">Status</th>
-                  <th className="px-6 py-3">Assigned</th>
-                  {isEditable && <th className="px-6 py-3" />}
-                  {showRatingPrompt && <th className="px-6 py-3" />}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow>
+                  <TableHead className="px-6 py-3">Name</TableHead>
+                  <TableHead className="px-6 py-3">Phone</TableHead>
+                  <TableHead className="px-6 py-3">Role</TableHead>
+                  <TableHead className="px-6 py-3">Status</TableHead>
+                  <TableHead className="px-6 py-3">Assigned</TableHead>
+                  {isEditable && <TableHead className="px-6 py-3" />}
+                  {showRatingPrompt && <TableHead className="px-6 py-3" />}
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {assignments.map((a) => (
-                  <tr key={a.id} className="hover:bg-bg-secondary/50">
-                    <td className="px-6 py-3 text-foreground">{a.crew_profiles?.full_name ?? '—'}</td>
-                    <td className="px-6 py-3 text-text-secondary">{a.crew_profiles?.phone ?? '—'}</td>
-                    <td className="px-6 py-3 text-text-secondary">{a.role ?? '—'}</td>
-                    <td className="px-6 py-3">
+                  <TableRow key={a.id} className="hover:bg-bg-secondary/50">
+                    <TableCell className="px-6 py-3 text-foreground">{a.crew_profiles?.full_name ?? '—'}</TableCell>
+                    <TableCell className="px-6 py-3 text-text-secondary">{a.crew_profiles?.phone ?? '—'}</TableCell>
+                    <TableCell className="px-6 py-3 text-text-secondary">{a.role ?? '—'}</TableCell>
+                    <TableCell className="px-6 py-3">
                       <StatusBadge status={a.status} colorMap={STATUS_COLORS} />
-                    </td>
-                    <td className="px-6 py-3 text-text-muted text-xs">{new Date(a.assigned_at).toLocaleDateString()}</td>
+                    </TableCell>
+                    <TableCell className="px-6 py-3 text-text-muted text-xs">{new Date(a.assigned_at).toLocaleDateString()}</TableCell>
                     {isEditable && (
-                      <td className="px-6 py-3">
+                      <TableCell className="px-6 py-3">
                         <Button onClick={() => handleRemoveAssignment(a.id)} className="text-xs text-text-muted hover:text-red-600 transition-colors">
                           Remove
                         </Button>
-                      </td>
+                      </TableCell>
                     )}
                     {showRatingPrompt && (
-                      <td className="px-6 py-3">
+                      <TableCell className="px-6 py-3">
                         <Button
                           onClick={() => { setRatingCrewId(a.crew_profiles?.id ?? null); setRatingScore(5); setRatingComment(''); }}
                           className="text-xs text-blue-600 hover:underline"
                         >
                           Rate
                         </Button>
-                      </td>
+                      </TableCell>
                     )}
-                  </tr>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </Card>

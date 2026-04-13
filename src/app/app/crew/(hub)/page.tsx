@@ -23,6 +23,7 @@ import Tag from '@/components/ui/Tag';
 import StatusBadge, { CREW_AVAILABILITY_COLORS, CREW_ONBOARDING_COLORS } from '@/components/ui/StatusBadge';
 import { Upload } from 'lucide-react';
 import { TierGate } from '@/components/shared/TierGate';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 
 interface CrewMember {
@@ -171,58 +172,58 @@ export default function CrewPage() {
 
       {/* Table */}
       <div className="rounded-xl border border-border bg-background overflow-hidden overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-border bg-bg-secondary">
-              <th className="px-4 py-3 text-left w-10">
+        <Table >
+          <TableHeader>
+            <TableRow className="border-b border-border bg-bg-secondary">
+              <TableHead className="px-4 py-3 text-left w-10">
                 <input type="checkbox" checked={isAllSelected} ref={(el) => { if (el) el.indeterminate = isSomeSelected; }} onChange={toggleAll} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/20" />
-              </th>
-              <th className="px-6 py-3"><SortableHeader label="Name" field="full_name" currentSort={sort} onSort={handleSort} /></th>
-              <th className="px-6 py-3"><SortableHeader label="Email" field="email" currentSort={sort} onSort={handleSort} /></th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Skills</th>
-              <th className="px-6 py-3"><SortableHeader label="Rate" field="hourly_rate" currentSort={sort} onSort={handleSort} /></th>
-              <th className="px-6 py-3"><SortableHeader label="Availability" field="availability_status" currentSort={sort} onSort={handleSort} /></th>
-              <th className="px-6 py-3"><SortableHeader label="Onboarding" field="onboarding_status" currentSort={sort} onSort={handleSort} /></th>
-              <th className="px-6 py-3 w-12"><span className="sr-only">Actions</span></th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
+              </TableHead>
+              <TableHead className="px-6 py-3"><SortableHeader label="Name" field="full_name" currentSort={sort} onSort={handleSort} /></TableHead>
+              <TableHead className="px-6 py-3"><SortableHeader label="Email" field="email" currentSort={sort} onSort={handleSort} /></TableHead>
+              <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted">Skills</TableHead>
+              <TableHead className="px-6 py-3"><SortableHeader label="Rate" field="hourly_rate" currentSort={sort} onSort={handleSort} /></TableHead>
+              <TableHead className="px-6 py-3"><SortableHeader label="Availability" field="availability_status" currentSort={sort} onSort={handleSort} /></TableHead>
+              <TableHead className="px-6 py-3"><SortableHeader label="Onboarding" field="onboarding_status" currentSort={sort} onSort={handleSort} /></TableHead>
+              <TableHead className="px-6 py-3 w-12"><span className="sr-only">Actions</span></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody >
             {sorted.map((member) => (
-              <tr key={member.id} className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(member.id) ? 'bg-blue-50/50' : ''}`}>
-                <td className="px-4 py-3.5">
+              <TableRow key={member.id} className={`transition-colors hover:bg-bg-secondary/50 ${isSelected(member.id) ? 'bg-blue-50/50' : ''}`}>
+                <TableCell className="px-4 py-3.5">
                   <input type="checkbox" checked={isSelected(member.id)} onChange={() => toggle(member.id)} className="h-3.5 w-3.5 rounded border-border text-foreground focus:ring-foreground/20" />
-                </td>
-                <td className="px-6 py-3.5">
+                </TableCell>
+                <TableCell className="px-6 py-3.5">
                   <Link href={`/app/crew/${member.id}`} className="text-sm font-medium text-foreground hover:underline">{member.full_name}</Link>
-                </td>
-                <td className="px-6 py-3.5 text-sm text-text-secondary">{member.email}</td>
-                <td className="px-6 py-3.5">
+                </TableCell>
+                <TableCell className="px-6 py-3.5 text-sm text-text-secondary">{member.email}</TableCell>
+                <TableCell className="px-6 py-3.5">
                   <div className="flex flex-wrap gap-1">
                     {member.skills.map((skill) => (
                       <Tag key={skill}>{skill}</Tag>
                     ))}
                   </div>
-                </td>
-                <td className="px-6 py-3.5 text-sm tabular-nums text-foreground">{member.hourly_rate != null ? `$${member.hourly_rate}/hr` : '\u2014'}</td>
-                <td className="px-6 py-3.5">
+                </TableCell>
+                <TableCell className="px-6 py-3.5 text-sm tabular-nums text-foreground">{member.hourly_rate != null ? `$${member.hourly_rate}/hr` : '\u2014'}</TableCell>
+                <TableCell className="px-6 py-3.5">
                   <StatusBadge status={member.availability_status} colorMap={CREW_AVAILABILITY_COLORS} />
-                </td>
-                <td className="px-6 py-3.5">
+                </TableCell>
+                <TableCell className="px-6 py-3.5">
                   <StatusBadge status={member.onboarding_status} colorMap={CREW_ONBOARDING_COLORS} />
-                </td>
-                <td className="px-6 py-3.5">
+                </TableCell>
+                <TableCell className="px-6 py-3.5">
                   <RowActionMenu actions={[
                     { label: 'View', onClick: () => router.push(`/app/crew/${member.id}`) },
                     { label: 'Delete', variant: 'danger', onClick: () => setShowDeleteConfirm(member.id) },
                   ]} />
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
             {sorted.length === 0 && (
-              <tr><td colSpan={8} className="px-6 py-12 text-center text-sm text-text-muted">No crew members found.</td></tr>
+              <TableRow><TableCell colSpan={8} className="px-6 py-12 text-center text-sm text-text-muted">No crew members found.</TableCell></TableRow>
             )}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
 
       {showDeleteConfirm && (

@@ -3,6 +3,7 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import StatusBadge, { AUTOMATION_RUN_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import MetricCard from '@/components/ui/MetricCard';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 interface RunRow {
   id: string;
@@ -72,30 +73,30 @@ export default async function AutomationRunsPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-bg-secondary text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                <tr>
-                  <th className="px-4 py-3">Automation</th>
-                  <th className="px-4 py-3">Status</th>
-                  <th className="px-4 py-3">Started</th>
-                  <th className="px-4 py-3">Completed</th>
-                  <th className="px-4 py-3">Error</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
+            <Table >
+              <TableHeader >
+                <TableRow>
+                  <TableHead className="px-4 py-3">Automation</TableHead>
+                  <TableHead className="px-4 py-3">Status</TableHead>
+                  <TableHead className="px-4 py-3">Started</TableHead>
+                  <TableHead className="px-4 py-3">Completed</TableHead>
+                  <TableHead className="px-4 py-3">Error</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
                 {runs.map((run) => (
-                  <tr key={run.id} className="hover:bg-bg-secondary/50 transition-colors">
-                    <td className="px-4 py-3 font-medium text-foreground">{run.automation_name ?? '—'}</td>
-                    <td className="px-4 py-3">
+                  <TableRow key={run.id} className="hover:bg-bg-secondary/50 transition-colors">
+                    <TableCell className="px-4 py-3 font-medium text-foreground">{run.automation_name ?? '—'}</TableCell>
+                    <TableCell className="px-4 py-3">
                       <StatusBadge status={run.status} colorMap={AUTOMATION_RUN_STATUS_COLORS} />
-                    </td>
-                    <td className="px-4 py-3 text-text-secondary">{new Date(run.started_at).toLocaleString()}</td>
-                    <td className="px-4 py-3 text-text-secondary">{run.completed_at ? new Date(run.completed_at).toLocaleString() : '—'}</td>
-                    <td className="px-4 py-3 text-red-600 text-xs max-w-48 truncate">{run.error || '—'}</td>
-                  </tr>
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{new Date(run.started_at).toLocaleString()}</TableCell>
+                    <TableCell className="px-4 py-3 text-text-secondary">{run.completed_at ? new Date(run.completed_at).toLocaleString() : '—'}</TableCell>
+                    <TableCell className="px-4 py-3 text-red-600 text-xs max-w-48 truncate">{run.error || '—'}</TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

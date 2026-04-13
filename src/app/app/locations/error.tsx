@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import Button from '@/components/ui/Button';
+import Alert from '@/components/ui/Alert';
 
 export default function LocationsError({
   error,
@@ -22,7 +23,7 @@ export default function LocationsError({
       <h2 className="text-xl font-semibold text-foreground">Failed to load location data</h2>
       <p className="text-sm text-text-secondary max-w-md">
         There was a problem loading the requested location information.
-        {error.message && <span className="block mt-2 text-xs font-mono text-red-600 bg-red-500/10 p-2 rounded">{error.message}</span>}
+        {error.message && <Alert variant="error" className="mt-4 text-left">{error.message}</Alert>}
       </p>
       <div className="flex gap-3 mt-2">
         <Button onClick={reset}>Try again</Button>
