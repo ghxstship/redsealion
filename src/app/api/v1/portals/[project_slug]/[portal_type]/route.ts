@@ -34,7 +34,7 @@ export async function GET(
     // Fetch the project by slug or project_code
     const { data: project, error: projectError } = await supabase
       .from('projects')
-      .select('id, name, subtitle, presenter, project_code, starts_at, ends_at, venue_name, venue_address, site_map_url, capacity, doors_time, daily_hours, general_email')
+      .select('id, name, subtitle, presenter, project_code, starts_at, ends_at, venue_name, venue_address, venue_phone, site_map_url, capacity, doors_time, daily_hours, general_email')
       .or(`slug.eq.${project_slug},project_code.eq.${project_slug}`)
       .single();
 
@@ -66,6 +66,7 @@ export async function GET(
         venue: {
           name: project.venue_name,
           address: project.venue_address,
+          phone: project.venue_phone,
           site_map_url: project.site_map_url,
           capacity: project.capacity,
         },
@@ -79,16 +80,30 @@ export async function GET(
       },
       portal: {
         type: portal.portal_type,
+        description: portal.description,
         call_time: portal.call_time,
         pre_arrival_checklist: portal.pre_arrival_checklist,
         wayfinding: {
+          route_in_instructions: portal.route_in_instructions,
           parking_instructions: portal.parking_instructions,
           rideshare_instructions: portal.rideshare_instructions,
           transit_instructions: portal.transit_instructions,
           check_in_instructions: portal.check_in_instructions,
         },
-        faqs: portal.faqs,
+        additional_notes: portal.additional_notes,
+        radio_protocol: portal.radio_protocol,
+        safety_rules: portal.safety_rules,
+        emergency_procedures: portal.emergency_procedures,
+        evacuation_info: portal.evacuation_info,
+        accessibility: portal.accessibility,
         amenities: portal.amenities,
+        schedule: portal.schedule,
+        faqs: portal.faqs,
+        crew_intel: portal.crew_intel,
+        guest_policies: portal.guest_policies,
+        sustainability: portal.sustainability,
+        external_links: portal.external_links,
+        artist_social_links: portal.artist_social_links,
       }
     };
 

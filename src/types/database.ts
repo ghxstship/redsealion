@@ -7,6 +7,11 @@ export type Json =
   | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.4"
+  }
   graphql_public: {
     Tables: {
       [_ in never]: never
@@ -12118,19 +12123,27 @@ export type Database = {
       project_portals: {
         Row: {
           access_token: string | null
+          accessibility: Json | null
+          additional_notes: Json | null
           amenities: Json | null
+          artist_social_links: Json | null
           brand_config: Json | null
           call_time: string | null
           check_in_instructions: string | null
           cover_image_url: string | null
           created_at: string
           created_by: string | null
+          crew_intel: Json | null
           custom_fields: Json | null
           deleted_at: string | null
           deleted_by: string | null
           description: string | null
           emergency_contacts: Json | null
+          emergency_procedures: Json | null
+          evacuation_info: Json | null
+          external_links: Json | null
           faqs: Json | null
+          guest_policies: Json | null
           id: string
           is_published: boolean
           last_accessed_at: string | null
@@ -12139,8 +12152,12 @@ export type Database = {
           portal_type: Database["public"]["Enums"]["portal_type"]
           pre_arrival_checklist: Json | null
           project_id: string
+          radio_protocol: string | null
           rideshare_instructions: string | null
+          route_in_instructions: string | null
+          safety_rules: Json | null
           schedule: Json | null
+          sustainability: Json | null
           transit_instructions: string | null
           updated_at: string
           updated_by: string | null
@@ -12148,19 +12165,27 @@ export type Database = {
         }
         Insert: {
           access_token?: string | null
+          accessibility?: Json | null
+          additional_notes?: Json | null
           amenities?: Json | null
+          artist_social_links?: Json | null
           brand_config?: Json | null
           call_time?: string | null
           check_in_instructions?: string | null
           cover_image_url?: string | null
           created_at?: string
           created_by?: string | null
+          crew_intel?: Json | null
           custom_fields?: Json | null
           deleted_at?: string | null
           deleted_by?: string | null
           description?: string | null
           emergency_contacts?: Json | null
+          emergency_procedures?: Json | null
+          evacuation_info?: Json | null
+          external_links?: Json | null
           faqs?: Json | null
+          guest_policies?: Json | null
           id?: string
           is_published?: boolean
           last_accessed_at?: string | null
@@ -12169,8 +12194,12 @@ export type Database = {
           portal_type: Database["public"]["Enums"]["portal_type"]
           pre_arrival_checklist?: Json | null
           project_id: string
+          radio_protocol?: string | null
           rideshare_instructions?: string | null
+          route_in_instructions?: string | null
+          safety_rules?: Json | null
           schedule?: Json | null
+          sustainability?: Json | null
           transit_instructions?: string | null
           updated_at?: string
           updated_by?: string | null
@@ -12178,19 +12207,27 @@ export type Database = {
         }
         Update: {
           access_token?: string | null
+          accessibility?: Json | null
+          additional_notes?: Json | null
           amenities?: Json | null
+          artist_social_links?: Json | null
           brand_config?: Json | null
           call_time?: string | null
           check_in_instructions?: string | null
           cover_image_url?: string | null
           created_at?: string
           created_by?: string | null
+          crew_intel?: Json | null
           custom_fields?: Json | null
           deleted_at?: string | null
           deleted_by?: string | null
           description?: string | null
           emergency_contacts?: Json | null
+          emergency_procedures?: Json | null
+          evacuation_info?: Json | null
+          external_links?: Json | null
           faqs?: Json | null
+          guest_policies?: Json | null
           id?: string
           is_published?: boolean
           last_accessed_at?: string | null
@@ -12199,8 +12236,12 @@ export type Database = {
           portal_type?: Database["public"]["Enums"]["portal_type"]
           pre_arrival_checklist?: Json | null
           project_id?: string
+          radio_protocol?: string | null
           rideshare_instructions?: string | null
+          route_in_instructions?: string | null
+          safety_rules?: Json | null
           schedule?: Json | null
+          sustainability?: Json | null
           transit_instructions?: string | null
           updated_at?: string
           updated_by?: string | null
@@ -16193,7 +16234,6 @@ export type Database = {
           created_at: string
           date_format: string
           default_calendar_view: string
-          density: string
           first_day_of_week: number
           id: string
           language: string
@@ -16209,7 +16249,6 @@ export type Database = {
           created_at?: string
           date_format?: string
           default_calendar_view?: string
-          density?: string
           first_day_of_week?: number
           id?: string
           language?: string
@@ -16225,7 +16264,6 @@ export type Database = {
           created_at?: string
           date_format?: string
           default_calendar_view?: string
-          density?: string
           first_day_of_week?: number
           id?: string
           language?: string
@@ -18596,7 +18634,6 @@ export const Constants = {
     },
   },
 } as const
-
 // ── Convenience table row aliases ────────────────────────────────────
 // These map `Tables['table_name']['Row']` to short PascalCase names.
 type PublicTables = Database['public']['Tables'];
