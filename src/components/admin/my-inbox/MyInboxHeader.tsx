@@ -1,8 +1,11 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useTranslation } from '@/lib/i18n/client';
 import PageHeader from '@/components/shared/PageHeader';
 import { Badge } from '@/components/ui/Badge';
+import NotificationFormModal from './NotificationFormModal';
+import { Send } from 'lucide-react';
 
 interface MyInboxHeaderProps {
   unreadCount: number;
@@ -10,6 +13,7 @@ interface MyInboxHeaderProps {
 
 export default function MyInboxHeader({ unreadCount }: MyInboxHeaderProps) {
   const { t } = useTranslation();
+  const router = useRouter();
 
   return (
     <PageHeader
@@ -20,6 +24,18 @@ export default function MyInboxHeader({ unreadCount }: MyInboxHeaderProps) {
         </div>
       }
       subtitle={t('myInbox.subtitle')}
+      actionLabel="New Message"
+      actionIcon={<Send size={16} />}
+      renderModal={(props) => (
+        <NotificationFormModal
+          open={props.open}
+          onClose={props.onClose}
+          onCreated={() => {
+            props.onCreated();
+            router.refresh();
+          }}
+        />
+      )}
     />
   );
 }

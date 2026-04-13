@@ -26,7 +26,7 @@ export default function EmptyState({
 }: EmptyStateProps) {
   return (
     <div className={`rounded-xl border border-dashed border-border bg-bg-secondary px-6 py-12 text-center ${className}`}>
-      {icon && <div className="mx-auto mb-3 text-text-muted">{icon}</div>}
+      {icon && <div className="mx-auto mb-3 flex justify-center text-text-muted">{icon}</div>}
       <p className="text-sm font-medium text-text-muted">{message}</p>
       {description && (
         <p className="mt-1 text-xs text-text-muted/70">{description}</p>

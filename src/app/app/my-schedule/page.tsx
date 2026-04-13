@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
-import PageHeader from '@/components/shared/PageHeader';
-import MyScheduleView, { ScheduleItem } from '@/components/admin/my-schedule/MyScheduleView';
+import MyScheduleHeader from '@/components/admin/my-schedule/MyScheduleHeader';
+import MyScheduleView, { type ScheduleItem, type ScheduleItemType } from '@/components/admin/my-schedule/MyScheduleView';
 
 async function getMySchedule(): Promise<ScheduleItem[]> {
   const supabase = await createClient();
@@ -12,20 +12,10 @@ async function getMySchedule(): Promise<ScheduleItem[]> {
   const items: ScheduleItem[] = [];
 
   try {
-    // #22: Read org timezone from settings for proper time defaults
-    const { data: org } = await supabase
-      .from('organizations')
-      .select('settings')
-      .eq('id', ctx.organizationId)
-      .single();
-
-    const orgSettings = (org?.settings ?? {}) as Record<string, unknown>;
-    const timezone = (orgSettings.timezone as string) || 'America/New_York';
-
-    // 1. Fetch Tasks — scoped to current org
+    // ── 1. Tasks ───────────────────────────────────────────
     const { data: tasks } = await supabase
       .from('tasks')
-      .select('id, title, due_date, start_time, end_time, projects(name)')
+      .select('id, title, status, due_date, start_time, end_time, projects(name)')
       .eq('assignee_id', user.id)
       .eq('organization_id', ctx.organizationId)
       .is('deleted_at', null)
@@ -33,39 +23,22 @@ async function getMySchedule(): Promise<ScheduleItem[]> {
 
     if (tasks) {
       for (const t of tasks) {
-        // Use org timezone for default time instead of hardcoded UTC
-        const defaultHour = '09:00:00'; // 9 AM in local time
-        let start = `${t.due_date}T${t.start_time ?? defaultHour}`;
-        let end = t.end_time ? `${t.due_date}T${t.end_time}` : undefined;
-
-        // Apply timezone offset for display
-        try {
-          const startDate = new Date(`${start}+00:00`);
-          const formatter = new Intl.DateTimeFormat('en-US', { timeZone: timezone, dateStyle: 'short', timeStyle: 'short' });
-          // Store as ISO for the schedule view
-          start = startDate.toISOString();
-          if (end) {
-            const endDate = new Date(`${end}+00:00`);
-            end = endDate.toISOString();
-          }
-        } catch {
-          // Fallback: keep original strings
-          start = `${t.due_date}T${t.start_time ?? defaultHour}Z`;
-          end = t.end_time ? `${t.due_date}T${t.end_time}Z` : undefined;
-        }
-
+        const hasTime = !!t.start_time;
         items.push({
           id: `task-${t.id}`,
-          type: 'task',
+          type: 'task' as ScheduleItemType,
           title: t.title,
           subtitle: (t.projects as { name?: string } | null)?.name ?? 'Personal task',
-          start,
-          end,
+          start: hasTime ? `${t.due_date}T${t.start_time}` : `${t.due_date}T09:00:00`,
+          end: t.end_time ? `${t.due_date}T${t.end_time}` : undefined,
+          allDay: !hasTime,
+          status: t.status,
+          href: `/app/tasks?id=${t.id}`,
         });
       }
     }
 
-    // 2. Fetch Crew Profile — scoped to current org
+    // ── 2. Crew Profile (for bookings & schedule blocks) ──
     const { data: profile } = await supabase
       .from('crew_profiles')
       .select('id')
@@ -74,7 +47,7 @@ async function getMySchedule(): Promise<ScheduleItem[]> {
       .single();
 
     if (profile) {
-      // Crew Bookings
+      // 2a. Crew Bookings
       const { data: bookings } = await supabase
         .from('crew_bookings')
         .select('id, role, project_name, venue_name, shift_start, shift_end, status')
@@ -87,17 +60,18 @@ async function getMySchedule(): Promise<ScheduleItem[]> {
           if (!b.shift_start) continue;
           items.push({
             id: `booking-${b.id}`,
-            type: 'shift',
-            title: `${b.role !== 'unassigned' ? b.role : 'Shift'} - ${b.project_name || 'Project'}`,
+            type: 'shift' as ScheduleItemType,
+            title: `${b.role !== 'unassigned' ? b.role : 'Shift'} — ${b.project_name || 'Project'}`,
             subtitle: b.venue_name || undefined,
             start: b.shift_start,
             end: b.shift_end || undefined,
             status: b.status,
+            location: b.venue_name || undefined,
           });
         }
       }
 
-      // Schedule Blocks
+      // 2b. Schedule Block Assignments
       const { data: assignments } = await supabase
         .from('schedule_block_assignments')
         .select(`
@@ -119,7 +93,7 @@ async function getMySchedule(): Promise<ScheduleItem[]> {
           if (!block || !block.start_time) continue;
           items.push({
             id: `block-${a.id}`,
-            type: 'block',
+            type: 'block' as ScheduleItemType,
             title: block.title,
             subtitle: a.role ? `Role: ${a.role}` : undefined,
             location: block.location || undefined,
@@ -130,6 +104,90 @@ async function getMySchedule(): Promise<ScheduleItem[]> {
       }
     }
 
+    // ── 3. Events (org events) ─────────────────────────────
+    const { data: events } = await supabase
+      .from('events')
+      .select('id, name, subtitle, starts_at, ends_at, type, status')
+      .eq('organization_id', ctx.organizationId)
+      .not('starts_at', 'is', null)
+      .in('status', ['confirmed', 'in_progress']);
+
+    if (events) {
+      for (const e of events) {
+        if (!e.starts_at) continue;
+        const startDate = new Date(e.starts_at);
+        const endDate = e.ends_at ? new Date(e.ends_at) : undefined;
+        const isMultiDay = endDate && (endDate.getTime() - startDate.getTime()) > 24 * 60 * 60 * 1000;
+
+        items.push({
+          id: `event-${e.id}`,
+          type: 'event' as ScheduleItemType,
+          title: e.name,
+          subtitle: e.subtitle || `${e.type} event`,
+          start: e.starts_at,
+          end: e.ends_at || undefined,
+          allDay: isMultiDay,
+          status: e.status,
+          href: `/app/events/${e.id}`,
+        });
+      }
+    }
+
+    // ── 4. Milestones (assigned to current user) ───────────
+    // First get schedule IDs for this org
+    const { data: schedules } = await supabase
+      .from('production_schedules')
+      .select('id')
+      .eq('organization_id', ctx.organizationId);
+
+    const scheduleIds = (schedules ?? []).map((s: { id: string }) => s.id);
+
+    if (scheduleIds.length > 0) {
+      const { data: milestones } = await supabase
+        .from('schedule_milestones')
+        .select('id, title, due_at, status, completed_at, production_schedules(name)')
+        .in('schedule_id', scheduleIds)
+        .or(`assigned_to.eq.${user.id},assigned_to.is.null`);
+
+      if (milestones) {
+        for (const m of milestones) {
+          if (!m.due_at) continue;
+          const schedName = (m.production_schedules as any)?.name;
+          items.push({
+            id: `milestone-${m.id}`,
+            type: 'milestone' as ScheduleItemType,
+            title: m.title,
+            subtitle: schedName ? `Schedule: ${schedName}` : undefined,
+            start: m.due_at,
+            allDay: true,
+            status: m.status ?? undefined,
+          });
+        }
+      }
+    }
+
+    // ── 5. Shifts ──────────────────────────────────────────
+    // Direct shifts table (proposal-linked shifts the user may be assigned to)
+    if (profile) {
+      const { data: shifts } = await supabase
+        .from('shifts')
+        .select('id, name, date, start_time, end_time, call_time, notes, venues:venue_id(name)')
+        .eq('organization_id', ctx.organizationId);
+
+      if (shifts) {
+        for (const s of shifts) {
+          items.push({
+            id: `shift-${s.id}`,
+            type: 'shift' as ScheduleItemType,
+            title: s.name,
+            subtitle: s.call_time ? `Call time: ${s.call_time}` : undefined,
+            start: `${s.date}T${s.start_time}`,
+            end: `${s.date}T${s.end_time}`,
+            location: (s.venues as { name?: string } | null)?.name || undefined,
+          });
+        }
+      }
+    }
   } catch (err) {
     console.error('Error fetching schedule', err);
   }
@@ -142,10 +200,7 @@ export default async function MySchedulePage() {
 
   return (
     <div>
-      <PageHeader
-        title="My Schedule"
-        subtitle="View your upcoming shifts, calls, and deadlines."
-      />
+      <MyScheduleHeader />
       <MyScheduleView items={items} />
     </div>
   );
