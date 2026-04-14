@@ -83,13 +83,7 @@ const PUBLIC_ROLES: PlatformRole[] = [
   'community',
 ];
 
-const ALL_PLATFORM_ROLES: PlatformRole[] = [
-  ...INTERNAL_ROLES, ...EXTERNAL_ROLES, ...PUBLIC_ROLES,
-];
 
-const ALL_PROJECT_ROLES: ProjectRole[] = [
-  'creator', 'collaborator', 'viewer', 'vendor',
-];
 
 // ---------------------------------------------------------------------------
 // Permission key helper
@@ -290,9 +284,6 @@ export const DEFAULT_PERMISSIONS: Record<PlatformRole, Record<string, boolean>> 
 // ---------------------------------------------------------------------------
 // Client portal permissions (separate from admin app)
 // ---------------------------------------------------------------------------
-
-type PortalAction = 'view' | 'comment' | 'approve' | 'pay' | 'upload';
-
 const PORTAL_PERMISSIONS: Record<'client' | 'viewer' | 'community', Record<string, boolean>> = {
   client: {
     'proposals.view': true,
@@ -390,9 +381,3 @@ export function getPortalPermission(
   return PORTAL_PERMISSIONS[role]?.[key] ?? false;
 }
 
-function getContractorPortalPermission(
-  role: 'contractor' | 'crew',
-  key: string
-): boolean {
-  return CONTRACTOR_PORTAL_PERMISSIONS[role]?.[key] ?? false;
-}

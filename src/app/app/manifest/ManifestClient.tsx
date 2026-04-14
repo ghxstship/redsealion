@@ -1,26 +1,19 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { Hammer, ShoppingCart, Package, Store } from 'lucide-react';
 import PageHeader from '@/components/shared/PageHeader';
 import Button from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
-import StatusBadge from '@/components/ui/StatusBadge';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
-const FULFILLMENT_LABELS: Record<string, { label: string; color: string; icon: string }> = {
-  build:    { label: 'Build',    color: '#FF6B35', icon: '🔨' },
-  purchase: { label: 'Purchase', color: '#4A90D9', icon: '🛒' },
-  rent:     { label: 'Rent',     color: '#7B61FF', icon: '📦' },
-  internal: { label: 'Internal', color: '#2ECC71', icon: '🏪' },
-};
-
-const HIERARCHY_STATUS_COLORS: Record<string, string> = {
-  draft: 'default', advancing: 'info', confirmed: 'success',
-  locked: 'warning', complete: 'success', archived: 'default',
+const FULFILLMENT_LABELS: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
+  build:    { label: 'Build',    color: '#FF6B35', icon: <Hammer size={14} /> },
+  purchase: { label: 'Purchase', color: '#4A90D9', icon: <ShoppingCart size={14} /> },
+  rent:     { label: 'Rent',     color: '#7B61FF', icon: <Package size={14} /> },
+  internal: { label: 'Internal', color: '#2ECC71', icon: <Store size={14} /> },
 };
 
 interface ManifestClientProps {
-  orgId: string;
   projects: Array<{ id: string; name: string; slug: string; hierarchy_status: string | null }>;
   events: Array<{ id: string; name: string; slug: string; starts_at: string | null; ends_at: string | null; hierarchy_status: string | null }>;
   catalogGroups: Array<{ id: string; name: string; slug: string; color_hex: string | null; icon: string | null }>;
@@ -54,7 +47,7 @@ function formatCents(cents: number): string {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(cents / 100);
 }
 
-export default function ManifestClient({ orgId, projects, events, catalogGroups }: ManifestClientProps) {
+export default function ManifestClient({ projects, events, catalogGroups }: ManifestClientProps) {
   // ── Scope selection ──
   const [scopeType, setScopeType] = useState<'project' | 'event'>('event');
   const [scopeId, setScopeId] = useState(events[0]?.id ?? '');
@@ -149,7 +142,7 @@ export default function ManifestClient({ orgId, projects, events, catalogGroups 
           }
         </select>
 
-        <Button variant="ghost" size="sm" onClick={loadManifest}>↻ Refresh</Button>
+        <Button variant="ghost" size="sm" onClick={loadManifest}>Refresh</Button>
       </div>
 
       {/* ── Fulfillment Method Filter Pills ── */}
@@ -171,7 +164,7 @@ export default function ManifestClient({ orgId, projects, events, catalogGroups 
             key={key}
             type="button"
             onClick={() => setFulfillmentFilter(fulfillmentFilter === key ? null : key)}
-            className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+            className={`px-3 py-1 rounded-full text-xs font-medium transition-colors inline-flex items-center gap-1.5 ${
               fulfillmentFilter === key
                 ? 'bg-foreground text-background'
                 : 'bg-surface-raised text-text-secondary hover:bg-border'

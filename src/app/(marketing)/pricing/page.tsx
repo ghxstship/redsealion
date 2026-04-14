@@ -1,5 +1,4 @@
 import { Fragment } from 'react';
-import Link from 'next/link';
 import type { Metadata } from 'next';
 import { IconCheck } from '@/components/ui/Icons';
 import JsonLd from '@/components/marketing/JsonLd';

@@ -3,7 +3,7 @@
  * Tier: professional+
  */
 import { test, expect } from '../../fixtures/test-fixtures';
-import { expectPageRendered, expectNoRawI18nKeys, expectAccessDenied } from '../../helpers/assertions';
+import { expectPageRendered, expectNoRawI18nKeys } from '../../helpers/assertions';
 
 test.describe('Campaigns @campaigns', () => {
   test('campaigns renders for owner @owner', async ({ authenticatedPage }) => {

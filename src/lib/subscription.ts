@@ -20,6 +20,7 @@ export type FeatureKey =
   | 'roadmap'
   | 'files'
   | 'calendar'
+  | 'billing'
   // Starter — CRM, sales, presentation
   | 'portfolio'
   | 'assets'
@@ -28,7 +29,6 @@ export type FeatureKey =
   | 'terms'
   | 'export_docx'
   | 'export_pdf'
-  | 'billing'
   | 'advancing'
   // Professional — integrations + advanced workflows
   | 'integrations'
@@ -96,6 +96,7 @@ const featureRegistry: Record<FeatureKey, AppTier> = {
   roadmap: 'portal',
   files: 'portal',
   calendar: 'portal',
+  billing: 'portal',
 
   // Starter tier — CRM, sales, presentation
   portfolio: 'starter',
@@ -105,7 +106,6 @@ const featureRegistry: Record<FeatureKey, AppTier> = {
   terms: 'starter',
   export_docx: 'starter',
   export_pdf: 'starter',
-  billing: 'starter',
   advancing: 'starter',
 
   // Professional tier — integrations + advanced workflows

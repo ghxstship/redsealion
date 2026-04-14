@@ -26,7 +26,6 @@ import { TEST_IDS } from '../../helpers/seed';
 import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
 import path from 'path';
-import type { Role } from '../../helpers/routes';
 
 // Load env from .env.local (same instance as dev server)
 dotenv.config({ path: path.resolve(__dirname, '../../../.env.local'), override: true });

@@ -1,5 +1,7 @@
 'use client';
 
+import { AlertTriangle } from 'lucide-react';
+
 import Link from 'next/link';
 import Button from '@/components/ui/Button';
 import Alert from '@/components/ui/Alert';
@@ -15,7 +17,7 @@ export default function PortalError({
     <div className="flex items-center justify-center py-16">
       <div className="max-w-md w-full space-y-6 text-center">
         <Alert variant="error">
-          <div className="text-3xl mb-2">⚠️</div>
+          <AlertTriangle size={32} className="text-amber-500 mb-2" />
           <h2 className="text-lg font-semibold mb-2">Something went wrong</h2>
           <p className="text-sm">
             {error.message || 'Failed to load the portal. Please try again.'}

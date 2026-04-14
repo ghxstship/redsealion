@@ -481,7 +481,7 @@ export default function ComplianceDocumentsPanel({ crewId }: ComplianceDocuments
                         })}
                       </span>
                     )}
-                    {doc.file_name && <span>📎 {doc.file_name}</span>}
+                    {doc.file_name && <span>File: {doc.file_name}</span>}
                     {doc.rejection_reason && (
                       <span className="text-red-600">Reason: {doc.rejection_reason}</span>
                     )}

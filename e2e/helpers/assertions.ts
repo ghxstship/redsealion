@@ -94,14 +94,6 @@ export async function expectAccessDenied(page: Page) {
   }
 }
 
-/**
- * Asserts the user was redirected to the login page.
- */
-async function expectRedirectToLogin(page: Page) {
-  await page.waitForURL('**/login**', { timeout: 10_000 });
-  expect(page.url()).toContain('/login');
-}
-
 // ─── Navigation Assertions ───────────────────────────────────────────────────
 
 /**
@@ -131,21 +123,3 @@ export async function expectSidebarFiltered(page: Page, role: string) {
 }
 
 // ─── Content Assertions ──────────────────────────────────────────────────────
-
-/**
- * Asserts the page has a visible heading (h1 or PageHeader).
- */
-export async function expectPageHeading(page: Page) {
-  const heading = page.locator('h1, [data-testid="page-header"]').first();
-  await expect(heading).toBeVisible({ timeout: 5_000 });
-}
-
-/**
- * Asserts no template strings like {variable} or {{variable}} are visible.
- */
-async function expectNoTemplateStrings(page: Page) {
-  const bodyText = (await page.textContent('body')) || '';
-  const templatePattern = /\{\{?\w+\}?\}/g;
-  const matches = bodyText.match(templatePattern) || [];
-  expect(matches, `Found raw template strings: ${matches.join(', ')}`).toHaveLength(0);
-}

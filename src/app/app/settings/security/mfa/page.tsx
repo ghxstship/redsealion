@@ -2,7 +2,7 @@
 
 import FormInput from '@/components/ui/FormInput';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { ShieldCheck, Loader2 } from 'lucide-react';
 import Button from '@/components/ui/Button';
@@ -21,11 +21,31 @@ export default function MfaSetupPage() {
   const [error, setError] = useState<string | null>(null);
   const [verifying, setVerifying] = useState(false);
 
-  useEffect(() => {
-    checkMfaStatus();
+  const enrollMfa = useCallback(async () => {
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.auth.mfa.enroll({
+        factorType: 'totp',
+        friendlyName: 'FlyteDeck Authenticator',
+      });
+
+      if (error) {
+        setError(error.message);
+        setStep('enroll');
+        return;
+      }
+
+      setFactorId(data.id);
+      setQrUri(data.totp.uri);
+      setSecret(data.totp.secret);
+      setStep('enroll');
+    } catch {
+      setError('Failed to set up MFA. Please try again.');
+      setStep('enroll');
+    }
   }, []);
 
-  async function checkMfaStatus() {
+  const checkMfaStatus = useCallback(async () => {
     try {
       const supabase = createClient();
       const { data } = await supabase.auth.mfa.listFactors();
@@ -50,31 +70,11 @@ export default function MfaSetupPage() {
       setError('Failed to check MFA status.');
       setStep('enroll');
     }
-  }
+  }, [enrollMfa]);
 
-  async function enrollMfa() {
-    try {
-      const supabase = createClient();
-      const { data, error } = await supabase.auth.mfa.enroll({
-        factorType: 'totp',
-        friendlyName: 'FlyteDeck Authenticator',
-      });
-
-      if (error) {
-        setError(error.message);
-        setStep('enroll');
-        return;
-      }
-
-      setFactorId(data.id);
-      setQrUri(data.totp.uri);
-      setSecret(data.totp.secret);
-      setStep('enroll');
-    } catch {
-      setError('Failed to set up MFA. Please try again.');
-      setStep('enroll');
-    }
-  }
+  useEffect(() => {
+    checkMfaStatus();
+  }, [checkMfaStatus]);
 
   async function verifyCode() {
     if (!factorId || code.length !== 6) return;

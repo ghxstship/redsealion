@@ -92,7 +92,6 @@ export async function GET(
   const orgId = perm.organizationId;
   const url = new URL(request.url);
   const proposalId = url.searchParams.get('proposalId');
-  const invoiceId = url.searchParams.get('invoiceId');
   const venueId = url.searchParams.get('venueId');
   const date = url.searchParams.get('date');
 

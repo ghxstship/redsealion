@@ -1,5 +1,6 @@
 'use client';
 
+import { Lock } from 'lucide-react';
 import { usePermissions } from '@/components/shared/PermissionsProvider';
 import type { PlatformRole } from '@/lib/permissions';
 import type { PermissionResource } from '@/lib/permissions';
@@ -23,7 +24,7 @@ export function RoleGate({ resource, allowedRoles, children }: RoleGateProps) {
   if (resource && !can(resource, 'view')) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-center">
-        <div className="text-4xl">🔒</div>
+        <Lock size={40} className="text-text-muted" />
         <h2 className="text-lg font-semibold text-foreground">Access Denied</h2>
         <p className="text-sm text-text-muted max-w-md">
           Your role ({role}) does not have permission to view this section.
@@ -36,7 +37,7 @@ export function RoleGate({ resource, allowedRoles, children }: RoleGateProps) {
   if (allowedRoles && !allowedRoles.includes(role)) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-center">
-        <div className="text-4xl">🔒</div>
+        <Lock size={40} className="text-text-muted" />
         <h2 className="text-lg font-semibold text-foreground">Access Denied</h2>
         <p className="text-sm text-text-muted max-w-md">
           Your role ({role}) does not have permission to view this section.

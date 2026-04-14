@@ -110,7 +110,10 @@
     "fabrication": "Fertigung",
     "procurement": "Beschaffung",
     "rentals": "Vermietungen",
-    "marketplace": "Marketplace"
+    "marketplace": "Marketplace",
+    "equipment": "Ausstattung",
+    "manifest": "Manifest",
+    "workOrders": "Arbeitsauftr\u00e4ge"
   },
   "header": {
     "search": "Suchen\u2026",
@@ -156,7 +159,16 @@
     "fabricator": "Hersteller",
     "installer": "Monteur",
     "clientPrimary": "Kunde",
-    "clientViewer": "Betrachter"
+    "clientViewer": "Betrachter",
+    "developer": "Entwickler",
+    "owner": "Inhaber",
+    "controller": "Controller",
+    "collaborator": "Mitarbeiter",
+    "contractor": "Auftragnehmer",
+    "crew": "Team",
+    "client": "Kunde",
+    "viewer": "Betrachter",
+    "community": "Community"
   },
   "empty": {
     "title": "Noch keine Elemente",
@@ -251,8 +263,31 @@
     "expensesAwaiting": "expense(s) awaiting review",
     "projectsInProduction": "active project(s) in production.",
     "rep": "Rep",
-    "dealsWon": "Deals Won",
-    "revenue": "Revenue"
+    "dealsWon": "Abschl\u00fcsse",
+    "revenue": "Umsatz",
+    "myPriorityTasks": "Meine Priorit\u00e4tsaufgaben",
+    "viewAllTasks": "Alle anzeigen \u2192",
+    "noTasksAssigned": "Alles erledigt \u2014 keine Priorit\u00e4tsaufgaben.",
+    "dueDatePrefix": "F\u00e4llig",
+    "noDueDate": "Kein F\u00e4lligkeitsdatum",
+    "overdue": "\u00dcberf\u00e4llig",
+    "dueToday": "Heute f\u00e4llig",
+    "upcomingSchedule": "Bevorstehende Termine",
+    "viewAllEvents": "Alle anzeigen \u2192",
+    "noUpcomingEvents": "Keine bevorstehenden Termine in den n\u00e4chsten 14 Tagen.",
+    "notifications": "Benachrichtigungen",
+    "viewAllNotifications": "Alle anzeigen \u2192",
+    "noNewNotifications": "Keine neuen Benachrichtigungen.",
+    "unreadCount": "ungelesen",
+    "quickActions": "Schnellaktionen",
+    "newProposal": "Neues Angebot",
+    "newClient": "Neuer Kunde",
+    "newLead": "Neuer Lead",
+    "newTask": "Neue Aufgabe",
+    "newInvoice": "Neue Rechnung",
+    "newEvent": "Neue Veranstaltung",
+    "overdueInvoicesStat": "\u00dcberf\u00e4llige Rechnungen",
+    "needsAttention": "Erfordert Aufmerksamkeit"
   },
   "myTasks": {
     "title": "My Tasks",

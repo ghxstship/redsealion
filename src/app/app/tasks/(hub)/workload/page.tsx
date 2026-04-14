@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
+import Image from 'next/image';
 import TasksHubTabs from '../../TasksHubTabs';
 import PageHeader from '@/components/shared/PageHeader';
 import { Badge } from '@/components/ui/Badge';
@@ -85,13 +86,6 @@ async function getWorkload(): Promise<TeamMemberWorkload[]> {
   }
 }
 
-function utilizationColor(pct: number): string {
-  if (pct > 100) return 'text-red-600 bg-red-500/10';
-  if (pct > 80) return 'text-amber-600 bg-amber-50';
-  if (pct > 50) return 'text-blue-600 bg-blue-50';
-  return 'text-green-600 bg-green-50';
-}
-
 function barColor(pct: number): string {
   if (pct > 100) return 'bg-red-500';
   if (pct > 80) return 'bg-amber-500';
@@ -158,7 +152,14 @@ export default async function WorkloadPage() {
                 {/* Header */}
                 <div className="flex items-center gap-3 mb-4">
                   {member.avatar ? (
-                    <img src={member.avatar} alt="" className="h-9 w-9 rounded-full" />
+                    <Image
+                      src={member.avatar}
+                      alt={`${member.name} avatar`}
+                      width={36}
+                      height={36}
+                      unoptimized
+                      className="h-9 w-9 rounded-full"
+                    />
                   ) : (
                     <div className="h-9 w-9 rounded-full bg-bg-tertiary flex items-center justify-center text-sm font-medium text-text-muted">
                       {member.name.charAt(0).toUpperCase()}

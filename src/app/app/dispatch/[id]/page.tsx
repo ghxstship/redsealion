@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import Link from 'next/link';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
@@ -14,7 +15,7 @@ import FormTextarea from '@/components/ui/FormTextarea';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import BiddingPanel from '@/components/admin/work-orders/BiddingPanel';
 import StatusBadge, { WORK_ORDER_STATUS_COLORS, PRIORITY_COLORS } from '@/components/ui/StatusBadge';
-import { formatLabel, formatDate } from '@/lib/utils';
+import { formatDate } from '@/lib/utils';
 import FormSelect from '@/components/ui/FormSelect';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
@@ -655,9 +656,12 @@ export default function DispatchDetailPage({ params }: { params: Promise<{ id: s
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
             {photos.map((photo) => (
               <a key={photo.id} href={photo.file_url} target="_blank" rel="noopener noreferrer" className="group relative rounded-lg overflow-hidden border border-border">
-                <img
+                <Image
                   src={photo.thumbnail_url ?? photo.file_url}
                   alt={photo.caption ?? 'Job site photo'}
+                  width={320}
+                  height={112}
+                  unoptimized
                   className="w-full h-28 object-cover group-hover:scale-105 transition-transform"
                 />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-2 py-1">

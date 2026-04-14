@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { User, CreditCard, Settings, LogOut } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
@@ -105,9 +106,12 @@ export default function UserMenu({ fullName, email, role, avatarUrl }: UserMenuP
         id="user-menu-trigger"
       >
         {avatarUrl ? (
-          <img
+          <Image
             src={avatarUrl}
             alt={fullName}
+            width={32}
+            height={32}
+            unoptimized
             className="h-8 w-8 rounded-full object-cover ring-1 ring-border/60"
           />
         ) : (
@@ -129,9 +133,12 @@ export default function UserMenu({ fullName, email, role, avatarUrl }: UserMenuP
           <div className="px-4 py-3.5 border-b border-border">
             <div className="flex items-center gap-3">
               {avatarUrl ? (
-                <img
+                <Image
                   src={avatarUrl}
                   alt={fullName}
+                  width={40}
+                  height={40}
+                  unoptimized
                   className="h-10 w-10 rounded-full object-cover ring-1 ring-border/60"
                 />
               ) : (

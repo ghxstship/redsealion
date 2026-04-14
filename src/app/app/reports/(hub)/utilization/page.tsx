@@ -130,7 +130,7 @@ export default async function UtilizationReportPage() {
 
       <ReportsHubTabs />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-4 mb-8">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 mb-8">
         <Card padding="default" className="px-5 py-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Avg Utilization</p>
           <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground">{avgUtilization}%</p>

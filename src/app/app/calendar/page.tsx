@@ -18,7 +18,6 @@ import PageHeader from '@/components/shared/PageHeader';
 import { RoleGate } from '@/components/shared/RoleGate';
 import { TierGate } from '@/components/shared/TierGate';
 import Button from '@/components/ui/Button';
-import Skeleton from '@/components/ui/Skeleton';
 import { CALENDAR_EVENT_COLORS, CALENDAR_EVENT_LABELS } from '@/lib/constants/calendar-events';
 
 const PERSIST_KEY = 'flytedeck:view:calendar-standalone';
@@ -53,11 +52,9 @@ export default function CalendarPage() {
     getPersistedView(PERSIST_KEY, ['month', 'week'], defaultView === 'day' ? 'month' : defaultView) as 'month' | 'week',
   );
   const [events, setEvents] = useState<CalendarEvent[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadEvents() {
-      setLoading(true);
       try {
         const ctx = await resolveClientOrg();
         if (!ctx) return;
@@ -144,8 +141,6 @@ export default function CalendarPage() {
         setEvents([...eventEntries, ...proposalEvents, ...crewEvents, ...taskEvents]);
       } catch {
         // Silently fail — calendar shows empty
-      } finally {
-        setLoading(false);
       }
     }
     loadEvents();

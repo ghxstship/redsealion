@@ -1,15 +1,11 @@
 'use client';
 
-import type { Address, VenueActivationDates, VenueLoadInStrike } from '@/types/database';
 import VenueCard from './VenueCard';
 
 export type { VenueData } from './VenueCard';
 import type { VenueData } from './VenueCard';
 import { IconPlus } from '@/components/ui/Icons';
 import EmptyState from '@/components/ui/EmptyState';
-import { createClient } from '@/lib/supabase/client';
-import Button from '@/components/ui/Button';
-import { MapPin, Plus } from 'lucide-react';
 
 interface VenueStepProps {
   venues: VenueData[];

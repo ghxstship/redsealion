@@ -257,20 +257,3 @@ const TIER_RANK: Record<Tier, number> = {
   professional: 2,
   enterprise: 3,
 };
-
-function tierMeetsMinimum(current: Tier, required: Tier): boolean {
-  return TIER_RANK[current] >= TIER_RANK[required];
-}
-
-function getRoutesByGroup(group: string): RouteEntry[] {
-  return ROUTES.filter((r) => r.group === group);
-}
-
-function getRouteGroups(): string[] {
-  return [...new Set(ROUTES.map((r) => r.group))];
-}
-
-function canRoleAccess(route: RouteEntry, role: Role): boolean {
-  if (!route.allowedRoles) return true;
-  return route.allowedRoles.includes(role);
-}

@@ -19,7 +19,7 @@ export default function CreateSubRentalButton() {
       const ctx = await resolveClientOrg();
       if (!ctx) return;
 
-      const { data, error } = await supabase
+      const { data, error: insertError } = await supabase
         .from('sub_rentals')
         .insert({
           organization_id: ctx.organizationId,
@@ -31,7 +31,13 @@ export default function CreateSubRentalButton() {
         .select('id')
         .single();
 
+      if (insertError) {
+        setError(insertError.message ?? 'Failed to create sub-rental.');
+        return;
+      }
+
       if (data?.id) {
+        setError(null);
         router.refresh();
       }
     } catch {
@@ -42,8 +48,11 @@ export default function CreateSubRentalButton() {
   }
 
   return (
-    <Button size="sm" onClick={handleCreate} disabled={creating}>
-      {creating ? 'Creating...' : 'New Sub-Rental'}
-    </Button>
+    <div className="space-y-2">
+      {error ? <Alert variant="error">{error}</Alert> : null}
+      <Button size="sm" onClick={handleCreate} disabled={creating}>
+        {creating ? 'Creating...' : 'New Sub-Rental'}
+      </Button>
+    </div>
   );
 }

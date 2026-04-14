@@ -2,7 +2,7 @@
  * FlyteDeck E2E — Events Tests
  * Tier: professional+
  */
-import { test, expect } from '../../fixtures/test-fixtures';
+import { test } from '../../fixtures/test-fixtures';
 import { expectPageRendered, expectNoRawI18nKeys } from '../../helpers/assertions';
 
 const EVENT_ROUTES = [

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import Link from 'next/link';
 import StatusBadge, { EQUIPMENT_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import Button from '@/components/ui/Button';
@@ -276,7 +277,7 @@ export default function AssetDetailClient({ asset, proposalId, proposalName, loc
             <Button variant="secondary" size="sm" onClick={() => setRevaluationOpen(true)}>Revalue</Button>
             <div className="relative" ref={actionMenuRef}>
               <Button variant="secondary" size="sm" onClick={() => setActionMenuOpen(!actionMenuOpen)}>
-                Actions ▾
+                Actions <span className="text-xs ml-1">&#9662;</span>
               </Button>
               {actionMenuOpen && (
                 <div className="absolute right-0 top-full mt-1 w-48 rounded-lg border border-border bg-background shadow-lg py-1 z-10">
@@ -659,7 +660,14 @@ export default function AssetDetailClient({ asset, proposalId, proposalName, loc
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {asset.photo_urls.map((url, i) => (
                 <div key={i} className="aspect-square rounded-lg overflow-hidden bg-bg-tertiary">
-                  <img src={url} alt={`${asset.name} photo ${i + 1}`} className="h-full w-full object-cover" />
+                  <Image
+                    src={url}
+                    alt={`${asset.name} photo ${i + 1}`}
+                    width={400}
+                    height={400}
+                    unoptimized
+                    className="h-full w-full object-cover"
+                  />
                 </div>
               ))}
             </div>

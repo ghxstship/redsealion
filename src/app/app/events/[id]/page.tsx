@@ -8,6 +8,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import StatusBadge, { EVENT_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import { Badge } from '@/components/ui/Badge';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
+import { MapPin } from 'lucide-react';
 
 const HIERARCHY_STATUS_COLORS: Record<string, string> = {
   draft: 'default', advancing: 'info', confirmed: 'success',
@@ -164,7 +165,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
                               <TableCell className="text-text-secondary text-sm">
                                 {space ? (
                                   <span>
-                                    📍 {space.name as string}
+                                    <MapPin size={12} className="inline" /> {space.name as string}
                                     <span className="ml-1 text-text-muted text-xs capitalize">({space.type as string})</span>
                                   </span>
                                 ) : (

@@ -6,6 +6,7 @@
  */
 
 import { useState, useMemo } from 'react';
+import Image from 'next/image';
 import { Pencil, Trash2, Globe, EyeOff } from 'lucide-react';
 import PortfolioFormModal from './PortfolioFormModal';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
@@ -23,8 +24,6 @@ export const PORTFOLIO_CATEGORIES = [
   'Trade Show',
   'Other',
 ] as const;
-
-type PortfolioCategory = (typeof PORTFOLIO_CATEGORIES)[number];
 
 interface PortfolioItem {
   id: string;
@@ -154,9 +153,12 @@ export default function PortfolioGrid({ items: initialItems }: PortfolioGridProp
             {/* Image */}
             <div className="relative aspect-[4/3] bg-bg-tertiary flex items-center justify-center overflow-hidden">
               {item.image_url ? (
-                <img
+                <Image
                   src={item.image_url}
                   alt={item.project_name}
+                  width={640}
+                  height={480}
+                  unoptimized
                   className="h-full w-full object-cover"
                 />
               ) : (

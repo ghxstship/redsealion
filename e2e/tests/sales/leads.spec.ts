@@ -2,7 +2,7 @@
  * FlyteDeck E2E — Leads Tests
  */
 import { test, expect } from '../../fixtures/test-fixtures';
-import { expectPageRendered, expectNoRawI18nKeys, expectAccessDenied } from '../../helpers/assertions';
+import { expectPageRendered, expectNoRawI18nKeys } from '../../helpers/assertions';
 
 const LEAD_ROUTES = [
   '/app/leads',

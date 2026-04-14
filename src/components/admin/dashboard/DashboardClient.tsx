@@ -486,7 +486,7 @@ export default function DashboardClient({ stats, cards, tier }: DashboardClientP
               <h2 className="text-base font-semibold text-foreground mb-4">
                 {t('dashboard.pipelineByStatus')}
               </h2>
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {stats.pipelineSummary.map((item) => (
                   <Link
                     key={item.status}
@@ -543,13 +543,7 @@ export default function DashboardClient({ stats, cards, tier }: DashboardClientP
                           className="transition-colors duration-fast hover:bg-bg-secondary/50"
                         >
                           <TableCell className="px-5 py-3 text-sm tabular-nums text-text-muted">
-                            {idx === 0
-                              ? '🥇'
-                              : idx === 1
-                                ? '🥈'
-                                : idx === 2
-                                  ? '🥉'
-                                  : `${idx + 1}`}
+                            {idx + 1}
                           </TableCell>
                           <TableCell className="px-5 py-3 text-sm font-medium text-foreground">
                             {entry.name}

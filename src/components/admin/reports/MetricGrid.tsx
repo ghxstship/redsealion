@@ -1,5 +1,7 @@
 'use client';
 
+import Card from '@/components/ui/Card';
+
 interface Metric {
   label: string;
   value: string;
@@ -13,11 +15,12 @@ interface MetricGridProps {
 
 export default function MetricGrid({ metrics }: MetricGridProps) {
   return (
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
       {metrics.map((metric) => (
-        <div
+        <Card
           key={metric.label}
-          className="rounded-xl border border-border bg-background p-5"
+          padding="default"
+          className="px-5 py-5"
         >
           <p className="text-xs text-text-muted">{metric.label}</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">
@@ -36,8 +39,9 @@ export default function MetricGrid({ metrics }: MetricGridProps) {
               {metric.change}
             </p>
           )}
-        </div>
+        </Card>
       ))}
     </div>
   );
 }
+

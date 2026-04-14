@@ -133,7 +133,7 @@ export async function POST(request: NextRequest) {
   return NextResponse.json({ success: true, codes: inserted }, { status: 201 });
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   const { ctx, denied } = await requireAuth();
   if (denied) return denied;
 

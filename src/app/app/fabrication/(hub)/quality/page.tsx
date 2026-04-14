@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
+import { CheckCircle2, XCircle } from 'lucide-react';
 import PageHeader from '@/components/shared/PageHeader';
 import StatusBadge, { FABRICATION_STATUS_COLORS } from '@/components/ui/StatusBadge';
 import FabricationHubTabs from '../../FabricationHubTabs';
@@ -75,7 +76,7 @@ export default async function QualityPage() {
             {logs.map((log) => (
               <div key={log.id} className="px-5 py-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="text-lg">{log.action === 'quality_pass' ? '🟢' : '🔴'}</span>
+                  <span className="text-lg">{log.action === 'quality_pass' ? <CheckCircle2 size={20} className="text-green-600" /> : <XCircle size={20} className="text-red-600" />}</span>
                   <div><p className="text-sm font-medium text-foreground">{log.order_number ?? 'Unknown'}</p>{log.notes && <p className="text-xs text-text-secondary">{log.notes}</p>}</div>
                 </div>
                 <p className="text-xs text-text-muted">{new Date(log.created_at).toLocaleString()}</p>

@@ -27,7 +27,7 @@ class ConsoleEmailProvider implements EmailProvider {
     if (!this.warned && process.env.NODE_ENV === 'production') {
 
       console.warn(
-        '[EMAIL] ⚠️ Using console email provider in production. ' +
+        '[EMAIL] WARNING: Using console email provider in production. ' +
         'Emails will NOT be delivered. Set EMAIL_PROVIDER=resend and configure RESEND_API_KEY.',
       );
       this.warned = true;

@@ -2,9 +2,9 @@
 
 import { useState, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import Button from '@/components/ui/Button';
+import Image from 'next/image';
 import Alert from '@/components/ui/Alert';
-import { Upload, X, File, Image, Check } from 'lucide-react';
+import { Upload, X, File, Image as ImageIcon, Check } from 'lucide-react';
 
 interface ReceiptFile {
   id: string;
@@ -183,9 +183,12 @@ export default function ReceiptUploader({
             >
               {/* Thumbnail / icon */}
               {file.previewUrl ? (
-                <img
+                <Image
                   src={file.previewUrl}
                   alt={file.name}
+                  width={40}
+                  height={40}
+                  unoptimized
                   className="h-10 w-10 rounded object-cover"
                 />
               ) : file.type === 'application/pdf' ? (
@@ -194,7 +197,7 @@ export default function ReceiptUploader({
                 </div>
               ) : (
                 <div className="flex h-10 w-10 items-center justify-center rounded bg-blue-50">
-                  <Image size={20} className="text-blue-600" />
+                  <ImageIcon size={20} className="text-blue-600" />
                 </div>
               )}
 
@@ -209,11 +212,11 @@ export default function ReceiptUploader({
                     <span className="ml-2 text-blue-600">Uploading…</span>
                   )}
                   {file.status === 'done' && (
-                    <span className="ml-2 text-green-600">✓ Uploaded</span>
+                    <span className="ml-2 text-green-600">Uploaded</span>
                   )}
                   {file.status === 'error' && (
                     <span className="ml-2 text-red-600">
-                      ✗ {file.error || 'Failed'}
+                      Failed: {file.error || 'Failed'}
                     </span>
                   )}
                 </p>

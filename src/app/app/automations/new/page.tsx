@@ -10,6 +10,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import { AUTOMATION_TEMPLATES } from '@/lib/automations/templates';
 import Alert from '@/components/ui/Alert';
 import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
 import FormTextarea from '@/components/ui/FormTextarea';
@@ -98,7 +99,7 @@ export default function NewAutomationPage() {
 
       <div className="space-y-6">
         {/* Name + Description */}
-        <div className="rounded-xl border border-border bg-background px-5 py-5 space-y-4">
+        <Card className="space-y-4">
           <div>
             <FormLabel>Name</FormLabel>
             <FormInput
@@ -118,10 +119,10 @@ export default function NewAutomationPage() {
               className="w-full rounded-lg border border-border bg-background text-sm text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-foreground/10 px-3 py-2"
             />
           </div>
-        </div>
+        </Card>
 
         {/* Trigger */}
-        <div className="rounded-xl border border-border bg-background px-5 py-5">
+        <Card>
           <h2 className="text-base font-semibold text-foreground mb-4">When this happens...</h2>
           <TriggerSelector
             value={triggerType}
@@ -131,10 +132,10 @@ export default function NewAutomationPage() {
               setTriggerConfig(config);
             }}
           />
-        </div>
+        </Card>
 
         {/* Action */}
-        <div className="rounded-xl border border-border bg-background px-5 py-5">
+        <Card>
           <h2 className="text-base font-semibold text-foreground mb-4">Do this...</h2>
           <ActionSelector
             value={actionType}
@@ -144,7 +145,7 @@ export default function NewAutomationPage() {
               setActionConfig(config);
             }}
           />
-        </div>
+        </Card>
 
         {/* Save */}
         <div className="flex justify-end gap-3">

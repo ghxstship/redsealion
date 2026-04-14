@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { clsx } from '@/lib/clsx';
 import { IconMenu, IconX } from '@/components/ui/Icons';
@@ -46,9 +47,12 @@ export default function PortalHeader({ orgName, logoUrl }: PortalHeaderProps) {
           {/* Logo / Org name */}
           <Link href={`/portal/${orgSlug}`} className="flex items-center gap-3">
             {logoUrl ? (
-              <img
+              <Image
                 src={logoUrl}
                 alt={orgName}
+                width={160}
+                height={32}
+                unoptimized
                 className="h-8 w-auto object-contain"
               />
             ) : (

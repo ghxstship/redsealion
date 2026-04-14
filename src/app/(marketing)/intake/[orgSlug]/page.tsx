@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { createServiceClient } from '@/lib/supabase/server';
 import { LeadIntakeForm } from '@/components/forms/LeadIntakeForm';
+import Image from 'next/image';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 
@@ -52,7 +53,14 @@ export default async function IntakePage({ params }: IntakePageProps) {
         {/* Branding header */}
         <div className="text-center">
           {org.logo_url ? (
-            <img src={org.logo_url} alt={org.name} className="h-16 w-auto mx-auto mb-4" />
+            <Image
+              src={org.logo_url}
+              alt={`${org.name} logo`}
+              width={256}
+              height={64}
+              unoptimized
+              className="h-16 w-auto mx-auto mb-4"
+            />
           ) : (
             <div className="h-16 w-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/20">
               <span className="text-2xl font-bold text-white">{org.name.charAt(0)}</span>

@@ -12,10 +12,8 @@ import DataImportDialog from '@/components/shared/DataImportDialog';
 import SortableHeader from '@/components/shared/SortableHeader';
 import RowActionMenu from '@/components/shared/RowActionMenu';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
-import FormSelect from '@/components/ui/FormSelect';
 import SearchInput from '@/components/ui/SearchInput';
 import Button from '@/components/ui/Button';
-import ActiveFilterBadge from '@/components/shared/ActiveFilterBadge';
 import FilterPills from '@/components/ui/FilterPills';
 import { Upload, SlidersHorizontal } from 'lucide-react';
 import { useEntityViews } from '@/hooks/useEntityViews';
@@ -90,8 +88,6 @@ export default function ExpensesTable({ expenses }: { expenses: ExpenseRow[] }) 
   const { sorted, sort, handleSort } = useSort(filtered);
   const allIds = useMemo(() => sorted.map((e) => e.id), [sorted]);
   const { selectedIds, isSelected, toggle, toggleAll, isAllSelected, isSomeSelected, deselectAll, count } = useSelection(allIds);
-
-  const activeFilterCount = (statusFilter !== 'all' ? 1 : 0);
 
   async function handleBulkDelete(ids: string[]) {
     await Promise.all(ids.map((id) => fetch(`/api/expenses/${id}`, { method: 'DELETE' })));

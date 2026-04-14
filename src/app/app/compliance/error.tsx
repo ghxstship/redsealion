@@ -1,5 +1,7 @@
 'use client';
 
+import { AlertTriangle } from 'lucide-react';
+
 import Button from '@/components/ui/Button';
 
 export default function ComplianceError({
@@ -11,7 +13,7 @@ export default function ComplianceError({
 }) {
   return (
     <div className="flex flex-col items-center justify-center rounded-xl border border-border bg-background px-8 py-16 text-center">
-      <div className="mb-4 text-4xl">⚠️</div>
+      <AlertTriangle size={40} className="text-amber-500 mb-4" />
       <h2 className="text-lg font-semibold text-foreground">Something went wrong</h2>
       <p className="mt-2 max-w-md text-sm text-text-secondary">
         {error?.message || 'An unexpected error occurred while loading compliance data. Please try again.'}

@@ -1,15 +1,15 @@
 /**
  * Multi-currency utilities.
  *
- * Supports currency formatting, conversion, and the canonical list of
- * currencies supported by FlyteDeck.
- *
  * @module lib/currency
  */
 
-// ---------------------------------------------------------------------------
-// Supported currencies
-// ---------------------------------------------------------------------------
+interface CurrencyInfo {
+  code: string;
+  name: string;
+  symbol: string;
+  decimals: number;
+}
 
 interface CurrencyInfo {
   code: string;
@@ -42,20 +42,8 @@ const SUPPORTED_CURRENCIES: CurrencyInfo[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Conversion & Formatting
+// Formatting
 // ---------------------------------------------------------------------------
-
-/**
- * Convert an amount between currencies given an exchange rate.
- */
-function convertAmount(
-  amount: number,
-  _fromCurrency: string,
-  _toCurrency: string,
-  exchangeRate: number,
-): number {
-  return Math.round(amount * exchangeRate * 100) / 100;
-}
 
 /**
  * Format a monetary amount with the correct currency symbol and decimals.
@@ -76,21 +64,4 @@ export function formatCurrencyAmount(amount: number, currencyCode: string, local
     const symbol = currency?.symbol ?? currencyCode;
     return `${symbol}${amount.toFixed(decimals)}`;
   }
-}
-
-/**
- * Get currency info by code.
- */
-function getCurrencyInfo(code: string): CurrencyInfo | undefined {
-  return SUPPORTED_CURRENCIES.find((c) => c.code === code);
-}
-
-/**
- * Get a currency select option list for form dropdowns.
- */
-function getCurrencyOptions(): Array<{ value: string; label: string }> {
-  return SUPPORTED_CURRENCIES.map((c) => ({
-    value: c.code,
-    label: `${c.code} — ${c.name} (${c.symbol})`,
-  }));
 }

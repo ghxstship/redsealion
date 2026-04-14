@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { formatCurrency } from '@/lib/utils';
 import { Trash, Plus } from 'lucide-react';
 import Button from '@/components/ui/Button';
@@ -19,10 +18,8 @@ interface BOMItem {
   status: string;
 }
 
-export default function BOMEditor({ orderId, initialItems }: { orderId: string, initialItems: BOMItem[] }) {
-  const router = useRouter();
-  const [items, setItems] = useState<BOMItem[]>(initialItems);
-  const [loading, setLoading] = useState(false);
+export default function BOMEditor({ orderId: _orderId, initialItems }: { orderId: string, initialItems: BOMItem[] }) {
+  const [items] = useState<BOMItem[]>(initialItems);
   
   // Since we don't have a specific API just for BOM yet, we can simulate local state or 
   // assume there's a POST /api/fabrication/orders/[id]/bom endpoint.

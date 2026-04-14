@@ -288,13 +288,13 @@ describe('RBAC — Session & Auth Tests (H01–H08)', () => {
   });
 
   it('H04: Suspended user any request → blocked at middleware', () => {
-    const userStatus = 'suspended';
+    const _userStatus = 'suspended';
     const canAuthenticate = false; // userStatus === 'active' logically
     expect(canAuthenticate).toBe(false);
   });
 
   it('H05: Deactivated user login → error + reactivation prompt', () => {
-    const userStatus = 'deactivated';
+    const _userStatus = 'deactivated';
     const canLogin = false;
     const showReactivation = true;
     expect(canLogin).toBe(false);
@@ -353,7 +353,7 @@ describe('RBAC — Cross-Cutting Security (X01–X06)', () => {
   });
 
   it('X03: External project member queries org resources → RLS blocks', () => {
-    const membershipType = 'external';
+    const _membershipType = 'external';
     const isProjectMember = true;
     const hasOrgMembership = false;
     const canAccessOrgResources = hasOrgMembership;
@@ -362,8 +362,8 @@ describe('RBAC — Cross-Cutting Security (X01–X06)', () => {
   });
 
   it('X04: API key from Org A queries Org B → error', () => {
-    const apiKeyOrgId = 'org_001';
-    const queryTargetOrgId = 'org_002';
+    const _apiKeyOrgId = 'org_001';
+    const _queryTargetOrgId = 'org_002';
     const authorized = false; // apiKeyOrgId === queryTargetOrgId
     expect(authorized).toBe(false);
   });

@@ -1,8 +1,8 @@
 /**
  * FlyteDeck E2E — Profitability, Equipment, Assets Tests
  */
-import { test, expect } from '../../fixtures/test-fixtures';
-import { expectPageRendered, expectNoRawI18nKeys, expectAccessDenied } from '../../helpers/assertions';
+import { test } from '../../fixtures/test-fixtures';
+import { expectPageRendered, expectNoRawI18nKeys } from '../../helpers/assertions';
 
 test.describe('Profitability @profitability', () => {
   test('profitability page renders for owner with proposal @owner', async ({ authenticatedPage }) => {

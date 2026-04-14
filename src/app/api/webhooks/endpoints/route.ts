@@ -4,7 +4,7 @@ import { requireFeature } from '@/lib/api/tier-guard';
 import { requirePermission } from '@/lib/api/permission-guard';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   const tierError = await requireFeature('integrations');
   if (tierError) return tierError;
 
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
       .order('created_at', { ascending: false });
 
     return NextResponse.json(endpoints || []);
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json(
       { error: 'Failed to fetch webhook endpoints' },
       { status: 500 },
@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
     if (error) throw error;
 
     return NextResponse.json(data);
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json(
       { error: 'Failed to create webhook endpoint' },
       { status: 500 },

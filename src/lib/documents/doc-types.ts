@@ -33,24 +33,12 @@ interface DocContact {
    Venue-related (JSONB columns on venues table)
    ───────────────────────────────────────────────────────── */
 
-export interface DocVenueActivationDates {
-  start?: string;
-  end?: string;
-}
-
 export interface DocVenueLoadInStrike {
   date?: string;
   startTime?: string;
   endTime?: string;
   type?: string;
   notes?: string;
-}
-
-export interface DocVenueContact {
-  name?: string;
-  phone?: string;
-  email?: string;
-  role?: string;
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -117,24 +105,15 @@ export function castDocContact(val: Json | null | undefined): DocContact | null 
   return castJson<DocContact | null>(val ?? null, null);
 }
 
+interface DocVenueActivationDates {
+  start?: string;
+  end?: string;
+  load_in?: string;
+  strike?: string;
+}
+
 export function castActivationDates(val: Json | null | undefined): DocVenueActivationDates | null {
   return castJson<DocVenueActivationDates | null>(val ?? null, null);
-}
-
-function castLoadInStrike(val: Json | null | undefined): DocVenueLoadInStrike[] {
-  return castJson<DocVenueLoadInStrike[]>(val ?? null, []);
-}
-
-function castVenueContact(val: Json | null | undefined): DocVenueContact | null {
-  return castJson<DocVenueContact | null>(val ?? null, null);
-}
-
-function castTermsSections(val: Json | null | undefined): DocTermsSection[] {
-  return castJson<DocTermsSection[]>(val ?? null, []);
-}
-
-function castDeliverableMeta(val: Json | null | undefined): DocDeliverableMeta {
-  return castJson<DocDeliverableMeta>(val ?? null, {});
 }
 
 export function castChangeOrders(val: unknown[]): DocChangeOrder[] {
@@ -156,8 +135,4 @@ interface DocAssetLocation {
   facilityId?: string;
   type?: string;
   venueId?: string;
-}
-
-function castAssetLocationDoc(val: Json | null | undefined): DocAssetLocation | null {
-  return castJson<DocAssetLocation | null>(val ?? null, null);
 }

@@ -31,7 +31,7 @@ import type {
    Catalog Tree
    ───────────────────────────────────────────────────────── */
 
-export interface CatalogTreeNode {
+interface CatalogTreeNode {
   group: AdvanceCategoryGroup;
   categories: Array<{
     category: AdvanceCategory;
@@ -40,11 +40,6 @@ export interface CatalogTreeNode {
       itemCount: number;
     }>;
   }>;
-}
-
-interface CatalogItemWithVariants extends AdvanceCatalogItem {
-  variants: AdvanceCatalogVariant[];
-  modifier_lists: Array<AdvanceModifierList & { options: AdvanceModifierOption[] }>;
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -90,46 +85,12 @@ export interface CartItem {
   isAdHoc: boolean;
 }
 
-type CartAction =
-  | { type: 'ADD_ITEM'; item: CartItem }
-  | { type: 'REMOVE_ITEM'; cartId: string }
-  | { type: 'UPDATE_QUANTITY'; cartId: string; quantity: number }
-  | { type: 'UPDATE_MODIFIERS'; cartId: string; modifiers: CartModifierSelection[] }
-  | { type: 'UPDATE_NOTES'; cartId: string; notes: string }
-  | { type: 'UPDATE_DATES'; cartId: string; dates: Partial<Pick<CartItem, 'serviceStartDate' | 'serviceEndDate' | 'loadInDate' | 'strikeDate'>> }
-  | { type: 'CLEAR_CART' };
-
 /* ─────────────────────────────────────────────────────────
    Advance With Related Data
    ───────────────────────────────────────────────────────── */
-
-interface AdvanceWithItems extends ProductionAdvance {
-  line_items: AdvanceLineItem[];
-  collaborators?: AdvanceCollaborator[];
-  status_history?: AdvanceStatusHistoryEntry[];
-  project_name?: string | null;
-}
-
-interface CollaboratorWithSubmission extends AdvanceCollaborator {
-  user_name?: string | null;
-  user_email?: string | null;
-  org_name?: string | null;
-  item_count: number;
-  total_cents: number;
-}
-
 /* ─────────────────────────────────────────────────────────
    Status Transitions
    ───────────────────────────────────────────────────────── */
-
-interface StatusTransition {
-  from: AdvanceStatus;
-  to: AdvanceStatus;
-  label: string;
-  requiresReason?: boolean;
-  requiresRole?: string[];
-}
-
 /* ─────────────────────────────────────────────────────────
    Filters & Listing
    ───────────────────────────────────────────────────────── */
@@ -202,48 +163,81 @@ export interface AddLineItemRequest {
   unit_price_cents?: number;
 }
 
-interface UpdateAdvanceRequest {
-  event_name?: string;
-  venue_name?: string;
-  venue_address?: Record<string, unknown>;
-  advance_type?: AdvanceType;
-  priority?: AdvancePriority;
-  service_start_date?: string;
-  service_end_date?: string;
-  load_in_date?: string;
-  strike_date?: string;
-  submission_deadline?: string;
-  purpose?: string;
-  special_considerations?: string;
+/* ─────────────────────────────────────────────────────────
+   Catalog Intelligence Layer
+   ───────────────────────────────────────────────────────── */
+
+// Interchange
+interface CatalogItemInterchange {
+  id: string;
+  source_item_id: string;
+  target_item_id: string;
+  relationship_type: 'direct_substitute' | 'budget_alternative' | 'premium_upgrade' | 'same_class_comparable' | 'partial_substitute';
+  compatibility_score: number;
+  comparison_data: Record<string, any>;
+  is_bidirectional: boolean;
+  valid_contexts: string[];
+  verified_by?: string;
+  verified_at?: string;
   notes?: string;
-  internal_notes?: string;
-  submission_instructions?: string;
-  fulfillment_type?: FulfillmentType;
-  is_catalog_shared?: boolean;
-  allow_ad_hoc_items?: boolean;
-  require_approval_per_contributor?: boolean;
-  allowed_advance_types?: AdvanceType[];
-  allowed_category_groups?: string[];
-  max_submissions?: number;
-  version: number;
 }
 
-interface InviteCollaboratorRequest {
-  user_id?: string;
-  organization_id?: string;
-  email?: string;
-  collaborator_role?: string;
-  allowed_advance_types?: AdvanceType[];
-  allowed_category_groups?: string[];
-  custom_instructions?: string;
+// Supersession
+interface CatalogItemSupersession {
+  id: string;
+  predecessor_item_id: string;
+  successor_item_id: string;
+  effective_date?: string;
+  change_summary?: string;
+  predecessor_status: 'discontinued' | 'legacy_available' | 'end_of_life' | 'recalled' | 'reclassified';
+  backward_compatible: boolean;
 }
 
-interface GenerateAccessCodeRequest {
-  code_type?: string;
-  collaborator_role?: string;
-  allowed_advance_types?: AdvanceType[];
-  allowed_category_groups?: string[];
-  allowed_domains?: string[];
-  max_uses?: number;
-  expires_at?: string;
+export interface SupersessionChainNode {
+  chain_position: number;
+  item_id: string;
+  item_name: string;
+  status: string;
+  effective_date?: string;
+  change_summary?: string;
 }
+
+// Fitment
+interface FitmentDimension {
+  id: string;
+  dimension_type: 'venue_type' | 'event_scale' | 'environment' | 'budget_tier' | 'use_case' | 'power_class' | 'control_protocol' | 'regulatory' | 'logistics';
+  dimension_value: string;
+  display_label: string;
+  applicable_collections: string[];
+}
+
+interface CatalogItemFitment {
+  id: string;
+  catalog_item_id: string;
+  fitment_dimension_id: string;
+  fit_rating: 1 | 2 | 3 | 4 | 5;
+  fit_notes?: string;
+}
+
+interface FitmentSearchResult {
+  item_id: string;
+  item_name: string;
+  collection_name: string;
+  category_name: string;
+  avg_fit_rating: number;
+  matching_dimensions: number;
+}
+
+// Extended catalog item
+interface CatalogItemEnriched extends AdvanceCatalogItem {
+  specifications: Record<string, any>;
+  msrp_usd?: number;
+  rental_rate_daily?: number;
+  manufacturer?: string;
+  manufacturer_url?: string;
+  product_image_url?: string;
+  is_discontinued: boolean;
+  vendor_availability: string[];
+  typical_qty_range?: string;
+}
+

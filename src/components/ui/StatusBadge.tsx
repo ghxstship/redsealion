@@ -2,56 +2,22 @@ import { formatLabel } from '@/lib/utils';
 
 import type {
   AdvanceStatus,
-  AssetCondition,
-  AssetStatus,
   AvailabilityStatus,
   BidStatus,
   BookingStatus,
-  ChangeOrderStatus,
-  ComplianceDocumentType,
-  ComponentType,
-  ContactRole,
-  CreativeReferenceType,
-  CrewRateType,
-  DealStage,
-  EsignStatus,
   EventType,
-  ExpenseStatus,
-  FulfillmentMethod,
-  FulfillmentStatus,
-  FulfillmentType,
-  HierarchyStatus,
-  IntegrationStatus,
-  InviteStatus,
   InvoiceStatus,
-  InvoiceType,
-  LeadSource,
   LeadStatus,
   LocationType,
-  MaintenanceStatus,
   MilestoneStatus,
-  ModifierSelectionType,
   OnboardingDocStatus,
   OrgRole,
-  PaymentLinkStatus,
-  PhaseStatus,
   PoStatus,
-  PortalType,
-  PricingStrategy,
-  ProcurementMethod,
   ProjectRole,
-  ProposalStatus,
-  RequirementStatus,
-  ReservationStatus,
-  SpaceType,
-  SubscriptionTier,
   TaskPriority,
   TaskStatus,
   TermsDocumentStatus,
-  TimeOffStatus,
-  TimesheetStatus,
   TransferStatus,
-  ZoneType,
   PipelineStageKey
 } from '@/types/enums';
 
@@ -96,29 +62,6 @@ export const LEAD_STATUS_COLORS: Partial<Record<LeadStatus | string, string>> = 
   disqualified: 'bg-red-500/10 text-red-600',
 };
 
-/** Denser variant for card contexts (stronger intensity) */
-const LEAD_STATUS_COLORS_DENSE: Record<string, string> = {
-  new: 'bg-blue-500/15 text-blue-600',
-  contacted: 'bg-yellow-500/15 text-yellow-600',
-  qualified: 'bg-green-500/15 text-green-600',
-  proposal_sent: 'bg-purple-500/15 text-purple-600',
-  won: 'bg-green-500/20 text-green-600',
-  lost: 'bg-red-500/15 text-red-600',
-  archived: 'bg-bg-secondary text-foreground',
-};
-
-const RESERVATION_STATUS_COLORS: Partial<Record<ReservationStatus, string>> = {
-  reserved: 'bg-blue-400',
-  checked_out: 'bg-green-500',
-  returned: 'bg-gray-400',
-};
-
-const AVAILABILITY_STATUS_COLORS: Partial<Record<AvailabilityStatus, string>> = {
-  available: 'bg-green-400',
-  unavailable: 'bg-red-400',
-  tentative: 'bg-yellow-400',
-};
-
 export const PIPELINE_STAGE_COLORS: Partial<Record<PipelineStageKey, string>> = {
   // DB enum values (canonical)
   lead: 'bg-blue-500/10 text-blue-600',
@@ -135,21 +78,6 @@ export const PIPELINE_STAGE_COLORS: Partial<Record<PipelineStageKey, string>> = 
   proposal: 'bg-purple-500/10 text-purple-600',
   closed_won: 'bg-green-500/10 text-green-600',
   closed_lost: 'bg-red-500/10 text-red-600',
-};
-
-const PHOTO_TYPE_COLORS: Record<string, string> = {
-  before: 'bg-bg-secondary text-text-muted',
-  progress: 'bg-blue-500/10 text-blue-600',
-  completion: 'bg-green-500/10 text-green-600',
-  issue: 'bg-red-500/10 text-red-600',
-  reference: 'bg-purple-500/10 text-purple-600',
-};
-
-const LEAD_SOURCE_COLORS: Partial<Record<LeadSource, string>> = {
-  referral: 'bg-bg-tertiary text-foreground',
-  website: 'bg-bg-tertiary text-foreground',
-  cold_outreach: 'bg-bg-tertiary text-foreground',
-  event: 'bg-bg-tertiary text-foreground',
 };
 
 export const EVENT_STATUS_COLORS: Partial<Record<EventType | string, string>> = {
@@ -184,18 +112,18 @@ export const LOCATION_TYPE_COLORS: Partial<Record<LocationType, string>> = {
 };
 
 export const LOCATION_TYPE_ICONS: Record<string, string> = {
-  venue: '🏟️',
-  arena: '🏟️',
-  stadium: '🏟️',
-  convention_center: '🏢',
-  hotel: '🏨',
-  outdoor: '🌳',
-  warehouse: '🏭',
-  office: '🏢',
-  studio: '🎥',
-  restaurant: '🍽️',
-  virtual: '💻',
-  other: '📍',
+  venue: 'Venue',
+  arena: 'Arena',
+  stadium: 'Stadium',
+  convention_center: 'Convention',
+  hotel: 'Hotel',
+  outdoor: 'Outdoor',
+  warehouse: 'Warehouse',
+  office: 'Office',
+  studio: 'Studio',
+  restaurant: 'Restaurant',
+  virtual: 'Virtual',
+  other: 'Location',
 };
 
 export const ROLE_BADGE_COLORS: Partial<Record<OrgRole | ProjectRole | string, string>> = {
@@ -271,26 +199,6 @@ export const COUNT_STATUS_COLORS: Record<string, string> = {
   rejected: 'bg-red-500/10 text-red-600',
 };
 
-const CHECK_IN_OUT_STATUS_COLORS: Record<string, string> = {
-  checked_out: 'bg-amber-500/10 text-amber-600',
-  checked_in: 'bg-green-500/10 text-green-600',
-  overdue: 'bg-red-500/10 text-red-600',
-  reserved: 'bg-blue-500/10 text-blue-600',
-};
-
-const DAILY_REPORT_STATUS_COLORS: Record<string, string> = {
-  draft: 'bg-bg-secondary text-text-secondary',
-  submitted: 'bg-amber-500/10 text-amber-600',
-  approved: 'bg-green-500/10 text-green-600',
-};
-
-const MAINTENANCE_STATUS_COLORS: Partial<Record<MaintenanceStatus, string>> = {
-  scheduled: 'bg-blue-500/10 text-blue-600',
-  in_progress: 'bg-amber-500/10 text-amber-600',
-  complete: 'bg-green-500/10 text-green-600',
-  cancelled: 'bg-bg-secondary text-text-muted',
-};
-
 export const INVOICE_STATUS_COLORS: Partial<Record<InvoiceStatus, string>> = {
   draft: 'bg-bg-secondary text-text-secondary',
   sent: 'bg-blue-500/10 text-blue-600',
@@ -358,15 +266,6 @@ export const PROJECT_STATUS_COLORS: Record<string, string> = {
   archived: 'bg-bg-secondary text-text-muted',
 };
 
-const PHASE_STATUS_COLORS: Partial<Record<PhaseStatus, string>> = {
-  complete: 'bg-green-500/10 text-green-600',
-  in_progress: 'bg-blue-500/10 text-blue-600',
-  pending_approval: 'bg-amber-500/10 text-amber-600',
-  approved: 'bg-green-500/10 text-green-600',
-  not_started: 'bg-bg-secondary text-text-muted',
-  skipped: 'bg-bg-secondary text-text-muted',
-};
-
 /** Bar colors for roadmap timeline — solid bg-* classes for progress bars, not text badges */
 export const ROADMAP_BAR_COLORS: Record<string, string> = {
   approved: 'bg-green-500',
@@ -426,15 +325,6 @@ export const PROJECT_STATUS_UPDATE_COLORS: Record<string, string> = {
   completed: 'bg-blue-500/15 text-blue-600',
 };
 
-const DISPATCH_STATUS_COLORS: Record<string, string> = {
-  pending: 'bg-yellow-500/10 text-yellow-600',
-  assigned: 'bg-blue-500/10 text-blue-600',
-  en_route: 'bg-indigo-500/10 text-indigo-600',
-  on_site: 'bg-green-500/10 text-green-600',
-  completed: 'bg-green-500/10 text-green-600',
-  cancelled: 'bg-red-500/10 text-red-600',
-};
-
 export const FABRICATION_STATUS_COLORS: Record<string, string> = {
   draft: 'bg-bg-secondary text-text-secondary',
   pending: 'bg-yellow-500/10 text-yellow-600',
@@ -491,16 +381,6 @@ export const SCHEDULE_TYPE_COLORS: Record<string, string> = {
   milestone: 'bg-green-500/10 text-green-600',
 };
 
-const SCHEDULE_STATUS_COLORS: Record<string, string> = {
-  draft: 'bg-bg-secondary text-text-secondary',
-  confirmed: 'bg-blue-500/10 text-blue-600',
-  in_progress: 'bg-amber-500/10 text-amber-600',
-  completed: 'bg-green-500/10 text-green-600',
-  delayed: 'bg-red-500/10 text-red-600',
-  on_hold: 'bg-bg-secondary text-text-muted',
-  cancelled: 'bg-red-500/10 text-red-600',
-};
-
 export const GOAL_STATUS_COLORS: Record<string, string> = {
   not_started: 'bg-bg-secondary text-text-secondary',
   in_progress: 'bg-blue-500/10 text-blue-600',
@@ -538,14 +418,6 @@ export const MILEAGE_STATUS_COLORS: Record<string, string> = {
   approved: 'bg-green-500/10 text-green-600',
   rejected: 'bg-red-500/10 text-red-600',
   reimbursed: 'bg-green-500/15 text-green-600',
-};
-
-const SYNC_STATUS_COLORS: Record<string, string> = {
-  pending: 'bg-yellow-500/10 text-yellow-600',
-  syncing: 'bg-blue-500/10 text-blue-600',
-  synced: 'bg-green-500/10 text-green-600',
-  error: 'bg-red-500/10 text-red-600',
-  warning: 'bg-amber-500/10 text-amber-600',
 };
 
 /** Generic fallback — covers the most common status vocabulary. */

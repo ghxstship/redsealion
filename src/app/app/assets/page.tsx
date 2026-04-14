@@ -2,7 +2,6 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import AssetsTable from '@/components/admin/assets/AssetsTable';
 import PageHeader from '@/components/shared/PageHeader';
-import Card from '@/components/ui/Card';
 import { formatCurrency } from '@/lib/utils';
 import { RoleGate } from '@/components/shared/RoleGate';
 import { TierGate } from '@/components/shared/TierGate';

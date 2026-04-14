@@ -11,6 +11,9 @@ import type { AdvanceCatalogVariant, AdvanceModifierList, AdvanceModifierOption 
 import type { CatalogItemFull } from './CatalogBrowse';
 import type { CartItem, CartModifierSelection } from '@/lib/advances/types';
 import { formatCents, calculateModifierTotal, calculateLineTotal } from '@/lib/advances/utils';
+import { CatalogItemSpecCard } from './CatalogItemSpecCard';
+import { InterchangeSuggestionCard } from './InterchangeSuggestionCard';
+import { SupersessionResolver } from './SupersessionResolver';
 
 interface CatalogItemDetailProps {
   item: CatalogItemFull;
@@ -25,6 +28,7 @@ export default function CatalogItemDetail({ item, onAddToCart, onClose }: Catalo
   const [quantity, setQuantity] = useState(1);
   const [notes, setNotes] = useState('');
   const [modifierSelections, setModifierSelections] = useState<Record<string, string>>({});
+  const [isAddedToCart, setIsAddedToCart] = useState(false);
 
   const selectedVariant = item.variants.find((v) => v.id === selectedVariantId) ?? item.variants[0];
   const unitPrice = selectedVariant?.price_cents ?? item.base_price_cents ?? null;
@@ -85,7 +89,15 @@ export default function CatalogItemDetail({ item, onAddToCart, onClose }: Catalo
       isAdHoc: false,
     };
     onAddToCart(cartItem);
+    setIsAddedToCart(true);
   }, [item, selectedVariant, quantity, notes, cartModifiers, unitPrice, modifierTotal, lineTotal, onAddToCart]);
+
+  const handleSwap = (altItem: { is_discontinued?: boolean }) => {
+    // A more advanced version would reset the state to the alt item. 
+    // Here we might just re-trigger add to cart or bubble up
+  };
+
+  const isDiscontinued = (item as { is_discontinued?: boolean }).is_discontinued === true;
 
   return (
     <div className="rounded-xl border border-border bg-background overflow-hidden">
@@ -112,6 +124,19 @@ export default function CatalogItemDetail({ item, onAddToCart, onClose }: Catalo
       </div>
 
       <div className="p-5 space-y-5">
+        
+        {isDiscontinued && (
+          <SupersessionResolver itemId={item.id} onSelectLatest={(newItemId) => {
+            // Swap to newer version logic
+          }} />
+        )}
+
+        <CatalogItemSpecCard item={item as any} />
+
+        {isAddedToCart && (
+          <InterchangeSuggestionCard itemId={item.id} onSwap={handleSwap} />
+        )}
+
         {/* Variant Selector */}
         {item.variants.length > 1 && (
           <div>

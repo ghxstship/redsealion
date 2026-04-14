@@ -20,7 +20,7 @@
  *   + Notification on completion
  */
 import { describe, it, expect } from 'vitest';
-import { makeInvoice, makeESignatureRequest, TEST_ORG_ID } from '../helpers';
+import { makeInvoice, makeESignatureRequest } from '../helpers';
 
 describe('Payment Workflow', () => {
   // -----------------------------------------------------------------------

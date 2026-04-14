@@ -3,7 +3,6 @@ import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
 import { dispatchWebhookEvent } from '@/lib/webhooks/outbound';
 import { checkAutomationTriggers } from '@/lib/automations/trigger';
-import type { DealStage } from '@/types/database';
 
 const VALID_DEAL_TRANSITIONS: Record<string, string[]> = {
   lead: ['qualified', 'lost', 'on_hold'],

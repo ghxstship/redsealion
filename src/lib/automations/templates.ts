@@ -164,7 +164,7 @@ export const AUTOMATION_TEMPLATES: AutomationTemplate[] = [
     },
     action_type: 'send_slack',
     action_config: {
-      message: '🔥 Hot lead! "{{contact_name}}" from {{company_name}} scored {{lead_score}}/100.',
+      message: 'Hot lead! "{{contact_name}}" from {{company_name}} scored {{lead_score}}/100.',
     },
   },
   {

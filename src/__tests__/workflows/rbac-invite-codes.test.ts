@@ -3,7 +3,6 @@
  * Validates invite code generation and redemption flows.
  */
 import { describe, it, expect } from 'vitest';
-import type { SeatType } from '@/types/rbac';
 
 // ---------------------------------------------------------------------------
 // Pure validation helpers

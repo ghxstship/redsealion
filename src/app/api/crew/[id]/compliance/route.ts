@@ -2,9 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
 import { logAudit } from '@/lib/audit';
-import { createLogger } from '@/lib/logger';
-
-const log = createLogger('api:crew:compliance');
 
 interface RouteContext {
   params: Promise<{ id: string }>;

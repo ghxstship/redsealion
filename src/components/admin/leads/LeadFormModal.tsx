@@ -122,7 +122,7 @@ export default function LeadFormModal({ open, onClose, onCreated }: LeadFormModa
             />
             {dupWarning && (
               <p className="mt-1 text-xs text-amber-600">
-                ⚠ A lead with this email already exists:{' '}
+                Warning: A lead with this email already exists:{' '}
                 <a href={`/app/leads`} className="underline font-medium">
                   {dupWarning.name}
                 </a>

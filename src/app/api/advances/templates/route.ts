@@ -9,7 +9,7 @@ import { requireAuth } from '@/lib/api/auth-guard';
  */
 
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
 ) {
   const { ctx, denied } = await requireAuth();
   if (denied) return denied;

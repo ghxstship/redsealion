@@ -5,11 +5,10 @@ import Button from '@/components/ui/Button';
 
 import { useState, useCallback } from 'react';
 import { FileText } from 'lucide-react';
-import Link from 'next/link';
 import ExportCard from '@/components/admin/export/ExportCard';
 import ExportPreview from '@/components/admin/export/ExportPreview';
 import Tabs from '@/components/ui/Tabs';
-import type { ProposalExportData, ExportHubData } from './_data';
+import type { ExportHubData } from './_data';
 import PageHeader from '@/components/shared/PageHeader';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
@@ -126,7 +125,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
   }, [id]);
 
   const {
-    proposal,
+    proposal: _proposal,
     salesforcePreview, hubspotPreview, pipedrivePreview,
     quickbooksPreview, xeroPreview, freshbooksPreview,
     clickupPreview, asanaPreview, mondayPreview,

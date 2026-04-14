@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
-import type { CrewAvailability, CrewAvailabilityStatus } from '@/types/database';
+import type { CrewAvailabilityStatus } from '@/types/database';
 
 export async function GET(
   request: NextRequest,

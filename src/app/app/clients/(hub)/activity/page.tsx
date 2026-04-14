@@ -28,7 +28,7 @@ async function getActivity() {
 export default async function ClientActivityPage() {
   const activities = await getActivity();
 
-  const typeIcons: Record<string, string> = { call: '📞', email: '📧', meeting: '🤝', note: '📝', task: '✅' };
+  const typeIcons: Record<string, string> = { call: '☎', email: '✉', meeting: '⌘', note: '✎', task: '✓' };
 
   return (
     <TierGate feature="clients">
@@ -44,7 +44,7 @@ export default async function ClientActivityPage() {
           <div className="divide-y divide-border">
             {activities.map((activity) => (
               <div key={activity.id} className="px-5 py-4 flex items-start gap-3">
-                <span className="text-lg mt-0.5">{typeIcons[activity.type] ?? '📌'}</span>
+                <span className="text-lg mt-0.5">{typeIcons[activity.type] ?? '•'}</span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <StatusBadge status={activity.type} colorMap={{}} />

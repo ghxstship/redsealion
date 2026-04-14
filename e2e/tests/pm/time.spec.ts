@@ -2,7 +2,7 @@
  * FlyteDeck E2E — Time Tracking Tests
  * Tier: enterprise
  */
-import { test, expect } from '../../fixtures/test-fixtures';
+import { test } from '../../fixtures/test-fixtures';
 import { expectPageRendered, expectNoRawI18nKeys } from '../../helpers/assertions';
 import type { Role } from '../../helpers/routes';
 
@@ -10,11 +10,6 @@ const TIME_ROUTES = [
   '/app/time',
   '/app/time/timer',
   '/app/time/timesheets',
-];
-
-const ALL_INTERNAL: Role[] = [
-  'developer', 'owner', 'manager',
-  'team_member', 'crew',
 ];
 
 test.describe('Time Hub @time', () => {

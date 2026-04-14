@@ -326,6 +326,11 @@ describe('Subscription Tier System', () => {
         expect(canAccessFeature('starter', feature)).toBe(true);
       });
     }
+
+    it('billing is accessible from free tier (upgrade path must not be gated)', () => {
+      expect(canAccessFeature('free', 'billing')).toBe(true);
+      expect(getRequiredTier('billing')).toBe('portal');
+    });
   });
 
   // -----------------------------------------------------------------------

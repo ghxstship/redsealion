@@ -110,7 +110,10 @@
     "fabrication": "Fabricaci\u00f3n",
     "procurement": "Adquisiciones",
     "rentals": "Alquileres",
-    "marketplace": "Marketplace"
+    "marketplace": "Marketplace",
+    "equipment": "Equipamiento",
+    "manifest": "Manifiesto",
+    "workOrders": "\u00d3rdenes de trabajo"
   },
   "header": {
     "search": "Buscar\u2026",
@@ -156,7 +159,16 @@
     "fabricator": "Fabricante",
     "installer": "Instalador",
     "clientPrimary": "Cliente",
-    "clientViewer": "Visor"
+    "clientViewer": "Visor",
+    "developer": "Desarrollador",
+    "owner": "Propietario",
+    "controller": "Controlador",
+    "collaborator": "Colaborador",
+    "contractor": "Contratista",
+    "crew": "Equipo",
+    "client": "Cliente",
+    "viewer": "Visor",
+    "community": "Comunidad"
   },
   "empty": {
     "title": "Sin elementos",
@@ -251,8 +263,31 @@
     "expensesAwaiting": "expense(s) awaiting review",
     "projectsInProduction": "active project(s) in production.",
     "rep": "Rep",
-    "dealsWon": "Deals Won",
-    "revenue": "Revenue"
+    "dealsWon": "Negocios ganados",
+    "revenue": "Ingresos",
+    "myPriorityTasks": "Mis tareas prioritarias",
+    "viewAllTasks": "Ver todo \u2192",
+    "noTasksAssigned": "Est\u00e1s al d\u00eda \u2014 sin tareas prioritarias.",
+    "dueDatePrefix": "Vence",
+    "noDueDate": "Sin fecha l\u00edmite",
+    "overdue": "Vencida",
+    "dueToday": "Vence hoy",
+    "upcomingSchedule": "Pr\u00f3ximos eventos",
+    "viewAllEvents": "Ver todo \u2192",
+    "noUpcomingEvents": "No hay eventos pr\u00f3ximos en los pr\u00f3ximos 14 d\u00edas.",
+    "notifications": "Notificaciones",
+    "viewAllNotifications": "Ver todo \u2192",
+    "noNewNotifications": "No hay nuevas notificaciones.",
+    "unreadCount": "sin leer",
+    "quickActions": "Acciones r\u00e1pidas",
+    "newProposal": "Nueva propuesta",
+    "newClient": "Nuevo cliente",
+    "newLead": "Nuevo lead",
+    "newTask": "Nueva tarea",
+    "newInvoice": "Nueva factura",
+    "newEvent": "Nuevo evento",
+    "overdueInvoicesStat": "Facturas vencidas",
+    "needsAttention": "Requiere atenci\u00f3n"
   },
   "myTasks": {
     "title": "My Tasks",

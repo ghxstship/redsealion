@@ -14,7 +14,7 @@ interface DealNextActionProps {
 }
 
 interface NextAction {
-  icon: string;
+  icon: string; // Short text prefix
   label: string;
   priority: 'high' | 'medium' | 'low';
 }
@@ -28,13 +28,13 @@ function computeNextActions(props: DealNextActionProps): NextAction[] {
   switch (props.stage) {
     case 'lead':
       actions.push({
-        icon: '📞',
+        icon: 'Call',
         label: 'Qualify this lead — schedule a discovery call',
         priority: 'high',
       });
       if (!props.hasContacts) {
         actions.push({
-          icon: '👤',
+          icon: 'Contact',
           label: 'Identify the decision-maker',
           priority: 'medium',
         });
@@ -42,7 +42,7 @@ function computeNextActions(props: DealNextActionProps): NextAction[] {
       break;
     case 'qualified':
       actions.push({
-        icon: '📄',
+        icon: 'Proposal',
         label: 'Prepare and send a proposal',
         priority: 'high',
       });
@@ -50,13 +50,13 @@ function computeNextActions(props: DealNextActionProps): NextAction[] {
     case 'proposal_sent':
       if (props.daysSinceUpdate > 3) {
         actions.push({
-          icon: '📧',
+          icon: 'Follow-up',
           label: 'Follow up on the proposal',
           priority: 'high',
         });
       } else {
         actions.push({
-          icon: '⏳',
+          icon: 'Wait',
           label: 'Wait for client response, prepare for negotiation',
           priority: 'low',
         });
@@ -64,13 +64,13 @@ function computeNextActions(props: DealNextActionProps): NextAction[] {
       break;
     case 'negotiation':
       actions.push({
-        icon: '🤝',
+        icon: 'Negotiate',
         label: 'Address objections and finalize terms',
         priority: 'high',
       });
       if (props.probability < 50) {
         actions.push({
-          icon: '💡',
+          icon: 'Strategy',
           label: 'Consider offering a concession or revised scope',
           priority: 'medium',
         });
@@ -78,7 +78,7 @@ function computeNextActions(props: DealNextActionProps): NextAction[] {
       break;
     case 'verbal_yes':
       actions.push({
-        icon: '✍️',
+        icon: 'Contract',
         label: 'Send the contract for signature',
         priority: 'high',
       });
@@ -88,7 +88,7 @@ function computeNextActions(props: DealNextActionProps): NextAction[] {
   // Activity-based suggestions
   if (props.daysSinceUpdate > 14 && props.stage !== 'verbal_yes') {
     actions.unshift({
-      icon: '🔥',
+      icon: 'Urgent',
       label: 'Re-engage — this deal is going cold',
       priority: 'high',
     });
@@ -96,7 +96,7 @@ function computeNextActions(props: DealNextActionProps): NextAction[] {
 
   if (props.activityCount < 2 && props.daysInPipeline > 7) {
     actions.push({
-      icon: '📝',
+      icon: 'Log',
       label: 'Log activities to build an engagement trail',
       priority: 'medium',
     });
@@ -128,7 +128,7 @@ export default function DealNextAction(props: DealNextActionProps) {
             key={idx}
             className={`rounded-lg border-l-2 px-3 py-2.5 text-xs text-text-secondary ${PRIORITY_STYLES[action.priority]}`}
           >
-            <span className="mr-1.5">{action.icon}</span>
+            <span className="mr-1.5 font-semibold text-text-muted">{action.icon}:</span>
             {action.label}
           </li>
         ))}

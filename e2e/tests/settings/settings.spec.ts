@@ -4,8 +4,8 @@
  * Validates all 24+ settings sub-pages render correctly for owner,
  * and verifies non-admin roles are blocked.
  */
-import { test, expect } from '../../fixtures/test-fixtures';
-import { expectPageRendered, expectNoRawI18nKeys, expectAccessDenied } from '../../helpers/assertions';
+import { test } from '../../fixtures/test-fixtures';
+import { expectPageRendered, expectNoRawI18nKeys } from '../../helpers/assertions';
 
 const SETTINGS_ROUTES = [
   '/app/settings',

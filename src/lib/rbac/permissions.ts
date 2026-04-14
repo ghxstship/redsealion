@@ -13,7 +13,7 @@ import type {
   PermissionAction,
   PermissionResource,
 } from '@/types/rbac';
-import { SYSTEM_ROLE_IDS } from '@/types/rbac';
+
 
 interface PermissionCheckResult {
   allowed: boolean;
@@ -135,24 +135,3 @@ export function enforceHierarchyCeiling(
   return targetRoleHierarchyLevel >= actorHierarchyLevel;
 }
 
-/**
- * Check if a user is the sole owner of an organization.
- * Used to prevent the last owner from leaving.
- */
-export async function isSoleOwner(
-  userId: string,
-  organizationId: string,
-): Promise<boolean> {
-  const supabase = await createClient();
-
-  const { data: ownerMemberships } = await supabase
-    .from('organization_memberships')
-    .select('id, user_id')
-    .eq('organization_id', organizationId)
-    .eq('role_id', SYSTEM_ROLE_IDS.OWNER)
-    .eq('status', 'active');
-
-  if (!ownerMemberships || ownerMemberships.length === 0) return false;
-  if (ownerMemberships.length === 1 && ownerMemberships[0].user_id === userId) return true;
-  return false;
-}

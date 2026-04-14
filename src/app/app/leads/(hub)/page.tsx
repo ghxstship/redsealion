@@ -82,15 +82,10 @@ export default async function LeadsPage() {
     <RoleGate>
     <>
       <PageHeader
-
         title="Inbox"
-
         subtitle={`${leads.length} leads in your inbox`}
-
       >
-
         <LeadsHeader />
-
       </PageHeader>
 
       <LeadsHubTabs />
@@ -100,3 +95,4 @@ export default async function LeadsPage() {
   </RoleGate>
   );
 }
+

@@ -22,21 +22,7 @@ export function formatCurrencyDetailed(amount: number, currency = 'USD', locale 
   return formatCurrencyAmount(amount, currency, locale);
 }
 
-function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/[\s_]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .substring(0, 60);
-}
 
-/** Generate a cryptographically secure random token (48 alphanumeric characters). */
-function generateToken(): string {
-  const bytes = new Uint8Array(36);
-  crypto.getRandomValues(bytes);
-  return Array.from(bytes, (b) => b.toString(36).padStart(2, '0')).join('').slice(0, 48);
-}
 
 export function getInitials(name: string): string {
   return name
@@ -105,37 +91,3 @@ export function statusColor(status: string): string {
   return colors[status] || 'bg-gray-100 text-gray-700';
 }
 
-// ---------------------------------------------------------------------------
-// Safe fetch — standardized client-side API call with error handling
-// ---------------------------------------------------------------------------
-
-interface SafeFetchResult<T = unknown> {
-  data: T | null;
-  error: string | null;
-  ok: boolean;
-}
-
-/**
- * Wrapper around `fetch()` that handles errors, checks `res.ok`, and parses JSON.
- * Returns `{ data, error, ok }` so callers never need try/catch.
- */
-async function safeFetch<T = unknown>(
-  url: string,
-  options?: RequestInit
-): Promise<SafeFetchResult<T>> {
-  try {
-    const res = await fetch(url, options);
-    if (!res.ok) {
-      const body = await res.json().catch(() => ({ error: res.statusText }));
-      return { data: null, error: body.error ?? `Request failed (${res.status})`, ok: false };
-    }
-    const data = (await res.json()) as T;
-    return { data, error: null, ok: true };
-  } catch (err) {
-    return {
-      data: null,
-      error: err instanceof Error ? err.message : 'Network error',
-      ok: false,
-    };
-  }
-}

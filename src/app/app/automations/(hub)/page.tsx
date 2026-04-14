@@ -4,7 +4,6 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import EmptyState from '@/components/ui/EmptyState';
 import { formatLabel , formatDate } from '@/lib/utils';
-import StatusBadge, { GENERIC_STATUS_COLORS } from '@/components/ui/StatusBadge';
 
 interface AutomationRow {
   id: string;

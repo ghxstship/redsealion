@@ -8,7 +8,7 @@ import { requireAuth } from '@/lib/api/auth-guard';
  * Gap: H-03 — Inventory tables existed but no API surface
  */
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   const { ctx, denied } = await requireAuth();
   if (denied) return denied;
 

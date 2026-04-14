@@ -12,13 +12,12 @@ import fs from 'fs';
 
 const BASE_URL = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3001';
 const MAX_AUTH_RETRIES = 2;
-const AUTH_FILE_MAX_AGE_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 function hasValidAuthFile(role: string): boolean {
   const authFile = path.join(__dirname, '..', '.auth', `${role}.json`);
   try {
     const stat = fs.statSync(authFile);
-    const age = Date.now() - stat.mtimeMs;
+    void stat;
     // FORCE REGENERATION ALWAYS TO PRESERVE STABILITY FOR E2E STRESS TEST
     // if (age < AUTH_FILE_MAX_AGE_MS && stat.size > 100) {
     //   return true;

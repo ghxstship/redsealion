@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import PageHeader from '@/components/shared/PageHeader';
 import Alert from '@/components/ui/Alert';
+import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
@@ -72,7 +73,7 @@ export default function NewCampaignPage() {
           <Alert variant="error">{error}</Alert>
         )}
 
-        <div className="rounded-xl border border-border bg-background p-6 space-y-4">
+        <Card className="space-y-4">
           <h2 className="text-sm font-semibold text-foreground">Campaign Details</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
@@ -86,9 +87,9 @@ export default function NewCampaignPage() {
                 placeholder="Exciting updates from our team" />
             </div>
           </div>
-        </div>
+        </Card>
 
-        <div className="rounded-xl border border-border bg-background p-6 space-y-4">
+        <Card className="space-y-4">
           <h2 className="text-sm font-semibold text-foreground">Email Body</h2>
           <FormTextarea
             name="body_html"
@@ -98,9 +99,9 @@ export default function NewCampaignPage() {
             placeholder="Compose your email body (HTML supported)…"
             className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground font-mono"
           />
-        </div>
+        </Card>
 
-        <div className="rounded-xl border border-border bg-background p-6 space-y-4">
+        <Card className="space-y-4">
           <h2 className="text-sm font-semibold text-foreground">Targeting</h2>
           <Checkbox
               id="c-all-clients"
@@ -116,7 +117,7 @@ export default function NewCampaignPage() {
                 placeholder="vip, returning, enterprise" />
             </div>
           )}
-        </div>
+        </Card>
 
         <div className="flex justify-end gap-3">
           <Button variant="secondary" type="button" onClick={() => router.back()}>

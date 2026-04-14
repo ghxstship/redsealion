@@ -2,7 +2,7 @@
  * FlyteDeck E2E — Invoices Tests
  */
 import { test, expect } from '../../fixtures/test-fixtures';
-import { expectPageRendered, expectNoRawI18nKeys, expectAccessDenied } from '../../helpers/assertions';
+import { expectPageRendered, expectNoRawI18nKeys } from '../../helpers/assertions';
 
 test.describe('Invoices @invoices', () => {
   test('invoices list renders for owner @owner', async ({ authenticatedPage }) => {

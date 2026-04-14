@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { requireFeature } from '@/lib/api/tier-guard';
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   const tierError = await requireFeature('automations');
   if (tierError) return tierError;
 

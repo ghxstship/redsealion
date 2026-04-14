@@ -1,10 +1,7 @@
 import { formatDate } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
-import { TierGate } from '@/components/shared/TierGate';
-import PageHeader from '@/components/shared/PageHeader';
 import CanonicalStatusBadge, { COMPLIANCE_STATUS_COLORS } from '@/components/ui/StatusBadge';
-import ComplianceHubTabs from './ComplianceHubTabs';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 
 async function getDocsByType(docType: string) {

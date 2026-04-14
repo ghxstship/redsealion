@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { checkPermission } from '@/lib/api/permission-guard';
 import { requireAdmin } from '@/lib/api/auth-guard';
 import { logAudit } from '@/lib/audit';
 

@@ -36,7 +36,7 @@ export async function GET(
     }
 
     return NextResponse.json({ integration });
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json(
       { error: 'Failed to fetch integration status' },
       { status: 500 },
@@ -93,7 +93,7 @@ export async function PATCH(
     if (error) throw error;
 
     return NextResponse.json({ success: true, platform });
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json(
       { error: 'Failed to update integration settings' },
       { status: 500 },
@@ -137,7 +137,7 @@ export async function DELETE(
     if (error) throw error;
 
     return NextResponse.json({ success: true, message: 'Integration disconnected' });
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json(
       { error: 'Failed to disconnect integration' },
       { status: 500 },

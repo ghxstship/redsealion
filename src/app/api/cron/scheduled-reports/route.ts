@@ -116,7 +116,7 @@ export async function GET(request: Request) {
           try {
             await emailProvider.send(
               recipient,
-              `📊 ${report.name} — Scheduled Report (${reportDate})`,
+              `${report.name} — Scheduled Report (${reportDate})`,
               html,
             );
           } catch (emailErr) {
@@ -256,7 +256,7 @@ function buildReportEmailHtml(opts: {
       <div style="max-width:680px;margin:24px auto;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #e4e4e7;">
         <!-- Header -->
         <div style="background:linear-gradient(135deg,#18181b 0%,#27272a 100%);padding:28px 32px;">
-          <h1 style="margin:0;font-size:20px;font-weight:600;color:#ffffff;">📊 ${reportName}</h1>
+          <h1 style="margin:0;font-size:20px;font-weight:600;color:#ffffff;">${reportName}</h1>
           <p style="margin:6px 0 0;font-size:13px;color:#a1a1aa;">${frequency.charAt(0).toUpperCase() + frequency.slice(1)} report • ${reportDate}</p>
         </div>
 

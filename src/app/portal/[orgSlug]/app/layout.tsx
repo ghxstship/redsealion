@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation';
+import Image from 'next/image';
 import { SubscriptionProvider } from '@/components/shared/SubscriptionProvider';
 import { PortalContextProvider } from '@/components/portal/PortalContext';
 import PortalSidebar from '@/components/portal/PortalSidebar';
@@ -42,9 +43,12 @@ export default async function PortalAppLayout({ children, params }: PortalAppLay
             <header className="sticky top-0 z-30 flex items-center justify-between border-b border-border/60 bg-background/80 backdrop-blur-xl backdrop-saturate-150 px-6 md:px-10 h-14">
               <div className="flex items-center gap-3">
                 {org.logoUrl ? (
-                  <img
+                  <Image
                     src={org.logoUrl}
                     alt={org.orgName}
+                    width={120}
+                    height={24}
+                    unoptimized
                     className="h-6 w-auto object-contain"
                   />
                 ) : (

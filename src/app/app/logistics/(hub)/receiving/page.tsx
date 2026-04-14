@@ -73,7 +73,7 @@ export default async function ReceivingPage({ searchParams }: { searchParams: Pr
       </PageHeader>
       <LogisticsHubTabs />
 
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 mb-8">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-8">
         {[
           { label: 'Total Inbound', value: shipmentStatuses.length },
           { label: 'Expected', value: expected.length, color: 'text-blue-600' },

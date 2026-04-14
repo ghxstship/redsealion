@@ -13,7 +13,7 @@
  *   + Scenario comparison
  */
 import { describe, it, expect } from 'vitest';
-import { makeProposal, makeInvoice, TEST_ORG_ID, TEST_CLIENT_ID } from '../helpers';
+import { makeProposal, makeInvoice, TEST_CLIENT_ID } from '../helpers';
 import type { ProposalStatus } from '@/types/database';
 
 describe('Client Portal Workflow', () => {

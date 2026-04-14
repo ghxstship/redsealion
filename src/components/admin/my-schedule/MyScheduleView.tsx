@@ -4,13 +4,12 @@ import React, { useState, useMemo, useRef, useEffect } from 'react';
 import Card from '@/components/ui/Card';
 import EmptyState from '@/components/ui/EmptyState';
 import {
-  Calendar, Clock, MapPin, Search, ChevronLeft, ChevronRight,
+  Calendar, Clock, MapPin, Search,
   ExternalLink, Flag, Milestone, CalendarDays, Briefcase, Layers,
 } from 'lucide-react';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { Badge } from '@/components/ui/Badge';
 import FilterPills from '@/components/ui/FilterPills';
-import Button from '@/components/ui/Button';
 import FormInput from '@/components/ui/FormInput';
 import MiniCalendar from './MiniCalendar';
 import { generateGoogleCalendarUrl, type ICalEvent } from '@/lib/utils/ical';

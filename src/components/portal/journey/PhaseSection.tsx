@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import Image from 'next/image';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { fmTransition } from '@/lib/motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -106,9 +107,12 @@ export default function PhaseSection({
                 <div key={ref.id} className="group">
                   <div className="aspect-[4/3] rounded-lg overflow-hidden bg-bg-secondary mb-2">
                     {ref.thumbnail_url ? (
-                      <img
+                      <Image
                         src={ref.thumbnail_url}
                         alt={ref.title ?? ''}
+                        width={640}
+                        height={480}
+                        unoptimized
                         className="w-full h-full object-cover transition-transform duration-decorative group-hover:scale-105"
                       />
                     ) : (

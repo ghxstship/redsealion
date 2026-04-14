@@ -609,3 +609,59 @@ summary:focus-visible {
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   CANONICAL GRID UTILITIES — responsive layout primitives
+   Apply to metric strips, card grids, and section splits.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Metric strip — consistent 2→4 column stat card row */
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .metric-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+/* 3-column metric variant */
+.metric-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 640px) {
+  .metric-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* 5-column metric variant (wide hubs) */
+.metric-grid-5 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 640px) {
+  .metric-grid-5 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1024px) {
+  .metric-grid-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+
+/* Section split — 1→2 column detail layout */
+.section-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .section-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

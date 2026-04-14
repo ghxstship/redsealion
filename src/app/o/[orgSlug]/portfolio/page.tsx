@@ -110,7 +110,7 @@ export default async function PublicPortfolioPage({ params }: PortfolioPageProps
                 />
               ) : (
                 <div className="w-full h-48 bg-bg-secondary flex items-center justify-center">
-                  <span className="text-3xl">🎪</span>
+                  <span className="text-lg font-semibold text-text-muted">Project</span>
                 </div>
               )}
 

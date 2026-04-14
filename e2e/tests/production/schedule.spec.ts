@@ -4,7 +4,7 @@
  * Validates schedule hub and sub-pages (milestones, run-of-show, build-strike).
  * Tier: professional+
  */
-import { test, expect } from '../../fixtures/test-fixtures';
+import { test } from '../../fixtures/test-fixtures';
 import { expectPageRendered, expectNoRawI18nKeys } from '../../helpers/assertions';
 
 const SCHEDULE_ROUTES = [

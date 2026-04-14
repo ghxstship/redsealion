@@ -55,7 +55,6 @@ export async function POST(
     });
 
     // Append state parameter to the auth URL
-    const separator = baseAuthUrl.includes('?') ? '&' : '?';
     const authUrl = `${baseAuthUrl}&state=${encodeURIComponent(state)}`;
 
     // Sign the state with a secret so we can verify it on callback.

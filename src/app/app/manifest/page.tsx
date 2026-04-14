@@ -35,7 +35,6 @@ export default async function ManifestPage() {
   return (
     <TierGate feature="advancing">
       <ManifestClient
-        orgId={ctx.organizationId}
         projects={projects ?? []}
         events={events ?? []}
         catalogGroups={groups ?? []}

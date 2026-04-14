@@ -86,31 +86,8 @@ export async function incrementSeatUsage(
   }
 }
 
-/**
- * Decrement seat usage after membership removal.
- */
-export async function decrementSeatUsage(
-  organizationId: string,
-  seatType: SeatType,
-): Promise<void> {
-  const supabase = await createClient();
-  const field = seatType === 'internal' ? 'internal_seats_used' : 'external_seats_used';
 
-  const { data: allocation } = await supabase
-    .from('seat_allocations')
-    .select('internal_seats_used, external_seats_used')
-    .eq('organization_id', organizationId)
-    .single();
 
-  if (allocation) {
-    const record = allocation as Record<string, unknown>;
-    const currentValue = record[field] as number;
-    await supabase
-      .from('seat_allocations')
-      .update({ [field]: Math.max(0, currentValue - 1) })
-      .eq('organization_id', organizationId);
-  }
-}
 
 /**
  * Reconcile seat counts by counting actual active memberships.

@@ -13,7 +13,7 @@ import { useCallback, useEffect, useState } from 'react';
 import Button from '@/components/ui/Button';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
-import { Paperclip, File, Image, FileText, Download, Trash2, Plus } from 'lucide-react';
+import { Paperclip, File, Image as ImageIcon, FileText, Download, Trash2, Plus } from 'lucide-react';
 
 interface Attachment {
   id: string;
@@ -26,7 +26,7 @@ interface Attachment {
 }
 
 const FILE_ICONS: Record<string, React.ReactNode> = {
-  image: <Image size={16} className="text-purple-500" />,
+  image: <ImageIcon size={16} className="text-purple-500" />,
   pdf: <FileText size={16} className="text-red-500" />,
   document: <FileText size={16} className="text-blue-500" />,
   default: <File size={16} className="text-text-muted" />,

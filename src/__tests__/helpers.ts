@@ -77,24 +77,6 @@ interface MockSupabase {
   };
 }
 
-function createMockSupabase(
-  tableResolvers: Record<string, MockQueryBuilder> = {},
-  userId = 'user_001',
-): MockSupabase {
-  return {
-    from: vi.fn((table: string) => {
-      if (tableResolvers[table]) return tableResolvers[table];
-      return createMockQueryBuilder(null, null);
-    }),
-    auth: {
-      getUser: vi.fn().mockResolvedValue({
-        data: { user: userId ? { id: userId } : null },
-        error: null,
-      }),
-    },
-  };
-}
-
 // ---------------------------------------------------------------------------
 // Seed data factories
 // ---------------------------------------------------------------------------
@@ -143,27 +125,6 @@ export function makeOrganization(overrides: RowData = {}) {
     ...overrides,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as Record<string, any>; // Test factory — flexible typing for assertion convenience
-}
-
-function makeClient(overrides: RowData = {}) {
-  return {
-    id: TEST_CLIENT_ID,
-    organization_id: TEST_ORG_ID,
-    company_name: 'Acme Corp',
-    industry: 'Technology',
-    billing_address: { street: '123 Main St', city: 'LA', state: 'CA', zip: '90001', country: 'US' },
-    tags: ['enterprise'],
-    source: 'referral',
-    crm_external_ids: null,
-    website: null,
-    linkedin: null,
-    annual_revenue: null,
-    employee_count: null,
-    notes: null,
-    created_at: '2025-02-01T00:00:00Z',
-    updated_at: '2025-02-01T00:00:00Z',
-    ...overrides,
-  };
 }
 
 export function makeProposal(overrides: RowData = {}) {
@@ -581,13 +542,3 @@ export function makeWorkOrderBid(overrides: RowData = {}) {
 // ---------------------------------------------------------------------------
 // Permission context helpers
 // ---------------------------------------------------------------------------
-
-function makePermResult(overrides: RowData = {}) {
-  return {
-    allowed: true,
-    role: 'owner',
-    userId: TEST_USER_ID,
-    organizationId: TEST_ORG_ID,
-    ...overrides,
-  };
-}

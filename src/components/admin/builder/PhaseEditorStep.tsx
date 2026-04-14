@@ -25,7 +25,7 @@ import FormSelect from '@/components/ui/FormSelect';
 import FormInput from '@/components/ui/FormInput';
 import FormLabel from '@/components/ui/FormLabel';
 import { IconPlus } from '@/components/ui/Icons';
-import { X, ChevronDown, ChevronUp, Palette, Image, FileText, BookOpen } from 'lucide-react';
+import { X, ChevronDown, ChevronUp, Palette, Image as ImageIcon, FileText } from 'lucide-react';
 import PhaseNarrativeEditor from './PhaseNarrativeEditor';
 
 export type {    PhaseData } from './types';
@@ -313,7 +313,7 @@ export default function PhaseEditorStep({ phase, onChange }: PhaseEditorStepProp
       {/* Portfolio / Precedent Work */}
       <Section
         title="Portfolio & Precedent Work"
-        icon={<Image size={14} className="text-amber-600" />}
+        icon={<ImageIcon size={14} className="text-amber-600" />}
         count={phase.portfolioLinks.length}
         accent="text-amber-700"
       >

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { checkPermission } from '@/lib/api/permission-guard';
 import { requireAdmin } from '@/lib/api/auth-guard';
 import { SYSTEM_ROLE_IDS } from '@/types/rbac';
 import type { PlatformRole } from '@/lib/permissions';

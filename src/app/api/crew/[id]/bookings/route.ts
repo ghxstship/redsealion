@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
 import { notifyCrewBookingOffer } from '@/lib/notifications/triggers';
-import type { CrewBooking, CrewBookingStatus } from '@/types/database';
 
 export async function GET(
   request: NextRequest,

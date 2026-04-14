@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { Check } from 'lucide-react';
 import { TierGate } from '@/components/shared/TierGate';
 import StatusBadge, { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS } from '@/components/ui/StatusBadge';
-import { notFound } from 'next/navigation';
+import Image from 'next/image';
 import EmptyState from '@/components/ui/EmptyState';
 import Link from 'next/link';
 import TaskComments from '@/components/admin/tasks/TaskComments';
@@ -15,7 +15,6 @@ import TaskActivityFeed from '@/components/admin/tasks/TaskActivityFeed';
 import TaskTimer from '@/components/admin/tasks/TaskTimer';
 import TaskWatchButton from '@/components/admin/tasks/TaskWatchButton';
 import FavoriteButton from '@/components/shared/FavoriteButton';
-import Card from '@/components/ui/Card';
 import PageHeader from '@/components/shared/PageHeader';
 
 interface TaskDetail {
@@ -263,7 +262,13 @@ export default async function TaskDetailPage({
                 <span className="text-xs text-text-muted">Assignee</span>
                 <div className="flex items-center gap-2">
                   {task.assigneeAvatar ? (
-                    <img src={task.assigneeAvatar} alt="" className="h-5 w-5 rounded-full" />
+                    <Image
+                      src={task.assigneeAvatar}
+                      alt={`${task.assigneeName ?? 'Assignee'} avatar`}
+                      width={20}
+                      height={20}
+                      className="h-5 w-5 rounded-full"
+                    />
                   ) : null}
                   <span className="text-sm text-foreground">{task.assigneeName ?? 'Unassigned'}</span>
                 </div>

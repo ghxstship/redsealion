@@ -1,7 +1,7 @@
 /**
  * FlyteDeck E2E — Logistics Tests
  */
-import { test, expect } from '../../fixtures/test-fixtures';
+import { test } from '../../fixtures/test-fixtures';
 import { expectPageRendered, expectNoRawI18nKeys } from '../../helpers/assertions';
 
 const LOGISTICS_ROUTES = [

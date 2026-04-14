@@ -49,7 +49,7 @@ export async function PATCH(
     if (error) throw error;
 
     return NextResponse.json(data);
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json(
       { error: 'Failed to update webhook endpoint' },
       { status: 500 },
@@ -90,7 +90,7 @@ export async function DELETE(
     if (error) throw error;
 
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json(
       { error: 'Failed to delete webhook endpoint' },
       { status: 500 },

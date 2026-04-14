@@ -27,6 +27,12 @@ const eslintConfig = defineConfig([
       ],
     },
   },
+  {
+    files: ["src/types/database.ts"],
+    rules: {
+      "@typescript-eslint/no-unused-vars": "off",
+    },
+  },
 ]);
 
 export default eslintConfig;

@@ -17,7 +17,7 @@ const TABLES: Record<EntityType, string> = {
   subcategory: 'advance_subcategories',
 };
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   const { ctx, denied } = await requireAuth();
   if (denied) return denied;
 

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useState, useCallback, useEffect } from 'react';
 import { useSubscription } from '@/components/shared/SubscriptionProvider';
@@ -62,7 +63,7 @@ function readCollapsed(): Record<string, boolean> {
   if (typeof window === 'undefined') return {};
   try {
     return JSON.parse(localStorage.getItem(COLLAPSE_KEY) || '{}');
-  } catch (error) {
+  } catch {
     return {};
   }
 }
@@ -262,9 +263,12 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
             className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-bg-secondary group"
           >
             {user?.avatarUrl ? (
-              <img
+              <Image
                 src={user.avatarUrl}
                 alt={user.fullName}
+                width={28}
+                height={28}
+                unoptimized
                 className="h-7 w-7 rounded-full object-cover ring-1 ring-border/60 shrink-0"
               />
             ) : (

@@ -42,7 +42,7 @@ export default async function LocationDetailPage({ params }: { params: Promise<{
 
   return (
     <TierGate feature="events">
-      <PageHeader title={location.name as string} subtitle={`${LOCATION_TYPE_ICONS[location.type as string] ?? '📍'} ${(location.type as string)?.charAt(0).toUpperCase()}${(location.type as string)?.slice(1)} location`}>
+      <PageHeader title={location.name as string} subtitle={`${LOCATION_TYPE_ICONS[location.type as string] ?? 'Location'} — ${(location.type as string)?.charAt(0).toUpperCase()}${(location.type as string)?.slice(1)} location`}>
         <div className="flex items-center gap-3">
           <Link href="/app/locations" className="text-sm text-text-secondary hover:text-foreground">← Back to Locations</Link>
           <div className="h-4 w-px bg-border" />

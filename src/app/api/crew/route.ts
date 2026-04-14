@@ -3,7 +3,6 @@ import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
 import { logAudit } from '@/lib/audit';
 import { dispatchWebhook } from '@/lib/webhooks/dispatch';
-import type { CrewProfile, User } from '@/types/database';
 
 export async function GET(request: NextRequest) {
   const perm = await checkPermission('crew', 'view');

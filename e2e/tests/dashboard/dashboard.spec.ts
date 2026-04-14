@@ -5,7 +5,7 @@
  * KPI cards are visible for admin roles, and sidebar is present.
  */
 import { test, expect } from '../../fixtures/test-fixtures';
-import { expectPageRendered, expectNoRawI18nKeys, expectPageHeading, expectSidebarFiltered } from '../../helpers/assertions';
+import { expectPageRendered, expectNoRawI18nKeys, expectSidebarFiltered } from '../../helpers/assertions';
 import type { Role } from '../../helpers/routes';
 
 const INTERNAL_ROLES: Role[] = [

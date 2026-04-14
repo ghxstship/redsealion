@@ -37,9 +37,6 @@ import {
   castDocContact,
   castLoadInStrikeEntry,
   castActivationDates,
-  type DocVenueLoadInStrike,
-  type DocVenueActivationDates,
-  type DocVenueContact,
 } from '../doc-types';
 
 // ---------------------------------------------------------------------------

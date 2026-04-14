@@ -111,7 +111,9 @@
     "procurement": "Procurement",
     "rentals": "Rentals",
     "marketplace": "Marketplace",
-    "equipment": "Equipment"
+    "equipment": "Equipment",
+    "manifest": "Manifest",
+    "workOrders": "Work Orders"
   },
   "header": {
     "search": "Search\u2026",
@@ -157,7 +159,16 @@
     "fabricator": "Fabricator",
     "installer": "Installer",
     "clientPrimary": "Client",
-    "clientViewer": "Viewer"
+    "clientViewer": "Viewer",
+    "developer": "Developer",
+    "owner": "Owner",
+    "controller": "Controller",
+    "collaborator": "Collaborator",
+    "contractor": "Contractor",
+    "crew": "Crew",
+    "client": "Client",
+    "viewer": "Viewer",
+    "community": "Community"
   },
   "empty": {
     "title": "No items yet",

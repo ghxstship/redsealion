@@ -186,7 +186,7 @@ export default function EquipmentFormModal({ open, onClose, onCreated, initialDa
           onClick={() => setShowAdvanced(!showAdvanced)}
           className="text-sm font-medium text-text-muted hover:text-foreground transition-colors"
         >
-          {showAdvanced ? '▾ Hide' : '▸ Show'} financial & warranty details
+          {showAdvanced ? <span className="text-xs mr-1">&#9662;</span> : <span className="text-xs mr-1">&#9656;</span>}{showAdvanced ? 'Hide' : 'Show'} financial & warranty details
         </button>
 
         {showAdvanced && (

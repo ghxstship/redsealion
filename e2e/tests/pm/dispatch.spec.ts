@@ -2,7 +2,7 @@
  * FlyteDeck E2E — Dispatch Tests
  */
 import { test, expect } from '../../fixtures/test-fixtures';
-import { expectPageRendered, expectNoRawI18nKeys, expectAccessDenied } from '../../helpers/assertions';
+import { expectPageRendered, expectNoRawI18nKeys } from '../../helpers/assertions';
 
 test.describe('Dispatch @dispatch', () => {
   test('dispatch renders for owner @owner', async ({ authenticatedPage }) => {

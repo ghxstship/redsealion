@@ -27,7 +27,7 @@ async function getShopFloor() {
   } catch { return []; }
 }
 
-const ACTION_ICONS: Record<string, string> = { started: '▶️', paused: '⏸️', resumed: '🔄', completed: '✅', quality_pass: '🟢', quality_fail: '🔴', note: '📝' };
+const ACTION_ICONS: Record<string, string> = { started: '▶', paused: '⏸', resumed: '↻', completed: '✓', quality_pass: '✔', quality_fail: '✘', note: '✉' };
 const ACTION_COLORS: Record<string, string> = { started: 'bg-blue-50 text-blue-700', completed: 'bg-green-50 text-green-700', quality_pass: 'bg-green-50 text-green-700', quality_fail: 'bg-red-500/10 text-red-700', paused: 'bg-yellow-50 text-yellow-700', resumed: 'bg-blue-50 text-blue-700', note: 'bg-bg-secondary text-text-secondary' };
 
 export default async function ShopFloorPage() {
@@ -51,7 +51,7 @@ export default async function ShopFloorPage() {
           <div className="divide-y divide-border">
             {logs.map((log) => (
               <div key={log.id} className="px-5 py-4 flex items-start gap-3">
-                <span className="text-lg mt-0.5">{ACTION_ICONS[log.action] ?? '📌'}</span>
+                <span className="text-lg mt-0.5">{ACTION_ICONS[log.action] ?? '•'}</span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <StatusBadge status={log.action} colorMap={ACTION_COLORS} />

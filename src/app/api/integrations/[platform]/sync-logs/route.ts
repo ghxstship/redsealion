@@ -46,7 +46,7 @@ export async function GET(
     if (error) throw error;
 
     return NextResponse.json({ logs: logs || [] });
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json(
       { error: 'Failed to fetch sync logs' },
       { status: 500 },

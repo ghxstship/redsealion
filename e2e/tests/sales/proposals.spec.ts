@@ -1,8 +1,8 @@
 /**
  * FlyteDeck E2E — Proposals Tests
  */
-import { test, expect } from '../../fixtures/test-fixtures';
-import { expectPageRendered, expectNoRawI18nKeys, expectAccessDenied } from '../../helpers/assertions';
+import { test } from '../../fixtures/test-fixtures';
+import { expectPageRendered, expectNoRawI18nKeys } from '../../helpers/assertions';
 
 test.describe('Proposals @proposals', () => {
   test('proposals list renders for owner @owner', async ({ authenticatedPage }) => {

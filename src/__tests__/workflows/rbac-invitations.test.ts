@@ -3,11 +3,7 @@
  * Validates the direct invitation flow end-to-end.
  */
 import { describe, it, expect } from 'vitest';
-import { SYSTEM_ROLE_IDS } from '@/types/rbac';
 import type {
-  Invitation,
-  OrganizationMembership,
-  SeatAllocation,
   SeatType,
   InvitationStatus,
 } from '@/types/rbac';

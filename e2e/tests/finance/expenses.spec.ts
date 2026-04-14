@@ -2,7 +2,7 @@
  * FlyteDeck E2E — Expenses Tests
  * Tier: enterprise
  */
-import { test, expect } from '../../fixtures/test-fixtures';
+import { test } from '../../fixtures/test-fixtures';
 import { expectPageRendered, expectNoRawI18nKeys } from '../../helpers/assertions';
 import type { Role } from '../../helpers/routes';
 

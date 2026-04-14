@@ -5,6 +5,7 @@ import { DndContext, DragOverlay, closestCorners, KeyboardSensor, PointerSensor,
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import Link from 'next/link';
+import { MapPin, User } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
 export interface BoardItem {
@@ -56,8 +57,8 @@ function SortableItem({ item, status }: { item: BoardItem; status: string }) {
     <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="touch-none cursor-grab active:cursor-grabbing">
       <div className={`block rounded-lg border px-3 py-3 transition-shadow hover:shadow-md ${STATUS_COLORS[status]}`}>
         <p className="text-sm font-medium text-foreground line-clamp-1 pointer-events-none">{item.title}</p>
-        {item.location_name && <p className="text-xs text-text-secondary mt-1 pointer-events-none">📍 {item.location_name}</p>}
-        {crewNames(item) && <p className="text-xs text-text-muted mt-1 pointer-events-none">👤 {crewNames(item)}</p>}
+        {item.location_name && <p className="text-xs text-text-secondary mt-1 pointer-events-none flex items-center gap-1"><MapPin size={12} /> {item.location_name}</p>}
+        {crewNames(item) && <p className="text-xs text-text-muted mt-1 pointer-events-none flex items-center gap-1"><User size={12} /> {crewNames(item)}</p>}
         {item.scheduled_start && <p className="text-xs text-text-muted mt-1 pointer-events-none">{new Date(item.scheduled_start).toLocaleDateString()}</p>}
       </div>
     </div>
@@ -175,8 +176,8 @@ export default function DispatchKanban({ initialColumns, statuses, workOrderIdPr
         {activeId && activeItem ? (
           <div className={`block rounded-lg border px-3 py-3 shadow-xl transform scale-105 ${STATUS_COLORS[activeItem.status]}`}>
             <p className="text-sm font-medium text-foreground line-clamp-1">{activeItem.title}</p>
-            {activeItem.location_name && <p className="text-xs text-text-secondary mt-1">📍 {activeItem.location_name}</p>}
-            {crewNames(activeItem) && <p className="text-xs text-text-muted mt-1">👤 {crewNames(activeItem)}</p>}
+            {activeItem.location_name && <p className="text-xs text-text-secondary mt-1 flex items-center gap-1"><MapPin size={12} /> {activeItem.location_name}</p>}
+            {crewNames(activeItem) && <p className="text-xs text-text-muted mt-1 flex items-center gap-1"><User size={12} /> {crewNames(activeItem)}</p>}
           </div>
         ) : null}
       </DragOverlay>

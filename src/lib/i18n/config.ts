@@ -12,13 +12,13 @@
 // ---------------------------------------------------------------------------
 
 export const SUPPORTED_LOCALES = [
-  { value: 'en-US', label: 'English (US)', flag: '🇺🇸' },
-  { value: 'en-GB', label: 'English (UK)', flag: '🇬🇧' },
-  { value: 'en-AU', label: 'English (AU)', flag: '🇦🇺' },
-  { value: 'es-ES', label: 'Español (ES)', flag: '🇪🇸' },
-  { value: 'es-MX', label: 'Español (MX)', flag: '🇲🇽' },
-  { value: 'fr-FR', label: 'Français', flag: '🇫🇷' },
-  { value: 'de-DE', label: 'Deutsch', flag: '🇩🇪' },
+  { value: 'en-US', label: 'English (US)', flag: 'US' },
+  { value: 'en-GB', label: 'English (UK)', flag: 'GB' },
+  { value: 'en-AU', label: 'English (AU)', flag: 'AU' },
+  { value: 'es-ES', label: 'Español (ES)', flag: 'ES' },
+  { value: 'es-MX', label: 'Español (MX)', flag: 'MX' },
+  { value: 'fr-FR', label: 'Français', flag: 'FR' },
+  { value: 'de-DE', label: 'Deutsch', flag: 'DE' },
 ] as const;
 
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number]['value'];

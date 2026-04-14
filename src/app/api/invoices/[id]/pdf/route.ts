@@ -39,7 +39,6 @@ export async function GET(
     .single();
 
   const orgName = org?.name ?? 'FlyteDeck';
-  const orgSettings = (org?.settings ?? {}) as Record<string, unknown>;
   const taxLabel = (org?.tax_label as string) ?? 'Tax';
   const logoUrl = org?.logo_url as string | null;
 

@@ -9,9 +9,6 @@ import DataImportDialog from '@/components/shared/DataImportDialog';
 import PersonEditModal from './PersonEditModal';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import RowActionMenu from '@/components/shared/RowActionMenu';
-import { Edit, Eye, FolderHeart, Mail, Users2, Shield, MoreVertical, Trash2 } from 'lucide-react';
-import type { Database } from '@/types/database';
-import StatusBadge from '@/components/ui/StatusBadge';
 import { Badge } from '@/components/ui/Badge';
 import EmptyState from '@/components/ui/EmptyState';
 

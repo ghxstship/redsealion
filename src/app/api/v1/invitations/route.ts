@@ -3,7 +3,6 @@ import { requireAuth } from '@/lib/api/auth-guard';
 import { checkPermission, enforceHierarchyCeiling } from '@/lib/rbac/permissions';
 import { checkSeatAvailability } from '@/lib/rbac/seats';
 import { writeAuditLog, extractIpAddress, extractUserAgent } from '@/lib/rbac/audit';
-import { validateInvitation } from '@/lib/rbac/validators';
 import type { InvitationScopeType, SeatType } from '@/types/rbac';
 import type { PlatformRole } from '@/lib/permissions';
 import { getInvitationEmailConfig, renderInvitationEmail } from '@/lib/email/invitation-templates';

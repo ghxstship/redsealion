@@ -111,7 +111,7 @@ export const navSections: NavSection[] = [
     icon: <IconNavProduction size={16} />,
     items: [
       { label: 'Events', labelKey: 'nav.events', href: '/app/events', feature: 'events', icon: <IconNavEvents size={18} /> },
-      { label: 'Locations', labelKey: 'nav.locations', href: '/app/locations', feature: 'events', icon: <IconNavLocations size={18} /> },
+      { label: 'Locations', labelKey: 'nav.locations', href: '/app/locations', feature: 'locations', icon: <IconNavLocations size={18} /> },
       { label: 'Advancing', labelKey: 'nav.advancing', href: '/app/advancing', feature: 'advancing', icon: <IconNavAdvancing size={18} /> },
       { label: 'Manifest', labelKey: 'nav.manifest', href: '/app/manifest', feature: 'advancing', icon: <IconNavManifest size={18} /> },
       { label: 'Schedule', labelKey: 'nav.schedule', href: '/app/schedule', feature: 'events', icon: <IconNavSchedule size={18} /> },

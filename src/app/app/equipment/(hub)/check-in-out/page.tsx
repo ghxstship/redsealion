@@ -61,12 +61,12 @@ const CONDITION_COLORS: Record<string, string> = {
 };
 
 const STATUS_ICONS: Record<string, string> = {
-  checked_out: '📤',
-  in_transit: '🚚',
-  on_site: '📍',
-  checked_in: '📥',
-  lost: '❌',
-  damaged_return: '⚠️',
+  checked_out: 'OUT',
+  in_transit: 'TRANSIT',
+  on_site: 'ON-SITE',
+  checked_in: 'IN',
+  lost: 'LOST',
+  damaged_return: 'DMG',
 };
 
 export default async function CheckInOutPage() {
@@ -128,9 +128,9 @@ export default async function CheckInOutPage() {
                       {c.asset_category && <span className="rounded-full bg-bg-secondary px-2 py-0.5">{c.asset_category}</span>}
                     </div>
                     <div className="flex flex-wrap items-center gap-2 mt-1 text-xs text-text-secondary">
-                      {c.event_name && <span>📅 {c.event_name}</span>}
-                      {c.rental_order && <span>🏷️ {c.rental_order}</span>}
-                      {c.destination && <span>📍 {c.destination}</span>}
+                      {c.event_name && <span>Event: {c.event_name}</span>}
+                      {c.rental_order && <span>Order: {c.rental_order}</span>}
+                      {c.destination && <span>Dest: {c.destination}</span>}
                     </div>
                     {c.checked_out_by_name && (
                       <p className="text-xs text-text-muted mt-1">Checked out by: {c.checked_out_by_name}</p>

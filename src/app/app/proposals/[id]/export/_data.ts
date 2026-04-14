@@ -13,13 +13,6 @@ import { createClient } from '@/lib/supabase/server';
 // Type Definitions
 // ---------------------------------------------------------------------------
 
-export interface ProposalExportData {
-  name: string;
-  client: string;
-  totalValue: number;
-  currency: string;
-}
-
 interface PhaseExportRow {
   name: string;
   phase_investment: number;
@@ -46,6 +39,13 @@ interface AssetExportRow {
 // ---------------------------------------------------------------------------
 // Data Fetcher
 // ---------------------------------------------------------------------------
+
+interface ProposalExportData {
+  name: string;
+  client: string;
+  totalValue: number;
+  currency: string;
+}
 
 export async function getExportData(proposalId: string) {
   const supabase = await createClient();

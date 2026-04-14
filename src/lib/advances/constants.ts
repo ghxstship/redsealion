@@ -6,7 +6,7 @@
  * @module lib/advances/constants
  */
 
-import type { AdvanceStatus, AdvanceMode, AdvanceType, AdvancePriority, FulfillmentStatus } from '@/types/database';
+import type { AdvanceStatus, AdvanceMode, AdvanceType } from '@/types/database';
 
 /* ─────────────────────────────────────────────────────────
    Status State Machine — Valid Transitions
@@ -49,17 +49,7 @@ export function getValidTransitions(mode: AdvanceMode, currentStatus: AdvanceSta
   return map[currentStatus] ?? [];
 }
 
-/* ─────────────────────────────────────────────────────────
-   Fulfillment Pipeline
-   ───────────────────────────────────────────────────────── */
 
-const FULFILLMENT_PIPELINE: FulfillmentStatus[] = [
-  'pending', 'sourcing', 'quoted', 'confirmed', 'reserved',
-  'in_transit', 'delivered', 'inspected', 'setup_complete',
-  'active', 'struck', 'returned',
-];
-
-const FULFILLMENT_TERMINAL: FulfillmentStatus[] = ['returned', 'damaged', 'cancelled'];
 
 /* ─────────────────────────────────────────────────────────
    Display Labels & Colors
@@ -81,22 +71,7 @@ export const ADVANCE_STATUS_CONFIG: Record<AdvanceStatus, { label: string; color
   expired: { label: 'Expired', color: '#9CA3AF', bgClass: 'bg-gray-100 text-gray-500' },
 };
 
-const FULFILLMENT_STATUS_CONFIG: Record<FulfillmentStatus, { label: string; color: string; bgClass: string }> = {
-  pending: { label: 'Pending', color: '#6B7280', bgClass: 'bg-gray-100 text-gray-700' },
-  sourcing: { label: 'Sourcing', color: '#8B5CF6', bgClass: 'bg-violet-100 text-violet-700' },
-  quoted: { label: 'Quoted', color: '#6366F1', bgClass: 'bg-indigo-100 text-indigo-700' },
-  confirmed: { label: 'Confirmed', color: '#3B82F6', bgClass: 'bg-blue-100 text-blue-700' },
-  reserved: { label: 'Reserved', color: '#0EA5E9', bgClass: 'bg-sky-100 text-sky-700' },
-  in_transit: { label: 'In Transit', color: '#F59E0B', bgClass: 'bg-amber-100 text-amber-700' },
-  delivered: { label: 'Delivered', color: '#10B981', bgClass: 'bg-emerald-100 text-emerald-700' },
-  inspected: { label: 'Inspected', color: '#059669', bgClass: 'bg-green-100 text-green-700' },
-  setup_complete: { label: 'Set Up', color: '#047857', bgClass: 'bg-green-100 text-green-800' },
-  active: { label: 'Active', color: '#10B981', bgClass: 'bg-emerald-100 text-emerald-800' },
-  struck: { label: 'Struck', color: '#F97316', bgClass: 'bg-orange-100 text-orange-700' },
-  returned: { label: 'Returned', color: '#6B7280', bgClass: 'bg-gray-100 text-gray-700' },
-  damaged: { label: 'Damaged', color: '#EF4444', bgClass: 'bg-red-100 text-red-700' },
-  cancelled: { label: 'Cancelled', color: '#9CA3AF', bgClass: 'bg-gray-100 text-gray-500' },
-};
+
 
 export const ADVANCE_TYPE_CONFIG: Record<AdvanceType, { label: string; icon: string; description: string }> = {
   access: { label: 'Access & Credentials', icon: 'KeyRound', description: 'Badges, parking, credentials' },
@@ -108,12 +83,7 @@ export const ADVANCE_TYPE_CONFIG: Record<AdvanceType, { label: string; icon: str
   custom: { label: 'Custom', icon: 'Boxes', description: 'Custom advance type' },
 };
 
-const PRIORITY_CONFIG: Record<AdvancePriority, { label: string; color: string; bgClass: string }> = {
-  critical: { label: 'Critical', color: '#DC2626', bgClass: 'bg-red-100 text-red-700' },
-  high: { label: 'High', color: '#F97316', bgClass: 'bg-orange-100 text-orange-700' },
-  medium: { label: 'Medium', color: '#3B82F6', bgClass: 'bg-blue-100 text-blue-700' },
-  low: { label: 'Low', color: '#6B7280', bgClass: 'bg-gray-100 text-gray-700' },
-};
+
 
 /* ─────────────────────────────────────────────────────────
    Tier Limits

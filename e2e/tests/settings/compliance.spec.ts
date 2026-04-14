@@ -2,7 +2,7 @@
  * FlyteDeck E2E — Compliance Tests
  */
 import { test, expect } from '../../fixtures/test-fixtures';
-import { expectPageRendered, expectNoRawI18nKeys, expectAccessDenied } from '../../helpers/assertions';
+import { expectPageRendered, expectNoRawI18nKeys } from '../../helpers/assertions';
 
 test.describe('Compliance @compliance', () => {
   test('compliance renders for owner @owner', async ({ authenticatedPage }) => {

@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import EmptyState from '@/components/ui/EmptyState';
-import PageHeader from '@/components/shared/PageHeader';
 import StatusBadge, { TASK_PRIORITY_COLORS } from '@/components/ui/StatusBadge';
 import type { Metadata } from 'next';
 
@@ -113,17 +112,17 @@ export default async function PublicMarketplacePage() {
                 <p className="text-xs text-text-muted font-mono">{job.wo_number}</p>
 
                 <div className="mt-4 space-y-2 text-xs text-text-secondary">
-                  <p>📍 {job.location_name || 'Location TBD'}</p>
+                  <p>Location: {job.location_name || 'Location TBD'}</p>
                   {job.scheduled_start && (
-                    <p>📅 {new Date(job.scheduled_start).toLocaleDateString('en-US', {
+                    <p>Date: {new Date(job.scheduled_start).toLocaleDateString('en-US', {
                       month: 'short', day: 'numeric', year: 'numeric',
                     })}</p>
                   )}
                   {job.budget_range && (
-                    <p>💰 {job.budget_range}</p>
+                    <p>Budget: {job.budget_range}</p>
                   )}
                   {job.bidding_deadline && !deadlinePassed && (
-                    <p>⏰ Bid by {new Date(job.bidding_deadline).toLocaleDateString('en-US', {
+                    <p>Bid by {new Date(job.bidding_deadline).toLocaleDateString('en-US', {
                       month: 'short', day: 'numeric',
                     })}</p>
                   )}

@@ -61,7 +61,7 @@ export default async function ActivationsPage() {
       <EventsHubTabs />
 
       {/* Status summary cards */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-5 mb-8">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5 mb-8">
         {(['draft', 'confirmed', 'in_progress', 'completed', 'cancelled'] as const).map((status) => (
           <MetricCard key={status} label={formatLabel(status)} value={statusCounts[status] ?? 0} />
         ))}

@@ -3,7 +3,7 @@
  *
  * Validates pipeline hub and all sub-pages across roles and tiers.
  */
-import { test, expect } from '../../fixtures/test-fixtures';
+import { test } from '../../fixtures/test-fixtures';
 import { expectPageRendered, expectNoRawI18nKeys, expectAccessDenied } from '../../helpers/assertions';
 import type { Role } from '../../helpers/routes';
 

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/api/auth-guard';
-import { checkPermission, enforceHierarchyCeiling, isSoleOwner } from '@/lib/rbac/permissions';
-import { checkSeatAvailability, incrementSeatUsage, decrementSeatUsage } from '@/lib/rbac/seats';
+import { checkPermission, enforceHierarchyCeiling } from '@/lib/rbac/permissions';
+import { checkSeatAvailability, incrementSeatUsage } from '@/lib/rbac/seats';
 import { writeAuditLog, extractIpAddress, extractUserAgent } from '@/lib/rbac/audit';
 import type { SeatType } from '@/types/rbac';
 

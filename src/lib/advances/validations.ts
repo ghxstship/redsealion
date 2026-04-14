@@ -5,7 +5,7 @@
  */
 
 import type { AdvanceStatus, AdvanceMode, AdvanceType } from '@/types/database';
-import type { CreateAdvanceRequest, AddLineItemRequest, CartModifierSelection } from './types';
+import type { CreateAdvanceRequest, AddLineItemRequest } from './types';
 import { getValidTransitions } from './constants';
 
 /* ─────────────────────────────────────────────────────────
@@ -93,69 +93,23 @@ export function validateAddLineItem(body: Partial<AddLineItemRequest>): { valid:
   return { valid: errors.length === 0, errors };
 }
 
+
+
+
+
 /* ─────────────────────────────────────────────────────────
-   Modifier Validation
+   Catalog Intelligence Layer
    ───────────────────────────────────────────────────────── */
 
-function validateModifierSelections(
-  modifiers: CartModifierSelection[],
-  modifierLists: Array<{
-    id: string;
-    name: string;
-    min_selected: number;
-    max_selected: number | null;
-    is_required: boolean;
-  }>,
-): { valid: boolean; errors: string[] } {
+export function validateQuickQuoteList(items: any[]): { valid: boolean; errors: string[] } {
   const errors: string[] = [];
-
-  for (const list of modifierLists) {
-    const selections = modifiers.filter((m) => m.list_id === list.id);
-    const count = selections.length;
-
-    if (list.is_required && count === 0) {
-      errors.push(`Modifier list "${list.name}" requires at least one selection`);
-    }
-
-    if (count < list.min_selected) {
-      errors.push(`Modifier list "${list.name}" requires at least ${list.min_selected} selections (got ${count})`);
-    }
-
-    if (list.max_selected !== null && count > list.max_selected) {
-      errors.push(`Modifier list "${list.name}" allows at most ${list.max_selected} selections (got ${count})`);
-    }
+  if (!items || !Array.isArray(items) || items.length === 0) {
+    errors.push('Quote must contain at least one item');
   }
-
+  items.forEach((item, index) => {
+    if (!item.catalog_item_id) errors.push(`Item at index ${index} missing catalog_item_id`);
+    if (!item.quantity || item.quantity < 1) errors.push(`Item at index ${index} must have quantity >= 1`);
+  });
   return { valid: errors.length === 0, errors };
 }
 
-/* ─────────────────────────────────────────────────────────
-   Submission Deadline Check
-   ───────────────────────────────────────────────────────── */
-
-function isSubmissionDeadlinePassed(deadline: string | null): boolean {
-  if (!deadline) return false;
-  return new Date() > new Date(deadline);
-}
-
-/* ─────────────────────────────────────────────────────────
-   Quantity Rules
-   ───────────────────────────────────────────────────────── */
-
-function validateQuantityRules(
-  quantity: number,
-  min: number,
-  max: number | null,
-  increment: number,
-): { valid: boolean; error?: string } {
-  if (quantity < min) {
-    return { valid: false, error: `Minimum order quantity is ${min}` };
-  }
-  if (max !== null && quantity > max) {
-    return { valid: false, error: `Maximum order quantity is ${max}` };
-  }
-  if (increment > 1 && (quantity - min) % increment !== 0) {
-    return { valid: false, error: `Quantity must be in increments of ${increment} (starting from ${min})` };
-  }
-  return { valid: true };
-}

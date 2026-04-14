@@ -2,7 +2,7 @@
  * FlyteDeck E2E — Rentals Tests
  */
 import { test, expect } from '../../fixtures/test-fixtures';
-import { expectPageRendered, expectNoRawI18nKeys, expectAccessDenied } from '../../helpers/assertions';
+import { expectPageRendered, expectNoRawI18nKeys } from '../../helpers/assertions';
 
 const RENTAL_ROUTES = [
   '/app/rentals',

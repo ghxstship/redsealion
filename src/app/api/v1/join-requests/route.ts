@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/api/auth-guard';
-import { checkPermission } from '@/lib/rbac/permissions';
-import { checkSeatAvailability, incrementSeatUsage } from '@/lib/rbac/seats';
 import { writeAuditLog, extractIpAddress, extractUserAgent } from '@/lib/rbac/audit';
 import type { InvitationScopeType } from '@/types/rbac';
 
@@ -123,7 +121,7 @@ export async function POST(request: NextRequest) {
   return NextResponse.json({ success: true, join_request: joinRequest }, { status: 201 });
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   const { ctx, denied } = await requireAuth();
   if (denied) return denied;
 

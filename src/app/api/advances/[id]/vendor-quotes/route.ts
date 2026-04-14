@@ -14,7 +14,7 @@ export async function GET(
 ) {
   const { ctx, denied } = await requireAuth();
   if (denied) return denied;
-  const { id } = await params;
+  const { id: _id } = await params;
 
   const url = new URL(request.url);
   const lineItemId = url.searchParams.get('line_item_id');

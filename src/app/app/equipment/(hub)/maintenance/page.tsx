@@ -1,10 +1,7 @@
-import { formatLabel } from '@/lib/utils';
-import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import PageHeader from '@/components/shared/PageHeader';
 import EquipmentHubTabs from '../../EquipmentHubTabs';
-import Card from '@/components/ui/Card';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 

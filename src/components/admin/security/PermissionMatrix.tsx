@@ -97,7 +97,7 @@ const ROLE_LABELS: Record<string, string> = {
   collaborator: 'Collaborator',
 };
 
-export default function PermissionMatrix({ organizationId, overrides }: PermissionMatrixProps) {
+export default function PermissionMatrix({ organizationId: _organizationId, overrides }: PermissionMatrixProps) {
   const { tier } = useSubscription();
   const isEnterprise = tier === 'enterprise';
 
@@ -204,7 +204,7 @@ export default function PermissionMatrix({ organizationId, overrides }: Permissi
         setSaving(null);
       }
     },
-    [isEnterprise, organizationId, permissions],
+    [isEnterprise, permissions],
   );
 
   return (

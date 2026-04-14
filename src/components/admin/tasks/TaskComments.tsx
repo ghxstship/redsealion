@@ -7,11 +7,11 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import Button from '@/components/ui/Button';
 import type { TaskCommentWithAuthor } from '@/types/database';
 import { renderMentions } from '@/lib/mentions';
 import FormTextarea from '@/components/ui/FormTextarea';
-import { createClient } from '@/lib/supabase/client';
 
 import { getInitials } from '@/lib/utils';
 import EmptyState from '@/components/ui/EmptyState';
@@ -106,9 +106,12 @@ export default function TaskComments({ taskId }: TaskCommentsProps) {
             <div key={comment.id} className="flex gap-3">
               {/* Avatar */}
               {comment.users?.avatar_url ? (
-                <img
+                <Image
                   src={comment.users.avatar_url}
                   alt={comment.users.full_name}
+                  width={32}
+                  height={32}
+                  unoptimized
                   className="h-8 w-8 rounded-full object-cover flex-shrink-0"
                 />
               ) : (

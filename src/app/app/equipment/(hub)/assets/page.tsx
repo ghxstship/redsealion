@@ -1,7 +1,5 @@
-import Link from 'next/link';
 import { formatCurrency } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
-import type { AssetStatus, AssetCondition } from '@/types/database';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import AssetsTable from '@/components/admin/assets/AssetsTable';
 import PageHeader from '@/components/shared/PageHeader';
@@ -77,7 +75,7 @@ export default async function AssetsPage() {
       <EquipmentHubTabs />
 
       {/* Summary stats */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 mb-8">
         <Card padding="default" className="px-5 py-5">
           <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Total Assets</p>
           <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground">{assets.length}</p>

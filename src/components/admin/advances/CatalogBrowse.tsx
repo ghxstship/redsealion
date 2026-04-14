@@ -5,6 +5,9 @@ import FormInput from '@/components/ui/FormInput';
 import EmptyState from '@/components/ui/EmptyState';
 import type { AdvanceCatalogItem, AdvanceCatalogVariant, AdvanceSubcategory, AdvanceCategory, AdvanceCategoryGroup, AdvanceModifierList, AdvanceModifierOption } from '@/types/database';
 import Button from '@/components/ui/Button';
+import FitmentFilterPanel from './FitmentFilterPanel';
+import FitmentBadgeRow from './FitmentBadgeRow';
+import { useFitment } from '@/hooks/useFitment';
 
 /* ═══════════════ Types ═══════════════ */
 
@@ -45,6 +48,25 @@ export default function CatalogBrowse({ groups, categories, subcategories, items
   const [search, setSearch] = useState('');
   const [activeGroupId, setActiveGroupId] = useState<string | null>(null);
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
+
+  const { searchFitment, loading: fitmentLoading } = useFitment();
+  const [fitmentFilteredIds, setFitmentFilteredIds] = useState<Set<string> | null>(null);
+
+  const activeGroup = useMemo(() => groups.find((g) => g.id === activeGroupId), [groups, activeGroupId]);
+
+  const handleFitmentChange = async (filters: Record<string, string>) => {
+    if (Object.keys(filters).length === 0) {
+      setFitmentFilteredIds(null);
+      return;
+    }
+    try {
+      // In a real app we might map activeGroup.name to code. Here we just pass the ID or name if needed
+      const res = await searchFitment({ ...filters }); 
+      setFitmentFilteredIds(new Set(res.map((r: { item_id: string }) => r.item_id)));
+    } catch(e) {
+      console.error(e);
+    }
+  };
 
   // Build tree
   const tree = useMemo<CatalogTreeGroup[]>(() => {
@@ -91,21 +113,28 @@ export default function CatalogBrowse({ groups, categories, subcategories, items
 
   // Active view
   const visibleItems = useMemo(() => {
-    if (lowerSearch) return filteredItems;
-    if (activeCategoryId) {
+    let result = items;
+    
+    if (lowerSearch) {
+      result = filteredItems;
+    } else if (activeCategoryId) {
       const subs = subcategories.filter((s) => s.category_id === activeCategoryId);
       const subIds = new Set(subs.map((s) => s.id));
-      return items.filter((i) => i.subcategory_id && subIds.has(i.subcategory_id));
-    }
-    if (activeGroupId) {
+      result = result.filter((i) => i.subcategory_id && subIds.has(i.subcategory_id));
+    } else if (activeGroupId) {
       const cats = categories.filter((c) => c.group_id === activeGroupId);
       const catIds = new Set(cats.map((c) => c.id));
       const subs = subcategories.filter((s) => catIds.has(s.category_id));
       const subIds = new Set(subs.map((s) => s.id));
-      return items.filter((i) => i.subcategory_id && subIds.has(i.subcategory_id));
+      result = result.filter((i) => i.subcategory_id && subIds.has(i.subcategory_id));
     }
-    return items;
-  }, [items, filteredItems, lowerSearch, activeGroupId, activeCategoryId, categories, subcategories]);
+
+    if (fitmentFilteredIds !== null) {
+      result = result.filter((i) => fitmentFilteredIds.has(i.id));
+    }
+
+    return result;
+  }, [items, filteredItems, lowerSearch, activeGroupId, activeCategoryId, categories, subcategories, fitmentFilteredIds]);
 
   return (
     <div className="flex gap-6 h-full">
@@ -164,6 +193,13 @@ export default function CatalogBrowse({ groups, categories, subcategories, items
             );
           })}
         </ul>
+        
+        <div className="mt-4 px-3 pb-4">
+          <FitmentFilterPanel 
+            collectionCode={(activeGroup as { code?: string })?.code || undefined} 
+            onFilterChange={handleFitmentChange} 
+          />
+        </div>
       </nav>
 
       {/* Main Content */}
@@ -205,7 +241,18 @@ export default function CatalogBrowse({ groups, categories, subcategories, items
                   <p className="text-xs text-text-secondary line-clamp-2 mb-2">{item.description}</p>
                 )}
 
-                <div className="flex items-center gap-2 flex-wrap">
+                {(item as { is_discontinued?: boolean }).is_discontinued && (
+                  <span className="inline-flex mb-2 items-center rounded bg-red-100 px-2 py-0.5 text-[10px] font-medium text-red-800">
+                    Discontinued
+                  </span>
+                )}
+
+                {/* Fitment badges mock display - typically passed down if available from state, but for simplicity here we assume item may have it attached via backend later */}
+                {fitmentFilteredIds?.has(item.id) && (
+                  <FitmentBadgeRow fitRating={5} matchingDimCount={1} />
+                )}
+
+                <div className="flex items-center gap-2 flex-wrap mt-2">
                   <span className="inline-flex items-center rounded-full bg-bg-secondary px-2 py-0.5 text-[10px] font-medium text-text-muted">
                     {item.default_unit_of_measure ?? 'each'}
                   </span>

@@ -16,7 +16,6 @@ export async function POST(request: NextRequest) {
     proposal_id,
     task_id,
     description,
-    date,
     start_time,
     end_time,
     duration_minutes,
@@ -25,7 +24,6 @@ export async function POST(request: NextRequest) {
     proposal_id?: string;
     task_id?: string;
     description?: string;
-    date?: string;
     start_time?: string;
     end_time?: string;
     duration_minutes?: number;

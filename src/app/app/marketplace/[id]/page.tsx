@@ -2,7 +2,6 @@
 
 import { formatDate } from '@/lib/utils';
 import { use, useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
@@ -45,7 +44,6 @@ interface BidRecord {
 
 export default function MarketplaceJobPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const router = useRouter();
   
   const [wo, setWo] = useState<WorkOrderDetail | null>(null);
   const [existingBid, setExistingBid] = useState<BidRecord | null>(null);
@@ -216,9 +214,7 @@ export default function MarketplaceJobPage({ params }: { params: Promise<{ id: s
   if (!wo) return null;
 
   const deadlinePassed = wo.bidding_deadline && new Date() > new Date(wo.bidding_deadline);
-  const inputClass = "w-full"; // FormInput/FormTextarea handle styling canonically
   const canSubmitNewBid = !existingBid || existingBid.status === 'withdrawn';
-  const canEditBid = existingBid && existingBid.status === 'pending';
 
   // Build the bid form (reused for new bids, edits, and resubmissions)
   function renderBidForm(isResubmit: boolean = false) {

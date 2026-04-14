@@ -3,25 +3,26 @@ import Link from 'next/link';
 import PageHeader from '@/components/shared/PageHeader';
 import Card from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
+import type { FeatureKey } from '@/lib/subscription';
 
 export default function SecurityPage() {
-  const sections = [
+  const sections: { title: string; description: string; href: string; feature: FeatureKey }[] = [
     {
       title: 'Audit Log',
       description: 'View a complete log of all actions taken in your organization.',
       href: '/app/settings/security/audit-log',
-      feature: 'audit_log' as const,
+      feature: 'audit_log',
     },
     {
       title: 'Permissions',
       description: 'Configure role-based access controls for your team.',
       href: '/app/settings/security/permissions',
-      feature: 'permissions' as const,
+      feature: 'permissions',
     },
   ];
 
   return (
-    <TierGate feature="audit_log">
+    <>
       <PageHeader
         title="Security Settings"
         subtitle="Manage security, audit logging, and access controls."
@@ -29,16 +30,27 @@ export default function SecurityPage() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {sections.map((section) => (
-          <Link
+          <TierGate
             key={section.title}
-            href={section.href}
-            className="group rounded-xl border border-border bg-background px-6 py-6 transition-[color,background-color,border-color,opacity,box-shadow,transform] duration-normal hover:shadow-md hover:-translate-y-0.5"
+            feature={section.feature}
+            fallback={
+              <div className="rounded-xl border border-border bg-background px-6 py-6 opacity-60">
+                <h3 className="text-sm font-semibold text-foreground">{section.title}</h3>
+                <p className="mt-2 text-xs text-text-secondary">{section.description}</p>
+                <p className="mt-3 text-xs text-text-muted italic">Requires a higher plan</p>
+              </div>
+            }
           >
-            <h3 className="text-sm font-semibold text-foreground group-hover:underline">
-              {section.title}
-            </h3>
-            <p className="mt-2 text-xs text-text-secondary">{section.description}</p>
-          </Link>
+            <Link
+              href={section.href}
+              className="group rounded-xl border border-border bg-background px-6 py-6 transition-[color,background-color,border-color,opacity,box-shadow,transform] duration-normal hover:shadow-md hover:-translate-y-0.5"
+            >
+              <h3 className="text-sm font-semibold text-foreground group-hover:underline">
+                {section.title}
+              </h3>
+              <p className="mt-2 text-xs text-text-secondary">{section.description}</p>
+            </Link>
+          </TierGate>
         ))}
       </div>
 
@@ -63,6 +75,6 @@ export default function SecurityPage() {
           </div>
         </TierGate>
       </Card>
-    </TierGate>
+    </>
   );
 }
