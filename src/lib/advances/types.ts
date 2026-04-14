@@ -228,16 +228,4 @@ interface FitmentSearchResult {
   matching_dimensions: number;
 }
 
-// Extended catalog item
-interface CatalogItemEnriched extends AdvanceCatalogItem {
-  specifications: Record<string, any>;
-  msrp_usd?: number;
-  rental_rate_daily?: number;
-  manufacturer?: string;
-  manufacturer_url?: string;
-  product_image_url?: string;
-  is_discontinued: boolean;
-  vendor_availability: string[];
-  typical_qty_range?: string;
-}
 

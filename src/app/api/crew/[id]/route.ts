@@ -63,7 +63,7 @@ export async function PATCH(
   if (error || !profile) return NextResponse.json({ error: 'Failed to update', details: error?.message }, { status: 500 });
 
   await logAudit({ action: 'crew.profile.updated', entityType: 'crew_profile', entityId: id, metadata: updates }, supabase);
-  await dispatchWebhook('crew.updated', profile, perm.organizationId, supabase).catch(() => {});
+  await dispatchWebhook('crew.updated', profile, perm.organizationId).catch(() => {});
 
   return NextResponse.json({ success: true, profile });
 }
@@ -109,7 +109,7 @@ export async function DELETE(
   if (error) return NextResponse.json({ error: 'Failed to delete', details: error.message }, { status: 500 });
 
   await logAudit({ action: 'crew.profile.deleted', entityType: 'crew_profile', entityId: id }, supabase);
-  await dispatchWebhook('crew.deleted', { id }, perm.organizationId, supabase).catch(() => {});
+  await dispatchWebhook('crew.deleted', { id }, perm.organizationId).catch(() => {});
 
   return NextResponse.json({ success: true });
 }

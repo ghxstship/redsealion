@@ -24,9 +24,11 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   }
 
   // Format to standard response extracting the "alternative" item
-  const formatted = data.map((record: any) => {
-    const isSource = record.source_item?.id === itemId;
-    const alternativeItem = isSource ? record.target_item : record.source_item;
+  const formatted = data.map((record) => {
+    const sourceItem = Array.isArray(record.source_item) ? record.source_item[0] : record.source_item;
+    const targetItem = Array.isArray(record.target_item) ? record.target_item[0] : record.target_item;
+    const isSource = sourceItem?.id === itemId;
+    const alternativeItem = isSource ? targetItem : sourceItem;
     
     return {
       interchange_id: record.id,

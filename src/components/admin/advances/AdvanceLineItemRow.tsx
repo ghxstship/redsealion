@@ -74,7 +74,7 @@ export default function AdvanceLineItemRow({ item, showApproval, onApprove, onRe
         <tr className="bg-bg-secondary/10">
           <td colSpan={showApproval ? 6 : 5} className="px-8 py-4 border-b border-border/50">
             <div className="max-w-3xl">
-              <SupersessionResolver itemId={item.catalog_item_id} onSelectLatest={(newItem) => console.log('Swap to', newItem)} />
+              <SupersessionResolver itemId={item.catalog_item_id} onSelectLatest={() => void 0} />
               
               {/* Note: In a complete implementation, this would fetch the full CatalogItemFull from the backend, because AdvanceLineItem does not inherently have all specifications. For now we pass the subset. */}
               <div className="mt-4">
@@ -83,8 +83,7 @@ export default function AdvanceLineItemRow({ item, showApproval, onApprove, onRe
 
               {showInterchange && (
                 <div className="mt-4">
-                  <InterchangeSuggestionCard itemId={item.catalog_item_id} onSwap={(alt) => {
-                     console.log('Swap alternative', alt);
+                  <InterchangeSuggestionCard itemId={item.catalog_item_id} onSwap={() => {
                      setShowInterchange(false);
                   }} />
                 </div>

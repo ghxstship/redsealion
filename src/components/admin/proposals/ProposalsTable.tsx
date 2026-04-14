@@ -281,9 +281,8 @@ export default function ProposalsTable({
         open={showAiDraft}
         onClose={() => setShowAiDraft(false)}
         onDraftReady={(draft) => {
-          // Navigate to new proposal page — draft data can be
-          // consumed via URL state or stored in sessionStorage
-          console.log('AI draft ready:', draft);
+          // Store draft data for the new proposal page to consume
+          try { sessionStorage.setItem('ai_draft_proposal', JSON.stringify(draft)); } catch { /* quota exceeded — proceed without */ }
           setShowAiDraft(false);
           router.push('/app/proposals/new');
         }}

@@ -2,6 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/api/auth-guard';
 import { validateQuickQuoteList } from '@/lib/advances/validations';
 
+interface QuoteRequestItem {
+  catalog_item_id: string;
+  quantity: number;
+  override_rate_cents?: number;
+}
+
 export async function POST(request: NextRequest) {
   const { ctx, denied } = await requireAuth();
   if (denied) return denied;
@@ -15,7 +21,7 @@ export async function POST(request: NextRequest) {
   }
 
   // Fetch prices for all items in a single query
-  const itemIds = items.map((i: any) => i.catalog_item_id);
+  const itemIds = items.map((i: QuoteRequestItem) => i.catalog_item_id);
   const { data: catalogItems, error } = await ctx.supabase
     .from('advance_catalog_items')
     .select('id, name, msrp_usd, rental_rate_daily, product_type')
@@ -28,7 +34,7 @@ export async function POST(request: NextRequest) {
   const lookup = new Map(catalogItems?.map(ci => [ci.id, ci]));
 
   let total_cents = 0;
-  const quote_lines = items.map((reqItem: any) => {
+  const quote_lines = items.map((reqItem: QuoteRequestItem) => {
     const ci = lookup.get(reqItem.catalog_item_id);
     if (!ci) {
       return { ...reqItem, status: 'not_found', line_total: 0 };

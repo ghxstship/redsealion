@@ -101,7 +101,7 @@ export function validateAddLineItem(body: Partial<AddLineItemRequest>): { valid:
    Catalog Intelligence Layer
    ───────────────────────────────────────────────────────── */
 
-export function validateQuickQuoteList(items: any[]): { valid: boolean; errors: string[] } {
+export function validateQuickQuoteList(items: Array<{ catalog_item_id?: string; quantity?: number }>): { valid: boolean; errors: string[] } {
   const errors: string[] = [];
   if (!items || !Array.isArray(items) || items.length === 0) {
     errors.push('Quote must contain at least one item');

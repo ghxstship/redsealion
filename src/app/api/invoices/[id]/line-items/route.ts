@@ -121,8 +121,7 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
   return NextResponse.json({ success: true });
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function recalculateInvoiceTotals(supabase: any, invoiceId: string) {
+async function recalculateInvoiceTotals(supabase: Awaited<ReturnType<typeof createClient>>, invoiceId: string) {
   const { data: items } = await supabase
     .from('invoice_line_items')
     .select('amount, tax_amount')

@@ -117,8 +117,7 @@ export async function logAudit(
     entityId?: string;
     metadata?: Record<string, unknown>;
   },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  supabase?: any,
+  supabase?: Awaited<ReturnType<typeof createClient>>,
 ): Promise<void> {
   try {
     const client = supabase ?? (await createClient());

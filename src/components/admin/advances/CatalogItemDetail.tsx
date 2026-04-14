@@ -131,7 +131,14 @@ export default function CatalogItemDetail({ item, onAddToCart, onClose }: Catalo
           }} />
         )}
 
-        <CatalogItemSpecCard item={item as any} />
+        <CatalogItemSpecCard item={{
+          specifications: item.specifications,
+          vendor_availability: (item as unknown as Record<string, unknown>).vendor_availability as string[] | undefined,
+          msrp_usd: item.msrp_usd ?? undefined,
+          rental_rate_daily: item.rental_rate_daily ?? undefined,
+          product_type: item.product_type ?? undefined,
+          id: item.id,
+        }} />
 
         {isAddedToCart && (
           <InterchangeSuggestionCard itemId={item.id} onSwap={handleSwap} />

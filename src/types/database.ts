@@ -18878,3 +18878,282 @@ export const Constants = {
     },
   },
 } as const
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MANUAL RE-EXPORT BLOCK — DO NOT DELETE
+// This section is manually maintained. `supabase gen types` overwrites
+// everything above this line. After regenerating, restore this block.
+// ═══════════════════════════════════════════════════════════════════════════
+
+// ── Helper aliases ─────────────────────────────────────────────────
+type PublicTables = Database['public']['Tables'];
+type PublicEnums = Database['public']['Enums'];
+
+// ── Table row aliases ──────────────────────────────────────────────
+
+// Organizations & Users
+export type Organization = PublicTables['organizations']['Row'];
+export type User = PublicTables['users']['Row'];
+export type OrganizationRole = PublicTables['organization_memberships']['Row'];
+
+// Proposals & Phases
+export type Proposal = PublicTables['proposals']['Row'];
+export type Phase = PublicTables['phases']['Row'];
+export type PhaseDeliverable = PublicTables['phase_deliverables']['Row'];
+export type PhaseAddon = PublicTables['phase_addons']['Row'];
+export type PhasePortfolioLink = PublicTables['phase_portfolio_links']['Row'];
+export type ChangeOrder = PublicTables['change_orders']['Row'];
+
+// Milestones
+export type MilestoneGate = PublicTables['milestone_gates']['Row'];
+export type MilestoneRequirement = PublicTables['milestone_requirements']['Row'];
+
+// Clients & Contacts
+export type Client = PublicTables['clients']['Row'];
+export type ClientContact = PublicTables['client_contacts']['Row'];
+
+// Deals & Pipeline
+export type Deal = PublicTables['deals']['Row'];
+export type DealWithClient = Deal & { client?: Client | null };
+
+// Invoices & Payments
+export type Invoice = PublicTables['invoices']['Row'];
+export type InvoiceLineItem = PublicTables['invoice_line_items']['Row'];
+export type InvoicePayment = PublicTables['invoice_payments']['Row'];
+
+// Assets
+export type Asset = PublicTables['assets']['Row'];
+export type AssetLocationHistory = PublicTables['asset_location_history']['Row'];
+
+// Venues
+export type Venue = PublicTables['venues']['Row'];
+
+// Crew
+export type CrewProfile = PublicTables['crew_profiles']['Row'];
+export type CrewProfileWithUser = CrewProfile & { users: User | null };
+export type CrewBooking = PublicTables['crew_bookings']['Row'];
+export type CrewAvailability = PublicTables['crew_availability']['Row'];
+
+// Team & Assignments
+export type TeamAssignment = PublicTables['team_assignments']['Row'];
+
+// Terms
+export type TermsDocument = PublicTables['terms_documents']['Row'];
+
+// Tasks
+export type TaskCommentWithAuthor = PublicTables['task_comments']['Row'] & { users: User | null };
+
+// Advances
+export type ProductionAdvance = PublicTables['production_advances']['Row'];
+export type AdvanceLineItem = PublicTables['advance_line_items']['Row'];
+export type AdvanceCatalogItem = PublicTables['advance_catalog_items']['Row'];
+export type AdvanceCatalogVariant = PublicTables['advance_catalog_variants']['Row'];
+export type AdvanceCategoryGroup = PublicTables['advance_category_groups']['Row'];
+export type AdvanceCategory = PublicTables['advance_categories']['Row'];
+export type AdvanceSubcategory = PublicTables['advance_subcategories']['Row'];
+export type AdvanceCollaborator = PublicTables['advance_collaborators']['Row'];
+export type AdvanceComment = PublicTables['advance_comments']['Row'];
+export type AdvanceAccessCode = PublicTables['advance_access_codes']['Row'];
+export type AdvanceModifierList = PublicTables['advance_modifier_lists']['Row'];
+export type AdvanceModifierOption = PublicTables['advance_modifier_options']['Row'];
+export type AdvanceStatusHistoryEntry = PublicTables['advance_status_history']['Row'];
+
+// APS (Atomic Production System)
+export type Space = PublicTables['spaces']['Row'];
+export type Zone = PublicTables['zones']['Row'];
+export type Component = PublicTables['components']['Row'];
+export type ComponentItem = PublicTables['component_items']['Row'];
+export type HierarchyTask = PublicTables['hierarchy_tasks']['Row'];
+export type HierarchyStatusLog = PublicTables['hierarchy_status_log']['Row'];
+
+// ── Convenience enum aliases ────────────────────────────────────────
+export type AdvanceMode = PublicEnums['advance_mode'];
+export type AdvanceType = PublicEnums['advance_type'];
+export type AdvancePriority = PublicEnums['advance_priority'];
+export type AdvanceStatus = PublicEnums['advance_status'];
+export type ApprovalStatus = 'pending' | 'approved' | 'rejected';
+export type AssetCondition = PublicEnums['asset_condition'];
+export type AssetStatus = PublicEnums['asset_status'];
+export type CrewAvailabilityStatus = PublicEnums['availability_status'];
+export type CrewBookingStatus = PublicEnums['booking_status'];
+export type DealStage = PublicEnums['deal_stage'];
+export type FulfillmentMethod = PublicEnums['fulfillment_method'];
+export type SpaceType = PublicEnums['space_type'];
+export type ZoneType = PublicEnums['zone_type'];
+export type ComponentType = PublicEnums['component_type'];
+export type HierarchyStatus = PublicEnums['hierarchy_status'];
+export type FulfillmentStatus = PublicEnums['fulfillment_status'];
+export type FulfillmentType = PublicEnums['fulfillment_type'];
+export type InvoiceStatus = PublicEnums['invoice_status'];
+export type InvoiceType = PublicEnums['invoice_type'];
+export type MilestoneStatus = PublicEnums['milestone_status'];
+export type PhaseStatus = PublicEnums['phase_status'];
+export type ProposalStatus = PublicEnums['proposal_status'];
+export type RequirementStatus = PublicEnums['requirement_status'];
+export type SubscriptionTier = PublicEnums['subscription_tier'];
+export type UnitOfMeasure = PublicEnums['unit_of_measure'];
+export type CollaboratorRole = PublicEnums['project_role'];
+export type InviteStatus = PublicEnums['invite_status'];
+export type CreativeReferenceType = PublicEnums['creative_reference_type'];
+
+// ── JSON composite type aliases ────────────────────────────────────
+// These are JSON fields that have a known structure but are stored in
+// jsonb columns. We define them as explicit types here for usage
+// throughout the codebase.
+export type Address = {
+  street?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+  country?: string;
+};
+
+export type BrandConfig = {
+  primary_color?: string;
+  secondary_color?: string;
+  logo_url?: string;
+  font?: string;
+  primaryColor?: string;
+  secondaryColor?: string;
+  accentColor?: string;
+  backgroundColor?: string;
+  fontHeading?: string;
+  fontBody?: string;
+  portalTitle?: string;
+  companyTagline?: string;
+  footerText?: string;
+  emailFromName?: string;
+  emailReplyTo?: string;
+  [key: string]: unknown;
+};
+
+export type Facility = {
+  name?: string;
+  address?: Address;
+  city?: string;
+  state?: string;
+  capacity?: number;
+  notes?: string;
+};
+
+export type PaymentTerms = {
+  type?: string;
+  due_days?: number;
+  deposit_percent?: number;
+  structure?: string;
+  schedule?: Array<{ milestone: string; percent: number }>;
+  [key: string]: unknown;
+};
+
+export type CreativeReference = {
+  id?: string;
+  type?: string;
+  title?: string;
+  url?: string;
+  description?: string;
+  thumbnail_url?: string;
+  phase_id?: string;
+  [key: string]: unknown;
+};
+
+export type VenueActivationDates = {
+  start?: string;
+  end?: string;
+  load_in?: string;
+  strike?: string;
+};
+
+export type VenueLoadInStrike = {
+  date?: string;
+  startTime?: string;
+  endTime?: string;
+  load_in_start?: string;
+  load_in_end?: string;
+  strike_start?: string;
+  strike_end?: string;
+};
+
+export type VenueContact = {
+  name?: string;
+  role?: string;
+  email?: string;
+  phone?: string;
+};
+
+export type NarrativeContext = {
+  brand_story?: string;
+  target_audience?: string;
+  key_messages?: string[];
+  tone_of_voice?: string;
+  assumptions?: string[];
+  [key: string]: unknown;
+};
+
+export type AssetMetadata = {
+  dimensions?: string;
+  weight?: string;
+  material?: string;
+  color?: string;
+  notes?: string;
+};
+
+export type AssetLocation = {
+  location_id?: string;
+  location_name?: string;
+  section?: string;
+  notes?: string;
+};
+
+export type ResourceMetadata = {
+  type?: string;
+  capacity?: number;
+  notes?: string;
+  triggersProcurement?: boolean;
+  [key: string]: unknown;
+};
+
+export type FinanceTrigger = {
+  type?: string;
+  percentage?: number;
+  milestone_id?: string;
+  date?: string;
+};
+
+export type PmMetadata = {
+  assigned_pm?: string;
+  backup_pm?: string;
+  notes?: string;
+};
+
+export type TermsSection = {
+  title: string;
+  content: string;
+  order?: number;
+};
+
+export type ChangeOrderLineItem = {
+  description: string;
+  amount_cents: number;
+  type?: string;
+};
+
+export type RecurrenceRule = {
+  frequency: string;
+  interval?: number;
+  by_day?: string[];
+  days_of_week?: number[];
+  day_of_month?: number;
+  until?: string;
+  end_date?: string;
+  count?: number;
+  end_after_occurrences?: number;
+  occurrences_created?: number;
+  [key: string]: unknown;
+};
+
+export type OrgSettings = {
+  [key: string]: unknown;
+};
+
+export type RequirementAssignee = string;

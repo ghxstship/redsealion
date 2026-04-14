@@ -136,7 +136,7 @@ export async function POST(request: NextRequest) {
   }
 
   await logAudit({ action: 'crew.profile.created', entityType: 'crew_profile', entityId: (profile as Record<string, unknown>).id as string }, supabase);
-  await dispatchWebhook('crew.created', profile, perm.organizationId, supabase).catch(() => {});
+  await dispatchWebhook('crew.created', profile, perm.organizationId).catch(() => {});
 
   return NextResponse.json({ success: true, profile });
 }
