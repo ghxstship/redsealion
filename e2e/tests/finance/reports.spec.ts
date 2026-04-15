@@ -27,8 +27,8 @@ test.describe('Reports Hub @reports', () => {
     });
   }
 
-  test('reports renders for manager @manager', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('manager');
+  test('reports renders for collaborator @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/reports');
     await page.waitForLoadState('networkidle');
     await expectPageRendered(page);
@@ -42,8 +42,8 @@ test.describe('Reports Hub @reports', () => {
     await expectPageRendered(page);
   });
 
-  test('reports denied for team_member @team_member', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('team_member');
+  test('reports denied for collaborator @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/reports');
     await page.waitForLoadState('networkidle');
     await expect(page.locator("text=Access Denied")).toBeVisible();

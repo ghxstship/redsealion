@@ -56,7 +56,7 @@ export { expect } from '@playwright/test';
 /**
  * Generates test cases for a list of roles.
  * Usage:
- *   forEachRole(['owner', 'team_member'], (role) => {
+ *   forEachRole(['owner', 'collaborator'], (role) => {
  *     test(`renders for ${role}`, async ({ authenticatedPage }) => {
  *       const page = await authenticatedPage(role);
  *       ...

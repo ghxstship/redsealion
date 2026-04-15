@@ -23,15 +23,15 @@ test.describe('Equipment @equipment', () => {
     await expectNoRawI18nKeys(page);
   });
 
-  test('equipment renders for team_member @team_member', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('team_member');
+  test('equipment renders for collaborator @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/equipment');
     await page.waitForLoadState('networkidle');
     await expectPageRendered(page);
   });
 
-  test('equipment denied for team_member @team_member', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('team_member');
+  test('equipment denied for collaborator @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/equipment');
     await page.waitForLoadState('networkidle');
     // Designer has view+edit on equipment, so should render
@@ -48,8 +48,8 @@ test.describe('Assets @assets', () => {
     await expectNoRawI18nKeys(page);
   });
 
-  test('assets renders for team_member @team_member', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('team_member');
+  test('assets renders for collaborator @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/assets');
     await page.waitForLoadState('networkidle');
     await expectPageRendered(page);

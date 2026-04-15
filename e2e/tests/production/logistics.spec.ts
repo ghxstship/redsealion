@@ -21,8 +21,8 @@ test.describe('Logistics Hub @logistics', () => {
     });
   }
 
-  test('logistics renders for team_member @team_member', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('team_member');
+  test('logistics renders for collaborator @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/logistics');
     await page.waitForLoadState('networkidle');
     await expectPageRendered(page);

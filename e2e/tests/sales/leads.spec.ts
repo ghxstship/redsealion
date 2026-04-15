@@ -20,15 +20,15 @@ test.describe('Leads Hub @leads', () => {
     });
   }
 
-  test('leads renders for manager @manager', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('manager');
+  test('leads renders for collaborator @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/leads');
     await page.waitForLoadState('networkidle');
     await expectPageRendered(page);
   });
 
-  test('team_member denied from leads @team_member', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('team_member');
+  test('collaborator denied from leads @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/leads');
     await page.waitForLoadState('networkidle');
     await expect(page.locator("text=Access Denied")).toBeVisible();

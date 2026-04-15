@@ -16,7 +16,7 @@ test.describe('Expenses @expenses', () => {
   });
 
   // All internal roles can create expenses (own)
-  for (const role of ['manager', 'team_member', 'crew'] as Role[]) {
+  for (const role of ['collaborator', 'collaborator', 'crew'] as Role[]) {
     test(`expenses renders for ${role} @${role}`, async ({ authenticatedPage }) => {
       const page = await authenticatedPage(role);
       await page.goto('/app/expenses');

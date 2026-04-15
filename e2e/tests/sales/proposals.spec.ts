@@ -20,22 +20,22 @@ test.describe('Proposals @proposals', () => {
     await expectPageRendered(page);
   });
 
-  test('proposals list renders for manager @manager', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('manager');
+  test('proposals list renders for collaborator @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/proposals');
     await page.waitForLoadState('networkidle');
     await expectPageRendered(page);
   });
 
-  test('team_member can view proposals (view-only) @team_member', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('team_member');
+  test('collaborator can view proposals (view-only) @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/proposals');
     await page.waitForLoadState('networkidle');
     await expectPageRendered(page);
   });
 
-  test('team_member denied from proposals @team_member', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('team_member');
+  test('collaborator denied from proposals @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/proposals');
     await page.waitForLoadState('networkidle');
     // Fabricator has view-only on proposals

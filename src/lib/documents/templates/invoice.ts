@@ -32,7 +32,7 @@ import {
 
 import { castDocAddress } from '../doc-types';
 
-import type { AlignmentType } from 'docx';
+import { AlignmentType } from 'docx';
 
 // ---------------------------------------------------------------------------
 // Public interface
@@ -101,15 +101,15 @@ export async function generateInvoice(data: InvoiceData): Promise<Buffer> {
 
   const colDefs: TableColumn[] = [
     { header: 'Description', width: Math.floor(CONTENT_WIDTH * (hasTax ? 0.35 : 0.4)) },
-    { header: 'Qty', width: Math.floor(CONTENT_WIDTH * 0.1), align: 'RIGHT' as unknown as (typeof AlignmentType)[keyof typeof AlignmentType] },
-    { header: 'Rate', width: Math.floor(CONTENT_WIDTH * 0.15), align: 'RIGHT' as unknown as (typeof AlignmentType)[keyof typeof AlignmentType] },
+    { header: 'Qty', width: Math.floor(CONTENT_WIDTH * 0.1), align: AlignmentType.RIGHT },
+    { header: 'Rate', width: Math.floor(CONTENT_WIDTH * 0.15), align: AlignmentType.RIGHT },
   ];
 
   if (hasTax) {
-    colDefs.push({ header: taxLabel, width: Math.floor(CONTENT_WIDTH * 0.1), align: 'RIGHT' as unknown as (typeof AlignmentType)[keyof typeof AlignmentType] });
+    colDefs.push({ header: taxLabel, width: Math.floor(CONTENT_WIDTH * 0.1), align: AlignmentType.RIGHT });
   }
 
-  colDefs.push({ header: 'Amount', width: Math.floor(CONTENT_WIDTH * (hasTax ? 0.3 : 0.35)), align: 'RIGHT' as unknown as (typeof AlignmentType)[keyof typeof AlignmentType] });
+  colDefs.push({ header: 'Amount', width: Math.floor(CONTENT_WIDTH * (hasTax ? 0.3 : 0.35)), align: AlignmentType.RIGHT });
 
   const rows = lineItems.map((li) => {
     const row = [

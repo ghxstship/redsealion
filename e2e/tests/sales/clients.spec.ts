@@ -23,22 +23,22 @@ test.describe('Clients Hub @clients', () => {
     });
   }
 
-  test('clients list renders for manager @manager', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('manager');
+  test('clients list renders for collaborator @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/clients');
     await page.waitForLoadState('networkidle');
     await expectPageRendered(page);
   });
 
-  test('team_member can view clients (view-only) @team_member', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('team_member');
+  test('collaborator can view clients (view-only) @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/clients');
     await page.waitForLoadState('networkidle');
     await expectPageRendered(page);
   });
 
-  test('team_member denied from clients @team_member', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('team_member');
+  test('collaborator denied from clients @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/clients');
     await page.waitForLoadState('networkidle');
     await expect(page.locator("text=Access Denied")).toBeVisible();

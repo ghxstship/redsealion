@@ -24,8 +24,8 @@ test.describe('Personal Pages @dashboard', () => {
       await expectNoRawI18nKeys(page);
     });
 
-    test(`${name} renders for team_member @team_member`, async ({ authenticatedPage }) => {
-      const page = await authenticatedPage('team_member');
+    test(`${name} renders for collaborator @collaborator`, async ({ authenticatedPage }) => {
+      const page = await authenticatedPage('collaborator');
       await page.goto(path);
       await page.waitForLoadState('networkidle');
       await expectPageRendered(page);

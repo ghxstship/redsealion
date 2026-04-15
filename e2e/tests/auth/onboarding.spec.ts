@@ -7,7 +7,7 @@ test.describe('User Onboarding Flow', () => {
   test.setTimeout(120_000);
 
   test('redirects to app and allows profile completion', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('team_member');
+    const page = await authenticatedPage('collaborator');
     
     // Navigate to profile settings directly
     await page.goto('/app/settings/profile', { timeout: 60_000, waitUntil: 'domcontentloaded' });

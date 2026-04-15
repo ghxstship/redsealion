@@ -50,15 +50,15 @@ test.describe('Settings @settings', () => {
   }
 
   // Profile and appearance should be accessible to all roles
-  test('profile accessible for team_member @team_member', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('team_member');
+  test('profile accessible for collaborator @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/settings/profile');
     await page.waitForLoadState('domcontentloaded');
     await expectPageRendered(page);
   });
 
-  test('appearance accessible for team_member @team_member_alt', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('team_member');
+  test('appearance accessible for collaborator @collaborator_alt', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/settings/appearance');
     await page.waitForLoadState('domcontentloaded');
     await expectPageRendered(page);
@@ -67,22 +67,22 @@ test.describe('Settings @settings', () => {
   // TODO: Implement server-side access control for admin-only settings routes.
   // Currently these pages render for all authenticated users. Once route
   // protection is added, switch back to expectAccessDenied.
-  test('billing renders for manager @manager', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('manager');
+  test('billing renders for collaborator @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/settings/billing');
     await page.waitForLoadState('domcontentloaded');
     await expectPageRendered(page);
   });
 
-  test('security renders for team_member @team_member_sec', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('team_member');
+  test('security renders for collaborator @collaborator_sec', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/settings/security');
     await page.waitForLoadState('domcontentloaded');
     await expectPageRendered(page);
   });
 
-  test('sso renders for manager @manager_sso', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('manager');
+  test('sso renders for collaborator @collaborator_sso', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/settings/sso');
     await page.waitForLoadState('domcontentloaded');
     await expectPageRendered(page);

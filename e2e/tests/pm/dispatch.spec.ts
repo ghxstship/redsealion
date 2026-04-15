@@ -13,8 +13,8 @@ test.describe('Dispatch @dispatch', () => {
     await expectNoRawI18nKeys(page);
   });
 
-  test('dispatch renders for manager @manager', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('manager');
+  test('dispatch renders for collaborator @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/dispatch');
     await page.waitForLoadState('networkidle');
     await expectPageRendered(page);

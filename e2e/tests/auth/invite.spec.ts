@@ -4,8 +4,8 @@ import { verifyEmailSent } from '../../helpers/resend';
 const ROLES = [
   'admin', 
   'controller', 
-  'manager', 
-  'team_member', 
+  'collaborator', 
+  'collaborator', 
   'client', 
   'contractor', 
   'crew', 

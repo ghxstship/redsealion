@@ -25,15 +25,15 @@ test.describe('Tasks Hub @tasks', () => {
     });
   }
 
-  test('tasks board renders for team_member @team_member', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('team_member');
+  test('tasks board renders for collaborator @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/tasks/board');
     await page.waitForLoadState('networkidle');
     await expectPageRendered(page);
   });
 
-  test('tasks renders for team_member @team_member', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('team_member');
+  test('tasks renders for collaborator @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/tasks');
     await page.waitForLoadState('networkidle');
     await expectPageRendered(page);

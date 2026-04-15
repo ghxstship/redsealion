@@ -25,7 +25,7 @@ import {
 } from '../engine';
 
 import { castDocAddress } from '../doc-types';
-import type { AlignmentType } from 'docx';
+import { AlignmentType } from 'docx';
 
 // ---------------------------------------------------------------------------
 // Public interface
@@ -112,9 +112,9 @@ export async function generateCreditNote(data: CreditNoteData): Promise<Buffer> 
 
   const cols: TableColumn[] = [
     { header: 'Description', width: Math.floor(CONTENT_WIDTH * 0.4) },
-    { header: 'Qty', width: Math.floor(CONTENT_WIDTH * 0.15), align: 'RIGHT' as unknown as (typeof AlignmentType)[keyof typeof AlignmentType] },
-    { header: 'Rate', width: Math.floor(CONTENT_WIDTH * 0.2), align: 'RIGHT' as unknown as (typeof AlignmentType)[keyof typeof AlignmentType] },
-    { header: 'Credit', width: Math.floor(CONTENT_WIDTH * 0.25), align: 'RIGHT' as unknown as (typeof AlignmentType)[keyof typeof AlignmentType] },
+    { header: 'Qty', width: Math.floor(CONTENT_WIDTH * 0.15), align: AlignmentType.RIGHT },
+    { header: 'Rate', width: Math.floor(CONTENT_WIDTH * 0.2), align: AlignmentType.RIGHT },
+    { header: 'Credit', width: Math.floor(CONTENT_WIDTH * 0.25), align: AlignmentType.RIGHT },
   ];
 
   const rows = creditNote.line_items.map((li) => [

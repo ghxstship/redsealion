@@ -20,14 +20,14 @@ test.describe('People Hub @people', () => {
     });
   }
 
-  test('people renders for manager @manager', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('manager');
+  test('people renders for collaborator @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/people');
     await expectPageRendered(page);
   });
 
-  test('people denied for team_member @team_member', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('team_member');
+  test('people denied for collaborator @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/people');
     const isDenied = await page.isVisible('text=Access Denied');
     const isFallback = await page.isVisible('text=Forbidden');
@@ -42,7 +42,7 @@ test.describe('People Hub @people', () => {
   });
 
   test('can open Time Off Request modal', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('manager');
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/people/time-off');
     await expectPageRendered(page);
   });

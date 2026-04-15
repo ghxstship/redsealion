@@ -13,15 +13,15 @@ test.describe('Finance @finance', () => {
     await expectNoRawI18nKeys(page);
   });
 
-  test('finance renders for manager @manager', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('manager');
+  test('finance renders for collaborator @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/finance');
     await page.waitForLoadState('networkidle');
     await expectPageRendered(page);
   });
 
-  test('finance denied for team_member @team_member', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('team_member');
+  test('finance denied for collaborator @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/finance');
     await page.waitForLoadState('networkidle');
     await expect(page.locator("text=Access Denied")).toBeVisible();

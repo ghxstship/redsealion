@@ -21,15 +21,15 @@ test.describe('Fabrication Hub @fabrication', () => {
     });
   }
 
-  test('fabrication renders for team_member @team_member', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('team_member');
+  test('fabrication renders for collaborator @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/fabrication');
     await page.waitForLoadState('networkidle');
     await expectPageRendered(page);
   });
 
-  test('team_member denied from fabrication @team_member', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('team_member');
+  test('collaborator denied from fabrication @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/fabrication');
     await page.waitForLoadState('networkidle');
     await expect(page.locator("text=Access Denied")).toBeVisible();

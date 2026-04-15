@@ -30,8 +30,8 @@ test.describe('Rentals Hub @rentals', () => {
     await expectPageRendered(page);
   });
 
-  test('team_member denied from rentals @team_member', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('team_member');
+  test('collaborator denied from rentals @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/rentals');
     await page.waitForLoadState('networkidle');
     await expect(page.locator("text=Access Denied")).toBeVisible();

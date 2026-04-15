@@ -21,8 +21,8 @@ test.describe('Files Hub @files', () => {
     await expectNoRawI18nKeys(page);
   });
 
-  test('renders files page for manager @manager', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('manager');
+  test('renders files page for collaborator @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/files');
     await page.waitForLoadState('networkidle');
 

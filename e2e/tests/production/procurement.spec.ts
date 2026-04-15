@@ -23,15 +23,15 @@ test.describe('Procurement Hub @procurement', () => {
     });
   }
 
-  test('procurement renders for manager @manager', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('manager');
+  test('procurement renders for collaborator @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/procurement');
     await page.waitForLoadState('networkidle');
     await expectPageRendered(page);
   });
 
-  test('team_member denied from procurement @team_member', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('team_member');
+  test('collaborator denied from procurement @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/procurement');
     await page.waitForLoadState('networkidle');
     await expect(page.locator("text=Access Denied")).toBeVisible();

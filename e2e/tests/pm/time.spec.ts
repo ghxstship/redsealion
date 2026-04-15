@@ -24,7 +24,7 @@ test.describe('Time Hub @time', () => {
   }
 
   // All internal roles should be able to track their own time
-  for (const role of ['team_member', 'crew'] as Role[]) {
+  for (const role of ['collaborator', 'crew'] as Role[]) {
     test(`time renders for ${role} @${role}`, async ({ authenticatedPage }) => {
       const page = await authenticatedPage(role);
       await page.goto('/app/time');

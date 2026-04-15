@@ -12,7 +12,7 @@
  *   8. Hold / Resume
  *   9. Tier enforcement
  *
- * Roles tested: owner, admin, manager, team_member
+ * Roles tested: owner, admin, manager, collaborator
  * Tiers tested: starter, professional
  *
  * Strategy:
@@ -97,7 +97,7 @@ test.describe('Advancing Hub Pages @advancing @smoke', () => {
     });
   }
 
-  forEachRole(['admin', 'manager'], (role) => {
+  forEachRole(['admin', 'collaborator'], (role) => {
     test(`advancing hub renders for ${role}`, async ({ authenticatedPage }) => {
       const page = await authenticatedPage(role);
       await page.goto('/app/advancing');
@@ -106,8 +106,8 @@ test.describe('Advancing Hub Pages @advancing @smoke', () => {
     });
   });
 
-  test('submissions page renders for team_member', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('team_member');
+  test('submissions page renders for collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/advancing/submissions');
     await page.waitForLoadState('networkidle');
     await expectPageRendered(page);

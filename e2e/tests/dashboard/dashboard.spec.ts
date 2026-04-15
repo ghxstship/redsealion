@@ -9,8 +9,8 @@ import { expectPageRendered, expectNoRawI18nKeys, expectSidebarFiltered } from '
 import type { Role } from '../../helpers/routes';
 
 const INTERNAL_ROLES: Role[] = [
-  'developer', 'owner', 'manager',
-  'team_member', 'crew',
+  'developer', 'owner', 'collaborator',
+  'collaborator', 'crew',
 ];
 
 test.describe('Dashboard @dashboard', () => {
@@ -39,11 +39,11 @@ test.describe('Dashboard @dashboard', () => {
     expect(count).toBeGreaterThan(0);
   });
 
-  test('sidebar is filtered for team_member role', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('team_member');
+  test('sidebar is filtered for collaborator role', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app');
     await page.waitForLoadState('networkidle');
 
-    await expectSidebarFiltered(page, 'team_member');
+    await expectSidebarFiltered(page, 'collaborator');
   });
 });

@@ -15,8 +15,8 @@ const PIPELINE_ROUTES = [
   '/app/pipeline/commissions',
 ];
 
-const ALLOWED_ROLES: Role[] = ['developer', 'owner', 'manager'];
-const DENIED_ROLES: Role[] = ['team_member', 'crew'];
+const ALLOWED_ROLES: Role[] = ['developer', 'owner', 'collaborator'];
+const DENIED_ROLES: Role[] = ['collaborator', 'crew'];
 
 test.describe('Pipeline Hub @pipeline', () => {
   // ── Access Granted ──
@@ -49,8 +49,8 @@ test.describe('Pipeline Hub @pipeline', () => {
     await expectPageRendered(page);
   });
 
-  test('pipeline settings denied for manager @manager', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('manager');
+  test('pipeline settings denied for collaborator @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/pipeline/settings');
     await page.waitForLoadState('networkidle');
     await expectAccessDenied(page);

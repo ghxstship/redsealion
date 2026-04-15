@@ -22,8 +22,8 @@ test.describe('Events Hub @events', () => {
     });
   }
 
-  test('events renders for manager @manager', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('manager');
+  test('events renders for collaborator @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/events');
     await page.waitForLoadState('networkidle');
     await expectPageRendered(page);

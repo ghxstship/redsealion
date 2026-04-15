@@ -30,15 +30,15 @@ test.describe('Crew Hub @crew', () => {
     });
   }
 
-  test('crew main renders for team_member (view-only) @team_member', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('team_member');
+  test('crew main renders for collaborator (view-only) @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/crew');
     await page.waitForLoadState('networkidle');
     await expectPageRendered(page);
   });
 
-  test('crew schedule renders for manager @manager', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('manager');
+  test('crew schedule renders for collaborator @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/crew/schedule');
     await page.waitForLoadState('networkidle');
     await expectPageRendered(page);

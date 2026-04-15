@@ -21,15 +21,15 @@ test.describe('Campaigns @campaigns', () => {
     await expectPageRendered(page);
   });
 
-  test('campaigns renders for manager @manager', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('manager');
+  test('campaigns renders for collaborator @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/campaigns');
     await page.waitForLoadState('networkidle');
     await expectPageRendered(page);
   });
 
-  test('campaigns denied for team_member @team_member', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('team_member');
+  test('campaigns denied for collaborator @collaborator', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('collaborator');
     await page.goto('/app/campaigns');
     await page.waitForLoadState('networkidle');
     await expect(page.locator("text=Access Denied")).toBeVisible();
