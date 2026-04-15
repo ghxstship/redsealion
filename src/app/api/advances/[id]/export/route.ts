@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/api/auth-guard';
+import { escapeCsvValue } from '@/lib/export-formats';
 
 /**
  * GET /api/advances/[id]/export?format=csv|json — Export advance data
@@ -58,11 +59,11 @@ export async function GET(
 
   const csvRows = lineItems.map((item, idx) => [
     idx + 1,
-    csvEscape(item.item_name as string ?? ''),
-    csvEscape(item.item_description as string ?? ''),
-    csvEscape(item.variant_name as string ?? ''),
-    csvEscape(item.variant_sku as string ?? ''),
-    csvEscape(item.category_group_slug as string ?? ''),
+    csvEscVal(item.item_name as string ?? ''),
+    csvEscVal(item.item_description as string ?? ''),
+    csvEscVal(item.variant_name as string ?? ''),
+    csvEscVal(item.variant_sku as string ?? ''),
+    csvEscVal(item.category_group_slug as string ?? ''),
     item.quantity ?? '',
     item.unit_of_measure ?? '',
     item.unit_price_cents ? ((item.unit_price_cents as number) / 100).toFixed(2) : '',
@@ -71,7 +72,7 @@ export async function GET(
     item.approval_status ?? '',
     item.service_start_date ?? '',
     item.service_end_date ?? '',
-    csvEscape(item.notes as string ?? ''),
+    csvEscVal(item.notes as string ?? ''),
     item.is_existing ? 'Yes' : 'No',
     item.is_tentative ? 'Yes' : 'No',
   ].join(','));
@@ -95,10 +96,6 @@ export async function GET(
   });
 }
 
-function csvEscape(val: string): string {
-  if (!val) return '';
-  if (val.includes(',') || val.includes('"') || val.includes('\n')) {
-    return `"${val.replace(/"/g, '""')}"`;
-  }
-  return val;
+function csvEscVal(val: string): string {
+  return escapeCsvValue(val);
 }

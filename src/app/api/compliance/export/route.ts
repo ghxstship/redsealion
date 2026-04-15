@@ -3,6 +3,7 @@ import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
 import { createLogger } from '@/lib/logger';
 import { logAudit } from '@/lib/audit';
+import { buildCsvString } from '@/lib/export-formats';
 
 const log = createLogger('api:compliance:export');
 
@@ -40,22 +41,21 @@ export async function GET(request: NextRequest) {
 
   const docs = data ?? [];
 
-  // Build CSV
   const headers = ['Document Name', 'Type', 'Status', 'Issued To', 'Issued Date', 'Expiry Date', 'Notes', 'Verified At', 'Rejection Reason', 'Created At'];
   const rows = docs.map((d) => [
-    escapeCsv(d.document_name),
-    escapeCsv(d.document_type),
-    escapeCsv(d.status),
-    escapeCsv(d.issued_to ?? ''),
-    escapeCsv(d.issued_date ?? ''),
-    escapeCsv(d.expiry_date ?? ''),
-    escapeCsv(d.notes ?? ''),
-    escapeCsv(d.verified_at ?? ''),
-    escapeCsv(d.rejection_reason ?? ''),
-    escapeCsv(d.created_at),
+    d.document_name,
+    d.document_type,
+    d.status,
+    d.issued_to ?? '',
+    d.issued_date ?? '',
+    d.expiry_date ?? '',
+    d.notes ?? '',
+    d.verified_at ?? '',
+    d.rejection_reason ?? '',
+    d.created_at,
   ]);
 
-  const csv = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+  const csv = buildCsvString(headers, rows);
 
   try { await logAudit({ action: 'compliance.exported', entityType: 'compliance_document', metadata: { format: 'csv', count: docs.length } }, supabase); } catch { /* non-fatal */ }
 
@@ -66,11 +66,4 @@ export async function GET(request: NextRequest) {
       'Content-Disposition': `attachment; filename="compliance-export-${new Date().toISOString().split('T')[0]}.csv"`,
     },
   });
-}
-
-function escapeCsv(value: string): string {
-  if (value.includes(',') || value.includes('"') || value.includes('\n')) {
-    return `"${value.replace(/"/g, '""')}"`;
-  }
-  return value;
 }

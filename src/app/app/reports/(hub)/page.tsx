@@ -2,7 +2,7 @@ import { formatDate } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import Link from 'next/link';
-import { Filter, TrendingUp, Funnel, PieChart, BarChart3, LayoutDashboard, Users, Wrench, FileText } from 'lucide-react';
+import { Filter, TrendingUp, Funnel, PieChart, BarChart3, LayoutDashboard, Users, Wrench, FileText, Clock, Receipt, Scale, HardHat, Boxes } from 'lucide-react';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import ReportsHubTabs from '../ReportsHubTabs';
@@ -49,6 +49,36 @@ const reportTypes = [
     description: 'Billable vs non-billable hours per team member with capacity tracking.',
     href: '/app/reports/utilization',
     icon: <Users size={24} />,
+  },
+  {
+    title: 'AR Aging',
+    description: 'Accounts receivable aging analysis with client-level breakdown by overdue bucket.',
+    href: '/app/reports/aging',
+    icon: <Clock size={24} />,
+  },
+  {
+    title: 'Expense Analysis',
+    description: 'Expense breakdown by category and project with approval status tracking.',
+    href: '/app/reports/expenses',
+    icon: <Receipt size={24} />,
+  },
+  {
+    title: 'Budget vs. Actual',
+    description: 'Compare budgeted amounts against actual spend per project with variance analysis.',
+    href: '/app/reports/budget-vs-actual',
+    icon: <Scale size={24} />,
+  },
+  {
+    title: 'Crew Availability',
+    description: 'Current crew availability, upcoming bookings, and capacity analysis.',
+    href: '/app/reports/crew-availability',
+    icon: <HardHat size={24} />,
+  },
+  {
+    title: 'Equipment Utilization',
+    description: 'Asset deployment rates, idle inventory, and category-level utilization.',
+    href: '/app/reports/equipment-utilization',
+    icon: <Boxes size={24} />,
   },
   {
     title: 'Custom Report Builder',

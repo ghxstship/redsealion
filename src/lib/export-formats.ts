@@ -40,11 +40,19 @@ function generateCSV<T extends object>(data: T[], columns: ExportColumn[]): stri
   return [header, ...rows].join('\n');
 }
 
-function escapeCSV(value: string): string {
-  if (value.includes(',') || value.includes('"') || value.includes('\n')) {
-    return `"${value.replace(/"/g, '""')}"`;
+/** Canonical CSV cell escaper — RFC 4180 compliant. SSOT for all CSV generation. */
+export function escapeCsvValue(value: unknown): string {
+  if (value === null || value === undefined) return '';
+  const str = String(value);
+  if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+    return `"${str.replace(/"/g, '""')}"`;
   }
-  return `"${value}"`;
+  return str;
+}
+
+/** @deprecated Use escapeCsvValue instead — kept for internal backward compat */
+function escapeCSV(value: string): string {
+  return `"${escapeCsvValue(value)}"`;
 }
 
 // ---------------------------------------------------------------------------
@@ -122,6 +130,19 @@ export async function copyToClipboard<T extends object>(
 // ---------------------------------------------------------------------------
 // Download helper
 // ---------------------------------------------------------------------------
+
+/**
+ * Build a complete CSV string from headers and row arrays.
+ * Canonical server-side CSV builder — use instead of inline CSV construction.
+ */
+export function buildCsvString(
+  headers: string[],
+  rows: string[][],
+): string {
+  const headerLine = headers.map(escapeCsvValue).join(',');
+  const dataLines = rows.map((row) => row.map(escapeCsvValue).join(','));
+  return [headerLine, ...dataLines].join('\n');
+}
 
 export function downloadBlob(content: string, filename: string, mimeType: string): void {
   const blob = new Blob([content], { type: mimeType });

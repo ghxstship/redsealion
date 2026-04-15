@@ -1,6 +1,9 @@
 /**
  * Generate a CSV string suitable for payroll export.
+ * Uses the canonical buildCsvString SSOT from lib/export-formats.
  */
+import { buildCsvString } from '@/lib/export-formats';
+
 export function generatePayrollCSV(opts: {
   orgId: string;
   periodStart: string;
@@ -26,22 +29,15 @@ export function generatePayrollCSV(opts: {
   ];
 
   const rows = opts.entries.map((e) => [
-    csvEscape(e.userName),
-    csvEscape(e.email),
+    e.userName,
+    e.email,
     String(e.hours),
     String(e.rate),
-    csvEscape(e.rateType),
+    e.rateType,
     String(e.total),
-    csvEscape(e.projectName ?? ''),
+    e.projectName ?? '',
   ]);
 
-  const lines = [headers.join(','), ...rows.map((r) => r.join(','))];
-  return lines.join('\n');
+  return buildCsvString(headers, rows);
 }
 
-function csvEscape(value: string): string {
-  if (value.includes(',') || value.includes('"') || value.includes('\n')) {
-    return `"${value.replace(/"/g, '""')}"`;
-  }
-  return value;
-}

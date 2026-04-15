@@ -2,6 +2,8 @@
 
 import Button from '@/components/ui/Button';
 import { Download } from 'lucide-react';
+import { performExport } from '@/lib/export-formats';
+import type { EntityField } from '@/lib/entity-fields';
 
 interface ProjectRow {
   id: string;
@@ -13,28 +15,19 @@ interface ProjectRow {
   marginPct: number;
 }
 
+const PROFITABILITY_FIELDS: EntityField[] = [
+  { key: 'name', label: 'Project', type: 'text' },
+  { key: 'clientName', label: 'Client', type: 'text' },
+  { key: 'revenue', label: 'Revenue', type: 'currency' },
+  { key: 'totalCosts', label: 'Costs', type: 'currency' },
+  { key: 'margin', label: 'Margin', type: 'currency' },
+  { key: 'marginPct', label: 'Margin %', type: 'number' },
+];
+
 export default function ProfitabilityExportButton({ projects }: { projects: ProjectRow[] }) {
   function handleExport() {
     if (projects.length === 0) return;
-
-    const headers = ['Project', 'Client', 'Revenue', 'Costs', 'Margin', 'Margin %'];
-    const rows = projects.map((p) => [
-      `"${p.name.replace(/"/g, '""')}"`,
-      `"${(p.clientName ?? '—').replace(/"/g, '""')}"`,
-      p.revenue.toFixed(2),
-      p.totalCosts.toFixed(2),
-      p.margin.toFixed(2),
-      `${p.marginPct}%`,
-    ]);
-
-    const csv = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `profitability_${new Date().toISOString().split('T')[0]}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
+    performExport('csv', projects, PROFITABILITY_FIELDS, `profitability_${new Date().toISOString().split('T')[0]}`);
   }
 
   return (
@@ -44,3 +37,4 @@ export default function ProfitabilityExportButton({ projects }: { projects: Proj
     </Button>
   );
 }
+

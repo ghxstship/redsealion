@@ -59,6 +59,25 @@ import { generateExpenseReport } from '@/lib/documents/templates/expense-report'
 import { generateComplianceCertificate } from '@/lib/documents/templates/compliance-certificate';
 import { generateQuote } from '@/lib/documents/templates/quote';
 import { generatePayrollSummary } from '@/lib/documents/templates/payroll-summary';
+import { generateTimesheet } from '@/lib/documents/templates/timesheet';
+import { generateClientStatement } from '@/lib/documents/templates/client-statement';
+import { generateArAging } from '@/lib/documents/templates/ar-aging';
+import { generatePurchaseRequisition } from '@/lib/documents/templates/purchase-requisition';
+import { generateVendorScorecard } from '@/lib/documents/templates/vendor-scorecard';
+import { generateEquipmentManifest } from '@/lib/documents/templates/equipment-manifest';
+import { generateMaintenanceLog } from '@/lib/documents/templates/maintenance-log';
+import { generateCrewRoster } from '@/lib/documents/templates/crew-roster';
+import { generateSafetyBriefing } from '@/lib/documents/templates/safety-briefing';
+import { generateEventSummary } from '@/lib/documents/templates/event-summary';
+import { generateRentalReturnReport } from '@/lib/documents/templates/rental-return-report';
+import { generateProjectCloseout } from '@/lib/documents/templates/project-closeout';
+import { generateTaskStatusReport } from '@/lib/documents/templates/task-status-report';
+import { generateMileageReport } from '@/lib/documents/templates/mileage-report';
+import { generateTimeOffSummary } from '@/lib/documents/templates/time-off-summary';
+import { generateWarehouseInventory } from '@/lib/documents/templates/warehouse-inventory';
+import { generateFabricationOrder } from '@/lib/documents/templates/fabrication-order';
+import { generateDispatchManifest } from '@/lib/documents/templates/dispatch-manifest';
+import { generateResourceAllocation } from '@/lib/documents/templates/resource-allocation';
 
 import { createLogger } from '@/lib/logger';
 
@@ -109,9 +128,40 @@ function permResourceForType(type: DocumentType): PermissionResource {
     case 'daily-report':
       return 'events';
     case 'payroll-summary':
+    case 'timesheet':
       return 'crew';
     case 'quote':
       return 'advances';
+    case 'client-statement':
+    case 'ar-aging':
+      return 'invoices';
+    case 'purchase-requisition':
+    case 'vendor-scorecard':
+      return 'purchase_orders';
+    case 'equipment-manifest':
+    case 'maintenance-log':
+      return 'assets';
+    case 'crew-roster':
+      return 'crew';
+    case 'safety-briefing':
+      return 'compliance';
+    case 'event-summary':
+      return 'events';
+    case 'rental-return-report':
+      return 'rentals';
+    case 'project-closeout':
+    case 'task-status-report':
+    case 'resource-allocation':
+      return 'proposals';
+    case 'mileage-report':
+    case 'time-off-summary':
+      return 'crew';
+    case 'warehouse-inventory':
+      return 'warehouse';
+    case 'fabrication-order':
+      return 'assets';
+    case 'dispatch-manifest':
+      return 'warehouse';
     default:
       return 'proposals';
   }
@@ -246,6 +296,58 @@ export async function GET(
 
       case 'payroll-summary':
         return await handlePayrollSummary(supabase, org as Organization, orgId, url.searchParams.get('from'), url.searchParams.get('to'));
+
+      case 'timesheet':
+        return await handleTimesheet(supabase, org as Organization, orgId, url.searchParams.get('userId'), url.searchParams.get('from'), url.searchParams.get('to'));
+
+      case 'client-statement':
+        return await handleClientStatement(supabase, org as Organization, orgId, url.searchParams.get('clientId'), url.searchParams.get('from'), url.searchParams.get('to'));
+
+      case 'ar-aging':
+        return await handleArAging(supabase, org as Organization, orgId, url.searchParams.get('asOfDate'));
+
+      case 'purchase-requisition':
+        return await handlePurchaseRequisition(supabase, org as Organization, orgId, url.searchParams.get('requisitionId'));
+
+      case 'vendor-scorecard':
+        return await handleVendorScorecard(supabase, org as Organization, orgId, url.searchParams.get('vendorId'), url.searchParams.get('from'), url.searchParams.get('to'));
+
+      case 'equipment-manifest':
+        return await handleEquipmentManifest(supabase, org as Organization, orgId, url.searchParams.get('category'));
+
+      case 'maintenance-log':
+        return await handleMaintenanceLog(supabase, org as Organization, orgId, url.searchParams.get('assetId'));
+
+      case 'crew-roster':
+        return await handleCrewRoster(supabase, org as Organization, orgId, url.searchParams.get('role'));
+
+      case 'safety-briefing':
+        return await handleSafetyBriefing(supabase, org as Organization, orgId, url.searchParams.get('proposalId'));
+
+      case 'event-summary':
+        return await handleEventSummary(supabase, org as Organization, orgId, proposalId);
+
+      case 'rental-return-report':
+        return await handleRentalReturnReport(supabase, org as Organization, orgId, rentalId);
+
+      case 'project-closeout':
+        return await handleProjectCloseout(supabase, org as Organization, orgId, proposalId);
+
+      case 'task-status-report':
+        return await handleTaskStatusReport(supabase, org as Organization, orgId, proposalId);
+
+      case 'mileage-report':
+      case 'time-off-summary':
+      case 'warehouse-inventory':
+      case 'fabrication-order':
+      case 'dispatch-manifest':
+      case 'resource-allocation':
+        // Phase 6 stubs — type registered, full data-fetching handlers to be wired
+        // when the underlying data tables are populated
+        return NextResponse.json(
+          { error: `Document type "${type}" is registered but the data handler is pending implementation. The DOCX template is ready.` },
+          { status: 501 },
+        );
 
       default:
         return NextResponse.json(
@@ -1592,4 +1694,685 @@ async function handlePayrollSummary(
   });
 
   return docxResponse(buffer, `payroll-summary-${from}-to-${to}.docx`);
+}
+
+// ---------------------------------------------------------------------------
+// Document-specific handlers — Phase 2: New Templates
+// ---------------------------------------------------------------------------
+
+async function handleTimesheet(
+  supabase: SupabaseClient,
+  org: Organization,
+  orgId: string,
+  userId: string | null,
+  from: string | null,
+  to: string | null,
+): Promise<NextResponse> {
+  if (!userId || !from || !to) {
+    return NextResponse.json({ error: 'userId, from, and to query parameters are required' }, { status: 400 });
+  }
+
+  // Fetch employee info
+  const { data: user } = await supabase
+    .from('users')
+    .select('full_name, email, role')
+    .eq('id', userId)
+    .eq('organization_id', orgId)
+    .single();
+
+  if (!user) {
+    return NextResponse.json({ error: 'User not found' }, { status: 404 });
+  }
+
+  // Fetch timesheet status
+  const { data: timesheetRecord } = await supabase
+    .from('timesheets')
+    .select('status')
+    .eq('user_id', userId)
+    .eq('organization_id', orgId)
+    .gte('week_start', from)
+    .lte('week_start', to)
+    .order('week_start', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  // Fetch time entries for the period
+  const { data: timeEntries } = await supabase
+    .from('time_entries')
+    .select('start_time, duration_minutes, is_billable, description, proposal:proposals(name)')
+    .eq('user_id', userId)
+    .eq('organization_id', orgId)
+    .gte('start_time', `${from}T00:00:00`)
+    .lte('start_time', `${to}T23:59:59`)
+    .order('start_time');
+
+  const entries = ((timeEntries ?? []) as Record<string, unknown>[]).map((te) => {
+    const proposal = castRelation<{ name: string }>(te.proposal);
+    return {
+      date: ((te.start_time as string) ?? '').split('T')[0],
+      projectName: proposal?.name ?? 'Unallocated',
+      taskDescription: (te.description as string) ?? '',
+      hours: ((te.duration_minutes as number) ?? 0) / 60,
+      isBillable: (te.is_billable as boolean) ?? false,
+    };
+  });
+
+  const buffer = await generateTimesheet({
+    org,
+    period: { start: from, end: to },
+    employee: {
+      name: user.full_name,
+      email: user.email ?? '',
+      role: user.role,
+    },
+    entries,
+    status: (timesheetRecord?.status as string) ?? 'draft',
+  });
+
+  const slug = user.full_name.replace(/\s+/g, '-').toLowerCase().slice(0, 20);
+  return docxResponse(buffer, `timesheet-${slug}-${from}-to-${to}.docx`);
+}
+
+async function handleClientStatement(
+  supabase: SupabaseClient,
+  org: Organization,
+  orgId: string,
+  clientId: string | null,
+  from: string | null,
+  to: string | null,
+): Promise<NextResponse> {
+  if (!clientId || !from || !to) {
+    return NextResponse.json({ error: 'clientId, from, and to query parameters are required' }, { status: 400 });
+  }
+
+  const { data: client } = await supabase
+    .from('clients')
+    .select('company_name, billing_address')
+    .eq('id', clientId)
+    .eq('organization_id', orgId)
+    .single();
+
+  if (!client) {
+    return NextResponse.json({ error: 'Client not found' }, { status: 404 });
+  }
+
+  // Fetch invoices within the period
+  const { data: invoices } = await supabase
+    .from('invoices')
+    .select('invoice_number, issue_date, due_date, status, total, amount_paid')
+    .eq('client_id', clientId)
+    .eq('organization_id', orgId)
+    .gte('issue_date', from)
+    .lte('issue_date', to)
+    .order('issue_date');
+
+  // Compute previous balance (invoices before period with outstanding balance)
+  const { data: priorInvoices } = await supabase
+    .from('invoices')
+    .select('total, amount_paid')
+    .eq('client_id', clientId)
+    .eq('organization_id', orgId)
+    .lt('issue_date', from)
+    .in('status', ['sent', 'overdue', 'partially_paid']);
+
+  const previousBalance = (priorInvoices ?? []).reduce(
+    (sum, inv) => sum + ((inv.total as number) ?? 0) - ((inv.amount_paid as number) ?? 0),
+    0,
+  );
+
+  const billingAddr = client.billing_address as Record<string, string> | null;
+  const addressStr = billingAddr
+    ? [billingAddr.street, billingAddr.city, billingAddr.state, billingAddr.zip, billingAddr.country].filter(Boolean).join(', ')
+    : null;
+
+  const buffer = await generateClientStatement({
+    org,
+    client: {
+      name: client.company_name,
+      company: client.company_name,
+      email: null,
+      address: addressStr,
+    },
+    period: { start: from, end: to },
+    invoices: ((invoices ?? []) as Record<string, unknown>[]).map((inv) => ({
+      invoice_number: (inv.invoice_number as string) ?? '',
+      issue_date: (inv.issue_date as string) ?? '',
+      due_date: (inv.due_date as string) ?? '',
+      status: (inv.status as string) ?? 'draft',
+      total: (inv.total as number) ?? 0,
+      amount_paid: (inv.amount_paid as number) ?? 0,
+      balance: ((inv.total as number) ?? 0) - ((inv.amount_paid as number) ?? 0),
+    })),
+    previousBalance,
+  });
+
+  const slug = client.company_name.replace(/\s+/g, '-').toLowerCase().slice(0, 20);
+  return docxResponse(buffer, `statement-${slug}-${from}-to-${to}.docx`);
+}
+
+async function handleArAging(
+  supabase: SupabaseClient,
+  org: Organization,
+  orgId: string,
+  asOfDate: string | null,
+): Promise<NextResponse> {
+  const dateStr = asOfDate ?? new Date().toISOString().split('T')[0];
+
+  // Fetch all outstanding invoices
+  const { data: invoices } = await supabase
+    .from('invoices')
+    .select('invoice_number, client_id, issue_date, due_date, status, total, amount_paid, clients(company_name)')
+    .eq('organization_id', orgId)
+    .in('status', ['sent', 'overdue', 'partially_paid'])
+    .order('due_date');
+
+  const arInvoices = ((invoices ?? []) as Record<string, unknown>[]).map((inv) => {
+    const clientRel = castRelation<{ company_name: string }>(inv.clients);
+    return {
+      invoice_number: (inv.invoice_number as string) ?? '',
+      client_name: clientRel?.company_name ?? 'Unknown Client',
+      issue_date: (inv.issue_date as string) ?? '',
+      due_date: (inv.due_date as string) ?? '',
+      total: (inv.total as number) ?? 0,
+      amount_paid: (inv.amount_paid as number) ?? 0,
+      balance: ((inv.total as number) ?? 0) - ((inv.amount_paid as number) ?? 0),
+      status: (inv.status as string) ?? '',
+    };
+  });
+
+  const buffer = await generateArAging({
+    org,
+    asOfDate: dateStr,
+    invoices: arInvoices,
+  });
+
+  return docxResponse(buffer, `ar-aging-${dateStr}.docx`);
+}
+
+// ---------------------------------------------------------------------------
+// Document-specific handlers — Phase 4: Medium-Priority Templates
+// ---------------------------------------------------------------------------
+
+async function handlePurchaseRequisition(
+  supabase: SupabaseClient, org: Organization, orgId: string, requisitionId: string | null,
+): Promise<NextResponse> {
+  if (!requisitionId) return NextResponse.json({ error: 'requisitionId is required' }, { status: 400 });
+
+  const { data: pr } = await supabase
+    .from('purchase_requisitions')
+    .select('*, requester:users(full_name)')
+    .eq('id', requisitionId)
+    .eq('organization_id', orgId)
+    .single();
+
+  if (!pr) return NextResponse.json({ error: 'Purchase requisition not found' }, { status: 404 });
+
+  const prRec = pr as Record<string, unknown>;
+  const requester = castRelation<{ full_name: string }>(prRec.requester);
+
+  const { data: items } = await supabase
+    .from('purchase_requisition_items')
+    .select('description, quantity, unit, estimated_unit_cost, estimated_total')
+    .eq('requisition_id', requisitionId)
+    .order('sort_order');
+
+  const buffer = await generatePurchaseRequisition({
+    org,
+    requisition: {
+      requisition_number: (prRec.requisition_number as string) ?? `PR-${requisitionId.slice(0, 8)}`,
+      requested_date: (prRec.created_at as string) ?? new Date().toISOString(),
+      needed_by_date: (prRec.needed_by_date as string) ?? null,
+      status: (prRec.status as string) ?? 'draft',
+      justification: (prRec.justification as string) ?? null,
+    },
+    requesterName: requester?.full_name ?? 'Unknown',
+    projectName: (prRec.project_name as string) ?? null,
+    vendorName: (prRec.preferred_vendor as string) ?? null,
+    lineItems: ((items ?? []) as Array<Record<string, unknown>>).map((i) => ({
+      description: (i.description as string) ?? '',
+      quantity: (i.quantity as number) ?? 1,
+      unit: (i.unit as string) ?? 'ea',
+      estimated_unit_cost: (i.estimated_unit_cost as number) ?? 0,
+      estimated_total: (i.estimated_total as number) ?? 0,
+    })),
+  });
+
+  return docxResponse(buffer, `purchase-requisition-${(prRec.requisition_number as string) ?? requisitionId.slice(0, 8)}.docx`);
+}
+
+async function handleVendorScorecard(
+  supabase: SupabaseClient, org: Organization, orgId: string,
+  vendorId: string | null, from: string | null, to: string | null,
+): Promise<NextResponse> {
+  if (!vendorId) return NextResponse.json({ error: 'vendorId is required' }, { status: 400 });
+
+  const periodStart = from ?? new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+  const periodEnd = to ?? new Date().toISOString().split('T')[0];
+
+  const { data: vendor } = await supabase
+    .from('vendors')
+    .select('name, contact_email, category')
+    .eq('id', vendorId)
+    .eq('organization_id', orgId)
+    .single();
+
+  if (!vendor) return NextResponse.json({ error: 'Vendor not found' }, { status: 404 });
+
+  const { data: pos } = await supabase
+    .from('purchase_orders')
+    .select('po_number, created_at, total, status')
+    .eq('vendor_id', vendorId)
+    .eq('organization_id', orgId)
+    .gte('created_at', periodStart)
+    .lte('created_at', periodEnd)
+    .order('created_at');
+
+  const orders = ((pos ?? []) as Array<Record<string, unknown>>).map((o) => ({
+    po_number: (o.po_number as string) ?? '',
+    order_date: (o.created_at as string) ?? '',
+    total: (o.total as number) ?? 0,
+    delivery_status: (o.status as string) ?? 'pending',
+    days_late: 0,
+  }));
+
+  const totalSpend = orders.reduce((s, o) => s + o.total, 0);
+
+  const buffer = await generateVendorScorecard({
+    org,
+    vendor: { name: vendor.name, contact_email: vendor.contact_email, category: vendor.category },
+    period: { start: periodStart, end: periodEnd },
+    orders,
+    totalSpend,
+    onTimeRate: orders.length > 0 ? 100 : 0,
+    avgLeadDays: 0,
+    returnRate: 0,
+  });
+
+  return docxResponse(buffer, `vendor-scorecard-${vendor.name.replace(/\s+/g, '-').toLowerCase().slice(0, 20)}.docx`);
+}
+
+async function handleEquipmentManifest(
+  supabase: SupabaseClient, org: Organization, orgId: string, category: string | null,
+): Promise<NextResponse> {
+  let query = supabase
+    .from('assets')
+    .select('name, category, serial_number, status, current_location, condition, acquisition_cost')
+    .eq('organization_id', orgId)
+    .is('deleted_at', null)
+    .order('category')
+    .order('name');
+
+  if (category) query = query.eq('category', category);
+
+  const { data: assets } = await query;
+
+  const buffer = await generateEquipmentManifest({
+    org,
+    asOfDate: new Date().toISOString(),
+    equipmentItems: ((assets ?? []) as Array<Record<string, unknown>>).map((a) => ({
+      name: (a.name as string) ?? '',
+      category: (a.category as string) ?? 'Uncategorized',
+      serial_number: (a.serial_number as string) ?? null,
+      status: (a.status as string) ?? 'in_storage',
+      current_location: (a.current_location as string) ?? null,
+      condition: (a.condition as string) ?? null,
+      acquisition_cost: (a.acquisition_cost as number) ?? null,
+    })),
+    filterCategory: category ?? undefined,
+  });
+
+  return docxResponse(buffer, `equipment-manifest-${new Date().toISOString().split('T')[0]}.docx`);
+}
+
+async function handleMaintenanceLog(
+  supabase: SupabaseClient, org: Organization, orgId: string, assetId: string | null,
+): Promise<NextResponse> {
+  if (!assetId) return NextResponse.json({ error: 'assetId is required' }, { status: 400 });
+
+  const { data: asset } = await supabase
+    .from('assets')
+    .select('name, serial_number, category, current_location')
+    .eq('id', assetId)
+    .eq('organization_id', orgId)
+    .single();
+
+  if (!asset) return NextResponse.json({ error: 'Asset not found' }, { status: 404 });
+
+  const { data: records } = await supabase
+    .from('maintenance_records')
+    .select('scheduled_date, maintenance_type, description, technician_name, cost, status')
+    .eq('asset_id', assetId)
+    .order('scheduled_date', { ascending: false });
+
+  const buffer = await generateMaintenanceLog({
+    org,
+    asset: {
+      name: asset.name,
+      serial_number: asset.serial_number,
+      category: asset.category,
+      location: asset.current_location,
+    },
+    records: ((records ?? []) as Array<Record<string, unknown>>).map((r) => ({
+      date: (r.scheduled_date as string) ?? '',
+      type: (r.maintenance_type as string) ?? 'inspection',
+      description: (r.description as string) ?? '',
+      technician: (r.technician_name as string) ?? null,
+      cost: (r.cost as number) ?? null,
+      status: (r.status as string) ?? 'pending',
+    })),
+  });
+
+  return docxResponse(buffer, `maintenance-log-${asset.name.replace(/\s+/g, '-').toLowerCase().slice(0, 20)}.docx`);
+}
+
+async function handleCrewRoster(
+  supabase: SupabaseClient, org: Organization, orgId: string, roleFilter: string | null,
+): Promise<NextResponse> {
+  let query = supabase
+    .from('crew_profiles')
+    .select('user_id, hourly_rate, skills, availability_status, users(full_name, email, phone, role)')
+    .eq('organization_id', orgId);
+
+  const { data: profiles } = await query;
+
+  const members = ((profiles ?? []) as Array<Record<string, unknown>>).map((cp) => {
+    const u = castRelation<{ full_name: string; email: string; phone: string | null; role: string | null }>(cp.users);
+    const skills = Array.isArray(cp.skills) ? (cp.skills as string[]) : [];
+    return {
+      name: u?.full_name ?? 'Unknown',
+      email: u?.email ?? '',
+      phone: u?.phone ?? null,
+      role: u?.role ?? null,
+      skills,
+      availability: (cp.availability_status as string) ?? 'unavailable',
+      hourly_rate: (cp.hourly_rate as number) ?? null,
+    };
+  }).filter((m) => !roleFilter || m.role === roleFilter);
+
+  const buffer = await generateCrewRoster({
+    org,
+    asOfDate: new Date().toISOString(),
+    crewMembers: members,
+    filterRole: roleFilter ?? undefined,
+  });
+
+  return docxResponse(buffer, `crew-roster-${new Date().toISOString().split('T')[0]}.docx`);
+}
+
+async function handleSafetyBriefing(
+  supabase: SupabaseClient, org: Organization, orgId: string, proposalId: string | null,
+): Promise<NextResponse> {
+  const { data: compDocs } = await supabase
+    .from('compliance_documents')
+    .select('document_name, document_type, status, notes, expiry_date')
+    .eq('organization_id', orgId)
+    .is('deleted_at', null)
+    .in('document_type', ['safety_certificate', 'insurance', 'license', 'permit']);
+
+  let eventName: string | null = null;
+  let venueName: string | null = null;
+
+  if (proposalId) {
+    const { data: proposal } = await supabase
+      .from('proposals')
+      .select('name, venue:venues(name)')
+      .eq('id', proposalId)
+      .single();
+    if (proposal) {
+      eventName = (proposal as Record<string, unknown>).name as string;
+      const venue = castRelation<{ name: string }>((proposal as Record<string, unknown>).venue);
+      venueName = venue?.name ?? null;
+    }
+  }
+
+  const buffer = await generateSafetyBriefing({
+    org,
+    eventName,
+    venueName,
+    briefingDate: new Date().toISOString(),
+    safetyItems: ((compDocs ?? []) as Array<Record<string, unknown>>).map((d) => ({
+      title: (d.document_name as string) ?? '',
+      category: (d.document_type as string) ?? 'other',
+      requirement: (d.notes as string) ?? 'Required',
+      status: (d.status as string) ?? 'pending',
+      expiry_date: (d.expiry_date as string) ?? null,
+    })),
+    emergencyContact: null,
+  });
+
+  return docxResponse(buffer, `safety-briefing-${new Date().toISOString().split('T')[0]}.docx`);
+}
+
+async function handleEventSummary(
+  supabase: SupabaseClient, org: Organization, orgId: string, proposalId: string | null,
+): Promise<NextResponse> {
+  if (!proposalId) return NextResponse.json({ error: 'proposalId is required' }, { status: 400 });
+
+  const { data: proposal } = await supabase
+    .from('proposals')
+    .select('name, status, venue:venues(name, address), client:clients(company_name), phases(name, start_date, end_date, status)')
+    .eq('id', proposalId)
+    .eq('organization_id', orgId)
+    .single();
+
+  if (!proposal) return NextResponse.json({ error: 'Proposal not found' }, { status: 404 });
+
+  const pRec = proposal as Record<string, unknown>;
+  const venue = castRelation<{ name: string; address: string | null }>(pRec.venue);
+  const client = castRelation<{ company_name: string }>(pRec.client);
+  const phases = Array.isArray(pRec.phases) ? (pRec.phases as Array<Record<string, unknown>>) : [];
+
+  const { data: team } = await supabase
+    .from('team_assignments')
+    .select('role, user:users(full_name, email)')
+    .eq('proposal_id', proposalId);
+
+  const { data: invoices } = await supabase
+    .from('invoices')
+    .select('total')
+    .eq('proposal_id', proposalId)
+    .eq('organization_id', orgId);
+
+  const { data: expenses } = await supabase
+    .from('expenses')
+    .select('amount')
+    .eq('proposal_id', proposalId)
+    .eq('organization_id', orgId);
+
+  const revenue = (invoices ?? []).reduce((s, i) => s + ((i.total as number) ?? 0), 0);
+  const totalExpenses = (expenses ?? []).reduce((s, e) => s + ((e.amount as number) ?? 0), 0);
+
+  const buffer = await generateEventSummary({
+    org,
+    event: {
+      name: pRec.name as string,
+      start_date: phases.length > 0 ? (phases[0].start_date as string) ?? null : null,
+      end_date: phases.length > 0 ? (phases[phases.length - 1].end_date as string) ?? null : null,
+      status: (pRec.status as string) ?? 'draft',
+    },
+    clientName: client?.company_name ?? null,
+    venueName: venue?.name ?? null,
+    venueAddress: venue?.address ?? null,
+    team: ((team ?? []) as Array<Record<string, unknown>>).map((t) => {
+      const u = castRelation<{ full_name: string; email: string }>(t.user);
+      return { name: u?.full_name ?? 'Unknown', role: (t.role as string) ?? '', email: u?.email ?? null };
+    }),
+    phases: phases.map((p) => ({
+      name: (p.name as string) ?? '',
+      start_date: (p.start_date as string) ?? null,
+      end_date: (p.end_date as string) ?? null,
+      status: (p.status as string) ?? 'not_started',
+    })),
+    revenue,
+    expenses: totalExpenses,
+  });
+
+  return docxResponse(buffer, `event-summary-${(pRec.name as string).replace(/\s+/g, '-').toLowerCase().slice(0, 20)}.docx`);
+}
+
+async function handleRentalReturnReport(
+  supabase: SupabaseClient, org: Organization, orgId: string, rentalId: string | null,
+): Promise<NextResponse> {
+  if (!rentalId) return NextResponse.json({ error: 'rentalId is required' }, { status: 400 });
+
+  const { data: rental } = await supabase
+    .from('rental_orders')
+    .select('rental_number, rental_start, rental_end, return_date, status, client:clients(company_name)')
+    .eq('id', rentalId)
+    .eq('organization_id', orgId)
+    .single();
+
+  if (!rental) return NextResponse.json({ error: 'Rental order not found' }, { status: 404 });
+
+  const rRec = rental as Record<string, unknown>;
+  const client = castRelation<{ company_name: string }>(rRec.client);
+
+  const { data: items } = await supabase
+    .from('rental_order_line_items')
+    .select('item_name, quantity_out, quantity_returned, condition, damage_notes, replacement_cost')
+    .eq('rental_order_id', rentalId)
+    .order('sort_order');
+
+  const buffer = await generateRentalReturnReport({
+    org,
+    rental: {
+      rental_number: (rRec.rental_number as string) ?? `RNT-${rentalId.slice(0, 8)}`,
+      rental_start: (rRec.rental_start as string) ?? '',
+      rental_end: (rRec.rental_end as string) ?? '',
+      return_date: (rRec.return_date as string) ?? new Date().toISOString(),
+      status: (rRec.status as string) ?? 'returned',
+    },
+    clientName: client?.company_name ?? 'Unknown Client',
+    lineItems: ((items ?? []) as Array<Record<string, unknown>>).map((i) => ({
+      item_name: (i.item_name as string) ?? '',
+      quantity_out: (i.quantity_out as number) ?? 0,
+      quantity_returned: (i.quantity_returned as number) ?? 0,
+      condition: (i.condition as string) ?? 'good',
+      damage_notes: (i.damage_notes as string) ?? null,
+      replacement_cost: (i.replacement_cost as number) ?? null,
+    })),
+  });
+
+  return docxResponse(buffer, `rental-return-${(rRec.rental_number as string) ?? rentalId.slice(0, 8)}.docx`);
+}
+
+async function handleProjectCloseout(
+  supabase: SupabaseClient, org: Organization, orgId: string, proposalId: string | null,
+): Promise<NextResponse> {
+  if (!proposalId) return NextResponse.json({ error: 'proposalId is required' }, { status: 400 });
+
+  const { data: proposal } = await supabase
+    .from('proposals')
+    .select('name, status, client:clients(company_name)')
+    .eq('id', proposalId)
+    .eq('organization_id', orgId)
+    .single();
+
+  if (!proposal) return NextResponse.json({ error: 'Proposal not found' }, { status: 404 });
+
+  const pRec = proposal as Record<string, unknown>;
+  const client = castRelation<{ company_name: string }>(pRec.client);
+
+  // Fetch milestones
+  const { data: milestones } = await supabase
+    .from('milestone_gates')
+    .select('name, status, target_date, completed_at')
+    .eq('proposal_id', proposalId)
+    .order('sort_order');
+
+  // Fetch financials
+  const { data: invoices } = await supabase
+    .from('invoices')
+    .select('total')
+    .eq('proposal_id', proposalId)
+    .eq('organization_id', orgId);
+
+  const { data: expenses } = await supabase
+    .from('expenses')
+    .select('amount')
+    .eq('proposal_id', proposalId)
+    .eq('organization_id', orgId);
+
+  // Fetch PM
+  const { data: pm } = await supabase
+    .from('team_assignments')
+    .select('user:users(full_name)')
+    .eq('proposal_id', proposalId)
+    .eq('role', 'project_manager')
+    .limit(1)
+    .maybeSingle();
+
+  const pmUser = pm ? castRelation<{ full_name: string }>((pm as Record<string, unknown>).user) : null;
+
+  const totalRevenue = (invoices ?? []).reduce((s, i) => s + ((i.total as number) ?? 0), 0);
+  const totalExpenses = (expenses ?? []).reduce((s, e) => s + ((e.amount as number) ?? 0), 0);
+
+  const buffer = await generateProjectCloseout({
+    org,
+    project: {
+      name: pRec.name as string,
+      start_date: null,
+      end_date: null,
+      status: (pRec.status as string) ?? 'complete',
+    },
+    clientName: client?.company_name ?? null,
+    projectManager: pmUser?.full_name ?? null,
+    milestones: ((milestones ?? []) as Array<Record<string, unknown>>).map((m) => ({
+      name: (m.name as string) ?? '',
+      status: (m.status as string) ?? 'not_started',
+      planned_date: (m.target_date as string) ?? null,
+      actual_date: (m.completed_at as string) ?? null,
+    })),
+    budgetCategories: [],
+    totalRevenue,
+    totalExpenses,
+    lessonsLearned: null,
+  });
+
+  return docxResponse(buffer, `project-closeout-${(pRec.name as string).replace(/\s+/g, '-').toLowerCase().slice(0, 20)}.docx`);
+}
+
+// ---------------------------------------------------------------------------
+// Document-specific handlers — Phase 6: Low-Priority Templates
+// ---------------------------------------------------------------------------
+
+async function handleTaskStatusReport(
+  supabase: SupabaseClient, org: Organization, orgId: string, proposalId: string | null,
+): Promise<NextResponse> {
+  let projectName: string | null = null;
+
+  let taskQuery = supabase
+    .from('tasks')
+    .select('title, status, priority, due_date, assignee:users(full_name), phase:phases(name)')
+    .eq('organization_id', orgId)
+    .is('deleted_at', null)
+    .order('status')
+    .order('priority');
+
+  if (proposalId) {
+    taskQuery = taskQuery.eq('proposal_id', proposalId);
+    const { data: proposal } = await supabase.from('proposals').select('name').eq('id', proposalId).single();
+    if (proposal) projectName = proposal.name;
+  }
+
+  const { data: tasks } = await taskQuery;
+
+  const buffer = await generateTaskStatusReport({
+    org,
+    projectName,
+    tasks: ((tasks ?? []) as Array<Record<string, unknown>>).map((t) => {
+      const assignee = castRelation<{ full_name: string }>(t.assignee);
+      const phase = castRelation<{ name: string }>(t.phase);
+      return {
+        title: (t.title as string) ?? '',
+        status: (t.status as string) ?? 'not_started',
+        priority: (t.priority as string) ?? 'medium',
+        assignee: assignee?.full_name ?? null,
+        due_date: (t.due_date as string) ?? null,
+        phase: phase?.name ?? null,
+      };
+    }),
+  });
+
+  return docxResponse(buffer, `task-status-report-${new Date().toISOString().split('T')[0]}.docx`);
 }
