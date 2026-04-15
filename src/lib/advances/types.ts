@@ -174,7 +174,7 @@ interface CatalogItemInterchange {
   target_item_id: string;
   relationship_type: 'direct_substitute' | 'budget_alternative' | 'premium_upgrade' | 'same_class_comparable' | 'partial_substitute';
   compatibility_score: number;
-  comparison_data: Record<string, any>;
+  comparison_data: Record<string, unknown>;
   is_bidirectional: boolean;
   valid_contexts: string[];
   verified_by?: string;

@@ -114,7 +114,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
   }, []);
 
   const handleDocxExport = useCallback(async () => {
-    const res = await fetch(`/api/proposals/${id}/export/document`);
+    const res = await fetch(`/api/documents/proposal?proposalId=${id}`);
     const blob = await res.blob();
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -151,7 +151,7 @@ export default function ExportHubContent({ id, data }: ExportHubContentProps) {
       {activeTab === 'document' && (
         <div className="space-y-5">
           <DocxOptions onExport={handleDocxExport} />
-          <ExportCard platformName="Print Preview" platformLetter="P" platformColor="#dc2626" description="Print-ready HTML with branded cover, phase breakdown, investment tables, and terms. Use your browser's Print → Save as PDF." status="connected" onExport={() => window.open(`/api/proposals/${id}/export/pdf`, '_blank')} actions={[{ label: 'Open Print Preview', onClick: () => window.open(`/api/proposals/${id}/export/pdf`, '_blank') }]} />
+          <ExportCard platformName="Print Preview" platformLetter="P" platformColor="#dc2626" description="Print-ready HTML with branded cover, phase breakdown, investment tables, and terms. Use your browser's Print → Save as PDF." status="connected" onExport={() => window.open(`/api/proposals/${id}/export/pdf?html=1`, '_blank')} actions={[{ label: 'Open Print Preview', onClick: () => window.open(`/api/proposals/${id}/export/pdf?html=1`, '_blank') }]} />
         </div>
       )}
 

@@ -4,6 +4,9 @@ import MyScheduleHeader from '@/components/admin/my-schedule/MyScheduleHeader';
 import MyScheduleView, { type ScheduleItem, type ScheduleItemType } from '@/components/admin/my-schedule/MyScheduleView';
 
 import { RoleGate } from '@/components/shared/RoleGate';
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('my-schedule');
 
 type ScheduleBlock = {
   title: string;
@@ -204,7 +207,7 @@ async function getMySchedule(): Promise<ScheduleItem[]> {
       }
     }
   } catch (err) {
-    console.error('Error fetching schedule', err);
+    log.error('Error fetching schedule', {}, err);
   }
 
   return items;

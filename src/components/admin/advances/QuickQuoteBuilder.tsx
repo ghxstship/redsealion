@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useQuickQuote } from '@/hooks/useQuickQuote';
+import type { QuoteLineItem } from '@/hooks/useQuickQuote';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import FormLabel from '@/components/ui/FormLabel';
@@ -10,7 +11,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@
 
 export default function QuickQuoteBuilder() {
   const { quote, generateQuote, loading } = useQuickQuote();
-  const [items, setItems] = useState<any[]>([]);
+  const [items] = useState<QuoteLineItem[]>([]);
   const [days, setDays] = useState(1);
 
   // Exposing a basic builder interface

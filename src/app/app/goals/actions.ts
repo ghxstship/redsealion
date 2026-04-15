@@ -3,6 +3,9 @@
 import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('goals:actions');
 
 export async function createGoal(formData: FormData) {
   const supabase = await createClient();
@@ -27,7 +30,7 @@ export async function createGoal(formData: FormData) {
   });
 
   if (error) {
-    console.error('Failed to create goal:', error);
+    log.error('Failed to create goal', {}, error);
     return { error: 'Failed to create goal' };
   }
 
@@ -68,7 +71,7 @@ export async function updateGoal(id: string, formData: FormData) {
     .eq('organization_id', ctx.organizationId);
 
   if (error) {
-    console.error('Failed to update goal:', error);
+    log.error('Failed to update goal', {}, error);
     return { error: 'Failed to update goal' };
   }
 
@@ -122,7 +125,7 @@ export async function createKeyResult(goalId: string, formData: FormData) {
   });
 
   if (error) {
-    console.error('Failed to create key result:', error);
+    log.error('Failed to create key result', {}, error);
     return { error: 'Failed to create key result' };
   }
 
@@ -185,7 +188,7 @@ export async function createCheckIn(goalId: string, formData: FormData) {
   });
 
   if (checkinError) {
-    console.error('Failed to insert check-in:', checkinError);
+    log.error('Failed to insert check-in', {}, checkinError);
     return { error: 'Failed to insert check-in' };
   }
 

@@ -166,7 +166,7 @@ export async function POST(request: NextRequest) {
       { name: 'role', value: role },
     ],
   }).catch((err) => {
-    console.error('[invite] Email send failed:', err);
+    import('@/lib/logger').then(({ createLogger: cl }) => cl('team:invite').error('Email send failed', {}, err));
   });
 
   return NextResponse.json({

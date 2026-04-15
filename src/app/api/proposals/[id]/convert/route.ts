@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('proposals:convert');
 
 type ProposalDeliverable = {
   id: string;
@@ -126,7 +129,7 @@ export async function POST(
 
     return NextResponse.json({ workOrder }, { status: 201 });
   } catch (error: unknown) {
-    console.error('Error in quote-to-job conversion:', error);
+    log.error('Error in quote-to-job conversion', {}, error);
     const message = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json({ error: message }, { status: 500 });
   }

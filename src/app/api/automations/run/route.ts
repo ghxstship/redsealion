@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { requireFeature } from '@/lib/api/tier-guard';
 import { requirePermission } from '@/lib/api/permission-guard';
-import { sendEmail } from '@/lib/email';
+import { sendEmail } from '@/lib/email/send';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 
 interface ActionResult {
@@ -32,12 +32,12 @@ async function executeAction(
         (actionConfig.body as string) ??
         `Automation "${automation.name}" was triggered.\n\nTrigger data: ${JSON.stringify(triggerData, null, 2)}`;
 
-      const result = await sendEmail({ to: recipient, subject, body });
+      const result = await sendEmail({ to: recipient, subject, html: `<pre>${body}</pre>` });
       return {
         action_type: actionType,
         success: result.success,
         message: result.success ? `Email sent to ${recipient}` : undefined,
-        data: { messageId: result.messageId },
+        data: { messageId: result.id },
         error: result.error,
       };
     }

@@ -196,7 +196,7 @@ export async function POST(request: NextRequest) {
       { name: 'source', value: 'v1_api' },
     ],
   }).catch((err) => {
-    console.error('[v1/invitations] Email send failed:', err);
+    import('@/lib/logger').then(({ createLogger: cl }) => cl('invitations').error('Email send failed', {}, err));
   });
 
   return NextResponse.json({ success: true, invitation, email_sent: true }, { status: 201 });

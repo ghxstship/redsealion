@@ -5,6 +5,9 @@ import { checkPermission } from '@/lib/api/permission-guard';
 import { logAuditAction } from '@/lib/api/audit-logger';
 import { dispatchWebhookEvent } from '@/lib/webhooks/outbound';
 import { notifyBidResolved } from '@/lib/notifications/triggers';
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('work-orders:bids');
 
 type BidResolutionStatus = 'accepted' | 'rejected' | 'withdrawn';
 
@@ -122,7 +125,7 @@ export async function PATCH(
 
     return NextResponse.json({ bid });
   } catch (error: unknown) {
-    console.error('Error updating bid:', error);
+    log.error('Error updating bid', {}, error);
     const message = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json({ error: message }, { status: 500 });
   }

@@ -1,3 +1,13 @@
+/**
+ * Proposal PDF / Print Preview Route
+ *
+ * GET /api/proposals/[id]/export/pdf — redirects to canonical /api/documents/proposal
+ * GET /api/proposals/[id]/export/pdf?html=1 — serves inline HTML print preview
+ *
+ * The DOCX generation is now handled by the canonical document engine.
+ * The HTML print preview is retained for browser-based Print → Save as PDF.
+ */
+
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { requirePermission } from '@/lib/api/permission-guard';
@@ -6,13 +16,23 @@ import { castPaymentTerms } from '@/lib/documents/json-casts';
 import type { Json } from '@/types/database';
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
+  const url = new URL(request.url);
+  const wantHtml = url.searchParams.get('html') === '1';
+
+  // Default behavior: redirect to canonical DOCX engine
+  if (!wantHtml) {
+    const canonicalUrl = new URL(`/api/documents/proposal`, url.origin);
+    canonicalUrl.searchParams.set('proposalId', id);
+    return NextResponse.redirect(canonicalUrl.toString(), 307);
+  }
+
+  // HTML print preview (retained for browser Print → PDF)
   const permError = await requirePermission('proposals', 'view');
   if (permError) return permError;
-
-  const { id } = await params;
 
   let proposalName = 'Proposal';
   let clientName = 'Client';
@@ -38,7 +58,7 @@ export async function GET(
     if (!user) throw new Error('No auth');
 
     const { data: proposal } = await supabase
-      /* org-scoped */ .from('proposals')
+      .from('proposals')
       .select('*, clients(company_name)')
       .eq('id', id)
       .single();

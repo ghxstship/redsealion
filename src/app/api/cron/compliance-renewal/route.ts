@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('cron:compliance-renewal');
 
 /**
  * POST /api/cron/compliance-renewal
@@ -98,7 +101,7 @@ export async function POST(request: Request) {
       .in('id', docIds);
 
     if (updateError) {
-      console.error('Failed to mark reminders as sent:', updateError);
+      log.error('Failed to mark reminders as sent', {}, updateError);
     }
 
     // 5. TODO: Send actual notifications via webhook/email service
@@ -112,7 +115,7 @@ export async function POST(request: Request) {
       payloads: notificationPayloads,
     });
   } catch (err) {
-    console.error('Compliance renewal cron failed:', err);
+    log.error('Compliance renewal cron failed', {}, err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

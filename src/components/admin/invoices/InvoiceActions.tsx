@@ -50,11 +50,11 @@ export default function InvoiceActions({ invoiceId, invoiceNumber, status }: Inv
       <div className="flex items-center gap-3 shrink-0">
         <Button
           variant="ghost"
-          href={`/api/invoices/${invoiceId}/pdf`}
+          href={`/api/documents/invoice?invoiceId=${invoiceId}`}
           target="_blank"
           rel="noopener noreferrer"
         >
-          Download PDF
+          Download DOCX
         </Button>
         {status === 'draft' && (
           <Button onClick={handleSend}

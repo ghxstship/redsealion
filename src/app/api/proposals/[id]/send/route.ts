@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
-import { sendEmail } from '@/lib/email';
+import { sendEmail } from '@/lib/email/send';
 import { notifyProposalSent } from '@/lib/notifications/triggers';
 import { dispatchWebhookEvent } from '@/lib/webhooks/outbound';
 
@@ -73,15 +73,9 @@ export async function POST(
 
     // Send email if we have a contact
     if (contact?.email) {
-      const recipientName = [contact.first_name, contact.last_name]
-        .filter(Boolean)
-        .join(' ');
-
       await sendEmail({
         to: contact.email,
-        toName: recipientName || undefined,
         subject: `Proposal: ${proposal.name}`,
-        body: `You have a new proposal to review: ${proposal.name}\n\nView your proposal here: ${portalUrl}`,
         html: `
           <h2>You have a new proposal to review</h2>
           <p><strong>${proposal.name}</strong></p>

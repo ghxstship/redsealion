@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
-import { sendEmail } from '@/lib/email';
+import { sendEmail } from '@/lib/email/send';
 import { notifyInvoiceSent } from '@/lib/notifications/triggers';
 import { createPaymentLink } from '@/lib/payments/stripe';
 import { logAuditAction } from '@/lib/api/audit-logger';
@@ -125,9 +125,8 @@ export async function POST(
 
     await sendEmail({
       to: billingContact.email as string,
-      toName: `${billingContact.first_name} ${billingContact.last_name}`,
       subject: `Invoice ${invoice.invoice_number} from your provider`,
-      body: emailBody.join('\n'),
+      html: `<pre>${emailBody.join('\n')}</pre>`,
     });
   }
 

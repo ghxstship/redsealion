@@ -3,6 +3,9 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { TierGate } from '@/components/shared/TierGate';
 import PageHeader from '@/components/shared/PageHeader';
 import GoalsPageClient from './GoalsPageClient';
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('goals');
 
 export const dynamic = 'force-dynamic';
 
@@ -50,7 +53,7 @@ async function getGoals() {
       })),
     }));
   } catch (err) {
-    console.error('Failed to get goals:', err);
+    log.error('Failed to get goals', {}, err);
     return [];
   }
 }

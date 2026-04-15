@@ -120,4 +120,4 @@ export function createLogger(service: string) {
 }
 
 /** Singleton logger for general application use. */
-const logger = createLogger('flytedeck');
+export const logger = createLogger('flytedeck');

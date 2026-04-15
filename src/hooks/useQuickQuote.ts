@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 
-interface QuoteLineItem {
+export interface QuoteLineItem {
   catalog_item_id: string;
   quantity: number;
 }

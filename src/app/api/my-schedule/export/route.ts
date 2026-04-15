@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { generateICalendar, type ICalEvent } from '@/lib/utils/ical';
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('schedule:export');
 
 /**
  * GET /api/my-schedule/export
@@ -140,7 +143,7 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error('Schedule export error:', error);
+    log.error('Schedule export error', {}, error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

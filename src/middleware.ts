@@ -2,7 +2,7 @@ import { updateSession } from '@/lib/supabase/middleware';
 import type { NextRequest } from 'next/server';
 import { LOCALE_COOKIE, LOCALE_HEADER, DEFAULT_LOCALE, hasLocale } from '@/lib/i18n/config';
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const response = await updateSession(request);
 
   // Forward the user's locale preference as a response header

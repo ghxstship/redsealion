@@ -406,9 +406,85 @@ export function calloutBox(text: string, brand: DocBrand, icon?: string): Paragr
 // ---------------------------------------------------------------------------
 // Phase header block — styled "PHASE 01" label + title + rule + subtitle
 // ---------------------------------------------------------------------------
+
+export function phaseHeader(
+  phaseNumber: string,
+  title: string,
+  brand: DocBrand,
+  subtitle?: string,
+): Paragraph[] {
+  const elements: Paragraph[] = [
+    new Paragraph({
+      spacing: { before: 360, after: 40 },
+      children: [
+        new TextRun({
+          text: `PHASE ${phaseNumber}`,
+          font: brand.fontHeading,
+          size: 16,
+          bold: true,
+          allCaps: true,
+          color: brand.accentColor,
+        }),
+      ],
+    }),
+    new Paragraph({
+      spacing: { after: 80 },
+      children: [
+        new TextRun({
+          text: title,
+          font: brand.fontHeading,
+          size: 30,
+          bold: true,
+          color: brand.primaryColor,
+        }),
+      ],
+    }),
+    new Paragraph({
+      spacing: { after: subtitle ? 60 : 160 },
+      border: { bottom: { style: BorderStyle.SINGLE, size: 4, color: brand.accentColor, space: 4 } },
+    }),
+  ];
+
+  if (subtitle) {
+    elements.push(
+      new Paragraph({
+        spacing: { after: 160 },
+        children: [
+          new TextRun({
+            text: subtitle,
+            size: 22,
+            italics: true,
+            color: brand.secondaryColor,
+          }),
+        ],
+      }),
+    );
+  }
+
+  return elements;
+}
+
 // ---------------------------------------------------------------------------
 // Narrative block — left-border indented storytelling paragraph
 // ---------------------------------------------------------------------------
+
+export function narrativeBlock(text: string, brand: DocBrand): Paragraph {
+  return new Paragraph({
+    spacing: { before: 100, after: 160 },
+    indent: { left: 300 },
+    border: {
+      left: { style: BorderStyle.SINGLE, size: 8, color: brand.accentColor, space: 8 },
+    },
+    children: [
+      new TextRun({
+        text,
+        size: 22,
+        color: brand.secondaryColor,
+      }),
+    ],
+  });
+}
+
 // ---------------------------------------------------------------------------
 // Styled box — colored bordered container for callouts
 // ---------------------------------------------------------------------------
@@ -422,7 +498,7 @@ const BOX_COLORS: Record<BoxStyle, { border: string; bg: string; icon: string }>
   info: { border: '2563EB', bg: 'EFF6FF', icon: '[i]' },
 };
 
-function styledBox(
+export function styledBox(
   title: string,
   bodyLines: string[],
   style: BoxStyle,
@@ -491,12 +567,47 @@ function styledBox(
 // ---------------------------------------------------------------------------
 // Milestone gate box — green bordered with checkbox requirements + unlocks
 // ---------------------------------------------------------------------------
+
+export function milestoneGateBox(
+  title: string,
+  requirements: string[],
+  unlocks: string[],
+  brand: DocBrand,
+): (Paragraph | Table)[] {
+  const bodyLines: string[] = [];
+  if (requirements.length > 0) {
+    bodyLines.push('Requirements:');
+    requirements.forEach((r) => bodyLines.push(`  \u2610  ${r}`));
+  }
+  if (unlocks.length > 0) {
+    bodyLines.push('Unlocks:');
+    unlocks.forEach((u) => bodyLines.push(`  \u2192  ${u}`));
+  }
+  return styledBox(title, bodyLines, 'milestone', brand);
+}
+
 // ---------------------------------------------------------------------------
-// Add-on table — amber styled rows with checkbox + description + cost
+// Add-on table — amber styled rows with description + cost
 // ---------------------------------------------------------------------------
-// ---------------------------------------------------------------------------
-// Reference cards — 2-column layout for creative refs / portfolio
-// ---------------------------------------------------------------------------
+
+export function addonTable(
+  items: Array<{ name: string; description?: string; cost: string; selected: boolean }>,
+  brand: DocBrand,
+): Table {
+  const cols: TableColumn[] = [
+    { header: '', width: Math.floor(CONTENT_WIDTH * 0.05) },
+    { header: 'Add-On', width: Math.floor(CONTENT_WIDTH * 0.35) },
+    { header: 'Description', width: Math.floor(CONTENT_WIDTH * 0.4) },
+    { header: 'Cost', width: Math.floor(CONTENT_WIDTH * 0.2), align: AlignmentType.RIGHT },
+  ];
+  const rows = items.map((item) => [
+    item.selected ? '\u2611' : '\u2610',
+    item.name,
+    item.description ?? '',
+    item.cost,
+  ]);
+  return dataTable(cols, rows, brand);
+}
 // ---------------------------------------------------------------------------
 // Table builders
 // ---------------------------------------------------------------------------
@@ -598,6 +709,63 @@ export function kvTable(
 // ---------------------------------------------------------------------------
 // Signature block
 // ---------------------------------------------------------------------------
+
+export function signatureBlock(
+  parties: Array<{ role: string; name?: string }>,
+  brand: DocBrand,
+): Paragraph[] {
+  const elements: Paragraph[] = [
+    new Paragraph({ spacing: { before: 480 } }),
+  ];
+
+  for (const party of parties) {
+    elements.push(
+      new Paragraph({
+        spacing: { before: 360 },
+        children: [
+          new TextRun({
+            text: '________________________________________________',
+            color: 'A1A1AA',
+            size: 20,
+          }),
+        ],
+      }),
+      new Paragraph({
+        spacing: { after: 40 },
+        children: [
+          new TextRun({
+            text: party.role,
+            bold: true,
+            size: 20,
+            color: brand.primaryColor,
+            font: brand.fontHeading,
+          }),
+          ...(party.name
+            ? [
+                new TextRun({
+                  text: `    ${party.name}`,
+                  size: 20,
+                  color: brand.secondaryColor,
+                }),
+              ]
+            : []),
+        ],
+      }),
+      new Paragraph({
+        children: [
+          new TextRun({
+            text: 'Date: ________________________________',
+            size: 18,
+            color: 'A1A1AA',
+          }),
+        ],
+      }),
+    );
+  }
+
+  return elements;
+}
+
 // ---------------------------------------------------------------------------
 // Currency formatter
 // ---------------------------------------------------------------------------
@@ -663,6 +831,17 @@ export const DOCUMENT_TYPES = [
   'crew-call-sheet',
   'wrap-report',
   'packing-list',
+  'purchase-order',
+  'work-order',
+  'shipment-manifest',
+  'rental-agreement',
+  'daily-report',
+  'expense-report',
+  'compliance-certificate',
+  'quote',
+  'credit-note',
+  'payroll-summary',
+  'goods-receipt',
 ] as const;
 
 export type DocumentType = (typeof DOCUMENT_TYPES)[number];

@@ -1,25 +1,41 @@
+/**
+ * Invoice PDF / Print Preview Route
+ *
+ * GET /api/invoices/[id]/pdf — redirects to canonical /api/documents/invoice
+ * GET /api/invoices/[id]/pdf?html=1 — serves inline HTML print preview
+ *
+ * The DOCX generation is now handled by the canonical document engine.
+ * The HTML print preview is retained for browser-based Print → Save as PDF.
+ */
+
 import { NextRequest, NextResponse } from 'next/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { createClient } from '@/lib/supabase/server';
 import { formatCurrency } from '@/lib/utils';
+import { castRelation } from '@/lib/supabase/cast-relation';
 
-/**
- * Generate a downloadable HTML-based invoice document.
- * This uses server-rendered HTML converted to a downloadable format.
- * For production PDF, this can be enhanced with @react-pdf/renderer or Puppeteer.
- */
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const { id } = await params;
+  const url = new URL(request.url);
+  const wantHtml = url.searchParams.get('html') === '1';
+
+  // Default behavior: redirect to canonical DOCX engine
+  if (!wantHtml) {
+    const canonicalUrl = new URL(`/api/documents/invoice`, url.origin);
+    canonicalUrl.searchParams.set('invoiceId', id);
+    return NextResponse.redirect(canonicalUrl.toString(), 307);
+  }
+
+  // HTML print preview (retained for browser Print → PDF)
   const perm = await checkPermission('invoices', 'view');
   if (!perm) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!perm.allowed) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
-  const { id } = await params;
   const supabase = await createClient();
 
-  // Fetch invoice with line items and client info
   const { data: invoice, error } = await supabase
     .from('invoices')
     .select('*, clients(company_name, billing_address), invoice_line_items(*)')
@@ -31,7 +47,6 @@ export async function GET(
     return NextResponse.json({ error: 'Invoice not found.' }, { status: 404 });
   }
 
-  // Fetch organization info for branding
   const { data: org } = await supabase
     .from('organizations')
     .select('name, logo_url, settings, tax_label')
@@ -42,13 +57,12 @@ export async function GET(
   const taxLabel = (org?.tax_label as string) ?? 'Tax';
   const logoUrl = org?.logo_url as string | null;
 
-  const client = invoice.clients as Record<string, unknown> | null;
+  const client = castRelation<Record<string, unknown>>(invoice.clients);
   const clientName = (client?.company_name as string) ?? 'Client';
   const billingAddress = client?.billing_address as Record<string, string> | null;
 
   const lineItems = (invoice.invoice_line_items as Array<Record<string, unknown>>) ?? [];
 
-  // Build the PDF-ready HTML
   const html = buildInvoiceHTML({
     orgName,
     logoUrl,

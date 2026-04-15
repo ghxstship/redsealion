@@ -4,6 +4,9 @@ import { resolveCurrentOrg } from '@/lib/auth/resolve-org';
 import { dispatchWebhookEvent } from '@/lib/webhooks/outbound';
 import { notifyBidSubmitted } from '@/lib/notifications/triggers';
 import { logAuditAction } from '@/lib/api/audit-logger';
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('work-orders:bids');
 
 export async function GET(
   req: NextRequest,
@@ -29,7 +32,7 @@ export async function GET(
 
     return NextResponse.json({ bids });
   } catch (error: unknown) {
-    console.error('Error fetching bids:', error);
+    log.error('Error fetching bids', {}, error);
     const message = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json({ error: message }, { status: 500 });
   }
@@ -129,7 +132,7 @@ export async function POST(
 
     return NextResponse.json({ bid }, { status: 201 });
   } catch (error: unknown) {
-    console.error('Error submitting bid:', error);
+    log.error('Error submitting bid', {}, error);
     const message = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json({ error: message }, { status: 500 });
   }

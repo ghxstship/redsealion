@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { sendEmail } from '@/lib/email';
+import { sendEmail } from '@/lib/email/send';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
 import { createLogger } from '@/lib/logger';
@@ -41,9 +41,8 @@ export async function POST(request: NextRequest) {
     // Send email
     const result = await sendEmail({
       to: recipient_email,
-      toName: recipient_name,
       subject,
-      body: emailBody,
+      html: `<pre>${emailBody}</pre>`,
     });
 
     // Record in database
@@ -69,7 +68,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: result.success,
-      messageId: result.messageId,
+      messageId: result.id,
     });
   } catch (error) {
     log.error('[Notification] Error:', {}, error);

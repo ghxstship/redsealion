@@ -139,7 +139,7 @@ export async function POST(request: NextRequest) {
           { name: 'source', value: 'bulk_api' },
         ],
       }).catch((err) => {
-        console.error(`[bulk-invite] Email to ${inv.invited_email} failed:`, err);
+        import('@/lib/logger').then(({ createLogger: cl }) => cl('invitations').error(`Email to ${inv.invited_email} failed`, {}, err));
       });
     }
   }
