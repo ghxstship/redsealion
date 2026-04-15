@@ -58,12 +58,12 @@ export default function PortalMagicLinkForm({ orgSlug, orgName }: PortalMagicLin
         </p>
         <p className="mt-4 text-xs text-text-muted">
           Didn&apos;t receive it? Check your spam folder or{' '}
-          <Button
+          <button
             onClick={() => { setSent(false); setEmail(''); }}
             className="underline hover:text-foreground transition-colors"
           >
             try again
-          </Button>
+          </button>
           .
         </p>
       </div>

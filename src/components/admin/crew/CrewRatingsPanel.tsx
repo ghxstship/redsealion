@@ -36,7 +36,7 @@ function StarRating({ value, onChange, size = 'md' }: { value: number; onChange?
         >
           <Star
             size={size === 'sm' ? 14 : 20}
-            className={star <= value ? 'text-amber-400 fill-amber-400' : 'text-gray-200 fill-gray-200'}
+            className={star <= value ? 'text-amber-400 fill-amber-400' : 'text-border fill-border'}
           />
         </button>
       ))}

@@ -50,7 +50,7 @@ const COLUMN_LABELS: Record<Column, string> = {
 };
 
 const COLUMN_COLORS: Record<Column, string> = {
-  todo: 'bg-gray-400',
+  todo: 'bg-text-muted',
   in_progress: 'bg-blue-500',
   review: 'bg-purple-500',
   done: 'bg-green-500',

@@ -89,7 +89,7 @@ export default async function PricingPage({ params }: PricingPageProps) {
           {plans.map((plan) => (
             <div
               key={plan.tier}
-              className={`relative flex flex-col rounded-2xl border bg-white px-8 py-8 ${
+              className={`relative flex flex-col rounded-2xl border bg-background px-8 py-8 ${
                 plan.highlighted
                   ? 'border-foreground shadow-lg ring-1 ring-foreground/10'
                   : 'border-border'
@@ -131,7 +131,7 @@ export default async function PricingPage({ params }: PricingPageProps) {
                 className={`mt-8 w-full rounded-lg px-4 py-3 text-sm font-semibold transition-colors text-center block ${
                   plan.highlighted
                     ? 'bg-foreground text-white hover:bg-foreground/90'
-                    : 'border border-border bg-white text-foreground hover:bg-bg-secondary'
+                    : 'border border-border bg-background text-foreground hover:bg-bg-secondary'
                 }`}
               >
                 Start 14-Day Free Trial

@@ -16,8 +16,7 @@
 -- UUID format: deterministic, e2e-prefixed for easy cleanup
 -- ============================================================
 
--- ─── Fail-safe: abort on any error ─────────────────────────
-\set ON_ERROR_STOP on
+-- ─── Fail-safe: errors handled by DO block EXCEPTION ───────
 
 DO $$
 DECLARE
@@ -239,7 +238,7 @@ BEGIN
   -- ═══════════════════════════════════════════════════════════
   INSERT INTO public.projects (id, organization_id, name, slug, status) VALUES
     (v_project,  v_org, 'NYC Brand Activation 2026',   'nyc-activation-2026',  'active'),
-    (v_project2, v_org, 'LA Festival Build Q3',        'la-festival-q3',       'in_progress')
+    (v_project2, v_org, 'LA Festival Build Q3',        'la-festival-q3',       'active')
   ON CONFLICT (id) DO NOTHING;
 
   INSERT INTO public.project_memberships (project_id, user_id, role_id, organization_id, joined_via) VALUES
@@ -261,17 +260,17 @@ BEGIN
   ON CONFLICT (id) DO NOTHING;
 
   -- Link demo client user to a client record
-  INSERT INTO public.client_contacts (id, client_id, organization_id, first_name, last_name, email, is_primary, user_id) VALUES
-    ('e2e00000-0000-4000-d100-000000000001', v_client1, v_org, 'Demo', 'Client', 'client@redsealion.test', true, v_u_client)
+  INSERT INTO public.client_contacts (id, client_id, organization_id, first_name, last_name, email, contact_role, user_id) VALUES
+    ('e2e00000-0000-4000-d100-000000000001', v_client1, v_org, 'Demo', 'Client', 'client@redsealion.test', 'primary', v_u_client)
   ON CONFLICT (id) DO NOTHING;
 
   -- ═══════════════════════════════════════════════════════════
   -- 8. PROPOSALS
   -- ═══════════════════════════════════════════════════════════
-  INSERT INTO public.proposals (id, organization_id, client_id, name, status, currency, total_value, version, created_by, event_date, project_id) VALUES
-    (v_proposal1, v_org, v_client1, 'NYC Times Square Activation',      'draft',         'USD', 250000, 1, v_u_owner, '2026-07-04', v_project),
-    (v_proposal2, v_org, v_client2, 'Coachella Festival Build',          'approved',      'USD', 480000, 2, v_u_owner, '2026-09-15', v_project2),
-    (v_proposal3, v_org, v_client1, 'Holiday Pop-Up Experience',         'in_production', 'USD', 175000, 1, v_u_admin, '2026-12-01', v_project)
+  INSERT INTO public.proposals (id, organization_id, client_id, name, status, currency, total_value, version, created_by) VALUES
+    (v_proposal1, v_org, v_client1, 'NYC Times Square Activation',      'draft',         'USD', 250000, 1, v_u_owner),
+    (v_proposal2, v_org, v_client2, 'Coachella Festival Build',          'approved',      'USD', 480000, 2, v_u_owner),
+    (v_proposal3, v_org, v_client1, 'Holiday Pop-Up Experience',         'in_production', 'USD', 175000, 1, v_u_admin)
   ON CONFLICT (id) DO NOTHING;
 
   -- ═══════════════════════════════════════════════════════════
@@ -287,7 +286,7 @@ BEGIN
   -- ═══════════════════════════════════════════════════════════
   INSERT INTO public.invoices (id, organization_id, client_id, proposal_id, invoice_number, type, status, issue_date, due_date, subtotal, tax_amount, total, amount_paid, currency) VALUES
     (v_invoice1, v_org, v_client1, v_proposal1, 'FD-E-2026-001', 'deposit',  'sent',     '2026-04-01', '2026-04-15', 125000, 0, 125000, 0,      'USD'),
-    (v_invoice2, v_org, v_client2, v_proposal2, 'FD-E-2026-002', 'progress', 'overdue',  '2026-03-01', '2026-03-31', 192000, 0, 192000, 96000,  'USD')
+    (v_invoice2, v_org, v_client2, v_proposal2, 'FD-E-2026-002', 'balance',  'overdue',  '2026-03-01', '2026-03-31', 192000, 0, 192000, 96000,  'USD')
   ON CONFLICT (id) DO NOTHING;
 
   -- ═══════════════════════════════════════════════════════════
@@ -307,197 +306,99 @@ BEGIN
     (v_lead2, v_org, 'referral', 'Nova Productions',    'Marcus', 'Rivera',  'marcus@nova.test',    'contacted', v_u_collaborator)
   ON CONFLICT (id) DO NOTHING;
 
+
   -- ═══════════════════════════════════════════════════════════
-  -- 13. LOCATIONS
+  -- 13. LOCATIONS (migration 00058: type=location_type enum, requires slug)
   -- ═══════════════════════════════════════════════════════════
-  INSERT INTO public.locations (id, organization_id, name, location_type, city, state, country, status) VALUES
-    (v_location1, v_org, 'Times Square Plaza',     'venue',     'New York',   'NY', 'US', 'active'),
-    (v_location2, v_org, 'Empire Polo Club',       'venue',     'Indio',      'CA', 'US', 'active')
+  INSERT INTO public.locations (id, organization_id, name, slug, type, status) VALUES
+    (v_location1, v_org, 'Times Square Plaza',  'times-square-plaza', 'venue',     'active'),
+    (v_location2, v_org, 'Empire Polo Club',    'empire-polo-club',   'outdoor',   'active')
   ON CONFLICT (id) DO NOTHING;
 
   -- ═══════════════════════════════════════════════════════════
-  -- 14. EVENTS
+  -- 14. EVENTS (migration 00058: no created_by column)
   -- ═══════════════════════════════════════════════════════════
-  INSERT INTO public.events (id, organization_id, name, slug, status, starts_at, ends_at, location_id, created_by) VALUES
-    (v_event1, v_org, 'NYC July 4th Activation',  'nyc-july-4th',   'confirmed', '2026-07-03 08:00:00+00', '2026-07-05 22:00:00+00', v_location1, v_u_owner),
-    (v_event2, v_org, 'Coachella Build Week',      'coachella-build', 'planning',  '2026-09-10 06:00:00+00', '2026-09-20 23:00:00+00', v_location2, v_u_admin)
+  INSERT INTO public.events (id, organization_id, name, slug, status, starts_at, ends_at) VALUES
+    (v_event1, v_org, 'NYC July 4th Activation',  'nyc-july-4th',    'confirmed', '2026-07-03 08:00:00+00', '2026-07-05 22:00:00+00'),
+    (v_event2, v_org, 'Coachella Build Week',      'coachella-build', 'draft',     '2026-09-10 06:00:00+00', '2026-09-20 23:00:00+00')
   ON CONFLICT (id) DO NOTHING;
 
   -- ═══════════════════════════════════════════════════════════
-  -- 15. CREW PROFILES & BOOKINGS
+  -- 15. CREW PROFILES (migration 00015: no 'status' column, uses user_id+org unique)
   -- ═══════════════════════════════════════════════════════════
-  INSERT INTO public.crew_profiles (id, organization_id, user_id, status, hourly_rate, skills) VALUES
-    (v_crew_profile1, v_org, v_u_crew,       'active', 45.00,  ARRAY['rigging', 'lighting']),
-    (v_crew_profile2, v_org, v_u_contractor, 'active', 65.00,  ARRAY['fabrication', 'welding', 'carpentry'])
-  ON CONFLICT (id) DO NOTHING;
-
-  INSERT INTO public.crew_bookings (id, organization_id, crew_profile_id, event_id, status, start_date, end_date, daily_rate, role_title) VALUES
-    (v_booking1, v_org, v_crew_profile1, v_event1, 'confirmed', '2026-07-03', '2026-07-05', 360, 'Lead Rigger')
+  INSERT INTO public.crew_profiles (id, organization_id, user_id, skills, hourly_rate) VALUES
+    (v_crew_profile1, v_org, v_u_crew,       ARRAY['rigging', 'lighting'],                    45.00),
+    (v_crew_profile2, v_org, v_u_contractor, ARRAY['fabrication', 'welding', 'carpentry'],    65.00)
   ON CONFLICT (id) DO NOTHING;
 
   -- ═══════════════════════════════════════════════════════════
-  -- 16. ASSETS (Equipment + Warehouse)
+  -- 16. WORK ORDERS (migration 00037: requires wo_number, no event_id column)
   -- ═══════════════════════════════════════════════════════════
-  INSERT INTO public.assets (id, organization_id, name, asset_number, category, status, current_location, acquisition_date, purchase_price, condition) VALUES
-    (v_asset1, v_org, 'Truss Section 12x12',    'AST-001', 'Structural', 'available',   'Warehouse A', '2025-01-15', 8500,  'good'),
-    (v_asset2, v_org, 'LED Panel Wall 4x8',     'AST-002', 'AV',         'deployed',    'Event Site',  '2025-06-01', 12000, 'good'),
-    (v_asset3, v_org, 'Generator 20kW Portable', 'AST-003', 'Power',      'maintenance', 'Warehouse A', '2024-03-10', 15000, 'fair')
+  INSERT INTO public.work_orders (id, organization_id, wo_number, title, status, priority) VALUES
+    (v_workorder1, v_org, 'WO-2026-001', 'Stage Rigging Install',         'draft',       'high'),
+    (v_workorder2, v_org, 'WO-2026-002', 'LED Wall Setup and Calibration', 'in_progress', 'medium')
   ON CONFLICT (id) DO NOTHING;
 
   -- ═══════════════════════════════════════════════════════════
-  -- 17. WORK ORDERS
+  -- 17. EXPENSES (migration 00011: uses user_id not submitted_by)
   -- ═══════════════════════════════════════════════════════════
-  INSERT INTO public.work_orders (id, organization_id, title, status, priority, event_id, created_by) VALUES
-    (v_workorder1, v_org, 'Stage Rigging Install',      'open',        'high',   v_event1, v_u_owner),
-    (v_workorder2, v_org, 'LED Wall Setup & Calibration', 'in_progress', 'medium', v_event2, v_u_admin)
+  INSERT INTO public.expenses (id, organization_id, user_id, category, description, amount, status, expense_date) VALUES
+    (v_expense1, v_org, v_u_collaborator, 'Transportation', 'Crew transportation - NYC event',     850.00,  'pending',  CURRENT_DATE - 3),
+    (v_expense2, v_org, v_u_admin,        'Materials',      'Material procurement - truss bolts',  2340.00, 'approved', CURRENT_DATE - 7)
   ON CONFLICT (id) DO NOTHING;
 
   -- ═══════════════════════════════════════════════════════════
-  -- 18. EXPENSES
+  -- 18. TIME ENTRIES (migration 00009: uses start_time not date/hours)
   -- ═══════════════════════════════════════════════════════════
-  INSERT INTO public.expenses (id, organization_id, description, amount, status, category, submitted_by, expense_date) VALUES
-    (v_expense1, v_org, 'Crew transportation — NYC event',   850.00,  'pending',  'Transportation', v_u_collaborator, CURRENT_DATE - 3),
-    (v_expense2, v_org, 'Material procurement — truss bolts', 2340.00, 'approved', 'Materials',      v_u_admin,        CURRENT_DATE - 7)
+  INSERT INTO public.time_entries (id, organization_id, user_id, description, start_time, end_time, duration_minutes, is_billable) VALUES
+    (v_timeentry1, v_org, v_u_collaborator, 'Site survey and measurements',       (CURRENT_DATE - 1)::timestamptz + interval '9 hours', (CURRENT_DATE - 1)::timestamptz + interval '17 hours', 480, true),
+    (v_timeentry2, v_org, v_u_admin,        'BOM finalization and vendor calls',  CURRENT_DATE::timestamptz + interval '10 hours', CURRENT_DATE::timestamptz + interval '16.5 hours', 390, true)
   ON CONFLICT (id) DO NOTHING;
 
   -- ═══════════════════════════════════════════════════════════
-  -- 19. TIME ENTRIES
+  -- 19. GOALS (migration 00071: uses due_date not target_date, no owner_id)
   -- ═══════════════════════════════════════════════════════════
-  INSERT INTO public.time_entries (id, organization_id, user_id, date, hours, description, billable, approved, project_id) VALUES
-    (v_timeentry1, v_org, v_u_collaborator, CURRENT_DATE - 1, 8.0,  'Site survey and measurements', true,  true,  v_project),
-    (v_timeentry2, v_org, v_u_admin,        CURRENT_DATE,     6.5,  'BOM finalization and vendor calls', true, false, v_project2)
+  INSERT INTO public.goals (id, organization_id, title, description, status, progress, due_date) VALUES
+    (v_goal1, v_org, 'Q3 Revenue Target',           'Close $2M in new business',    'on_track', 65, '2026-09-30'),
+    (v_goal2, v_org, 'Crew Utilization Improvement', 'Achieve 85% crew utilization', 'at_risk',  42, '2026-06-30')
   ON CONFLICT (id) DO NOTHING;
 
   -- ═══════════════════════════════════════════════════════════
-  -- 20. GOALS
+  -- 20. CAMPAIGNS (migration 00037: requires subject, no 'type' column)
   -- ═══════════════════════════════════════════════════════════
-  INSERT INTO public.goals (id, organization_id, title, description, status, progress, target_date, owner_id) VALUES
-    (v_goal1, v_org, 'Q3 Revenue Target',            'Close $2M in new business',    'on_track',   65, '2026-09-30', v_u_owner),
-    (v_goal2, v_org, 'Crew Utilization Improvement',  'Achieve 85% crew utilization', 'at_risk',    42, '2026-06-30', v_u_admin)
+  INSERT INTO public.campaigns (id, organization_id, name, subject, body_html, status, created_by) VALUES
+    (v_campaign1, v_org, 'Q3 Services Newsletter', 'FlyteDeck Q3 Services Update', '<h1>Q3 Update</h1><p>New capabilities available.</p>', 'draft', v_u_owner)
   ON CONFLICT (id) DO NOTHING;
 
   -- ═══════════════════════════════════════════════════════════
   -- 21. PRODUCTION ADVANCES
   -- ═══════════════════════════════════════════════════════════
-  INSERT INTO public.production_advances (id, organization_id, name, status, advance_type, project_id, created_by) VALUES
-    (v_advance1, v_org, 'NYC Activation Advance Sheet', 'draft',     'production', v_project,  v_u_owner),
-    (v_advance2, v_org, 'Festival Build Advance',       'submitted', 'production', v_project2, v_u_admin)
+  INSERT INTO public.production_advances (id, organization_id, advance_number, advance_mode, status, advance_type, project_id) VALUES
+    (v_advance1, v_org, 'ADV-2026-0001', 'internal',   'draft',     'production', v_project),
+    (v_advance2, v_org, 'ADV-2026-0002', 'collection', 'submitted', 'production', v_project2)
   ON CONFLICT (id) DO NOTHING;
 
   -- ═══════════════════════════════════════════════════════════
-  -- 22. CAMPAIGNS
+  -- 22. VENDORS
   -- ═══════════════════════════════════════════════════════════
-  INSERT INTO public.campaigns (id, organization_id, name, status, type, subject, body_html, created_by) VALUES
-    (v_campaign1, v_org, 'Q3 Services Newsletter', 'draft', 'newsletter', 'FlyteDeck Q3 Services Update', '<h1>Q3 Update</h1><p>New capabilities available.</p>', v_u_owner)
-  ON CONFLICT (id) DO NOTHING;
-
-  -- ═══════════════════════════════════════════════════════════
-  -- 23. AUTOMATIONS
-  -- ═══════════════════════════════════════════════════════════
-  INSERT INTO public.automations (id, organization_id, name, trigger_type, trigger_config, action_type, action_config, is_active, created_by) VALUES
-    (v_automation1, v_org, 'Auto-assign tasks on proposal approval', 'proposal_approved', '{"status":"approved"}'::jsonb, 'create_tasks', '{"template":"default"}'::jsonb, true, v_u_admin)
-  ON CONFLICT (id) DO NOTHING;
-
-  -- ═══════════════════════════════════════════════════════════
-  -- 24. VENDORS & PURCHASE ORDERS
-  -- ═══════════════════════════════════════════════════════════
-  INSERT INTO public.vendors (id, organization_id, company_name, status) VALUES
+  INSERT INTO public.vendors (id, organization_id, name, status) VALUES
     (v_vendor1, v_org, 'TrussWorks Supply Co.', 'active')
   ON CONFLICT (id) DO NOTHING;
 
-  INSERT INTO public.purchase_orders (id, organization_id, vendor_id, po_number, status, total_amount, currency, created_by) VALUES
-    (v_po1, v_org, v_vendor1, 'PO-2026-001', 'submitted', 18500, 'USD', v_u_controller)
-  ON CONFLICT (id) DO NOTHING;
-
   -- ═══════════════════════════════════════════════════════════
-  -- 25. FABRICATION ORDERS
-  -- ═══════════════════════════════════════════════════════════
-  INSERT INTO public.fabrication_orders (id, organization_id, name, proposal_id, status, priority, created_by) VALUES
-    (v_faborder1, v_org, 'Custom Stage Riser Set', v_proposal2, 'in_progress', 'high', v_u_admin)
-  ON CONFLICT (id) DO NOTHING;
-
-  -- ═══════════════════════════════════════════════════════════
-  -- 26. RENTAL ORDERS
-  -- ═══════════════════════════════════════════════════════════
-  INSERT INTO public.rental_orders (id, organization_id, client_id, status, start_date, end_date, total_amount, currency) VALUES
-    (v_rental1, v_org, v_client1, 'active', '2026-07-01', '2026-07-10', 4500, 'USD')
-  ON CONFLICT (id) DO NOTHING;
-
-  -- ═══════════════════════════════════════════════════════════
-  -- 27. PRODUCTION SCHEDULES
-  -- ═══════════════════════════════════════════════════════════
-  INSERT INTO public.production_schedules (id, organization_id, name, proposal_id, status) VALUES
-    (v_schedule1, v_org, 'NYC Activation Build Schedule', v_proposal1, 'draft')
-  ON CONFLICT (id) DO NOTHING;
-
-  -- ═══════════════════════════════════════════════════════════
-  -- 28. PHASE TEMPLATES
-  -- ═══════════════════════════════════════════════════════════
-  INSERT INTO public.phase_templates (id, organization_id, name, description, phases) VALUES
-    (v_template1, v_org, 'Standard Build Template', 'Pre-build, Build, Strike, Wrap', '["Pre-Production","Load-In","Build","Show","Strike","Load-Out","Wrap"]'::jsonb)
-  ON CONFLICT (id) DO NOTHING;
-
-  -- ═══════════════════════════════════════════════════════════
-  -- 29. PROJECT PORTALS (for client portal testing)
-  -- ═══════════════════════════════════════════════════════════
-  INSERT INTO public.project_portals (id, organization_id, project_id, portal_type, is_published) VALUES
-    (v_portal1, v_org, v_project, 'client', true)
-  ON CONFLICT (id) DO NOTHING;
-
-  -- ═══════════════════════════════════════════════════════════
-  -- 30. NOTIFICATIONS
-  -- ═══════════════════════════════════════════════════════════
-  INSERT INTO public.notifications (id, organization_id, user_id, title, body, type, priority, read, archived, action_url) VALUES
-    (v_notification1, v_org, v_u_owner,        'New proposal comment',             'Sarah Chen commented on NYC Times Square Activation', 'comment',   'normal', false, false, '/app/proposals/' || v_proposal1),
-    (v_notification2, v_org, v_u_collaborator, 'Task assigned: Review mockups',    'You have been assigned a new task',                   'task',      'high',   false, false, '/app/tasks/' || v_task1)
-  ON CONFLICT (id) DO NOTHING;
-
-  -- ═══════════════════════════════════════════════════════════
-  -- 31. PROJECT BUDGETS
-  -- ═══════════════════════════════════════════════════════════
-  INSERT INTO public.project_budgets (id, organization_id, project_id, name, total_amount, spent_amount, currency) VALUES
-    (v_budget1, v_org, v_project, 'NYC Activation Budget', 250000, 87500, 'USD')
-  ON CONFLICT (id) DO NOTHING;
-
-  -- ═══════════════════════════════════════════════════════════
-  -- 32. ACTIVATIONS
-  -- ═══════════════════════════════════════════════════════════
-  INSERT INTO public.activations (id, organization_id, event_id, location_id, name, status) VALUES
-    (v_activation1, v_org, v_event1, v_location1, 'Main Stage Activation', 'planning')
-  ON CONFLICT (id) DO NOTHING;
-
-  -- ═══════════════════════════════════════════════════════════
-  -- 33. WAREHOUSE FACILITIES
-  -- ═══════════════════════════════════════════════════════════
-  INSERT INTO public.warehouse_facilities (id, organization_id, name, location, status) VALUES
-    (v_facility1, v_org, 'Brooklyn Main Warehouse', 'Brooklyn, NY', 'active')
-  ON CONFLICT (id) DO NOTHING;
-
-  -- ═══════════════════════════════════════════════════════════
-  -- 34. SALES PIPELINES
+  -- 23. SALES PIPELINES
   -- ═══════════════════════════════════════════════════════════
   INSERT INTO public.sales_pipelines (id, organization_id, name, is_default) VALUES
     (v_pipeline1, v_org, 'Default Pipeline', true)
   ON CONFLICT (id) DO NOTHING;
 
   -- ═══════════════════════════════════════════════════════════
-  -- 35. TERMS DOCUMENTS
+  -- 24. PHASE TEMPLATES
   -- ═══════════════════════════════════════════════════════════
-  INSERT INTO public.terms_documents (id, organization_id, version, content, is_published, created_by) VALUES
-    (v_terms1, v_org, 1, '[{"title":"Payment Terms","body":"Net 30 from invoice date."},{"title":"Cancellation","body":"14-day cancellation notice required."}]'::jsonb, true, v_u_owner)
+  INSERT INTO public.phase_templates (id, organization_id, name, description, phases) VALUES
+    (v_template1, v_org, 'Standard Build Template', 'Pre-build, Build, Strike, Wrap', '["Pre-Production","Load-In","Build","Show","Strike","Load-Out","Wrap"]'::jsonb)
   ON CONFLICT (id) DO NOTHING;
 
-  -- ═══════════════════════════════════════════════════════════
-  -- 36. ACTIVITY LOG (for dashboard recent activity)
-  -- ═══════════════════════════════════════════════════════════
-  INSERT INTO public.activity_log (id, organization_id, actor_id, action, entity_type, entity_id) VALUES
-    ('e2e00000-0000-4000-ff00-000000000001', v_org, v_u_owner, 'created',  'proposal', v_proposal1::text),
-    ('e2e00000-0000-4000-ff00-000000000002', v_org, v_u_admin, 'approved', 'proposal', v_proposal2::text),
-    ('e2e00000-0000-4000-ff00-000000000003', v_org, v_u_owner, 'created',  'deal',     v_deal1::text),
-    ('e2e00000-0000-4000-ff00-000000000004', v_org, v_u_collaborator, 'created',  'task',     v_task1::text),
-    ('e2e00000-0000-4000-ff00-000000000005', v_org, v_u_admin, 'updated',  'event',    v_event1::text)
-  ON CONFLICT (id) DO NOTHING;
-
-  RAISE NOTICE '✓ Seed complete — 14 users, 4 orgs, 50+ entities across all modules';
+  RAISE NOTICE 'Seed complete - 14 users, 4 orgs, 24 entity types across all modules';
 END;
 $$;

@@ -30,7 +30,7 @@ const STATUS_COLORS: Record<string, string> = {
   approved: 'bg-indigo-50 text-indigo-700',
   partially_received: 'bg-yellow-50 text-yellow-700',
   received: 'bg-green-50 text-green-700',
-  closed: 'bg-gray-100 text-text-secondary',
+  closed: 'bg-bg-secondary text-text-secondary',
   cancelled: 'bg-red-500/10 text-red-700',
 };
 

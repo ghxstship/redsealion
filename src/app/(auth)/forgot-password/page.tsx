@@ -38,19 +38,19 @@ export default function ForgotPasswordPage() {
 
   if (sent) {
     return (
-      <div className="rounded-2xl border border-zinc-200 bg-white px-8 py-12 shadow-sm">
+      <div className="rounded-2xl border border-border bg-background px-8 py-12 shadow-sm">
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
             Check your email
           </h1>
-          <p className="mt-2 text-sm text-zinc-500">
+          <p className="mt-2 text-sm text-text-muted">
             We sent a password reset link to{' '}
-            <span className="font-medium text-zinc-700">{email}</span>
+            <span className="font-medium text-text-secondary">{email}</span>
           </p>
         </div>
         <Link
           href="/login"
-          className="block w-full text-center text-sm text-zinc-500 transition-colors hover:text-zinc-900"
+          className="block w-full text-center text-sm text-text-muted transition-colors hover:text-foreground"
         >
           Back to sign in
         </Link>
@@ -59,20 +59,20 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="rounded-2xl border border-zinc-200 bg-white px-8 py-12 shadow-sm">
+    <div className="rounded-2xl border border-border bg-background px-8 py-12 shadow-sm">
       <div className="mb-8 text-center">
         <div className="mb-6 inline-flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-900">
-            <span className="text-xs font-bold text-white">FD</span>
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-foreground">
+            <span className="text-xs font-bold text-background">FD</span>
           </div>
-          <span className="text-lg font-semibold tracking-tight text-zinc-900">
+          <span className="text-lg font-semibold tracking-tight text-foreground">
             FlyteDeck
           </span>
         </div>
-        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
           Reset your password
         </h1>
-        <p className="mt-1 text-sm text-zinc-500">
+        <p className="mt-1 text-sm text-text-muted">
           Enter your email and we&apos;ll send you a reset link
         </p>
       </div>
@@ -87,7 +87,7 @@ export default function ForgotPasswordPage() {
         <div>
           <label
             htmlFor="email"
-            className="mb-1.5 block text-sm font-medium text-zinc-700"
+            className="mb-1.5 block text-sm font-medium text-text-secondary"
           >
             Email
           </label>
@@ -104,18 +104,20 @@ export default function ForgotPasswordPage() {
 
         <Button
           type="submit"
+          variant="primary"
+          size="lg"
           disabled={loading}
-          className="w-full rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full"
         >
           {loading ? 'Sending...' : 'Send reset link'}
         </Button>
       </form>
 
-      <div className="mt-8 border-t border-zinc-100 pt-6 text-center text-sm text-zinc-500">
+      <div className="mt-8 border-t border-border pt-6 text-center text-sm text-text-muted">
         Remember your password?{' '}
         <Link
           href="/login"
-          className="font-medium text-zinc-900 transition-colors hover:text-zinc-700"
+          className="font-medium text-foreground transition-colors hover:text-text-secondary"
         >
           Sign in
         </Link>

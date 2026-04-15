@@ -39,14 +39,14 @@ type ZoomLevel = 'day' | 'week' | 'month';
 
 function statusBarColor(status: string): string {
   const map: Record<string, string> = {
-    todo: 'bg-gray-400',
+    todo: 'bg-text-muted',
     in_progress: 'bg-blue-500',
     review: 'bg-purple-500',
     done: 'bg-green-500',
     blocked: 'bg-red-500',
-    cancelled: 'bg-gray-300',
+    cancelled: 'bg-border',
   };
-  return map[status] ?? 'bg-gray-400';
+  return map[status] ?? 'bg-text-muted';
 }
 
 const DEMO_TASKS: GanttTask[] = [
@@ -253,7 +253,7 @@ export default function GanttChart({ tasks, dependencies }: GanttChartProps) {
         {[
           { label: 'Done', color: 'bg-green-500' },
           { label: 'In Progress', color: 'bg-blue-500' },
-          { label: 'To Do', color: 'bg-gray-400' },
+          { label: 'To Do', color: 'bg-text-muted' },
           { label: 'Blocked', color: 'bg-red-500' },
           { label: 'Review', color: 'bg-purple-500' },
         ].map((item) => (

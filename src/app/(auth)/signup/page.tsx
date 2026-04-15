@@ -178,20 +178,20 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="rounded-2xl border border-zinc-200 bg-white px-8 py-12 shadow-sm">
+    <div className="rounded-2xl border border-border bg-background px-8 py-12 shadow-sm">
       <div className="mb-8 text-center">
         <div className="mb-6 inline-flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-900">
-            <span className="text-xs font-bold text-white">FD</span>
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-foreground">
+            <span className="text-xs font-bold text-background">FD</span>
           </div>
-          <span className="text-lg font-semibold tracking-tight text-zinc-900">
+          <span className="text-lg font-semibold tracking-tight text-foreground">
             FlyteDeck
           </span>
         </div>
-        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
           Create your account
         </h1>
-        <p className="mt-1 text-sm text-zinc-500">
+        <p className="mt-1 text-sm text-text-muted">
           {step === 1
             ? 'Start with your personal details'
             : 'Set up your organization'}
@@ -204,31 +204,31 @@ export default function SignupPage() {
           <div
             className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium ${
               step >= 1
-                ? 'bg-zinc-900 text-white'
-                : 'bg-zinc-100 text-zinc-400'
+                ? 'bg-foreground text-background'
+                : 'bg-bg-secondary text-text-muted'
             }`}
           >
             1
           </div>
           <span
-            className={`text-xs font-medium ${step >= 1 ? 'text-zinc-900' : 'text-zinc-400'}`}
+            className={`text-xs font-medium ${step >= 1 ? 'text-foreground' : 'text-text-muted'}`}
           >
             Account
           </span>
         </div>
-        <div className="h-px w-8 bg-zinc-200" />
+        <div className="h-px w-8 bg-bg-tertiary" />
         <div className="flex items-center gap-2">
           <div
             className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium ${
               step >= 2
-                ? 'bg-zinc-900 text-white'
-                : 'bg-zinc-100 text-zinc-400'
+                ? 'bg-foreground text-background'
+                : 'bg-bg-secondary text-text-muted'
             }`}
           >
             2
           </div>
           <span
-            className={`text-xs font-medium ${step >= 2 ? 'text-zinc-900' : 'text-zinc-400'}`}
+            className={`text-xs font-medium ${step >= 2 ? 'text-foreground' : 'text-text-muted'}`}
           >
             Organization
           </span>
@@ -247,9 +247,11 @@ export default function SignupPage() {
           <div className="mb-6 space-y-3">
             <Button
               type="button"
+              variant="secondary"
+              size="lg"
               onClick={handleGoogleSignup}
               disabled={loading}
-              className="flex w-full items-center justify-center gap-3 rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full"
             >
               <GoogleIcon />
               Continue with Google
@@ -259,10 +261,10 @@ export default function SignupPage() {
           {/* Divider */}
           <div className="relative mb-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-zinc-200" />
+              <div className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-xs">
-              <span className="bg-white px-3 text-zinc-400">or</span>
+              <span className="bg-background px-3 text-text-muted">or</span>
             </div>
           </div>
 
@@ -276,7 +278,7 @@ export default function SignupPage() {
             <div>
               <label
                 htmlFor="fullName"
-                className="mb-1.5 block text-sm font-medium text-zinc-700"
+                className="mb-1.5 block text-sm font-medium text-text-secondary"
               >
                 Full name
               </label>
@@ -292,7 +294,7 @@ export default function SignupPage() {
             <div>
               <label
                 htmlFor="email"
-                className="mb-1.5 block text-sm font-medium text-zinc-700"
+                className="mb-1.5 block text-sm font-medium text-text-secondary"
               >
                 Email
               </label>
@@ -308,7 +310,7 @@ export default function SignupPage() {
             <div>
               <label
                 htmlFor="password"
-                className="mb-1.5 block text-sm font-medium text-zinc-700"
+                className="mb-1.5 block text-sm font-medium text-text-secondary"
               >
                 Password
               </label>
@@ -324,14 +326,14 @@ export default function SignupPage() {
                   minLength={8}
                   className="pr-10"
                 />
-                <Button
+                <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 transition-colors hover:text-zinc-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted transition-colors hover:text-foreground"
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? <EyeOffIcon /> : <EyeIcon />}
-                </Button>
+                </button>
               </div>
               {/* L-03: Password strength indicator */}
               {password && (
@@ -341,18 +343,20 @@ export default function SignupPage() {
                       <div
                         key={i}
                         className={`h-1 flex-1 rounded-full transition-colors ${
-                          i <= strength.score ? strength.color : 'bg-zinc-200'
+                          i <= strength.score ? strength.color : 'bg-bg-tertiary'
                         }`}
                       />
                     ))}
                   </div>
-                  <p className="mt-1 text-xs text-zinc-500">{strength.label}</p>
+                  <p className="mt-1 text-xs text-text-muted">{strength.label}</p>
                 </div>
               )}
             </div>
             <Button
               type="submit"
-              className="w-full rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
+              variant="primary"
+              size="lg"
+              className="w-full"
             >
               Continue
             </Button>
@@ -365,7 +369,7 @@ export default function SignupPage() {
           <div>
             <label
               htmlFor="companyName"
-              className="mb-1.5 block text-sm font-medium text-zinc-700"
+              className="mb-1.5 block text-sm font-medium text-text-secondary"
             >
               Company name
             </label>
@@ -381,12 +385,12 @@ export default function SignupPage() {
           <div>
             <label
               htmlFor="slug"
-              className="mb-1.5 block text-sm font-medium text-zinc-700"
+              className="mb-1.5 block text-sm font-medium text-text-secondary"
             >
               URL slug
             </label>
-            <div className="flex items-center rounded-lg border border-zinc-300 bg-white focus-within:border-zinc-500 focus-within:ring-1 focus-within:ring-zinc-500">
-              <span className="pl-3.5 text-sm text-zinc-400">flytedeck.app/</span>
+            <div className="flex items-center rounded-lg border border-border bg-background focus-within:border-foreground focus-within:ring-1 focus-within:ring-foreground">
+              <span className="pl-3.5 text-sm text-text-muted">flytedeck.app/</span>
               <FormInput
                 id="slug"
                 type="text"
@@ -394,22 +398,26 @@ export default function SignupPage() {
                 onChange={(e) => setSlug(e.target.value)}
                 placeholder="acme-productions"
                 required
-                className="w-full rounded-r-lg border-none bg-transparent px-1 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none"
+                className="w-full rounded-r-lg border-none bg-transparent px-1 py-2.5 text-sm text-foreground placeholder:text-text-muted focus:outline-none"
               />
             </div>
           </div>
           <div className="flex gap-3">
             <Button
               type="button"
+              variant="secondary"
+              size="lg"
               onClick={() => setStep(1)}
-              className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50"
+              className="w-full"
             >
               Back
             </Button>
             <Button
               type="submit"
+              variant="primary"
+              size="lg"
               disabled={loading}
-              className="w-full rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full"
             >
               {loading ? 'Creating account...' : 'Create account'}
             </Button>
@@ -417,18 +425,18 @@ export default function SignupPage() {
         </form>
       )}
 
-      <div className="mt-6 text-center text-xs text-zinc-500">
+      <div className="mt-6 text-center text-xs text-text-muted">
         By creating an account, you agree to our{' '}
-        <Link href="/terms" className="underline hover:text-zinc-900">Terms of Service</Link>
+        <Link href="/terms" className="underline hover:text-foreground">Terms of Service</Link>
         {' '}and{' '}
-        <Link href="/privacy" className="underline hover:text-zinc-900">Privacy Policy</Link>.
+        <Link href="/privacy" className="underline hover:text-foreground">Privacy Policy</Link>.
       </div>
 
-      <div className="mt-8 border-t border-zinc-100 pt-6 text-center text-sm text-zinc-500">
+      <div className="mt-8 border-t border-border pt-6 text-center text-sm text-text-muted">
         Already have an account?{' '}
         <Link
           href="/login"
-          className="font-medium text-zinc-900 transition-colors hover:text-zinc-700"
+          className="font-medium text-foreground transition-colors hover:text-text-secondary"
         >
           Sign in
         </Link>

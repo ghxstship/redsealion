@@ -161,11 +161,11 @@ export default function ResetPasswordPage() {
 
   if (success) {
     return (
-      <div className="rounded-2xl border border-zinc-200 bg-white px-8 py-12 shadow-sm text-center">
-        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
+      <div className="rounded-2xl border border-border bg-background px-8 py-12 shadow-sm text-center">
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
           Password updated
         </h1>
-        <p className="mt-2 text-sm text-zinc-500">
+        <p className="mt-2 text-sm text-text-muted">
           Redirecting you to the dashboard…
         </p>
       </div>
@@ -173,20 +173,20 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="rounded-2xl border border-zinc-200 bg-white px-8 py-12 shadow-sm">
+    <div className="rounded-2xl border border-border bg-background px-8 py-12 shadow-sm">
       <div className="mb-8 text-center">
         <div className="mb-6 inline-flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-900">
-            <span className="text-xs font-bold text-white">FD</span>
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-foreground">
+            <span className="text-xs font-bold text-background">FD</span>
           </div>
-          <span className="text-lg font-semibold tracking-tight text-zinc-900">
+          <span className="text-lg font-semibold tracking-tight text-foreground">
             FlyteDeck
           </span>
         </div>
-        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
           Set a new password
         </h1>
-        <p className="mt-1 text-sm text-zinc-500">
+        <p className="mt-1 text-sm text-text-muted">
           Choose a new password for your account
         </p>
       </div>
@@ -199,9 +199,9 @@ export default function ResetPasswordPage() {
 
       {/* H-04: Display password requirements */}
       {ready && (
-        <div className="mb-6 rounded-lg border border-zinc-100 bg-zinc-50 px-4 py-3">
-          <p className="text-xs font-medium text-zinc-600 mb-1">Password requirements:</p>
-          <ul className="text-xs text-zinc-500 space-y-0.5">
+        <div className="mb-6 rounded-lg border border-border bg-bg-secondary px-4 py-3">
+          <p className="text-xs font-medium text-text-secondary mb-1">Password requirements:</p>
+          <ul className="text-xs text-text-muted space-y-0.5">
             <li>• At least {policy.password_min_length} characters</li>
             {policy.password_require_uppercase && <li>• One uppercase letter</li>}
             {policy.password_require_number && <li>• One number</li>}
@@ -215,7 +215,7 @@ export default function ResetPasswordPage() {
           <div>
             <label
               htmlFor="password"
-              className="mb-1.5 block text-sm font-medium text-zinc-700"
+              className="mb-1.5 block text-sm font-medium text-text-secondary"
             >
               New password
             </label>
@@ -231,21 +231,21 @@ export default function ResetPasswordPage() {
                 minLength={policy.password_min_length}
                 className="pr-10"
               />
-              <Button
+              <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 transition-colors hover:text-zinc-600"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted transition-colors hover:text-foreground"
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? <EyeOffIcon /> : <EyeIcon />}
-              </Button>
+              </button>
             </div>
           </div>
 
           <div>
             <label
               htmlFor="confirm"
-              className="mb-1.5 block text-sm font-medium text-zinc-700"
+              className="mb-1.5 block text-sm font-medium text-text-secondary"
             >
               Confirm password
             </label>
@@ -260,27 +260,29 @@ export default function ResetPasswordPage() {
                 minLength={policy.password_min_length}
                 className="pr-10"
               />
-              <Button
+              <button
                 type="button"
                 onClick={() => setShowConfirm(!showConfirm)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 transition-colors hover:text-zinc-600"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted transition-colors hover:text-foreground"
                 aria-label={showConfirm ? 'Hide password' : 'Show password'}
               >
                 {showConfirm ? <EyeOffIcon /> : <EyeIcon />}
-              </Button>
+              </button>
             </div>
           </div>
 
           <Button
             type="submit"
+            variant="primary"
+            size="lg"
             disabled={loading}
-            className="w-full rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+            className="w-full"
           >
             {loading ? 'Updating...' : 'Update password'}
           </Button>
         </form>
       ) : !error ? (
-        <div className="text-center text-sm text-zinc-500">
+        <div className="text-center text-sm text-text-muted">
           Validating reset link…
         </div>
       ) : null}

@@ -104,22 +104,22 @@ export default function InviteAcceptPage() {
   }
 
   if (loading) {
-    return <Skeleton height="h-[300px]" className="rounded-2xl border border-zinc-200" />;
+    return <Skeleton height="h-[300px]" className="rounded-2xl border border-border" />;
   }
 
   if (error && !invitation) {
     return (
-      <div className="rounded-2xl border border-zinc-200 bg-white px-8 py-12 shadow-sm text-center">
+      <div className="rounded-2xl border border-border bg-background px-8 py-12 shadow-sm text-center">
         <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
           <svg className="h-8 w-8 text-red-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
           </svg>
         </div>
-        <h1 className="text-xl font-semibold text-zinc-900">Invalid Invitation</h1>
-        <p className="mt-2 text-sm text-zinc-500">{error}</p>
+        <h1 className="text-xl font-semibold text-foreground">Invalid Invitation</h1>
+        <p className="mt-2 text-sm text-text-muted">{error}</p>
         <Link
           href="/login"
-          className="mt-6 inline-block rounded-lg bg-zinc-900 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
+          className="mt-6 inline-block rounded-lg bg-foreground px-6 py-2.5 text-sm font-medium text-background transition-colors hover:bg-foreground/90"
         >
           Go to Sign In
         </Link>
@@ -128,22 +128,22 @@ export default function InviteAcceptPage() {
   }
 
   return (
-    <div className="rounded-2xl border border-zinc-200 bg-white px-8 py-12 shadow-sm">
+    <div className="rounded-2xl border border-border bg-background px-8 py-12 shadow-sm">
       <div className="mb-8 text-center">
         <div className="mb-6 inline-flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-900">
-            <span className="text-xs font-bold text-white">FD</span>
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-foreground">
+            <span className="text-xs font-bold text-background">FD</span>
           </div>
-          <span className="text-lg font-semibold tracking-tight text-zinc-900">
+          <span className="text-lg font-semibold tracking-tight text-foreground">
             FlyteDeck
           </span>
         </div>
-        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
           You&apos;re invited!
         </h1>
         {invitation && (
-          <p className="mt-2 text-sm text-zinc-500">
-            You&apos;ve been invited to join <span className="font-medium text-zinc-700">{invitation.organization_name}</span> as a <span className="font-medium text-zinc-700">{invitation.role_name}</span>.
+          <p className="mt-2 text-sm text-text-muted">
+            You&apos;ve been invited to join <span className="font-medium text-text-secondary">{invitation.organization_name}</span> as a <span className="font-medium text-text-secondary">{invitation.role_name}</span>.
           </p>
         )}
       </div>
@@ -155,7 +155,7 @@ export default function InviteAcceptPage() {
       )}
 
       {invitation?.personal_message && (
-        <div className="mb-6 rounded-lg border border-zinc-100 bg-zinc-50 px-4 py-3 text-sm text-zinc-600 italic">
+        <div className="mb-6 rounded-lg border border-border bg-bg-secondary px-4 py-3 text-sm text-text-secondary italic">
           &ldquo;{invitation.personal_message}&rdquo;
         </div>
       )}
@@ -169,36 +169,38 @@ export default function InviteAcceptPage() {
           )}
 
           <Button
+            variant="primary"
+            size="lg"
             onClick={handleAccept}
             disabled={accepting}
-            className="w-full rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+            className="w-full"
           >
             {accepting ? 'Accepting...' : 'Accept Invitation'}
           </Button>
 
           <Link
             href="/app"
-            className="block w-full text-center text-sm text-zinc-500 transition-colors hover:text-zinc-900"
+            className="block w-full text-center text-sm text-text-muted transition-colors hover:text-foreground"
           >
             Go to Dashboard
           </Link>
         </div>
       ) : (
         <div className="space-y-4">
-          <p className="text-sm text-zinc-500 text-center">
+          <p className="text-sm text-text-muted text-center">
             Sign in or create an account to accept this invitation.
           </p>
 
           <Link
             href={`/login?redirect=${encodeURIComponent(`/invite/${token}`)}`}
-            className="block w-full rounded-lg bg-zinc-900 px-4 py-2.5 text-center text-sm font-medium text-white transition-colors hover:bg-zinc-800"
+            className="block w-full rounded-lg bg-foreground px-4 py-2.5 text-center text-sm font-medium text-background transition-colors hover:bg-foreground/90"
           >
             Sign In
           </Link>
 
           <Link
             href="/signup"
-            className="block w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-center text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50"
+            className="block w-full rounded-lg border border-border bg-background px-4 py-2.5 text-center text-sm font-medium text-text-secondary transition-colors hover:bg-bg-secondary"
           >
             Create Account
           </Link>

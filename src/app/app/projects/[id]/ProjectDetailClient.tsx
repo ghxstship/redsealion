@@ -172,7 +172,7 @@ export default function ProjectDetailClient({ project }: ProjectDetailProps) {
                 {project.portals.map((p) => (
                   <div key={p.id} className="flex items-center justify-between text-sm">
                     <span className="text-foreground capitalize">{p.portal_type.replace(/_/g, ' ')}</span>
-                    <StatusBadge status={p.is_published ? 'published' : 'draft'} colorMap={{published: 'bg-green-100 text-green-700', draft: 'bg-gray-100 text-text-muted'}} />
+                    <StatusBadge status={p.is_published ? 'published' : 'draft'} colorMap={{published: 'bg-green-100 text-green-700', draft: 'bg-bg-secondary text-text-muted'}} />
                   </div>
                 ))}
                 {project.portals.length === 0 && <p className="text-xs text-text-muted italic">No portals configured</p>}

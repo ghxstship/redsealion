@@ -94,7 +94,7 @@ const STATUS_COLORS: Record<string, string> = {
   accepted: 'bg-green-50 text-green-700',
   declined: 'bg-red-50 text-red-600',
   confirmed: 'bg-indigo-50 text-indigo-700',
-  cancelled: 'bg-bg-secondary text-gray-600',
+  cancelled: 'bg-bg-secondary text-text-secondary',
 };
 
 export default async function BookingDetailPage({
@@ -135,7 +135,7 @@ export default async function BookingDetailPage({
           <h2 className="text-sm font-semibold text-foreground">{booking.event_name}</h2>
           <span
             className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-              STATUS_COLORS[booking.status] ?? 'bg-bg-secondary text-gray-600'
+              STATUS_COLORS[booking.status] ?? 'bg-bg-secondary text-text-secondary'
             }`}
           >
             {formatLabel(booking.status)}

@@ -157,22 +157,23 @@ export default function LoginPage() {
 
   if (magicLinkSent) {
     return (
-      <div className="rounded-2xl border border-zinc-200 bg-white px-8 py-12 shadow-sm">
+      <div className="rounded-2xl border border-border bg-background px-8 py-12 shadow-sm">
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
             Check your email
           </h1>
-          <p className="mt-2 text-sm text-zinc-500">
+          <p className="mt-2 text-sm text-text-muted">
             We sent a magic link to{' '}
-            <span className="font-medium text-zinc-700">{email}</span>
+            <span className="font-medium text-text-secondary">{email}</span>
           </p>
         </div>
         <Button
+          variant="ghost"
           onClick={() => {
             setMagicLinkSent(false);
             setMode('password');
           }}
-          className="w-full text-center text-sm text-zinc-500 transition-colors hover:text-zinc-900"
+          className="w-full"
         >
           Back to sign in
         </Button>
@@ -181,20 +182,20 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="rounded-2xl border border-zinc-200 bg-white px-8 py-12 shadow-sm">
+    <div className="rounded-2xl border border-border bg-background px-8 py-12 shadow-sm">
       <div className="mb-8 text-center">
         <div className="mb-6 inline-flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-900">
-            <span className="text-xs font-bold text-white">FD</span>
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-foreground">
+            <span className="text-xs font-bold text-background">FD</span>
           </div>
-          <span className="text-lg font-semibold tracking-tight text-zinc-900">
+          <span className="text-lg font-semibold tracking-tight text-foreground">
             FlyteDeck
           </span>
         </div>
-        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
           Welcome back
         </h1>
-        <p className="mt-1 text-sm text-zinc-500">
+        <p className="mt-1 text-sm text-text-muted">
           Sign in to your account to continue
         </p>
       </div>
@@ -222,9 +223,11 @@ export default function LoginPage() {
       <div className="mb-6 space-y-3">
         <Button
           type="button"
+          variant="secondary"
+          size="lg"
           onClick={handleGoogleLogin}
           disabled={loading}
-          className="flex w-full items-center justify-center gap-3 rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full"
         >
           <GoogleIcon />
           Continue with Google
@@ -234,10 +237,10 @@ export default function LoginPage() {
       {/* Divider */}
       <div className="relative mb-6">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-zinc-200" />
+          <div className="w-full border-t border-border" />
         </div>
         <div className="relative flex justify-center text-xs">
-          <span className="bg-white px-3 text-zinc-400">or</span>
+          <span className="bg-background px-3 text-text-muted">or</span>
         </div>
       </div>
 
@@ -248,7 +251,7 @@ export default function LoginPage() {
         <div>
           <label
             htmlFor="email"
-            className="mb-1.5 block text-sm font-medium text-zinc-700"
+            className="mb-1.5 block text-sm font-medium text-text-secondary"
           >
             Email
           </label>
@@ -266,7 +269,7 @@ export default function LoginPage() {
           <div>
             <label
               htmlFor="password"
-              className="mb-1.5 block text-sm font-medium text-zinc-700"
+              className="mb-1.5 block text-sm font-medium text-text-secondary"
             >
               Password
             </label>
@@ -281,22 +284,24 @@ export default function LoginPage() {
                 required
                 className="pr-10"
               />
-              <Button
+              <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 transition-colors hover:text-zinc-600"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted transition-colors hover:text-foreground"
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? <EyeOffIcon /> : <EyeIcon />}
-              </Button>
+              </button>
             </div>
           </div>
         )}
 
         <Button
           type="submit"
+          variant="primary"
+          size="lg"
           disabled={loading}
-          className="w-full rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full"
         >
           {loading
             ? 'Signing in...'
@@ -308,37 +313,38 @@ export default function LoginPage() {
 
       <div className="mt-4 flex items-center justify-center gap-4">
         <Button
+          variant="ghost"
+          size="sm"
           onClick={() => {
             setMode(mode === 'password' ? 'magic-link' : 'password');
             setError(null);
           }}
-          className="text-sm text-zinc-500 transition-colors hover:text-zinc-900"
         >
           {mode === 'password'
             ? 'Sign in with magic link'
             : 'Sign in with password'}
         </Button>
-        <span className="text-zinc-300">·</span>
+        <span className="text-border">·</span>
         <Link
           href="/forgot-password"
-          className="text-sm text-zinc-500 transition-colors hover:text-zinc-900"
+          className="text-sm text-text-muted transition-colors hover:text-foreground"
         >
           Forgot password?
         </Link>
       </div>
 
-      <div className="mt-6 text-center text-xs text-zinc-500">
+      <div className="mt-6 text-center text-xs text-text-muted">
         By continuing, you agree to our{' '}
-        <Link href="/terms" className="underline hover:text-zinc-900">Terms of Service</Link>
+        <Link href="/terms" className="underline hover:text-foreground">Terms of Service</Link>
         {' '}and{' '}
-        <Link href="/privacy" className="underline hover:text-zinc-900">Privacy Policy</Link>.
+        <Link href="/privacy" className="underline hover:text-foreground">Privacy Policy</Link>.
       </div>
 
-      <div className="mt-8 border-t border-zinc-100 pt-6 text-center text-sm text-zinc-500">
+      <div className="mt-8 border-t border-border pt-6 text-center text-sm text-text-muted">
         Don&apos;t have an account?{' '}
         <Link
           href="/signup"
-          className="font-medium text-zinc-900 transition-colors hover:text-zinc-700"
+          className="font-medium text-foreground transition-colors hover:text-text-secondary"
         >
           Sign up
         </Link>

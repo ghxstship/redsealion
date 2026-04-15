@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { formatCurrency } from '@/lib/utils';
 import EmptyState from '@/components/ui/EmptyState';
 import StatusBadge, { GENERIC_STATUS_COLORS } from '@/components/ui/StatusBadge';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 import type { Metadata } from 'next';
 
 interface ViewerProposalsProps {
@@ -48,34 +49,34 @@ export default async function ViewerProposalsPage({ params }: ViewerProposalsPro
         <EmptyState message="No proposals" description="No proposals have been created yet." />
       ) : (
         <div className="rounded-lg border border-border overflow-hidden">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-bg-secondary">
-                <th className="text-left px-4 py-3 text-xs font-medium text-text-muted uppercase tracking-wider">Name</th>
-                <th className="text-left px-4 py-3 text-xs font-medium text-text-muted uppercase tracking-wider">Status</th>
-                <th className="text-right px-4 py-3 text-xs font-medium text-text-muted uppercase tracking-wider">Value</th>
-                <th className="text-right px-4 py-3 text-xs font-medium text-text-muted uppercase tracking-wider">Updated</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Value</TableHead>
+                <TableHead className="text-right">Updated</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {(proposals ?? []).map((proposal) => (
-                <tr key={proposal.id} className="hover:bg-bg-secondary/50 transition-colors">
-                  <td className="px-4 py-3 font-medium text-foreground">{proposal.name}</td>
-                  <td className="px-4 py-3">
+                <TableRow key={proposal.id}>
+                  <TableCell className="font-medium text-foreground">{proposal.name}</TableCell>
+                  <TableCell>
                     <StatusBadge status={proposal.status} colorMap={GENERIC_STATUS_COLORS} />
-                  </td>
-                  <td className="px-4 py-3 text-right text-text-secondary">
+                  </TableCell>
+                  <TableCell className="text-right text-text-secondary">
                     {formatCurrency(proposal.total_value, proposal.currency)}
-                  </td>
-                  <td className="px-4 py-3 text-right text-text-muted text-xs">
+                  </TableCell>
+                  <TableCell className="text-right text-text-muted text-xs">
                     {new Date(proposal.updated_at).toLocaleDateString('en-US', {
                       month: 'short', day: 'numeric', year: 'numeric',
                     })}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       )}
     </div>

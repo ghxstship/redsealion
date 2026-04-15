@@ -76,12 +76,12 @@ export default function VerifyEmailPage() {
 
   return (
     // H-05: Use same zinc-based styling as other auth pages, no double-nesting
-    <div className="rounded-2xl border border-zinc-200 bg-white px-8 py-12 shadow-sm text-center">
+    <div className="rounded-2xl border border-border bg-background px-8 py-12 shadow-sm text-center">
       <div className="mb-6 inline-flex items-center gap-2">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-900">
-          <span className="text-xs font-bold text-white">FD</span>
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-foreground">
+          <span className="text-xs font-bold text-background">FD</span>
         </div>
-        <span className="text-lg font-semibold tracking-tight text-zinc-900">
+        <span className="text-lg font-semibold tracking-tight text-foreground">
           FlyteDeck
         </span>
       </div>
@@ -102,10 +102,10 @@ export default function VerifyEmailPage() {
         </svg>
       </div>
 
-      <h1 className="text-xl font-semibold tracking-tight text-zinc-900">
+      <h1 className="text-xl font-semibold tracking-tight text-foreground">
         Verify your email
       </h1>
-      <p className="mt-2 text-sm text-zinc-500">
+      <p className="mt-2 text-sm text-text-muted">
         We&apos;ve sent a verification link to your email address.
         Please check your inbox and click the link to activate your account.
       </p>
@@ -127,7 +127,7 @@ export default function VerifyEmailPage() {
         <Button
           onClick={handleResend}
           disabled={loading || cooldown > 0}
-          className="w-full rounded-lg border border-zinc-200 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm font-medium text-text-secondary transition-colors hover:bg-bg-secondary disabled:cursor-not-allowed disabled:opacity-50"
         >
           {loading
             ? 'Sending...'
@@ -139,7 +139,7 @@ export default function VerifyEmailPage() {
         {/* L-07: Use Link instead of <a> */}
         <Link
           href="/login"
-          className="block text-sm text-zinc-500 hover:text-zinc-900 transition-colors"
+          className="block text-sm text-text-muted hover:text-foreground transition-colors"
         >
           ← Back to login
         </Link>

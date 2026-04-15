@@ -27,9 +27,9 @@ function RequirementStatusIcon({ status }: { status: RequirementStatus }) {
     return <span className="h-4 w-4 shrink-0 rounded-full border-2 border-blue-500 bg-blue-100" />;
   }
   if (status === 'waived') {
-    return <Minus className="h-4 w-4 text-gray-400 shrink-0" strokeWidth={2} />;
+    return <Minus className="h-4 w-4 text-text-muted shrink-0" strokeWidth={2} />;
   }
-  return <span className="h-4 w-4 shrink-0 rounded-full border-2 border-gray-300" />;
+  return <span className="h-4 w-4 shrink-0 rounded-full border-2 border-border" />;
 }
 
 function AssigneeBadge({ assignee }: { assignee: RequirementAssignee }) {
@@ -40,7 +40,7 @@ function AssigneeBadge({ assignee }: { assignee: RequirementAssignee }) {
     external_vendor: 'bg-orange-50 text-orange-700',
   };
   return (
-    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${styles[assignee] ?? 'bg-bg-secondary text-gray-600'}`}>
+    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${styles[assignee] ?? 'bg-bg-secondary text-text-secondary'}`}>
       {assignee === 'external_vendor' ? 'vendor' : assignee}
     </span>
   );
@@ -179,7 +179,7 @@ export default async function MilestonesPage({ params }: PageProps) {
                       ? 'bg-green-500 border-green-500'
                       : isCurrent
                         ? 'bg-blue-500 border-blue-500'
-                        : 'bg-white border-gray-300'
+                        : 'bg-background border-border'
                   }`}
                 />
                 {!isLast && (

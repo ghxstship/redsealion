@@ -170,7 +170,7 @@ export default function DealRiskAssessment(props: DealRiskAssessmentProps) {
                   ? 'bg-red-500'
                   : signal.severity === 'medium'
                     ? 'bg-amber-500'
-                    : 'bg-gray-400'
+                    : 'bg-text-muted'
               }`}
             />
             <span className="text-text-secondary">{signal.label}</span>

@@ -108,7 +108,7 @@ const STATUS_COLORS: Record<string, string> = {
   overdue: 'bg-red-50 text-red-700',
   paid: 'bg-green-50 text-green-700',
   partially_paid: 'bg-yellow-50 text-yellow-700',
-  draft: 'bg-bg-secondary text-gray-600',
+  draft: 'bg-bg-secondary text-text-secondary',
 };
 
 function formatLabel(s: string): string {
@@ -130,7 +130,7 @@ export default async function PaymentPage({
   if (error || !invoice) {
     return (
       <div className="min-h-screen bg-bg-secondary flex items-center justify-center p-6">
-        <div className="w-full max-w-md rounded-xl border border-border bg-white p-8 text-center">
+        <div className="w-full max-w-md rounded-xl border border-border bg-background p-8 text-center">
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-50">
             <XCircle className="text-red-500" size={24} strokeWidth={2} />
           </div>
@@ -156,12 +156,12 @@ export default async function PaymentPage({
       </div>
 
       {/* Invoice summary */}
-      <div className="w-full max-w-lg rounded-xl border border-border bg-white p-6 mb-6">
+      <div className="w-full max-w-lg rounded-xl border border-border bg-background p-6 mb-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-sm font-semibold text-foreground">Invoice Summary</h2>
           <span
             className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-              STATUS_COLORS[invoice.status] ?? 'bg-bg-secondary text-gray-600'
+              STATUS_COLORS[invoice.status] ?? 'bg-bg-secondary text-text-secondary'
             }`}
           >
             {formatLabel(invoice.status)}
@@ -220,7 +220,7 @@ export default async function PaymentPage({
             Pay Now &mdash; {formatCurrency(invoice.amount_due, invoice.currency)}
           </a>
         ) : (
-          <div className="rounded-xl border border-border bg-white p-6 text-center">
+          <div className="rounded-xl border border-border bg-background p-6 text-center">
             <p className="text-sm text-text-secondary">
               Online payment is not yet configured for this invoice.
             </p>

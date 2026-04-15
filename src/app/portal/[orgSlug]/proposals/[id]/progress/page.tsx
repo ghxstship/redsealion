@@ -190,14 +190,14 @@ export default async function ProgressPage({ params }: PageProps) {
                           ? 'bg-green-500 border-green-500'
                           : isCurrent
                             ? 'border-blue-500 bg-blue-500'
-                            : 'border-gray-300 bg-white'
+                            : 'border-border bg-background'
                       }`}
                     >
                       {phase.status === 'complete' && (
                         <IconCheck className="h-3 w-3 text-white" strokeWidth={3} />
                       )}
                       {isCurrent && (
-                        <span className="h-2 w-2 rounded-full bg-white" />
+                        <span className="h-2 w-2 rounded-full bg-background" />
                       )}
                     </div>
                     {/* Line */}

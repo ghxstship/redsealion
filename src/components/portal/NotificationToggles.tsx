@@ -99,7 +99,7 @@ export default function NotificationToggles({
             aria-label={notif.label}
           >
             <span
-              className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition-transform ${
+              className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-background shadow ring-0 transition-transform ${
                 notif.enabled ? 'translate-x-4' : 'translate-x-0'
               }`}
             />

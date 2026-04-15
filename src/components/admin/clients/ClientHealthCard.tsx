@@ -64,7 +64,7 @@ export default function ClientHealthCard(props: ClientHealthCardProps) {
                   ? 'bg-green-500'
                   : signal.impact === 'negative'
                     ? 'bg-red-500'
-                    : 'bg-gray-400'
+                    : 'bg-text-muted'
               }`}
             />
             <span className="text-text-secondary">{signal.label}</span>

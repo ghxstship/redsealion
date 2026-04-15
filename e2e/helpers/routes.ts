@@ -65,13 +65,13 @@ const ROUTES: RouteEntry[] = [
 
   // ── Clients ──
   { path: '/app/clients', minTier: 'portal', allowedRoles: [...ADMIN_COLLAB], hasDynamicParams: false, group: 'clients' },
-  { path: '/app/clients/contacts', minTier: 'portal', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'clients' },
   { path: '/app/clients/activity', minTier: 'portal', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'clients' },
+  { path: '/app/clients/map', minTier: 'portal', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'clients' },
+  { path: '/app/clients/segments', minTier: 'portal', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'clients' },
 
   // ── Leads ──
   { path: '/app/leads', minTier: 'portal', allowedRoles: [...ADMIN_COLLAB], hasDynamicParams: false, group: 'leads' },
   { path: '/app/leads/forms', minTier: 'portal', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'leads' },
-  { path: '/app/leads/scoring', minTier: 'portal', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'leads' },
 
   // ── Proposals ──
   { path: '/app/proposals', minTier: 'portal', allowedRoles: [...ADMIN_COLLAB], hasDynamicParams: false, group: 'proposals' },
@@ -79,6 +79,8 @@ const ROUTES: RouteEntry[] = [
 
   // ── Invoices ──
   { path: '/app/invoices', minTier: 'portal', allowedRoles: ADMIN_CTRL_COLLAB, hasDynamicParams: false, group: 'invoices' },
+  { path: '/app/invoices/credit-notes', minTier: 'portal', allowedRoles: ADMIN_CTRL_COLLAB, hasDynamicParams: false, group: 'invoices' },
+  { path: '/app/invoices/recurring', minTier: 'professional', allowedRoles: ADMIN_CTRL_COLLAB, hasDynamicParams: false, group: 'invoices' },
 
   // ── Projects ──
   { path: '/app/projects', minTier: 'portal', allowedRoles: ALL_INTERNAL, hasDynamicParams: false, group: 'projects' },
@@ -93,6 +95,8 @@ const ROUTES: RouteEntry[] = [
   { path: '/app/fabrication', minTier: 'professional', allowedRoles: [...ADMIN_COLLAB], hasDynamicParams: false, group: 'fabrication' },
   { path: '/app/fabrication/bom', minTier: 'professional', allowedRoles: [...ADMIN_COLLAB], hasDynamicParams: false, group: 'fabrication' },
   { path: '/app/fabrication/print', minTier: 'professional', allowedRoles: [...ADMIN_COLLAB], hasDynamicParams: false, group: 'fabrication' },
+  { path: '/app/fabrication/quality', minTier: 'professional', allowedRoles: [...ADMIN_COLLAB], hasDynamicParams: false, group: 'fabrication' },
+  { path: '/app/fabrication/shop-floor', minTier: 'professional', allowedRoles: [...ADMIN_COLLAB], hasDynamicParams: false, group: 'fabrication' },
 
   // ── Procurement ──
   { path: '/app/procurement', minTier: 'enterprise', allowedRoles: ADMIN_CTRL_COLLAB, hasDynamicParams: false, group: 'procurement' },
@@ -112,10 +116,18 @@ const ROUTES: RouteEntry[] = [
   { path: '/app/logistics', minTier: 'enterprise', allowedRoles: [...ADMIN_COLLAB], hasDynamicParams: false, group: 'logistics' },
   { path: '/app/logistics/shipping', minTier: 'enterprise', allowedRoles: [...ADMIN_COLLAB], hasDynamicParams: false, group: 'logistics' },
   { path: '/app/logistics/receiving', minTier: 'enterprise', allowedRoles: [...ADMIN_COLLAB], hasDynamicParams: false, group: 'logistics' },
+  { path: '/app/logistics/counts', minTier: 'enterprise', allowedRoles: [...ADMIN_COLLAB], hasDynamicParams: false, group: 'logistics' },
+  { path: '/app/logistics/goods-receipts', minTier: 'enterprise', allowedRoles: [...ADMIN_COLLAB], hasDynamicParams: false, group: 'logistics' },
+  { path: '/app/logistics/packing', minTier: 'enterprise', allowedRoles: [...ADMIN_COLLAB], hasDynamicParams: false, group: 'logistics' },
+  { path: '/app/logistics/scan', minTier: 'enterprise', allowedRoles: ALL_INTERNAL, hasDynamicParams: false, group: 'logistics' },
+  { path: '/app/logistics/transfers', minTier: 'enterprise', allowedRoles: [...ADMIN_COLLAB], hasDynamicParams: false, group: 'logistics' },
 
   // ── Events ──
   { path: '/app/events', minTier: 'professional', allowedRoles: ALL_INTERNAL, hasDynamicParams: false, group: 'events' },
+  { path: '/app/events/activations', minTier: 'professional', allowedRoles: ALL_INTERNAL, hasDynamicParams: false, group: 'events' },
+  { path: '/app/events/calendar', minTier: 'professional', allowedRoles: ALL_INTERNAL, hasDynamicParams: false, group: 'events' },
   { path: '/app/events/daily-reports', minTier: 'professional', allowedRoles: ALL_INTERNAL, hasDynamicParams: false, group: 'events' },
+  { path: '/app/events/locations', minTier: 'professional', allowedRoles: ALL_INTERNAL, hasDynamicParams: false, group: 'events' },
   { path: '/app/events/punch-list', minTier: 'professional', allowedRoles: ALL_INTERNAL, hasDynamicParams: false, group: 'events' },
 
   // ── Advancing ──
@@ -124,6 +136,8 @@ const ROUTES: RouteEntry[] = [
   { path: '/app/advancing/submissions', minTier: 'starter', allowedRoles: ALL_INTERNAL, hasDynamicParams: false, group: 'advancing' },
   { path: '/app/advancing/approvals', minTier: 'starter', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'advancing' },
   { path: '/app/advancing/assignments', minTier: 'starter', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'advancing' },
+  { path: '/app/advancing/fulfillment', minTier: 'starter', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'advancing' },
+  { path: '/app/advancing/quote', minTier: 'starter', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'advancing' },
 
   // ── Tasks ──
   { path: '/app/tasks', minTier: 'portal', allowedRoles: ALL_INTERNAL, hasDynamicParams: false, group: 'tasks' },
@@ -136,16 +150,22 @@ const ROUTES: RouteEntry[] = [
   // ── Campaigns ──
   { path: '/app/campaigns', minTier: 'professional', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'campaigns' },
   { path: '/app/campaigns/analytics', minTier: 'professional', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'campaigns' },
+  { path: '/app/campaigns/audiences', minTier: 'professional', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'campaigns' },
+  { path: '/app/campaigns/drafts', minTier: 'professional', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'campaigns' },
+  { path: '/app/campaigns/scheduled', minTier: 'professional', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'campaigns' },
 
   // ── Dispatch ──
   { path: '/app/dispatch', minTier: 'enterprise', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'dispatch' },
+  { path: '/app/dispatch/board', minTier: 'enterprise', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'dispatch' },
+  { path: '/app/dispatch/history', minTier: 'enterprise', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'dispatch' },
+  { path: '/app/dispatch/routes', minTier: 'enterprise', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'dispatch' },
 
   // ── Crew ──
   { path: '/app/crew', minTier: 'professional', allowedRoles: ALL_INTERNAL, hasDynamicParams: false, group: 'crew' },
-  { path: '/app/crew/roster', minTier: 'professional', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'crew' },
-  { path: '/app/crew/bookings', minTier: 'professional', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'crew' },
   { path: '/app/crew/availability', minTier: 'professional', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'crew' },
   { path: '/app/crew/onboarding', minTier: 'professional', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'crew' },
+  { path: '/app/crew/recruitment', minTier: 'professional', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'crew' },
+  { path: '/app/crew/schedule', minTier: 'professional', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'crew' },
 
   // ── People ──
   { path: '/app/people', minTier: 'enterprise', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'people' },
@@ -162,11 +182,19 @@ const ROUTES: RouteEntry[] = [
   { path: '/app/workloads/schedule', minTier: 'enterprise', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'workloads' },
   { path: '/app/workloads/utilization', minTier: 'enterprise', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'workloads' },
 
-  // ── Finance ──
-  { path: '/app/finance', minTier: 'professional', allowedRoles: ADMIN_CTRL_COLLAB, hasDynamicParams: false, group: 'finance' },
+  // ── Compliance ──
+  { path: '/app/compliance', minTier: 'professional', allowedRoles: ADMIN_ONLY, hasDynamicParams: false, group: 'compliance' },
+  { path: '/app/compliance/certifications', minTier: 'professional', allowedRoles: ADMIN_ONLY, hasDynamicParams: false, group: 'compliance' },
+  { path: '/app/compliance/cois', minTier: 'professional', allowedRoles: ADMIN_ONLY, hasDynamicParams: false, group: 'compliance' },
+  { path: '/app/compliance/contracts', minTier: 'professional', allowedRoles: ADMIN_ONLY, hasDynamicParams: false, group: 'compliance' },
+  { path: '/app/compliance/licenses', minTier: 'professional', allowedRoles: ADMIN_ONLY, hasDynamicParams: false, group: 'compliance' },
+  { path: '/app/compliance/permits', minTier: 'professional', allowedRoles: ADMIN_ONLY, hasDynamicParams: false, group: 'compliance' },
 
   // ── Expenses ──
   { path: '/app/expenses', minTier: 'enterprise', allowedRoles: ALL_INTERNAL, hasDynamicParams: false, group: 'expenses' },
+  { path: '/app/expenses/approvals', minTier: 'enterprise', allowedRoles: ADMIN_CTRL_COLLAB, hasDynamicParams: false, group: 'expenses' },
+  { path: '/app/expenses/mileage', minTier: 'enterprise', allowedRoles: ALL_INTERNAL, hasDynamicParams: false, group: 'expenses' },
+  { path: '/app/expenses/receipts', minTier: 'enterprise', allowedRoles: ALL_INTERNAL, hasDynamicParams: false, group: 'expenses' },
 
   // ── Budgets ──
   { path: '/app/budgets', minTier: 'enterprise', allowedRoles: ADMIN_CTRL_COLLAB, hasDynamicParams: false, group: 'budgets' },
@@ -176,6 +204,11 @@ const ROUTES: RouteEntry[] = [
 
   // ── Equipment ──
   { path: '/app/equipment', minTier: 'professional', allowedRoles: [...ADMIN_COLLAB], hasDynamicParams: false, group: 'equipment' },
+  { path: '/app/equipment/assets', minTier: 'professional', allowedRoles: [...ADMIN_COLLAB], hasDynamicParams: false, group: 'equipment' },
+  { path: '/app/equipment/bundles', minTier: 'professional', allowedRoles: [...ADMIN_COLLAB], hasDynamicParams: false, group: 'equipment' },
+  { path: '/app/equipment/check-in-out', minTier: 'professional', allowedRoles: ALL_INTERNAL, hasDynamicParams: false, group: 'equipment' },
+  { path: '/app/equipment/inventory', minTier: 'professional', allowedRoles: [...ADMIN_COLLAB], hasDynamicParams: false, group: 'equipment' },
+  { path: '/app/equipment/maintenance', minTier: 'professional', allowedRoles: [...ADMIN_COLLAB], hasDynamicParams: false, group: 'equipment' },
 
   // ── Assets ──
   { path: '/app/assets', minTier: 'starter', allowedRoles: ALL_INTERNAL, hasDynamicParams: false, group: 'assets' },
@@ -190,9 +223,15 @@ const ROUTES: RouteEntry[] = [
   { path: '/app/reports/wip', minTier: 'portal', allowedRoles: ADMIN_CTRL_COLLAB, hasDynamicParams: false, group: 'reports' },
   { path: '/app/reports/forecast', minTier: 'portal', allowedRoles: ADMIN_CTRL_COLLAB, hasDynamicParams: false, group: 'reports' },
   { path: '/app/reports/builder', minTier: 'professional', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'reports' },
+  { path: '/app/reports/aging', minTier: 'portal', allowedRoles: ADMIN_CTRL_COLLAB, hasDynamicParams: false, group: 'reports' },
+  { path: '/app/reports/budget-vs-actual', minTier: 'professional', allowedRoles: ADMIN_CTRL_COLLAB, hasDynamicParams: false, group: 'reports' },
+  { path: '/app/reports/crew-availability', minTier: 'professional', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'reports' },
+  { path: '/app/reports/equipment-utilization', minTier: 'professional', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'reports' },
+  { path: '/app/reports/expenses', minTier: 'enterprise', allowedRoles: ADMIN_CTRL_COLLAB, hasDynamicParams: false, group: 'reports' },
 
-  // ── Portfolio ──
-  { path: '/app/portfolio', minTier: 'starter', allowedRoles: ALL_INTERNAL, hasDynamicParams: false, group: 'portfolio' },
+  // ── Automations (sub-pages) ──
+  { path: '/app/automations/runs', minTier: 'professional', allowedRoles: ADMIN_ONLY, hasDynamicParams: false, group: 'automations' },
+  { path: '/app/automations/templates', minTier: 'professional', allowedRoles: ADMIN_ONLY, hasDynamicParams: false, group: 'automations' },
 
   // ── Templates ──
   { path: '/app/templates', minTier: 'starter', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'templates' },
@@ -200,20 +239,19 @@ const ROUTES: RouteEntry[] = [
   // ── Terms ──
   { path: '/app/terms', minTier: 'starter', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'terms' },
 
-  // ── Files ──
-  { path: '/app/files', minTier: 'portal', allowedRoles: ALL_INTERNAL, hasDynamicParams: false, group: 'files' },
-
   // ── Automations ──
   { path: '/app/automations', minTier: 'professional', allowedRoles: ADMIN_ONLY, hasDynamicParams: false, group: 'automations' },
 
   // ── Emails ──
   { path: '/app/emails', minTier: 'professional', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'emails' },
+  { path: '/app/emails/templates', minTier: 'professional', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'emails' },
+
+  // ── Files ──
+  { path: '/app/files', minTier: 'portal', allowedRoles: ALL_INTERNAL, hasDynamicParams: false, group: 'files' },
 
   // ── Integrations ──
   { path: '/app/integrations', minTier: 'professional', allowedRoles: ADMIN_ONLY, hasDynamicParams: false, group: 'integrations' },
-
-  // ── Compliance ──
-  { path: '/app/compliance', minTier: 'professional', allowedRoles: ADMIN_ONLY, hasDynamicParams: false, group: 'compliance' },
+  { path: '/app/integrations/sync-errors', minTier: 'professional', allowedRoles: ADMIN_ONLY, hasDynamicParams: false, group: 'integrations' },
 
   // ── Goals ──
   { path: '/app/goals', minTier: 'professional', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'goals' },
@@ -223,6 +261,20 @@ const ROUTES: RouteEntry[] = [
 
   // ── Marketplace ──
   { path: '/app/marketplace', minTier: 'enterprise', allowedRoles: ALL_INTERNAL, hasDynamicParams: false, group: 'marketplace' },
+
+  // ── Finance ──
+  { path: '/app/finance', minTier: 'professional', allowedRoles: ADMIN_CTRL_COLLAB, hasDynamicParams: false, group: 'finance' },
+  { path: '/app/finance/invoices', minTier: 'professional', allowedRoles: ADMIN_CTRL_COLLAB, hasDynamicParams: false, group: 'finance' },
+  { path: '/app/finance/invoices/credit-notes', minTier: 'professional', allowedRoles: ADMIN_CTRL_COLLAB, hasDynamicParams: false, group: 'finance' },
+  { path: '/app/finance/invoices/recurring', minTier: 'professional', allowedRoles: ADMIN_CTRL_COLLAB, hasDynamicParams: false, group: 'finance' },
+  { path: '/app/finance/purchase-orders', minTier: 'professional', allowedRoles: ADMIN_CTRL_COLLAB, hasDynamicParams: false, group: 'finance' },
+  { path: '/app/finance/vendors', minTier: 'professional', allowedRoles: ADMIN_CTRL_COLLAB, hasDynamicParams: false, group: 'finance' },
+  { path: '/app/finance/profitability', minTier: 'professional', allowedRoles: ADMIN_CTRL_COLLAB, hasDynamicParams: false, group: 'finance' },
+  { path: '/app/finance/budgets', minTier: 'professional', allowedRoles: ADMIN_CTRL_COLLAB, hasDynamicParams: false, group: 'finance' },
+  { path: '/app/finance/revenue-recognition', minTier: 'professional', allowedRoles: ADMIN_CTRL_COLLAB, hasDynamicParams: false, group: 'finance' },
+
+  // ── Portfolio ──
+  { path: '/app/portfolio', minTier: 'starter', allowedRoles: ALL_INTERNAL, hasDynamicParams: false, group: 'portfolio' },
 
   // ── Work Orders ──
   { path: '/app/work-orders', minTier: 'enterprise', allowedRoles: ALL_INTERNAL, hasDynamicParams: false, group: 'work-orders' },
@@ -263,6 +315,7 @@ const ROUTES: RouteEntry[] = [
   { path: '/app/settings/data-privacy', minTier: 'professional', allowedRoles: ADMIN_ONLY, hasDynamicParams: false, group: 'settings' },
   { path: '/app/settings/webhooks', minTier: 'professional', allowedRoles: ADMIN_ONLY, hasDynamicParams: false, group: 'settings' },
   { path: '/app/settings/security', minTier: 'enterprise', allowedRoles: ADMIN_ONLY, hasDynamicParams: false, group: 'settings' },
+  { path: '/app/settings/security/mfa', minTier: 'enterprise', allowedRoles: ADMIN_ONLY, hasDynamicParams: false, group: 'settings' },
   { path: '/app/settings/security/permissions', minTier: 'enterprise', allowedRoles: ADMIN_ONLY, hasDynamicParams: false, group: 'settings' },
   { path: '/app/settings/security/audit-log', minTier: 'enterprise', allowedRoles: ADMIN_ONLY, hasDynamicParams: false, group: 'settings' },
   { path: '/app/settings/sso', minTier: 'enterprise', allowedRoles: ADMIN_ONLY, hasDynamicParams: false, group: 'settings' },

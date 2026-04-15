@@ -39,8 +39,8 @@ export default function ReactivatePage() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-50 flex items-center justify-center p-6">
-      <div className="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-8 text-center shadow-sm">
+    <div className="min-h-screen bg-bg-secondary flex items-center justify-center p-6">
+      <div className="w-full max-w-md rounded-2xl border border-border bg-background p-8 text-center shadow-sm">
         <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-amber-50">
           <svg className="text-amber-600" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
@@ -49,11 +49,11 @@ export default function ReactivatePage() {
           </svg>
         </div>
 
-        <h1 className="text-xl font-semibold text-zinc-900">
+        <h1 className="text-xl font-semibold text-foreground">
           Account Deactivated
         </h1>
 
-        <p className="mt-3 text-sm text-zinc-500 leading-relaxed">
+        <p className="mt-3 text-sm text-text-muted leading-relaxed">
           Your account has been deactivated by your organization&apos;s
           administrator. If you believe this is a mistake, you can request
           reactivation below or contact your admin directly.
@@ -77,7 +77,7 @@ export default function ReactivatePage() {
             <Button
               onClick={handleRequestReactivation}
               disabled={requesting}
-              className="block w-full rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+              className="block w-full rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-background transition-colors hover:bg-foreground/90 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {requesting ? 'Submitting...' : 'Request Reactivation'}
             </Button>
@@ -85,13 +85,13 @@ export default function ReactivatePage() {
 
           <Link
             href="/login"
-            className="block w-full rounded-lg border border-zinc-200 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50"
+            className="block w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm font-medium text-text-secondary transition-colors hover:bg-bg-secondary"
           >
             Back to Sign In
           </Link>
           <a
             href="mailto:support@flytedeck.com"
-            className="block w-full rounded-lg border border-zinc-200 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50"
+            className="block w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm font-medium text-text-secondary transition-colors hover:bg-bg-secondary"
           >
             Contact Support
           </a>

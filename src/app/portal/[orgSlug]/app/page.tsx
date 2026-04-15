@@ -172,7 +172,7 @@ export default async function PortalDashboardPage({ params }: PortalDashboardPro
           <Link
             key={card.label}
             href={card.href || '#'}
-            className="group rounded-xl border border-border bg-white px-5 py-5 transition-[color,background-color,border-color,opacity,box-shadow] duration-normal hover:border-text-muted hover:shadow-sm"
+            className="group rounded-xl border border-border bg-background px-5 py-5 transition-[color,background-color,border-color,opacity,box-shadow] duration-normal hover:border-text-muted hover:shadow-sm"
           >
             <p className="text-xs font-medium uppercase tracking-wider text-text-muted">
               {card.label}
@@ -193,7 +193,7 @@ export default async function PortalDashboardPage({ params }: PortalDashboardPro
         {lockedCards.map((card) => (
           <div
             key={card.label}
-            className="relative rounded-xl border border-dashed border-border bg-white/50 px-5 py-5 opacity-60"
+            className="relative rounded-xl border border-dashed border-border bg-background/50 px-5 py-5 opacity-60"
           >
             <p className="text-xs font-medium uppercase tracking-wider text-text-muted">
               {card.label}
@@ -222,7 +222,7 @@ export default async function PortalDashboardPage({ params }: PortalDashboardPro
               <Link
                 key={item.status}
                 href={`/portal/${orgSlug}/app/pipeline`}
-                className="rounded-lg border border-border bg-white px-4 py-3 transition-[color,background-color,border-color,opacity,box-shadow] duration-normal hover:border-text-muted hover:shadow-sm"
+                className="rounded-lg border border-border bg-background px-4 py-3 transition-[color,background-color,border-color,opacity,box-shadow] duration-normal hover:border-text-muted hover:shadow-sm"
               >
                 <p className="text-xs font-medium capitalize text-text-secondary">
                   {item.status.replace(/_/g, ' ')}
@@ -245,7 +245,7 @@ export default async function PortalDashboardPage({ params }: PortalDashboardPro
           <h2 className="text-base font-semibold text-foreground mb-4">
             Recent Activity
           </h2>
-          <div className="rounded-xl border border-border bg-white divide-y divide-border">
+          <div className="rounded-xl border border-border bg-background divide-y divide-border">
             {stats.recentActivity.map((activity) => (
               <div
                 key={activity.id}

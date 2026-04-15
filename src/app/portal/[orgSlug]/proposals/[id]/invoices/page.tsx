@@ -22,7 +22,7 @@ function InvoiceTypeBadge({ type }: { type: InvoiceType }) {
     recurring: 'bg-teal-50 text-teal-700',
   };
   return (
-    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${styles[type] ?? 'bg-bg-secondary text-gray-600'}`}>
+    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${styles[type] ?? 'bg-bg-secondary text-text-secondary'}`}>
       {type.replace('_', ' ')}
     </span>
   );

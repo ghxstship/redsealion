@@ -4,7 +4,7 @@ import Button from '@/components/ui/Button';
 
 export default function OfflinePage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white px-4">
+    <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="text-center max-w-md">
         {/* FlyteDeck logo */}
         <div className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-2xl bg-foreground">

@@ -116,20 +116,20 @@ export default function SetupOrgPage() {
   }
 
   return (
-    <div className="rounded-2xl border border-zinc-200 bg-white px-8 py-12 shadow-sm">
+    <div className="rounded-2xl border border-border bg-background px-8 py-12 shadow-sm">
       <div className="mb-8 text-center">
         <div className="mb-6 inline-flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-900">
-            <span className="text-xs font-bold text-white">FD</span>
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-foreground">
+            <span className="text-xs font-bold text-background">FD</span>
           </div>
-          <span className="text-lg font-semibold tracking-tight text-zinc-900">
+          <span className="text-lg font-semibold tracking-tight text-foreground">
             FlyteDeck
           </span>
         </div>
-        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
           Set up your organization
         </h1>
-        <p className="mt-1 text-sm text-zinc-500">
+        <p className="mt-1 text-sm text-text-muted">
           One last step — tell us about yourself and your company
         </p>
       </div>
@@ -147,7 +147,7 @@ export default function SetupOrgPage() {
             <div className="flex-1">
               <label
                 htmlFor="firstName"
-                className="mb-1.5 block text-sm font-medium text-zinc-700"
+                className="mb-1.5 block text-sm font-medium text-text-secondary"
               >
                 First name
               </label>
@@ -158,13 +158,13 @@ export default function SetupOrgPage() {
                 onChange={(e) => setFirstName(e.target.value)}
                 placeholder="Jane"
                 required
-                className="w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500"
+                className="w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm text-foreground placeholder:text-text-muted focus:border-foreground focus:outline-none focus:ring-1 focus:ring-foreground"
               />
             </div>
             <div className="flex-1">
               <label
                 htmlFor="lastName"
-                className="mb-1.5 block text-sm font-medium text-zinc-700"
+                className="mb-1.5 block text-sm font-medium text-text-secondary"
               >
                 Last name
               </label>
@@ -175,7 +175,7 @@ export default function SetupOrgPage() {
                 onChange={(e) => setLastName(e.target.value)}
                 placeholder="Smith"
                 required
-                className="w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500"
+                className="w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm text-foreground placeholder:text-text-muted focus:border-foreground focus:outline-none focus:ring-1 focus:ring-foreground"
               />
             </div>
           </div>
@@ -184,7 +184,7 @@ export default function SetupOrgPage() {
         <div>
           <label
             htmlFor="companyName"
-            className="mb-1.5 block text-sm font-medium text-zinc-700"
+            className="mb-1.5 block text-sm font-medium text-text-secondary"
           >
             Company name
           </label>
@@ -195,24 +195,24 @@ export default function SetupOrgPage() {
             onChange={(e) => handleCompanyNameChange(e.target.value)}
             placeholder="Acme Productions"
             required
-            className="w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500"
+            className="w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm text-foreground placeholder:text-text-muted focus:border-foreground focus:outline-none focus:ring-1 focus:ring-foreground"
           />
         </div>
         <div>
           <label
             htmlFor="slug"
-            className="mb-1.5 block text-sm font-medium text-zinc-700"
+            className="mb-1.5 block text-sm font-medium text-text-secondary"
           >
             URL slug
           </label>
-          <div className={`flex items-center rounded-lg border bg-white focus-within:ring-1 ${
+          <div className={`flex items-center rounded-lg border bg-background focus-within:ring-1 ${
             slugStatus === 'taken'
               ? 'border-red-300 focus-within:border-red-500 focus-within:ring-red-500'
               : slugStatus === 'available'
                 ? 'border-emerald-300 focus-within:border-emerald-500 focus-within:ring-emerald-500'
-                : 'border-zinc-300 focus-within:border-zinc-500 focus-within:ring-zinc-500'
+                : 'border-border focus-within:border-foreground focus-within:ring-foreground'
           }`}>
-            <span className="pl-3.5 text-sm text-zinc-400">flytedeck.app/</span>
+            <span className="pl-3.5 text-sm text-text-muted">flytedeck.app/</span>
             <FormInput
               id="slug"
               type="text"
@@ -223,11 +223,11 @@ export default function SetupOrgPage() {
               }}
               placeholder="acme-productions"
               required
-              className="w-full rounded-r-lg border-none bg-transparent px-1 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none"
+              className="w-full rounded-r-lg border-none bg-transparent px-1 py-2.5 text-sm text-foreground placeholder:text-text-muted focus:outline-none"
             />
             {/* H-09: Slug availability indicator */}
             {slugStatus === 'checking' && (
-              <span className="pr-3 text-xs text-zinc-400">Checking…</span>
+              <span className="pr-3 text-xs text-text-muted">Checking…</span>
             )}
             {slugStatus === 'available' && (
               <span className="pr-3 text-xs text-emerald-600">✓</span>
@@ -243,7 +243,7 @@ export default function SetupOrgPage() {
         <Button
           type="submit"
           disabled={loading || slugStatus === 'taken'}
-          className="w-full rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-background transition-colors hover:bg-foreground/90 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {loading ? 'Setting up...' : 'Continue to Dashboard'}
         </Button>

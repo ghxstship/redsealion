@@ -66,7 +66,7 @@ export default function Tooltip({
       {visible && (
         <span
           role="tooltip"
-          className={`absolute z-50 whitespace-nowrap rounded-md bg-gray-900 px-2 py-1 text-[11px] font-medium text-white shadow-lg pointer-events-none animate-fade-in ${positionClasses[position]}`}
+          className={`absolute z-50 whitespace-nowrap rounded-md bg-foreground px-2 py-1 text-[11px] font-medium text-background shadow-lg pointer-events-none animate-fade-in ${positionClasses[position]}`}
         >
           {label}
         </span>

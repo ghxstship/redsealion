@@ -158,15 +158,15 @@ export default function PlanSelector() {
               </ul>
 
               <Button
-                className={`mt-6 w-full rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${
+                variant={
                   isCurrent
-                    ? 'border border-border bg-bg-secondary text-text-secondary cursor-default'
-                    : isDowngrade
-                      ? 'border border-border bg-background text-text-secondary hover:bg-bg-secondary'
-                      : plan.highlighted
-                        ? 'bg-foreground text-background hover:bg-foreground/90'
-                        : 'border border-border bg-background text-foreground hover:bg-bg-secondary'
-                }`}
+                    ? 'ghost'
+                    : plan.highlighted
+                      ? 'primary'
+                      : 'secondary'
+                }
+                size="lg"
+                className={`mt-6 w-full ${isCurrent ? 'cursor-default' : ''}`}
                 disabled={isCurrent || isLoading}
                 onClick={() => !isCurrent && handleUpgrade(plan.tier)}
               >
@@ -185,3 +185,4 @@ export default function PlanSelector() {
     </div>
   );
 }
+
