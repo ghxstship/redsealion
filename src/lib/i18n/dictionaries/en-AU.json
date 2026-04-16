@@ -21,7 +21,6 @@
     "columns": "Columns",
     "actions": "Actions",
     "settings": "Settings",
-    "plansBilling": "Plans & Billing",
     "loading": "Loading\u2026",
     "noResults": "No results found",
     "viewAll": "View All",
@@ -114,7 +113,8 @@
     "marketplace": "Marketplace",
     "equipment": "Equipment",
     "manifest": "Manifest",
-    "workOrders": "Work Orders"
+    "workOrders": "Work Orders",
+    "portalPreview": "Portal Preview"
   },
   "header": {
     "search": "Search\u2026",

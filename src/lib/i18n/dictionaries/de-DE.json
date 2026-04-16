@@ -21,7 +21,6 @@
     "columns": "Spalten",
     "actions": "Aktionen",
     "settings": "Einstellungen",
-    "plansBilling": "Tarife & Abrechnung",
     "loading": "Laden\u2026",
     "noResults": "Keine Ergebnisse",
     "viewAll": "Alle anzeigen",
@@ -114,7 +113,8 @@
     "marketplace": "Marketplace",
     "equipment": "Ausstattung",
     "manifest": "Manifest",
-    "workOrders": "Arbeitsauftr\u00e4ge"
+    "workOrders": "Arbeitsauftr\u00e4ge",
+    "portalPreview": "Portal-Vorschau"
   },
   "header": {
     "search": "Suchen\u2026",

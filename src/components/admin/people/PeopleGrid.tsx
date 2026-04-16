@@ -13,6 +13,7 @@ import { Badge } from '@/components/ui/Badge';
 import EmptyState from '@/components/ui/EmptyState';
 
 import { ROLE_BADGE_COLORS } from '@/components/ui/StatusBadge';
+import { ROLE_LABELS } from '@/config/roles';
 import SearchInput from '@/components/ui/SearchInput';
 import Button from '@/components/ui/Button';
 import { Upload } from 'lucide-react';
@@ -30,19 +31,6 @@ interface TeamMember {
   rate_card: string | null;
   avatar_url: string | null;
 }
-
-const ROLE_LABELS: Record<string, string> = {
-  developer: 'Developer',
-  owner: 'Owner',
-  admin: 'Admin',
-  controller: 'Controller',
-  collaborator: 'Collaborator',
-  contractor: 'Contractor',
-  crew: 'Crew',
-  client: 'Client',
-  viewer: 'Viewer',
-  community: 'Community',
-};
 
 export default function PeopleGrid({ members }: { members: TeamMember[] }) {
   const [search, setSearch] = useState('');

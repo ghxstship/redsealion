@@ -10,7 +10,8 @@ import { navSections } from '@/components/admin/sidebar/nav-data';
 import { useTranslation } from '@/lib/i18n/client';
 import { Settings, ChevronRight, Menu, X, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { usePreferencesSafe } from '@/components/shared/PreferencesProvider';
-import { ROLE_LABELS, getInitials } from '@/config/roles';
+import { ROLE_LABELS } from '@/config/roles';
+import { getInitials } from '@/lib/utils';
 
 /* ─────────────────────────────────────────────────────────
    Types

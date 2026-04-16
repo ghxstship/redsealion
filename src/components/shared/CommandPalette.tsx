@@ -100,18 +100,41 @@ function buildNavigationItems(): CommandItem[] {
    ───────────────────────────────────────────────────────── */
 
 const settingsItems: CommandItem[] = [
+  /* ── General ── */
   { id: 'nav-settings', label: 'Settings', section: 'Navigate', href: '/app/settings', icon: <NavIcon />, keywords: ['preferences', 'config'] },
   { id: 'nav-settings-branding', label: 'Branding', section: 'Settings', href: '/app/settings/branding', icon: <SettingsIcon />, keywords: ['logo', 'colors'] },
-  { id: 'nav-settings-billing', label: 'Plans & Billing', section: 'Settings', href: '/app/settings/billing', icon: <SettingsIcon />, keywords: ['subscription', 'plan', 'pricing'] },
-  { id: 'nav-settings-team', label: 'Team Members', section: 'Settings', href: '/app/settings/team', icon: <SettingsIcon />, keywords: ['invite', 'members', 'roles'] },
-  { id: 'nav-settings-notifications', label: 'Notifications', section: 'Settings', href: '/app/settings/notifications', icon: <SettingsIcon />, keywords: ['alerts', 'email'] },
-  { id: 'nav-settings-security', label: 'Security', section: 'Settings', href: '/app/settings/security', icon: <SettingsIcon />, keywords: ['password', 'audit', '2fa'] },
-  { id: 'nav-settings-appearance', label: 'Appearance', section: 'Settings', href: '/app/settings/appearance', icon: <SettingsIcon />, keywords: ['theme', 'dark mode'] },
   { id: 'nav-settings-localization', label: 'Localization', section: 'Settings', href: '/app/settings/localization', icon: <SettingsIcon />, keywords: ['language', 'timezone', 'currency'] },
-  { id: 'nav-settings-profile', label: 'Profile', section: 'Settings', href: '/app/settings/profile', icon: <SettingsIcon />, keywords: ['account', 'personal'] },
-  { id: 'nav-settings-apikeys', label: 'API Keys & Webhooks', section: 'Settings', href: '/app/settings/api-keys', icon: <SettingsIcon />, keywords: ['developer', 'tokens'] },
-  { id: 'nav-settings-customfields', label: 'Custom Fields', section: 'Settings', href: '/app/settings/custom-fields', icon: <SettingsIcon />, keywords: ['metadata', 'attributes'] },
+  { id: 'nav-settings-facilities', label: 'Facilities', section: 'Settings', href: '/app/settings/facilities', icon: <SettingsIcon />, keywords: ['offices', 'locations', 'warehouses'] },
+  /* ── Team ── */
+  { id: 'nav-settings-team', label: 'Team Members', section: 'Settings', href: '/app/settings/team', icon: <SettingsIcon />, keywords: ['invite', 'members', 'roles'] },
+  { id: 'nav-settings-permissions', label: 'Roles & Permissions', section: 'Settings', href: '/app/settings/security/permissions', icon: <SettingsIcon />, keywords: ['rbac', 'access'] },
+  { id: 'nav-settings-notifications', label: 'Notifications', section: 'Settings', href: '/app/settings/notifications', icon: <SettingsIcon />, keywords: ['alerts', 'email'] },
+  { id: 'nav-settings-email-templates', label: 'Email Templates', section: 'Settings', href: '/app/settings/email-templates', icon: <SettingsIcon />, keywords: ['templates', 'email'] },
+  /* ── Display ── */
+  { id: 'nav-settings-appearance', label: 'Appearance', section: 'Settings', href: '/app/settings/appearance', icon: <SettingsIcon />, keywords: ['theme', 'dark mode'] },
+  /* ── Billing ── */
+  { id: 'nav-settings-billing', label: 'Plans & Billing', section: 'Settings', href: '/app/settings/billing', icon: <SettingsIcon />, keywords: ['subscription', 'plan', 'pricing'] },
+  { id: 'nav-settings-payment-terms', label: 'Payment Terms', section: 'Settings', href: '/app/settings/payment-terms', icon: <SettingsIcon />, keywords: ['net30', 'due date'] },
+  { id: 'nav-settings-tax', label: 'Tax Settings', section: 'Settings', href: '/app/settings/tax', icon: <SettingsIcon />, keywords: ['vat', 'gst', 'tax rate'] },
   { id: 'nav-settings-payments', label: 'Stripe Connect', section: 'Settings', href: '/app/settings/payments', icon: <SettingsIcon />, keywords: ['stripe', 'payout'] },
+  { id: 'nav-settings-cost-rates', label: 'Cost Rates', section: 'Settings', href: '/app/settings/cost-rates', icon: <SettingsIcon />, keywords: ['hourly', 'rate card'] },
+  /* ── Security ── */
+  { id: 'nav-settings-security', label: 'Security', section: 'Settings', href: '/app/settings/security', icon: <SettingsIcon />, keywords: ['password', 'audit', '2fa'] },
+  { id: 'nav-settings-sso', label: 'SSO', section: 'Settings', href: '/app/settings/sso', icon: <SettingsIcon />, keywords: ['saml', 'single sign-on'] },
+  { id: 'nav-settings-audit-log', label: 'Audit Log', section: 'Settings', href: '/app/settings/security/audit-log', icon: <SettingsIcon />, keywords: ['history', 'log', 'activity'] },
+  /* ── Integrations ── */
+  { id: 'nav-settings-integrations', label: 'Integrations Settings', section: 'Settings', href: '/app/settings/integrations', icon: <SettingsIcon />, keywords: ['connect', 'sync'] },
+  { id: 'nav-settings-calendar-sync', label: 'Calendar Sync', section: 'Settings', href: '/app/settings/calendar-sync', icon: <SettingsIcon />, keywords: ['google', 'outlook'] },
+  { id: 'nav-settings-apikeys', label: 'API Keys', section: 'Settings', href: '/app/settings/api-keys', icon: <SettingsIcon />, keywords: ['developer', 'tokens'] },
+  { id: 'nav-settings-webhooks', label: 'Webhooks', section: 'Settings', href: '/app/settings/webhooks', icon: <SettingsIcon />, keywords: ['events', 'callbacks'] },
+  { id: 'nav-settings-automations-config', label: 'Automations Config', section: 'Settings', href: '/app/settings/automations-config', icon: <SettingsIcon />, keywords: ['workflows', 'rules'] },
+  /* ── Data ── */
+  { id: 'nav-settings-customfields', label: 'Custom Fields', section: 'Settings', href: '/app/settings/custom-fields', icon: <SettingsIcon />, keywords: ['metadata', 'attributes'] },
+  { id: 'nav-settings-tags', label: 'Tags & Categories', section: 'Settings', href: '/app/settings/tags', icon: <SettingsIcon />, keywords: ['labels', 'taxonomy'] },
+  { id: 'nav-settings-doc-defaults', label: 'Document Defaults', section: 'Settings', href: '/app/settings/document-defaults', icon: <SettingsIcon />, keywords: ['templates', 'defaults'] },
+  /* ── Account ── */
+  { id: 'nav-settings-profile', label: 'Profile', section: 'Settings', href: '/app/settings/profile', icon: <SettingsIcon />, keywords: ['account', 'personal'] },
+  { id: 'nav-settings-data-privacy', label: 'Data & Privacy', section: 'Settings', href: '/app/settings/data-privacy', icon: <SettingsIcon />, keywords: ['gdpr', 'export', 'delete'] },
 ];
 
 /* ─────────────────────────────────────────────────────────

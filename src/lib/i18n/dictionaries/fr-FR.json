@@ -113,7 +113,8 @@
     "marketplace": "Marketplace",
     "equipment": "\u00c9quipement",
     "manifest": "Manifeste",
-    "workOrders": "Bons de travail"
+    "workOrders": "Bons de travail",
+    "portalPreview": "Aperçu du portail"
   },
   "header": {
     "search": "Rechercher\u2026",
@@ -168,7 +169,8 @@
     "crew": "\u00c9quipe",
     "client": "Client",
     "viewer": "Observateur",
-    "community": "Communaut\u00e9"
+    "community": "Communauté",
+    "plansBilling": "Plans et facturation"
   },
   "empty": {
     "title": "Aucun \u00e9l\u00e9ment",

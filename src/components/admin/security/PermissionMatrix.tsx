@@ -16,6 +16,7 @@ import {
   type PermissionAction,
 } from '@/lib/permissions';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
+import { ROLE_LABELS } from '@/config/roles';
 
 interface PermissionMatrixProps {
   organizationId: string;
@@ -87,14 +88,6 @@ const RESOURCE_LABELS: Record<PermissionResource, string> = {
   component_items: 'Component Items',
   hierarchy_tasks: 'Hierarchy Tasks',
   manifest: 'Manifest',
-};
-
-const ROLE_LABELS: Record<string, string> = {
-  developer: 'Developer',
-  owner: 'Owner',
-  admin: 'Admin',
-  controller: 'Controller',
-  collaborator: 'Collaborator',
 };
 
 export default function PermissionMatrix({ organizationId: _organizationId, overrides }: PermissionMatrixProps) {

@@ -7,7 +7,8 @@ import { useRouter } from 'next/navigation';
 import { User, CreditCard, Settings, LogOut } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { useTranslation } from '@/lib/i18n/client';
-import { ROLE_LABELS, ROLE_I18N_KEYS, getInitials } from '@/config/roles';
+import { ROLE_LABELS, ROLE_I18N_KEYS } from '@/config/roles';
+import { getInitials } from '@/lib/utils';
 
 /* ─────────────────────────────────────────────────────────
    Types
