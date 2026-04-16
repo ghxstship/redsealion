@@ -134,8 +134,8 @@ BEGIN
   -- ═══════════════════════════════════════════════════════════
   INSERT INTO public.organizations (id, name, slug, subscription_tier, currency, timezone, language, invoice_prefix, proposal_prefix, date_format, time_format, first_day_of_week, number_format)
   VALUES
-    (v_org_free,    'FlyteDeck Free Demo',    'fd-demo-free',    'free',         'USD', 'America/New_York', 'en-US', 'FD-F', 'FD-F', 'MM/DD/YYYY', '12h', 0, 'en-US'),
-    (v_org_starter, 'FlyteDeck Starter Demo', 'fd-demo-starter', 'starter',     'USD', 'America/New_York', 'en-US', 'FD-S', 'FD-S', 'MM/DD/YYYY', '12h', 0, 'en-US'),
+    (v_org_free,    'FlyteDeck Access Demo',  'fd-demo-access',  'access',      'USD', 'America/New_York', 'en-US', 'FD-A', 'FD-A', 'MM/DD/YYYY', '12h', 0, 'en-US'),
+    (v_org_starter, 'FlyteDeck Core Demo',    'fd-demo-core',    'core',        'USD', 'America/New_York', 'en-US', 'FD-C', 'FD-C', 'MM/DD/YYYY', '12h', 0, 'en-US'),
     (v_org_pro,     'FlyteDeck Pro Demo',     'fd-demo-pro',     'professional','USD', 'America/New_York', 'en-US', 'FD-P', 'FD-P', 'MM/DD/YYYY', '12h', 0, 'en-US'),
     (v_org_ent,     'FlyteDeck Enterprise',   'fd-demo-ent',     'enterprise',  'USD', 'America/New_York', 'en-US', 'FD-E', 'FD-E', 'MM/DD/YYYY', '12h', 0, 'en-US')
   ON CONFLICT (id) DO UPDATE SET

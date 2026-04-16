@@ -1,15 +1,18 @@
+import { canView } from '@/lib/permissions/server';
+import { AccessDenied } from '@/components/shared/AccessDenied';
 import AutomationsHubTabs from '../AutomationsHubTabs';
 import PageHeader from '@/components/shared/PageHeader';
 import Button from '@/components/ui/Button';
-import { RoleGate } from '@/components/shared/RoleGate';
 
-export default function AutomationsHubLayout({
+export default async function AutomationsHubLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  if (!(await canView('automations'))) return <AccessDenied />;
+
   return (
-    <RoleGate resource="automations">
+    <>
       <PageHeader
         title="Automations"
         subtitle="Automate workflows with event triggers and actions."
@@ -20,6 +23,6 @@ export default function AutomationsHubLayout({
       <AutomationsHubTabs />
 
       {children}
-    </RoleGate>
+    </>
   );
 }

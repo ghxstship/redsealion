@@ -1,10 +1,7 @@
-'use client';
-import { RoleGate } from '@/components/shared/RoleGate';
+import { canView } from '@/lib/permissions/server';
+import { AccessDenied } from '@/components/shared/AccessDenied';
 
-export default function PipelineHubLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <RoleGate resource="pipeline">
-      {children}
-    </RoleGate>
-  );
+export default async function PipelineHubLayout({ children }: { children: React.ReactNode }) {
+  if (!(await canView('pipeline'))) return <AccessDenied />;
+  return <>{children}</>;
 }

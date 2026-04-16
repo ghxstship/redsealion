@@ -82,6 +82,7 @@ const RESOURCE_LABELS: Record<PermissionResource, string> = {
   calendar: 'Calendar',
   campaigns: 'Campaigns',
   email_inbox: 'Email Inbox',
+  recruitment: 'Recruitment',
   spaces: 'Spaces',
   zones: 'Zones',
   components: 'Components',

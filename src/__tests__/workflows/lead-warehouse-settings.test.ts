@@ -402,7 +402,7 @@ describe('Settings Workflow', () => {
 
     it('supports subscription tier per organization', () => {
       const org = makeOrganization();
-      expect(['free', 'starter', 'professional', 'enterprise']).toContain(org.subscription_tier);
+      expect(['access', 'core', 'professional', 'enterprise']).toContain(org.subscription_tier);
     });
   });
 });

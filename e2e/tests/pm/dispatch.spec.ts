@@ -1,30 +1,36 @@
 /**
- * FlyteDeck E2E — Dispatch Tests
+ * FlyteDeck E2E — Dispatch Hub
+ *
+ * RoleGate: resource="dispatch" — controller has viewOnly → ALLOWED
  */
-import { test, expect } from '../../fixtures/test-fixtures';
-import { expectPageRendered, expectNoRawI18nKeys } from '../../helpers/assertions';
+import { test } from '../../fixtures/test-fixtures';
+import { expectPageRendered, expectNoRawI18nKeys, expectAccessDenied } from '../../helpers/assertions';
+import type { Role } from '../../helpers/routes';
+
+const ALLOWED_ROLES: Role[] = ['owner', 'admin', 'controller', 'collaborator'];
+
+const DISPATCH_ROUTES = [
+  '/app/dispatch',
+  '/app/dispatch/board',
+  '/app/dispatch/history',
+  '/app/dispatch/routes',
+];
 
 test.describe('Dispatch @dispatch', () => {
-  test('dispatch renders for owner @owner', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('owner');
-    await page.goto('/app/dispatch');
-    await page.waitForLoadState('networkidle');
-    await expectPageRendered(page);
-    await expectNoRawI18nKeys(page);
-  });
+  for (const role of ALLOWED_ROLES) {
+    for (const route of DISPATCH_ROUTES) {
+      test(`${route} renders for ${role}`, async ({ authenticatedPage }) => {
+        const page = await authenticatedPage(role);
+        await page.goto(route, { waitUntil: 'domcontentloaded' });
+        await expectPageRendered(page);
+        await expectNoRawI18nKeys(page);
+      });
+    }
+  }
 
-  test('dispatch renders for collaborator @collaborator', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('collaborator');
+  test('/app/dispatch denied for viewer', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('viewer');
     await page.goto('/app/dispatch');
-    await page.waitForLoadState('networkidle');
-    await expectPageRendered(page);
-  });
-
-  test('dispatch denied for crew @crew', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('crew');
-    await page.goto('/app/dispatch');
-    await page.waitForLoadState('networkidle');
-    await expect(page.locator("text=Access Denied")).toBeVisible();
-    await expectPageRendered(page);
+    await expectAccessDenied(page);
   });
 });

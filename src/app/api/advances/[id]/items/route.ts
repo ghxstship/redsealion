@@ -97,9 +97,9 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     .eq('id', a.organization_id)
     .single();
 
-  const tier = ((orgData as Record<string, unknown>)?.subscription_plan as string) ?? 'free';
+  const tier = ((orgData as Record<string, unknown>)?.subscription_plan as string) ?? 'access';
   const { TIER_LIMITS } = await import('@/lib/advances/constants');
-  const limits = TIER_LIMITS[tier as keyof typeof TIER_LIMITS] ?? TIER_LIMITS.free;
+  const limits = TIER_LIMITS[tier as keyof typeof TIER_LIMITS] ?? TIER_LIMITS.access;
 
   if ((itemCount ?? 0) >= limits.lineItemsPerAdvance) {
     return NextResponse.json(

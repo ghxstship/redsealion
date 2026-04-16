@@ -41,7 +41,7 @@ export type PermissionResource =
   | 'project_portals' | 'webhooks' | 'schedule' | 'portals'
   | 'profitability' | 'templates' | 'terms' | 'workloads'
   | 'roadmap' | 'finance' | 'calendar' | 'campaigns'
-  | 'email_inbox'
+  | 'email_inbox' | 'recruitment'
   | 'spaces' | 'zones' | 'components' | 'component_items'
   | 'hierarchy_tasks' | 'manifest';
 
@@ -59,7 +59,7 @@ export const ALL_RESOURCES: PermissionResource[] = [
   'project_portals', 'webhooks', 'schedule', 'portals',
   'profitability', 'templates', 'terms', 'workloads',
   'roadmap', 'finance', 'calendar', 'campaigns',
-  'email_inbox',
+  'email_inbox', 'recruitment',
   'spaces', 'zones', 'components', 'component_items',
   'hierarchy_tasks', 'manifest',
 ];
@@ -183,6 +183,10 @@ export const DEFAULT_PERMISSIONS: Record<PlatformRole, Record<string, boolean>> 
     ...viewOnly(['portals', 'project_portals']),
     ...noPerm(['webhooks']),
     ...viewOnly(['finance']),
+    // Hierarchy resources — explicit view-only (closes permission gap)
+    ...viewOnly(['spaces', 'zones', 'components', 'component_items', 'hierarchy_tasks', 'manifest']),
+    // Recruitment — view only
+    ...viewOnly(['recruitment']),
   },
 
   // ── collaborator — standard internal ──
@@ -257,6 +261,10 @@ export const DEFAULT_PERMISSIONS: Record<PlatformRole, Record<string, boolean>> 
     ...viewOnly(['webhooks']),
     // Finance — view only
     ...viewOnly(['finance']),
+    // Hierarchy resources — operational access (closes permission gap)
+    ...viewCreate(['spaces', 'zones', 'components', 'component_items', 'hierarchy_tasks', 'manifest']),
+    // Recruitment — manage (no delete)
+    ...viewCreate(['recruitment']),
   },
 
 
@@ -379,5 +387,17 @@ export function getPortalPermission(
   key: string
 ): boolean {
   return PORTAL_PERMISSIONS[role]?.[key] ?? false;
+}
+
+/**
+ * Contractor portal permission lookup — SSOT.
+ * Reads from CONTRACTOR_PORTAL_PERMISSIONS for contractor/crew roles.
+ * Closes the permission lookup gap identified in quality audit.
+ */
+export function getContractorPortalPermission(
+  role: 'contractor' | 'crew',
+  key: string
+): boolean {
+  return CONTRACTOR_PORTAL_PERMISSIONS[role]?.[key] ?? false;
 }
 

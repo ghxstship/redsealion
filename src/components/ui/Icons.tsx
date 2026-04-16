@@ -147,6 +147,9 @@ export {
   Warehouse as IconNavLogistics,
   Truck as IconNavDispatch,
   Box as IconNavAssets,
+  Repeat2 as IconNavRentals,
+  Hammer as IconNavFabrication,
+  ShoppingCart as IconNavProcurement,
 
   /* ─── Navigation: Finance Items ───────────────────────── */
   

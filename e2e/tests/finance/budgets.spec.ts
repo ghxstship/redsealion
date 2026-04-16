@@ -1,31 +1,28 @@
 /**
- * FlyteDeck E2E — Budgets Tests
- * Tier: enterprise
+ * FlyteDeck E2E — Budgets
+ *
+ * Route: /app/budgets
+ * Tier: enterprise, ADMIN_CTRL_COLLAB
  */
-import { test, expect } from '../../fixtures/test-fixtures';
-import { expectPageRendered, expectNoRawI18nKeys } from '../../helpers/assertions';
+import { test } from '../../fixtures/test-fixtures';
+import { expectPageRendered, expectNoRawI18nKeys, expectAccessDenied } from '../../helpers/assertions';
+import type { Role } from '../../helpers/routes';
+
+const ALLOWED_ROLES: Role[] = ['owner', 'admin', 'controller', 'collaborator'];
 
 test.describe('Budgets @budgets', () => {
-  test('budgets renders for owner @owner', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('owner');
-    await page.goto('/app/budgets');
-    await page.waitForLoadState('networkidle');
-    await expectPageRendered(page);
-    await expectNoRawI18nKeys(page);
-  });
+  for (const role of ALLOWED_ROLES) {
+    test(`/app/budgets renders for ${role}`, async ({ authenticatedPage }) => {
+      const page = await authenticatedPage(role);
+      await page.goto('/app/budgets');
+      await expectPageRendered(page);
+      await expectNoRawI18nKeys(page);
+    });
+  }
 
-  test('budgets renders for collaborator @collaborator', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('collaborator');
+  test('/app/budgets renders for viewer (viewOnly)', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('viewer');
     await page.goto('/app/budgets');
-    await page.waitForLoadState('networkidle');
-    await expectPageRendered(page);
-  });
-
-  test('budgets denied for collaborator @collaborator', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('collaborator');
-    await page.goto('/app/budgets');
-    await page.waitForLoadState('networkidle');
-    await expect(page.locator("text=Access Denied")).toBeVisible();
     await expectPageRendered(page);
   });
 });

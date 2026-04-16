@@ -1,8 +1,13 @@
 /**
- * FlyteDeck E2E — Rentals Tests
+ * FlyteDeck E2E — Rentals Hub
+ *
+ * RoleGate: resource="rentals" — controller viewOnly → ALLOWED on ALL sub-routes
  */
-import { test, expect } from '../../fixtures/test-fixtures';
-import { expectPageRendered, expectNoRawI18nKeys } from '../../helpers/assertions';
+import { test } from '../../fixtures/test-fixtures';
+import { expectPageRendered, expectNoRawI18nKeys, expectAccessDenied } from '../../helpers/assertions';
+import type { Role } from '../../helpers/routes';
+
+const ALL_INTERNAL: Role[] = ['owner', 'admin', 'controller', 'collaborator'];
 
 const RENTAL_ROUTES = [
   '/app/rentals',
@@ -13,28 +18,20 @@ const RENTAL_ROUTES = [
 ];
 
 test.describe('Rentals Hub @rentals', () => {
-  for (const route of RENTAL_ROUTES) {
-    test(`${route} renders for owner @owner`, async ({ authenticatedPage }) => {
-      const page = await authenticatedPage('owner');
-      await page.goto(route);
-      await page.waitForLoadState('networkidle');
-      await expectPageRendered(page);
-      await expectNoRawI18nKeys(page);
-    });
+  for (const role of ALL_INTERNAL) {
+    for (const route of RENTAL_ROUTES) {
+      test(`${route} renders for ${role}`, async ({ authenticatedPage }) => {
+        const page = await authenticatedPage(role);
+        await page.goto(route, { waitUntil: 'domcontentloaded' });
+        await expectPageRendered(page);
+        await expectNoRawI18nKeys(page);
+      });
+    }
   }
 
-  test('rentals renders for crew @crew', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('crew');
+  test('/app/rentals denied for viewer', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('viewer');
     await page.goto('/app/rentals');
-    await page.waitForLoadState('networkidle');
-    await expectPageRendered(page);
-  });
-
-  test('collaborator denied from rentals @collaborator', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('collaborator');
-    await page.goto('/app/rentals');
-    await page.waitForLoadState('networkidle');
-    await expect(page.locator("text=Access Denied")).toBeVisible();
-    await expectPageRendered(page);
+    await expectAccessDenied(page);
   });
 });

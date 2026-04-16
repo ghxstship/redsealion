@@ -1,44 +1,38 @@
 /**
- * FlyteDeck E2E — Proposals Tests
+ * FlyteDeck E2E — Proposals
+ *
+ * Routes: /app/proposals, /new
+ * RoleGate: resource="proposals" — controller has viewOnly → ALLOWED for hub
+ * /new: ADMIN_COLLAB (controller can't create, only view)
  */
 import { test } from '../../fixtures/test-fixtures';
-import { expectPageRendered, expectNoRawI18nKeys } from '../../helpers/assertions';
+import { expectPageRendered, expectNoRawI18nKeys, expectAccessDenied } from '../../helpers/assertions';
+import type { Role } from '../../helpers/routes';
+
+const ALLOWED_ROLES: Role[] = ['owner', 'admin', 'controller', 'collaborator'];
 
 test.describe('Proposals @proposals', () => {
-  test('proposals list renders for owner @owner', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('owner');
-    await page.goto('/app/proposals');
-    await page.waitForLoadState('networkidle');
-    await expectPageRendered(page);
-    await expectNoRawI18nKeys(page);
-  });
+  for (const role of ALLOWED_ROLES) {
+    test(`/app/proposals renders for ${role}`, async ({ authenticatedPage }) => {
+      const page = await authenticatedPage(role);
+      await page.goto('/app/proposals');
+      await expectPageRendered(page);
+      await expectNoRawI18nKeys(page);
+    });
+  }
 
-  test('new proposal page renders for owner @owner', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('owner');
-    await page.goto('/app/proposals/new');
-    await page.waitForLoadState('networkidle');
-    await expectPageRendered(page);
-  });
+  // /new requires create permission — ADMIN_COLLAB only
+  for (const role of ['owner', 'admin', 'collaborator'] as Role[]) {
+    test(`/app/proposals/new renders for ${role}`, async ({ authenticatedPage }) => {
+      const page = await authenticatedPage(role);
+      await page.goto('/app/proposals/new');
+      await expectPageRendered(page);
+    });
+  }
 
-  test('proposals list renders for collaborator @collaborator', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('collaborator');
+  test('/app/proposals renders for viewer (viewOnly)', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('viewer');
     await page.goto('/app/proposals');
-    await page.waitForLoadState('networkidle');
-    await expectPageRendered(page);
-  });
-
-  test('collaborator can view proposals (view-only) @collaborator', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('collaborator');
-    await page.goto('/app/proposals');
-    await page.waitForLoadState('networkidle');
-    await expectPageRendered(page);
-  });
-
-  test('collaborator denied from proposals @collaborator', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('collaborator');
-    await page.goto('/app/proposals');
-    await page.waitForLoadState('networkidle');
-    // Fabricator has view-only on proposals
     await expectPageRendered(page);
   });
 });

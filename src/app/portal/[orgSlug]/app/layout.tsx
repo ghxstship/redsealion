@@ -17,7 +17,7 @@ interface PortalAppLayoutProps {
  * Portal Demo App Shell
  *
  * Mirrors the admin app layout (sidebar + header + page transitions) but:
- * - Forces tier='portal' so TierGate/canAccess only unlocks the demo-visible features
+ * - Forces tier='access' so TierGate/canAccess only unlocks the free-tier features
  * - Wraps everything in PortalContext so child components can resolve orgSlug/orgId
  * - Includes a persistent DemoBanner with a trial CTA
  * - Uses PortalSidebar which rewrites hrefs from /app/* → /portal/[orgSlug]/app/*
@@ -31,7 +31,7 @@ export default async function PortalAppLayout({ children, params }: PortalAppLay
   }
 
   return (
-    <SubscriptionProvider tier="portal">
+    <SubscriptionProvider tier="access">
       <PortalContextProvider orgSlug={orgSlug} orgName={org.orgName} orgId={org.organizationId} portalType="client">
         {/* Demo banner — spans full width */}
         <DemoBanner />

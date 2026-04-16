@@ -1,10 +1,11 @@
-'use client';
-import { RoleGate } from '@/components/shared/RoleGate';
+import { getSessionRole } from '@/lib/permissions/server';
+import { AccessDenied } from '@/components/shared/AccessDenied';
+import type { PlatformRole } from '@/lib/permissions';
 
-export default function CampaignsHubLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <RoleGate allowedRoles={['developer', 'owner', 'admin', 'collaborator']}>
-      {children}
-    </RoleGate>
-  );
+const ALLOWED: PlatformRole[] = ['developer', 'owner', 'admin', 'collaborator'];
+
+export default async function CampaignsHubLayout({ children }: { children: React.ReactNode }) {
+  const role = await getSessionRole();
+  if (!ALLOWED.includes(role)) return <AccessDenied role={role} />;
+  return <>{children}</>;
 }

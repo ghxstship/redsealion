@@ -1,9 +1,13 @@
 /**
- * FlyteDeck E2E — People Tests
- * Tier: enterprise
+ * FlyteDeck E2E — People Hub
+ *
+ * RoleGate: bare (no resource) → ALL_INTERNAL pass
  */
-import { test, expect } from '../../fixtures/test-fixtures';
-import { expectPageRendered } from '../../helpers/assertions';
+import { test } from '../../fixtures/test-fixtures';
+import { expectPageRendered, expectNoRawI18nKeys } from '../../helpers/assertions';
+import type { Role } from '../../helpers/routes';
+
+const ALL_INTERNAL: Role[] = ['owner', 'admin', 'controller', 'collaborator'];
 
 const PEOPLE_ROUTES = [
   '/app/people',
@@ -12,39 +16,14 @@ const PEOPLE_ROUTES = [
 ];
 
 test.describe('People Hub @people', () => {
-  for (const route of PEOPLE_ROUTES) {
-    test(`${route} renders for owner @owner`, async ({ authenticatedPage }) => {
-      const page = await authenticatedPage('owner');
-      await page.goto(route);
-      await expectPageRendered(page);
-    });
+  for (const role of ALL_INTERNAL) {
+    for (const route of PEOPLE_ROUTES) {
+      test(`${route} renders for ${role}`, async ({ authenticatedPage }) => {
+        const page = await authenticatedPage(role);
+        await page.goto(route, { waitUntil: 'domcontentloaded' });
+        await expectPageRendered(page);
+        await expectNoRawI18nKeys(page);
+      });
+    }
   }
-
-  test('people renders for collaborator @collaborator', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('collaborator');
-    await page.goto('/app/people');
-    await expectPageRendered(page);
-  });
-
-  test('people denied for collaborator @collaborator', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('collaborator');
-    await page.goto('/app/people');
-    const isDenied = await page.isVisible('text=Access Denied');
-    const isFallback = await page.isVisible('text=Forbidden');
-    const redirected = page.url() !== 'http://localhost:3001/app/people';
-    expect(isDenied || isFallback || redirected || true).toBeTruthy();
-  });
-
-  test('can open Add Position modal in Org Chart', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('admin');
-    await page.goto('/app/people/org-chart');
-    await expectPageRendered(page);
-  });
-
-  test('can open Time Off Request modal', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('collaborator');
-    await page.goto('/app/people/time-off');
-    await expectPageRendered(page);
-  });
 });
-

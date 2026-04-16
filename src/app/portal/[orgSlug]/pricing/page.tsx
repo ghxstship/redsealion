@@ -9,8 +9,8 @@ interface PricingPageProps {
 
 const plans = [
   {
-    name: 'Starter',
-    tier: 'starter',
+    name: 'Core',
+    tier: 'core',
     price: '$49',
     period: '/month',
     tagline: 'Perfect for solo operators and small teams',

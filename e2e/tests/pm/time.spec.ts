@@ -1,10 +1,14 @@
 /**
- * FlyteDeck E2E — Time Tracking Tests
- * Tier: enterprise
+ * FlyteDeck E2E — Time Hub
+ *
+ * Routes: /app/time, /timer, /timesheets
+ * Tier: enterprise, ALL_INTERNAL
  */
 import { test } from '../../fixtures/test-fixtures';
 import { expectPageRendered, expectNoRawI18nKeys } from '../../helpers/assertions';
 import type { Role } from '../../helpers/routes';
+
+const ALL_INTERNAL: Role[] = ['owner', 'admin', 'controller', 'collaborator'];
 
 const TIME_ROUTES = [
   '/app/time',
@@ -13,23 +17,14 @@ const TIME_ROUTES = [
 ];
 
 test.describe('Time Hub @time', () => {
-  for (const route of TIME_ROUTES) {
-    test(`${route} renders for owner @owner`, async ({ authenticatedPage }) => {
-      const page = await authenticatedPage('owner');
-      await page.goto(route);
-      await page.waitForLoadState('networkidle');
-      await expectPageRendered(page);
-      await expectNoRawI18nKeys(page);
-    });
-  }
-
-  // All internal roles should be able to track their own time
-  for (const role of ['collaborator', 'crew'] as Role[]) {
-    test(`time renders for ${role} @${role}`, async ({ authenticatedPage }) => {
-      const page = await authenticatedPage(role);
-      await page.goto('/app/time');
-      await page.waitForLoadState('networkidle');
-      await expectPageRendered(page);
-    });
+  for (const role of ALL_INTERNAL) {
+    for (const route of TIME_ROUTES) {
+      test(`${route} renders for ${role}`, async ({ authenticatedPage }) => {
+        const page = await authenticatedPage(role);
+        await page.goto(route, { waitUntil: 'domcontentloaded' });
+        await expectPageRendered(page);
+        await expectNoRawI18nKeys(page);
+      });
+    }
   }
 });

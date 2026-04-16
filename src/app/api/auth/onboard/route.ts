@@ -144,7 +144,7 @@ export const POST = withRateLimit(RATE_LIMITS.auth, async function POST(request:
       .insert({
         name: company_name,
         slug,
-        subscription_tier: 'free',
+        subscription_tier: 'access',
         subscription_status: 'active',
         owner_id: user.id,
         currency: 'USD',
@@ -245,7 +245,7 @@ export const POST = withRateLimit(RATE_LIMITS.auth, async function POST(request:
     const { data: freePlan } = await service
       .from('subscription_plans')
       .select('id, internal_seats_included, external_seats_included')
-      .eq('name', 'Free')
+      .eq('name', 'Access')
       .eq('is_active', true)
       .limit(1)
       .maybeSingle();

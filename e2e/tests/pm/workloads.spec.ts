@@ -1,9 +1,13 @@
 /**
- * FlyteDeck E2E — Workloads Tests
- * Tier: enterprise
+ * FlyteDeck E2E — Workloads Hub
+ *
+ * RoleGate: resource="workloads" — controller viewOnly → ALLOWED
  */
-import { test, expect } from '../../fixtures/test-fixtures';
+import { test } from '../../fixtures/test-fixtures';
 import { expectPageRendered, expectNoRawI18nKeys } from '../../helpers/assertions';
+import type { Role } from '../../helpers/routes';
+
+const ALL_INTERNAL: Role[] = ['owner', 'admin', 'controller', 'collaborator'];
 
 const WORKLOAD_ROUTES = [
   '/app/workloads',
@@ -12,21 +16,14 @@ const WORKLOAD_ROUTES = [
 ];
 
 test.describe('Workloads Hub @workloads', () => {
-  for (const route of WORKLOAD_ROUTES) {
-    test(`${route} renders for owner @owner`, async ({ authenticatedPage }) => {
-      const page = await authenticatedPage('owner');
-      await page.goto(route);
-      await page.waitForLoadState('networkidle');
-      await expectPageRendered(page);
-      await expectNoRawI18nKeys(page);
-    });
+  for (const role of ALL_INTERNAL) {
+    for (const route of WORKLOAD_ROUTES) {
+      test(`${route} renders for ${role}`, async ({ authenticatedPage }) => {
+        const page = await authenticatedPage(role);
+        await page.goto(route, { waitUntil: 'domcontentloaded' });
+        await expectPageRendered(page);
+        await expectNoRawI18nKeys(page);
+      });
+    }
   }
-
-  test('workloads denied for collaborator @collaborator', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('collaborator');
-    await page.goto('/app/workloads');
-    await page.waitForLoadState('networkidle');
-    await expect(page.locator("text=Access Denied")).toBeVisible();
-    await expectPageRendered(page);
-  });
 });

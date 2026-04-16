@@ -1,11 +1,12 @@
-import { RoleGate } from '@/components/shared/RoleGate';
+import { canView } from '@/lib/permissions/server';
+import { AccessDenied } from '@/components/shared/AccessDenied';
 import { TierGate } from '@/components/shared/TierGate';
-import React from 'react';
 
-export default function LogisticsModuleLayout({ children }: { children: React.ReactNode }) {
+export default async function LogisticsModuleLayout({ children }: { children: React.ReactNode }) {
+  if (!(await canView('warehouse'))) return <AccessDenied />;
   return (
     <TierGate feature="warehouse">
-      <RoleGate resource="warehouse">{children}</RoleGate>
+      {children}
     </TierGate>
   );
 }

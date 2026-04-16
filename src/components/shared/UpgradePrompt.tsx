@@ -19,8 +19,8 @@ export function UpgradePrompt({
   const { tier } = useSubscription();
   const pathname = usePathname();
 
-  // Detect portal context for appropriate CTA
-  const isPortal = tier === 'portal' || pathname.startsWith('/portal/');
+  // Detect portal context via pathname — no longer relies on a 'portal' tier value
+  const isPortal = pathname.startsWith('/portal/');
   const portalSlug = isPortal ? pathname.split('/')[2] : null;
 
   const ctaHref = isPortal
@@ -48,7 +48,7 @@ export function UpgradePrompt({
       );
 
   return (
-    <div className="flex flex-col items-center justify-center rounded-xl border border-border bg-background px-8 py-12 text-center">
+    <div data-testid="upgrade-prompt" className="flex flex-col items-center justify-center rounded-xl border border-border bg-background px-8 py-12 text-center">
       <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-bg-tertiary">
         <Lock size={24} className="text-text-muted" />
       </div>

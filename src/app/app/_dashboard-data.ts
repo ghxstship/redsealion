@@ -115,12 +115,12 @@ export async function getDashboardData(): Promise<{
   try {
     const supabase = await createClient();
     const ctx = await resolveCurrentOrg();
-    if (!ctx) return { stats: fallbackStats, tier: 'free' };
+    if (!ctx) return { stats: fallbackStats, tier: 'access' };
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user) return { stats: fallbackStats, tier: 'free' };
+    if (!user) return { stats: fallbackStats, tier: 'access' };
     const orgId = ctx.organizationId;
 
     // Fetch user's display name for greeting
@@ -138,7 +138,7 @@ export async function getDashboardData(): Promise<{
       .eq('id', orgId)
       .single();
 
-    const tier = (org?.subscription_tier as SubscriptionTier) || 'free';
+    const tier = (org?.subscription_tier as SubscriptionTier) || 'access';
 
     // Core queries (all tiers)
     const [proposalsRes, activeRes, pipelineRes, pendingRes, activityRes, projectsRes] =
@@ -398,7 +398,7 @@ export async function getDashboardData(): Promise<{
       tier,
     };
   } catch {
-    return { stats: fallbackStats, tier: 'free' };
+    return { stats: fallbackStats, tier: 'access' };
   }
 }
 

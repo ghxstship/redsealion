@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
 
   if (!canAccessFeature(ctx.tier, 'advancing')) {
     return NextResponse.json(
-      { error: 'Plan upgrade required', message: 'Advancing requires Starter plan or above.' },
+      { error: 'Plan upgrade required', message: 'Advancing requires Core plan or above.' },
       { status: 403 },
     );
   }
@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
 
   if (!canAccessFeature(ctx.tier, 'advancing')) {
     return NextResponse.json(
-      { error: 'Plan upgrade required', message: 'Advancing requires Starter plan or above.' },
+      { error: 'Plan upgrade required', message: 'Advancing requires Core plan or above.' },
       { status: 403 },
     );
   }
@@ -115,7 +115,7 @@ export async function POST(request: NextRequest) {
 
   // M-12: Enforce advancesPerMonth tier limit
   const { TIER_LIMITS } = await import('@/lib/advances/constants');
-  const limits = TIER_LIMITS[ctx.tier as keyof typeof TIER_LIMITS] ?? TIER_LIMITS.free;
+  const limits = TIER_LIMITS[ctx.tier as keyof typeof TIER_LIMITS] ?? TIER_LIMITS.access;
   if (limits.advancesPerMonth < Infinity) {
     const monthStart = new Date();
     monthStart.setDate(1);

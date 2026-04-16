@@ -1,10 +1,7 @@
-'use client';
-import { RoleGate } from '@/components/shared/RoleGate';
+import { canView } from '@/lib/permissions/server';
+import { AccessDenied } from '@/components/shared/AccessDenied';
 
-export default function ReportsHubLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <RoleGate resource="reports">
-      {children}
-    </RoleGate>
-  );
+export default async function ReportsHubLayout({ children }: { children: React.ReactNode }) {
+  if (!(await canView('reports'))) return <AccessDenied />;
+  return <>{children}</>;
 }

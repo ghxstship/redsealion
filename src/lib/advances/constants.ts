@@ -90,7 +90,7 @@ export const ADVANCE_TYPE_CONFIG: Record<AdvanceType, { label: string; icon: str
    ───────────────────────────────────────────────────────── */
 
 export const TIER_LIMITS = {
-  free: {
+  access: {
     advancesPerMonth: 3,
     lineItemsPerAdvance: 10,
     templates: 0,
@@ -104,7 +104,7 @@ export const TIER_LIMITS = {
     webhookEvents: false,
     apiAccess: false,
   },
-  starter: {
+  core: {
     advancesPerMonth: 25,
     lineItemsPerAdvance: 50,
     templates: 5,

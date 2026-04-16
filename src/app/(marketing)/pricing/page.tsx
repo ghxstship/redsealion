@@ -24,7 +24,7 @@ const jsonLd = {
 export const metadata: Metadata = {
   title: 'Pricing',
   description:
-    'Simple, transparent pricing for experiential production teams. Choose Starter, Professional, or Enterprise to match your team size and workflow.',
+    'Simple, transparent pricing for experiential production teams. Choose Core, Professional, or Enterprise to match your team size and workflow.',
 };
 
 function CellValue({ value }: { value: FeatureValue }) {
@@ -75,7 +75,7 @@ export default function PricingPage() {
                   Feature
                 </TableHead>
                 <TableHead className="border-b border-zinc-200 pb-4 text-center text-sm font-medium text-zinc-500">
-                  Starter
+                  Core
                 </TableHead>
                 <TableHead className="border-b border-zinc-200 bg-zinc-50 pb-4 text-center text-sm font-semibold text-zinc-900">
                   Professional
@@ -105,7 +105,7 @@ export default function PricingPage() {
                         {feature.name}
                       </TableCell>
                       <TableCell className="border-b border-zinc-100 py-3 text-center">
-                        <CellValue value={feature.starter} />
+                        <CellValue value={feature.core} />
                       </TableCell>
                       <TableCell className="border-b border-zinc-100 bg-zinc-50/80 py-3 text-center">
                         <CellValue value={feature.professional} />
@@ -137,8 +137,8 @@ export default function PricingPage() {
                     <p className="mb-3 text-sm font-medium text-zinc-900">{feature.name}</p>
                     <div className="grid grid-cols-3 gap-2 text-center">
                       <div>
-                        <p className="mb-1 text-xs text-zinc-400">Starter</p>
-                        <CellValue value={feature.starter} />
+                        <p className="mb-1 text-xs text-zinc-400">Core</p>
+                        <CellValue value={feature.core} />
                       </div>
                       <div className="rounded bg-zinc-50 py-1">
                         <p className="mb-1 text-xs font-medium text-zinc-500">Pro</p>

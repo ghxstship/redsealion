@@ -5,7 +5,6 @@ const ROLES = [
   'admin', 
   'controller', 
   'collaborator', 
-  'collaborator', 
   'client', 
   'contractor', 
   'crew', 

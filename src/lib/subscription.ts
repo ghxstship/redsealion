@@ -1,13 +1,17 @@
 import type { SubscriptionTier } from '@/types/database';
 
 /**
- * Extends the DB-level SubscriptionTier with 'portal' for demo/preview contexts.
- * All downstream code should use AppTier when the portal tier may appear.
+ * Subscription tier gating — SSOT.
+ *
+ * Tier hierarchy (ascending):
+ *   Access (0) — free for life, core CRM + project management
+ *   Core (1) — CRM, sales, presentation
+ *   Professional (2) — integrations + advanced workflows
+ *   Enterprise (3) — full standalone platform
  */
-export type AppTier = SubscriptionTier | 'portal';
 
 export type FeatureKey =
-  // All tiers (Portal) — core CRM + Project Management
+  // Access tier — core CRM + Project Management (free for life)
   | 'proposals'
   | 'clients'
   | 'pipeline'
@@ -21,7 +25,7 @@ export type FeatureKey =
   | 'files'
   | 'calendar'
   | 'billing'
-  // Starter — CRM, sales, presentation
+  // Core — CRM, sales, presentation
   | 'portfolio'
   | 'assets'
   | 'team'
@@ -82,31 +86,31 @@ export type FeatureKey =
   | 'procurement';
 
 // Maps each feature to the minimum subscription tier required
-const featureRegistry: Record<FeatureKey, AppTier> = {
-  // Portal tier — core CRM + project management (all tiers)
-  proposals: 'portal',
-  clients: 'portal',
-  pipeline: 'portal',
-  leads: 'portal',
-  invoices: 'portal',
-  reports: 'portal',
-  projects: 'portal',
-  tasks: 'portal',
-  gantt: 'portal',
-  roadmap: 'portal',
-  files: 'portal',
-  calendar: 'portal',
-  billing: 'portal',
+const featureRegistry: Record<FeatureKey, SubscriptionTier> = {
+  // Access tier — core CRM + project management (free for life)
+  proposals: 'access',
+  clients: 'access',
+  pipeline: 'access',
+  leads: 'access',
+  invoices: 'access',
+  reports: 'access',
+  projects: 'access',
+  tasks: 'access',
+  gantt: 'access',
+  roadmap: 'access',
+  files: 'access',
+  calendar: 'access',
+  billing: 'access',
 
-  // Starter tier — CRM, sales, presentation
-  portfolio: 'starter',
-  assets: 'starter',
-  team: 'starter',
-  templates: 'starter',
-  terms: 'starter',
-  export_docx: 'starter',
-  export_pdf: 'starter',
-  advancing: 'starter',
+  // Core tier — CRM, sales, presentation
+  portfolio: 'core',
+  assets: 'core',
+  team: 'core',
+  templates: 'core',
+  terms: 'core',
+  export_docx: 'core',
+  export_pdf: 'core',
+  advancing: 'core',
 
   // Professional tier — integrations + advanced workflows
   integrations: 'professional',
@@ -161,20 +165,19 @@ const featureRegistry: Record<FeatureKey, AppTier> = {
   procurement: 'enterprise',
 };
 
-const tierRank: Record<AppTier, number> = {
-  portal: -1,
-  free: 0,
-  starter: 1,
+const tierRank: Record<SubscriptionTier, number> = {
+  access: 0,
+  core: 1,
   professional: 2,
   enterprise: 3,
 };
 
-export function getRequiredTier(feature: FeatureKey): AppTier {
+export function getRequiredTier(feature: FeatureKey): SubscriptionTier {
   return featureRegistry[feature];
 }
 
 export function canAccessFeature(
-  currentTier: AppTier,
+  currentTier: SubscriptionTier,
   feature: FeatureKey
 ): boolean {
   const required = featureRegistry[feature];
@@ -182,17 +185,16 @@ export function canAccessFeature(
 }
 
 export function tierMeetsMinimum(
-  currentTier: AppTier,
-  requiredTier: AppTier
+  currentTier: SubscriptionTier,
+  requiredTier: SubscriptionTier
 ): boolean {
   return tierRank[currentTier] >= tierRank[requiredTier];
 }
 
-export function getTierLabel(tier: AppTier): string {
-  const labels: Record<AppTier, string> = {
-    portal: 'Portal Demo',
-    free: 'Free',
-    starter: 'Starter',
+export function getTierLabel(tier: SubscriptionTier): string {
+  const labels: Record<SubscriptionTier, string> = {
+    access: 'Access',
+    core: 'Core',
     professional: 'Professional',
     enterprise: 'Enterprise',
   };

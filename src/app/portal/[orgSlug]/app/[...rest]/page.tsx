@@ -12,17 +12,17 @@ interface PortalCatchAllProps {
 }
 
 // Map URL segments to FeatureKey + tier
-const segmentMap: Record<string, { feature: FeatureKey; tier: 'starter' | 'professional' | 'enterprise' }> = {
+const segmentMap: Record<string, { feature: FeatureKey; tier: 'core' | 'professional' | 'enterprise' }> = {
   resources: { feature: 'resource_scheduling', tier: 'enterprise' },
-  templates: { feature: 'templates', tier: 'starter' },
+  templates: { feature: 'templates', tier: 'core' },
   dispatch: { feature: 'work_orders', tier: 'enterprise' },
   people: { feature: 'people_hr', tier: 'enterprise' },
   crew: { feature: 'crew', tier: 'professional' },
   equipment: { feature: 'equipment', tier: 'professional' },
-  assets: { feature: 'assets', tier: 'starter' },
+  assets: { feature: 'assets', tier: 'core' },
   warehouse: { feature: 'warehouse', tier: 'enterprise' },
-  portfolio: { feature: 'portfolio', tier: 'starter' },
-  terms: { feature: 'terms', tier: 'starter' },
+  portfolio: { feature: 'portfolio', tier: 'core' },
+  terms: { feature: 'terms', tier: 'core' },
   expenses: { feature: 'expenses', tier: 'enterprise' },
   budgets: { feature: 'budgets', tier: 'enterprise' },
   profitability: { feature: 'profitability', tier: 'enterprise' },
@@ -32,7 +32,7 @@ const segmentMap: Record<string, { feature: FeatureKey; tier: 'starter' | 'profe
   emails: { feature: 'email_inbox', tier: 'professional' },
   campaigns: { feature: 'email_campaigns', tier: 'professional' },
   ai: { feature: 'ai_assistant', tier: 'enterprise' },
-  settings: { feature: 'billing', tier: 'starter' },
+  settings: { feature: 'billing', tier: 'core' },
 };
 
 export default async function PortalCatchAllPage({ params }: PortalCatchAllProps) {

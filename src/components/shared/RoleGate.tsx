@@ -23,7 +23,7 @@ export function RoleGate({ resource, allowedRoles, children }: RoleGateProps) {
   // Resource-based check: does this role have `view` on the resource?
   if (resource && !can(resource, 'view')) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-center">
+      <div data-testid="access-denied" className="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-center">
         <Lock size={40} className="text-text-muted" />
         <h2 className="text-lg font-semibold text-foreground">Access Denied</h2>
         <p className="text-sm text-text-muted max-w-md">
@@ -36,7 +36,7 @@ export function RoleGate({ resource, allowedRoles, children }: RoleGateProps) {
   // Explicit role list check
   if (allowedRoles && !allowedRoles.includes(role)) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-center">
+      <div data-testid="access-denied" className="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-center">
         <Lock size={40} className="text-text-muted" />
         <h2 className="text-lg font-semibold text-foreground">Access Denied</h2>
         <p className="text-sm text-text-muted max-w-md">

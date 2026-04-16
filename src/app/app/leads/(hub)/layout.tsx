@@ -1,10 +1,7 @@
-'use client';
-import { RoleGate } from '@/components/shared/RoleGate';
+import { canView } from '@/lib/permissions/server';
+import { AccessDenied } from '@/components/shared/AccessDenied';
 
-export default function LeadsHubLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <RoleGate resource="leads">
-      {children}
-    </RoleGate>
-  );
+export default async function LeadsHubLayout({ children }: { children: React.ReactNode }) {
+  if (!(await canView('leads'))) return <AccessDenied />;
+  return <>{children}</>;
 }

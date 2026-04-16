@@ -20,10 +20,10 @@ interface Plan {
 
 const plans: Plan[] = [
   {
-    name: 'Free',
-    tier: 'free',
+    name: 'Access',
+    tier: 'access',
     price: '$0',
-    period: '/month',
+    period: '/forever',
     features: [
       'Proposals & Clients',
       'Invoicing & Pipeline',
@@ -33,12 +33,12 @@ const plans: Plan[] = [
     ],
   },
   {
-    name: 'Starter',
-    tier: 'starter',
+    name: 'Core',
+    tier: 'core',
     price: '$49',
     period: '/month',
     features: [
-      'Everything in Free',
+      'Everything in Access',
       'Portfolio & Assets',
       'Team Management',
       'Templates & Terms',
@@ -53,7 +53,7 @@ const plans: Plan[] = [
     period: '/month',
     highlighted: true,
     features: [
-      'Everything in Starter',
+      'Everything in Core',
       'CRM & PM Integrations',
       'Automations & Webhooks',
       'Multi-Pipeline & Custom Reports',

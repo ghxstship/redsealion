@@ -1,47 +1,37 @@
 /**
- * FlyteDeck E2E — Clients Tests
+ * FlyteDeck E2E — Clients Hub
  *
- * Validates clients hub, contacts, activity sub-pages.
+ * Routes: /app/clients, /activity, /map, /segments
+ * RoleGate: resource="clients" — controller has viewOnly → ALLOWED
  */
-import { test, expect } from '../../fixtures/test-fixtures';
-import { expectPageRendered, expectNoRawI18nKeys } from '../../helpers/assertions';
+import { test } from '../../fixtures/test-fixtures';
+import { expectPageRendered, expectNoRawI18nKeys, expectAccessDenied } from '../../helpers/assertions';
+import type { Role } from '../../helpers/routes';
+
+const ALLOWED_ROLES: Role[] = ['owner', 'admin', 'controller', 'collaborator'];
 
 const CLIENT_ROUTES = [
   '/app/clients',
-  '/app/clients/contacts',
   '/app/clients/activity',
+  '/app/clients/map',
+  '/app/clients/segments',
 ];
 
 test.describe('Clients Hub @clients', () => {
-  for (const route of CLIENT_ROUTES) {
-    test(`${route} renders for owner @owner`, async ({ authenticatedPage }) => {
-      const page = await authenticatedPage('owner');
-      await page.goto(route);
-      await page.waitForLoadState('networkidle');
-      await expectPageRendered(page);
-      await expectNoRawI18nKeys(page);
-    });
+  for (const role of ALLOWED_ROLES) {
+    for (const route of CLIENT_ROUTES) {
+      test(`${route} renders for ${role}`, async ({ authenticatedPage }) => {
+        const page = await authenticatedPage(role);
+        await page.goto(route, { waitUntil: 'domcontentloaded' });
+        await expectPageRendered(page);
+        await expectNoRawI18nKeys(page);
+      });
+    }
   }
 
-  test('clients list renders for collaborator @collaborator', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('collaborator');
+  test('/app/clients denied for viewer', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('viewer');
     await page.goto('/app/clients');
-    await page.waitForLoadState('networkidle');
-    await expectPageRendered(page);
-  });
-
-  test('collaborator can view clients (view-only) @collaborator', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('collaborator');
-    await page.goto('/app/clients');
-    await page.waitForLoadState('networkidle');
-    await expectPageRendered(page);
-  });
-
-  test('collaborator denied from clients @collaborator', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('collaborator');
-    await page.goto('/app/clients');
-    await page.waitForLoadState('networkidle');
-    await expect(page.locator("text=Access Denied")).toBeVisible();
-    await expectPageRendered(page);
+    await expectAccessDenied(page);
   });
 });

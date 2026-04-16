@@ -1,11 +1,13 @@
 import type { Metadata } from 'next';
-import { RoleGate } from '@/components/shared/RoleGate';
+import { canView } from '@/lib/permissions/server';
+import { AccessDenied } from '@/components/shared/AccessDenied';
 
 export const metadata: Metadata = {
   title: 'Equipment | FlyteDeck',
   description: 'Manage equipment inventory, check-ins, check-outs, and maintenance.',
 };
 
-export default function EquipmentLayout({ children }: { children: React.ReactNode }) {
-  return <RoleGate resource="equipment">{children}</RoleGate>;
+export default async function EquipmentLayout({ children }: { children: React.ReactNode }) {
+  if (!(await canView('equipment'))) return <AccessDenied />;
+  return <>{children}</>;
 }

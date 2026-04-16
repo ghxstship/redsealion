@@ -1,4 +1,3 @@
-import { RoleGate } from '@/components/shared/RoleGate';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import AppHeader from '@/components/shared/AppHeader';
 import PageTransition from '@/components/shared/PageTransition';
@@ -37,7 +36,7 @@ interface SessionContext {
 }
 
 const DEFAULT_CONTEXT: SessionContext = {
-  tier: 'free',
+  tier: 'access',
   user: { fullName: 'User', email: '', role: 'collaborator', avatarUrl: null },
   orgName: 'FlyteDeck',
   locale: DEFAULT_LOCALE,
@@ -96,7 +95,7 @@ async function getSessionContext(): Promise<SessionContext> {
     }
 
     return {
-      tier: (org?.subscription_tier as SubscriptionTier) || 'free',
+      tier: (org?.subscription_tier as SubscriptionTier) || 'access',
       user: {
         fullName: userData.full_name || 'User',
         email: userData.email || authUser.email || '',
@@ -139,7 +138,7 @@ export default async function AppLayout({
                     <AppHeader user={ctx.user} orgName={ctx.orgName} />
                     <div className="px-6 py-8 md:px-10 md:py-10 max-w-7xl mx-auto">
                       <PageTransition>
-                        <RoleGate>{children}</RoleGate>
+                        {children}
                       </PageTransition>
                     </div>
                   </main>

@@ -18227,7 +18227,7 @@ export type Database = {
         | "medical_station"
         | "broadcast_compound"
         | "custom"
-      subscription_tier: "free" | "starter" | "professional" | "enterprise"
+      subscription_tier: "access" | "core" | "professional" | "enterprise"
       task_priority: "low" | "medium" | "high" | "urgent"
       task_status:
         | "todo"
@@ -18786,7 +18786,7 @@ export const Constants = {
         "broadcast_compound",
         "custom",
       ],
-      subscription_tier: ["free", "starter", "professional", "enterprise"],
+      subscription_tier: ["access", "core", "professional", "enterprise"],
       task_priority: ["low", "medium", "high", "urgent"],
       task_status: [
         "todo",

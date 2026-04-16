@@ -1,11 +1,14 @@
 /**
- * FlyteDeck E2E — Schedule Tests
+ * FlyteDeck E2E — Schedule Hub
  *
- * Validates schedule hub and sub-pages (milestones, run-of-show, build-strike).
- * Tier: professional+
+ * Routes: /app/schedule, /milestones, /run-of-show, /build-strike
+ * Tier: professional, ALL_INTERNAL
  */
 import { test } from '../../fixtures/test-fixtures';
 import { expectPageRendered, expectNoRawI18nKeys } from '../../helpers/assertions';
+import type { Role } from '../../helpers/routes';
+
+const ALL_INTERNAL: Role[] = ['owner', 'admin', 'controller', 'collaborator'];
 
 const SCHEDULE_ROUTES = [
   '/app/schedule',
@@ -15,20 +18,14 @@ const SCHEDULE_ROUTES = [
 ];
 
 test.describe('Schedule Hub @schedule', () => {
-  for (const route of SCHEDULE_ROUTES) {
-    test(`${route} renders for owner @owner`, async ({ authenticatedPage }) => {
-      const page = await authenticatedPage('owner');
-      await page.goto(route);
-      await page.waitForLoadState('networkidle');
-      await expectPageRendered(page);
-      await expectNoRawI18nKeys(page);
-    });
+  for (const role of ALL_INTERNAL) {
+    for (const route of SCHEDULE_ROUTES) {
+      test(`${route} renders for ${role}`, async ({ authenticatedPage }) => {
+        const page = await authenticatedPage(role);
+        await page.goto(route, { waitUntil: 'domcontentloaded' });
+        await expectPageRendered(page);
+        await expectNoRawI18nKeys(page);
+      });
+    }
   }
-
-  test('schedule renders for crew @crew', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('crew');
-    await page.goto('/app/schedule');
-    await page.waitForLoadState('networkidle');
-    await expectPageRendered(page);
-  });
 });

@@ -8,7 +8,7 @@
 
 export const tiers = [
   {
-    name: 'Starter',
+    name: 'Core',
     price: '$49',
     priceAnnual: '$39',
     period: '/mo',
@@ -84,7 +84,7 @@ export type FeatureValue = string | boolean;
 
 interface Feature {
   name: string;
-  starter: FeatureValue;
+  core: FeatureValue;
   professional: FeatureValue;
   enterprise: FeatureValue;
 }
@@ -98,77 +98,77 @@ export const comparisonData: Category[] = [
   {
     name: 'Proposals & Sales',
     features: [
-      { name: 'Interactive proposal builder', starter: true, professional: true, enterprise: true },
-      { name: 'Proposal templates', starter: 'Basic', professional: 'Custom + branding', enterprise: 'Custom + branding' },
-      { name: 'Client portal', starter: true, professional: 'With activity tracking', enterprise: 'Full (approvals + files)' },
-      { name: 'Sales pipeline', starter: 'Single', professional: 'Multi-pipeline', enterprise: 'Multi-pipeline' },
-      { name: 'CRM & contacts', starter: 'Basic', professional: 'Advanced', enterprise: 'Advanced' },
-      { name: 'Proposal scenarios', starter: false, professional: false, enterprise: true },
-      { name: 'E-signatures', starter: true, professional: true, enterprise: true },
+      { name: 'Interactive proposal builder', core: true, professional: true, enterprise: true },
+      { name: 'Proposal templates', core: 'Basic', professional: 'Custom + branding', enterprise: 'Custom + branding' },
+      { name: 'Client portal', core: true, professional: 'With activity tracking', enterprise: 'Full (approvals + files)' },
+      { name: 'Sales pipeline', core: 'Single', professional: 'Multi-pipeline', enterprise: 'Multi-pipeline' },
+      { name: 'CRM & contacts', core: 'Basic', professional: 'Advanced', enterprise: 'Advanced' },
+      { name: 'Proposal scenarios', core: false, professional: false, enterprise: true },
+      { name: 'E-signatures', core: true, professional: true, enterprise: true },
     ],
   },
   {
     name: 'Finance',
     features: [
-      { name: 'Invoicing', starter: 'Basic', professional: 'Advanced', enterprise: 'Advanced' },
-      { name: 'Recurring invoices', starter: false, professional: true, enterprise: true },
-      { name: 'Credit notes', starter: false, professional: true, enterprise: true },
-      { name: 'QuickBooks/Xero integration', starter: false, professional: true, enterprise: true },
-      { name: 'Budgeting & burn tracking', starter: false, professional: false, enterprise: true },
-      { name: 'Profitability analysis', starter: false, professional: false, enterprise: true },
-      { name: 'Expense management', starter: false, professional: false, enterprise: true },
+      { name: 'Invoicing', core: 'Basic', professional: 'Advanced', enterprise: 'Advanced' },
+      { name: 'Recurring invoices', core: false, professional: true, enterprise: true },
+      { name: 'Credit notes', core: false, professional: true, enterprise: true },
+      { name: 'QuickBooks/Xero integration', core: false, professional: true, enterprise: true },
+      { name: 'Budgeting & burn tracking', core: false, professional: false, enterprise: true },
+      { name: 'Profitability analysis', core: false, professional: false, enterprise: true },
+      { name: 'Expense management', core: false, professional: false, enterprise: true },
     ],
   },
   {
     name: 'Project Management',
     features: [
-      { name: 'Projects', starter: true, professional: true, enterprise: true },
-      { name: 'Task management', starter: true, professional: true, enterprise: true },
-      { name: 'Goals', starter: true, professional: true, enterprise: true },
-      { name: 'Roadmap', starter: true, professional: true, enterprise: true },
-      { name: 'Gantt charts', starter: true, professional: true, enterprise: true },
-      { name: 'Files & documents', starter: true, professional: true, enterprise: true },
-      { name: 'Calendar & scheduling', starter: true, professional: true, enterprise: true },
+      { name: 'Projects', core: true, professional: true, enterprise: true },
+      { name: 'Task management', core: true, professional: true, enterprise: true },
+      { name: 'Goals', core: true, professional: true, enterprise: true },
+      { name: 'Roadmap', core: true, professional: true, enterprise: true },
+      { name: 'Gantt charts', core: true, professional: true, enterprise: true },
+      { name: 'Files & documents', core: true, professional: true, enterprise: true },
+      { name: 'Calendar & scheduling', core: true, professional: true, enterprise: true },
     ],
   },
   {
     name: 'Operations',
     features: [
-      { name: 'Time tracking', starter: false, professional: false, enterprise: true },
-      { name: 'Workload management', starter: false, professional: false, enterprise: true },
-      { name: 'Utilization tracking', starter: false, professional: false, enterprise: true },
+      { name: 'Time tracking', core: false, professional: false, enterprise: true },
+      { name: 'Workload management', core: false, professional: false, enterprise: true },
+      { name: 'Utilization tracking', core: false, professional: false, enterprise: true },
     ],
   },
   {
     name: 'Integrations & Automation',
     features: [
-      { name: 'CRM integration (Salesforce, HubSpot)', starter: false, professional: true, enterprise: true },
-      { name: 'PM integration (ClickUp, Asana)', starter: false, professional: true, enterprise: true },
-      { name: 'Automations', starter: false, professional: true, enterprise: true },
-      { name: 'Webhooks (Zapier)', starter: false, professional: true, enterprise: true },
-      { name: 'API access', starter: false, professional: true, enterprise: true },
+      { name: 'CRM integration (Salesforce, HubSpot)', core: false, professional: true, enterprise: true },
+      { name: 'PM integration (ClickUp, Asana)', core: false, professional: true, enterprise: true },
+      { name: 'Automations', core: false, professional: true, enterprise: true },
+      { name: 'Webhooks (Zapier)', core: false, professional: true, enterprise: true },
+      { name: 'API access', core: false, professional: true, enterprise: true },
     ],
   },
   {
     name: 'Team & Security',
     features: [
-      { name: 'Team members', starter: '2', professional: '10', enterprise: 'Unlimited' },
-      { name: 'Custom fields', starter: false, professional: false, enterprise: true },
-      { name: 'AI assistant', starter: false, professional: false, enterprise: true },
-      { name: 'People & HR', starter: false, professional: false, enterprise: true },
-      { name: 'SSO (coming soon)', starter: false, professional: false, enterprise: true },
-      { name: 'Audit log', starter: false, professional: false, enterprise: true },
-      { name: 'Granular permissions', starter: false, professional: false, enterprise: true },
-      { name: 'SLA guarantee', starter: false, professional: false, enterprise: true },
+      { name: 'Team members', core: '2', professional: '10', enterprise: 'Unlimited' },
+      { name: 'Custom fields', core: false, professional: false, enterprise: true },
+      { name: 'AI assistant', core: false, professional: false, enterprise: true },
+      { name: 'People & HR', core: false, professional: false, enterprise: true },
+      { name: 'SSO (coming soon)', core: false, professional: false, enterprise: true },
+      { name: 'Audit log', core: false, professional: false, enterprise: true },
+      { name: 'Granular permissions', core: false, professional: false, enterprise: true },
+      { name: 'SLA guarantee', core: false, professional: false, enterprise: true },
     ],
   },
   {
     name: 'Support',
     features: [
-      { name: 'Email support', starter: true, professional: true, enterprise: true },
-      { name: 'Priority support', starter: false, professional: true, enterprise: true },
-      { name: 'Dedicated account manager', starter: false, professional: false, enterprise: true },
-      { name: 'Onboarding & training', starter: false, professional: false, enterprise: true },
+      { name: 'Email support', core: true, professional: true, enterprise: true },
+      { name: 'Priority support', core: false, professional: true, enterprise: true },
+      { name: 'Dedicated account manager', core: false, professional: false, enterprise: true },
+      { name: 'Onboarding & training', core: false, professional: false, enterprise: true },
     ],
   },
 ];

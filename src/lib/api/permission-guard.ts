@@ -95,7 +95,7 @@ export async function checkPermission(
       .eq('id', organizationId)
       .single();
 
-    const tier = (org?.subscription_tier as SubscriptionTier) ?? 'free';
+    const tier = (org?.subscription_tier as SubscriptionTier) ?? 'access';
 
     if (!canAccessFeature(tier, requireFeature)) {
       return {

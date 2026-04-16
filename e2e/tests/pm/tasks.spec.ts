@@ -1,9 +1,14 @@
 /**
- * FlyteDeck E2E — Tasks Tests
- * Tier: enterprise
+ * FlyteDeck E2E — Tasks Hub
+ *
+ * Routes: /app/tasks, /board, /calendar, /gantt, /projects, /workload
+ * Tier: access, ALL_INTERNAL
  */
 import { test } from '../../fixtures/test-fixtures';
 import { expectPageRendered, expectNoRawI18nKeys } from '../../helpers/assertions';
+import type { Role } from '../../helpers/routes';
+
+const ALL_INTERNAL: Role[] = ['owner', 'admin', 'controller', 'collaborator'];
 
 const TASK_ROUTES = [
   '/app/tasks',
@@ -15,27 +20,14 @@ const TASK_ROUTES = [
 ];
 
 test.describe('Tasks Hub @tasks', () => {
-  for (const route of TASK_ROUTES) {
-    test(`${route} renders for owner @owner`, async ({ authenticatedPage }) => {
-      const page = await authenticatedPage('owner');
-      await page.goto(route);
-      await page.waitForLoadState('networkidle');
-      await expectPageRendered(page);
-      await expectNoRawI18nKeys(page);
-    });
+  for (const role of ALL_INTERNAL) {
+    for (const route of TASK_ROUTES) {
+      test(`${route} renders for ${role}`, async ({ authenticatedPage }) => {
+        const page = await authenticatedPage(role);
+        await page.goto(route, { waitUntil: 'domcontentloaded' });
+        await expectPageRendered(page);
+        await expectNoRawI18nKeys(page);
+      });
+    }
   }
-
-  test('tasks board renders for collaborator @collaborator', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('collaborator');
-    await page.goto('/app/tasks/board');
-    await page.waitForLoadState('networkidle');
-    await expectPageRendered(page);
-  });
-
-  test('tasks renders for collaborator @collaborator', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('collaborator');
-    await page.goto('/app/tasks');
-    await page.waitForLoadState('networkidle');
-    await expectPageRendered(page);
-  });
 });

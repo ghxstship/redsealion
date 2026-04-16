@@ -90,8 +90,7 @@ test.describe('Advancing Hub Pages @advancing @smoke', () => {
   for (const route of ADVANCING_ROUTES) {
     test(`${route} renders for owner`, async ({ authenticatedPage }) => {
       const page = await authenticatedPage('owner');
-      await page.goto(route);
-      await page.waitForLoadState('networkidle');
+      await page.goto(route, { waitUntil: 'domcontentloaded' });
       await expectPageRendered(page);
       await expectNoRawI18nKeys(page);
     });
@@ -101,7 +100,6 @@ test.describe('Advancing Hub Pages @advancing @smoke', () => {
     test(`advancing hub renders for ${role}`, async ({ authenticatedPage }) => {
       const page = await authenticatedPage(role);
       await page.goto('/app/advancing');
-      await page.waitForLoadState('networkidle');
       await expectPageRendered(page);
     });
   });
@@ -109,7 +107,6 @@ test.describe('Advancing Hub Pages @advancing @smoke', () => {
   test('submissions page renders for collaborator', async ({ authenticatedPage }) => {
     const page = await authenticatedPage('collaborator');
     await page.goto('/app/advancing/submissions');
-    await page.waitForLoadState('networkidle');
     await expectPageRendered(page);
   });
 });

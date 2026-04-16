@@ -68,7 +68,7 @@ export async function requireAuth(): Promise<
       userId: user.id,
       organizationId: membership.organizationId,
       role: membership.role,
-      tier: (org?.subscription_tier as SubscriptionTier) ?? 'free',
+      tier: (org?.subscription_tier as SubscriptionTier) ?? 'access',
       supabase,
     },
     denied: null,

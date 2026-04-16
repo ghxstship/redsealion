@@ -1,5 +1,7 @@
-import { RoleGate } from '@/components/shared/RoleGate';
+import { canView } from '@/lib/permissions/server';
+import { AccessDenied } from '@/components/shared/AccessDenied';
 
-export default function ExpensesHubLayout({ children }: { children: React.ReactNode }) {
-  return <RoleGate resource="expenses">{children}</RoleGate>;
+export default async function ExpensesHubLayout({ children }: { children: React.ReactNode }) {
+  if (!(await canView('expenses'))) return <AccessDenied />;
+  return <>{children}</>;
 }

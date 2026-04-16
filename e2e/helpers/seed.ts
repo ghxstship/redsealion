@@ -19,8 +19,8 @@ const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 /** Deterministic UUIDs for test entities — e2e-prefixed for easy cleanup */
 export const TEST_IDS = {
   orgs: {
-    free:         'e2e00000-0000-4000-a000-000000000001',
-    starter:      'e2e00000-0000-4000-a000-000000000002',
+    access:       'e2e00000-0000-4000-a000-000000000001',
+    core:         'e2e00000-0000-4000-a000-000000000002',
     professional: 'e2e00000-0000-4000-a000-000000000003',
     enterprise:   'e2e00000-0000-4000-a000-000000000004',
   },
@@ -133,7 +133,7 @@ const ROLE_UUID_MAP: Record<Role, string> = {
 };
 
 const EXTERNAL_ROLES: Role[] = ['contractor', 'crew', 'client', 'viewer', 'community'];
-const TIER_LIST: Tier[] = ['free', 'starter', 'professional', 'enterprise'];
+const TIER_LIST: Tier[] = ['access', 'core', 'professional', 'enterprise'];
 const ROLE_LIST: Role[] = Object.keys(ROLE_EMAILS) as Role[];
 
 // ─── Client ──────────────────────────────────────────────────────────────────
@@ -216,7 +216,7 @@ export async function seedTestData() {
   }
 
   // 4. Owner on lower-tier orgs for tier-gate testing
-  for (const tier of ['free', 'starter', 'professional'] as const) {
+  for (const tier of ['access', 'core', 'professional'] as const) {
     const orgId = TEST_IDS.orgs[tier];
     await supabase.from('organization_memberships').upsert({
       user_id: TEST_IDS.users.owner,

@@ -1,8 +1,13 @@
 /**
- * FlyteDeck E2E — Reports Tests
+ * FlyteDeck E2E — Reports Hub
+ *
+ * RoleGate: resource="reports" — controller has viewCreate → ALLOWED on ALL reports
  */
-import { test, expect } from '../../fixtures/test-fixtures';
-import { expectPageRendered, expectNoRawI18nKeys } from '../../helpers/assertions';
+import { test } from '../../fixtures/test-fixtures';
+import { expectPageRendered, expectNoRawI18nKeys, expectAccessDenied } from '../../helpers/assertions';
+import type { Role } from '../../helpers/routes';
+
+const ALLOWED_ROLES: Role[] = ['owner', 'admin', 'controller', 'collaborator'];
 
 const REPORT_ROUTES = [
   '/app/reports',
@@ -13,40 +18,29 @@ const REPORT_ROUTES = [
   '/app/reports/utilization',
   '/app/reports/wip',
   '/app/reports/forecast',
+  '/app/reports/aging',
   '/app/reports/builder',
+  '/app/reports/budget-vs-actual',
+  '/app/reports/crew-availability',
+  '/app/reports/equipment-utilization',
+  '/app/reports/expenses',
 ];
 
 test.describe('Reports Hub @reports', () => {
-  for (const route of REPORT_ROUTES) {
-    test(`${route} renders for owner @owner`, async ({ authenticatedPage }) => {
-      const page = await authenticatedPage('owner');
-      await page.goto(route);
-      await page.waitForLoadState('networkidle');
-      await expectPageRendered(page);
-      await expectNoRawI18nKeys(page);
-    });
+  for (const role of ALLOWED_ROLES) {
+    for (const route of REPORT_ROUTES) {
+      test(`${route} renders for ${role}`, async ({ authenticatedPage }) => {
+        const page = await authenticatedPage(role);
+        await page.goto(route, { waitUntil: 'domcontentloaded' });
+        await expectPageRendered(page);
+        await expectNoRawI18nKeys(page);
+      });
+    }
   }
 
-  test('reports renders for collaborator @collaborator', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('collaborator');
+  test('/app/reports renders for viewer (viewOnly)', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('viewer');
     await page.goto('/app/reports');
-    await page.waitForLoadState('networkidle');
-    await expectPageRendered(page);
-  });
-
-  test('builder requires professional tier', async ({ authenticatedPage }) => {
-    // This test would differ based on tier context
-    const page = await authenticatedPage('owner');
-    await page.goto('/app/reports/builder');
-    await page.waitForLoadState('networkidle');
-    await expectPageRendered(page);
-  });
-
-  test('reports denied for collaborator @collaborator', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('collaborator');
-    await page.goto('/app/reports');
-    await page.waitForLoadState('networkidle');
-    await expect(page.locator("text=Access Denied")).toBeVisible();
     await expectPageRendered(page);
   });
 });

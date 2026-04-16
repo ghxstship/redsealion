@@ -1,18 +1,7 @@
-import type { Metadata } from 'next';
-import { TierGate } from '@/components/shared/TierGate';
-import { RoleGate } from '@/components/shared/RoleGate';
+import { canView } from '@/lib/permissions/server';
+import { AccessDenied } from '@/components/shared/AccessDenied';
 
-export const metadata: Metadata = {
-  title: 'Emails | FlyteDeck',
-  description: 'Manage email templates and inbox.',
-};
-
-export default function EmailsLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <TierGate feature="email_inbox">
-      <RoleGate resource="email_inbox">
-        {children}
-      </RoleGate>
-    </TierGate>
-  );
+export default async function Layout({ children }: { children: React.ReactNode }) {
+  if (!(await canView('email_inbox'))) return <AccessDenied />;
+  return <>{children}</>;
 }

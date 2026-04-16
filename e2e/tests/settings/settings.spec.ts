@@ -1,13 +1,20 @@
 /**
- * FlyteDeck E2E — Settings Tests
+ * FlyteDeck E2E — Settings Hub
  *
- * Validates all 24+ settings sub-pages render correctly for owner,
- * and verifies non-admin roles are blocked.
+ * RoleGate: allowedRoles=['developer','owner','admin','controller','collaborator'] → ALL_INTERNAL
+ * Sub-pages use requiresAdmin filter (can('settings','view')) to hide sidebar sections
+ * Profile/Appearance/Notifications/Calendar-sync/Data-privacy: ALL_INTERNAL
+ * Admin-only sub-pages: controller/collaborator can navigate but see limited content
  */
 import { test } from '../../fixtures/test-fixtures';
-import { expectPageRendered, expectNoRawI18nKeys } from '../../helpers/assertions';
+import { expectPageRendered, expectNoRawI18nKeys, expectAccessDenied } from '../../helpers/assertions';
+import type { Role } from '../../helpers/routes';
 
-const SETTINGS_ROUTES = [
+const ALL_INTERNAL: Role[] = ['owner', 'admin', 'controller', 'collaborator'];
+const ADMIN_ROLES: Role[] = ['owner', 'admin'];
+
+// All settings pages — tested for admin roles (full access)
+const ALL_SETTINGS_ROUTES = [
   '/app/settings',
   '/app/settings/profile',
   '/app/settings/appearance',
@@ -29,7 +36,9 @@ const SETTINGS_ROUTES = [
   '/app/settings/automations-config',
   '/app/settings/integrations',
   '/app/settings/data-privacy',
+  '/app/settings/webhooks',
   '/app/settings/security',
+  '/app/settings/security/mfa',
   '/app/settings/security/permissions',
   '/app/settings/security/audit-log',
   '/app/settings/sso',
@@ -37,54 +46,47 @@ const SETTINGS_ROUTES = [
   '/app/settings/audit-log',
 ];
 
+// Pages accessible to ALL_INTERNAL
+const ALL_INTERNAL_ROUTES = [
+  '/app/settings',
+  '/app/settings/profile',
+  '/app/settings/appearance',
+  '/app/settings/notifications',
+  '/app/settings/calendar-sync',
+  '/app/settings/data-privacy',
+];
+
 test.describe('Settings @settings', () => {
-  // All settings pages should render for owner
-  for (const route of SETTINGS_ROUTES) {
-    test(`${route} renders for owner @owner`, async ({ authenticatedPage }) => {
-      const page = await authenticatedPage('owner');
-      await page.goto(route);
-      await page.waitForLoadState('domcontentloaded');
-      await expectPageRendered(page);
-      await expectNoRawI18nKeys(page);
-    });
+  // Admin access — all pages
+  for (const role of ADMIN_ROLES) {
+    for (const route of ALL_SETTINGS_ROUTES) {
+      test(`${route} renders for ${role}`, async ({ authenticatedPage }) => {
+        const page = await authenticatedPage(role);
+        await page.goto(route, { waitUntil: 'domcontentloaded' });
+        await page.waitForLoadState('domcontentloaded');
+        await expectPageRendered(page);
+        await expectNoRawI18nKeys(page);
+      });
+    }
   }
 
-  // Profile and appearance should be accessible to all roles
-  test('profile accessible for collaborator @collaborator', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('collaborator');
-    await page.goto('/app/settings/profile');
-    await page.waitForLoadState('domcontentloaded');
-    await expectPageRendered(page);
-  });
+  // ALL_INTERNAL access — collaborator/controller can reach root + personal pages
+  for (const role of ['collaborator', 'controller'] as Role[]) {
+    for (const route of ALL_INTERNAL_ROUTES) {
+      test(`${route} renders for ${role}`, async ({ authenticatedPage }) => {
+        const page = await authenticatedPage(role);
+        await page.goto(route, { waitUntil: 'domcontentloaded' });
+        await page.waitForLoadState('domcontentloaded');
+        await expectPageRendered(page);
+      });
+    }
+  }
 
-  test('appearance accessible for collaborator @collaborator_alt', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('collaborator');
-    await page.goto('/app/settings/appearance');
+  // Viewer denied from settings entirely
+  test('/app/settings denied for viewer', async ({ authenticatedPage }) => {
+    const page = await authenticatedPage('viewer');
+    await page.goto('/app/settings');
     await page.waitForLoadState('domcontentloaded');
-    await expectPageRendered(page);
-  });
-
-  // TODO: Implement server-side access control for admin-only settings routes.
-  // Currently these pages render for all authenticated users. Once route
-  // protection is added, switch back to expectAccessDenied.
-  test('billing renders for collaborator @collaborator', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('collaborator');
-    await page.goto('/app/settings/billing');
-    await page.waitForLoadState('domcontentloaded');
-    await expectPageRendered(page);
-  });
-
-  test('security renders for collaborator @collaborator_sec', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('collaborator');
-    await page.goto('/app/settings/security');
-    await page.waitForLoadState('domcontentloaded');
-    await expectPageRendered(page);
-  });
-
-  test('sso renders for collaborator @collaborator_sso', async ({ authenticatedPage }) => {
-    const page = await authenticatedPage('collaborator');
-    await page.goto('/app/settings/sso');
-    await page.waitForLoadState('domcontentloaded');
-    await expectPageRendered(page);
+    await expectAccessDenied(page);
   });
 });

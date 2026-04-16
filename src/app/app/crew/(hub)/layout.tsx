@@ -1,11 +1,7 @@
-import { RoleGate } from '@/components/shared/RoleGate';
-import CrewHubTabs from '../CrewHubTabs';
+import { canView } from '@/lib/permissions/server';
+import { AccessDenied } from '@/components/shared/AccessDenied';
 
-export default function CrewHubLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <RoleGate resource="crew">
-      <CrewHubTabs />
-      {children}
-    </RoleGate>
-  );
+export default async function CrewHubLayout({ children }: { children: React.ReactNode }) {
+  if (!(await canView('crew'))) return <AccessDenied />;
+  return <>{children}</>;
 }

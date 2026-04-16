@@ -1,10 +1,7 @@
-'use client';
-import { RoleGate } from '@/components/shared/RoleGate';
+import { canView } from '@/lib/permissions/server';
+import { AccessDenied } from '@/components/shared/AccessDenied';
 
-export default function InvoiceHubLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <RoleGate resource="invoices">
-      {children}
-    </RoleGate>
-  );
+export default async function InvoiceHubLayout({ children }: { children: React.ReactNode }) {
+  if (!(await canView('invoices'))) return <AccessDenied />;
+  return <>{children}</>;
 }
