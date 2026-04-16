@@ -41,6 +41,12 @@ export default function MarketingNav() {
           Pricing
         </Link>
         <Link
+          href="/compare"
+          className="hidden text-sm font-medium text-zinc-500 transition-colors hover:text-zinc-900 sm:inline"
+        >
+          Compare
+        </Link>
+        <Link
           href="/login"
           className="text-sm font-medium text-zinc-500 transition-colors hover:text-zinc-900"
         >
@@ -103,6 +109,20 @@ export default function MarketingNav() {
               onClick={() => setMobileOpen(false)}
             >
               Compare
+            </Link>
+            <Link
+              href="/login"
+              className="rounded-lg px-3 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100"
+              onClick={() => setMobileOpen(false)}
+            >
+              Sign in
+            </Link>
+            <Link
+              href="/signup"
+              className="rounded-lg px-3 py-2 text-sm font-medium text-white bg-zinc-900 transition-colors hover:bg-zinc-800 text-center"
+              onClick={() => setMobileOpen(false)}
+            >
+              Get Started
             </Link>
           </div>
         </div>

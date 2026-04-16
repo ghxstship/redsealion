@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo, startTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronRight, Settings, Plus, Search } from 'lucide-react';
+import { navSections, type NavItem } from '@/components/admin/sidebar/nav-data';
 
 
 /* ─────────────────────────────────────────────────────────
@@ -19,52 +20,87 @@ interface CommandItem {
 }
 
 /* ─────────────────────────────────────────────────────────
-   Searchable items registry
+   Keyword supplements — extra search terms for sidebar items
+   (keyed by href for lookup from navSections).
    ───────────────────────────────────────────────────────── */
 
-const navigationItems: CommandItem[] = [
-  // Overview
-  { id: 'nav-dashboard', label: 'Dashboard', section: 'Navigate', href: '/app', icon: <NavIcon />, keywords: ['home', 'overview'] },
-  { id: 'nav-ai', label: 'AI Assistant', section: 'Navigate', href: '/app/ai', icon: <NavIcon />, keywords: ['chat', 'copilot'] },
+const keywordsByHref: Record<string, string[]> = {
+  '/app': ['home', 'overview'],
+  '/app/ai': ['chat', 'copilot'],
+  '/app/leads': ['prospects', 'crm'],
+  '/app/pipeline': ['deals', 'funnel', 'sales'],
+  '/app/clients': ['customers', 'accounts'],
+  '/app/proposals': ['quotes', 'estimates', 'bids'],
+  '/app/tasks': ['todo', 'checklist'],
+  '/app/calendar': ['schedule', 'events'],
+  '/app/workloads': ['capacity', 'scheduling'],
+  '/app/templates': ['presets', 'phase templates'],
+  '/app/dispatch': ['work orders', 'field'],
+  '/app/people': ['team', 'hr', 'directory', 'staff', 'employees'],
+  '/app/crew': ['freelancers', 'contractors'],
+  '/app/equipment': ['gear', 'tools', 'inventory'],
+  '/app/invoices': ['billing', 'payments'],
+  '/app/expenses': ['receipts', 'reimbursement'],
+  '/app/budgets': ['cost', 'forecast'],
+  '/app/profitability': ['margin', 'profit', 'loss'],
+  '/app/time': ['hours', 'timesheet', 'clock'],
+  '/app/reports': ['analytics', 'charts', 'data'],
+  '/app/automations': ['workflows', 'rules'],
+  '/app/campaigns': ['marketing', 'email blasts'],
+  '/app/emails': ['inbox', 'mail'],
+  '/app/integrations': ['connect', 'sync', 'api'],
+  '/app/assets': ['inventory', 'physical'],
+  '/app/logistics': ['warehouse', 'storage', 'logistics', 'shipping', 'receiving'],
+  '/app/portfolio': ['showcase', 'gallery', 'work'],
+  '/app/terms': ['legal', 'contract'],
+  '/app/settings': ['preferences', 'config'],
+  '/app/favorites': ['bookmarks', 'starred'],
+  '/app/my-schedule': ['personal', 'calendar'],
+  '/app/my-tasks': ['personal', 'assigned'],
+  '/app/my-inbox': ['notifications', 'mentions'],
+  '/app/my-documents': ['personal', 'files', 'upload'],
+  '/app/goals': ['okr', 'objectives'],
+  '/app/roadmap': ['timeline', 'milestones'],
+  '/app/files': ['documents', 'uploads'],
+  '/app/events': ['shows', 'gigs', 'performances'],
+  '/app/locations': ['venues', 'sites'],
+  '/app/advancing': ['advance', 'prep', 'fabrication', 'procurement', 'rentals', 'fulfillment', 'build', 'purchase', 'rent'],
+  '/app/manifest': ['packing', 'load list', 'fulfillment', 'build', 'purchase', 'rent', 'internal'],
+  '/app/schedule': ['production calendar'],
+  '/app/work-orders': ['service', 'dispatch'],
+  '/app/marketplace': ['store', 'marketplace'],
+  '/app/compliance': ['documents', 'insurance', 'licenses'],
+  '/app/finance': ['money', 'financials'],
+  '/app/portal': ['preview', 'client portal', 'demo'],
+};
 
-  // Sales & CRM
-  { id: 'nav-leads', label: 'Leads', section: 'Navigate', href: '/app/leads', icon: <NavIcon />, keywords: ['prospects', 'crm'] },
-  { id: 'nav-pipeline', label: 'Pipeline', section: 'Navigate', href: '/app/pipeline', icon: <NavIcon />, keywords: ['deals', 'funnel', 'sales'] },
-  { id: 'nav-clients', label: 'Clients', section: 'Navigate', href: '/app/clients', icon: <NavIcon />, keywords: ['customers', 'accounts'] },
-  { id: 'nav-proposals', label: 'Proposals', section: 'Navigate', href: '/app/proposals', icon: <NavIcon />, keywords: ['quotes', 'estimates', 'bids'] },
+/* ─────────────────────────────────────────────────────────
+   Derive navigation items from navSections (SSOT)
+   ───────────────────────────────────────────────────────── */
 
-  // Production
-  { id: 'nav-tasks', label: 'Tasks', section: 'Navigate', href: '/app/tasks', icon: <NavIcon />, keywords: ['todo', 'checklist'] },
-  { id: 'nav-calendar', label: 'Calendar', section: 'Navigate', href: '/app/calendar', icon: <NavIcon />, keywords: ['schedule', 'events'] },
-  { id: 'nav-workloads', label: 'Workloads', section: 'Navigate', href: '/app/workloads', icon: <NavIcon />, keywords: ['capacity', 'scheduling'] },
-  { id: 'nav-templates', label: 'Templates', section: 'Navigate', href: '/app/templates', icon: <NavIcon />, keywords: ['presets', 'phase templates'] },
-  { id: 'nav-dispatch', label: 'Dispatch', section: 'Navigate', href: '/app/dispatch', icon: <NavIcon />, keywords: ['work orders', 'field'] },
+function buildNavigationItems(): CommandItem[] {
+  const items: CommandItem[] = [];
+  for (const section of navSections) {
+    for (const item of section.items) {
+      items.push({
+        id: `nav-${item.href.replace(/\//g, '-').slice(1)}`,
+        label: item.label,
+        section: 'Navigate',
+        href: item.href,
+        icon: <NavIcon />,
+        keywords: keywordsByHref[item.href] ?? [],
+      });
+    }
+  }
+  return items;
+}
 
-  // People & Crew
-  { id: 'nav-people', label: 'People', section: 'Navigate', href: '/app/people', icon: <NavIcon />, keywords: ['team', 'hr', 'directory', 'staff', 'employees'] },
-  { id: 'nav-crew', label: 'Crew', section: 'Navigate', href: '/app/crew', icon: <NavIcon />, keywords: ['freelancers', 'contractors'] },
-  { id: 'nav-equipment', label: 'Equipment', section: 'Navigate', href: '/app/equipment', icon: <NavIcon />, keywords: ['gear', 'tools', 'inventory'] },
+/* ─────────────────────────────────────────────────────────
+   Settings sub-pages (not in sidebar — supplemental registry)
+   ───────────────────────────────────────────────────────── */
 
-  // Finance
-  { id: 'nav-invoices', label: 'Invoices', section: 'Navigate', href: '/app/invoices', icon: <NavIcon />, keywords: ['billing', 'payments'] },
-  { id: 'nav-expenses', label: 'Expenses', section: 'Navigate', href: '/app/expenses', icon: <NavIcon />, keywords: ['receipts', 'reimbursement'] },
-  { id: 'nav-budgets', label: 'Budgets', section: 'Navigate', href: '/app/budgets', icon: <NavIcon />, keywords: ['cost', 'forecast'] },
-  { id: 'nav-profitability', label: 'Profitability', section: 'Navigate', href: '/app/profitability', icon: <NavIcon />, keywords: ['margin', 'profit', 'loss'] },
-  { id: 'nav-time', label: 'Time Tracking', section: 'Navigate', href: '/app/time', icon: <NavIcon />, keywords: ['hours', 'timesheet', 'clock'] },
-
-  // Insights & Tools
-  { id: 'nav-reports', label: 'Reports', section: 'Navigate', href: '/app/reports', icon: <NavIcon />, keywords: ['analytics', 'charts', 'data'] },
-  { id: 'nav-automations', label: 'Automations', section: 'Navigate', href: '/app/automations', icon: <NavIcon />, keywords: ['workflows', 'rules'] },
-  { id: 'nav-campaigns', label: 'Campaigns', section: 'Navigate', href: '/app/campaigns', icon: <NavIcon />, keywords: ['marketing', 'email blasts'] },
-  { id: 'nav-emails', label: 'Emails', section: 'Navigate', href: '/app/emails', icon: <NavIcon />, keywords: ['inbox', 'mail'] },
-  { id: 'nav-integrations', label: 'Integrations', section: 'Navigate', href: '/app/integrations', icon: <NavIcon />, keywords: ['connect', 'sync', 'api'] },
-  { id: 'nav-assets', label: 'Assets', section: 'Navigate', href: '/app/assets', icon: <NavIcon />, keywords: ['inventory', 'physical'] },
-  { id: 'nav-logistics', label: 'Logistics', section: 'Navigate', href: '/app/logistics', icon: <NavIcon />, keywords: ['warehouse', 'storage', 'logistics', 'shipping', 'receiving'] },
-  { id: 'nav-portfolio', label: 'Portfolio', section: 'Navigate', href: '/app/portfolio', icon: <NavIcon />, keywords: ['showcase', 'gallery', 'work'] },
-  { id: 'nav-terms', label: 'Terms & Conditions', section: 'Navigate', href: '/app/terms', icon: <NavIcon />, keywords: ['legal', 'contract'] },
+const settingsItems: CommandItem[] = [
   { id: 'nav-settings', label: 'Settings', section: 'Navigate', href: '/app/settings', icon: <NavIcon />, keywords: ['preferences', 'config'] },
-
-  // Settings sub-pages
   { id: 'nav-settings-branding', label: 'Branding', section: 'Settings', href: '/app/settings/branding', icon: <SettingsIcon />, keywords: ['logo', 'colors'] },
   { id: 'nav-settings-billing', label: 'Plans & Billing', section: 'Settings', href: '/app/settings/billing', icon: <SettingsIcon />, keywords: ['subscription', 'plan', 'pricing'] },
   { id: 'nav-settings-team', label: 'Team Members', section: 'Settings', href: '/app/settings/team', icon: <SettingsIcon />, keywords: ['invite', 'members', 'roles'] },
@@ -76,8 +112,13 @@ const navigationItems: CommandItem[] = [
   { id: 'nav-settings-apikeys', label: 'API Keys & Webhooks', section: 'Settings', href: '/app/settings/api-keys', icon: <SettingsIcon />, keywords: ['developer', 'tokens'] },
   { id: 'nav-settings-customfields', label: 'Custom Fields', section: 'Settings', href: '/app/settings/custom-fields', icon: <SettingsIcon />, keywords: ['metadata', 'attributes'] },
   { id: 'nav-settings-payments', label: 'Stripe Connect', section: 'Settings', href: '/app/settings/payments', icon: <SettingsIcon />, keywords: ['stripe', 'payout'] },
+];
 
-  // Quick actions
+/* ─────────────────────────────────────────────────────────
+   Quick action items (supplemental — not derived from sidebar)
+   ───────────────────────────────────────────────────────── */
+
+const actionItems: CommandItem[] = [
   { id: 'action-new-proposal', label: 'Create Proposal', section: 'Actions', href: '/app/proposals/new', icon: <ActionIcon />, keywords: ['new', 'create', 'add'] },
   { id: 'action-new-invoice', label: 'Create Invoice', section: 'Actions', href: '/app/invoices/new', icon: <ActionIcon />, keywords: ['new', 'create', 'bill'] },
   { id: 'action-new-expense', label: 'New Expense', section: 'Actions', href: '/app/expenses/new', icon: <ActionIcon />, keywords: ['new', 'submit', 'receipt'] },
@@ -115,6 +156,11 @@ export default function CommandPalette() {
   const listRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
+  // Build the complete items list — derived from navSections (SSOT) + supplemental
+  const allItems = useMemo(() => {
+    return [...buildNavigationItems(), ...settingsItems, ...actionItems];
+  }, []);
+
   // ⌘K / Ctrl+K listener
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
@@ -143,15 +189,15 @@ export default function CommandPalette() {
 
   // Filter items
   const filtered = useMemo(() => {
-    if (!query.trim()) return navigationItems.slice(0, 12); // show top items when empty
+    if (!query.trim()) return allItems.slice(0, 12); // show top items when empty
     const q = query.toLowerCase();
-    return navigationItems.filter(
+    return allItems.filter(
       (item) =>
         item.label.toLowerCase().includes(q) ||
         item.section.toLowerCase().includes(q) ||
         item.keywords?.some((kw) => kw.includes(q))
     );
-  }, [query]);
+  }, [query, allItems]);
 
   // Group by section
   const grouped = useMemo(() => {

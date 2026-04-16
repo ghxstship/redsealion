@@ -3,52 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, ChevronRight } from 'lucide-react';
-
-/* ─────────────────────────────────────────────────────────
-   Route label registry — human-readable names for path
-   segments that aren't self-explanatory.
-   ───────────────────────────────────────────────────────── */
-
-const SEGMENT_LABELS: Record<string, string> = {
-  app: 'Home',
-  ai: 'AI Assistant',
-  'api-keys': 'API Keys & Webhooks',
-  'automations-config': 'Automations Config',
-  'calendar-sync': 'Calendar Sync',
-  'credit-notes': 'Credit Notes',
-  'custom-fields': 'Custom Fields',
-  'data-privacy': 'Data & Privacy',
-  'document-defaults': 'Document Defaults',
-  'email-templates': 'Email Templates',
-  'org-chart': 'Org Chart',
-  'payment-terms': 'Payment Terms',
-  'revenue-recognition': 'Revenue Recognition',
-  'time-off': 'Time Off',
-  'win-rate': 'Win Rate',
-  builder: 'Builder',
-  board: 'Board',
-  gantt: 'Gantt',
-  workloads: 'Workloads',
-  utilization: 'Utilization',
-  schedule: 'Schedule',
-  availability: 'Availability',
-  onboarding: 'Onboarding',
-  maintenance: 'Maintenance',
-  bundles: 'Bundles',
-  packing: 'Packing',
-  scan: 'Scan',
-  transfers: 'Transfers',
-  timer: 'Timer',
-  timesheets: 'Timesheets',
-  pipeline: 'Pipeline',
-  recurring: 'Recurring',
-  new: 'New',
-  export: 'Export',
-  scenarios: 'Scenarios',
-  forms: 'Lead Forms',
-  revenue: 'Revenue',
-  profitability: 'Profitability',
-};
+import { SEGMENT_LABELS } from '@/config/route-labels';
 
 /* ─────────────────────────────────────────────────────────
    Breadcrumb Component

@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { User, CreditCard, Settings, LogOut } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { useTranslation } from '@/lib/i18n/client';
+import { ROLE_LABELS, ROLE_I18N_KEYS, getInitials } from '@/config/roles';
 
 /* ─────────────────────────────────────────────────────────
    Types
@@ -19,24 +20,7 @@ interface UserMenuProps {
   avatarUrl: string | null;
 }
 
-const ROLE_LABELS: Record<string, string> = {
-  developer: 'Developer',
-  owner: 'Owner',
-  admin: 'Admin',
-  controller: 'Controller',
-  collaborator: 'Collaborator',
-  contractor: 'Contractor',
-  crew: 'Crew',
-  client: 'Client',
-  viewer: 'Viewer',
-  community: 'Community',
-};
-
-function getInitials(name: string): string {
-  const parts = name.trim().split(/\s+/);
-  if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-  return name.slice(0, 2).toUpperCase();
-}
+/* ROLE_LABELS, ROLE_I18N_KEYS, getInitials imported from @/config/roles (SSOT) */
 
 /* ─────────────────────────────────────────────────────────
    Component
@@ -73,24 +57,12 @@ export default function UserMenu({ fullName, email, role, avatarUrl }: UserMenuP
   };
 
   const initials = getInitials(fullName);
-  const ROLE_KEY_MAP: Record<string, string> = {
-    developer: 'user.developer',
-    owner: 'user.owner',
-    admin: 'user.admin',
-    controller: 'user.controller',
-    collaborator: 'user.collaborator',
-    contractor: 'user.contractor',
-    crew: 'user.crew',
-    client: 'user.client',
-    viewer: 'user.viewer',
-    community: 'user.community',
-  };
-  const roleLabel = ROLE_KEY_MAP[role] ? t(ROLE_KEY_MAP[role]) : (ROLE_LABELS[role] ?? role);
+  const roleLabel = ROLE_I18N_KEYS[role] ? t(ROLE_I18N_KEYS[role]) : (ROLE_LABELS[role] ?? role);
 
   const menuLinks = [
     { label: t('user.profile'), href: '/app/settings/profile', icon: ProfileIcon },
     { label: t('user.settings'), href: '/app/settings', icon: SettingsIcon },
-    { label: 'Plans & Billing', href: '/app/settings/billing', icon: BillingIcon },
+    { label: t('user.plansBilling'), href: '/app/settings/billing', icon: BillingIcon },
   ];
 
   return (

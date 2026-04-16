@@ -10,6 +10,7 @@ import { navSections } from '@/components/admin/sidebar/nav-data';
 import { useTranslation } from '@/lib/i18n/client';
 import { Settings, ChevronRight, Menu, X, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { usePreferencesSafe } from '@/components/shared/PreferencesProvider';
+import { ROLE_LABELS, getInitials } from '@/config/roles';
 
 /* ─────────────────────────────────────────────────────────
    Types
@@ -21,25 +22,6 @@ interface AdminSidebarProps {
     role: string;
     avatarUrl: string | null;
   };
-}
-
-const ROLE_LABELS: Record<string, string> = {
-  developer: 'Developer',
-  owner: 'Owner',
-  admin: 'Admin',
-  controller: 'Controller',
-  collaborator: 'Collaborator',
-  contractor: 'Contractor',
-  crew: 'Crew',
-  client: 'Client',
-  viewer: 'Viewer',
-  community: 'Community',
-};
-
-function getInitials(name: string): string {
-  const parts = name.trim().split(/\s+/);
-  if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-  return name.slice(0, 2).toUpperCase();
 }
 
 /* ─────────────────────────────────────────────────────────

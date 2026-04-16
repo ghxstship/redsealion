@@ -145,12 +145,14 @@ export {
   Store as IconNavMarketplace,
   Package as IconNavInventory,
   Warehouse as IconNavLogistics,
+  Truck as IconNavDispatch,
+  Box as IconNavAssets,
 
   /* ─── Navigation: Finance Items ───────────────────────── */
   
   CreditCard as IconNavExpenses,
-  
-  
+  Receipt as IconNavInvoices,
+  PieChart as IconNavBudgets,
   
   
   TrendingUp as IconNavProfitability,
@@ -161,4 +163,6 @@ export {
   Workflow as IconNavAutomations,
   Plug as IconNavIntegrations,
   BookOpen as IconNavTerms,
+  Eye as IconNavPortalPreview,
+  Calendar as IconNavCalendar,
 } from 'lucide-react';

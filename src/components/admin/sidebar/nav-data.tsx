@@ -23,7 +23,7 @@ import {
   IconNavOverview, IconNavProjects, IconNavSales, IconNavProduction,
   IconNavOperations, IconNavFinance, IconNavAdmin,
   IconNavDashboard, IconNavFavorites, IconNavAI, IconNavMySchedule,
-  IconNavMyTasks, IconNavMyInbox, IconNavMyDocs,
+  IconNavMyTasks, IconNavMyInbox, IconNavMyDocs, IconNavCalendar,
   IconNavTasks, IconNavGoals, IconNavRoadmap, IconNavFiles, IconNavTemplates,
   IconNavLeads, IconNavPipeline, IconNavClients, IconNavProposals,
   IconNavCampaigns, IconNavEmails, IconNavPortfolio,
@@ -31,11 +31,14 @@ import {
   IconNavWorkOrders,
   IconNavPeople, IconNavCrew, IconNavWorkloads, IconNavTime,
   IconNavMarketplace, IconNavInventory, IconNavLogistics, IconNavCompliance,
-  IconNavFinance as IconNavFinanceItem, IconNavExpenses,
+  IconNavDispatch, IconNavAssets,
+  IconNavFinance as IconNavFinanceItem, IconNavExpenses, IconNavInvoices,
+  IconNavBudgets, IconNavProfitability,
   IconNavReports, IconNavAutomations, IconNavIntegrations, IconNavTerms,
+  IconNavPortalPreview,
 } from '@/components/ui/Icons';
 
-interface NavItem {
+export interface NavItem {
   label: string;
   labelKey: string;
   href: string;
@@ -43,7 +46,7 @@ interface NavItem {
   icon: React.ReactNode;
 }
 
-interface NavSection {
+export interface NavSection {
   id: string;
   label: string;
   labelKey: string;
@@ -62,6 +65,7 @@ export const navSections: NavSection[] = [
       { label: 'Dashboard', labelKey: 'nav.dashboard', href: '/app', icon: <IconNavDashboard size={18} /> },
       { label: 'Favorites', labelKey: 'nav.favorites', href: '/app/favorites', icon: <IconNavFavorites size={18} /> },
       { label: 'AI Assistant', labelKey: 'nav.aiAssistant', href: '/app/ai', feature: 'ai_assistant', icon: <IconNavAI size={18} /> },
+      { label: 'Calendar', labelKey: 'nav.calendar', href: '/app/calendar', feature: 'calendar', icon: <IconNavCalendar size={18} /> },
       { label: 'My Schedule', labelKey: 'nav.mySchedule', href: '/app/my-schedule', feature: 'calendar', icon: <IconNavMySchedule size={18} /> },
       { label: 'My Tasks', labelKey: 'nav.myTasks', href: '/app/my-tasks', feature: 'tasks', icon: <IconNavMyTasks size={18} /> },
       { label: 'My Inbox', labelKey: 'nav.myInbox', href: '/app/my-inbox', icon: <IconNavMyInbox size={18} /> },
@@ -130,6 +134,8 @@ export const navSections: NavSection[] = [
       { label: 'People', labelKey: 'nav.people', href: '/app/people', feature: 'people_hr', icon: <IconNavPeople size={18} /> },
       { label: 'Crew', labelKey: 'nav.crew', href: '/app/crew', feature: 'crew', icon: <IconNavCrew size={18} /> },
       { label: 'Equipment', labelKey: 'nav.equipment', href: '/app/equipment', feature: 'equipment', icon: <IconNavInventory size={18} /> },
+      { label: 'Assets', labelKey: 'nav.assets', href: '/app/assets', feature: 'assets', icon: <IconNavAssets size={18} /> },
+      { label: 'Dispatch', labelKey: 'nav.dispatch', href: '/app/dispatch', feature: 'work_orders', icon: <IconNavDispatch size={18} /> },
       { label: 'Logistics', labelKey: 'nav.logistics', href: '/app/logistics', feature: 'warehouse', icon: <IconNavLogistics size={18} /> },
       { label: 'Workloads', labelKey: 'nav.workloads', href: '/app/workloads', feature: 'resource_scheduling', icon: <IconNavWorkloads size={18} /> },
       { label: 'Time', labelKey: 'nav.time', href: '/app/time', feature: 'time_tracking', icon: <IconNavTime size={18} /> },
@@ -146,7 +152,10 @@ export const navSections: NavSection[] = [
     icon: <IconNavFinance size={16} />,
     items: [
       { label: 'Finance', labelKey: 'nav.financeHub', href: '/app/finance', feature: 'profitability', icon: <IconNavFinanceItem size={18} /> },
+      { label: 'Invoices', labelKey: 'nav.invoices', href: '/app/invoices', feature: 'invoices', icon: <IconNavInvoices size={18} /> },
       { label: 'Expenses', labelKey: 'nav.expenses', href: '/app/expenses', feature: 'expenses', icon: <IconNavExpenses size={18} /> },
+      { label: 'Budgets', labelKey: 'nav.budgets', href: '/app/budgets', feature: 'budgets', icon: <IconNavBudgets size={18} /> },
+      { label: 'Profitability', labelKey: 'nav.profitability', href: '/app/profitability', feature: 'profitability', icon: <IconNavProfitability size={18} /> },
     ],
   },
 
@@ -161,7 +170,7 @@ export const navSections: NavSection[] = [
       { label: 'Automations', labelKey: 'nav.automations', href: '/app/automations', feature: 'automations', icon: <IconNavAutomations size={18} /> },
       { label: 'Integrations', labelKey: 'nav.integrations', href: '/app/integrations', feature: 'integrations', icon: <IconNavIntegrations size={18} /> },
       { label: 'Terms', labelKey: 'nav.terms', href: '/app/terms', feature: 'terms', icon: <IconNavTerms size={18} /> },
+      { label: 'Portal Preview', labelKey: 'nav.portalPreview', href: '/app/portal', icon: <IconNavPortalPreview size={18} /> },
     ],
   },
 ];
-

@@ -113,7 +113,8 @@
     "marketplace": "Marketplace",
     "equipment": "Equipment",
     "manifest": "Manifest",
-    "workOrders": "Work Orders"
+    "workOrders": "Work Orders",
+    "portalPreview": "Portal Preview"
   },
   "header": {
     "search": "Search\u2026",
@@ -151,6 +152,7 @@
     "signOut": "Sign out",
     "profile": "Profile",
     "settings": "Settings",
+    "plansBilling": "Plans & Billing",
     "switchOrg": "Switch organization",
     "superAdmin": "Super Admin",
     "admin": "Admin",
