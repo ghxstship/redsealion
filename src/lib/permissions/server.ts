@@ -49,8 +49,10 @@ export const getSessionRole = cache(async (): Promise<PlatformRole> => {
       .limit(1)
       .single();
 
+    if (!membership) return 'community';
+
     const roleData = castRelation<{ name: string }>(membership?.roles);
-    return (roleData?.name as PlatformRole) || 'collaborator';
+    return (roleData?.name as PlatformRole) || 'community';
   } catch {
     return 'community';
   }

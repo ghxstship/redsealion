@@ -29,7 +29,7 @@ export default function NewProjectPage() {
       description: formData.get('description') || undefined,
       status: formData.get('status'),
       visibility: formData.get('visibility'),
-      venue_name: formData.get('venue_name') || undefined,
+      location_name: formData.get('location_name') || undefined,
       starts_at: formData.get('starts_at') || undefined,
       ends_at: formData.get('ends_at') || undefined,
     };
@@ -109,8 +109,8 @@ export default function NewProjectPage() {
           <div className="rounded-xl border border-border bg-background p-6 space-y-4">
             <h3 className="text-sm font-semibold text-foreground">Details</h3>
             <div>
-              <FormLabel>Venue Name</FormLabel>
-              <FormInput name="venue_name" placeholder="e.g., Austin Convention Center" />
+              <FormLabel>Location Name</FormLabel>
+              <FormInput name="location_name" placeholder="e.g., Austin Convention Center" />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>

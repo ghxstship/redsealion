@@ -85,7 +85,7 @@ export default async function FavoritesPage() {
   const validKeys = Object.keys(data).filter(key => ENTITY_CONFIGS[key] && data[key].length > 0);
 
   return (
-    <RoleGate>
+    <RoleGate allowedRoles={['developer', 'owner', 'admin', 'controller', 'collaborator']}>
     <div>
       <PageHeader title="Favorites" subtitle="Quick access to your starred items across the platform." />
 

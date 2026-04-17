@@ -30,7 +30,7 @@ export default async function MyDocumentsPage() {
   const files = await getMyDocuments();
 
   return (
-    <RoleGate>
+    <RoleGate allowedRoles={['developer', 'owner', 'admin', 'controller', 'collaborator']}>
     <div>
       <PageHeader
         title="My Documents"

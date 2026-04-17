@@ -84,7 +84,7 @@ const ROUTES: RouteEntry[] = [
 
   // ── Proposals ── (RoleGate resource="proposals", controller: viewOnly)
   { path: '/app/proposals', minTier: 'access', allowedRoles: ADMIN_CTRL_COLLAB, hasDynamicParams: false, group: 'proposals' },
-  { path: '/app/proposals/new', minTier: 'core', allowedRoles: ADMIN_COLLAB, hasDynamicParams: false, group: 'proposals' },
+  { path: '/app/proposals/new', minTier: 'core', allowedRoles: ADMIN_CTRL_COLLAB, hasDynamicParams: false, group: 'proposals' },
 
   // ── Invoices ── (RoleGate via finance layout resource="invoices", controller: allActions)
   { path: '/app/invoices', minTier: 'access', allowedRoles: ADMIN_CTRL_COLLAB, hasDynamicParams: false, group: 'invoices' },

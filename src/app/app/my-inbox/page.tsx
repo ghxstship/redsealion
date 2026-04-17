@@ -31,7 +31,7 @@ export default async function MyInboxPage() {
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   return (
-    <RoleGate>
+    <RoleGate allowedRoles={['developer', 'owner', 'admin', 'controller', 'collaborator']}>
     <div>
       <MyInboxHeader unreadCount={unreadCount} />
       <MyInboxTable notifications={notifications} />

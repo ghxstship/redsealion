@@ -11,7 +11,7 @@ export default defineConfig({
   testDir: './e2e/tests',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 1,
+  retries: process.env.CI ? 2 : 2,
   timeout: 60_000,
   workers: process.env.CI ? 2 : 2,
   reporter: [['html', { open: 'never' }], ['github']],

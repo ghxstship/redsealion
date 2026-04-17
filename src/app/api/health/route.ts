@@ -30,7 +30,7 @@ export async function GET() {
     const latencyMs = Date.now() - dbStart;
 
     if (error) {
-      checks.push({ service: 'database', status: 'error', latencyMs, error: error.message });
+      checks.push({ service: 'database', status: 'error', latencyMs, error: 'Database connection unavailable' });
       allHealthy = false;
     } else {
       checks.push({ service: 'database', status: 'ok', latencyMs });
@@ -41,7 +41,7 @@ export async function GET() {
       service: 'database',
       status: 'error',
       latencyMs,
-      error: err instanceof Error ? err.message : 'Unknown error',
+      error: 'Database connection unavailable',
     });
     allHealthy = false;
   }

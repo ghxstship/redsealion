@@ -68,7 +68,7 @@ export default async function MyTasksPage() {
   const tasks = await getMyTasks();
 
   return (
-    <RoleGate>
+    <RoleGate allowedRoles={['developer', 'owner', 'admin', 'controller', 'collaborator']}>
     <div>
       <MyTasksHeader taskCount={tasks.length} />
       <MyTasksTable tasks={tasks} />

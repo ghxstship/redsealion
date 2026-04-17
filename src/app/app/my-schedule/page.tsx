@@ -217,7 +217,7 @@ export default async function MySchedulePage() {
   const items = await getMySchedule();
 
   return (
-    <RoleGate>
+    <RoleGate allowedRoles={['developer', 'owner', 'admin', 'controller', 'collaborator']}>
     <div>
       <MyScheduleHeader />
       <MyScheduleView items={items} />
