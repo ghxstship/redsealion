@@ -1,0 +1,8 @@
+Gap ID,Role/Entity,Stage,Gap Type,Current State,Required State,3NF Impact,SSOT Impact,RBAC Impact,Severity,Effort,Dependency
+GAP-001,project_role,All,Schema gap,"project_role ENUM currently has 4 values: creator, collaborator, viewer, vendor.","project_role ENUM must support the full 12-role matrix (executive, production, management, crew...)",High,High,High,P0 (blocker),Large,None
+GAP-002,crew,Onboarding,UI gap,Missing COMPVSS specialized onboarding route for crew documents,Standalone route for crew to upload W9/COI mapping directly to UAC database,Low,High,Medium,P2 (major),Medium,GAP-001
+GAP-003,All,Contracting,Data gap,No mapping to canonical classification codes (UNSPSC/NIGP/NAICS),Classification codes mapped in UAC per role,High,High,Low,P2 (major),Medium,None
+GAP-004,vendor,Settlement,Schema gap,Vendor settlements are decoupled from PO matching,Vendor invoices must FK strictly to advance_line_items and PO,High,High,Low,P1 (critical),Large,GAP-001
+GAP-005,guest/attendee,All,Schema gap,Consumer roles missing entirely from project_role enum,Addition of Consumer roles into enum for GVTEWAY validation layer,Low,High,High,P0 (blocker),Small,GAP-001
+GAP-006,All,Archival,Audit gap,Status transitions lack immutability checks via trigger,Records must lock cleanly when entering 'Closeout' state for a role,Low,High,Medium,P1 (critical),Medium,None
+GAP-007,press,Deployment,RLS/RBAC gaps,Missing specific RLS policy for press media pool access,Press role read constraints on media drive/assets,Medium,Low,High,P1 (critical),Small,GAP-001

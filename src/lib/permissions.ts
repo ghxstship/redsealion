@@ -4,7 +4,7 @@
  * Two-Tier Architecture:
  *   PLATFORM (org_role): developer, owner, admin, controller, collaborator,
  *                        contractor, crew, client, community
- *   PROJECT  (project_role): creator, collaborator, viewer, vendor
+ *   PROJECT  (project_role): executive, production, management, crew, staff, talent, vendor, client, sponsor, press, guest, attendee
  *
  * This module defines the static permission matrix, helper functions,
  * and role group constants used throughout the application.
@@ -21,7 +21,7 @@ export type PlatformRole =
 /**
  * Project role type — directly mirrors the `project_role` Postgres enum.
  */
-export type ProjectRole = 'creator' | 'collaborator' | 'viewer' | 'vendor';
+export type ProjectRole = 'executive' | 'production' | 'management' | 'crew' | 'staff' | 'talent' | 'vendor' | 'client' | 'sponsor' | 'press' | 'guest' | 'attendee';
 
 // ---------------------------------------------------------------------------
 // Resources & Actions

@@ -7,6 +7,8 @@
 ALTER TYPE subscription_tier ADD VALUE IF NOT EXISTS 'access';
 ALTER TYPE subscription_tier ADD VALUE IF NOT EXISTS 'core';
 
+COMMIT;
+
 -- Step 2: Update existing organization rows
 UPDATE organizations SET subscription_tier = 'access' WHERE subscription_tier = 'free';
 UPDATE organizations SET subscription_tier = 'core'   WHERE subscription_tier = 'starter';
