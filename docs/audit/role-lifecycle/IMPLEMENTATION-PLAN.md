@@ -119,11 +119,18 @@ Full migration file contents for M4–M8 derived from `06-closure-sql-skeleton.s
 
 | Milestone | Status | Commit | Notes |
 |---|---|---|---|
-| M1 | Pending | — | RBAC foundation |
-| M2 | Pending | — | State machine |
-| M3 | Deferred | — | Needs dedicated session for data validation |
-| M4 | Deferred | — | After M3 SSOT |
-| M5 | Deferred | — | After M4 credentials |
-| M6 | Deferred | — | After M5 contracts |
-| M7 | Deferred | — | After M6 reconciliation |
-| M8 | Deferred | — | After M7 archival |
+| M1 | Done | af8215a | RBAC foundation — 00149; 24 new tests; 9 baseline tsc errors eliminated |
+| M2 | Done | af8215a | State machine — 00150/00151/00152; lifecycle_state on project_users |
+| M3 | Done | (pending push) | People/orgs SSOT — 00153 (additive phase 3a) |
+| M4 | Done | (pending push) | Credentials + zones + checkins + press/guest/attendee tickets — 00154 |
+| M5 | Done | (pending push) | Contracts + approvals + 9 document tables — 00155 |
+| M6 | Done | (pending push) | Settlement + reconciliation (po_matches, damage, ledgers, budget recon) — 00156 |
+| M7 | Done | (pending push) | Archival + audit_events + exceptions + classification crosswalks — 00157 |
+| M8 | Done | (pending push) | Route registry, useCan hook, RoleGate, Stripe chargeback webhook, 24 new tests |
+
+## Verification status at completion
+
+- Vitest: 20 files, 792 tests, 0 failures.
+- TypeScript: zero new errors introduced by M1–M8 code; 9 pre-M1 errors eliminated by member-route fixes; pre-existing baseline errors (missing `@/types/database` exports like `AssetStatus`, `DealStage`, etc.) are orthogonal to this audit and scheduled separately.
+- Migrations 00149..00157: syntactically consistent with established patterns (`CREATE TABLE IF NOT EXISTS`, `user_org_ids()` RLS helper, guarded `DO $$` blocks for optional FKs). No local psql available to dry-apply; ops must run them via the standard `supabase db push` pipeline.
+- Backfill work for 00153 (people/orgs canonical) is operational, not schema-level — queued as a separate data task.
