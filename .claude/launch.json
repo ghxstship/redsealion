@@ -3,10 +3,9 @@
   "configurations": [
     {
       "name": "xpb-dev",
-      "runtimeExecutable": "/usr/local/bin/npx",
-      "runtimeArgs": ["next", "dev", "--port", "3001"],
-      "port": 3001,
-      "cwd": "/Users/julianclarkson/claude-code/xpb"
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3001
     }
   ]
 }

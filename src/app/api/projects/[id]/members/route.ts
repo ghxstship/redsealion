@@ -1,19 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
-import { SYSTEM_ROLE_IDS } from '@/types/rbac';
+import { getProjectRoleId } from '@/types/rbac';
 import type { ProjectRole } from '@/lib/permissions';
 
 interface RouteContext { params: Promise<{ id: string }> }
 
-const VALID_PROJECT_ROLES: ProjectRole[] = ['creator', 'collaborator', 'viewer', 'vendor'];
-
-const PROJECT_ROLE_MAP: Record<ProjectRole, string> = {
-  creator: SYSTEM_ROLE_IDS.PROJECT_CREATOR,
-  collaborator: SYSTEM_ROLE_IDS.PROJECT_COLLABORATOR,
-  viewer: SYSTEM_ROLE_IDS.PROJECT_VIEWER,
-  vendor: SYSTEM_ROLE_IDS.PROJECT_VENDOR,
-};
+const VALID_PROJECT_ROLES: ProjectRole[] = [
+  'executive', 'production', 'management', 'crew', 'staff', 'talent',
+  'vendor', 'client', 'sponsor', 'press', 'guest', 'attendee',
+];
 
 /**
  * GET /api/projects/[id]/members — List members of a project.
@@ -68,9 +64,12 @@ export async function POST(request: NextRequest, context: RouteContext) {
 
   const projectRole = (role && VALID_PROJECT_ROLES.includes(role as ProjectRole))
     ? role as ProjectRole
-    : 'collaborator';
+    : 'production';
 
-  const roleId = PROJECT_ROLE_MAP[projectRole];
+  const roleId = getProjectRoleId(projectRole);
+  if (!roleId) {
+    return NextResponse.json({ error: `Unknown project role: ${projectRole}` }, { status: 400 });
+  }
   const supabase = await createClient();
 
   // Resolve user

@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import type { PlatformRole } from '@/lib/permissions';
+import type { PlatformRole, ProjectRole } from '@/lib/permissions';
 import {
   type PermissionResource,
   type PermissionAction,
   getDefaultPermission,
+  getDefaultProjectPermission,
 } from '@/lib/permissions';
 import {
   canAccessFeature,
@@ -17,10 +18,38 @@ import type { SubscriptionTier } from '@/types/database';
 interface PermissionCheckResult {
   allowed: boolean;
   role: PlatformRole;
+  /** Project-scoped role when the check ran in project scope. */
+  projectRole?: ProjectRole;
   userId: string;
   organizationId: string;
   /** True when access was denied due to subscription tier, not role */
   tierBlocked?: boolean;
+}
+
+/**
+ * Resolves the caller's project-scoped role for a given project.
+ * Returns null if the user has no accepted project membership.
+ * Reads from project_users (canonical) — migration 00148.
+ */
+export async function resolveProjectMembership(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  userId: string,
+  projectId: string,
+): Promise<{ projectId: string; role: ProjectRole } | null> {
+  const { data } = await supabase
+    .from('project_users')
+    .select('project_id, role')
+    .eq('user_id', userId)
+    .eq('project_id', projectId)
+    .eq('invite_status', 'accepted')
+    .limit(1)
+    .maybeSingle();
+
+  if (!data) return null;
+  return {
+    projectId: data.project_id as string,
+    role: data.role as ProjectRole,
+  };
 }
 
 /**
@@ -74,6 +103,7 @@ export async function checkPermission(
   resource: PermissionResource,
   action: PermissionAction,
   requireFeature?: FeatureKey,
+  projectId?: string,
 ): Promise<PermissionCheckResult | null> {
   const supabase = await createClient();
   const {
@@ -113,6 +143,24 @@ export async function checkPermission(
     return { allowed: true, role, userId: user.id, organizationId };
   }
 
+  // --- Project-scoped authorization (canonical) ---
+  // When the caller passes a projectId, resolve the project role and consult
+  // DEFAULT_PROJECT_PERMISSIONS first. Project-scoped bundles take precedence
+  // over platform fallback for project-scoped resources. If the user has no
+  // project membership OR the bundle denies, fall through to the platform
+  // matrix below (which will likely deny for external roles).
+  let projectRole: ProjectRole | undefined;
+  if (projectId) {
+    const pm = await resolveProjectMembership(supabase, user.id, projectId);
+    if (pm) {
+      projectRole = pm.role;
+      const projectAllowed = getDefaultProjectPermission(pm.role, resource, action);
+      if (projectAllowed) {
+        return { allowed: true, role, projectRole, userId: user.id, organizationId };
+      }
+    }
+  }
+
   // --- RBAC RPC path ---
   const hmAction = action === 'view' ? 'read'
     : action === 'create' ? 'create'
@@ -124,18 +172,18 @@ export async function checkPermission(
     p_user_id: user.id,
     p_action: hmAction,
     p_resource: resource,
-    p_scope: 'organization',
-    p_scope_id: organizationId,
+    p_scope: projectId ? 'project' : 'organization',
+    p_scope_id: projectId ?? organizationId,
   });
 
   if (hmAllowed === true) {
-    return { allowed: true, role, userId: user.id, organizationId };
+    return { allowed: true, role, projectRole, userId: user.id, organizationId };
   }
 
   // --- Fallback: in-code default permission matrix (no DB table) ---
   const allowed = getDefaultPermission(role, resource, action);
 
-  return { allowed, role, userId: user.id, organizationId };
+  return { allowed, role, projectRole, userId: user.id, organizationId };
 }
 
 /**
@@ -146,8 +194,9 @@ export async function requirePermission(
   resource: PermissionResource,
   action: PermissionAction,
   requireFeature?: FeatureKey,
+  projectId?: string,
 ): Promise<NextResponse | null> {
-  const result = await checkPermission(resource, action, requireFeature);
+  const result = await checkPermission(resource, action, requireFeature, projectId);
 
   if (!result) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

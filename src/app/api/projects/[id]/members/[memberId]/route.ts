@@ -1,19 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkPermission } from '@/lib/api/permission-guard';
-import { SYSTEM_ROLE_IDS } from '@/types/rbac';
+import { getProjectRoleId } from '@/types/rbac';
 import type { ProjectRole } from '@/lib/permissions';
 
 interface RouteContext { params: Promise<{ id: string; memberId: string }> }
 
-const VALID_PROJECT_ROLES: ProjectRole[] = ['creator', 'collaborator', 'viewer', 'vendor'];
-
-const PROJECT_ROLE_MAP: Record<ProjectRole, string> = {
-  creator: SYSTEM_ROLE_IDS.PROJECT_CREATOR,
-  collaborator: SYSTEM_ROLE_IDS.PROJECT_COLLABORATOR,
-  viewer: SYSTEM_ROLE_IDS.PROJECT_VIEWER,
-  vendor: SYSTEM_ROLE_IDS.PROJECT_VENDOR,
-};
+const VALID_PROJECT_ROLES: ProjectRole[] = [
+  'executive', 'production', 'management', 'crew', 'staff', 'talent',
+  'vendor', 'client', 'sponsor', 'press', 'guest', 'attendee',
+];
 
 /**
  * PATCH /api/projects/[id]/members/[memberId] — Update a member's project role.
@@ -34,7 +30,10 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
     );
   }
 
-  const roleId = PROJECT_ROLE_MAP[role as ProjectRole];
+  const roleId = getProjectRoleId(role);
+  if (!roleId) {
+    return NextResponse.json({ error: `Unknown project role: ${role}` }, { status: 400 });
+  }
   const supabase = await createClient();
 
   const { error } = await supabase

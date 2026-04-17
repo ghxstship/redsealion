@@ -382,6 +382,150 @@ export function getDefaultPermission(
   return DEFAULT_PERMISSIONS[role]?.[key] ?? false;
 }
 
+// ---------------------------------------------------------------------------
+// DEFAULT_PROJECT_PERMISSIONS — 12-value canonical project-role matrix
+//
+// Mirrors the DB SSOT in role_permission_bundles (migration 00149).
+// RPC-vocabulary actions (create/read/update/delete/manage/invite/approve/export)
+// are mapped through projectActionToAppAction() for the app-layer checker.
+// ---------------------------------------------------------------------------
+
+type ProjectAction =
+  | 'create' | 'read' | 'update' | 'delete'
+  | 'manage' | 'invite' | 'approve' | 'export' | 'configure';
+
+export type ProjectPermissionKey = `${PermissionResource}.${ProjectAction}`;
+
+function pk(resource: PermissionResource, action: ProjectAction): ProjectPermissionKey {
+  return `${resource}.${action}` as ProjectPermissionKey;
+}
+
+export const DEFAULT_PROJECT_PERMISSIONS: Record<ProjectRole, Record<string, boolean>> = {
+  executive: {
+    [pk('projects','create')]: true, [pk('projects','read')]: true, [pk('projects','update')]: true, [pk('projects','delete')]: true, [pk('projects','manage')]: true, [pk('projects','approve')]: true,
+    [pk('advances','read')]: true, [pk('advances','update')]: true, [pk('advances','approve')]: true,
+    [pk('purchase_orders','read')]: true, [pk('purchase_orders','approve')]: true,
+    [pk('invoices','read')]: true, [pk('invoices','approve')]: true,
+    [pk('budgets','read')]: true, [pk('budgets','update')]: true, [pk('budgets','approve')]: true,
+    [pk('settings','read')]: true, [pk('settings','update')]: true,
+    [pk('reports','read')]: true, [pk('reports','export')]: true,
+    [pk('finance','read')]: true, [pk('finance','approve')]: true,
+    [pk('compliance','read')]: true, [pk('compliance','approve')]: true,
+    [pk('crew','read')]: true, [pk('crew','manage')]: true,
+    [pk('vendors','read')]: true, [pk('vendors','manage')]: true,
+    [pk('clients','read')]: true, [pk('clients','manage')]: true,
+    [pk('events','read')]: true, [pk('events','manage')]: true,
+    [pk('activations','read')]: true, [pk('activations','manage')]: true,
+  },
+  production: {
+    [pk('projects','read')]: true, [pk('projects','update')]: true,
+    [pk('events','create')]: true, [pk('events','read')]: true, [pk('events','update')]: true, [pk('events','manage')]: true,
+    [pk('activations','create')]: true, [pk('activations','read')]: true, [pk('activations','update')]: true,
+    [pk('advances','create')]: true, [pk('advances','read')]: true, [pk('advances','update')]: true, [pk('advances','approve')]: true,
+    [pk('crew','create')]: true, [pk('crew','read')]: true, [pk('crew','update')]: true, [pk('crew','invite')]: true,
+    [pk('schedule','create')]: true, [pk('schedule','read')]: true, [pk('schedule','update')]: true,
+    [pk('tasks','create')]: true, [pk('tasks','read')]: true, [pk('tasks','update')]: true,
+    [pk('dispatch','read')]: true, [pk('dispatch','update')]: true,
+    [pk('locations','read')]: true, [pk('locations','update')]: true,
+    [pk('spaces','read')]: true, [pk('spaces','update')]: true,
+    [pk('zones','read')]: true, [pk('zones','update')]: true,
+    [pk('manifest','read')]: true, [pk('manifest','update')]: true,
+    [pk('compliance','read')]: true, [pk('compliance','update')]: true,
+    [pk('reports','read')]: true,
+  },
+  management: {
+    [pk('schedule','create')]: true, [pk('schedule','read')]: true, [pk('schedule','update')]: true,
+    [pk('tasks','create')]: true, [pk('tasks','read')]: true, [pk('tasks','update')]: true,
+    [pk('crew','read')]: true, [pk('crew','update')]: true,
+    [pk('vendors','read')]: true, [pk('vendors','update')]: true,
+    [pk('purchase_orders','create')]: true, [pk('purchase_orders','read')]: true, [pk('purchase_orders','update')]: true,
+    [pk('dispatch','read')]: true, [pk('dispatch','update')]: true,
+    [pk('work_orders','create')]: true, [pk('work_orders','read')]: true, [pk('work_orders','update')]: true,
+    [pk('equipment','read')]: true, [pk('equipment','update')]: true,
+    [pk('manifest','read')]: true, [pk('manifest','update')]: true,
+    [pk('locations','read')]: true,
+    [pk('spaces','read')]: true,
+    [pk('zones','read')]: true,
+    [pk('compliance','read')]: true,
+    [pk('time_tracking','read')]: true, [pk('time_tracking','approve')]: true,
+  },
+  crew: {
+    [pk('schedule','read')]: true,
+    [pk('tasks','read')]: true, [pk('tasks','update')]: true,
+    [pk('time_tracking','create')]: true, [pk('time_tracking','read')]: true, [pk('time_tracking','update')]: true,
+    [pk('manifest','read')]: true,
+    [pk('equipment','read')]: true,
+  },
+  staff: {
+    [pk('schedule','read')]: true,
+    [pk('tasks','read')]: true,
+    [pk('time_tracking','create')]: true, [pk('time_tracking','read')]: true,
+  },
+  talent: {
+    [pk('schedule','read')]: true,
+    [pk('advances','read')]: true, [pk('advances','update')]: true,
+    [pk('compliance','read')]: true,
+  },
+  vendor: {
+    [pk('advances','read')]: true, [pk('advances','update')]: true,
+    [pk('invoices','create')]: true, [pk('invoices','read')]: true, [pk('invoices','update')]: true,
+    [pk('purchase_orders','read')]: true,
+    [pk('equipment','read')]: true, [pk('equipment','update')]: true,
+    [pk('manifest','read')]: true, [pk('manifest','update')]: true,
+    [pk('compliance','read')]: true,
+  },
+  client: {
+    [pk('projects','read')]: true,
+    [pk('proposals','read')]: true, [pk('proposals','approve')]: true,
+    [pk('invoices','read')]: true, [pk('invoices','approve')]: true,
+    [pk('reports','read')]: true,
+    [pk('events','read')]: true,
+  },
+  sponsor: {
+    [pk('activations','read')]: true,
+    [pk('events','read')]: true,
+    [pk('reports','read')]: true,
+  },
+  press: {
+    [pk('events','read')]: true,
+    [pk('files','read')]: true,
+  },
+  guest: {
+    [pk('events','read')]: true,
+  },
+  attendee: {
+    [pk('events','read')]: true,
+  },
+};
+
+/**
+ * Map the legacy app PermissionAction vocabulary ('view'/'edit') to the RPC
+ * vocabulary ('read'/'update'). Other actions pass through unchanged.
+ * Used by the project-role guard so callers keep the existing view/edit API
+ * without duplicating keys in the matrix.
+ */
+function appActionToProjectAction(action: PermissionAction): ProjectAction {
+  if (action === 'view') return 'read';
+  if (action === 'edit') return 'update';
+  return action as ProjectAction;
+}
+
+/**
+ * Check whether a project-scoped role permits an action on a resource.
+ * Returns false for unknown roles, resources, or actions.
+ */
+export function getDefaultProjectPermission(
+  role: ProjectRole,
+  resource: PermissionResource,
+  action: PermissionAction | ProjectAction
+): boolean {
+  const projectAction = typeof action === 'string'
+    ? appActionToProjectAction(action as PermissionAction)
+    : action;
+  const key = `${resource}.${projectAction}`;
+  return DEFAULT_PROJECT_PERMISSIONS[role]?.[key] ?? false;
+}
+
 export function getPortalPermission(
   role: 'client' | 'viewer' | 'community',
   key: string
